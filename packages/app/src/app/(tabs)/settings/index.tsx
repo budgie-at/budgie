@@ -2,7 +2,7 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -31,7 +31,7 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { scrollViewRef, anchorProps } = useScrollToRef();
+    const { scrollViewRef, anchorLayout, anchorHighlight } = useScrollToRef();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -58,95 +58,107 @@ export default function SettingsPage() {
                     />
                 </SettingsGroup>
 
-                <Animated.View {...anchorProps('security')}>
+                <View {...anchorLayout('security')}>
                     <SettingsGroup title={t`Security`}>
-                        <PinCard />
-                        <SettingsCard
-                            icon={UserIconNameEnum.ShieldCheck}
-                            variant="pink"
-                            title={t`Screenshot Protection`}
-                            description={t`Hide account balances and net worth when taking screenshots`}
-                            right={
-                                <ThemedSwitch
-                                    className="my-auto"
-                                    onValueChange={handleToggle('isScreenshotProtectionEnabled')}
-                                    value={isScreenshotProtectionEnabled}
-                                />
-                            }
-                        />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('security')}>
+                            <PinCard />
+                            <SettingsCard
+                                icon={UserIconNameEnum.ShieldCheck}
+                                variant="pink"
+                                title={t`Screenshot Protection`}
+                                description={t`Hide account balances and net worth when taking screenshots`}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        onValueChange={handleToggle('isScreenshotProtectionEnabled')}
+                                        value={isScreenshotProtectionEnabled}
+                                    />
+                                }
+                            />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
-                <Animated.View {...anchorProps('general')}>
+                <View {...anchorLayout('general')}>
                     <SettingsGroup title={t`General`}>
-                        <LanguageSelector />
-                        <DefaultCurrencySelector />
-                        <DefaultAccountSelector />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('general')}>
+                            <LanguageSelector />
+                            <DefaultCurrencySelector />
+                            <DefaultAccountSelector />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
-                <Animated.View {...anchorProps('ai')}>
+                <View {...anchorLayout('ai')}>
                     <SettingsGroup title={t`AI`}>
-                        <AiDataCard />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                            <AiDataCard />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
-                <Animated.View {...anchorProps('organization')}>
+                <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
-                        <SettingsCard
-                            onPress={handleNavigateToCategories}
-                            title={t`Manage Categories`}
-                            description={t`View and delete custom categories`}
-                            icon={UserIconNameEnum.Folder}
-                            variant="default"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToTags}
-                            title={t`Manage Tags`}
-                            description={t`Create and organize transaction tags`}
-                            icon={UserIconNameEnum.Tag}
-                            variant="pink"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToArchived}
-                            title={t`Archived Accounts`}
-                            description={t`View and restore archived accounts`}
-                            icon={UserIconNameEnum.Archive}
-                            variant="dark-warning"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToInactive}
-                            title={t`Inactive Accounts`}
-                            description={t`View and activate hidden accounts`}
-                            icon={UserIconNameEnum.EyeOff}
-                            variant="dark-warning"
-                        />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('organization')}>
+                            <SettingsCard
+                                onPress={handleNavigateToCategories}
+                                title={t`Manage Categories`}
+                                description={t`View and delete custom categories`}
+                                icon={UserIconNameEnum.Folder}
+                                variant="default"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToTags}
+                                title={t`Manage Tags`}
+                                description={t`Create and organize transaction tags`}
+                                icon={UserIconNameEnum.Tag}
+                                variant="pink"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToArchived}
+                                title={t`Archived Accounts`}
+                                description={t`View and restore archived accounts`}
+                                icon={UserIconNameEnum.Archive}
+                                variant="dark-warning"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToInactive}
+                                title={t`Inactive Accounts`}
+                                description={t`View and activate hidden accounts`}
+                                icon={UserIconNameEnum.EyeOff}
+                                variant="dark-warning"
+                            />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
-                <Animated.View {...anchorProps('appearance')}>
+                <View {...anchorLayout('appearance')}>
                     <SettingsGroup title={t`Appearance`}>
-                        <ThemeSwitch />
-                        <SettingsCard
-                            title={t`Show Cents`}
-                            description={t`Show $1,234.56 instead of $1,235`}
-                            icon={UserIconNameEnum.DollarSign}
-                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
-                            variant="positive"
-                        />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
+                            <ThemeSwitch />
+                            <SettingsCard
+                                title={t`Show Cents`}
+                                description={t`Show $1,234.56 instead of $1,235`}
+                                icon={UserIconNameEnum.DollarSign}
+                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                                variant="positive"
+                            />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
-                <Animated.View {...anchorProps('data')}>
+                <View {...anchorLayout('data')}>
                     <SettingsGroup title={t`Data management`}>
-                        <ImportCsv />
-                        <ExportCsv />
-                        <ImportDatabase />
-                        <ExportDatabase />
-                        <RecalculateBalances />
-                        <TruncateData />
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('data')}>
+                            <ImportCsv />
+                            <ExportCsv />
+                            <ImportDatabase />
+                            <ExportDatabase />
+                            <RecalculateBalances />
+                            <TruncateData />
+                        </Animated.View>
                     </SettingsGroup>
-                </Animated.View>
+                </View>
 
                 <SettingsGroup title={t`About`}>
                     <SettingsCard
