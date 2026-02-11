@@ -9,6 +9,7 @@ interface Props {
 
 export const AiEmbeddingProgressProvider = ({ children }: Props) => {
     const [progress, setProgress] = useState(0);
+    const [isEmbedding, setIsEmbedding] = useState(false);
     const [refreshVersion, setRefreshVersion] = useState(0);
 
     useEffect(() => {
@@ -24,7 +25,7 @@ export const AiEmbeddingProgressProvider = ({ children }: Props) => {
         setRefreshVersion(version => version + 1);
     };
 
-    const value: AiEmbeddingProgressContextInterface = { progress, refreshProgress };
+    const value: AiEmbeddingProgressContextInterface = { progress, isEmbedding, refreshProgress, setIsEmbedding };
 
     return <AiEmbeddingProgressContext value={value}>{children}</AiEmbeddingProgressContext>;
 };
