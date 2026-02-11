@@ -14,6 +14,7 @@ export {
 
 // @generic - utils
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
+export { stripThinkingTags } from './@generic/util/strip-thinking-tags.util';
 
 // embedding - services
 export { EmbeddingService } from './embedding/service/embedding.service';
