@@ -1,5 +1,5 @@
 import { t } from '@lingui/core/macro';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -50,10 +50,7 @@ export const AiStatusProvider = ({ children }: Props) => {
         brainProgress = downloadPercent;
     }
 
-    const value: AiStatusContextInterface = useMemo(
-        () => ({ statusLabel, brainProgress, isRunning, isLlmReady, start, startFresh }),
-        [statusLabel, brainProgress, isRunning, isLlmReady, start, startFresh]
-    );
+    const value: AiStatusContextInterface = { statusLabel, brainProgress, isRunning, isLlmReady, start, startFresh };
 
     return <AiStatusContext value={value}>{children}</AiStatusContext>;
 };

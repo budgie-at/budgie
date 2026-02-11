@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import Animated, { interpolate, useAnimatedProps, useAnimatedStyle } from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
@@ -26,7 +25,7 @@ export const LongPressBrain = ({ progress, size, iconSize, isAnimating = false, 
     const ringCircumference = 2 * Math.PI * ringRadius;
 
     const ringOffset = (ringSize - size) / 2;
-    const containerStyle = useMemo(() => ({ width: size, height: size }), [size]);
+    const containerStyle = { width: size, height: size };
 
     const animatedProps = useAnimatedProps(() => ({
         strokeDashoffset: ringCircumference * (1 - holdProgress.get())
