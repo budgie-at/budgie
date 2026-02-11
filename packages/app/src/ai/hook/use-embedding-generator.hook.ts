@@ -4,6 +4,7 @@ import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { mccCategoryRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
+import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
 import { useLlmContext } from '../context/llm.context';
 
 interface UseEmbeddingGeneratorReturn {
@@ -56,6 +57,7 @@ const generateAndStoreEmbeddings = async (
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
     const { llm } = useLlmContext();
+    const { refreshProgress } = useAiEmbeddingProgressContext();
 
     const generateForTransaction = (title: string, comment: string, mccCategoryId: number | null): void => {
         if (!llm.isReady) {
@@ -63,7 +65,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
         }
 
         const embeddingService = new EmbeddingService(llm);
-        generateAndStoreEmbedding(title, comment, mccCategoryId, embeddingService).catch(emptyFn);
+        generateAndStoreEmbedding(title, comment, mccCategoryId, embeddingService).then(refreshProgress).catch(emptyFn);
     };
 
     const generateForTransactions = (transactions: readonly TransactionCreateInputInterface[]): void => {
@@ -72,7 +74,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
         }
 
         const embeddingService = new EmbeddingService(llm);
-        generateAndStoreEmbeddings(transactions, embeddingService).catch(emptyFn);
+        generateAndStoreEmbeddings(transactions, embeddingService).then(refreshProgress).catch(emptyFn);
     };
 
     return { generateForTransaction, generateForTransactions };

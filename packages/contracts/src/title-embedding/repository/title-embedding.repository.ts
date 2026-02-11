@@ -283,6 +283,28 @@ export class TitleEmbeddingRepository {
         console.log(`[VecRepo] upsert done in ${(performance.now() - start).toFixed(0)}ms, id=${row.id}`); // eslint-disable-line no-console
     }
 
+    async getEmbeddingCoverageProgress(): Promise<number> {
+        const [result] = this.db.all<{ progress: number }>(sql`
+            SELECT CAST(COALESCE(ROUND(
+                (SELECT COUNT(*) FROM ${TitleEmbeddingEntityTable} WHERE ${TitleEmbeddingEntityTable.deletedAt} IS NULL) * 100.0 /
+                NULLIF((SELECT COUNT(*) FROM (
+                    SELECT 1
+                    FROM ${TransactionEntityTable}
+                    LEFT JOIN ${TransactionEntryEntityTable}
+                        ON ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id}
+                        AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                    LEFT JOIN ${MccCategoryEntityTable}
+                        ON ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId}
+                    WHERE ${TransactionEntityTable.deletedAt} IS NULL
+                        AND ${hasEmbeddableContext}
+                    GROUP BY ${TransactionEntityTable.title}, ${TransactionEntityTable.comment}, ${MccCategoryEntityTable.fullDescription}
+                )), 0)
+            ), 0) AS INTEGER) as progress
+        `);
+
+        return result.progress;
+    }
+
     async countAll(): Promise<number> {
         const [result] = await this.db
             .select({ count: count() })
