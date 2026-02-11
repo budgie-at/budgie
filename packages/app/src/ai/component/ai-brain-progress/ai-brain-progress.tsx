@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 
@@ -60,7 +60,7 @@ export const AiBrainProgress = ({ progress, size, iconSize, isAnimating = false 
         borderRadius: size / 2,
         transform: [{ scale: pulseScale.value }]
     }));
-    const iconWrapperStyle: ViewStyle = useMemo(() => ({ width: iconSize, height: iconSize }), [iconSize]);
+    const iconWrapperStyle: ViewStyle = { width: iconSize, height: iconSize };
 
     return (
         <Animated.View className="items-center justify-center bg-ghost-background" style={containerStyle}>
