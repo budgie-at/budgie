@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
@@ -13,6 +14,8 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onToggle: () => void;
 }
+
+const ANIMATION_DURATION = 150;
 
 const pillVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
     'items-center justify-center rounded-full border w-10 h-10',
@@ -29,12 +32,17 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     }
 });
 
+const enteringAnimation = FadeIn.duration(ANIMATION_DURATION);
+const exitingAnimation = FadeOut.duration(ANIMATION_DURATION);
+
 export const SignTogglePill = ({ isNegative, variant, onToggle }: Props) => {
     const icon = isNegative ? UserIconNameEnum.Minus : UserIconNameEnum.Plus;
 
     return (
         <HapticPressable className={pillVariants({ variant })} onPress={onToggle}>
-            <Icon icon={icon} size={20} className={iconVariants({ variant })} />
+            <Animated.View key={icon} entering={enteringAnimation} exiting={exitingAnimation}>
+                <Icon icon={icon} size={20} className={iconVariants({ variant })} />
+            </Animated.View>
         </HapticPressable>
     );
 };

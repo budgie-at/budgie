@@ -12,6 +12,7 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
+import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
@@ -44,14 +45,9 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const variant = ACCOUNT_COLOR[type];
 
     return (
-        <CreateAccountScreen
-            title={title}
-            control={control}
-            variant={variant}
-            instrumentSymbol={instrument.symbol}
-            allowNegativeBalance
-            onSubmit={handleSubmit}
-        >
+        <CreateAccountScreen title={title} variant={variant} onSubmit={handleSubmit}>
+            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative />
+
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
                 <CreateAccountCurrencyField control={control} />
