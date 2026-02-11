@@ -15,8 +15,6 @@ export class EmbeddingService {
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
-            console.log(`[EmbedSvc] cache hit for "${text}"`); // eslint-disable-line no-console
-
             return cached;
         }
 
@@ -30,11 +28,8 @@ export class EmbeddingService {
     }
 
     async generateEmbeddingWithTranslation(originalText: string): Promise<Float32Array | null> {
-        const start = performance.now();
         const needsTranslation = containsNonLatin(originalText);
-        console.log(`[EmbedSvc] generateEmbeddingWithTranslation needsTranslation=${needsTranslation} text="${originalText}"`); // eslint-disable-line no-console
         const textToEmbed = needsTranslation ? await this.translateContext(originalText) : originalText;
-        console.log(`[EmbedSvc] translation done in ${(performance.now() - start).toFixed(0)}ms, result="${textToEmbed}"`); // eslint-disable-line no-console
 
         return this.generateEmbedding(textToEmbed);
     }
@@ -48,9 +43,7 @@ export class EmbeddingService {
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {
-        const start = performance.now();
         const rawEmbedding = await this.llm.embedding(text);
-        console.log(`[EmbedSvc] llm.embedding() done in ${(performance.now() - start).toFixed(0)}ms, dims=${rawEmbedding.length}`); // eslint-disable-line no-console
 
         if (!isNotEmptyArray(rawEmbedding)) {
             return null;
@@ -73,10 +66,7 @@ export class EmbeddingService {
 
     private async translateContext(text: string): Promise<string> {
         try {
-            const start = performance.now();
-            console.log(`[EmbedSvc] translateContext START text="${text}"`); // eslint-disable-line no-console
             const translated = await this.llm.generate(CONTEXT_TRANSLATION_SYSTEM_PROMPT, text, { temperature: 0.3 });
-            console.log(`[EmbedSvc] translateContext done in ${(performance.now() - start).toFixed(0)}ms, result="${translated.trim()}"`); // eslint-disable-line no-console
 
             return translated.trim();
         } catch {
