@@ -1,4 +1,4 @@
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
@@ -6,18 +6,27 @@ import { CONTEXT_TRANSLATION_SYSTEM_PROMPT } from '../constant/context-translati
 import { containsNonLatin } from '../util/contains-non-latin.util';
 
 export class EmbeddingService {
+    private static inferenceQueue: Promise<void> = Promise.resolve();
+    private static embeddingCache = new Map<string, Promise<Float32Array | null>>();
+    private static EMBEDDING_CACHE_LIMIT = 50;
+
     constructor(private readonly llm: LlmInterface) {}
 
     async generateEmbedding(text: string): Promise<Float32Array | null> {
-        const start = performance.now();
-        const rawEmbedding = await this.llm.embedding(text);
-        console.log(`[EmbedSvc] llm.embedding() done in ${(performance.now() - start).toFixed(0)}ms, dims=${rawEmbedding.length}`); // eslint-disable-line no-console
+        const cached = EmbeddingService.embeddingCache.get(text);
+        if (isDefined(cached)) {
+            console.log(`[EmbedSvc] cache hit for "${text}"`); // eslint-disable-line no-console
 
-        if (!isNotEmptyArray(rawEmbedding)) {
-            return null;
+            return cached;
         }
 
-        return new Float32Array(rawEmbedding);
+        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
+        EmbeddingService.embeddingCache.set(text, promise);
+        EmbeddingService.evictOldestCacheEntry();
+
+        void promise.then(emptyFn, () => EmbeddingService.embeddingCache.delete(text));
+
+        return promise;
     }
 
     async generateEmbeddingWithTranslation(originalText: string): Promise<Float32Array | null> {
@@ -31,6 +40,26 @@ export class EmbeddingService {
     }
 
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
+        return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
+    }
+
+    isAvailable(): boolean {
+        return this.llm.isReady;
+    }
+
+    private async executeEmbedding(text: string): Promise<Float32Array | null> {
+        const start = performance.now();
+        const rawEmbedding = await this.llm.embedding(text);
+        console.log(`[EmbedSvc] llm.embedding() done in ${(performance.now() - start).toFixed(0)}ms, dims=${rawEmbedding.length}`); // eslint-disable-line no-console
+
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return null;
+        }
+
+        return new Float32Array(rawEmbedding);
+    }
+
+    private async executeBatchEmbedding(texts: string[]): Promise<Map<string, Float32Array>> {
         const batch = texts.slice(0, EMBEDDING_BATCH_LIMIT);
         const rawResults = await this.llm.batchEmbedding(batch);
 
@@ -40,10 +69,6 @@ export class EmbeddingService {
         }
 
         return results;
-    }
-
-    isAvailable(): boolean {
-        return this.llm.isReady;
     }
 
     private async translateContext(text: string): Promise<string> {
@@ -57,5 +82,23 @@ export class EmbeddingService {
         } catch {
             return text;
         }
+    }
+
+    private static evictOldestCacheEntry(): void {
+        if (EmbeddingService.embeddingCache.size <= EmbeddingService.EMBEDDING_CACHE_LIMIT) {
+            return;
+        }
+
+        const firstKey = EmbeddingService.embeddingCache.keys().next().value;
+        if (isDefined(firstKey)) {
+            EmbeddingService.embeddingCache.delete(firstKey);
+        }
+    }
+
+    private static enqueueInference<T>(fn: () => Promise<T>): Promise<T> {
+        const current = EmbeddingService.inferenceQueue.then(fn);
+        EmbeddingService.inferenceQueue = current.then(emptyFn, emptyFn);
+
+        return current;
     }
 }

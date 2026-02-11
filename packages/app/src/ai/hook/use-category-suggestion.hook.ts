@@ -31,12 +31,18 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
         return embeddingSuggestionService.suggestCategories(llm, categories, transactionTitle, mccDescription, comment, aiContext);
     };
 
+    console.log(
+        `[CatSuggest] enabled=${enabled} llm.isReady=${llm.isReady} mccLoading=${isMccLoading} catLoading=${isCategoriesLoading} catLoaded=${hasCategoriesLoaded} title="${transactionTitle}" mccId=${mccCategoryId}`
+    );
+
     const { status, suggestions } = useSuggestionBase({
         enabled,
         readyChecks: [llm.isReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
         requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isReady, categories.length],
         fetchSuggestions
     });
+
+    console.log(`[CatSuggest] status=${status} results=${suggestions.length}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
     return { status, suggestions };
 };

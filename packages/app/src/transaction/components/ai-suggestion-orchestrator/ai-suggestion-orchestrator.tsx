@@ -26,13 +26,23 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     } = props;
 
     const safeCategoryId = categoryId ?? 0;
+    const embCtx = hasEmbeddingContext(transactionTitle, mccCategoryId, comment, aiContext);
+    const hasCatSel = isPositiveNumber(safeCategoryId);
+    const hasCmt = isNotEmptyString(comment);
+
+    console.log(
+        `[AiOrch] embCtx=${embCtx} hasCat=${hasCatSel}(${safeCategoryId}) hasTags=${hasTagsSelected} hasCmt=${hasCmt} split=${isSplitActive}`
+    );
+
     const step = useAiSuggestionOrchestrator({
         isSplitActive,
-        hasEmbeddingContext: hasEmbeddingContext(transactionTitle, mccCategoryId, comment, aiContext),
-        hasCategorySelected: isPositiveNumber(safeCategoryId),
+        hasEmbeddingContext: embCtx,
+        hasCategorySelected: hasCatSel,
         hasTagsSelected,
-        hasComment: isNotEmptyString(comment)
+        hasComment: hasCmt
     });
+
+    console.log(`[AiOrch] step=${step}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
     if (step === SuggestionOrchestratorStepEnum.CATEGORY) {
         return (

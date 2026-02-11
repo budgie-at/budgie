@@ -74,6 +74,10 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
 
+    console.log(
+        `[SugBase] enabled=${enabled} isReady=${isReady} checks=[${readyChecks.join(',')}] resultStatus=${currentResult.status} finalStatus=${status} key=${requestKey.slice(0, 80)}`
+    );
+
     const refresh = useCallback((): void => {
         setRefreshVersion(version => version + 1);
     }, []);
