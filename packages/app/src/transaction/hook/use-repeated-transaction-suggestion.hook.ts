@@ -1,7 +1,7 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -42,11 +42,9 @@ export const useRepeatedTransactionSuggestion = (
         refreshVersion
     });
 
-    useFocusEffect(
-        useCallback(() => {
-            setRefreshVersion(version => version + 1);
-        }, [])
-    );
+    useFocusEffect(() => {
+        setRefreshVersion(version => version + 1);
+    });
 
     useEffect(() => {
         const clearDebounceTimer = (): void => {

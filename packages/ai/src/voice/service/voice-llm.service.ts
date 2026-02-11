@@ -1,46 +1,11 @@
-import { AccountWithInstrumentEntityInterface, CurrencyEnum } from '@budgie/contracts';
+import { CurrencyEnum } from '@budgie/contracts';
 import { z } from 'zod';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
-import { AITransactionInterface } from '../interface/ai-transaction.interface';
-
-export interface ExtractedVoiceTransactionInterface {
-    description: string;
-    amount: number;
-    currency: CurrencyEnum | null;
-}
-
-export interface GroupedVoiceTransactionInterface {
-    amount: number;
-    currency: CurrencyEnum | null;
-    account: AccountWithInstrumentEntityInterface | null;
-    comment: string;
-    aiContext: string;
-}
-
-export const groupVoiceTransactions = (
-    transactions: AITransactionInterface[],
-    originalText: string
-): GroupedVoiceTransactionInterface | null => {
-    if (!isNotEmptyArray(transactions)) {
-        return null;
-    }
-
-    const totalAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
-    const aiContext = transactions.map(transaction => transaction.comment).join(', ');
-    const [firstTransaction] = transactions;
-
-    return {
-        amount: totalAmount,
-        currency: firstTransaction.currency,
-        account: firstTransaction.account,
-        comment: originalText,
-        aiContext
-    };
-};
+import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 
 const ExtractedItemSchema = z.object({
     description: z.string(),

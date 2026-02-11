@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
+import { emptyFn, isDefined } from '@rnw-community/shared';
+
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
 
@@ -20,7 +22,7 @@ interface UseSttReturn {
     cancelStream: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-statements
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
@@ -49,12 +51,12 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cleanupStream = async () => {
-        if (streamPromiseRef.current) {
+        if (isDefined(streamPromiseRef.current)) {
             try {
                 stt.streamStop();
                 await streamPromiseRef.current;
             } catch {
-                /* empty */
+                emptyFn();
             } finally {
                 // eslint-disable-next-line require-atomic-updates
                 streamPromiseRef.current = null;
@@ -62,16 +64,15 @@ export const useStt = (): UseSttReturn => {
         }
     };
 
+    const initStream = () => {
+        resetState();
+        baseTranscriptionRef.current = stt.committedTranscription;
+        streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
+        setStatus('streaming');
+    };
+
     const startStream = () => {
-        void (async () => {
-            await cleanupStream();
-            resetState();
-
-            baseTranscriptionRef.current = stt.committedTranscription;
-
-            streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
-            setStatus('streaming');
-        })();
+        cleanupStream().then(initStream).catch(emptyFn);
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -84,7 +85,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const stopStream = async (): Promise<string> => {
-        if (!streamPromiseRef.current) {
+        if (!isDefined(streamPromiseRef.current)) {
             return transcription;
         }
 
@@ -109,10 +110,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cancelStream = () => {
-        void (async () => {
-            await cleanupStream();
-            resetState();
-        })();
+        cleanupStream().then(resetState).catch(emptyFn);
     };
 
     return {

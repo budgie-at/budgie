@@ -269,9 +269,14 @@ export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embeddi
 
 export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embedding-entity.schema';
 
+export { EMBEDDING_DIMENSIONS } from './title-embedding/constant/embedding-dimensions.constant';
+
 export type { TitleEmbeddingEntityInterface } from './title-embedding/interface/title-embedding-entity.interface';
-export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
+export type { CategoryCountResultInterface } from './title-embedding/interface/category-count-result.interface';
 export type { CommentCountResultInterface } from './title-embedding/interface/comment-count-result.interface';
+export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
+export type { TagCountResultInterface } from './title-embedding/interface/tag-count-result.interface';
 export type { UnembeddedTransactionDataInterface } from './title-embedding/interface/unembedded-transaction-data.interface';
+export type { VecSearchResultInterface } from './title-embedding/interface/vec-search-result.interface';
 
 export { TitleEmbeddingRepository } from './title-embedding/repository/title-embedding.repository';

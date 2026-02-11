@@ -5,6 +5,7 @@ import {
     AccountRepository,
     BankSyncRepository,
     CategoryRepository,
+    EMBEDDING_DIMENSIONS,
     ExchangeRateRepository,
     InstrumentRepository,
     MccCategoryRepository,
@@ -28,8 +29,6 @@ declare global {
     var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
 }
 
-const EXPECTED_EMBEDDING_DIMENSIONS = 768;
-
 const migrateVecDimensions = (sqliteDb: SQLite.SQLiteDatabase): void => {
     const [tableCheck] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
         "SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name='title_embeddings'" // eslint-disable-line lingui/no-unlocalized-strings
@@ -40,7 +39,7 @@ const migrateVecDimensions = (sqliteDb: SQLite.SQLiteDatabase): void => {
     }
 
     const [wrongDimensions] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
-        `SELECT COUNT(*) as count FROM title_embeddings WHERE dimensions != ${EXPECTED_EMBEDDING_DIMENSIONS}` // eslint-disable-line lingui/no-unlocalized-strings
+        `SELECT COUNT(*) as count FROM title_embeddings WHERE dimensions != ${EMBEDDING_DIMENSIONS}` // eslint-disable-line lingui/no-unlocalized-strings
     );
 
     if (wrongDimensions.count === 0) {
