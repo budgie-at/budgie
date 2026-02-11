@@ -71,7 +71,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(tabs)/settings/index.tsx:139
+#: src/app/(tabs)/settings/index.tsx:163
 msgid "About"
 msgstr "About"
 
@@ -143,7 +143,7 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:93
 msgid "AI"
 msgstr "AI"
 
@@ -159,7 +159,7 @@ msgstr "AI model is loading, please wait..."
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
-#: src/app/(tabs)/settings/index.tsx:144
+#: src/app/(tabs)/settings/index.tsx:168
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -201,7 +201,7 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:136
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -226,7 +226,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(tabs)/settings/archived.tsx:17
-#: src/app/(tabs)/settings/index.tsx:105
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -281,7 +281,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(tabs)/settings/index.tsx:142
+#: src/app/(tabs)/settings/index.tsx:166
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -435,7 +435,7 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:62
+#: src/transaction/hook/use-create-transaction-form.hook.ts:58
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
@@ -499,7 +499,7 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(tabs)/settings/index.tsx:99
+#: src/app/(tabs)/settings/index.tsx:113
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -565,7 +565,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(tabs)/settings/index.tsx:130
+#: src/app/(tabs)/settings/index.tsx:151
 msgid "Data management"
 msgstr "Data management"
 
@@ -891,7 +891,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(tabs)/settings/index.tsx:78
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "General"
 msgstr "General"
 
@@ -911,7 +911,7 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:69
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -965,7 +965,7 @@ msgid "Importing a database will replace all current data. The app will restart 
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
 #: src/app/(tabs)/settings/inactive.tsx:17
-#: src/app/(tabs)/settings/index.tsx:112
+#: src/app/(tabs)/settings/index.tsx:126
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -1035,15 +1035,19 @@ msgstr "Listening..."
 msgid "LLM not ready"
 msgstr "LLM not ready"
 
+#: src/ai/provider/ai-status.provider.tsx:43
+msgid "Long press to learn"
+msgstr "Long press to learn"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings/index.tsx:91
+#: src/app/(tabs)/settings/index.tsx:105
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(tabs)/settings/index.tsx:98
+#: src/app/(tabs)/settings/index.tsx:112
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1080,11 +1084,11 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/app/(main)/create-transaction/expense.tsx:70
+#: src/app/(main)/create-transaction/expense.tsx:66
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/app/(main)/create-transaction/income.tsx:49
+#: src/app/(main)/create-transaction/income.tsx:46
 msgid "New Income"
 msgstr "New Income"
 
@@ -1201,7 +1205,7 @@ msgstr "Note"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/app/(tabs)/settings/index.tsx:88
+#: src/app/(tabs)/settings/index.tsx:101
 msgid "Organization"
 msgstr "Organization"
 
@@ -1295,10 +1299,6 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/ai/provider/ai-status.provider.tsx:43
-msgid "Ready to learn"
-msgstr "Ready to learn"
-
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
 msgstr "Recalculate"
@@ -1342,7 +1342,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(tabs)/settings/index.tsx:66
+#: src/app/(tabs)/settings/index.tsx:68
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1391,7 +1391,7 @@ msgstr "Search..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:62
 msgid "Security"
 msgstr "Security"
 
@@ -1475,15 +1475,15 @@ msgstr "Sending {fromCode}"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(tabs)/settings/index.tsx:49
+#: src/app/(tabs)/settings/index.tsx:51
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(tabs)/settings/index.tsx:123
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/(tabs)/settings/index.tsx:122
+#: src/app/(tabs)/settings/index.tsx:140
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -1497,7 +1497,7 @@ msgstr "Show this account on the main page"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:61
+#: src/transaction/hook/use-create-transaction-form.hook.ts:57
 msgid "Something went wrong."
 msgstr "Something went wrong."
 
@@ -1712,7 +1712,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/ai/hook/use-stt.hook.ts:104
+#: src/ai/hook/use-stt.hook.ts:105
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
@@ -1794,15 +1794,15 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/app/(tabs)/settings/index.tsx:113
+#: src/app/(tabs)/settings/index.tsx:127
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(tabs)/settings/index.tsx:92
+#: src/app/(tabs)/settings/index.tsx:106
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(tabs)/settings/index.tsx:106
+#: src/app/(tabs)/settings/index.tsx:120
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 

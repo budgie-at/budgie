@@ -1,7 +1,3 @@
-import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
+import { View } from 'react-native';
 
-export const SuggestionRowSpacer = () => (
-    <SuggestionRowLayout showContent={false} showLoading={false}>
-        {null}
-    </SuggestionRowLayout>
-);
+export const SuggestionRowSpacer = () => <View className="h-10" />;
