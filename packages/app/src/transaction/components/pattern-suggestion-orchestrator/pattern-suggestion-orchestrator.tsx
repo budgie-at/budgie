@@ -61,10 +61,6 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
 
     const patternEnabled = !isSplitActive && canUsePattern && (config.loadPatternBeforeCategorySelection || hasCategorySelected);
 
-    console.log(
-        `[PatOrch] enabled=${patternEnabled} split=${isSplitActive} canUse=${canUsePattern} hasCat=${hasCategorySelected} accId=${accountId}`
-    );
-
     const { suggestions: patterns, status: patternStatus } = useRepeatedTransactionSuggestion({
         enabled: patternEnabled,
         type: transactionType,
@@ -72,8 +68,6 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         amount,
         categoryId: hasCategorySelected ? safeCategoryId : 0
     });
-
-    console.log(`[PatOrch] status=${patternStatus} patterns=${patterns.length} step will resolve next`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
     const patternTagIds = hasCategorySelected ? getPatternTagIds(patterns, safeCategoryId) : [];
     const patternComments = hasCategorySelected ? getPatternComments(patterns, safeCategoryId) : [];
@@ -93,10 +87,6 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         hasPatternTags,
         hasPatternComments
     });
-
-    console.log(
-        `[PatOrch] step=${step} patternCats=${patternCategories.length} patternTags=${patternTagIds.length} patternCmts=${patternComments.length}`
-    );
 
     const fillPatternAmount = (selectedCategoryId: number): void => {
         if (!config.autoFillAmountFromPattern) {

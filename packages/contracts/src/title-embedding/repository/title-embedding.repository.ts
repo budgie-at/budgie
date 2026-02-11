@@ -129,14 +129,10 @@ export class TitleEmbeddingRepository {
     ) {}
 
     async findSimilarContexts(queryEmbedding: Uint8Array, limit: number): Promise<EmbeddingContextResultInterface[]> {
-        const start = performance.now();
-        const result = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [
+        return this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             limit
         ]);
-        console.log(`[VecRepo] findSimilarContexts done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
-
-        return result;
     }
 
     async findSimilarCategories(
@@ -145,32 +141,18 @@ export class TitleEmbeddingRepository {
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryCountResultInterface[]> {
-        const start = performance.now();
-
-        const debugRaw = await this.rawDb.getAllAsync<{ title: string; distance: number }>(
-            `SELECT te.title, vec.distance
-             FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT 5) vec
-             JOIN title_embeddings te ON te.id = vec.rowid
-             WHERE te.deleted_at IS NULL`,
-            [this.convertEmbeddingToJson(queryEmbedding)]
-        );
-        console.log(`[VecRepo] DEBUG raw vec top5: ${JSON.stringify(debugRaw)}`); // eslint-disable-line no-console
-
-        const result = await this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
+        return this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
-        console.log(`[VecRepo] findSimilarCats ${(performance.now() - start).toFixed(0)}ms rows=${result.length} th=${distanceThreshold}`); // eslint-disable-line no-console
-
-        return result;
     }
 
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsQueryParamsInterface): Promise<TagCountResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
-        const start = performance.now();
-        const result = await this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
+
+        return this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -178,9 +160,6 @@ export class TitleEmbeddingRepository {
             categoryId,
             tagLimit
         ]);
-        console.log(`[VecRepo] findSimilarTags done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
-
-        return result;
     }
 
     async findSimilarComments(
@@ -188,8 +167,8 @@ export class TitleEmbeddingRepository {
         params: SimilarCommentsQueryParamsInterface
     ): Promise<CommentCountResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
-        const start = performance.now();
-        const result = await this.rawDb.getAllAsync<CommentCountResultInterface>(SIMILAR_COMMENTS_QUERY, [
+
+        return this.rawDb.getAllAsync<CommentCountResultInterface>(SIMILAR_COMMENTS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -197,28 +176,18 @@ export class TitleEmbeddingRepository {
             categoryId,
             commentLimit
         ]);
-        console.log(`[VecRepo] findSimilarComments done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
-
-        return result;
     }
 
     async findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): Promise<string[]> {
-        const start = performance.now();
-        console.log(`[VecRepo] findSimilarTitlesByContexts START, contexts=${contextEmbeddings.length}`); // eslint-disable-line no-console
         const titleSet = new Set<string>();
 
         /* eslint-disable no-await-in-loop -- Sequential execution with UI yielding between vector searches */
         for (const { context, embedding } of contextEmbeddings) {
-            const iterStart = performance.now();
             const results = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_TITLES_BY_CONTEXT_QUERY, [
                 this.convertEmbeddingToJson(embedding),
                 limit,
                 context
             ]);
-            // eslint-disable-next-line no-console
-            console.log(
-                `[VecRepo] vec "${context.slice(0, 40)}" in ${(performance.now() - iterStart).toFixed(0)}ms rows=${results.length}`
-            );
 
             for (const row of results) {
                 titleSet.add(row.title);
@@ -229,13 +198,11 @@ export class TitleEmbeddingRepository {
             });
         }
         /* eslint-enable no-await-in-loop */
-        console.log(`[VecRepo] findSimilarTitlesByContexts TOTAL ${(performance.now() - start).toFixed(0)}ms, titles=${titleSet.size}`); // eslint-disable-line no-console
 
         return [...titleSet];
     }
 
     async findEmbeddingsByContexts(contexts: string[]): Promise<Map<string, Uint8Array>> {
-        const start = performance.now();
         const resultMap = new Map<string, Uint8Array>();
 
         if (!isNotEmptyArray(contexts)) {
@@ -253,10 +220,6 @@ export class TitleEmbeddingRepository {
         for (const row of results) {
             resultMap.set(row.context, row.embedding);
         }
-        // eslint-disable-next-line no-console
-        console.log(
-            `[VecRepo] findEmbeddingsByContexts in ${(performance.now() - start).toFixed(0)}ms n=${resultMap.size}/${contexts.length}`
-        );
 
         return resultMap;
     }
@@ -266,7 +229,6 @@ export class TitleEmbeddingRepository {
             return;
         }
 
-        const start = performance.now();
         const [row] = await this.db
             .insert(TitleEmbeddingEntityTable)
             .values({ title, context, embedding, dimensions })
@@ -280,7 +242,6 @@ export class TitleEmbeddingRepository {
             'INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE id = ?',
             [row.id]
         );
-        console.log(`[VecRepo] upsert done in ${(performance.now() - start).toFixed(0)}ms, id=${row.id}`); // eslint-disable-line no-console
     }
 
     async getEmbeddingCoverageProgress(): Promise<number> {
@@ -386,11 +347,7 @@ export class TitleEmbeddingRepository {
     }
 
     async findRecentContexts(limit: number): Promise<EmbeddingContextResultInterface[]> {
-        const start = performance.now();
-        const results = await this.rawDb.getAllAsync<EmbeddingContextResultInterface>(RECENT_CONTEXTS_QUERY, [limit]);
-        console.log(`[VecRepo] findRecentContexts done in ${(performance.now() - start).toFixed(0)}ms, rows=${results.length}`); // eslint-disable-line no-console
-
-        return results;
+        return this.rawDb.getAllAsync<EmbeddingContextResultInterface>(RECENT_CONTEXTS_QUERY, [limit]);
     }
 
     async rebuildVecIndex(): Promise<void> {
