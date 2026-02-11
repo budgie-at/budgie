@@ -1,6 +1,6 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -66,26 +66,18 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [isReady, requestKey, refreshVersion, isIncomplete]);
 
     const currentResult =
-        result.key === requestKey
-            ? result
-            : {
-                  key: requestKey,
-                  status: 'idle' as SuggestionInternalStatus,
-                  suggestions: [] as T[]
-              };
+        result.key === requestKey ? result : { key: requestKey, status: 'idle' as SuggestionInternalStatus, suggestions: [] as T[] };
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
 
-    const refresh = useCallback((): void => {
+    const refresh = (): void => {
         setRefreshVersion(version => version + 1);
-    }, []);
+    };
 
-    useFocusEffect(
-        useCallback(() => {
-            refresh();
-        }, [refresh])
-    );
+    useFocusEffect(() => {
+        refresh();
+    });
 
     return { status, suggestions: currentResult.suggestions, refresh };
 };
