@@ -150,8 +150,6 @@ export const SimpleQuickForm = (props: Props) => {
     const hasTagsSelected = isNotEmptyArray(tagIds);
 
     const handleNormalConfirm = () => {
-        console.log('[QuickForm] handleNormalConfirm START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-        const start = performance.now();
         const amount = getValues('amount');
         const formCategoryId = getValues('entries.0.categoryId') ?? 0;
         const accountId = getValues(accountFieldName) ?? 0;
@@ -169,7 +167,6 @@ export const SimpleQuickForm = (props: Props) => {
         const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
 
         setValue('entries', builtEntries, { shouldValidate: false });
-        console.log(`[QuickForm] calling onSubmit after ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
         onSubmit();
     };

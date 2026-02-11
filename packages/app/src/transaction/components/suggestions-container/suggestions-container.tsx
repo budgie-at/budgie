@@ -34,11 +34,7 @@ export const SuggestionsContainer = (props: Props) => {
     const { isNewTransaction, ...orchestratorProps } = props;
     const isVoiceTransaction = isNewTransaction && isNotEmptyString(orchestratorProps.aiContext);
 
-    if (!isNewTransaction) {
-        return <AiSuggestionOrchestrator {...orchestratorProps} />;
-    }
-
-    if (isVoiceTransaction) {
+    if (!isNewTransaction || isVoiceTransaction) {
         return <AiSuggestionOrchestrator {...orchestratorProps} />;
     }
 

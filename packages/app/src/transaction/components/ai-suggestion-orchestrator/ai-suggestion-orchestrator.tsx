@@ -26,16 +26,16 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     } = props;
 
     const safeCategoryId = categoryId ?? 0;
-    const embCtx = hasEmbeddingContext(transactionTitle, mccCategoryId, comment, aiContext);
-    const hasCatSel = isPositiveNumber(safeCategoryId);
-    const hasCmt = isNotEmptyString(comment);
+    const hasContext = hasEmbeddingContext(transactionTitle, mccCategoryId, comment, aiContext);
+    const hasCategorySelected = isPositiveNumber(safeCategoryId);
+    const hasComment = isNotEmptyString(comment);
 
     const step = useAiSuggestionOrchestrator({
         isSplitActive,
-        hasEmbeddingContext: embCtx,
-        hasCategorySelected: hasCatSel,
+        hasEmbeddingContext: hasContext,
+        hasCategorySelected,
         hasTagsSelected,
-        hasComment: hasCmt
+        hasComment
     });
 
     if (step === SuggestionOrchestratorStepEnum.CATEGORY) {

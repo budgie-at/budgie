@@ -52,10 +52,7 @@ class TransactionService {
     }
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        const start = performance.now();
-        console.log('[TxService] createInternal START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const [transaction] = await this.bulkCreate([input]);
-        console.log(`[TxService] createInternal done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
         return transaction;
     }
@@ -372,14 +369,9 @@ class TransactionService {
     }
 
     private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        const start = performance.now();
-        console.log('[TxService] processBatch START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-
         return db.transaction(async tx => {
             const transactions = await transactionRepository.bulkCreate(batch, tx);
-            console.log(`[TxService] bulkCreate transactions done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
-            // HINT: This will work if bulkCreate will preserve the order of the inputs.
             const batchEntries = transactions.flatMap((transaction, index) =>
                 batch[index].entries.map(entry => ({
                     transactionId: transaction.id,
@@ -397,9 +389,7 @@ class TransactionService {
             );
 
             await transactionEntryRepository.bulkCreate(batchEntries, tx);
-            console.log(`[TxService] bulkCreate entries done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             await transactionTagsRepository.bulkCreate(batchTags, tx);
-            console.log(`[TxService] processBatch DONE in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
             return transactions;
         });
