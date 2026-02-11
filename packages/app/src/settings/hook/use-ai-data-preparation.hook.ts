@@ -15,6 +15,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 
 import { categoryRepository, tagRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { useAiEmbeddingProgressContext } from '../../ai/context/ai-embedding-progress.context';
 import { useLlmContext } from '../../ai/context/llm.context';
 
 interface TransactionContextDataInterface {
@@ -130,6 +131,7 @@ const processEmbeddingBatches = async (
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const { llm } = useLlmContext();
+    const { refreshProgress } = useAiEmbeddingProgressContext();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
@@ -214,14 +216,24 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setPhaseLabel(t`Generating embeddings...`);
             await microPause();
+            let lastRefreshedPercentage = 0;
+            const progressRefreshInterval = 5;
             await processEmbeddingBatches(llm, existingContexts, {
                 onStep: updateProgress,
-                onEmbeddingStored: (count: number) => void setEmbeddedCount(count)
+                onEmbeddingStored: (count: number) => {
+                    setEmbeddedCount(count);
+                    const percentage = Math.round((count / totalDistinctContexts) * 100);
+                    if (percentage >= lastRefreshedPercentage + progressRefreshInterval) {
+                        lastRefreshedPercentage = percentage;
+                        refreshProgress();
+                    }
+                }
             });
 
             setProgress(100);
             setPhaseLabel(t`Done`);
             setTotalContexts(existingContexts.size);
+            refreshProgress();
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
