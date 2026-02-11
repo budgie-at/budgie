@@ -79,15 +79,7 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 };
 
-                console.log(
-                    `[PatHook] fetching patterns: type=${type} accId=${accountId} amount=${amountOrNull} catId=${categoryIdOrNull} weekday=${currentTimeRef.current.getDay()} time=${currentTimeRef.current.getHours()}:${currentTimeRef.current.getMinutes()}`
-                );
-
                 const results = await repeatedTransactionService.getSuggestions(queryParams);
-
-                console.log(
-                    `[PatHook] got ${results.length} patterns: ${JSON.stringify(results.map(r => ({ cat: r.categoryTitle, title: r.title, count: r.occurrenceCount })))}`
-                );
 
                 if (!cancelled) {
                     setSuggestions(results);
