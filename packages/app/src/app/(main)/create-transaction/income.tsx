@@ -28,10 +28,7 @@ export default function CreateIncomeTransactionPage() {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
-            const start = performance.now();
-            console.log('[Income] onSubmit START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             const result = await transactionService.createInternal(data);
-            console.log(`[Income] createInternal done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             generateForTransaction(data.title, data.comment, data.entries[0]?.mccCategoryId ?? null);
 
             return result;
