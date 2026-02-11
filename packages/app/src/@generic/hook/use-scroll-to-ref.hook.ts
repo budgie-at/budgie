@@ -1,36 +1,29 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { Dimensions, LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
-import {
-    AnimatedStyle,
-    Easing,
-    interpolateColor,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withSequence,
-    withTiming
-} from 'react-native-reanimated';
+import { AnimatedStyle, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 const SCROLL_DELAY_MS = 300;
-const SCROLL_SETTLE_MS = 500;
-const HIGHLIGHT_FADE_IN_MS = 300;
-const HIGHLIGHT_HOLD_MS = 800;
-const HIGHLIGHT_FADE_OUT_MS = 500;
+const FADE_IN_MS = 200;
+const HOLD_MS = 600;
+const FADE_OUT_MS = 400;
 const CENTER_DIVISOR = 2;
 const HIGHLIGHT_BORDER_RADIUS = 16;
-const HIGHLIGHT_COLOR = 'rgba(100, 160, 255, 0.08)';
-const TRANSPARENT = 'transparent';
+const HIGHLIGHT_PADDING = 8;
+const HIGHLIGHT_OPACITY = 0.08;
 
 interface LayoutPosition {
     readonly y: number;
     readonly height: number;
 }
 
-interface AnchorProps {
+interface AnchorLayoutProps {
     readonly onLayout: (event: LayoutChangeEvent) => void;
+}
+
+interface AnchorStyleProps {
     readonly style: AnimatedStyle<ViewStyle>;
 }
 
@@ -42,16 +35,6 @@ export const useScrollToRef = () => {
 
     const scrollViewRef = (node: ScrollView | null): void => {
         scrollViewInstance.current = node;
-    };
-
-    const triggerHighlight = (): void => {
-        highlightProgress.value = withDelay(
-            SCROLL_SETTLE_MS,
-            withSequence(
-                withTiming(1, { duration: HIGHLIGHT_FADE_IN_MS, easing: Easing.out(Easing.cubic) }),
-                withDelay(HIGHLIGHT_HOLD_MS, withTiming(0, { duration: HIGHLIGHT_FADE_OUT_MS, easing: Easing.in(Easing.cubic) }))
-            )
-        );
     };
 
     useEffect(() => {
@@ -70,7 +53,10 @@ export const useScrollToRef = () => {
             const centeredY = position.y - windowHeight / CENTER_DIVISOR + position.height / CENTER_DIVISOR;
 
             scrollView.scrollTo({ y: Math.max(0, centeredY), animated: true });
-            triggerHighlight();
+            highlightProgress.value = withSequence(
+                withTiming(1, { duration: FADE_IN_MS }),
+                withDelay(HOLD_MS, withTiming(0, { duration: FADE_OUT_MS }))
+            );
         }, SCROLL_DELAY_MS);
 
         return () => {
@@ -80,18 +66,22 @@ export const useScrollToRef = () => {
 
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
-        backgroundColor: interpolateColor(highlightProgress.value, [0, 1], [TRANSPARENT, HIGHLIGHT_COLOR])
+        padding: HIGHLIGHT_PADDING,
+        backgroundColor: `rgba(120, 170, 255, ${interpolate(highlightProgress.value, [0, 1], [0, HIGHLIGHT_OPACITY])})`
     }));
 
     const emptyStyle = useAnimatedStyle(() => ({}));
 
-    const anchorProps = (name: string): AnchorProps => ({
+    const anchorLayout = (name: string): AnchorLayoutProps => ({
         onLayout: (event: LayoutChangeEvent) => {
             const { y, height } = event.nativeEvent.layout;
             positions.current.set(name, { y, height });
-        },
+        }
+    });
+
+    const anchorHighlight = (name: string): AnchorStyleProps => ({
         style: anchor === name ? highlightStyle : emptyStyle
     });
 
-    return { scrollViewRef, anchorProps };
+    return { scrollViewRef, anchorLayout, anchorHighlight };
 };
