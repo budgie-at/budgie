@@ -60,7 +60,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
     const { refreshProgress } = useAiEmbeddingProgressContext();
 
     const generateForTransaction = (title: string, comment: string, mccCategoryId: number | null): void => {
-        if (!llm.isReady) {
+        if (!llm.isEmbeddingReady) {
             return;
         }
 
@@ -69,7 +69,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
     };
 
     const generateForTransactions = (transactions: readonly TransactionCreateInputInterface[]): void => {
-        if (!llm.isReady) {
+        if (!llm.isEmbeddingReady) {
             return;
         }
 

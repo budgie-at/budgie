@@ -40,8 +40,17 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
-        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, llm.isReady, allTags?.length ?? 0],
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
+        requestKeyParts: [
+            transactionTitle,
+            categoryId,
+            mccCategoryId,
+            comment,
+            aiContext,
+            enabled,
+            llm.isEmbeddingReady,
+            allTags?.length ?? 0
+        ],
         fetchSuggestions
     });
 

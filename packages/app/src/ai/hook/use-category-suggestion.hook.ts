@@ -33,8 +33,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
-        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isReady, categories.length],
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady, categories.length],
         fetchSuggestions
     });
 
