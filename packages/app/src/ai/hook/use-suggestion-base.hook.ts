@@ -30,20 +30,10 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const { isIncomplete } = useAiEmbeddingProgress();
-    const previousIncompleteRef = useRef(isIncomplete);
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
     }, [fetchSuggestions]);
-
-    useEffect(() => {
-        console.log(`[SugBase] isIncomplete transition: ${previousIncompleteRef.current} → ${isIncomplete}`);
-        if (previousIncompleteRef.current && !isIncomplete) {
-            console.log('[SugBase] embedding complete transition detected, bumping refreshVersion');
-            setRefreshVersion(version => version + 1);
-        }
-        previousIncompleteRef.current = isIncomplete;
-    }, [isIncomplete]);
 
     useEffect(() => {
         if (!isReady) {
@@ -73,27 +63,19 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         return () => {
             cancelled = true;
         };
-    }, [isReady, requestKey, refreshVersion]);
+    }, [isReady, requestKey, refreshVersion, isIncomplete]);
 
-    const keysMatch = result.key === requestKey;
-    const currentResult = keysMatch
-        ? result
-        : {
-              key: requestKey,
-              status: 'idle' as SuggestionInternalStatus,
-              suggestions: [] as T[]
-          };
-
-    console.log(
-        `[SugBase] keysMatch=${keysMatch} resultKey=${result.key?.slice(0, 60)} requestKey=${requestKey.slice(0, 60)} resultStatus=${result.status} resultSuggestions=${result.suggestions.length}`
-    );
+    const currentResult =
+        result.key === requestKey
+            ? result
+            : {
+                  key: requestKey,
+                  status: 'idle' as SuggestionInternalStatus,
+                  suggestions: [] as T[]
+              };
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
-
-    console.log(
-        `[SugBase] enabled=${enabled} isReady=${isReady} checks=[${readyChecks.join(',')}] resultStatus=${currentResult.status} finalStatus=${status} key=${requestKey.slice(0, 80)}`
-    );
 
     const refresh = useCallback((): void => {
         setRefreshVersion(version => version + 1);

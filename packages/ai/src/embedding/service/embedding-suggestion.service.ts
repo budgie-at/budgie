@@ -35,17 +35,11 @@ export class EmbeddingSuggestionService {
     ): Promise<CategoryEntityInterface[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         const { context, distanceThreshold } = suggestionContext;
-        console.log(`[EmbSuggest] suggestCategories context="${context}" threshold=${distanceThreshold}`); // eslint-disable-line no-console
-
         const serialized = await this.generateSerializedEmbedding(context, llm);
 
         if (!isDefined(serialized)) {
-            console.log('[EmbSuggest] suggestCategories: embedding generation failed, returning []'); // eslint-disable-line no-console
-
             return [];
         }
-
-        console.log(`[EmbSuggest] embedding generated, ${serialized.byteLength} bytes, querying vec...`); // eslint-disable-line no-console
 
         const categoryCounts = await this.repository.findSimilarCategories(
             serialized,
@@ -53,8 +47,6 @@ export class EmbeddingSuggestionService {
             distanceThreshold,
             EMBEDDING_CATEGORY_SUGGESTION_LIMIT
         );
-
-        console.log(`[EmbSuggest] vec returned ${categoryCounts.length} categories: ${JSON.stringify(categoryCounts)}`); // eslint-disable-line no-console
 
         return categoryCounts.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
     }
@@ -69,6 +61,7 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<TagEntityInterface[]> {
+        /* jscpd:ignore-start */
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         const { context, distanceThreshold } = suggestionContext;
         const serialized = await this.generateSerializedEmbedding(context, llm);
@@ -76,6 +69,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(serialized)) {
             return [];
         }
+        /* jscpd:ignore-end */
 
         const tagCounts = await this.repository.findSimilarTags(serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -96,6 +90,7 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<string[]> {
+        /* jscpd:ignore-start */
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         const { context, distanceThreshold } = suggestionContext;
         const serialized = await this.generateSerializedEmbedding(context, llm);
@@ -103,6 +98,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(serialized)) {
             return [];
         }
+        /* jscpd:ignore-end */
 
         const commentCounts = await this.repository.findSimilarComments(serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,

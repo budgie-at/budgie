@@ -93,26 +93,20 @@ const getRowCount = (sqliteDb: SQLite.SQLiteDatabase, query: string): number => 
 
 export const initPostMigration = (sqliteDb: SQLite.SQLiteDatabase): void => {
     if (!hasTable(sqliteDb, 'title_embeddings') || !hasTable(sqliteDb, 'title_embedding_vec')) {
-        console.log('[DB] initPostMigration: tables missing, skipping vec rebuild');
-
         return;
     }
 
     const embeddingCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embeddings WHERE deleted_at IS NULL'); // eslint-disable-line lingui/no-unlocalized-strings
     const vecCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
 
-    console.log(`[DB] initPostMigration: embeddings=${embeddingCount} vec=${vecCount}`);
-
     if (embeddingCount === vecCount) {
         return;
     }
 
-    console.log('[DB] initPostMigration: rebuilding vec index...');
     sqliteDb.execSync('DELETE FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
     sqliteDb.execSync(
         'INSERT INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
     );
-    console.log('[DB] initPostMigration: vec rebuild complete');
 };
 
 export let expoDb = dbInit();
