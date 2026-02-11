@@ -29,8 +29,8 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isReady, !isMccLoading],
-        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, llm.isReady],
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading],
+        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady],
         fetchSuggestions
     });
 

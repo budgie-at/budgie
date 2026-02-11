@@ -39,7 +39,7 @@ export class EmbeddingService {
     }
 
     isAvailable(): boolean {
-        return this.llm.isReady;
+        return this.llm.isEmbeddingReady;
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {

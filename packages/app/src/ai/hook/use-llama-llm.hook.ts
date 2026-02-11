@@ -85,6 +85,7 @@ export const useLlamaLlm = (): LlmInterface => {
     const generateMutexRef = useRef<Promise<unknown>>(Promise.resolve());
 
     const [isReady, setIsReady] = useState(false);
+    const [isEmbeddingReady, setIsEmbeddingReady] = useState(false);
     const [isInitializing, setIsInitializing] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
@@ -143,12 +144,13 @@ export const useLlamaLlm = (): LlmInterface => {
 
                 setIsInitializing(true);
 
-                chatContextRef.current = await initLlama({
-                    model: chatModelPath,
-                    n_ctx: CHAT_CONTEXT_SIZE,
+                embeddingContextRef.current = await initLlama({
+                    model: embeddingModelPath,
+                    n_ctx: EMBEDDING_CONTEXT_SIZE,
                     n_gpu_layers: GPU_LAYERS,
                     use_mlock: true,
-                    embedding: false
+                    embedding: true,
+                    pooling_type: 'mean'
                 });
 
                 if (!isMounted()) {
@@ -157,13 +159,14 @@ export const useLlamaLlm = (): LlmInterface => {
                     return;
                 }
 
-                embeddingContextRef.current = await initLlama({
-                    model: embeddingModelPath,
-                    n_ctx: EMBEDDING_CONTEXT_SIZE,
+                setIsEmbeddingReady(true);
+
+                chatContextRef.current = await initLlama({
+                    model: chatModelPath,
+                    n_ctx: CHAT_CONTEXT_SIZE,
                     n_gpu_layers: GPU_LAYERS,
                     use_mlock: true,
-                    embedding: true,
-                    pooling_type: 'mean'
+                    embedding: false
                 });
 
                 if (!isMounted()) {
@@ -282,5 +285,16 @@ export const useLlamaLlm = (): LlmInterface => {
         setIsGenerating(false);
     };
 
-    return { isReady, isInitializing, isGenerating, downloadProgress, error, generate, embedding, batchEmbedding, interrupt };
+    return {
+        isReady,
+        isEmbeddingReady,
+        isInitializing,
+        isGenerating,
+        downloadProgress,
+        error,
+        generate,
+        embedding,
+        batchEmbedding,
+        interrupt
+    };
 };
