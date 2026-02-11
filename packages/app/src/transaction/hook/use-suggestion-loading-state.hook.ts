@@ -59,5 +59,9 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const showLoadingIndicator = showLoading && !isReady;
     const showContent = enabled && (showLoadingIndicator || isReady);
 
+    console.log(
+        `[LoadState] status=${status} hasResults=${hasResults} enabled=${enabled} isProcessing=${isProcessing} isReady=${isReady} showLoading=${showLoadingIndicator} showContent=${showContent}`
+    );
+
     return { showLoading: showLoadingIndicator, showContent, markSelected: () => void 0 };
 };
