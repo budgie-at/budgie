@@ -12,14 +12,10 @@ import {
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
+import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
-
-interface SuggestionContextInterface {
-    readonly context: string;
-    readonly distanceThreshold: number;
-}
 
 export class EmbeddingSuggestionService {
     constructor(private readonly repository: TitleEmbeddingRepository) {}

@@ -10,15 +10,16 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
 import { CategoryCountResultInterface } from '../interface/category-count-result.interface';
 import { CommentCountResultInterface } from '../interface/comment-count-result.interface';
 import { EmbeddingContextResultInterface } from '../interface/embedding-context-result.interface';
+import { SimilarCommentsQueryParamsInterface } from '../interface/similar-comments-query-params.interface';
+import { SimilarTagsQueryParamsInterface } from '../interface/similar-tags-query-params.interface';
 import { TagCountResultInterface } from '../interface/tag-count-result.interface';
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
 import { VecSearchResultInterface } from '../interface/vec-search-result.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
-
-const EMBEDDING_DIMENSIONS = 768;
 
 const SIMILAR_CONTEXTS_QUERY = `
     SELECT te.context, te.title, vec.distance
@@ -81,20 +82,6 @@ const SIMILAR_COMMENTS_QUERY = `
 `;
 
 const RECENT_TRANSACTION_SCAN_LIMIT = 200;
-
-interface SimilarTagsQueryParamsInterface {
-    readonly vecLimit: number;
-    readonly distanceThreshold: number;
-    readonly categoryId: number | null;
-    readonly tagLimit: number;
-}
-
-interface SimilarCommentsQueryParamsInterface {
-    readonly vecLimit: number;
-    readonly distanceThreshold: number;
-    readonly categoryId: number | null;
-    readonly commentLimit: number;
-}
 
 const RECENT_CONTEXTS_QUERY = `
     SELECT te.title, te.context
