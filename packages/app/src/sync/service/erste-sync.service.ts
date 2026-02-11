@@ -147,3 +147,5 @@ class ErsteSyncService {
 }
 
 export const ersteSyncService = new ErsteSyncService();
+
+export const ersteSyncQuickImportFromUri = ersteSyncService.quickImport.bind(ersteSyncService);
