@@ -31,9 +31,9 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:25
-msgid "{embeddedCount} of {totalContexts} contexts embedded"
-msgstr "{embeddedCount} sur {totalContexts} contextes intégrés"
+#: src/ai/provider/ai-status.provider.tsx:40
+msgid "{completionRatio}% learned"
+msgstr "{completionRatio}% appris"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
@@ -142,15 +142,14 @@ msgid "Adjustment"
 msgstr "Ajustement"
 
 #: src/app/(tabs)/settings/index.tsx:84
-#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:37
 msgid "AI"
 msgstr "IA"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:207
+#: src/ai/hook/use-ai-data-preparation.hook.ts:243
 msgid "AI data preparation failed"
 msgstr "La préparation des données IA a échoué"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:149
+#: src/ai/hook/use-ai-data-preparation.hook.ts:159
 msgid "AI model is loading, please wait..."
 msgstr "Le modèle IA est en cours de chargement, veuillez patienter..."
 
@@ -187,7 +186,7 @@ msgid "Amount"
 msgstr "Montant"
 
 #: src/app/(main)/create-transaction/transfer.tsx:60
-#: src/app/(main)/transactions/[id]/transfer.tsx:66
+#: src/app/(main)/transactions/[id]/transfer.tsx:65
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
@@ -369,6 +368,10 @@ msgstr "Effacer toutes les données"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Effacer les soldes mis en cache et recalculer à partir des transactions"
 
+#: src/ai/hook/use-ai-data-preparation.hook.ts:172
+msgid "Clearing old data..."
+msgstr "Suppression des anciennes données…"
+
 #: src/sync/component/get-token-card/get-token-card.tsx:43
 msgid "Close"
 msgstr "Fermer"
@@ -430,7 +433,7 @@ msgstr "Impossible de créer la catégorie"
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:58
+#: src/transaction/hook/use-create-transaction-form.hook.ts:62
 msgid "Could not create transaction. Please try again later."
 msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
@@ -622,8 +625,8 @@ msgstr "Tout désélectionner"
 msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
 
+#: src/ai/hook/use-ai-data-preparation.hook.ts:237
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/settings/hook/use-ai-data-preparation.hook.ts:202
 msgid "Done"
 msgstr "Terminé"
 
@@ -631,7 +634,7 @@ msgstr "Terminé"
 msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
 msgstr "Téléchargez votre relevé de compte au format PDF depuis George (banque en ligne Erste Bank) : Compte → Relevés → Télécharger PDF."
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:22
+#: src/ai/provider/ai-status.provider.tsx:49
 msgid "Downloading AI model..."
 msgstr "Téléchargement du modèle IA..."
 
@@ -655,11 +658,11 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:75
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:75
+#: src/app/(main)/transactions/[id]/income.tsx:74
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -667,7 +670,7 @@ msgstr "Modifier le revenu"
 msgid "Edit Tag"
 msgstr "Modifier l'étiquette"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:79
+#: src/app/(main)/transactions/[id]/transfer.tsx:78
 msgid "Edit Transfer"
 msgstr "Modifier le transfert"
 
@@ -890,7 +893,7 @@ msgstr "Devise source"
 msgid "General"
 msgstr "Général"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:195
+#: src/ai/hook/use-ai-data-preparation.hook.ts:219
 msgid "Generating embeddings..."
 msgstr "Génération des embeddings..."
 
@@ -988,7 +991,7 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:28
+#: src/ai/provider/ai-status.provider.tsx:46
 msgid "Initializing AI model..."
 msgstr "Initialisation du modèle IA..."
 
@@ -1075,11 +1078,11 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/app/(main)/create-transaction/expense.tsx:57
+#: src/app/(main)/create-transaction/expense.tsx:70
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
-#: src/app/(main)/create-transaction/income.tsx:46
+#: src/app/(main)/create-transaction/income.tsx:49
 msgid "New Income"
 msgstr "Nouveau revenu"
 
@@ -1266,7 +1269,7 @@ msgstr "Polonais (Pologne)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugais (Portugal)"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:42
+#: src/settings/components/ai-data-card/ai-data-card.tsx:49
 msgid "Prepare AI Data"
 msgstr "Préparer les données IA"
 
@@ -1289,6 +1292,10 @@ msgstr "PrivatBank"
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
+
+#: src/ai/provider/ai-status.provider.tsx:43
+msgid "Ready to learn"
+msgstr "Prêt à apprendre"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
@@ -1410,7 +1417,7 @@ msgstr "Sélectionnez une étiquette pour fusionner"
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:66
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:67
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
@@ -1488,7 +1495,7 @@ msgstr "Afficher ce compte sur la page principale"
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:57
+#: src/transaction/hook/use-create-transaction-form.hook.ts:61
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
 
@@ -1712,11 +1719,11 @@ msgstr "Échec de la transcription"
 msgid "Transfer"
 msgstr "Virement"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:180
+#: src/ai/hook/use-ai-data-preparation.hook.ts:200
 msgid "Translating categories..."
 msgstr "Traduction des catégories..."
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:187
+#: src/ai/hook/use-ai-data-preparation.hook.ts:209
 msgid "Translating tags..."
 msgstr "Traduction des tags..."
 
