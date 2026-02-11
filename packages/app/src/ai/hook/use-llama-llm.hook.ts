@@ -129,7 +129,7 @@ export const useLlamaLlm = (): LlmInterface => {
                             deprecatedFile.delete();
                         }
                     } catch {
-                        // Non-blocking: old model cleanup is best-effort
+                        emptyFn();
                     }
                 }
 
@@ -272,7 +272,7 @@ export const useLlamaLlm = (): LlmInterface => {
                     results.set(text, result.embedding);
                 }
             } catch {
-                // Silently skip failed items
+                emptyFn();
             }
         }
         /* eslint-enable no-await-in-loop */
