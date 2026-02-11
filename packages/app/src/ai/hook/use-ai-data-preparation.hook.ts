@@ -15,8 +15,8 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 
 import { categoryRepository, tagRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { useAiEmbeddingProgressContext } from '../../ai/context/ai-embedding-progress.context';
-import { useLlmContext } from '../../ai/context/llm.context';
+import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
+import { useLlmContext } from '../context/llm.context';
 
 interface TransactionContextDataInterface {
     readonly title: string;
