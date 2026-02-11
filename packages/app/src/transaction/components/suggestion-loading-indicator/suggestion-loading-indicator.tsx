@@ -14,9 +14,9 @@ const BRAIN_CONTAINER_SIZE = 26;
 const BRAIN_ICON_SIZE = 16;
 
 export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
-    const { progress, isIncomplete } = useAiEmbeddingProgress();
+    const { progress, isEmbedding } = useAiEmbeddingProgress();
 
-    const shouldAnimate = isLoading || isIncomplete;
+    const shouldAnimate = isLoading || isEmbedding;
 
     return (
         <View className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">
