@@ -3,6 +3,7 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
@@ -55,13 +56,27 @@ class RepeatedTransactionService {
         return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
     }
 
+    getLatestAmount(patterns: RepeatedTransactionPatternInterface[], categoryId: number): number {
+        let bestAmount = 0;
+        let bestOccurrenceCount = 0;
+
+        for (const pattern of patterns) {
+            if (pattern.categoryId === categoryId && pattern.occurrenceCount > bestOccurrenceCount) {
+                bestOccurrenceCount = pattern.occurrenceCount;
+                bestAmount = pattern.latestAmount;
+            }
+        }
+
+        return convertFromMicroUnits(bestAmount);
+    }
+
     private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
         const targetAmountMicroUnits = convertToMicroUnits(targetAmount);
         const tolerance = targetAmountMicroUnits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
         const minAmount = targetAmountMicroUnits - tolerance;
         const maxAmount = targetAmountMicroUnits + tolerance;
 
-        return patterns.filter(pattern => pattern.averageAmount >= minAmount && pattern.averageAmount <= maxAmount);
+        return patterns.filter(pattern => pattern.latestAmount >= minAmount && pattern.latestAmount <= maxAmount);
     }
 }
 

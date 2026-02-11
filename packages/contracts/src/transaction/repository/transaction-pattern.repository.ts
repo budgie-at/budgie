@@ -80,7 +80,16 @@ export class TransactionPatternRepository {
                 categoryIcon: CategoryEntityTable.icon,
                 title: TransactionEntityTable.title,
                 comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
-                averageAmount: sql<number>`CAST(AVG(${TransactionEntryEntityTable.amount}) AS INTEGER)`.as('averageAmount'),
+                latestAmount: sql<number>`(
+                    SELECT te2.amount
+                    FROM transactions t2
+                    INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+                    WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+                      AND t2.title = ${TransactionEntityTable.title}
+                      AND t2.deleted_at IS NULL
+                    ORDER BY t2.operated_at DESC
+                    LIMIT 1
+                )`.as('latestAmount'),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 accountId: AccountEntityTable.id,
@@ -117,7 +126,7 @@ export class TransactionPatternRepository {
                 tagIds: tagMap.get(patternKey) ?? [],
                 title: row.title,
                 comment: row.comment,
-                averageAmount: row.averageAmount,
+                latestAmount: row.latestAmount,
                 occurrenceCount: row.occurrenceCount,
                 lastOccurrence: new Date(row.lastOccurrence * 1000),
                 accountId: row.accountId,

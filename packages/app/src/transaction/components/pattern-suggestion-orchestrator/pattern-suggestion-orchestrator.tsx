@@ -8,9 +8,9 @@ import { usePatternSuggestionOrchestrator } from '../../hook/use-pattern-suggest
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
 import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator.interface';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
+import { repeatedTransactionService } from '../../service/repeated-transaction.service';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { deduplicatePatternCategories } from '../../utils/deduplicate-pattern-categories.util';
-import { getPatternAverageAmount } from '../../utils/get-pattern-average-amount.util';
 import { getPatternComments } from '../../utils/get-pattern-comments.util';
 import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
@@ -93,7 +93,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
             return;
         }
 
-        onFillPatternAmount(getPatternAverageAmount(patterns, selectedCategoryId));
+        onFillPatternAmount(repeatedTransactionService.getLatestAmount(patterns, selectedCategoryId));
     };
 
     const handleSelectPatternCategory = (selectedCategoryId: number): void => {
