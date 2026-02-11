@@ -44,7 +44,14 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const variant = ACCOUNT_COLOR[type];
 
     return (
-        <CreateAccountScreen title={title} control={control} variant={variant} instrumentSymbol={instrument.symbol} onSubmit={handleSubmit}>
+        <CreateAccountScreen
+            title={title}
+            control={control}
+            variant={variant}
+            instrumentSymbol={instrument.symbol}
+            allowNegativeBalance
+            onSubmit={handleSubmit}
+        >
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
                 <CreateAccountCurrencyField control={control} />
