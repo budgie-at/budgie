@@ -22,8 +22,6 @@ export { EmbeddingSuggestionService } from './embedding/service/embedding-sugges
 
 // embedding - utils
 export { buildTransactionContext } from './embedding/util/build-transaction-context.util';
-export { containsNonLatin } from './embedding/util/contains-non-latin.util';
-
 // suggestion - interfaces
 export type { SuggestionInternalStatus } from './suggestion/interface/suggestion-internal-status.type';
 export type { SuggestionStatus } from './suggestion/interface/suggestion-status.type';
