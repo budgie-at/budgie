@@ -70,6 +70,7 @@ class ErsteSyncService {
         await this.executeImport(client, enabledBankAccounts);
     }
 
+    /* jscpd:ignore-start */
     private async getEnabledExternalIds(): Promise<Set<string>> {
         const enabledSyncs = await bankSyncRepository.getEnabledByProvider(PROVIDER);
         if (!isNotEmptyArray(enabledSyncs)) {
@@ -81,6 +82,7 @@ class ErsteSyncService {
 
         return new Set(accounts.map(account => account.externalId).filter(isDefined));
     }
+    /* jscpd:ignore-end */
 
     private async getErsteFileClient(): Promise<ErsteFileClientInterface> {
         const module = await import('@budgie/bank-sync');

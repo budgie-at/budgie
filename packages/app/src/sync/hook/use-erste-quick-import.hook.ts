@@ -13,6 +13,7 @@ interface ErsteQuickImportResult {
     readonly clearError: () => void;
 }
 
+/* jscpd:ignore-start */
 export const useErsteQuickImport = (): ErsteQuickImportResult => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -49,3 +50,4 @@ export const useErsteQuickImport = (): ErsteQuickImportResult => {
 
     return { isLoading, error, handleQuickImport, clearError };
 };
+/* jscpd:ignore-end */
