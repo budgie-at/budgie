@@ -2,10 +2,10 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -31,7 +31,7 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { scrollViewRef, anchorRef } = useScrollToRef();
+    const { scrollViewRef, anchorProps } = useScrollToRef();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -49,120 +49,115 @@ export default function SettingsPage() {
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
-                <MenuSpacer multiplier={0.05}></MenuSpacer>
-                <View className="py-5xl gap-y-7xl">
-                    <SettingsGroup title={t`Privacy`}>
-                        <SimpleHorizontalCell
-                            left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
-                            title={t`100% Offline & Private`}
-                            description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
-                        />
-                    </SettingsGroup>
+            <ScrollView ref={scrollViewRef} contentContainerClassName="pt-md pb-5xl gap-y-7xl" showsVerticalScrollIndicator={false}>
+                <SettingsGroup title={t`Privacy`}>
+                    <SimpleHorizontalCell
+                        left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
+                        title={t`100% Offline & Private`}
+                        description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
+                    />
+                </SettingsGroup>
 
-                    <View ref={anchorRef('security')}>
-                        <SettingsGroup title={t`Security`}>
-                            <PinCard />
-                            <SettingsCard
-                                icon={UserIconNameEnum.ShieldCheck}
-                                variant="pink"
-                                title={t`Screenshot Protection`}
-                                description={t`Hide account balances and net worth when taking screenshots`}
-                                right={
-                                    <ThemedSwitch
-                                        className="my-auto"
-                                        onValueChange={handleToggle('isScreenshotProtectionEnabled')}
-                                        value={isScreenshotProtectionEnabled}
-                                    />
-                                }
-                            />
-                        </SettingsGroup>
-                    </View>
-
-                    <View ref={anchorRef('general')}>
-                        <SettingsGroup title={t`General`}>
-                            <LanguageSelector />
-                            <DefaultCurrencySelector />
-                            <DefaultAccountSelector />
-                        </SettingsGroup>
-                    </View>
-
-                    <View ref={anchorRef('ai')}>
-                        <SettingsGroup title={t`AI`}>
-                            <AiDataCard />
-                        </SettingsGroup>
-                    </View>
-
-                    <View ref={anchorRef('organization')}>
-                        <SettingsGroup title={t`Organization`}>
-                            <SettingsCard
-                                onPress={handleNavigateToCategories}
-                                title={t`Manage Categories`}
-                                description={t`View and delete custom categories`}
-                                icon={UserIconNameEnum.Folder}
-                                variant="default"
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToTags}
-                                title={t`Manage Tags`}
-                                description={t`Create and organize transaction tags`}
-                                icon={UserIconNameEnum.Tag}
-                                variant="pink"
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToArchived}
-                                title={t`Archived Accounts`}
-                                description={t`View and restore archived accounts`}
-                                icon={UserIconNameEnum.Archive}
-                                variant="dark-warning"
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToInactive}
-                                title={t`Inactive Accounts`}
-                                description={t`View and activate hidden accounts`}
-                                icon={UserIconNameEnum.EyeOff}
-                                variant="dark-warning"
-                            />
-                        </SettingsGroup>
-                    </View>
-
-                    <View ref={anchorRef('appearance')}>
-                        <SettingsGroup title={t`Appearance`}>
-                            <ThemeSwitch />
-                            <SettingsCard
-                                title={t`Show Cents`}
-                                description={t`Show $1,234.56 instead of $1,235`}
-                                icon={UserIconNameEnum.DollarSign}
-                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
-                                variant="positive"
-                            />
-                        </SettingsGroup>
-                    </View>
-
-                    <View ref={anchorRef('data')}>
-                        <SettingsGroup title={t`Data management`}>
-                            <ImportCsv />
-                            <ExportCsv />
-                            <ImportDatabase />
-                            <ExportDatabase />
-                            <RecalculateBalances />
-                            <TruncateData />
-                        </SettingsGroup>
-                    </View>
-
-                    <SettingsGroup title={t`About`}>
+                <Animated.View {...anchorProps('security')}>
+                    <SettingsGroup title={t`Security`}>
+                        <PinCard />
                         <SettingsCard
-                            align="top"
-                            title={t`Budgie`}
-                            className="items-baseline"
-                            description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
-                            icon={UserIconNameEnum.Database}
-                            variant="ghost"
+                            icon={UserIconNameEnum.ShieldCheck}
+                            variant="pink"
+                            title={t`Screenshot Protection`}
+                            description={t`Hide account balances and net worth when taking screenshots`}
+                            right={
+                                <ThemedSwitch
+                                    className="my-auto"
+                                    onValueChange={handleToggle('isScreenshotProtectionEnabled')}
+                                    value={isScreenshotProtectionEnabled}
+                                />
+                            }
                         />
                     </SettingsGroup>
+                </Animated.View>
 
-                    <MenuSpacer />
-                </View>
+                <Animated.View {...anchorProps('general')}>
+                    <SettingsGroup title={t`General`}>
+                        <LanguageSelector />
+                        <DefaultCurrencySelector />
+                        <DefaultAccountSelector />
+                    </SettingsGroup>
+                </Animated.View>
+
+                <Animated.View {...anchorProps('ai')}>
+                    <SettingsGroup title={t`AI`}>
+                        <AiDataCard />
+                    </SettingsGroup>
+                </Animated.View>
+
+                <Animated.View {...anchorProps('organization')}>
+                    <SettingsGroup title={t`Organization`}>
+                        <SettingsCard
+                            onPress={handleNavigateToCategories}
+                            title={t`Manage Categories`}
+                            description={t`View and delete custom categories`}
+                            icon={UserIconNameEnum.Folder}
+                            variant="default"
+                        />
+                        <SettingsCard
+                            onPress={handleNavigateToTags}
+                            title={t`Manage Tags`}
+                            description={t`Create and organize transaction tags`}
+                            icon={UserIconNameEnum.Tag}
+                            variant="pink"
+                        />
+                        <SettingsCard
+                            onPress={handleNavigateToArchived}
+                            title={t`Archived Accounts`}
+                            description={t`View and restore archived accounts`}
+                            icon={UserIconNameEnum.Archive}
+                            variant="dark-warning"
+                        />
+                        <SettingsCard
+                            onPress={handleNavigateToInactive}
+                            title={t`Inactive Accounts`}
+                            description={t`View and activate hidden accounts`}
+                            icon={UserIconNameEnum.EyeOff}
+                            variant="dark-warning"
+                        />
+                    </SettingsGroup>
+                </Animated.View>
+
+                <Animated.View {...anchorProps('appearance')}>
+                    <SettingsGroup title={t`Appearance`}>
+                        <ThemeSwitch />
+                        <SettingsCard
+                            title={t`Show Cents`}
+                            description={t`Show $1,234.56 instead of $1,235`}
+                            icon={UserIconNameEnum.DollarSign}
+                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                            variant="positive"
+                        />
+                    </SettingsGroup>
+                </Animated.View>
+
+                <Animated.View {...anchorProps('data')}>
+                    <SettingsGroup title={t`Data management`}>
+                        <ImportCsv />
+                        <ExportCsv />
+                        <ImportDatabase />
+                        <ExportDatabase />
+                        <RecalculateBalances />
+                        <TruncateData />
+                    </SettingsGroup>
+                </Animated.View>
+
+                <SettingsGroup title={t`About`}>
+                    <SettingsCard
+                        align="top"
+                        title={t`Budgie`}
+                        className="items-baseline"
+                        description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
+                        icon={UserIconNameEnum.Database}
+                        variant="ghost"
+                    />
+                </SettingsGroup>
             </ScrollView>
         </Page>
     );
