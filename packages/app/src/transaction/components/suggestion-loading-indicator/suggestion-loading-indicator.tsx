@@ -23,7 +23,7 @@ export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true
     const shouldAnimate = isLoading || isEmbedding;
     const showHint = !showArrow;
 
-    const handleBrainPress = () => void router.push('/settings');
+    const handleBrainPress = () => void router.push({ pathname: '/settings', params: { scrollTo: 'ai' } });
 
     return (
         <View className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">

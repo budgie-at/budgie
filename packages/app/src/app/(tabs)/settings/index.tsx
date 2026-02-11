@@ -1,8 +1,11 @@
 import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
-import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useRef } from 'react';
+import { LayoutChangeEvent, ScrollView, View } from 'react-native';
+
+import { emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -27,9 +30,31 @@ import { TruncateData } from '../../../settings/components/truncate-data/truncat
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
+const SCROLL_DELAY_MS = 300;
+
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
+    const { scrollTo } = useLocalSearchParams<{ scrollTo?: string }>();
+
+    const scrollViewRef = useRef<ScrollView>(null);
+    const aiSectionY = useRef(0);
+
+    const handleAiSectionLayout = useCallback((event: LayoutChangeEvent) => {
+        aiSectionY.current = event.nativeEvent.layout.y;
+    }, []);
+
+    useEffect(() => {
+        if (isNotEmptyString(scrollTo)) {
+            const timer = setTimeout(() => {
+                scrollViewRef.current?.scrollTo({ y: aiSectionY.current, animated: true });
+            }, SCROLL_DELAY_MS);
+
+            return () => void clearTimeout(timer);
+        }
+
+        return emptyFn;
+    }, [scrollTo]);
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -47,7 +72,7 @@ export default function SettingsPage() {
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false}>
                 <MenuSpacer multiplier={0.05}></MenuSpacer>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
@@ -81,9 +106,11 @@ export default function SettingsPage() {
                         <DefaultAccountSelector />
                     </SettingsGroup>
 
-                    <SettingsGroup title={t`AI`}>
-                        <AiDataCard />
-                    </SettingsGroup>
+                    <View onLayout={handleAiSectionLayout}>
+                        <SettingsGroup title={t`AI`}>
+                            <AiDataCard />
+                        </SettingsGroup>
+                    </View>
 
                     <SettingsGroup title={t`Organization`}>
                         <SettingsCard
