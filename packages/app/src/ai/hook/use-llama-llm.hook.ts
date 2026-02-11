@@ -1,4 +1,4 @@
-import { GenerateOptionsInterface, LlmInterface } from '@budgie/ai';
+import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budgie/ai';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
@@ -14,8 +14,9 @@ interface RunCompletionParams {
     temperature?: number;
 }
 
-const CHAT_MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf';
-const CHAT_MODEL_FILENAME = 'qwen2.5-1.5b-instruct-q8_0.gguf';
+const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf';
+// eslint-disable-next-line lingui/no-unlocalized-strings
+const CHAT_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 const CHAT_CONTEXT_SIZE = 2048;
 
 const EMBEDDING_MODEL_URL = 'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
@@ -26,9 +27,11 @@ const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
 
 const DEFAULT_MAX_TOKENS = 64;
 const GPU_LAYERS = 99;
-const GENERATION_CONFIG = { temperature: 0.1, top_k: 40, top_p: 0.95 };
+const GENERATION_CONFIG = { temperature: 0.7, top_k: 20, top_p: 0.8 };
 
-const CHAT_MODEL_SIZE_MB = 1620;
+const DEPRECATED_MODEL_FILES = ['qwen2.5-1.5b-instruct-q8_0.gguf'];
+
+const CHAT_MODEL_SIZE_MB = 1110;
 const EMBEDDING_MODEL_SIZE_MB = 488;
 const TOTAL_MODEL_SIZE_MB = CHAT_MODEL_SIZE_MB + EMBEDDING_MODEL_SIZE_MB;
 const CHAT_DOWNLOAD_WEIGHT = CHAT_MODEL_SIZE_MB / TOTAL_MODEL_SIZE_MB;
@@ -61,7 +64,7 @@ const downloadModel = async (url: string, filename: string, onProgress: (progres
 const runCompletion = async (params: RunCompletionParams): Promise<string> => {
     const result = await params.context.completion({
         messages: [
-            { role: 'system', content: params.systemPrompt },
+            { role: 'system', content: `${params.systemPrompt}\n/no_think` },
             { role: 'user', content: params.userMessage }
         ],
         n_predict: params.maxTokens,
@@ -70,7 +73,7 @@ const runCompletion = async (params: RunCompletionParams): Promise<string> => {
         ...(isDefined(params.temperature) ? { temperature: params.temperature } : {})
     });
 
-    return result.text.trim();
+    return stripThinkingTags(result.text.trim());
 };
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- LLM hook requires dual model lifecycle, generation mutex, and state management
@@ -117,6 +120,18 @@ export const useLlamaLlm = (): LlmInterface => {
         // eslint-disable-next-line max-statements -- Dual model initialization requires sequential context setup with mount checks
         const initializeModels = async (): Promise<void> => {
             try {
+                for (const filename of DEPRECATED_MODEL_FILES) {
+                    try {
+                        const deprecatedFile = new File(`${Paths.document.uri}${filename}`);
+
+                        if (deprecatedFile.exists) {
+                            deprecatedFile.delete();
+                        }
+                    } catch {
+                        // Non-blocking: old model cleanup is best-effort
+                    }
+                }
+
                 const [chatModelPath, embeddingModelPath] = await Promise.all([
                     downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, handleChatDownloadProgress),
                     downloadModel(EMBEDDING_MODEL_URL, EMBEDDING_MODEL_FILENAME, handleEmbeddingDownloadProgress)
