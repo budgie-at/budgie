@@ -125,7 +125,7 @@ export class EmbeddingSuggestionService {
 
     private async generateSerializedEmbedding(context: string, llm: LlmInterface): Promise<Uint8Array | null> {
         const service = new EmbeddingService(llm);
-        const queryEmbedding = await service.generateEmbeddingWithTranslation(context);
+        const queryEmbedding = await service.generateEmbedding(context);
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
             return null;
