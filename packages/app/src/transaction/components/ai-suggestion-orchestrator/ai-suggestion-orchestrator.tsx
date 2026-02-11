@@ -30,10 +30,6 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     const hasCatSel = isPositiveNumber(safeCategoryId);
     const hasCmt = isNotEmptyString(comment);
 
-    console.log(
-        `[AiOrch] embCtx=${embCtx} hasCat=${hasCatSel}(${safeCategoryId}) hasTags=${hasTagsSelected} hasCmt=${hasCmt} split=${isSplitActive}`
-    );
-
     const step = useAiSuggestionOrchestrator({
         isSplitActive,
         hasEmbeddingContext: embCtx,
@@ -41,8 +37,6 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         hasTagsSelected,
         hasComment: hasCmt
     });
-
-    console.log(`[AiOrch] step=${step}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
     if (step === SuggestionOrchestratorStepEnum.CATEGORY) {
         return (

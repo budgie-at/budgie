@@ -28,10 +28,6 @@ export const SuggestionRow = <T,>(props: Props<T>) => {
         onSelect(item);
     };
 
-    console.log(
-        `[SugRow] suggestions=${suggestions.length} status=${status} enabled=${enabled} showContent=${showContent} showLoading=${showLoading} isProcessing=${isProcessing}`
-    );
-
     return (
         <SuggestionRowLayout showContent={showContent} showLoading={showLoading} isProcessing={isProcessing}>
             {[...suggestions].reverse().map((item, index) => renderPill(item, index, () => void handleSelect(item)))}
