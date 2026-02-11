@@ -79,7 +79,8 @@ const dbInit = () => {
 
 const hasTable = (sqliteDb: SQLite.SQLiteDatabase, tableName: string): boolean => {
     const [result] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
-        `SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name='${tableName}'` // eslint-disable-line lingui/no-unlocalized-strings
+        "SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name=?", // eslint-disable-line lingui/no-unlocalized-strings
+        [tableName]
     );
 
     return result.count > 0;
