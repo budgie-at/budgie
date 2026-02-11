@@ -102,6 +102,10 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const handleFillPatternAmount = (patternAmount: number) => {
+        if (amount > 0) {
+            return;
+        }
+
         setValue('amount', patternAmount);
         setFromNumeric(patternAmount);
     };
