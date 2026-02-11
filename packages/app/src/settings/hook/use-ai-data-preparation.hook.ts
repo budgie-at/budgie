@@ -131,7 +131,7 @@ const processEmbeddingBatches = async (
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const { llm } = useLlmContext();
-    const { refreshProgress } = useAiEmbeddingProgressContext();
+    const { refreshProgress, setIsEmbedding } = useAiEmbeddingProgressContext();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
@@ -163,6 +163,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
         isRunningRef.current = true;
         setIsRunning(true);
+        setIsEmbedding(true);
         setProgress(0);
         await microPause();
 
@@ -171,6 +172,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 setPhaseLabel(t`Clearing old data...`);
                 await microPause();
                 await titleEmbeddingRepository.truncate();
+                refreshProgress();
             }
 
             const categories = fresh ? await categoryRepository.findAllNonSystem() : await categoryRepository.findWithoutTags();
@@ -230,6 +232,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 }
             });
 
+            setIsEmbedding(false);
             setProgress(100);
             setPhaseLabel(t`Done`);
             setTotalContexts(existingContexts.size);
@@ -242,6 +245,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             });
         } finally {
             isRunningRef.current = false; // eslint-disable-line require-atomic-updates -- Intentional: ref is only written by this function
+            setIsEmbedding(false);
             setIsRunning(false);
         }
     };

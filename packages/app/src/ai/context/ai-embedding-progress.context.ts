@@ -3,7 +3,9 @@ import { createContext, use } from 'react';
 
 export interface AiEmbeddingProgressContextInterface {
     readonly progress: number;
+    readonly isEmbedding: boolean;
     readonly refreshProgress: () => void;
+    readonly setIsEmbedding: (value: boolean) => void;
 }
 
 export const AiEmbeddingProgressContext = createContext<AiEmbeddingProgressContextInterface | null>(null);
