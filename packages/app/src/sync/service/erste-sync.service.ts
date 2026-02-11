@@ -4,7 +4,7 @@ import { extractText } from 'expo-pdf-text-extract';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -50,6 +50,37 @@ class ErsteSyncService {
         await this.executeImport(client, selectedBankAccounts);
     }
     /* jscpd:ignore-end */
+
+    async quickImport(filePath: string): Promise<void> {
+        const text = await extractText(filePath);
+        const client = await this.getErsteFileClient();
+        client.parse(text);
+        const bankAccounts = client.getAccounts();
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return;
+        }
+
+        const enabledExternalIds = await this.getEnabledExternalIds();
+        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
+        if (!isNotEmptyArray(enabledBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, enabledBankAccounts);
+    }
+
+    private async getEnabledExternalIds(): Promise<Set<string>> {
+        const enabledSyncs = await bankSyncRepository.getEnabledByProvider(PROVIDER);
+        if (!isNotEmptyArray(enabledSyncs)) {
+            return new Set();
+        }
+
+        const accountIds = enabledSyncs.map(sync => sync.accountId);
+        const accounts = await accountRepository.findByIds(accountIds);
+
+        return new Set(accounts.map(account => account.externalId).filter(isDefined));
+    }
 
     private async getErsteFileClient(): Promise<ErsteFileClientInterface> {
         const module = await import('@budgie/bank-sync');

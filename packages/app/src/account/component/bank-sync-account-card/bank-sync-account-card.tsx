@@ -7,6 +7,7 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useAccountBankSync } from '../../../sync/hook/use-account-bank-sync.hook';
+import { useErsteQuickImport } from '../../../sync/hook/use-erste-quick-import.hook';
 import { usePrivatbankQuickImport } from '../../../sync/hook/use-privatbank-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 
@@ -30,19 +31,27 @@ export const BankSyncAccountCard = (props: Props) => {
 
     const [, hapticImpact] = useVibration();
     const { bankSync } = useAccountBankSync(id);
-    const { handleQuickImport } = usePrivatbankQuickImport();
+    const { handleQuickImport: handlePrivatbankQuickImport } = usePrivatbankQuickImport();
+    const { handleQuickImport: handleErsteQuickImport } = useErsteQuickImport();
 
     const shouldShow = isDefined(bankSync);
     const isPrivatbank = isDefined(bankSync) && bankSync.provider === ExternalSourceEnum.PRIVATBANK;
+    const isErste = isDefined(bankSync) && bankSync.provider === ExternalSourceEnum.ERSTE;
+    const hasQuickImport = isPrivatbank || isErste;
 
     const handleLongPress = () => {
+        hapticImpact(ImpactFeedbackStyle.Medium);
+
         if (isPrivatbank) {
-            hapticImpact(ImpactFeedbackStyle.Medium);
-            handleQuickImport();
+            handlePrivatbankQuickImport();
+        }
+
+        if (isErste) {
+            handleErsteQuickImport();
         }
     };
 
-    const longPressHandler = isPrivatbank ? handleLongPress : emptyFn;
+    const longPressHandler = hasQuickImport ? handleLongPress : emptyFn;
     const statusClassName = shouldShow
         ? syncStatusVariants({ status: bankSync.status })
         : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });
