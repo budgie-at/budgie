@@ -2,10 +2,7 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
-
-import { emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -13,6 +10,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -30,31 +28,11 @@ import { TruncateData } from '../../../settings/components/truncate-data/truncat
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
-const SCROLL_DELAY_MS = 300;
-
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
     const { scrollTo } = useLocalSearchParams<{ scrollTo?: string }>();
-
-    const scrollViewRef = useRef<ScrollView>(null);
-
-    const aiSectionRef = useCallback(
-        (node: View | null) => {
-            if (!isNotEmptyString(scrollTo) || node === null) {
-                return emptyFn;
-            }
-
-            const timer = setTimeout(() => {
-                node.measureInWindow((_x, y) => {
-                    scrollViewRef.current?.scrollTo({ y, animated: true });
-                });
-            }, SCROLL_DELAY_MS);
-
-            return () => void clearTimeout(timer);
-        },
-        [scrollTo]
-    );
+    const { scrollViewRef, sectionRef } = useScrollToRef(scrollTo);
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -106,7 +84,7 @@ export default function SettingsPage() {
                         <DefaultAccountSelector />
                     </SettingsGroup>
 
-                    <View ref={aiSectionRef}>
+                    <View ref={sectionRef}>
                         <SettingsGroup title={t`AI`}>
                             <AiDataCard />
                         </SettingsGroup>
