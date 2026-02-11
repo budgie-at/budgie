@@ -10,8 +10,8 @@ interface Props {
     readonly showArrow?: boolean;
 }
 
-const BRAIN_CONTAINER_SIZE = 20;
-const BRAIN_ICON_SIZE = 12;
+const BRAIN_CONTAINER_SIZE = 26;
+const BRAIN_ICON_SIZE = 16;
 
 export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
     const { progress, isIncomplete } = useAiEmbeddingProgress();
