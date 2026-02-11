@@ -27,15 +27,11 @@ export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true
 
     return (
         <View className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">
-            {showArrow ? (
-                <Icon icon={UserIconNameEnum.ArrowLeft} size={12} className="text-secondary-foreground" />
-            ) : (
-                <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
-                    {statusLabel}
-                </Text>
-            )}
             {showHint ? (
-                <Pressable onPress={handleBrainPress} hitSlop={8}>
+                <Pressable className="flex-row items-center gap-xs" onPress={handleBrainPress} hitSlop={8}>
+                    <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
+                        {statusLabel}
+                    </Text>
                     <AiBrainProgress
                         progress={progress}
                         size={BRAIN_CONTAINER_SIZE}
@@ -44,7 +40,15 @@ export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true
                     />
                 </Pressable>
             ) : (
-                <AiBrainProgress progress={progress} size={BRAIN_CONTAINER_SIZE} iconSize={BRAIN_ICON_SIZE} isAnimating={shouldAnimate} />
+                <>
+                    <Icon icon={UserIconNameEnum.ArrowLeft} size={12} className="text-secondary-foreground" />
+                    <AiBrainProgress
+                        progress={progress}
+                        size={BRAIN_CONTAINER_SIZE}
+                        iconSize={BRAIN_ICON_SIZE}
+                        isAnimating={shouldAnimate}
+                    />
+                </>
             )}
         </View>
     );
