@@ -1,29 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
-import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
-
-const FULL_PROGRESS = 100;
+const PROGRESS_THRESHOLD = 90;
 
 interface UseAiEmbeddingProgressReturn {
     readonly progress: number;
+    readonly isIncomplete: boolean;
+    readonly refreshProgress: () => void;
 }
 
 export const useAiEmbeddingProgress = (): UseAiEmbeddingProgressReturn => {
-    const [progress, setProgress] = useState(0);
+    const { progress, refreshProgress } = useAiEmbeddingProgressContext();
 
-    useEffect(() => {
-        const loadProgress = async (): Promise<void> => {
-            const embeddedCount = await titleEmbeddingRepository.countAll();
-            const totalContexts = await titleEmbeddingRepository.countDistinctTransactionContexts();
+    const isIncomplete = progress < PROGRESS_THRESHOLD;
 
-            const computed = isPositiveNumber(totalContexts) ? Math.round((embeddedCount / totalContexts) * FULL_PROGRESS) : 0;
-            setProgress(computed);
-        };
-
-        void loadProgress();
-    }, []);
-
-    return { progress };
+    return { progress, isIncomplete, refreshProgress };
 };
