@@ -26,7 +26,6 @@ interface UseLongPressHoldParams {
     readonly disabled?: boolean;
 }
 
- 
 export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = false }: UseLongPressHoldParams): UseLongPressHoldReturn => {
     const [hapticNotification, hapticImpact] = useVibration();
     const hapticIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
