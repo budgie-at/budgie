@@ -7,7 +7,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 const FILL_ANIMATION_DURATION = 300;
 const PERCENT_DIVISOR = 100;
-const PULSE_SCALE = 1.06;
+const PULSE_SCALE = 1.08;
 const PULSE_DURATION = 1000;
 const PULSE_STOP_DURATION = 200;
 
@@ -23,12 +23,12 @@ interface Props {
 }
 
 export const AiBrainProgress = ({ progress, size, iconSize, isAnimating = false }: Props) => {
-    const progressValue = useSharedValue(0);
+    const fillHeight = useSharedValue((progress / PERCENT_DIVISOR) * iconSize);
     const pulseScale = useSharedValue(1);
 
     useEffect(() => {
-        progressValue.value = progress;
-    }, [progress, progressValue]);
+        fillHeight.value = withTiming((progress / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION });
+    }, [progress, iconSize, fillHeight]);
 
     useEffect(() => {
         if (isAnimating) {
@@ -51,7 +51,7 @@ export const AiBrainProgress = ({ progress, size, iconSize, isAnimating = false 
         left: 0,
         right: 0,
         overflow: 'hidden' as const,
-        height: withTiming((progressValue.value / PERCENT_DIVISOR) * iconSize, { duration: FILL_ANIMATION_DURATION })
+        height: fillHeight.value
     }));
 
     const containerStyle = useAnimatedStyle(() => ({
