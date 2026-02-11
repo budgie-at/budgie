@@ -10,6 +10,7 @@ import { BankAccountPreviewInterface } from '../interface/bank-account-preview.i
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
+import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 
 import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
 
@@ -120,7 +121,7 @@ const getEnabledExternalIds = async (): Promise<Set<string>> => {
     return new Set(accounts.map(account => account.externalId).filter(isDefined));
 };
 
-export const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise<void> => {
+const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise<void> => {
     const client = new PrivatbankFileClient(fileBuffer);
     const bankAccounts = client.getAccounts();
 
@@ -139,4 +140,9 @@ export const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise
     }
 
     await executeImport(client, enabledBankAccounts);
+};
+
+export const privatbankSyncQuickImportFromUri = async (uri: string): Promise<void> => {
+    const buffer = await readFileAsUint8Array(uri);
+    await privatbankSyncQuickImport(buffer);
 };
