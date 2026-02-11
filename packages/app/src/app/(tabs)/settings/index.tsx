@@ -2,8 +2,8 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useRef } from 'react';
-import { LayoutChangeEvent, ScrollView, View } from 'react-native';
+import { useCallback, useRef } from 'react';
+import { ScrollView, View } from 'react-native';
 
 import { emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
@@ -38,23 +38,23 @@ export default function SettingsPage() {
     const { scrollTo } = useLocalSearchParams<{ scrollTo?: string }>();
 
     const scrollViewRef = useRef<ScrollView>(null);
-    const aiSectionY = useRef(0);
 
-    const handleAiSectionLayout = useCallback((event: LayoutChangeEvent) => {
-        aiSectionY.current = event.nativeEvent.layout.y;
-    }, []);
+    const aiSectionRef = useCallback(
+        (node: View | null) => {
+            if (!isNotEmptyString(scrollTo) || node === null) {
+                return emptyFn;
+            }
 
-    useEffect(() => {
-        if (isNotEmptyString(scrollTo)) {
             const timer = setTimeout(() => {
-                scrollViewRef.current?.scrollTo({ y: aiSectionY.current, animated: true });
+                node.measureInWindow((_x, y) => {
+                    scrollViewRef.current?.scrollTo({ y, animated: true });
+                });
             }, SCROLL_DELAY_MS);
 
             return () => void clearTimeout(timer);
-        }
-
-        return emptyFn;
-    }, [scrollTo]);
+        },
+        [scrollTo]
+    );
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -106,7 +106,7 @@ export default function SettingsPage() {
                         <DefaultAccountSelector />
                     </SettingsGroup>
 
-                    <View onLayout={handleAiSectionLayout}>
+                    <View ref={aiSectionRef}>
                         <SettingsGroup title={t`AI`}>
                             <AiDataCard />
                         </SettingsGroup>
