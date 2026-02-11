@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -8,6 +9,7 @@ import { useAutoScaleFont } from '../../hook/use-auto-scale-font.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { AmountInput } from '../amount-input/amount-input';
+import { SignTogglePill } from '../sign-toggle-pill/sign-toggle-pill';
 
 const BASE_FONT_SIZE = 72;
 
@@ -16,6 +18,7 @@ interface Props {
     readonly textClassName?: string;
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
+    readonly allowNegative?: boolean;
     readonly autoFocus?: boolean;
     readonly onChange: (value: number) => void;
 }
@@ -26,25 +29,53 @@ const textVariants = cva('', {
     }
 });
 
-export const FormAmountInput = ({ value, onChange, variant, textClassName, instrumentSymbol, autoFocus }: Props) => {
+export const FormAmountInput = (props: Props) => {
+    const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus } = props;
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const displayedText = value === 0 ? '' : formatDigits(value.toString());
+
+    const [isNegative, setIsNegative] = useState(value < 0);
+
+    const absoluteValue = Math.abs(value);
+    const displayedText = absoluteValue === 0 ? '' : formatDigits(absoluteValue.toString());
+    const effectiveVariant = allowNegative && isNegative ? 'destructive' : variant;
 
     const fullText = `${instrumentSymbol} ${displayedText}`;
     const { fontSize, onContainerLayout } = useAutoScaleFont(BASE_FONT_SIZE, fullText);
 
     const fontSizeStyle = { fontSize };
 
+    const handleToggleSign = () => {
+        setIsNegative(previous => {
+            const newIsNegative = !previous;
+
+            if (absoluteValue !== 0) {
+                onChange(newIsNegative ? -absoluteValue : absoluteValue);
+            }
+
+            return newIsNegative;
+        });
+    };
+
+    const handleAmountChange = (newAbsoluteValue: number) => {
+        onChange(isNegative ? -newAbsoluteValue : newAbsoluteValue);
+    };
+
     return (
         <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5" onLayout={onContainerLayout}>
-            <Text className={textVariants({ variant })} style={fontSizeStyle}>
+            {allowNegative ? (
+                <View className="mr-xl">
+                    <SignTogglePill isNegative={isNegative} variant={effectiveVariant} onToggle={handleToggleSign} />
+                </View>
+            ) : null}
+
+            <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
                 {instrumentSymbol}{' '}
             </Text>
 
             <AmountInput
-                value={value}
-                onChangeValue={onChange}
+                value={absoluteValue}
+                onChangeValue={handleAmountChange}
                 inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
                 placeholder={formatDigits(0)}
                 autoFocus={autoFocus}
