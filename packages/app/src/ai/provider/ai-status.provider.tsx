@@ -40,7 +40,7 @@ export const AiStatusProvider = ({ children }: Props) => {
         statusLabel = t`${completionRatio}% learned`;
         brainProgress = completionRatio;
     } else if (isLlmReady) {
-        statusLabel = t`Ready to learn`;
+        statusLabel = t`Long press to learn`;
         brainProgress = 0;
     } else if (isLlmInitializing) {
         statusLabel = t`Initializing AI model...`;
