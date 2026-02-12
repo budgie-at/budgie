@@ -1,22 +1,18 @@
-/* eslint-disable no-await-in-loop */
-import { BankAccountInterface, BankTransactionInterface, PrivatbankFileClient } from '@budgie/bank-sync';
-import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { PrivatbankFileClient } from '@budgie/bank-sync';
+import { ExternalSourceEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
-import { transactionService } from '../../transaction/service/transaction.service';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
-import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
-import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
-import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 
+import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
 
-const PROVIDER = ExternalSourceEnum.PRIVATBANK;
+import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
+import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
+import type { BankAccountInterface } from '@budgie/bank-sync';
 
-const collectUniqueCategories = (client: PrivatbankFileClient, accountIds: string[]): string[] => {
+const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] => {
     const categorySet = new Set<string>();
 
     for (const accountId of accountIds) {
@@ -31,118 +27,29 @@ const collectUniqueCategories = (client: PrivatbankFileClient, accountIds: strin
     return [...categorySet];
 };
 
-const createBankSyncRecord = async (accountId: number): Promise<void> => {
-    const existingSync = await bankSyncRepository.getByAccountId(accountId);
-    if (isDefined(existingSync)) {
-        return;
+class PrivatbankSyncService extends BaseFileBankSyncService {
+    constructor() {
+        super(ExternalSourceEnum.PRIVATBANK);
     }
 
-    await bankSyncRepository.create({
-        token: '',
-        accountId,
-        provider: PROVIDER,
-        enabled: true,
-        mode: BankSyncModeEnum.FORWARD
-    });
-};
+    protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
+        const buffer = await readFileAsUint8Array(uri);
+        const client = new PrivatbankFileClient(buffer);
 
-const importAccountTransactions = async (
-    client: PrivatbankFileClient,
-    bankAccount: BankAccountInterface,
-    categoryToMccCategoryIdMap: Map<string, number | null>,
-    existingExternalIds: Set<string>
-): Promise<void> => {
-    const account = await getOrCreateBankAccount(bankAccount, PROVIDER);
-    await createBankSyncRecord(account.id);
-
-    const transactions = client.getTransactions(bankAccount.id);
-    const newTransactions = transactions.filter(transaction => !existingExternalIds.has(transaction.id));
-
-    if (!isNotEmptyArray(newTransactions)) {
-        return;
+        return { client, bankAccounts: client.getAccounts() };
     }
 
-    const transactionInputs = newTransactions.map((transaction: BankTransactionInterface) => {
-        const mccCategoryId = isNotEmptyString(transaction.category)
-            ? (categoryToMccCategoryIdMap.get(transaction.category) ?? null)
-            : null;
+    protected async resolveMccCategoryIdMap(
+        client: FileBasedBankSyncClientInterface,
+        bankAccounts: BankAccountInterface[]
+    ): Promise<Map<string, number | null>> {
+        const accountIds = bankAccounts.map(account => account.id);
+        const uniqueCategories = collectUniqueCategories(client, accountIds);
 
-        return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, PROVIDER);
-    });
-
-    await transactionService.bulkCreate(transactionInputs);
-};
-
-export const privatbankSyncImportPreview = async (fileBuffer: Uint8Array): Promise<BankAccountPreviewInterface[]> => {
-    const client = new PrivatbankFileClient(fileBuffer);
-    const bankAccounts = client.getAccounts();
-
-    if (!isNotEmptyArray(bankAccounts)) {
-        return [];
+        return privatbankCategoryMatcherMatch(uniqueCategories);
     }
+}
 
-    return mapBankAccountsToPreview(bankAccounts, PROVIDER);
-};
+export const privatbankSyncService = new PrivatbankSyncService();
 
-const executeImport = async (client: PrivatbankFileClient, bankAccounts: BankAccountInterface[]): Promise<void> => {
-    const accountIds = bankAccounts.map(account => account.id);
-    const uniqueCategories = collectUniqueCategories(client, accountIds);
-    const [categoryToMccCategoryIdMap, existingExternalIds] = await Promise.all([
-        privatbankCategoryMatcherMatch(uniqueCategories),
-        transactionService.findByExternalSource(PROVIDER)
-    ]);
-
-    for (const bankAccount of bankAccounts) {
-        await importAccountTransactions(client, bankAccount, categoryToMccCategoryIdMap, existingExternalIds);
-    }
-};
-
-export const privatbankSyncExecuteImport = async (fileBuffer: Uint8Array, selectedAccountIds: string[]): Promise<void> => {
-    const client = new PrivatbankFileClient(fileBuffer);
-    const bankAccounts = client.getAccounts();
-    const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-
-    if (!isNotEmptyArray(selectedBankAccounts)) {
-        return;
-    }
-
-    await executeImport(client, selectedBankAccounts);
-};
-
-const getEnabledExternalIds = async (): Promise<Set<string>> => {
-    const enabledSyncs = await bankSyncRepository.getEnabledByProvider(PROVIDER);
-    if (!isNotEmptyArray(enabledSyncs)) {
-        return new Set();
-    }
-
-    const accountIds = enabledSyncs.map(sync => sync.accountId);
-    const accounts = await accountRepository.findByIds(accountIds);
-
-    return new Set(accounts.map(account => account.externalId).filter(isDefined));
-};
-
-const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise<void> => {
-    const client = new PrivatbankFileClient(fileBuffer);
-    const bankAccounts = client.getAccounts();
-
-    if (!isNotEmptyArray(bankAccounts)) {
-        return;
-    }
-
-    const enabledExternalIds = await getEnabledExternalIds();
-    if (enabledExternalIds.size === 0) {
-        return;
-    }
-
-    const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
-    if (!isNotEmptyArray(enabledBankAccounts)) {
-        return;
-    }
-
-    await executeImport(client, enabledBankAccounts);
-};
-
-export const privatbankSyncQuickImportFromUri = async (uri: string): Promise<void> => {
-    const buffer = await readFileAsUint8Array(uri);
-    await privatbankSyncQuickImport(buffer);
-};
+export const privatbankSyncQuickImportFromUri = privatbankSyncService.quickImport.bind(privatbankSyncService);
