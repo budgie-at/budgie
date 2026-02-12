@@ -378,8 +378,7 @@ class TransactionService {
             batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
         );
 
-        await transactionEntryRepository.bulkCreate(batchEntries, tx);
-        await transactionTagsRepository.bulkCreate(batchTags, tx);
+        await Promise.all([transactionEntryRepository.bulkCreate(batchEntries, tx), transactionTagsRepository.bulkCreate(batchTags, tx)]);
 
         return transactions;
     }
