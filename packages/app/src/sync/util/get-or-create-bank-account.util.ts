@@ -4,6 +4,7 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { Transaction } from '../../@generic/type/transaction.type';
 import { accountService } from '../../account/service/account.service';
 
 import { mapBankAccountToCreateInput } from './map-bank-account-to-create-input.util';
@@ -12,7 +13,8 @@ import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } fro
 
 export const getOrCreateBankAccount = async (
     bankAccount: BankAccountInterface,
-    provider: ExternalSourceEnum
+    provider: ExternalSourceEnum,
+    tx?: Transaction
 ): Promise<AccountEntityInterface> => {
     const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
     if (isNotEmptyArray(existingByExternalId)) {
@@ -35,7 +37,7 @@ export const getOrCreateBankAccount = async (
 
     const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id, provider);
 
-    const [createdAccount] = Object.values(await accountService.bulkCreate([input]));
+    const [createdAccount] = Object.values(await accountService.bulkCreate([input], tx));
     if (!isDefined(createdAccount)) {
         // eslint-disable-next-line lingui/no-unlocalized-strings
         throw new Error('Failed to create bank account');

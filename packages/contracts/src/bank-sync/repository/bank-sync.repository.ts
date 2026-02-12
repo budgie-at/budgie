@@ -38,8 +38,8 @@ export class BankSyncRepository {
         });
     }
 
-    async getByAccountId(accountId: number): Promise<BankSyncEntityInterface | undefined> {
-        return await this.db.query.BankSyncEntityTable.findFirst({
+    async getByAccountId(accountId: number, tx?: TX): Promise<BankSyncEntityInterface | undefined> {
+        return await (tx ?? this.db).query.BankSyncEntityTable.findFirst({
             where: and(eq(BankSyncEntityTable.accountId, accountId), isNull(BankSyncEntityTable.deletedAt))
         });
     }
