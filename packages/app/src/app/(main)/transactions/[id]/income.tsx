@@ -44,7 +44,14 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         transaction: transactionInput,
         schema: IncomeTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: data => void generateForTransaction(data.title, data.comment, data.entries[0]?.mccCategoryId ?? null)
+        onAfterSubmit: data =>
+            void generateForTransaction({
+                title: data.title,
+                comment: data.comment,
+                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
+                categoryId: data.entries[0]?.categoryId ?? null,
+                tagIds: data.tagIds
+            })
     });
 
     const toAccountId = form.watch('toAccountId');

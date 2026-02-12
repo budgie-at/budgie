@@ -1,5 +1,8 @@
 import { EmbeddingSuggestionService } from '@budgie/ai';
 
-import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
+import { commentEmbeddingRepository, merchantEmbeddingRepository } from '../../@generic/drizzle/db/db';
 
-export const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
+export const embeddingSuggestionService = new EmbeddingSuggestionService({
+    merchant: merchantEmbeddingRepository,
+    comment: commentEmbeddingRepository
+});
