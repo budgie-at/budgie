@@ -297,7 +297,7 @@ Conventional commits: `type(scope): description`
 - If Prettier keeps reformatting your changes back, stop and use `eslint-disable`
 - Ask for confirmation before attempting complex refactors - do not go back and forth
 - Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
-- Use `jscpd:ignore-start/end` for intentionally similar code patterns (like form components)
+- **NEVER use `jscpd:ignore-start/end` in code files** - only allowed in JSX route files (e.g., `expense.tsx`, `income.tsx`, `transfer.tsx`). Fix duplication in source code by extracting shared logic instead
 
 ## Acceptable ESLint Disable Comments
 
