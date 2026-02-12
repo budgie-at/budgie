@@ -13,6 +13,7 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { accountService } from '../../service/account.service';
+import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
@@ -46,13 +47,9 @@ export const CreateDebtAccount = () => {
     }
 
     return (
-        <CreateAccountScreen
-            control={control}
-            variant={ACCOUNT_COLOR.DEBT}
-            instrumentSymbol={instrument.symbol}
-            title={t`Debt Account`}
-            onSubmit={handleSubmit}
-        >
+        <CreateAccountScreen variant={ACCOUNT_COLOR.DEBT} title={t`Debt Account`} onSubmit={handleSubmit}>
+            <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
+
             <FormLayoutGroup>
                 <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />
 
