@@ -25,5 +25,13 @@ export {
     MccGroupEntityRelations,
     MccCategoryEntityTable,
     MccCategoryEntityRelations,
-    TitleEmbeddingEntityTable
+    TitleEmbeddingEntityTable,
+    MerchantEmbeddingEntityTable,
+    MerchantEmbeddingEntityRelations,
+    MerchantEmbeddingTagEntityTable,
+    MerchantEmbeddingTagEntityRelations,
+    CommentEmbeddingEntityTable,
+    CommentEmbeddingEntityRelations,
+    CommentEmbeddingTagEntityTable,
+    CommentEmbeddingTagEntityRelations
 } from '@budgie/contracts';

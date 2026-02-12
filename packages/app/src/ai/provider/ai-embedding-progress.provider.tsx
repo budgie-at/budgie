@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
-import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
+import { commentEmbeddingRepository, merchantEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { AiEmbeddingProgressContext, AiEmbeddingProgressContextInterface } from '../context/ai-embedding-progress.context';
 
 interface Props {
@@ -14,8 +14,10 @@ export const AiEmbeddingProgressProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const loadProgress = async (): Promise<void> => {
-            const result = await titleEmbeddingRepository.getEmbeddingCoverageProgress();
-            setProgress(result);
+            const merchantCount = await merchantEmbeddingRepository.countAll();
+            const commentCount = await commentEmbeddingRepository.countAll();
+            const total = merchantCount + commentCount;
+            setProgress(total > 0 ? 100 : 0);
         };
 
         void loadProgress();

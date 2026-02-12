@@ -5,15 +5,16 @@ import {
     AccountRepository,
     BankSyncRepository,
     CategoryRepository,
+    CommentEmbeddingRepository,
     EMBEDDING_DIMENSIONS,
     ExchangeRateRepository,
     InstrumentRepository,
     MccCategoryRepository,
+    MerchantEmbeddingRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
     TransactionEntryRepository,
-    TitleEmbeddingRepository,
     TransactionPatternRepository,
     TransactionRepository,
     TransactionTagsRepository
@@ -68,6 +69,8 @@ const dbInit = () => {
             global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
             migrateVecDimensions(global.__expoSqliteDb__);
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
         }
     } catch {
         // no-op: sqlite-vec extension not available
@@ -134,4 +137,5 @@ export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
-export const titleEmbeddingRepository = new TitleEmbeddingRepository(db, expoDb);
+export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db, expoDb);
+export const commentEmbeddingRepository = new CommentEmbeddingRepository(db, expoDb);

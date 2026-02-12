@@ -12,13 +12,7 @@ import {
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import {
-    db,
-    titleEmbeddingRepository,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -34,17 +28,12 @@ class TransactionService {
     }
 
     async deleteById(id: number) {
-        const transaction = await transactionRepository.getById(id);
         await db.transaction(async tx => {
             await transactionRepository.deleteById(id, tx);
             await transactionTagsRepository.deleteByTransactionId(id, tx);
             await transactionEntryRepository.deleteByTransactionId(id, tx);
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
-
-        if (isDefined(transaction)) {
-            await titleEmbeddingRepository.softDeleteByTitle(transaction.title);
-        }
     }
 
     async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
@@ -133,7 +122,6 @@ class TransactionService {
     }
 
     async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        const existingTransaction = await transactionRepository.getById(id);
         const result = await db.transaction(async tx => {
             const transaction = await transactionRepository.updateById(id, input, tx);
 
@@ -143,10 +131,6 @@ class TransactionService {
 
             return transaction;
         });
-
-        if (isDefined(existingTransaction) && existingTransaction.title !== input.title) {
-            await titleEmbeddingRepository.softDeleteByTitle(existingTransaction.title);
-        }
 
         return result;
     }

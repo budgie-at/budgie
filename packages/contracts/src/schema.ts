@@ -19,6 +19,14 @@ export { SettingsEntityRelations } from './settings/relations/settings-entity.re
 export { TagEntityTable } from './tag/table/tag-entity.table';
 export { TagEntityRelations } from './tag/relations/tag-entity.relations';
 export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
+export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
+export { MerchantEmbeddingEntityRelations } from './merchant-embedding/relations/merchant-embedding-entity.relations';
+export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
+export { MerchantEmbeddingTagEntityRelations } from './merchant-embedding/relations/merchant-embedding-tag-entity.relations';
+export { CommentEmbeddingEntityTable } from './comment-embedding/table/comment-embedding-entity.table';
+export { CommentEmbeddingEntityRelations } from './comment-embedding/relations/comment-embedding-entity.relations';
+export { CommentEmbeddingTagEntityTable } from './comment-embedding/table/comment-embedding-tag-entity.table';
+export { CommentEmbeddingTagEntityRelations } from './comment-embedding/relations/comment-embedding-tag-entity.relations';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';

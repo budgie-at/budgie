@@ -92,6 +92,13 @@
       "when": 1770500000000,
       "tag": "0012_smooth_hedge_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1770883083393,
+      "tag": "0013_fat_wild_child",
+      "breakpoints": true
     }
   ]
 }

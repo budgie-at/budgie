@@ -1,6 +1,6 @@
-export interface SimilarTagsQueryParamsInterface {
+export interface SimilarTagsParamsInterface {
     readonly vecLimit: number;
     readonly distanceThreshold: number;
-    readonly categoryId: number | null;
+    readonly categoryId: number;
     readonly tagLimit: number;
 }
