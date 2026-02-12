@@ -1,27 +1,16 @@
-import {
-    EMBEDDING_BATCH_LIMIT,
-    EmbeddingService,
-    LlmInterface,
-    TranslationLlmService,
-    buildTransactionContext,
-    serializeEmbedding
-} from '@budgie/ai';
-import { UnembeddedTransactionDataInterface } from '@budgie/contracts';
+import { TranslationLlmService } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useEffect, useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage } from '@rnw-community/shared';
 
-import { categoryRepository, tagRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
 import { useLlmContext } from '../context/llm.context';
-
-interface TransactionContextDataInterface {
-    readonly title: string;
-    readonly context: string;
-}
+import { processCommentBatches } from '../utils/process-comment-batches.util';
+import { processMerchantBatches } from '../utils/process-merchant-batches.util';
 
 interface UseAiDataPreparationReturn {
     readonly start: () => Promise<void>;
@@ -36,98 +25,6 @@ interface UseAiDataPreparationReturn {
     readonly llmDownloadProgress: number;
 }
 
-interface ProgressCallbackInterface {
-    readonly onStep: () => void;
-    readonly onEmbeddingStored: (contextCount: number) => void;
-}
-
-const buildContextData = (transactionData: UnembeddedTransactionDataInterface[]): TransactionContextDataInterface[] =>
-    transactionData
-        .map(row => {
-            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
-
-            if (!isNotEmptyString(context)) {
-                return null;
-            }
-
-            return { title: row.title, context };
-        })
-        .filter(isDefined);
-
-const filterUnembeddedContexts = (
-    contextData: TransactionContextDataInterface[],
-    existingContexts: Set<string>
-): TransactionContextDataInterface[] => contextData.filter(item => !existingContexts.has(item.context));
-
-const storeEmbeddingBatch = async (
-    unembeddedContexts: TransactionContextDataInterface[],
-    embeddings: Map<string, Float32Array>,
-    existingContexts: Set<string>,
-    callbacks: ProgressCallbackInterface
-): Promise<void> => {
-    for (const item of unembeddedContexts) {
-        const embeddingVector = embeddings.get(item.context);
-
-        if (isDefined(embeddingVector)) {
-            const serialized = serializeEmbedding(embeddingVector);
-            await titleEmbeddingRepository.upsert(item.title, item.context, serialized, embeddingVector.length); // eslint-disable-line no-await-in-loop -- Sequential DB writes for upsert consistency
-            existingContexts.add(item.context);
-            callbacks.onStep();
-            callbacks.onEmbeddingStored(existingContexts.size);
-            await microPause(); // eslint-disable-line no-await-in-loop -- Yield to render progress updates
-        }
-    }
-};
-
-const MAX_CONSECUTIVE_FAILURES = 3;
-
-// eslint-disable-next-line max-statements -- Batch processing with error recovery
-const processEmbeddingBatches = async (
-    llm: LlmInterface,
-    existingContexts: Set<string>,
-    callbacks: ProgressCallbackInterface
-): Promise<void> => {
-    const embeddingService = new EmbeddingService(llm);
-    let cursor: number | undefined;
-    let hasMore = true;
-    let consecutiveFailures = 0;
-
-    /* eslint-disable no-await-in-loop -- Sequential batch processing */
-    while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
-        try {
-            const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, cursor);
-
-            if (!isNotEmptyArray(transactionData)) {
-                break;
-            }
-
-            const contextData = buildContextData(transactionData);
-            const unembeddedContexts = filterUnembeddedContexts(contextData, existingContexts);
-
-            if (isNotEmptyArray(unembeddedContexts)) {
-                const contextStrings = unembeddedContexts.map(item => item.context);
-                const embeddings = await embeddingService.generateEmbeddings(contextStrings);
-
-                if (embeddings.size === 0) {
-                    consecutiveFailures += 1;
-                    cursor = transactionData[transactionData.length - 1].maxOperatedAt;
-                } else {
-                    await storeEmbeddingBatch(unembeddedContexts, embeddings, existingContexts, callbacks);
-                }
-            }
-
-            if (consecutiveFailures === 0) {
-                hasMore = transactionData.length === EMBEDDING_BATCH_LIMIT;
-            }
-
-            cursor = transactionData[transactionData.length - 1].maxOperatedAt;
-        } catch {
-            consecutiveFailures += 1;
-        }
-    }
-    /* eslint-enable no-await-in-loop */
-};
-
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const { llm } = useLlmContext();
@@ -141,15 +38,17 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
     useEffect(() => {
         const loadCounts = async (): Promise<void> => {
-            const embedded = await titleEmbeddingRepository.countAll();
-            setEmbeddedCount(embedded);
-            setTotalContexts(embedded);
+            const merchantCount = await merchantEmbeddingRepository.countAll();
+            const commentCount = await commentEmbeddingRepository.countAll();
+            const total = merchantCount + commentCount;
+            setEmbeddedCount(total);
+            setTotalContexts(total);
         };
 
         void loadCounts();
     }, []);
 
-    // eslint-disable-next-line max-statements -- Multi-phase sequential orchestration
+    // eslint-disable-next-line max-statements, max-lines-per-function -- Multi-phase sequential orchestration
     const run = async (fresh: boolean): Promise<void> => {
         if (isRunningRef.current) {
             return;
@@ -171,21 +70,24 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             if (fresh) {
                 setPhaseLabel(t`Clearing old data...`);
                 await microPause();
-                await titleEmbeddingRepository.truncate();
+                await merchantEmbeddingRepository.truncate();
+                await commentEmbeddingRepository.truncate();
                 refreshProgress();
             }
 
             const categories = fresh ? await categoryRepository.findAllNonSystem() : await categoryRepository.findWithoutTags();
             const tags = fresh ? await tagRepository.findAll() : await tagRepository.findWithoutTags();
 
-            const allContexts = fresh ? [] : await titleEmbeddingRepository.findAllContexts();
-            const existingContexts = new Set(allContexts);
-            const totalDistinctContexts = await titleEmbeddingRepository.countDistinctTransactionContexts();
-            const estimatedUnembedded = Math.max(0, totalDistinctContexts - existingContexts.size);
-            const totalSteps = categories.length + tags.length + estimatedUnembedded;
+            const merchantKeys = fresh ? [] : await merchantEmbeddingRepository.findAllContextKeys();
+            const commentKeys = fresh ? [] : await commentEmbeddingRepository.findAllContextKeys();
+            const existingMerchantKeys = new Set(merchantKeys);
+            const existingCommentKeys = new Set(commentKeys);
+            const totalExisting = existingMerchantKeys.size + existingCommentKeys.size;
+            const estimatedTotal = Math.max(totalExisting + 100, totalExisting);
+            const totalSteps = categories.length + tags.length + estimatedTotal;
 
-            setTotalContexts(totalDistinctContexts);
-            setEmbeddedCount(existingContexts.size);
+            setTotalContexts(estimatedTotal);
+            setEmbeddedCount(totalExisting);
             await microPause();
 
             let completedSteps = 0;
@@ -216,26 +118,28 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             }
             /* eslint-enable no-await-in-loop */
 
-            setPhaseLabel(t`Generating embeddings...`);
+            setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();
-            let lastRefreshedPercentage = 0;
-            const progressRefreshInterval = 5;
-            await processEmbeddingBatches(llm, existingContexts, {
+            await processMerchantBatches(llm, existingMerchantKeys, {
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
-                    setEmbeddedCount(count);
-                    const percentage = Math.round((count / totalDistinctContexts) * 100);
-                    if (percentage >= lastRefreshedPercentage + progressRefreshInterval) {
-                        lastRefreshedPercentage = percentage;
-                        refreshProgress();
-                    }
+                    setEmbeddedCount(count + existingCommentKeys.size);
+                }
+            });
+
+            setPhaseLabel(t`Generating comment embeddings...`);
+            await microPause();
+            await processCommentBatches(llm, existingCommentKeys, {
+                onStep: updateProgress,
+                onEmbeddingStored: (count: number) => {
+                    setEmbeddedCount(existingMerchantKeys.size + count);
                 }
             });
 
             setIsEmbedding(false);
             setProgress(100);
             setPhaseLabel(t`Done`);
-            setTotalContexts(existingContexts.size);
+            setTotalContexts(existingMerchantKeys.size + existingCommentKeys.size);
             refreshProgress();
         } catch (error: unknown) {
             Toast.show({

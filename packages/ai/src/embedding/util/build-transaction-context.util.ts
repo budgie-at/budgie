@@ -2,24 +2,27 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { EMBEDDING_CONTEXT_MAX_LENGTH } from '../../@generic/constant/embedding.constant';
 
-export const buildTransactionContext = (title: string, mccDescription: string | null, comment: string): string => {
-    const parts: string[] = [];
-    const hasTitle = isNotEmptyString(title);
+import { buildContextParts } from './build-context-parts.util';
 
-    if (hasTitle) {
-        parts.push(`Transaction: ${title}`);
-    }
+interface BuildTransactionContextParamsInterface {
+    readonly title: string;
+    readonly mccDescription: string | null;
+    readonly comment: string;
+    readonly categoryTitle?: string | null;
+    readonly tagTitles?: string | null;
+}
 
-    if (isNotEmptyString(mccDescription)) {
-        parts.push(`Type: ${mccDescription}`);
-    }
+export const buildTransactionContext = (params: BuildTransactionContextParamsInterface): string => {
+    const hasTitle = isNotEmptyString(params.title);
+    const commentLabel = hasTitle ? 'Note' : 'Transaction';
 
-    if (isNotEmptyString(comment)) {
-        const commentLabel = hasTitle ? 'Note' : 'Transaction';
-        parts.push(`${commentLabel}: ${comment}`);
-    }
-
-    const context = parts.join(' | ');
+    const context = buildContextParts([
+        { label: 'Transaction', value: params.title },
+        { label: 'Type', value: params.mccDescription },
+        { label: commentLabel, value: params.comment },
+        { label: 'Category', value: params.categoryTitle },
+        { label: 'Tags', value: params.tagTitles }
+    ]);
 
     return context.length > EMBEDDING_CONTEXT_MAX_LENGTH ? context.slice(0, EMBEDDING_CONTEXT_MAX_LENGTH) : context;
 };
