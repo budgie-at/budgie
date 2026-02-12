@@ -24,7 +24,6 @@ interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
 
