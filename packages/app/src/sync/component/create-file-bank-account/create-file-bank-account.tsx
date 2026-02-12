@@ -1,51 +1,60 @@
 import { useLingui } from '@lingui/react/macro';
+import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
-import { monobankSyncService } from '../../service/monobank-sync.service';
 import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
-import { TokenInputStep } from '../token-input-step/token-input-step';
+import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
-type SetupStep = 'token' | 'accounts';
+import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 
-export const CreateMonobankAccount = () => {
+type SetupStep = 'file' | 'accounts';
+
+interface CreateFileBankAccountProps {
+    readonly config: CreateFileBankAccountConfigInterface;
+}
+
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
 
-    const [step, setStep] = useState<SetupStep>('token');
-    const [token, setToken] = useState('');
+    const [step, setStep] = useState<SetupStep>('file');
     const [isLoading, setIsLoading] = useState(false);
     const [accountPreviews, setAccountPreviews] = useState<BankAccountPreviewInterface[]>([]);
     const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
+    const [fileUri, setFileUri] = useState<string | null>(null);
 
     const handleGoBack = () => void goBackOrReplace('/');
 
-    const handleFetchAccounts = async () => {
-        const trimmedToken = token.trim();
-
-        if (!isNotEmptyString(trimmedToken)) {
-            Toast.show({ type: 'error', text1: t`Token required`, text2: t`Please enter your Monobank API token` });
-
-            return;
-        }
-
+    const handleSelectFile = async () => {
         setIsLoading(true);
         try {
-            const previews = await monobankSyncService.fetchAccountsPreview(trimmedToken);
+            const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
+            const { uri } = result.assets?.at(0) ?? {};
+
+            if (result.canceled || !isNotEmptyString(uri)) {
+                setIsLoading(false);
+
+                return;
+            }
+
+            const previews = await config.importPreview(uri);
+            setFileUri(uri);
             setAccountPreviews(previews);
-            setSelectedAccounts(new Set(previews.filter(acc => acc.hasBankSync).map(acc => acc.externalId)));
+            setSelectedAccounts(new Set(previews.filter(preview => preview.hasBankSync).map(preview => preview.externalId)));
             setStep('accounts');
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Failed to fetch accounts`, text2: String(error) });
+            Toast.show({ type: 'error', text1: t`Invalid file`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }
@@ -56,35 +65,31 @@ export const CreateMonobankAccount = () => {
     };
 
     const handleSetupSync = async () => {
+        if (!isDefined(fileUri)) {
+            return;
+        }
+
         setIsLoading(true);
         try {
-            await monobankSyncService.setupAccountSyncBatch(token.trim(), [...selectedAccounts]);
+            await config.executeImportForSelectedAccounts(fileUri, [...selectedAccounts]);
             router.replace('/');
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Failed to setup sync`, text2: String(error) });
+            Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <FullPage
-            header={
-                <PageHeader
-                    onGoBack={handleGoBack}
-                    title={t`Connect Monobank`}
-                    description={t`Sync your Monobank accounts and transactions`}
-                />
-            }
-        >
+        <FullPage header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}>
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    {step === 'token' && (
-                        <TokenInputStep
-                            token={token}
+                    {step === 'file' && (
+                        <FileUploadStep
                             isLoading={isLoading}
-                            onTokenChange={setToken}
-                            onFetchAccounts={handleFetchAccounts}
+                            onSelectFile={handleSelectFile}
+                            instructionText={config.instructionText}
+                            selectFileText={config.selectFileText}
                         />
                     )}
 
