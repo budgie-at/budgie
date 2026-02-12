@@ -3,7 +3,8 @@ import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { Transaction } from '../../@generic/type/transaction.type';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -11,6 +12,7 @@ import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.u
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
+import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 
@@ -70,44 +72,48 @@ export abstract class BaseFileBankSyncService {
         return new Set(accounts.map(account => account.externalId).filter(isDefined));
     }
 
-    private async createBankSyncRecord(accountId: number): Promise<void> {
-        const existingSync = await bankSyncRepository.getByAccountId(accountId);
+    private async createBankSyncRecord(accountId: number, tx: Transaction): Promise<void> {
+        const existingSync = await bankSyncRepository.getByAccountId(accountId, tx);
         if (isDefined(existingSync)) {
             return;
         }
 
-        await bankSyncRepository.create({
-            token: '',
-            accountId,
-            provider: this.provider,
-            enabled: true,
-            mode: BankSyncModeEnum.FORWARD
-        });
+        await bankSyncRepository.create(
+            {
+                token: '',
+                accountId,
+                provider: this.provider,
+                enabled: true,
+                mode: BankSyncModeEnum.FORWARD
+            },
+            tx
+        );
     }
 
     private async importAccountTransactions(
         client: FileBasedBankSyncClientInterface,
         bankAccount: BankAccountInterface,
-        mccCategoryIdMap: Map<string, number | null>,
-        existingExternalIds: Set<string>
+        context: ImportContextInterface
     ): Promise<void> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider);
-        await this.createBankSyncRecord(account.id);
+        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        await this.createBankSyncRecord(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
-        const newTransactions = transactions.filter(transaction => !existingExternalIds.has(transaction.id));
+        const newTransactions = transactions.filter(transaction => !context.existingExternalIds.has(transaction.id));
 
         if (!isNotEmptyArray(newTransactions)) {
             return;
         }
 
         const transactionInputs = newTransactions.map(transaction => {
-            const mccCategoryId = isNotEmptyString(transaction.category) ? (mccCategoryIdMap.get(transaction.category) ?? null) : null;
+            const mccCategoryId = isNotEmptyString(transaction.category)
+                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
+                : null;
 
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        await transactionService.bulkCreate(transactionInputs);
+        await transactionService.bulkCreate(transactionInputs, context.tx);
     }
 
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
@@ -116,9 +122,13 @@ export abstract class BaseFileBankSyncService {
             transactionService.findByExternalSource(this.provider)
         ]);
 
-        for (const bankAccount of bankAccounts) {
-            await this.importAccountTransactions(client, bankAccount, mccCategoryIdMap, existingExternalIds);
-        }
+        await db.transaction(async tx => {
+            const context: ImportContextInterface = { mccCategoryIdMap, existingExternalIds, tx };
+
+            for (const bankAccount of bankAccounts) {
+                await this.importAccountTransactions(client, bankAccount, context);
+            }
+        });
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;
