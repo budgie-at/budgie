@@ -34,7 +34,13 @@ export default function CreateTransferTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternalTransfer(data);
-            generateForTransaction(data.title, data.comment, data.entries[0]?.mccCategoryId ?? null);
+            generateForTransaction({
+                title: data.title,
+                comment: data.comment,
+                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
+                categoryId: data.entries[0]?.categoryId ?? null,
+                tagIds: data.tagIds
+            });
 
             return result;
         },

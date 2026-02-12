@@ -22,6 +22,9 @@ export { EmbeddingSuggestionService } from './embedding/service/embedding-sugges
 
 // embedding - utils
 export { buildTransactionContext } from './embedding/util/build-transaction-context.util';
+export { buildMerchantContext } from './embedding/util/build-merchant-context.util';
+export { buildCommentContext } from './embedding/util/build-comment-context.util';
+export { buildQueryContext } from './embedding/util/build-query-context.util';
 // suggestion - interfaces
 export type { SuggestionInternalStatus } from './suggestion/interface/suggestion-internal-status.type';
 export type { SuggestionStatus } from './suggestion/interface/suggestion-status.type';
