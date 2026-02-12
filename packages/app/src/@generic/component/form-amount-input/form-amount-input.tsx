@@ -69,25 +69,27 @@ export const FormAmountInput = (props: Props) => {
     };
 
     return (
-        <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5" onLayout={onContainerLayout}>
+        <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5">
             {allowNegative ? (
-                <View className="mr-xl">
+                <View className="mr-xl flex-shrink-0">
                     <SignTogglePill isNegative={isNegative} variant={effectiveVariant} onToggle={handleToggleSign} />
                 </View>
             ) : null}
 
-            <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
-                {instrumentSymbol}{' '}
-            </Text>
+            <View className="flex-row flex-1 items-center overflow-hidden" onLayout={onContainerLayout}>
+                <Text className={textVariants({ variant: effectiveVariant })} style={fontSizeStyle}>
+                    {instrumentSymbol}{' '}
+                </Text>
 
-            <AmountInput
-                value={absoluteValue}
-                onChangeValue={handleAmountChange}
-                inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
-                placeholder={formatDigits(0)}
-                autoFocus={autoFocus}
-                style={fontSizeStyle}
-            />
+                <AmountInput
+                    value={absoluteValue}
+                    onChangeValue={handleAmountChange}
+                    inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
+                    placeholder={formatDigits(0)}
+                    autoFocus={autoFocus}
+                    style={fontSizeStyle}
+                />
+            </View>
         </View>
     );
 };
