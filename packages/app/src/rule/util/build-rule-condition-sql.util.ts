@@ -1,4 +1,5 @@
 import {
+    MccCategoryEntityTable,
     RuleConditionCreateInputInterface,
     RuleConditionFieldEnum,
     RuleConditionOperatorEnum,
@@ -26,7 +27,7 @@ const getColumnForField = (field: RuleConditionFieldEnum): Column | SQL | null =
         case RuleConditionFieldEnum.ACCOUNT_ID:
             return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
         case RuleConditionFieldEnum.MCC_CODE:
-            return TransactionEntryEntityTable.mccCategoryId;
+            return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
         case RuleConditionFieldEnum.AMOUNT:
             return null;
         default:
