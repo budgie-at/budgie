@@ -4,6 +4,8 @@ import { FlatList, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { AccountPickerBottomSheetSelectors } from '../../../@e2e/selectors/account-picker-bottom-sheet.selector';
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -24,8 +26,12 @@ export const AccountSelectContent = (props: Props) => {
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
-    const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
+    const getCardTestID = (index: number): string =>
+        index === 0 ? TransactionFormSelectors.Account : AccountPickerBottomSheetSelectors.Card(index);
+
+    const renderItem = ({ item, index }: { item: AccountWithInstrumentEntityInterface; index: number }) => (
         <AccountSelectorCard
+            testID={getCardTestID(index)}
             isSelected={item.id === initialAccountId}
             instrument={item.instrument}
             onSelect={onSelect}

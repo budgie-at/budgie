@@ -26,9 +26,19 @@ export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string;
+    readonly testID?: string;
+    readonly categoryBadgeTestID?: string;
+    readonly tagTestID?: string;
 }
 
-export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
+export const TransactionCard = ({
+    transaction,
+    formattedDate,
+    categoryLabel,
+    testID,
+    categoryBadgeTestID,
+    tagTestID
+}: TransactionCardProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
@@ -55,7 +65,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     return (
         <Link href={getHref()} asChild>
-            <Card className="p-xl gap-y-8">
+            <Card testID={testID} className="p-xl gap-y-8">
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 
@@ -73,7 +83,11 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                         ) : null}
 
                         {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
-                            <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
+                            <TransactionCategoryBadge
+                                testID={categoryBadgeTestID}
+                                transaction={transaction}
+                                categoryLabel={categoryLabel}
+                            />
                         )}
                     </View>
 
@@ -84,7 +98,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                     <TransactionCardAccountInfo transaction={transaction} />
 
                     <View className="items-end gap-y-xs">
-                        <TransactionCardTag transaction={transaction} />
+                        <TransactionCardTag testID={tagTestID} transaction={transaction} />
                         <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
                     </View>
                 </View>
