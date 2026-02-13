@@ -229,26 +229,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    async countByRuleConditions(where: SQL): Promise<number> {
-        const result = await this.db
-            .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})` })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .where(and(isNull(TransactionEntityTable.deletedAt), where));
-
-        return result[0]?.count ?? 0;
-    }
-
-    async findIdsByRuleConditions(where: SQL): Promise<number[]> {
-        const result = await this.db
-            .selectDistinct({ id: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .where(and(isNull(TransactionEntityTable.deletedAt), where));
-
-        return result.map(row => row.id);
-    }
-
     protected override buildAccountCondition(accountIds: number[] | null) {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(

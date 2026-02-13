@@ -225,6 +225,7 @@ export type { MonthlyPatternRowInterface } from './transaction/interface/monthly
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
+export { TransactionRuleRepository } from './transaction/repository/transaction-rule.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
