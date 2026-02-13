@@ -339,7 +339,7 @@ class RuleEngineService {
     }
 
     private async applyRuleActions(transactionId: number, actions: RuleActionEntityInterface[], transaction: Transaction): Promise<void> {
-        const sortedActions = actions.toSorted((actionA, actionB) => {
+        const sortedActions = [...actions].sort((actionA, actionB) => {
             if (actionA.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
                 return 1;
             }
