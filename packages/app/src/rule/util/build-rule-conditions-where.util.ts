@@ -1,5 +1,4 @@
 import { RuleConditionMatchTypeEnum } from '@budgie/contracts';
-
 import { SQL, and, or } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
