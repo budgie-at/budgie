@@ -1,14 +1,13 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
-import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
-import { Button } from '../../../@generic/component/button/button';
-import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../interface/rule-prefill-data.interface';
@@ -19,25 +18,22 @@ import { RuleFormApplyToggle } from '../rule-form-apply-toggle/rule-form-apply-t
 interface Props {
     readonly prefillData?: RulePrefillDataInterface;
     readonly onSuccess: (result: RuleFormResultType) => void;
+    readonly onCancel: () => void;
 }
 
-export const RuleFormCreate = ({ prefillData, onSuccess }: Props) => {
+export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
-    const { backgroundColor } = useFormsheetListStyles();
     const { form, handleSubmit } = useRuleForm({ prefillData, onSuccess });
-
-    const containerStyle = { flex: 1, backgroundColor };
 
     return (
         <FormProvider {...form}>
             {/* jscpd:ignore-start */}
-            <View testID={RuleFormSelectors.Page} style={containerStyle}>
+            <ModalPage header={<PageHeader testID={RuleFormSelectors.Page} title={t`Create Rule`} onGoBack={onCancel} />}>
                 <KeyboardAwareScrollView
                     contentContainerClassName="pb-5xl"
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    <BottomSheetHeader size="md" title={t`Create Rule`} />
                     <View className="px-5xl gap-y-7xl">
                         <RuleConditionsSection />
                         <RuleActionsSection />
@@ -46,18 +42,15 @@ export const RuleFormCreate = ({ prefillData, onSuccess }: Props) => {
                         <RuleFormApplyToggle />
                     </View>
                     {/* jscpd:ignore-end */}
-                    <View className="px-5xl pt-5xl">
-                        <Button
-                            testID={RuleFormSelectors.SubmitButton}
-                            leftIcon={UserIconNameEnum.CircleCheck}
-                            onPress={handleSubmit}
-                            variant="ghost"
-                            content={t`Create Rule`}
-                        />
-                    </View>
                 </KeyboardAwareScrollView>
-                <FormSheetSpacer />
-            </View>
+
+                <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                    <View className="flex-row gap-x-md">
+                        <ModalFormCancelButton onPress={onCancel} />
+                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} />
+                    </View>
+                </View>
+            </ModalPage>
         </FormProvider>
     );
 };

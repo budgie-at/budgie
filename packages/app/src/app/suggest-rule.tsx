@@ -1,4 +1,4 @@
-import { SuggestRuleBottomSheet } from '../rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet';
+import { SuggestRuleModalContent } from '../rule/components/suggest-rule-modal-content/suggest-rule-modal-content';
 import { useSuggestRuleModal } from '../rule/context/suggest-rule-modal.context';
 import { SuggestRuleDataInterface } from '../rule/interface/suggest-rule-data.interface';
 
@@ -22,7 +22,7 @@ export default function SuggestRuleModal() {
     };
 
     return (
-        <SuggestRuleBottomSheet
+        <SuggestRuleModalContent
             suggestRuleData={currentParams?.suggestRuleData ?? DEFAULT_SUGGEST_RULE_DATA}
             onCreateRule={handleCreateRule}
             onDismiss={handleDismiss}

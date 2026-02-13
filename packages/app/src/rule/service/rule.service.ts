@@ -4,8 +4,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
 
-import { ruleEngineService } from './rule-engine.service';
-
 class RuleService {
     async create(input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
         const rule = await db.transaction(async tx => {
@@ -34,15 +32,11 @@ class RuleService {
             return createdRule;
         });
 
-        if (input.applyToExisting) {
-            setTimeout(() => void ruleEngineService.applyRuleToMatchingTransactions(rule.id), 0);
-        }
-
         return rule;
     }
 
     async updateById(id: number, input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
-        const rule = await db.transaction(async tx => {
+        return db.transaction(async tx => {
             const updatedRule = await ruleRepository.updateById(
                 id,
                 {
@@ -74,12 +68,6 @@ class RuleService {
 
             return updatedRule;
         });
-
-        if (input.applyToExisting) {
-            setTimeout(() => void ruleEngineService.applyRuleToMatchingTransactions(id), 0);
-        }
-
-        return rule;
     }
 }
 
