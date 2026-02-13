@@ -11,9 +11,13 @@ export default function RuleFormModal() {
         resolveRuleForm(result);
     };
 
+    const handleCancel = () => {
+        resolveRuleForm(null);
+    };
+
     if (isDefined(currentParams?.ruleId)) {
-        return <RuleFormEdit ruleId={currentParams.ruleId} onSuccess={handleSuccess} />;
+        return <RuleFormEdit ruleId={currentParams.ruleId} onSuccess={handleSuccess} onCancel={handleCancel} />;
     }
 
-    return <RuleFormCreate prefillData={currentParams?.prefillData} onSuccess={handleSuccess} />;
+    return <RuleFormCreate prefillData={currentParams?.prefillData} onSuccess={handleSuccess} onCancel={handleCancel} />;
 }

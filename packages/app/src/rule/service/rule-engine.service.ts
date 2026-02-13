@@ -1,6 +1,7 @@
 import {
     RuleActionEntityInterface,
     RuleActionTypeEnum,
+    RuleConditionCreateInputInterface,
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionAssociationEnum,
@@ -22,12 +23,17 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
+import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
+
+interface CountConditionsParams {
+    readonly conditions: RuleConditionCreateInputInterface[];
+    readonly conditionMatchType: RuleConditionMatchTypeEnum;
+}
 
 class RuleEngineService {
     async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
@@ -41,45 +47,114 @@ class RuleEngineService {
         );
     }
 
-    async applyRuleToMatchingTransactions(ruleId: number): Promise<void> {
+    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
+    async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
+        const { conditions, conditionMatchType } = params;
+
+        if (!isNotEmptyArray(conditions)) {
+            return 0;
+        }
+
+        let count = 0;
+        let offset = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+            // eslint-disable-next-line no-await-in-loop
+            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
+
+            if (!isNotEmptyArray(transactions)) {
+                break;
+            }
+
+            const matchCount = transactions.filter(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                return this.evaluateConditions(conditions, conditionMatchType, input);
+            }).length;
+
+            count += matchCount;
+            hasMore = transactions.length >= BATCH_SIZE;
+            offset += BATCH_SIZE;
+        }
+
+        return count;
+    }
+
+    // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking
+    async applyRuleToMatchingTransactions(ruleId: number, onProgress?: (processed: number, total: number) => void): Promise<void> {
         const rule = await ruleRepository.findByIdWithRelations(ruleId);
 
         if (!isDefined(rule) || !isNotEmptyArray(rule.conditions)) {
             return;
         }
 
-        await this.processTransactionBatch(rule, 0);
-    }
+        const matchingIds = await this.collectMatchingTransactionIds(rule);
 
-    private async processTransactionBatch(rule: RuleWithRelationsEntityInterface, offset: number): Promise<void> {
-        await new Promise<void>(resolve => {
-            setTimeout(resolve, BATCH_DELAY_MS);
-        });
-
-        const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-        if (!isNotEmptyArray(transactions)) {
+        if (!isNotEmptyArray(matchingIds)) {
             return;
         }
 
-        await this.applyRuleToTransactionBatch(rule, transactions);
+        const total = matchingIds.length;
+        let processed = 0;
 
-        if (transactions.length >= BATCH_SIZE) {
-            await this.processTransactionBatch(rule, offset + BATCH_SIZE);
+        for (let batchStart = 0; batchStart < total; batchStart += BATCH_SIZE) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
+
+            const batchIds = matchingIds.slice(batchStart, batchStart + BATCH_SIZE);
+            // eslint-disable-next-line no-await-in-loop
+            await Promise.all(batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions)));
+
+            processed += batchIds.length;
+            onProgress?.(processed, total);
         }
     }
 
-    private async applyRuleToTransactionBatch(
-        rule: RuleWithRelationsEntityInterface,
-        transactions: TransactionWithEntriesMccCategoryEntityInterface[]
-    ): Promise<void> {
-        const matchingTransactions = transactions.filter(transaction => {
-            const input = this.convertTransactionForRuleEvaluation(transaction);
+    private async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
+        const matchingIds: number[] = [];
+        let offset = 0;
+        let hasMore = true;
 
-            return this.evaluateRule(rule, input);
-        });
+        while (hasMore) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
 
-        await Promise.all(matchingTransactions.map(transaction => this.applyRuleActionsToTransaction(transaction.id, rule.actions)));
+            // eslint-disable-next-line no-await-in-loop
+            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
+
+            if (!isNotEmptyArray(transactions)) {
+                break;
+            }
+
+            transactions.forEach(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+                if (this.evaluateRule(rule, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            });
+
+            hasMore = transactions.length >= BATCH_SIZE;
+            offset += BATCH_SIZE;
+        }
+
+        return matchingIds;
+    }
+
+    private evaluateConditions(
+        conditions: RuleConditionCreateInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum,
+        input: TransactionCreateInputInterface
+    ): boolean {
+        const evaluator = conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
+
+        return conditions[evaluator](condition =>
+            evaluateRuleCondition({ ...condition, id: 0, ruleId: 0, createdAt: new Date(), updatedAt: new Date(), deletedAt: null }, input)
+        );
     }
 
     private async applyRulesToTransaction(

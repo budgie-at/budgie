@@ -2,10 +2,8 @@
 export const SuggestRuleSelectors = {
     Pill: 'SuggestRule.Pill',
     AddRuleButton: 'SuggestRule.AddRuleButton',
-    BottomSheet: 'SuggestRule.BottomSheet',
+    Modal: 'SuggestRule.Modal',
     ConditionChip: (field: string) => `SuggestRule.ConditionChip.${field}`,
     ApplyToExistingToggle: 'SuggestRule.ApplyToExistingToggle',
-    CreateRuleButton: 'SuggestRule.CreateRuleButton',
-    ConfigureRuleButton: 'SuggestRule.ConfigureRuleButton',
-    NoThanksButton: 'SuggestRule.NoThanksButton'
+    CreateRuleButton: 'SuggestRule.CreateRuleButton'
 } as const;
