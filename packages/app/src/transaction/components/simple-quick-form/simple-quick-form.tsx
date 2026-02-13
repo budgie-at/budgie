@@ -244,7 +244,7 @@ export const SimpleQuickForm = (props: Props) => {
                 </View>
             </View>
 
-            <View className="min-h-[40px] justify-center">{suggestRulePill}</View>
+            {suggestRulePill}
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}

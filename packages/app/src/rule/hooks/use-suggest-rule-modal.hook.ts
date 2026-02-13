@@ -34,12 +34,13 @@ export const useSuggestRuleModalHook = ({ suggestRuleData, onCreateRule, onDismi
     const [isApplying, setIsApplying] = useState(false);
     const [progress, setProgress] = useState<ProgressState | null>(null);
 
-    const availableFields: SuggestRuleConditionField[] = typedObjectKeys(SUGGEST_RULE_CONDITION_FIELD_LABELS)
-        .filter((field): field is SuggestRuleConditionField => {
+    const availableFields: SuggestRuleConditionField[] = typedObjectKeys(SUGGEST_RULE_CONDITION_FIELD_LABELS).filter(
+        (field): field is SuggestRuleConditionField => {
             const value = getSuggestRuleFieldValue(field, suggestRuleData);
 
             return isNotEmptyString(value);
-        });
+        }
+    );
 
     const toggleField = (field: SuggestRuleConditionField) => {
         setSelectedFields(previous => toggleSetItem(previous, field));
