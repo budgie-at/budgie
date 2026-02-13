@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CreateTransactionTrigger } from '../../../transaction/components/create-transaction-trigger/create-transaction-trigger';
+import { ActionButton } from '../../../@generic/component/action-button/action-button';
 
 const FAB_ANIMATION_DELAY = 75;
 const FAB_INITIAL_SCALE = 0.85;
@@ -28,7 +28,7 @@ export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
     return (
         <View className="absolute right-0 bottom-0 px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
             <Animated.View style={animatedStyle}>
-                <CreateTransactionTrigger isOpen={isMenuOpen} onPress={onPress} />
+                <ActionButton isOpen={isMenuOpen} onPress={onPress} />
             </Animated.View>
         </View>
     );

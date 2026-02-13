@@ -42,6 +42,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         [TransactionAssociationEnum.TO_ACCOUNT]: true
     } as const;
 
+    async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
+    }
+
     async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
@@ -83,7 +87,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     getAllWithOffset(limit: number, offset: number) {
         return this.db.query.TransactionEntityTable.findMany({
-            with: { [TransactionAssociationEnum.ENTRIES]: true },
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                    }
+                }
+            },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             offset,

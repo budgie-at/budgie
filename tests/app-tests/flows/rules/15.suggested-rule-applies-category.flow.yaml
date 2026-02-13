@@ -1,0 +1,66 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '15'
+  CATEGORY_NAME: Groceries
+  CSV_DISPLAY_NAME: test15-suggested-rule
+---
+# Test 15: Suggested rule "Configure Rule" flow prefills rule form correctly
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+- runFlow:
+    file: ../shared/import-test-transactions.flow.yaml
+    env:
+      CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1'
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.AddRuleButton'
+
+- tapOn:
+    id: 'SuggestRule.AddRuleButton'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.BottomSheet'
+
+- tapOn:
+    id: 'SuggestRule.ConditionChip.COMMENT'
+
+- tapOn:
+    id: 'SuggestRule.ConfigureRuleButton'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- assertVisible: 'Comment'
+
+- assertVisible: 'Test15 Unique Purchase'
+
+- assertVisible: ${CATEGORY_NAME}

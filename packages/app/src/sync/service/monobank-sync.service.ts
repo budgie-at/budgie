@@ -9,6 +9,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
+import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -226,19 +227,27 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
+        await this.createTransactionsWithRules(result, account.id);
+        await microPause();
+
+        return result;
+    }
+
+    private async createTransactionsWithRules(result: BankSyncBatchResultInterface, accountId: number): Promise<void> {
         const existingIds = await transactionService.findByExternalSource(this.provider);
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
 
         if (isNotEmptyArray(newTxs)) {
-            await transactionService.bulkCreate(
-                newTxs.map(tx =>
-                    mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
-                )
+            const inputs = newTxs.map(tx =>
+                mapBankTransactionToCreateInput(tx, accountId, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
+            );
+            const createdTransactions = await transactionService.bulkCreate(inputs);
+
+            await ruleEngineService.applyRulesToTransactions(
+                createdTransactions.map(({ id }) => id),
+                inputs
             );
         }
-        await microPause();
-
-        return result;
     }
 
     private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {

@@ -4,7 +4,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { useRef } from 'react';
+import { ReactNode, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -38,6 +38,7 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
+    readonly suggestRulePill?: ReactNode;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -59,6 +60,7 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
+        suggestRulePill,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -233,6 +235,8 @@ export const SimpleQuickForm = (props: Props) => {
                     />
                 </View>
             </View>
+
+            {suggestRulePill}
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}

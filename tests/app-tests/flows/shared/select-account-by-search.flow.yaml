@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible: ${ACCOUNT_NAME}
+- tapOn:
+    text: ${ACCOUNT_NAME}
+    index: 1

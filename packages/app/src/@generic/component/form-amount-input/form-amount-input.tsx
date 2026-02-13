@@ -15,6 +15,7 @@ const BASE_FONT_SIZE = 72;
 
 interface Props {
     readonly value: number;
+    readonly testID?: string;
     readonly textClassName?: string;
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
@@ -31,7 +32,7 @@ const textVariants = cva('', {
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
-    const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus } = props;
+    const { value, testID, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus } = props;
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -83,6 +84,7 @@ export const FormAmountInput = (props: Props) => {
 
                 <AmountInput
                     value={absoluteValue}
+                    testID={testID}
                     onChangeValue={handleAmountChange}
                     inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
                     placeholder={formatDigits(0)}

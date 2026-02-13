@@ -21,6 +21,7 @@ interface Props {
     readonly totalItems: number;
     readonly isOpen: boolean;
     readonly onPress: () => void;
+    readonly testID?: string;
 }
 
 const ICON_SIZE = 20;
@@ -37,7 +38,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, onPress }: Props) => {
+export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, onPress, testID }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const translateY = useSharedValue(0);
@@ -71,9 +72,12 @@ export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, on
         onPress();
     };
 
+    // eslint-disable-next-line lingui/no-unlocalized-strings
+    const actionTestId = testID ?? `ActionItem.${index}`;
+
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
-            <Pressable className="flex-row-reverse items-center" onPress={handlePress}>
+            <Pressable testID={actionTestId} className="flex-row-reverse items-center p-sm" hitSlop={10} onPress={handlePress}>
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>

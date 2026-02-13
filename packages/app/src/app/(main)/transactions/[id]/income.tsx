@@ -13,6 +13,9 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
+import { SuggestRulePill } from '../../../../rule/components/suggest-rule-pill/suggest-rule-pill';
+import { useSuggestRuleModal } from '../../../../rule/context/suggest-rule-modal.context';
+import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -29,10 +32,13 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const { generateForTransaction } = useEmbeddingGenerator();
+    const { openSuggestRule } = useSuggestRuleModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -51,6 +57,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     });
 
     const toAccountId = form.watch('toAccountId');
+    const { shouldSuggestRule, suggestRuleData } = useSuggestRuleDetection({ transaction, control: form.control });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
@@ -68,6 +75,9 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
             sourceInstrumentId,
             sourceCode: sourceAccount.instrument.code
         });
+    const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
+
+    const suggestRulePill = shouldSuggestRule ? <SuggestRulePill onPress={handleOpenSuggestRule} /> : null;
 
     return (
         <FormProvider {...form}>
@@ -90,6 +100,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
+                    suggestRulePill={suggestRulePill}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

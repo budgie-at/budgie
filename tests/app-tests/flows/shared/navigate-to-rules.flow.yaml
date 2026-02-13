@@ -1,0 +1,27 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+
+- waitForAnimationToEnd
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'

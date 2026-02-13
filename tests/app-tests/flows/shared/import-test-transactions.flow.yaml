@@ -1,0 +1,32 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: 'Settings.ImportCsvCard'
+    direction: DOWN
+- tapOn:
+    id: 'Settings.ImportCsvCard'
+
+- tapOn:
+    id: ${CSV_DISPLAY_NAME}, csv
+
+- extendedWaitUntil:
+    visible:
+      id: 'ImportScreen.Page'
+
+- tapOn:
+    id: 'ImportScreen.PresetChip.Budgie'
+
+- tapOn:
+    id: 'ImportScreen.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Transactions'

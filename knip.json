@@ -15,6 +15,7 @@
         "**/*.web.ts",
         "**/*.web.tsx",
         "**/selectors.ts",
+        "**/selectors/*.selector.ts",
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/src/category/enum/system-category-id.enum.ts",
