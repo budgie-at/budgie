@@ -24,6 +24,7 @@ interface Props {
 export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
     const { form, handleSubmit } = useRuleForm({ prefillData, onSuccess });
+    const { isSubmitting } = form.formState;
 
     return (
         <FormProvider {...form}>
@@ -47,7 +48,7 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
                 <View className="px-3xl pb-3xl gap-y-md pt-xl">
                     <View className="flex-row gap-x-md">
                         <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} />
+                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} isLoading={isSubmitting} />
                     </View>
                 </View>
             </ModalPage>
