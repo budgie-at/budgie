@@ -24,6 +24,7 @@ interface Props {
     readonly secondaryAmount?: string | null;
     readonly onLabelPress?: () => void;
     readonly onSecondaryAmountPress?: () => void;
+    readonly testID?: string;
 }
 
 const textVariants = cva('text-center font-semibold', {
@@ -51,7 +52,8 @@ export const TransactionAmountDisplay = ({
     isLabelFlipped = false,
     onLabelPress,
     secondaryAmount,
-    onSecondaryAmountPress
+    onSecondaryAmountPress,
+    testID
 }: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
@@ -79,7 +81,7 @@ export const TransactionAmountDisplay = ({
     const fullDisplay = `${currencySymbol} ${amount}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
+        <Animated.View testID={testID} entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
             <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                 <Animated.View style={shakeStyle} className="w-full">
                     <Animated.View style={scaleStyle}>

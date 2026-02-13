@@ -2,6 +2,7 @@ import { LegendList } from '@legendapp/list';
 import { ReactElement } from 'react';
 import { Text, View } from 'react-native';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
@@ -32,6 +33,9 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             transaction={item.data.transaction}
             formattedDate={item.data.formattedDate}
             categoryLabel={item.data.categoryLabel}
+            testID={item.data.testID}
+            categoryBadgeTestID={item.data.categoryBadgeTestID}
+            tagTestID={item.data.tagTestID}
         />
     );
 
@@ -49,17 +53,26 @@ export const TransactionSectionsList = ({
 }: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
 
+    let transactionIndex = 0;
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => ({
-            type: 'transaction' as const,
-            id: `transaction-${transaction.id}`,
-            data: {
-                transaction,
-                formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
-            }
-        }))
+        ...transactions.map(transaction => {
+            const index = transactionIndex;
+            transactionIndex += 1;
+
+            return {
+                type: 'transaction' as const,
+                id: `transaction-${transaction.id}`,
+                data: {
+                    transaction,
+                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel),
+                    testID: TransactionCardSelectors.Card(index),
+                    categoryBadgeTestID: TransactionCardSelectors.CategoryBadge(index),
+                    tagTestID: TransactionCardSelectors.Tag(index)
+                }
+            };
+        })
     ]);
 
     const isEmpty = flatData.length === 0;

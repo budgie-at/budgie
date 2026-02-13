@@ -2,8 +2,9 @@ import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { SUGGEST_RULE_CONDITION_FIELD_LABELS } from '../../constant/suggest-rule-condition-field-labels.constant';
 import { isDefined } from '@rnw-community/shared';
+
+import { SUGGEST_RULE_CONDITION_FIELD_LABELS } from '../../constant/suggest-rule-condition-field-labels.constant';
 
 interface Props {
     readonly field: RuleConditionFieldEnum;
