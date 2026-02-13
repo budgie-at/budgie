@@ -32,9 +32,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
         toggleField,
         applyToExisting,
         setApplyToExisting,
-        isCreating,
         isBusy,
-        isApplying,
         progress,
         hasSelectedConditions,
         matchingCount,
@@ -52,9 +50,6 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
     const processed = progress?.processed ?? 0;
     const total = progress?.total ?? 0;
     const buttonText = applyToExisting ? t`Create & update` : t`Create Rule`;
-    const progressText = isDefined(progress) ? t`Updating ${processed}/${total}...` : buttonText;
-    const createButtonContent = isApplying ? progressText : buttonText;
-    const showCreateLoading = isCreating && !isApplying;
 
     return (
         <ModalPage header={<PageHeader title={t`Create Automation Rule`} {...(!isBusy && { onGoBack: handleDismiss })} />}>
@@ -114,16 +109,26 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
             </KeyboardAwareScrollView>
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isDefined(progress) ? (
+                    <View className="flex-row items-center justify-center gap-x-sm">
+                        <ActivityIndicator size="small" />
+                        <Text className="text-sm text-secondary-foreground">
+                            <Trans>
+                                Updating {processed}/{total}...
+                            </Trans>
+                        </Text>
+                    </View>
+                ) : null}
                 <View className="flex-row gap-x-md">
                     <Button className="flex-1" variant="ghost" onPress={handleDismiss} disabled={isBusy} content={t`Cancel`} />
                     <Button
                         testID={SuggestRuleSelectors.CreateRuleButton}
                         className="flex-1"
-                        content={createButtonContent}
+                        content={buttonText}
                         variant="cta"
                         onPress={handleCreate}
                         disabled={isCreateDisabled}
-                        isLoading={showCreateLoading}
+                        isLoading={isBusy}
                     />
                 </View>
             </View>
