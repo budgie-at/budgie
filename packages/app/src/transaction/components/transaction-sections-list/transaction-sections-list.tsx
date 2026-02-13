@@ -53,27 +53,29 @@ export const TransactionSectionsList = ({
 }: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
 
-    let transactionIndex = 0;
-    const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
-        { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => {
-            const index = transactionIndex;
-            transactionIndex += 1;
+    const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }, sectionIndex) => {
+        const transactionOffset = sections.slice(0, sectionIndex).reduce((sum, section) => sum + section.transactions.length, 0);
 
-            return {
-                type: 'transaction' as const,
-                id: `transaction-${transaction.id}`,
-                data: {
-                    transaction,
-                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel),
-                    testID: TransactionCardSelectors.Card(index),
-                    categoryBadgeTestID: TransactionCardSelectors.CategoryBadge(index),
-                    tagTestID: TransactionCardSelectors.Tag(index)
-                }
-            };
-        })
-    ]);
+        return [
+            { type: 'header' as const, title: date, id: `header-${date}` },
+            ...transactions.map((transaction, indexInSection) => {
+                const index = transactionOffset + indexInSection;
+
+                return {
+                    type: 'transaction' as const,
+                    id: `transaction-${transaction.id}`,
+                    data: {
+                        transaction,
+                        formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                        categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel),
+                        testID: TransactionCardSelectors.Card(index),
+                        categoryBadgeTestID: TransactionCardSelectors.CategoryBadge(index),
+                        tagTestID: TransactionCardSelectors.Tag(index)
+                    }
+                };
+            })
+        ];
+    });
 
     const isEmpty = flatData.length === 0;
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
