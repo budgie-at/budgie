@@ -21,14 +21,8 @@ interface Props<T extends string> {
     readonly testID?: string;
 }
 
-export const RuleConditionBottomSheetSelector = <T extends string>({
-    value,
-    onChange,
-    options,
-    sheetTitle,
-    defaultLabel,
-    testID
-}: Props<T>) => {
+export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<T>) => {
+    const { value, onChange, options, sheetTitle, defaultLabel, testID } = props;
     const { t } = useLingui();
     const { openRuleSelector } = useRuleSelectorModal();
 

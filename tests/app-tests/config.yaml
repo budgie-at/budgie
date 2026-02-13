@@ -8,12 +8,6 @@ platform:
 executionOrder:
   continueOnFailure: false
   flowsOrder:
-    # Setup flows
-#    - setup/00.enter-app.flow
-#    - setup/00.setup-account.flow
-#    - setup/00.setup-category.flow
-#    - setup/00.setup-tag.flow
-    # Rules CRUD tests
     - rules/01.rules-list-empty.flow
     - rules/02.rules-create-basic.flow
     - rules/03.rules-create-multiple-conditions.flow
@@ -22,7 +16,6 @@ executionOrder:
     - rules/06.rules-delete.flow
     - rules/07.rules-toggle-enabled.flow
     - rules/08.rules-all-field-types.flow
-    # Rule application tests
     - rules/09.rule-applies-category.flow
     - rules/10.rule-applies-tag.flow
     - rules/11.rule-applies-multiple-actions.flow

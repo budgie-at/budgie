@@ -1,7 +1,8 @@
 import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
+import { MessageDescriptor } from '@lingui/core';
 
-export const RULE_CONDITION_FIELD = {
+export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, MessageDescriptor> = {
     [RuleConditionFieldEnum.TITLE]: msg`Title`,
     [RuleConditionFieldEnum.COMMENT]: msg`Comment`,
     [RuleConditionFieldEnum.AMOUNT]: msg`Amount`,

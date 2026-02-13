@@ -7,6 +7,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { useGetAllMccCategoriesQuery } from '../../../mcc-category/query/use-get-all-mcc-categories.query';
 import { useRuleMccSelectorModal } from '../../context/rule-mcc-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
+import { formatMccDisplay } from '../../../mcc-category/utils/format-mcc-display.util';
 
 interface Props {
     readonly index: number;
@@ -28,7 +29,7 @@ export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
     };
 
     const selectedMcc = mccCategories.find(({ mcc }) => mcc === value);
-    const displayLabel = selectedMcc ? `${selectedMcc.mcc} - ${selectedMcc.shortDescription}` : t`Select MCC code`;
+    const displayLabel = selectedMcc ? formatMccDisplay(selectedMcc) : t`Select MCC code`;
 
     return (
         <HapticPressable

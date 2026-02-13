@@ -9,14 +9,11 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 import { getSuggestRuleFieldValue } from '../util/get-suggest-rule-field-value.util';
+import { toggleSetItem } from '../../sync/util/toggle-set-item.util';
+import { SUGGEST_RULE_CONDITION_FIELD_LABELS } from '../constant/suggest-rule-condition-field-labels.constant';
+import { typedObjectKeys } from '../../@generic/utils/typed-object-keys.util';
 
 type SuggestRuleConditionField = RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT | RuleConditionFieldEnum.MCC_CODE;
-
-const CONDITION_FIELDS: SuggestRuleConditionField[] = [
-    RuleConditionFieldEnum.TITLE,
-    RuleConditionFieldEnum.COMMENT,
-    RuleConditionFieldEnum.MCC_CODE
-];
 
 interface UseSuggestRuleBottomSheetParams {
     readonly suggestRuleData: SuggestRuleDataInterface;
@@ -30,35 +27,24 @@ export const useSuggestRuleBottomSheet = ({ suggestRuleData, onCreateRule, onDis
     const [applyToExisting, setApplyToExisting] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
 
-    const availableFields = CONDITION_FIELDS.filter(field => {
+    const availableFields = typedObjectKeys(SUGGEST_RULE_CONDITION_FIELD_LABELS).filter(field => {
         const value = getSuggestRuleFieldValue(field, suggestRuleData);
 
         return isNotEmptyString(value);
     });
 
     const toggleField = (field: SuggestRuleConditionField) => {
-        setSelectedFields(previous => {
-            const next = new Set(previous);
-            if (next.has(field)) {
-                next.delete(field);
-            } else {
-                next.add(field);
-            }
-
-            return next;
-        });
+        setSelectedFields(previous => toggleSetItem(previous, field));
     };
 
     const hasSelectedConditions = selectedFields.size > 0;
 
     const buildPrefillData = (): RulePrefillDataInterface => ({
-        conditions: Array.from(selectedFields)
-            .map(field => {
-                const value = getSuggestRuleFieldValue(field, suggestRuleData);
+        conditions: Array.from(selectedFields).flatMap(field => {
+            const value = getSuggestRuleFieldValue(field, suggestRuleData);
 
-                return isDefined(value) ? { field, value } : null;
-            })
-            .filter(isDefined),
+            return isDefined(value) ? { field, value } : [];
+        }),
         categoryId: suggestRuleData.categoryId,
         tagIds: suggestRuleData.tagIds,
         applyToExisting
@@ -86,10 +72,6 @@ export const useSuggestRuleBottomSheet = ({ suggestRuleData, onCreateRule, onDis
         void openRuleForm({ prefillData });
     };
 
-    const handleDismiss = () => {
-        onDismiss();
-    };
-
     return {
         availableFields,
         selectedFields,
@@ -100,6 +82,6 @@ export const useSuggestRuleBottomSheet = ({ suggestRuleData, onCreateRule, onDis
         hasSelectedConditions,
         handleCreateRule,
         handleConfigureRule,
-        handleDismiss
+        handleDismiss: onDismiss
     };
 };
