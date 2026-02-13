@@ -5,11 +5,11 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
-
 import { SQL, and, sql } from 'drizzle-orm';
-import type { Column } from 'drizzle-orm';
 
 import { isNotEmptyString } from '@rnw-community/shared';
+
+import type { Column } from 'drizzle-orm';
 
 type RuleConditionInput = Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>;
 
@@ -44,9 +44,9 @@ const buildOperatorSql = (
 
     switch (operator) {
         case RuleConditionOperatorEnum.CONTAINS:
-            return sql`LOWER(CAST(${column} AS TEXT)) LIKE ${'%' + lowerValue + '%'}`;
+            return sql`LOWER(CAST(${column} AS TEXT)) LIKE ${`%${lowerValue}%`}`;
         case RuleConditionOperatorEnum.NOT_CONTAINS:
-            return sql`LOWER(CAST(${column} AS TEXT)) NOT LIKE ${'%' + lowerValue + '%'}`;
+            return sql`LOWER(CAST(${column} AS TEXT)) NOT LIKE ${`%${lowerValue}%`}`;
         case RuleConditionOperatorEnum.EQUALS:
             return sql`LOWER(CAST(${column} AS TEXT)) = ${lowerValue}`;
         case RuleConditionOperatorEnum.NOT_EQUALS:
