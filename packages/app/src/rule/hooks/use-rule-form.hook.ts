@@ -16,6 +16,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import { ruleRepository } from '../../@generic/drizzle/db/db';
 import { RuleFormResultType } from '../context/rule-form-modal.context';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
+import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 
@@ -78,8 +79,16 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         try {
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
+
+                if (values.applyToExisting) {
+                    await ruleEngineService.applyRuleToMatchingTransactions(ruleId);
+                }
             } else {
-                await ruleService.create(values);
+                const rule = await ruleService.create(values);
+
+                if (values.applyToExisting) {
+                    await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+                }
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
         } catch {
