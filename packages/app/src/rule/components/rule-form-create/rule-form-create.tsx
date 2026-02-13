@@ -34,11 +34,11 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    <View className="px-5xl gap-y-7xl">
+                    <View className="px-3xl gap-y-3xl">
                         <RuleConditionsSection />
                         <RuleActionsSection />
                     </View>
-                    <View className="px-5xl mt-3xl">
+                    <View className="px-3xl mt-3xl">
                         <RuleFormApplyToggle />
                     </View>
                     {/* jscpd:ignore-end */}
