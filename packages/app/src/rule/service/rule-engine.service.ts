@@ -24,8 +24,11 @@ import {
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
+import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
+
+import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
 
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
@@ -47,7 +50,6 @@ class RuleEngineService {
         );
     }
 
-    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
     async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
@@ -55,30 +57,19 @@ class RuleEngineService {
             return 0;
         }
 
-        let count = 0;
-        let offset = 0;
-        let hasMore = true;
+        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
 
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(conditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
+        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
+            return transactionRepository.countByRuleConditions(sqlWhere);
         }
 
-        return count;
+        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+            const candidateIds = await transactionRepository.findIdsByRuleConditions(sqlWhere);
+
+            return this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+        }
+
+        return this.countMatchingTransactionsLegacy(params);
     }
 
     // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking
@@ -114,6 +105,120 @@ class RuleEngineService {
     }
 
     private async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
+        if (!isNotEmptyArray(rule.conditions)) {
+            return [];
+        }
+
+        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+
+        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
+            return transactionRepository.findIdsByRuleConditions(sqlWhere);
+        }
+
+        if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+            const candidateIds = await transactionRepository.findIdsByRuleConditions(sqlWhere);
+
+            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
+        }
+
+        return this.collectMatchingTransactionIdsLegacy(rule);
+    }
+
+    private async countWithFallbackConditions(
+        candidateIds: number[],
+        fallbackConditions: RuleConditionInput[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ): Promise<number> {
+        if (!isNotEmptyArray(candidateIds)) {
+            return 0;
+        }
+
+        let count = 0;
+
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
+            // eslint-disable-next-line no-await-in-loop
+            const transactions = await this.loadTransactionsByIds(batchIds);
+
+            const matchCount = transactions.filter(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
+            }).length;
+
+            count += matchCount;
+        }
+
+        return count;
+    }
+
+    private async filterWithFallbackConditions(
+        candidateIds: number[],
+        fallbackConditions: RuleConditionInput[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ): Promise<number[]> {
+        if (!isNotEmptyArray(candidateIds)) {
+            return [];
+        }
+
+        const matchingIds: number[] = [];
+
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
+            // eslint-disable-next-line no-await-in-loop
+            const transactions = await this.loadTransactionsByIds(batchIds);
+
+            for (const transaction of transactions) {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                if (this.evaluateConditions(fallbackConditions, conditionMatchType, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            }
+        }
+
+        return matchingIds;
+    }
+
+    private async loadTransactionsByIds(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
+        return transactionRepository.findByIdsWithEntries(ids);
+    }
+
+    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
+    private async countMatchingTransactionsLegacy(params: CountConditionsParams): Promise<number> {
+        const { conditions, conditionMatchType } = params;
+
+        if (!isNotEmptyArray(conditions)) {
+            return 0;
+        }
+
+        let count = 0;
+        let offset = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+            // eslint-disable-next-line no-await-in-loop
+            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
+
+            if (!isNotEmptyArray(transactions)) {
+                break;
+            }
+
+            const matchCount = transactions.filter(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                return this.evaluateConditions(conditions, conditionMatchType, input);
+            }).length;
+
+            count += matchCount;
+            hasMore = transactions.length >= BATCH_SIZE;
+            offset += BATCH_SIZE;
+        }
+
+        return count;
+    }
+
+    private async collectMatchingTransactionIdsLegacy(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
         const matchingIds: number[] = [];
         let offset = 0;
         let hasMore = true;
@@ -146,7 +251,7 @@ class RuleEngineService {
     }
 
     private evaluateConditions(
-        conditions: RuleConditionCreateInputInterface[],
+        conditions: readonly RuleConditionInput[],
         conditionMatchType: RuleConditionMatchTypeEnum,
         input: TransactionCreateInputInterface
     ): boolean {

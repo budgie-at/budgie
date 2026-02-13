@@ -12,5 +12,15 @@ interface Props {
 export const ModalFormSaveButton = ({ disabled, isLoading, onPress, testID }: Props) => {
     const { t } = useLingui();
 
-    return <Button testID={testID} className="flex-1" variant="cta" onPress={onPress} disabled={disabled} isLoading={isLoading} content={t`Save`} />;
+    return (
+        <Button
+            testID={testID}
+            className="flex-1"
+            variant="cta"
+            onPress={onPress}
+            disabled={disabled}
+            isLoading={isLoading}
+            content={t`Save`}
+        />
+    );
 };
