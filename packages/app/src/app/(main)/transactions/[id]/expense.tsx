@@ -57,7 +57,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     });
 
     const fromAccountId = form.watch('fromAccountId');
-    const { shouldSuggestRule, suggestRuleData } = useSuggestRuleDetection({ transaction, control: form.control });
+    const { shouldSuggestRule, suggestRuleData, onRuleCreated } = useSuggestRuleDetection({ transaction, control: form.control });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
@@ -75,9 +75,15 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
             sourceInstrumentId,
             sourceCode: sourceAccount.instrument.code
         });
-    const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
+    const handleOpenSuggestRule = async () => {
+        const result = await openSuggestRule({ suggestRuleData });
+        if (result === 'created') {
+            onRuleCreated();
+        }
+    };
 
-    const suggestRulePill = <SuggestRulePill visible={shouldSuggestRule} onPress={handleOpenSuggestRule} />;
+    const handlePressSuggestRule = () => void handleOpenSuggestRule();
+    const suggestRulePill = <SuggestRulePill visible={shouldSuggestRule} onPress={handlePressSuggestRule} />;
 
     return (
         <FormProvider {...form}>

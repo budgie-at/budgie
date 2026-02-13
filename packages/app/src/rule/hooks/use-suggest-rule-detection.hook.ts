@@ -1,4 +1,5 @@
 import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { useState } from 'react';
 import { Control, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -13,9 +14,11 @@ interface UseSuggestRuleDetectionParams {
 interface UseSuggestRuleDetectionResult {
     readonly shouldSuggestRule: boolean;
     readonly suggestRuleData: SuggestRuleDataInterface;
+    readonly onRuleCreated: () => void;
 }
 
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParams): UseSuggestRuleDetectionResult => {
+    const [ruleCreated, setRuleCreated] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
 
@@ -28,7 +31,10 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
     const tagsChanged = JSON.stringify([...tagIds].sort()) !== JSON.stringify([...originalTagIds].sort());
 
-    const shouldSuggestRule = isBankSynced && (categoryChanged || tagsChanged);
+    const shouldSuggestRule = isBankSynced && (categoryChanged || tagsChanged) && !ruleCreated;
+    const onRuleCreated = () => {
+        setRuleCreated(true);
+    };
 
     const mccCategory = transaction.entries[0]?.mccCategory ?? null;
 
@@ -40,5 +46,5 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         tagIds
     };
 
-    return { shouldSuggestRule, suggestRuleData };
+    return { shouldSuggestRule, suggestRuleData, onRuleCreated };
 };
