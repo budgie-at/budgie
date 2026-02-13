@@ -1,9 +1,9 @@
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
@@ -48,7 +48,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
 
     const handleCreate = () => void handleCreateRule();
     const isCreateDisabled = !hasSelectedConditions || isBusy;
-    const showMatchingCount = isPositiveNumber(matchingCount) && !isCountLoading;
+    const displayMatchingCount = matchingCount ?? 0;
     const processed = progress?.processed ?? 0;
     const total = progress?.total ?? 0;
     const buttonText = applyToExisting ? t`Create & update` : t`Create Rule`;
@@ -87,11 +87,22 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
 
                     <SuggestRuleActionPills category={category ?? null} tags={tags ?? null} />
 
-                    {showMatchingCount ? (
+                    {hasSelectedConditions ? (
                         <View className="flex-row items-center justify-between gap-x-lg">
-                            <Text className="flex-1 text-sm text-primary">
-                                <Trans>{matchingCount} matching transactions — update them too?</Trans>
-                            </Text>
+                            <View className="flex-1 flex-row items-center gap-x-sm">
+                                {isCountLoading ? (
+                                    <>
+                                        <ActivityIndicator size="small" />
+                                        <Text className="text-sm text-secondary-foreground">
+                                            <Trans>Checking transactions...</Trans>
+                                        </Text>
+                                    </>
+                                ) : (
+                                    <Text className="text-sm text-primary">
+                                        <Trans>{displayMatchingCount} matching transactions — update them too?</Trans>
+                                    </Text>
+                                )}
+                            </View>
                             <ThemedSwitch
                                 testID={SuggestRuleSelectors.ApplyToExistingToggle}
                                 value={applyToExisting}
