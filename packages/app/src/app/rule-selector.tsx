@@ -7,10 +7,6 @@ import { useRuleSelectorModal } from '../rule/context/rule-selector-modal.contex
 export default function RuleSelectorModal() {
     const { currentParams, resolveRuleSelector } = useRuleSelectorModal();
 
-    const handleSelect = (value: string) => {
-        resolveRuleSelector(value);
-    };
-
     const options = currentParams?.options ?? [];
     const selectedValue = currentParams?.selectedValue ?? null;
 
@@ -24,7 +20,7 @@ export default function RuleSelectorModal() {
                         key={option.value}
                         identifier={option.value}
                         isSelected={option.value === selectedValue}
-                        onSelect={handleSelect}
+                        onSelect={resolveRuleSelector}
                         title={option.label}
                         iconSlot={null}
                         testID={RuleFormSelectors.SelectorCard(option.value)}
