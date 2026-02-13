@@ -216,6 +216,39 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
     }
 
+    findByIdsWithEntries(ids: number[]) {
+        return this.db.query.TransactionEntityTable.findMany({
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                    }
+                }
+            },
+            where: and(inArray(TransactionEntityTable.id, ids), isNull(TransactionEntityTable.deletedAt))
+        });
+    }
+
+    async countByRuleConditions(where: SQL): Promise<number> {
+        const result = await this.db
+            .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})` })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(and(isNull(TransactionEntityTable.deletedAt), where));
+
+        return result[0]?.count ?? 0;
+    }
+
+    async findIdsByRuleConditions(where: SQL): Promise<number[]> {
+        const result = await this.db
+            .selectDistinct({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(and(isNull(TransactionEntityTable.deletedAt), where));
+
+        return result.map(row => row.id);
+    }
+
     protected override buildAccountCondition(accountIds: number[] | null) {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
