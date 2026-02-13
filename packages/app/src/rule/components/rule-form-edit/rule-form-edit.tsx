@@ -52,6 +52,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
         : null;
 
     const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId, defaultValues, onSuccess });
+    const { isSubmitting } = form.formState;
 
     const handleDeleteConfirm = async () => {
         const confirmed = await confirmAlert({
@@ -98,7 +99,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
                     />
                     <View className="flex-row gap-x-md">
                         <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} />
+                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} isLoading={isSubmitting} />
                     </View>
                 </View>
             </ModalPage>
