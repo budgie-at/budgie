@@ -1,14 +1,14 @@
 import { RuleConditionMatchTypeEnum } from '@budgie/contracts';
 import { SQL, and, or } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { buildRuleConditionSql } from './build-rule-condition-sql.util';
 
 import type { RuleConditionInput } from './build-rule-condition-sql.util';
 
 interface BuildRuleConditionsWhereResult {
-    readonly sqlWhere: SQL | undefined;
+    readonly sqlWhere: SQL | null;
     readonly fallbackConditions: RuleConditionInput[];
 }
 
@@ -30,7 +30,7 @@ export const buildRuleConditionsWhere = (
     }
 
     const combiner = conditionMatchType === RuleConditionMatchTypeEnum.ALL ? and : or;
-    const sqlWhere = sqlConditions.length > 0 ? combiner(...sqlConditions) : undefined;
+    const sqlWhere = isNotEmptyArray(sqlConditions) ? (combiner(...sqlConditions) ?? null) : null;
 
     return { sqlWhere, fallbackConditions };
 };
