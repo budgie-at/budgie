@@ -4,7 +4,6 @@ env:
   CATEGORY_NAME: Groceries
   CSV_DISPLAY_NAME: test15-suggested-rule
 ---
-# Test 15: Suggested rule "Configure Rule" flow prefills rule form correctly
 
 - runFlow:
     file: ../shared/enter-app.flow.yaml
