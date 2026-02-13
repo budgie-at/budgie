@@ -4,12 +4,7 @@ import {
     RuleConditionCreateInputInterface,
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
-    TransactionAssociationEnum,
-    TransactionCreateInputInterface,
-    TransactionEntryAssociationEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    TransactionWithEntriesMccCategoryEntityInterface
+    TransactionCreateInputInterface
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -19,17 +14,12 @@ import {
     ruleRepository,
     transactionEntryRepository,
     transactionRepository,
-    transactionRuleRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
-import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
-import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
-import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
+import { ruleMatcherService } from './rule-matcher.service';
 
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
@@ -52,25 +42,7 @@ class RuleEngineService {
     }
 
     async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return 0;
-        }
-
-        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.countByRuleConditions(sqlWhere);
-        }
-
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-
-            return this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-        }
-
-        return this.countMatchingTransactionsLegacy(params);
+        return ruleMatcherService.countMatchingTransactions(params);
     }
 
     // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking
@@ -81,7 +53,7 @@ class RuleEngineService {
             return;
         }
 
-        const matchingIds = await this.collectMatchingTransactionIds(rule);
+        const matchingIds = await ruleMatcherService.collectMatchingTransactionIds(rule);
 
         if (!isNotEmptyArray(matchingIds)) {
             return;
@@ -105,170 +77,12 @@ class RuleEngineService {
         }
     }
 
-    private async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
-        if (!isNotEmptyArray(rule.conditions)) {
-            return [];
-        }
-
-        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-        }
-
-        if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-
-            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
-        }
-
-        return this.collectMatchingTransactionIdsLegacy(rule);
-    }
-
-    private async countWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInput[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await this.loadTransactionsByIds(batchIds);
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-        }
-
-        return count;
-    }
-
-    private async filterWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInput[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number[]> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return [];
-        }
-
-        const matchingIds: number[] = [];
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await this.loadTransactionsByIds(batchIds);
-
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.evaluateConditions(fallbackConditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        }
-
-        return matchingIds;
-    }
-
-    private async loadTransactionsByIds(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
-        return transactionRepository.findByIdsWithEntries(ids);
-    }
-
-    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
-    private async countMatchingTransactionsLegacy(params: CountConditionsParams): Promise<number> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return 0;
-        }
-
-        let count = 0;
-        let offset = 0;
-        let hasMore = true;
-
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(conditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
-        }
-
-        return count;
-    }
-
-    private async collectMatchingTransactionIdsLegacy(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
-        const matchingIds: number[] = [];
-        let offset = 0;
-        let hasMore = true;
-
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
-            });
-
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            transactions.forEach(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-                if (this.evaluateRule(rule, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            });
-
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
-        }
-
-        return matchingIds;
-    }
-
-    private evaluateConditions(
-        conditions: readonly RuleConditionInput[],
-        conditionMatchType: RuleConditionMatchTypeEnum,
-        input: TransactionCreateInputInterface
-    ): boolean {
-        const evaluator = conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
-
-        return conditions[evaluator](condition =>
-            evaluateRuleCondition({ ...condition, id: 0, ruleId: 0, createdAt: new Date(), updatedAt: new Date(), deletedAt: null }, input)
-        );
-    }
-
     private async applyRulesToTransaction(
         transactionId: number,
         input: TransactionCreateInputInterface,
         rules: RuleWithRelationsEntityInterface[]
     ): Promise<void> {
-        const matchingRules = rules.filter(rule => this.evaluateRule(rule, input));
+        const matchingRules = rules.filter(rule => ruleMatcherService.evaluateRule(rule, input));
 
         if (!isNotEmptyArray(matchingRules)) {
             return;
@@ -282,61 +96,10 @@ class RuleEngineService {
         });
     }
 
-    private evaluateRule(rule: RuleWithRelationsEntityInterface, input: TransactionCreateInputInterface): boolean {
-        if (!isNotEmptyArray(rule.conditions)) {
-            return false;
-        }
-
-        const evaluator = rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
-
-        return rule.conditions[evaluator](condition => evaluateRuleCondition(condition, input));
-    }
-
     private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
         await db.transaction(async transaction => {
             await this.applyRuleActions(transactionId, actions, transaction);
         });
-    }
-
-    private calculateAmountForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): number {
-        const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-        if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
-            return sumEntryAmounts(entries, TransactionEntryTypeEnum.CREDIT);
-        }
-
-        if (transaction.type === TransactionTypeEnum.INCOME) {
-            return sumEntryAmounts(entries, TransactionEntryTypeEnum.DEBIT);
-        }
-
-        if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-            const hasDebit = entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-
-            return hasDebit
-                ? sumEntryAmounts(entries, TransactionEntryTypeEnum.DEBIT)
-                : sumEntryAmounts(entries, TransactionEntryTypeEnum.CREDIT);
-        }
-
-        return 0;
-    }
-
-    private convertTransactionForRuleEvaluation(
-        transaction: TransactionWithEntriesMccCategoryEntityInterface
-    ): TransactionCreateInputInterface {
-        const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-        return {
-            ...transaction,
-            amount: convertFromMicroUnits(this.calculateAmountForRuleEvaluation(transaction)),
-            tagIds: [],
-            entries: entries.map(entry => ({
-                type: entry.type,
-                categoryId: entry.categoryId,
-                accountId: entry.accountId,
-                amount: convertFromMicroUnits(entry.amount),
-                mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null
-            }))
-        };
     }
 
     private async applyRuleActions(transactionId: number, actions: RuleActionEntityInterface[], transaction: Transaction): Promise<void> {
