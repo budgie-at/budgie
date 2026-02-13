@@ -1,0 +1,11 @@
+export enum RuleConditionOperatorEnum {
+    EQUALS = 'EQUALS',
+    NOT_EQUALS = 'NOT_EQUALS',
+    CONTAINS = 'CONTAINS',
+    NOT_CONTAINS = 'NOT_CONTAINS',
+    MATCHES_REGEX = 'MATCHES_REGEX',
+    GREATER_THAN = 'GREATER_THAN',
+    LESS_THAN = 'LESS_THAN',
+    BETWEEN = 'BETWEEN',
+    IN = 'IN'
+}

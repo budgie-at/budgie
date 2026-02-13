@@ -1,0 +1,88 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '13'
+  ACCOUNT_NAME: Test13 Account
+  CATEGORY_NAME: Test13 Category
+  TAG_NAME: Test13 Tag
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+- runFlow:
+    file: ../shared/create-expense-transaction.flow.yaml
+    env:
+      TITLE: 'Spotify Premium'
+      AMOUNT: '10'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Spotify'
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'TransactionList.Card.1'
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ApplyToExistingToggle'
+    direction: DOWN
+- tapOn:
+    id: 'RuleForm.ApplyToExistingToggle'
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'TransactionList.Card.1.CategoryBadge'

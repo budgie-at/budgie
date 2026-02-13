@@ -9,6 +9,10 @@ import { LanguageSelectorModalProvider } from '../../i18n/provider/language-sele
 import { ImportColumnMapperModalProvider } from '../../import/provider/import-column-mapper-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
+import { RuleFormModalProvider } from '../../rule/provider/rule-form-modal.provider';
+import { RuleMccSelectorModalProvider } from '../../rule/provider/rule-mcc-selector-modal.provider';
+import { RuleSelectorModalProvider } from '../../rule/provider/rule-selector-modal.provider';
+import { SuggestRuleModalProvider } from '../../rule/provider/suggest-rule-modal.provider';
 import { ConvertToTransferModalProvider } from '../../transaction/provider/convert-to-transfer-modal.provider';
 import { DatePickerModalProvider } from '../../transaction/provider/date-picker-modal.provider';
 import { NoteInputModalProvider } from '../../transaction/provider/note-input-modal.provider';
@@ -44,7 +48,13 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                         <TransactionCategoryFilterModalProvider>
                                                                             <TransactionAccountFilterModalProvider>
                                                                                 <TransactionTagFilterModalProvider>
-                                                                                    {children}
+                                                                                    <RuleFormModalProvider>
+                                                                                        <RuleSelectorModalProvider>
+                                                                                            <RuleMccSelectorModalProvider>
+                                                                                                <SuggestRuleModalProvider>{children}</SuggestRuleModalProvider>
+                                                                                            </RuleMccSelectorModalProvider>
+                                                                                        </RuleSelectorModalProvider>
+                                                                                    </RuleFormModalProvider>
                                                                                 </TransactionTagFilterModalProvider>
                                                                             </TransactionAccountFilterModalProvider>
                                                                         </TransactionCategoryFilterModalProvider>

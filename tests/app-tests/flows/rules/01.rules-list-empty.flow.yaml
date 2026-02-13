@@ -1,0 +1,14 @@
+appId: com.vitalyiegorov.budgie
+---
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+- assertVisible:
+    text: 'No Rules Yet'
+- assertVisible:
+    text: 'Create rules to automatically categorize and tag your bank transactions'

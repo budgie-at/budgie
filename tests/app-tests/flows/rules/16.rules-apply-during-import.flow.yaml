@@ -1,0 +1,145 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '16'
+  TAG_NAME: Subscription
+  CATEGORY_NAME: Groceries
+  CSV_DISPLAY_NAME: test16-rules-import
+---
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+- runFlow:
+    file: ../setup/create-tag.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- waitForAnimationToEnd
+- tapOn: 'Comment'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Netflix'
+
+- tapOn:
+    id: 'RuleForm.Action.0.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.SET_CATEGORY'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- waitForAnimationToEnd
+- tapOn: 'Comment'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Starbucks'
+
+- tapOn:
+    id: 'RuleForm.Action.0.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.ADD_TAG'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Action.0.TagSelector'
+- runFlow:
+    file: ../shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.1'
+
+- runFlow:
+    file: ../shared/import-test-transactions.flow.yaml
+    env:
+      CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1.Tag'
+
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: ${TAG_NAME}
+
+- tapOn:
+    id: 'GoBackButton'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.2.CategoryBadge'
+
+- tapOn:
+    id: 'TransactionList.Card.2'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: 'Groceries'
