@@ -41,17 +41,15 @@ const buildOperatorSql = (
     value: string,
     secondaryValue: string | null
 ): SQL | null => {
-    const lowerValue = value.toLowerCase();
-
     switch (operator) {
         case RuleConditionOperatorEnum.CONTAINS:
-            return sql`LOWER(CAST(${column} AS TEXT)) LIKE ${`%${lowerValue}%`}`;
+            return sql`CAST(${column} AS TEXT) LIKE ${`%${value}%`}`;
         case RuleConditionOperatorEnum.NOT_CONTAINS:
-            return sql`LOWER(CAST(${column} AS TEXT)) NOT LIKE ${`%${lowerValue}%`}`;
+            return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${value}%`}`;
         case RuleConditionOperatorEnum.EQUALS:
-            return sql`LOWER(CAST(${column} AS TEXT)) = ${lowerValue}`;
+            return sql`CAST(${column} AS TEXT) = ${value} COLLATE NOCASE`;
         case RuleConditionOperatorEnum.NOT_EQUALS:
-            return sql`LOWER(CAST(${column} AS TEXT)) != ${lowerValue}`;
+            return sql`CAST(${column} AS TEXT) != ${value} COLLATE NOCASE`;
         case RuleConditionOperatorEnum.GREATER_THAN:
             return sql`${column} > ${Number(value)}`;
         case RuleConditionOperatorEnum.LESS_THAN:
@@ -67,10 +65,10 @@ const buildOperatorSql = (
             return and(gteClause, lteClause) ?? null;
         }
         case RuleConditionOperatorEnum.IN: {
-            const inValues = value.split(',').map(item => item.trim().toLowerCase());
+            const inValues = value.split(',').map(item => item.trim());
             const placeholders = inValues.map(item => sql`${item}`);
 
-            return sql`LOWER(CAST(${column} AS TEXT)) IN (${sql.join(placeholders, sql`, `)})`;
+            return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
         }
         case RuleConditionOperatorEnum.MATCHES_REGEX:
             return null;
