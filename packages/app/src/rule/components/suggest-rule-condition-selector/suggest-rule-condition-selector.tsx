@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -64,7 +64,8 @@ export const SuggestRuleConditionSelector = ({ availableFields, selectedFields, 
         <View className="flex-row flex-wrap gap-md">
             {availableFields.map(field => {
                 const isSelected = selectedFields.has(field);
-                const label = t(SUGGEST_RULE_CONDITION_FIELD_LABELS[field]);
+                const fieldDescriptor = SUGGEST_RULE_CONDITION_FIELD_LABELS[field];
+                const label = isDefined(fieldDescriptor) ? t(fieldDescriptor) : '';
                 const value = getSuggestRuleFieldValue(field, suggestRuleData);
                 const handleToggle = () => void onToggle(field);
 
