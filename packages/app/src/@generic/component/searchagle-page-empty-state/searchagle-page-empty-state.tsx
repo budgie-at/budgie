@@ -7,10 +7,11 @@ interface Props {
     readonly title: string;
     readonly icon: UserIconNameEnum;
     readonly description: string;
+    readonly testID?: string;
 }
 
-export const SearchablePageEmptyState = ({ title, icon, description }: Props) => (
-    <View className="items-center pt-17.5 flex-1">
+export const SearchablePageEmptyState = ({ title, icon, description, testID }: Props) => (
+    <View testID={testID} className="items-center pt-17.5 flex-1">
         <View className="bg-secondary-background p-3xl rounded-3xl mb-3xl">
             <Icon icon={icon} className="text-secondary-foreground" size={32} />
         </View>

@@ -1,0 +1,62 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '12'
+  ACCOUNT_NAME: Test12 Account
+  CATEGORY_NAME: Test12 Category
+  TAG_NAME: Test12 Tag
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Uber'
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: ../shared/create-expense-transaction.flow.yaml
+    env:
+      TITLE: 'Uber Ride'
+      AMOUNT: '25'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- assertVisible:
+    id: 'TransactionList.Card.1'

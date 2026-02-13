@@ -1,0 +1,5 @@
+export enum RuleActionTypeEnum {
+    SET_CATEGORY = 'SET_CATEGORY',
+    ADD_TAG = 'ADD_TAG',
+    CONVERT_TO_TRANSFER = 'CONVERT_TO_TRANSFER'
+}

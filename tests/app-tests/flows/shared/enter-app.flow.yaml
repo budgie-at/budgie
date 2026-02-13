@@ -1,0 +1,26 @@
+appId: com.vitalyiegorov.budgie
+---
+
+- clearState
+- launchApp
+
+- runFlow:
+    when:
+      visible: 'http://localhost:8081'
+    commands:
+      - tapOn: 'http://localhost:8081'
+
+- waitForAnimationToEnd
+
+- tapOn:
+    text: 'Continue'
+    optional: true
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'TOOLS'
+    commands:
+      - tapOn:
+          point: '90%,52%'

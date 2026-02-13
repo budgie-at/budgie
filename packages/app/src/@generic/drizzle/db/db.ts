@@ -10,6 +10,9 @@ import {
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
+    RuleActionRepository,
+    RuleConditionRepository,
+    RuleRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
@@ -86,3 +89,6 @@ export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);
+export const ruleRepository = new RuleRepository(db);
+export const ruleConditionRepository = new RuleConditionRepository(db);
+export const ruleActionRepository = new RuleActionRepository(db);

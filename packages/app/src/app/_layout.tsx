@@ -23,9 +23,11 @@ import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-option
 import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
+import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
 import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
+import { SUGGEST_RULE_MODAL_OPTIONS } from '../@generic/constant/suggest-rule-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
@@ -101,6 +103,9 @@ export default function RootLayout() {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
+                                                                    <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="rule-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
@@ -166,6 +171,7 @@ export default function RootLayout() {
                                                                         name="transaction-tag-filter"
                                                                         options={SEARCHABLE_FILTER_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="suggest-rule" options={SUGGEST_RULE_MODAL_OPTIONS} />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />

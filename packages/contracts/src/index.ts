@@ -171,6 +171,7 @@ export { TransactionEntityRelations } from './transaction/relations/transaction-
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';
+export type { TransactionWithEntriesMccCategoryEntityInterface } from './transaction/entity/transaction-with-entries-mcc-category-entity.interface';
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
 export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';
@@ -246,6 +247,7 @@ export type { TransactionEntryCreateInputInterface } from './transaction-entry/i
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
+export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
@@ -319,3 +321,48 @@ export type { UnembeddedCommentDataInterface } from './comment-embedding/interfa
 export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
 
 export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';
+
+export { RuleConditionFieldEnum } from './rule/enum/rule-condition-field.enum';
+export { RuleConditionOperatorEnum } from './rule/enum/rule-condition-operator.enum';
+export { RuleConditionMatchTypeEnum } from './rule/enum/rule-condition-match-type.enum';
+export { RuleActionTypeEnum } from './rule/enum/rule-action-type.enum';
+export { RuleAssociationEnum } from './rule/enum/rule-association.enum';
+export { RuleEntityTable } from './rule/table/rule-entity.table';
+export { RuleEntityRelations } from './rule/relations/rule-entity.relations';
+export { RuleEntitySchema } from './rule/schema/rule-entity.schema';
+export { RuleCreateEntitySchema } from './rule/schema/rule-create-entity.schema';
+export { RuleUpdateEntitySchema } from './rule/schema/rule-update-entity.schema';
+export { RuleCreateInputSchema } from './rule/schema/rule-create-input.schema';
+export { RuleUpdateInputSchema } from './rule/schema/rule-update-input.schema';
+export type { RuleEntityInterface } from './rule/entity/rule-entity.interface';
+export type { RuleCreateEntityInterface } from './rule/entity/rule-create-entity.interface';
+export type { RuleUpdateEntityInterface } from './rule/entity/rule-update-entity.interface';
+export type { RuleWithRelationsEntityInterface } from './rule/entity/rule-with-relations-entity.interface';
+export type { RuleWithActionsRelationsEntityInterface } from './rule/entity/rule-with-actions-relations-entity.interface';
+export type { RuleCreateInputInterface } from './rule/input/rule-create-input.interface';
+export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.interface';
+
+export { RuleRepository } from './rule/repository/rule.repository';
+
+export { RuleConditionAssociationEnum } from './rule-condition/enum/rule-condition-association.enum';
+export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
+export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
+export { RuleConditionEntitySchema } from './rule-condition/schema/rule-condition-entity.schema';
+export { RuleConditionCreateEntitySchema } from './rule-condition/schema/rule-condition-create-entity.schema';
+export { RuleConditionCreateInputSchema } from './rule-condition/schema/rule-condition-create-input.schema';
+export type { RuleConditionEntityInterface } from './rule-condition/entity/rule-condition-entity.interface';
+export type { RuleConditionCreateEntityInterface } from './rule-condition/entity/rule-condition-create-entity.interface';
+export type { RuleConditionCreateInputInterface } from './rule-condition/input/rule-condition-create-input.interface';
+export { RuleConditionRepository } from './rule-condition/repository/rule-condition.repository';
+
+export { RuleActionAssociationEnum } from './rule-action/enum/rule-action-association.enum';
+export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
+export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';
+export { RuleActionEntitySchema } from './rule-action/schema/rule-action-entity.schema';
+export { RuleActionCreateEntitySchema } from './rule-action/schema/rule-action-create-entity.schema';
+export { RuleActionCreateInputSchema } from './rule-action/schema/rule-action-create-input.schema';
+export type { RuleActionEntityInterface } from './rule-action/entity/rule-action-entity.interface';
+export type { RuleActionWithRelationsEntityInterface } from './rule-action/entity/rule-action-with-relations-entity.interface';
+export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
+export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
+export { RuleActionRepository } from './rule-action/repository/rule-action.repository';

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ActionButton } from '../../@generic/component/action-button/action-button';
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
@@ -11,7 +12,6 @@ import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-
 import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
-import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
@@ -64,7 +64,7 @@ export default function TabsLayout() {
                         <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                             <TabButtons />
 
-                            <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
+                            <ActionButton isOpen={isMenuOpen} onPress={openMenu} />
                         </View>
                     </View>
                 </BlurGradient>

@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { useVibration } from '../../hook/use-vibration.hook';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
 
 const TRIGGER_ICON_SIZE = 32;
 
@@ -12,7 +12,10 @@ interface Props {
     readonly onPress: () => void;
 }
 
-export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
+// eslint-disable-next-line lingui/no-unlocalized-strings
+const testID = 'ActionButton';
+
+export const ActionButton = ({ isOpen, onPress }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const handlePress = () => {
@@ -22,6 +25,7 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
 
     return (
         <HapticPressable
+            testID={testID}
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
             {...(!isOpen && { onPress: handlePress })}
         >

@@ -58,4 +58,11 @@ export class TransactionEntryRepository {
     async deleteByAccountId(accountId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
     }
+
+    async updateCategoryByTransactionId(transactionId: number, categoryId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set({ categoryId })
+            .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
+    }
 }
