@@ -13,12 +13,13 @@ import { MccCategoryChip } from '../mcc-category-chip/mcc-category-chip';
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly categoryLabel: string;
+    readonly testID?: string;
 }
 
 const wrapperClassName = 'rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
-export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
+export const TransactionCategoryBadge = ({ transaction, categoryLabel, testID }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
@@ -53,7 +54,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     const showMccChip = isDefined(mccCategory) && isDefined(firstEntry.category);
 
     return (
-        <View className="flex-row gap-xs">
+        <View testID={testID} className="flex-row gap-xs">
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>

@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryPickerBottomSheetSelectors } from '../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -51,6 +52,7 @@ export default function CategorySelectorModal() {
     return (
         <View style={containerStyle}>
             <SelectorModalSearchHeader
+                testID={CategoryPickerBottomSheetSelectors.Input}
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search categories...`}

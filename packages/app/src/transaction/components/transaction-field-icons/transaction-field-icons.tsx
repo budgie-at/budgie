@@ -37,6 +37,7 @@ interface Props {
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
     readonly onSplitPress?: () => void;
+    readonly categorySelectorTestID?: string;
 }
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
@@ -49,7 +50,8 @@ export const TransactionFieldIcons = (props: Props) => {
         isAmountPositive = false,
         onCommentPress,
         onDatePress,
-        onSplitPress
+        onSplitPress,
+        categorySelectorTestID
     } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
@@ -155,6 +157,7 @@ export const TransactionFieldIcons = (props: Props) => {
             {isTransfer ? null : (
                 <TransactionFieldIcon
                     ref={categoryIconRef}
+                    testID={categorySelectorTestID}
                     icon={category?.icon ?? UserIconNameEnum.Folder}
                     label={t`Category`}
                     value={category?.title}

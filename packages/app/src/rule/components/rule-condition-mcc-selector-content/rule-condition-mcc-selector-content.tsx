@@ -5,9 +5,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useGetAllMccCategoriesQuery } from '../../../mcc-category/query/use-get-all-mcc-categories.query';
+import { formatMccDisplay } from '../../../mcc-category/utils/format-mcc-display.util';
 import { useRuleMccSelectorModal } from '../../context/rule-mcc-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
-import { formatMccDisplay } from '../../../mcc-category/utils/format-mcc-display.util';
 
 interface Props {
     readonly index: number;

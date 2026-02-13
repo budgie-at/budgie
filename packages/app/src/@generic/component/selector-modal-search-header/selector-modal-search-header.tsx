@@ -13,10 +13,11 @@ interface Props {
     readonly placeholder?: string;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
+    readonly testID?: string;
 }
 
 export const SelectorModalSearchHeader = (props: Props) => {
-    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress } = props;
+    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress, testID } = props;
     const { t } = useLingui();
 
     const hasRightAction = isDefined(rightActionIcon) && isDefined(rightActionOnPress);
@@ -27,6 +28,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
                 <View className="flex-1 flex-row items-center rounded-5xl bg-secondary-background h-[50px] px-lg border border-secondary-corner">
                     <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
                     <TextInput
+                        testID={testID}
                         className="flex-1 text-primary text-md ml-sm"
                         value={search}
                         onChangeText={onSearchChange}

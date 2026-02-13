@@ -25,12 +25,13 @@ interface Props {
     readonly disabled?: boolean;
     readonly onPress: () => void;
     readonly animationDelay?: number;
+    readonly testID?: string;
 }
 
 const disabledOpacity = { opacity: 0.3 };
 
 export const TransactionFieldIcon = (props: Props) => {
-    const { ref, icon, label, value, variant, disabled = false, onPress, animationDelay = 0 } = props;
+    const { ref, icon, label, value, variant, disabled = false, onPress, animationDelay = 0, testID } = props;
 
     const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -66,6 +67,7 @@ export const TransactionFieldIcon = (props: Props) => {
             <Animated.View style={shakeStyle}>
                 <Animated.View style={pressedStyle}>
                     <HapticPressable
+                        testID={testID}
                         className="items-center gap-sm"
                         onPress={onPress}
                         onPressIn={handlePressIn}

@@ -1,6 +1,6 @@
 import { RuleConditionOperatorEnum } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
 import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 
 export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, MessageDescriptor> = {
     [RuleConditionOperatorEnum.EQUALS]: msg`equals`,

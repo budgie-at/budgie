@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -172,6 +173,7 @@ export const TransferQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <TransactionAmountDisplay
+                testID={TransactionFormSelectors.AmountInput}
                 ref={amountDisplayRef}
                 amount={display.displayAmount}
                 currencySymbol={display.displaySymbol}
@@ -218,6 +220,7 @@ export const TransferQuickForm = (props: Props) => {
                 onLongBackspace={activeHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
+                confirmTestID={TransactionFormSelectors.SubmitButton}
             />
         </View>
     );
