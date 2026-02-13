@@ -19,6 +19,7 @@ import {
     ruleRepository,
     transactionEntryRepository,
     transactionRepository,
+    transactionRuleRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
@@ -60,11 +61,11 @@ class RuleEngineService {
         const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRepository.countByRuleConditions(sqlWhere);
+            return transactionRuleRepository.countByRuleConditions(sqlWhere);
         }
 
         if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRepository.findIdsByRuleConditions(sqlWhere);
+            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
             return this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
         }
@@ -112,11 +113,11 @@ class RuleEngineService {
         const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRepository.findIdsByRuleConditions(sqlWhere);
+            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
         }
 
         if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRepository.findIdsByRuleConditions(sqlWhere);
+            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
             return this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
         }
