@@ -77,7 +77,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         });
     const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
 
-    const suggestRulePill = shouldSuggestRule ? <SuggestRulePill onPress={handleOpenSuggestRule} /> : null;
+    const suggestRulePill = <SuggestRulePill visible={shouldSuggestRule} onPress={handleOpenSuggestRule} />;
 
     return (
         <FormProvider {...form}>

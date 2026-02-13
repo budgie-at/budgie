@@ -77,7 +77,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         });
     const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
 
-    const suggestRulePill = shouldSuggestRule ? <SuggestRulePill onPress={handleOpenSuggestRule} /> : null;
+    const suggestRulePill = <SuggestRulePill visible={shouldSuggestRule} onPress={handleOpenSuggestRule} />;
 
     return (
         <FormProvider {...form}>
