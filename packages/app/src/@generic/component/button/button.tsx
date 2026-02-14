@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
-import { ActivityIndicator, Text } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -27,7 +27,7 @@ const buttonVariants = cva<{
     variant: Record<ColorPaletteVariant, ClassValue>;
     size: Record<ButtonSizeType, ClassValue>;
     disabled: Record<'true', ClassValue>;
-}>('flex-row items-center gap-x-xl justify-center border', {
+}>('items-center justify-center border', {
     variants: {
         disabled: { true: 'opacity-50' },
         variant: BACKGROUND_COLOR_PALETTE,
@@ -64,16 +64,15 @@ export const Button = (props: Props) => {
             {...rest}
         >
             {isLoading ? (
-                <ActivityIndicator size="small" />
-            ) : (
-                <>
-                    {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
-
-                    {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
-
-                    {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
-                </>
-            )}
+                <View className="absolute inset-0 items-center justify-center">
+                    <ActivityIndicator size="small" />
+                </View>
+            ) : null}
+            <View className={cn('flex-row items-center gap-x-xl', isLoading && 'opacity-0')}>
+                {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
+                {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
+                {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
+            </View>
         </HapticPressable>
     );
 };
