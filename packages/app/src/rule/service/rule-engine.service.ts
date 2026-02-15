@@ -17,6 +17,7 @@ import {
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
+import { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
@@ -46,21 +47,26 @@ class RuleEngineService {
     }
 
     // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking
-    async applyRuleToMatchingTransactions(ruleId: number, onProgress?: (processed: number, total: number) => void): Promise<void> {
+    async applyRuleToMatchingTransactions(
+        ruleId: number,
+        onProgress?: (processed: number, total: number) => void
+    ): Promise<ApplyRuleResultInterface> {
         const rule = await ruleRepository.findByIdWithRelations(ruleId);
+        const emptyResult: ApplyRuleResultInterface = { applied: 0, failed: 0, total: 0 };
 
         if (!isDefined(rule) || !isNotEmptyArray(rule.conditions)) {
-            return;
+            return emptyResult;
         }
 
         const matchingIds = await ruleMatcherService.collectMatchingTransactionIds(rule);
 
         if (!isNotEmptyArray(matchingIds)) {
-            return;
+            return emptyResult;
         }
 
         const total = matchingIds.length;
         let processed = 0;
+        let failed = 0;
 
         for (let batchStart = 0; batchStart < total; batchStart += BATCH_SIZE) {
             // eslint-disable-next-line no-await-in-loop
@@ -70,11 +76,23 @@ class RuleEngineService {
 
             const batchIds = matchingIds.slice(batchStart, batchStart + BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
-            await Promise.all(batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions)));
+            const results = await Promise.allSettled(
+                batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions))
+            );
+
+            for (const result of results) {
+                if (result.status === 'rejected') {
+                    failed += 1;
+                }
+            }
 
             processed += batchIds.length;
             onProgress?.(processed, total);
         }
+
+        const applied = total - failed;
+
+        return { applied, failed, total };
     }
 
     private async applyRulesToTransaction(

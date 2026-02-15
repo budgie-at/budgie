@@ -1,13 +1,21 @@
-import { CategoryEntityInterface, RuleConditionFieldEnum, TagEntityInterface } from '@budgie/contracts';
+import {
+    CategoryEntityInterface,
+    RuleConditionFieldEnum,
+    RuleConditionOperatorEnum,
+    TagEntityInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
+import { Fragment } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { getSuggestRuleFieldValue } from '../../util/get-suggest-rule-field-value.util';
-import { SuggestRuleDescriptionActions } from '../suggest-rule-description-actions/suggest-rule-description-actions';
-import { SuggestRuleDescriptionCondition } from '../suggest-rule-description-condition/suggest-rule-description-condition';
+import { RuleConditionPill } from '../rule-condition-pill/rule-condition-pill';
+import { SuggestRuleActionPills } from '../suggest-rule-action-pills/suggest-rule-action-pills';
 
 type SuggestRuleConditionField = RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT | RuleConditionFieldEnum.MCC_CODE;
 
@@ -18,31 +26,37 @@ interface Props {
     readonly tags: Pick<TagEntityInterface, 'title'>[] | null;
 }
 
+const ARROW_ICON_SIZE = 14;
+
 export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData, category, tags }: Props) => {
     const conditions = Array.from(selectedFields)
         .map(field => {
             const value = getSuggestRuleFieldValue(field, suggestRuleData);
 
-            return isDefined(value) ? { field, value } : null;
+            return isDefined(value) ? { field, operator: RuleConditionOperatorEnum.CONTAINS, value } : null;
         })
         .filter(isDefined);
 
     return (
-        <View className="gap-y-md">
-            <Text className="text-sm font-medium text-secondary-foreground">
-                <Trans>If:</Trans>
-            </Text>
-            <View className="pl-lg gap-y-xxs">
-                {conditions.map(condition => (
-                    <SuggestRuleDescriptionCondition key={condition.field} field={condition.field} value={condition.value} />
-                ))}
-            </View>
-            <Text className="text-sm font-medium text-secondary-foreground">
-                <Trans>Then:</Trans>
-            </Text>
-            <View className="pl-lg">
-                <SuggestRuleDescriptionActions category={category} tags={tags} />
-            </View>
+        <View className="flex-row flex-wrap items-center gap-sm">
+            {conditions.map((condition, index) => {
+                const isLast = index === conditions.length - 1;
+
+                return (
+                    <Fragment key={condition.field}>
+                        <RuleConditionPill condition={condition} />
+                        {isLast ? null : (
+                            <Text className="text-xs text-secondary-foreground">
+                                <Trans>and</Trans>
+                            </Text>
+                        )}
+                    </Fragment>
+                );
+            })}
+
+            <Icon icon={UserIconNameEnum.ArrowRight} size={ARROW_ICON_SIZE} className="text-secondary-foreground" />
+
+            <SuggestRuleActionPills category={category} tags={tags} />
         </View>
     );
 };

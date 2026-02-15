@@ -1,10 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInUp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+
+const FLEX_ANIMATION_DURATION = 300;
+const GEAR_SPIN_DURATION = 600;
+const CONFIRM_FLEX_DEFAULT = 2;
+const CONFIRM_FLEX_SPLIT = 1.3;
+const GEAR_FLEX = 0.7;
+const FULL_ROTATION = 360;
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -16,10 +24,53 @@ interface Props {
     readonly onCancel: () => void;
     readonly isConfirmDisabled?: boolean;
     readonly confirmTestID?: string;
+    readonly showAutomateButton?: boolean;
+    readonly onAutomate?: () => void;
 }
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- Keypad component with multiple digit handlers and animation values
 export const TransactionKeypad = (props: Props) => {
-    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled, confirmTestID } = props;
+    const {
+        variant,
+        onDigit,
+        onDecimal,
+        onBackspace,
+        onLongBackspace,
+        onConfirm,
+        onCancel,
+        isConfirmDisabled,
+        confirmTestID,
+        showAutomateButton = false,
+        onAutomate
+    } = props;
+
+    const confirmFlex = useSharedValue(CONFIRM_FLEX_DEFAULT);
+    const gearFlex = useSharedValue(0);
+    const gearRotation = useSharedValue(0);
+
+    useEffect(() => {
+        if (showAutomateButton) {
+            confirmFlex.value = withTiming(CONFIRM_FLEX_SPLIT, { duration: FLEX_ANIMATION_DURATION });
+            gearFlex.value = withTiming(GEAR_FLEX, { duration: FLEX_ANIMATION_DURATION });
+            gearRotation.value = withTiming(FULL_ROTATION, { duration: GEAR_SPIN_DURATION });
+        } else {
+            confirmFlex.value = withTiming(CONFIRM_FLEX_DEFAULT, { duration: FLEX_ANIMATION_DURATION });
+            gearFlex.value = withTiming(0, { duration: FLEX_ANIMATION_DURATION });
+            gearRotation.value = 0;
+        }
+    }, [showAutomateButton, confirmFlex, gearFlex, gearRotation]);
+
+    const confirmAnimatedStyle = useAnimatedStyle(() => ({
+        flex: confirmFlex.value
+    }));
+
+    const gearAnimatedStyle = useAnimatedStyle(() => ({
+        flex: gearFlex.value
+    }));
+
+    const gearIconAnimatedStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${gearRotation.value}deg` }]
+    }));
 
     const handleDigit1 = () => void onDigit('1');
     const handleDigit2 = () => void onDigit('2');
@@ -65,14 +116,23 @@ export const TransactionKeypad = (props: Props) => {
 
                 <View className="flex-row gap-md">
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
-                    <TransactionKeypadButton
-                        testID={confirmTestID}
-                        icon={UserIconNameEnum.CircleCheck}
-                        variant="confirm"
-                        colorVariant={variant}
-                        onPress={onConfirm}
-                        disabled={isConfirmDisabled}
-                    />
+                    <Animated.View style={confirmAnimatedStyle}>
+                        <TransactionKeypadButton
+                            testID={confirmTestID}
+                            icon={UserIconNameEnum.CircleCheck}
+                            variant="confirm"
+                            colorVariant={variant}
+                            onPress={onConfirm}
+                            disabled={isConfirmDisabled}
+                        />
+                    </Animated.View>
+                    {showAutomateButton ? (
+                        <Animated.View entering={FadeIn.duration(FLEX_ANIMATION_DURATION)} style={gearAnimatedStyle}>
+                            <Animated.View style={gearIconAnimatedStyle} className="flex-1">
+                                <TransactionKeypadButton icon={UserIconNameEnum.Cog} variant="cancel" onPress={onAutomate ?? onConfirm} />
+                            </Animated.View>
+                        </Animated.View>
+                    ) : null}
                 </View>
             </View>
         </Animated.View>

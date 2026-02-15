@@ -1,7 +1,9 @@
 import { RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { typedObjectKeys } from '../../@generic/utils/typed-object-keys.util';
 import { toggleSetItem } from '../../sync/util/toggle-set-item.util';
@@ -28,6 +30,7 @@ interface ProgressState {
 }
 
 export const useSuggestRuleModalHook = ({ suggestRuleData, onCreateRule, onDismiss }: UseSuggestRuleModalHookParams) => {
+    const { t } = useLingui();
     const [selectedFields, setSelectedFields] = useState<Set<SuggestRuleConditionField>>(new Set([RuleConditionFieldEnum.TITLE]));
     const [applyToExisting, setApplyToExisting] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
@@ -96,6 +99,12 @@ export const useSuggestRuleModalHook = ({ suggestRuleData, onCreateRule, onDismi
             }
 
             onCreateRule();
+        } catch (error: unknown) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not create rule`,
+                text2: getErrorMessage(error)
+            });
         } finally {
             setIsCreating(false);
             setIsApplying(false);

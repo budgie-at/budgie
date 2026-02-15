@@ -243,10 +243,14 @@ class AppMonobankSyncService {
             );
             const createdTransactions = await transactionService.bulkCreate(inputs);
 
-            await ruleEngineService.applyRulesToTransactions(
-                createdTransactions.map(({ id }) => id),
-                inputs
-            );
+            try {
+                await ruleEngineService.applyRulesToTransactions(
+                    createdTransactions.map(({ id }) => id),
+                    inputs
+                );
+            } catch {
+                /* empty */
+            }
         }
     }
 
