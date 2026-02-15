@@ -68,8 +68,6 @@ export default function RulesPage() {
                     testID={RuleCardSelectors.Card(index)}
                     switchTestID={RuleCardSelectors.EnabledSwitch(index)}
                     orderBadgeTestID={RuleCardSelectors.OrderBadge(index)}
-                    conditionsTestID={RuleCardSelectors.ConditionsText(index)}
-                    actionsTestID={RuleCardSelectors.ActionsText(index)}
                     onOpen={handleOpenRule}
                     order={order}
                     rule={item}

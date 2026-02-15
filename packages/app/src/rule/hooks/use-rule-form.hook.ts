@@ -75,27 +75,39 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         mode: 'onSubmit'
     });
 
+    const showApplyResultToast = (applied: number, failed: number) => {
+        if (failed === 0) {
+            Toast.show({ type: 'success', text1: t`Rule applied to ${applied} transactions` });
+
+            return;
+        }
+
+        Toast.show({ type: 'error', text1: t`${applied} updated, ${failed} failed` });
+    };
+
     const handleSubmit = async (values: RuleCreateInputInterface) => {
         try {
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
 
                 if (values.applyToExisting) {
-                    await ruleEngineService.applyRuleToMatchingTransactions(ruleId);
+                    const result = await ruleEngineService.applyRuleToMatchingTransactions(ruleId);
+                    showApplyResultToast(result.applied, result.failed);
                 }
             } else {
                 const rule = await ruleService.create(values);
 
                 if (values.applyToExisting) {
-                    await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+                    const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+                    showApplyResultToast(result.applied, result.failed);
                 }
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
-        } catch {
+        } catch (error: unknown) {
             Toast.show({
                 type: 'error',
                 text1: isEditing ? t`Could not update rule` : t`Could not create rule`,
-                text2: t`Please try again later`
+                text2: getErrorMessage(error)
             });
         }
     };

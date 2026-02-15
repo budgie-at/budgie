@@ -1,10 +1,11 @@
+/* eslint-disable max-lines */
 import {
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { ReactNode, useRef } from 'react';
+import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -40,7 +41,8 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly suggestRulePill?: ReactNode;
+    readonly showAutomateButton?: boolean;
+    readonly onAutomateSubmit?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -62,7 +64,8 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
-        suggestRulePill,
+        showAutomateButton = false,
+        onAutomateSubmit,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -157,24 +160,31 @@ export const SimpleQuickForm = (props: Props) => {
     const isSplitActive = splitEntryCount > 1;
     const hasTagsSelected = isNotEmptyArray(tagIds);
 
-    const handleNormalConfirm = () => {
+    const validateAndBuildEntries = (): boolean => {
         const amount = getValues('amount');
         const formCategoryId = getValues('entries.0.categoryId') ?? 0;
-        const accountId = getValues(accountFieldName) ?? 0;
+        const formAccountId = getValues(accountFieldName) ?? 0;
 
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: formCategoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
-            { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
+            { isValid: formAccountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
 
         if (!isValid) {
-            return;
+            return false;
         }
 
-        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
-
+        const builtEntries = buildEntries({ accountId: formAccountId, categoryId: formCategoryId, amount, mccCategoryId });
         setValue('entries', builtEntries, { shouldValidate: false });
+
+        return true;
+    };
+
+    const handleNormalConfirm = () => {
+        if (!validateAndBuildEntries()) {
+            return;
+        }
 
         onSubmit();
     };
@@ -212,6 +222,14 @@ export const SimpleQuickForm = (props: Props) => {
         handleNormalConfirm();
     };
 
+    const handleAutomate = () => {
+        if (isSplitActive) {
+            handleSplitConfirm();
+        } else if (validateAndBuildEntries()) {
+            onAutomateSubmit?.();
+        }
+    };
+
     return (
         <View className="flex-1">
             <View className="flex-1">
@@ -244,8 +262,6 @@ export const SimpleQuickForm = (props: Props) => {
                 </View>
             </View>
 
-            {suggestRulePill}
-
             <TransactionFieldIcons
                 ref={fieldIconsRef}
                 variant={variant}
@@ -276,6 +292,8 @@ export const SimpleQuickForm = (props: Props) => {
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
                 confirmTestID={TransactionFormSelectors.SubmitButton}
+                showAutomateButton={showAutomateButton}
+                onAutomate={handleAutomate}
             />
         </View>
     );

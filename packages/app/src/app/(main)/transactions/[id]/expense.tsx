@@ -13,7 +13,6 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
-import { SuggestRulePill } from '../../../../rule/components/suggest-rule-pill/suggest-rule-pill';
 import { useSuggestRuleModal } from '../../../../rule/context/suggest-rule-modal.context';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
@@ -22,6 +21,7 @@ import { TransactionActionsMenu } from '../../../../transaction/components/trans
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
+import { transactionService } from '../../../../transaction/service/transaction.service';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
@@ -75,15 +75,19 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
             sourceInstrumentId,
             sourceCode: sourceAccount.instrument.code
         });
-    const handleOpenSuggestRule = async () => {
+
+    const handleAutomateSubmit = async () => {
+        const formData = form.getValues();
+        await transactionService.updateById(transactionId, formData);
+
         const result = await openSuggestRule({ suggestRuleData });
         if (result === 'created') {
             onRuleCreated();
         }
+        goBackOrReplace('/');
     };
 
-    const handlePressSuggestRule = () => void handleOpenSuggestRule();
-    const suggestRulePill = <SuggestRulePill visible={shouldSuggestRule} onPress={handlePressSuggestRule} />;
+    const handleAutomatePress = () => void handleAutomateSubmit();
 
     return (
         <FormProvider {...form}>
@@ -106,7 +110,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    suggestRulePill={suggestRulePill}
+                    showAutomateButton={shouldSuggestRule}
+                    onAutomateSubmit={handleAutomatePress}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
