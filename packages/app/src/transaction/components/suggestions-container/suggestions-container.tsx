@@ -1,5 +1,8 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { RuleSuggestionStrip } from '../../../rule/components/rule-suggestion-strip/rule-suggestion-strip';
+import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 
 import { CategorySuggestionRow } from './category-suggestion-row';
@@ -18,6 +21,10 @@ interface Props {
     readonly accountId: number;
     readonly amount: number;
     readonly hasTagsSelected: boolean;
+    readonly shouldSuggestRule?: boolean;
+    readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly variant?: ColorPaletteVariant;
+    readonly onRuleCreated?: () => void;
     readonly onSelectCategory: (categoryId: number) => void;
     readonly onSelectTag: (tagId: number) => void;
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
@@ -37,10 +44,18 @@ export const SuggestionsContainer = (props: Props) => {
         accountId,
         amount,
         hasTagsSelected,
+        shouldSuggestRule = false,
+        suggestRuleData,
+        variant = 'default',
+        onRuleCreated,
         onSelectCategory,
         onSelectTag,
         onSelectRepeatedPattern
     } = props;
+
+    if (shouldSuggestRule && suggestRuleData && onRuleCreated) {
+        return <RuleSuggestionStrip suggestRuleData={suggestRuleData} variant={variant} onRuleCreated={onRuleCreated} />;
+    }
 
     const safeCategoryId = categoryId ?? 0;
     const hasCategorySelected = safeCategoryId > 0;
