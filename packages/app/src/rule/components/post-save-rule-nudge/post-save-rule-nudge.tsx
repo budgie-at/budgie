@@ -21,11 +21,11 @@ import { useQuickRuleCreation } from '../../hooks/use-quick-rule-creation.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 
 const BACKDROP_FADE_DURATION = 200;
-const BACKDROP_OPACITY = 0.3;
+const BACKDROP_OPACITY = 0.5;
 const CARD_SPRING_CONFIG = { damping: 20, stiffness: 200 };
 const SPARKLE_ROTATION_DURATION = 600;
 const SUCCESS_DISMISS_DELAY = 800;
-const DISMISS_FADE_DURATION = 150;
+const DISMISS_FADE_DURATION = 100;
 const CARD_INITIAL_TRANSLATE = 400;
 
 const buttonVariants = cva('h-12 items-center justify-center rounded-xl', {
@@ -172,7 +172,7 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
             <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} onTouchEnd={handleBackdropPress} />
 
             <Animated.View className="absolute inset-x-0 bottom-0 px-lg" style={cardContainerStyle}>
-                <View className="rounded-3xl bg-background px-5xl py-3xl">
+                <View className="rounded-3xl bg-primary-reverse px-5xl py-3xl">
                     <View className="items-center gap-sm">
                         <Animated.View style={sparkleStyle}>
                             <Icon icon={iconName} size={32} className={sparkleVariants({ variant })} />
