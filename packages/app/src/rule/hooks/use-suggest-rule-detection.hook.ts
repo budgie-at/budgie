@@ -4,7 +4,10 @@ import { Control, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
+import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
+import { hasMatchingRule } from '../util/has-matching-rule.util';
 
 interface UseSuggestRuleDetectionParams {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -17,10 +20,12 @@ interface UseSuggestRuleDetectionResult {
     readonly onRuleCreated: () => void;
 }
 
+// eslint-disable-next-line max-statements -- Detection hook with multiple derived values
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParams): UseSuggestRuleDetectionResult => {
     const [ruleCreated, setRuleCreated] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
+    const { enabledRules } = useGetEnabledRulesQuery();
 
     const categoryId = entries[0]?.categoryId ?? null;
 
@@ -31,11 +36,6 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
     const tagsChanged = JSON.stringify([...tagIds].sort()) !== JSON.stringify([...originalTagIds].sort());
 
-    const shouldSuggestRule = isBankSynced && (categoryChanged || tagsChanged) && !ruleCreated;
-    const onRuleCreated = () => {
-        setRuleCreated(true);
-    };
-
     const mccCategory = transaction.entries[0]?.mccCategory ?? null;
 
     const suggestRuleData: SuggestRuleDataInterface = {
@@ -44,6 +44,14 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         mccCode: isDefined(mccCategory) ? mccCategory.mcc : null,
         categoryId,
         tagIds
+    };
+
+    const transactionInput = convertTransactionToInput(transaction);
+    const matchingRuleExists = hasMatchingRule(enabledRules, transactionInput, suggestRuleData);
+
+    const shouldSuggestRule = isBankSynced && (categoryChanged || tagsChanged) && !ruleCreated && !matchingRuleExists;
+    const onRuleCreated = () => {
+        setRuleCreated(true);
     };
 
     return { shouldSuggestRule, suggestRuleData, onRuleCreated };
