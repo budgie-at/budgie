@@ -5,7 +5,6 @@ import { cva } from 'class-variance-authority';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -20,13 +19,8 @@ import { useMatchingTransactionCount } from '../../hooks/use-matching-transactio
 import { useQuickRuleCreation } from '../../hooks/use-quick-rule-creation.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 
-const BACKDROP_FADE_DURATION = 200;
 const BACKDROP_OPACITY = 0.5;
-const CARD_SPRING_CONFIG = { damping: 20, stiffness: 200 };
-const SPARKLE_ROTATION_DURATION = 600;
 const SUCCESS_DISMISS_DELAY = 800;
-const DISMISS_FADE_DURATION = 100;
-const CARD_INITIAL_TRANSLATE = 400;
 
 const buttonVariants = cva('h-12 items-center justify-center rounded-xl', {
     variants: {
@@ -63,7 +57,7 @@ interface Props {
     readonly onComplete: () => void;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Animated overlay component with multiple animation values and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Overlay component with multiple handlers
 export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onComplete }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const [hapticNotification] = useVibration();
@@ -96,26 +90,6 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
         enabled: true
     });
 
-    const backdropOpacity = useSharedValue(0);
-    const cardTranslateY = useSharedValue(CARD_INITIAL_TRANSLATE);
-    const sparkleRotation = useSharedValue(0);
-
-    useEffect(() => {
-        backdropOpacity.value = withTiming(BACKDROP_OPACITY, { duration: BACKDROP_FADE_DURATION });
-        cardTranslateY.value = withSpring(0, CARD_SPRING_CONFIG);
-        sparkleRotation.value = withTiming(360, { duration: SPARKLE_ROTATION_DURATION });
-    }, [backdropOpacity, cardTranslateY, sparkleRotation]);
-
-    const animateDismiss = (callback: () => void) => {
-        setIsDismissing(true);
-        cardTranslateY.value = withSpring(CARD_INITIAL_TRANSLATE, CARD_SPRING_CONFIG);
-        backdropOpacity.value = withTiming(0, { duration: DISMISS_FADE_DURATION }, finished => {
-            if (finished) {
-                runOnJS(callback)();
-            }
-        });
-    };
-
     useEffect(() => {
         if (!isSuccess) {
             return emptyFn;
@@ -124,17 +98,14 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
         hapticNotification(NotificationFeedbackType.Success);
 
         const timer = setTimeout(() => {
-            animateDismiss(onComplete);
+            setIsDismissing(true);
+            onComplete();
         }, SUCCESS_DISMISS_DELAY);
 
         return () => {
             clearTimeout(timer);
         };
     }, [isSuccess]);
-
-    const backdropStyle = useAnimatedStyle(() => ({ opacity: backdropOpacity.value }));
-    const cardStyle = useAnimatedStyle(() => ({ transform: [{ translateY: cardTranslateY.value }] }));
-    const sparkleStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${sparkleRotation.value}deg` }] }));
 
     const handleCreate = () => {
         handleQuickCreate();
@@ -151,12 +122,12 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
     };
 
     const handleSkip = () => {
-        animateDismiss(onComplete);
+        onComplete();
     };
 
     const handleBackdropPress = () => {
         if (!isDismissing && !isCreating) {
-            animateDismiss(onComplete);
+            onComplete();
         }
     };
 
@@ -165,18 +136,16 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
     const iconName = isSuccess ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Sparkles;
     const isInteractionDisabled = isDismissing || isCreating || isSuccess;
     const containerStyle = { zIndex: 50 };
-    const cardContainerStyle = [cardStyle, bottomPadding];
+    const backdropStyle = { opacity: BACKDROP_OPACITY };
 
     return (
         <View className="absolute inset-0" style={containerStyle}>
-            <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} onTouchEnd={handleBackdropPress} />
+            <View className="absolute inset-0 bg-black" style={backdropStyle} onTouchEnd={handleBackdropPress} />
 
-            <Animated.View className="absolute inset-x-0 bottom-0 px-lg" style={cardContainerStyle}>
+            <View className="absolute inset-x-0 bottom-0 px-lg" style={bottomPadding}>
                 <View className="rounded-3xl bg-primary-reverse px-5xl py-3xl">
                     <View className="items-center gap-sm">
-                        <Animated.View style={sparkleStyle}>
-                            <Icon icon={iconName} size={32} className={sparkleVariants({ variant })} />
-                        </Animated.View>
+                        <Icon icon={iconName} size={32} className={sparkleVariants({ variant })} />
 
                         <Text className="text-xl font-semibold text-primary">
                             {isSuccess ? <Trans>Rule created!</Trans> : <Trans>Automate this?</Trans>}
@@ -225,7 +194,7 @@ export const PostSaveRuleNudge = ({ suggestRuleData, variant, onRuleCreated, onC
                         )}
                     </View>
                 </View>
-            </Animated.View>
+            </View>
         </View>
     );
 };
