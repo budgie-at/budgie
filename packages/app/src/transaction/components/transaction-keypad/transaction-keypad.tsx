@@ -128,9 +128,12 @@ export const TransactionKeypad = (props: Props) => {
                     </Animated.View>
                     {showAutomateButton ? (
                         <Animated.View entering={FadeIn.duration(FLEX_ANIMATION_DURATION)} style={gearAnimatedStyle}>
-                            <Animated.View style={gearIconAnimatedStyle} className="flex-1">
-                                <TransactionKeypadButton icon={UserIconNameEnum.Cog} variant="cancel" onPress={onAutomate ?? onConfirm} />
-                            </Animated.View>
+                            <TransactionKeypadButton
+                                icon={UserIconNameEnum.Cog}
+                                iconAnimatedStyle={gearIconAnimatedStyle}
+                                variant="cancel"
+                                onPress={onAutomate ?? onConfirm}
+                            />
                         </Animated.View>
                     ) : null}
                 </View>

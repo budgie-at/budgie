@@ -83,8 +83,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         const result = await openSuggestRule({ suggestRuleData });
         if (result === 'created') {
             onRuleCreated();
+            goBackOrReplace('/');
         }
-        goBackOrReplace('/');
     };
 
     const handleAutomatePress = () => void handleAutomateSubmit();
