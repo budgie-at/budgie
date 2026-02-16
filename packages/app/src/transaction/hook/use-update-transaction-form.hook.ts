@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
@@ -17,15 +17,13 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     readonly transaction: T;
     readonly id: number;
     readonly onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
-    readonly onSuccess?: () => void;
 }
 
 export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>({
     id,
     schema,
     transaction,
-    onAfterSubmit,
-    onSuccess
+    onAfterSubmit
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
@@ -40,11 +38,7 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
             await transactionService.updateById(id, data);
             onAfterSubmit?.(data);
 
-            if (isDefined(onSuccess)) {
-                onSuccess();
-            } else {
-                goBackOrReplace('/');
-            }
+            goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',

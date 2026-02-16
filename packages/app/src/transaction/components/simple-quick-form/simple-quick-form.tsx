@@ -15,6 +15,7 @@ import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-fo
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -42,6 +43,9 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
+    readonly shouldSuggestRule?: boolean;
+    readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly onRuleCreated?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -63,6 +67,9 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
+        shouldSuggestRule = false,
+        suggestRuleData,
+        onRuleCreated,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -222,6 +229,7 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <View className="flex-1">
+                <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                 <TransactionAmountDisplay
                     testID={TransactionFormSelectors.AmountInput}
                     ref={amountDisplayRef}
@@ -230,7 +238,6 @@ export const SimpleQuickForm = (props: Props) => {
                     variant={variant}
                 />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
-                    <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                     <SuggestionsContainer
                         isNewTransaction={isNewTransaction}
                         isSplitActive={isSplitActive}
@@ -243,6 +250,10 @@ export const SimpleQuickForm = (props: Props) => {
                         accountId={accountId}
                         amount={amount}
                         hasTagsSelected={hasTagsSelected}
+                        shouldSuggestRule={shouldSuggestRule}
+                        suggestRuleData={suggestRuleData}
+                        variant={variant}
+                        onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
                         onSelectComment={handleSelectComment}
