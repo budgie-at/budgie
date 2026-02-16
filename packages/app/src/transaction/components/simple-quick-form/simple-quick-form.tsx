@@ -228,7 +228,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     return (
         <View className="flex-1">
-            <View className="flex-1">
+            <View className="flex-1 justify-start pt-3xl">
                 <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                 <TransactionAmountDisplay
                     testID={TransactionFormSelectors.AmountInput}
@@ -252,7 +252,6 @@ export const SimpleQuickForm = (props: Props) => {
                         hasTagsSelected={hasTagsSelected}
                         shouldSuggestRule={shouldSuggestRule}
                         suggestRuleData={suggestRuleData}
-                        variant={variant}
                         onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
