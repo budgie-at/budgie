@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { AnimatedStyle, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -13,12 +13,14 @@ import { cn } from '../../../@generic/utils/cn.util';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { ClassValue } from 'clsx';
+import type { ViewStyle } from 'react-native';
 
 type KeypadButtonVariant = 'digit' | 'action' | 'confirm' | 'cancel';
 
 interface Props {
     readonly value?: string;
     readonly icon?: UserIconNameEnum;
+    readonly iconAnimatedStyle?: AnimatedStyle<ViewStyle>;
     readonly variant?: KeypadButtonVariant;
     readonly colorVariant?: ColorPaletteVariant;
     readonly onPress: () => void;
@@ -75,6 +77,7 @@ export const TransactionKeypadButton = (props: Props) => {
     const {
         value,
         icon,
+        iconAnimatedStyle,
         variant = 'digit',
         colorVariant = 'positive',
         onPress,
@@ -133,7 +136,9 @@ export const TransactionKeypadButton = (props: Props) => {
         >
             <Animated.View className="items-center justify-center" style={animatedStyle}>
                 {isDefined(icon) ? (
-                    <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
+                    <Animated.View style={iconAnimatedStyle}>
+                        <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
+                    </Animated.View>
                 ) : (
                     <Text className={contentClassName}>{value}</Text>
                 )}
