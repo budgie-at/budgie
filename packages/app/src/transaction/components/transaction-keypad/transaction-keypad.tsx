@@ -8,11 +8,8 @@ import { TransactionKeypadButton } from '../transaction-keypad-button/transactio
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 const FLEX_ANIMATION_DURATION = 300;
-const GEAR_SPIN_DURATION = 600;
 const CONFIRM_FLEX_DEFAULT = 2;
-const CONFIRM_FLEX_SPLIT = 1.3;
-const GEAR_FLEX = 0.7;
-const FULL_ROTATION = 360;
+const AUTOMATE_CONFIRM_FLEX = 1;
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -45,31 +42,24 @@ export const TransactionKeypad = (props: Props) => {
     } = props;
 
     const confirmFlex = useSharedValue(CONFIRM_FLEX_DEFAULT);
-    const gearFlex = useSharedValue(0);
-    const gearRotation = useSharedValue(0);
+    const automateFlex = useSharedValue(0);
 
     useEffect(() => {
         if (showAutomateButton) {
-            confirmFlex.value = withTiming(CONFIRM_FLEX_SPLIT, { duration: FLEX_ANIMATION_DURATION });
-            gearFlex.value = withTiming(GEAR_FLEX, { duration: FLEX_ANIMATION_DURATION });
-            gearRotation.value = withTiming(FULL_ROTATION, { duration: GEAR_SPIN_DURATION });
+            confirmFlex.value = withTiming(AUTOMATE_CONFIRM_FLEX, { duration: FLEX_ANIMATION_DURATION });
+            automateFlex.value = withTiming(AUTOMATE_CONFIRM_FLEX, { duration: FLEX_ANIMATION_DURATION });
         } else {
             confirmFlex.value = withTiming(CONFIRM_FLEX_DEFAULT, { duration: FLEX_ANIMATION_DURATION });
-            gearFlex.value = withTiming(0, { duration: FLEX_ANIMATION_DURATION });
-            gearRotation.value = 0;
+            automateFlex.value = withTiming(0, { duration: FLEX_ANIMATION_DURATION });
         }
-    }, [showAutomateButton, confirmFlex, gearFlex, gearRotation]);
+    }, [showAutomateButton, confirmFlex, automateFlex]);
 
     const confirmAnimatedStyle = useAnimatedStyle(() => ({
         flex: confirmFlex.value
     }));
 
-    const gearAnimatedStyle = useAnimatedStyle(() => ({
-        flex: gearFlex.value
-    }));
-
-    const gearIconAnimatedStyle = useAnimatedStyle(() => ({
-        transform: [{ rotate: `${gearRotation.value}deg` }]
+    const automateAnimatedStyle = useAnimatedStyle(() => ({
+        flex: automateFlex.value
     }));
 
     const handleDigit1 = () => void onDigit('1');
@@ -116,6 +106,16 @@ export const TransactionKeypad = (props: Props) => {
 
                 <View className="flex-row gap-md">
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
+                    {showAutomateButton ? (
+                        <Animated.View entering={FadeIn.duration(FLEX_ANIMATION_DURATION)} style={automateAnimatedStyle}>
+                            <TransactionKeypadButton
+                                icon={UserIconNameEnum.Shuffle}
+                                variant="confirm"
+                                colorVariant={variant}
+                                onPress={onAutomate ?? onConfirm}
+                            />
+                        </Animated.View>
+                    ) : null}
                     <Animated.View style={confirmAnimatedStyle}>
                         <TransactionKeypadButton
                             testID={confirmTestID}
@@ -126,16 +126,6 @@ export const TransactionKeypad = (props: Props) => {
                             disabled={isConfirmDisabled}
                         />
                     </Animated.View>
-                    {showAutomateButton ? (
-                        <Animated.View entering={FadeIn.duration(FLEX_ANIMATION_DURATION)} style={gearAnimatedStyle}>
-                            <TransactionKeypadButton
-                                icon={UserIconNameEnum.Cog}
-                                iconAnimatedStyle={gearIconAnimatedStyle}
-                                variant="cancel"
-                                onPress={onAutomate ?? onConfirm}
-                            />
-                        </Animated.View>
-                    ) : null}
                 </View>
             </View>
         </Animated.View>
