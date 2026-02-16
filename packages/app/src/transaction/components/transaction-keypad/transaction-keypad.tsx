@@ -18,7 +18,6 @@ interface Props {
     readonly confirmTestID?: string;
 }
 
- 
 export const TransactionKeypad = (props: Props) => {
     const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled, confirmTestID } = props;
 
