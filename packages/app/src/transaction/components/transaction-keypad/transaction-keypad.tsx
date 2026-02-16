@@ -1,15 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useEffect } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeInUp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-
-const FLEX_ANIMATION_DURATION = 300;
-const CONFIRM_FLEX_DEFAULT = 2;
-const AUTOMATE_CONFIRM_FLEX = 1;
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -21,46 +16,11 @@ interface Props {
     readonly onCancel: () => void;
     readonly isConfirmDisabled?: boolean;
     readonly confirmTestID?: string;
-    readonly showAutomateButton?: boolean;
-    readonly onAutomate?: () => void;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Keypad component with multiple digit handlers and animation values
+ 
 export const TransactionKeypad = (props: Props) => {
-    const {
-        variant,
-        onDigit,
-        onDecimal,
-        onBackspace,
-        onLongBackspace,
-        onConfirm,
-        onCancel,
-        isConfirmDisabled,
-        confirmTestID,
-        showAutomateButton = false,
-        onAutomate
-    } = props;
-
-    const confirmFlex = useSharedValue(CONFIRM_FLEX_DEFAULT);
-    const automateFlex = useSharedValue(0);
-
-    useEffect(() => {
-        if (showAutomateButton) {
-            confirmFlex.value = withTiming(AUTOMATE_CONFIRM_FLEX, { duration: FLEX_ANIMATION_DURATION });
-            automateFlex.value = withTiming(AUTOMATE_CONFIRM_FLEX, { duration: FLEX_ANIMATION_DURATION });
-        } else {
-            confirmFlex.value = withTiming(CONFIRM_FLEX_DEFAULT, { duration: FLEX_ANIMATION_DURATION });
-            automateFlex.value = withTiming(0, { duration: FLEX_ANIMATION_DURATION });
-        }
-    }, [showAutomateButton, confirmFlex, automateFlex]);
-
-    const confirmAnimatedStyle = useAnimatedStyle(() => ({
-        flex: confirmFlex.value
-    }));
-
-    const automateAnimatedStyle = useAnimatedStyle(() => ({
-        flex: automateFlex.value
-    }));
+    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled, confirmTestID } = props;
 
     const handleDigit1 = () => void onDigit('1');
     const handleDigit2 = () => void onDigit('2');
@@ -106,17 +66,7 @@ export const TransactionKeypad = (props: Props) => {
 
                 <View className="flex-row gap-md">
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
-                    {showAutomateButton ? (
-                        <Animated.View entering={FadeIn.duration(FLEX_ANIMATION_DURATION)} style={automateAnimatedStyle}>
-                            <TransactionKeypadButton
-                                icon={UserIconNameEnum.Shuffle}
-                                variant="confirm"
-                                colorVariant={variant}
-                                onPress={onAutomate ?? onConfirm}
-                            />
-                        </Animated.View>
-                    ) : null}
-                    <Animated.View style={confirmAnimatedStyle}>
+                    <View className="flex-2">
                         <TransactionKeypadButton
                             testID={confirmTestID}
                             icon={UserIconNameEnum.CircleCheck}
@@ -125,7 +75,7 @@ export const TransactionKeypad = (props: Props) => {
                             onPress={onConfirm}
                             disabled={isConfirmDisabled}
                         />
-                    </Animated.View>
+                    </View>
                 </View>
             </View>
         </Animated.View>

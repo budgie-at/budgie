@@ -14,6 +14,8 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -41,8 +43,9 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly showAutomateButton?: boolean;
-    readonly onAutomateSubmit?: () => void;
+    readonly shouldSuggestRule?: boolean;
+    readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly onRuleCreated?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -64,8 +67,9 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
-        showAutomateButton = false,
-        onAutomateSubmit,
+        shouldSuggestRule = false,
+        suggestRuleData,
+        onRuleCreated,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -222,14 +226,6 @@ export const SimpleQuickForm = (props: Props) => {
         handleNormalConfirm();
     };
 
-    const handleAutomate = () => {
-        if (isSplitActive) {
-            handleSplitConfirm();
-        } else if (validateAndBuildEntries()) {
-            onAutomateSubmit?.();
-        }
-    };
-
     return (
         <View className="flex-1">
             <View className="flex-1">
@@ -254,6 +250,10 @@ export const SimpleQuickForm = (props: Props) => {
                         accountId={accountId}
                         amount={amount}
                         hasTagsSelected={hasTagsSelected}
+                        shouldSuggestRule={shouldSuggestRule}
+                        suggestRuleData={suggestRuleData}
+                        variant={variant}
+                        onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
                         onSelectComment={handleSelectComment}
@@ -292,8 +292,6 @@ export const SimpleQuickForm = (props: Props) => {
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
                 confirmTestID={TransactionFormSelectors.SubmitButton}
-                showAutomateButton={showAutomateButton}
-                onAutomate={handleAutomate}
             />
         </View>
     );

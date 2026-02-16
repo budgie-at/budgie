@@ -13,7 +13,6 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
-import { useSuggestRuleModal } from '../../../../rule/context/suggest-rule-modal.context';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
@@ -21,7 +20,6 @@ import { TransactionActionsMenu } from '../../../../transaction/components/trans
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
-import { transactionService } from '../../../../transaction/service/transaction.service';
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
@@ -33,12 +31,11 @@ interface UpdateIncomeFormProps {
 
 /* jscpd:ignore-start */
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+ 
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const { generateForTransaction } = useEmbeddingGenerator();
-    const { openSuggestRule } = useSuggestRuleModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -76,19 +73,6 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
             sourceCode: sourceAccount.instrument.code
         });
 
-    const handleAutomateSubmit = async () => {
-        const formData = form.getValues();
-        await transactionService.updateById(transactionId, formData);
-
-        const result = await openSuggestRule({ suggestRuleData });
-        if (result === 'created') {
-            onRuleCreated();
-            goBackOrReplace('/');
-        }
-    };
-
-    const handleAutomatePress = () => void handleAutomateSubmit();
-
     return (
         <FormProvider {...form}>
             <FullPage
@@ -110,8 +94,9 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    showAutomateButton={shouldSuggestRule}
-                    onAutomateSubmit={handleAutomatePress}
+                    shouldSuggestRule={shouldSuggestRule}
+                    suggestRuleData={suggestRuleData}
+                    onRuleCreated={onRuleCreated}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
