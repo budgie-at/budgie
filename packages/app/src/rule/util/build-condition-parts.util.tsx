@@ -27,8 +27,8 @@ export const buildConditionParts = (
 
             parts.push(
                 <Fragment key={field}>
-                    <Text className="font-semibold">{fieldLabel}</Text> {operatorLabel}{' '}
-                    <Text className="font-semibold">&quot;{value}&quot;</Text>
+                    <Text className="font-semibold text-foreground">{fieldLabel}</Text> {operatorLabel}{' '}
+                    <Text className="font-semibold text-foreground">&quot;{value}&quot;</Text>
                 </Fragment>
             );
         }
