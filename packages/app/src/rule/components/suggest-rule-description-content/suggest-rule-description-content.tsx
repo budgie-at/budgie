@@ -35,9 +35,7 @@ export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData,
             {hasActions ? (
                 <>
                     {' → '}
-                    <Text className="text-primary">
-                        <Trans>set</Trans> {actionsJoined}
-                    </Text>
+                    <Trans>set</Trans> {actionsJoined}
                 </>
             ) : null}
         </Text>
