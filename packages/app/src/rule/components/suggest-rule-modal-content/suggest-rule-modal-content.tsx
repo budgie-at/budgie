@@ -14,7 +14,6 @@ import { useGetCategoryByIdQuery } from '../../../category/query/use-get-categor
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { useSuggestRuleModalHook } from '../../hooks/use-suggest-rule-modal.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
-import { SuggestRuleActionPills } from '../suggest-rule-action-pills/suggest-rule-action-pills';
 import { SuggestRuleConditionSelector } from '../suggest-rule-condition-selector/suggest-rule-condition-selector';
 import { SuggestRuleDescription } from '../suggest-rule-description/suggest-rule-description';
 
@@ -79,8 +78,6 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismi
                         category={category ?? null}
                         tags={tags ?? null}
                     />
-
-                    <SuggestRuleActionPills category={category ?? null} tags={tags ?? null} />
 
                     {hasSelectedConditions ? (
                         <View className="flex-row items-center justify-between gap-x-lg">
