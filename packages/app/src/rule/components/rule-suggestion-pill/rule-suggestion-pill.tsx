@@ -21,6 +21,7 @@ const SPARKLE_ANIMATION_DURATION = 600;
 const SUCCESS_EXIT_DELAY_MS = 600;
 const SPARKLE_ICON_SIZE = 14;
 const CHECK_ICON_SIZE = 14;
+const ACTION_ICON_SIZE = 10;
 const SPARKLE_ROTATION_DEGREES = 360;
 
 interface Props {
@@ -42,8 +43,8 @@ export const RuleSuggestionPill = (props: Props) => {
 
     const { tags } = useGetTagByIdsQuery(suggestRuleData.tagIds);
     const tagDisplayValue = getTagsDisplayValue(tags ?? null);
-    const actionParts = [categoryName, tagDisplayValue].filter(isNotEmptyString);
-    const actionText = actionParts.join(', ');
+    const hasCategory = isNotEmptyString(categoryName);
+    const hasTagDisplay = isNotEmptyString(tagDisplayValue);
 
     const sparkleRotation = useSharedValue(0);
 
@@ -96,9 +97,22 @@ export const RuleSuggestionPill = (props: Props) => {
                     <Animated.View style={sparkleAnimatedStyle}>
                         <Icon icon={UserIconNameEnum.Sparkles} size={SPARKLE_ICON_SIZE} className="text-secondary-foreground" />
                     </Animated.View>
-                    <Text className="text-xs text-secondary-foreground font-medium max-w-48" numberOfLines={1}>
-                        {actionText}
-                    </Text>
+                    {hasCategory ? (
+                        <>
+                            <Icon icon={UserIconNameEnum.FolderOpen} size={ACTION_ICON_SIZE} className="text-secondary-foreground" />
+                            <Text className="text-xs text-secondary-foreground font-medium max-w-24" numberOfLines={1}>
+                                {categoryName}
+                            </Text>
+                        </>
+                    ) : null}
+                    {hasTagDisplay ? (
+                        <>
+                            <Icon icon={UserIconNameEnum.Tag} size={ACTION_ICON_SIZE} className="text-secondary-foreground" />
+                            <Text className="text-xs text-secondary-foreground font-medium max-w-24" numberOfLines={1}>
+                                {tagDisplayValue}
+                            </Text>
+                        </>
+                    ) : null}
                 </HapticPressable>
             </Animated.View>
         </View>
