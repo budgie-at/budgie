@@ -21,19 +21,17 @@ export const buildConditionParts = (
     for (const field of selectedFields) {
         const value = getSuggestRuleFieldValue(field, suggestRuleData);
 
-        if (!isDefined(value)) {
-            continue;
+        if (isDefined(value)) {
+            const fieldLabel = translateFn(RULE_CONDITION_FIELD[field]);
+            const operatorLabel = translateFn(RULE_CONDITION_OPERATOR[RuleConditionOperatorEnum.CONTAINS]);
+
+            parts.push(
+                <Fragment key={field}>
+                    <Text className="font-semibold">{fieldLabel}</Text> {operatorLabel}{' '}
+                    <Text className="font-semibold">&quot;{value}&quot;</Text>
+                </Fragment>
+            );
         }
-
-        const fieldLabel = translateFn(RULE_CONDITION_FIELD[field]);
-        const operatorLabel = translateFn(RULE_CONDITION_OPERATOR[RuleConditionOperatorEnum.CONTAINS]);
-
-        parts.push(
-            <Fragment key={field}>
-                <Text className="font-semibold">{fieldLabel}</Text> {operatorLabel}{' '}
-                <Text className="font-semibold">&quot;{value}&quot;</Text>
-            </Fragment>
-        );
     }
 
     return parts;
