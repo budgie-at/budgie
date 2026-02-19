@@ -1,9 +1,6 @@
 import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
-type PatternCategorySuggestion = Pick<
-    RepeatedTransactionPatternInterface,
-    'categoryId' | 'categoryTitle' | 'categoryIcon' | 'occurrenceCount'
->;
+import { PatternCategorySuggestion } from '../interface/pattern-category-suggestion.type';
 
 export const deduplicatePatternCategories = (patterns: RepeatedTransactionPatternInterface[]): PatternCategorySuggestion[] => {
     const categoryMap = new Map<number, PatternCategorySuggestion>();

@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, lt, ne, not, sql } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,6 +11,7 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { UnembeddedCommentDataInterface } from '../interface/unembedded-comment-data.interface';
+import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
 import { CommentEmbeddingTagEntityTable } from '../table/comment-embedding-tag-entity.table';
 
@@ -44,7 +45,9 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
         super(db, rawDb, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
     }
 
-    async upsert(comment: string, categoryId: number, embedding: Uint8Array, dimensions: number): Promise<number | null> {
+    async upsert(params: UpsertCommentEmbeddingParamsInterface): Promise<number | null> {
+        const { comment, categoryId, embedding, dimensions } = params;
+
         if (dimensions !== EMBEDDING_DIMENSIONS) {
             return null;
         }
@@ -67,20 +70,15 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async replaceTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        await this.db.transaction(async transaction => {
-            await transaction
-                .delete(CommentEmbeddingTagEntityTable)
-                .where(eq(CommentEmbeddingTagEntityTable.commentEmbeddingId, embeddingId));
-
-            if (tagIds.length > 0) {
-                await transaction
-                    .insert(CommentEmbeddingTagEntityTable)
-                    .values(tagIds.map(tagId => ({ commentEmbeddingId: embeddingId, tagId })));
-            }
+        return this.replaceEmbeddingTags({
+            tagTable: CommentEmbeddingTagEntityTable,
+            foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
+            embeddingId,
+            tagIds,
+            createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
         });
     }
 
-     
     async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedCommentDataInterface[]> {
         const entryJoinCondition = and(
             eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
@@ -90,7 +88,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
             isNull(TransactionEntityTable.deletedAt),
             eq(TransactionEntityTable.title, ''),
             ne(TransactionEntityTable.comment, ''),
-            not(isNull(TransactionEntryEntityTable.categoryId))
+            isNotNull(TransactionEntryEntityTable.categoryId)
         );
 
         let query = this.db

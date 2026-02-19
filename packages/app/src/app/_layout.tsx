@@ -95,10 +95,19 @@ export default function RootLayout() {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
-                                                                    <Stack.Screen name="category-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="account-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="account-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="category-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-form"
+                                                                        options={CATEGORY_EDIT_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tag-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
                                                                     <Stack.Screen name="date-picker" options={DATE_PICKER_MODAL_OPTIONS} />
                                                                     <Stack.Screen name="note-input" options={NOTE_INPUT_MODAL_OPTIONS} />
@@ -106,8 +115,14 @@ export default function RootLayout() {
                                                                         name="convert-to-transfer"
                                                                         options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="icon-selector"
+                                                                        options={ICON_SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="split-entries"
+                                                                        options={SPLIT_ENTRIES_MODAL_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />

@@ -7,7 +7,11 @@ export { LanguageEnum } from './@generic/enum/language.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
+export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
+export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
+export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
+export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
 
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 
@@ -192,6 +196,7 @@ export { TransactionTagsEntitySchema } from './transaction-tags/schema/transacti
 export { TransactionTagsCreateEntitySchema } from './transaction-tags/schema/transaction-tags-create-entity.schema';
 
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
+export type { TransactionTagsWithTagEntityInterface } from './transaction-tags/entity/transaction-tags-with-tag-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
@@ -276,7 +281,7 @@ export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embed
 
 export { EMBEDDING_DIMENSIONS } from './@generic/constant/embedding-dimensions.constant';
 
-export type { TitleEmbeddingEntityInterface } from './title-embedding/interface/title-embedding-entity.interface';
+export type { TitleEmbeddingEntityInterface } from './title-embedding/entity/title-embedding-entity.interface';
 export type { CategoryCountResultInterface } from './title-embedding/interface/category-count-result.interface';
 export type { CommentCountResultInterface } from './title-embedding/interface/comment-count-result.interface';
 export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
@@ -297,10 +302,7 @@ export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/m
 
 export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
 
-export type { CategoryScoreResultInterface } from './merchant-embedding/interface/category-score-result.interface';
-export type { TagScoreResultInterface } from './merchant-embedding/interface/tag-score-result.interface';
 export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
-export type { SimilarTagsParamsInterface } from './merchant-embedding/interface/similar-tags-params.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
 export type { UnembeddedMerchantDataInterface } from './merchant-embedding/interface/unembedded-merchant-data.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
@@ -320,5 +322,6 @@ export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/com
 export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
 
 export type { UnembeddedCommentDataInterface } from './comment-embedding/interface/unembedded-comment-data.interface';
+export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
 
 export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';
