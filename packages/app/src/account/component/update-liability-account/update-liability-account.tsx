@@ -53,7 +53,13 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     }
 
     return (
-        <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={updatedAccount} control={control}>
+        <UpdateAccountScreen
+            instrumentSymbol={instrument.symbol}
+            onSubmit={handleSubmit}
+            account={updatedAccount}
+            control={control}
+            allowNegativeBalance
+        >
             {canChangeType ? <AccountTypeSelectorField control={control} /> : null}
             {isBankSyncAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
             <IncludeInNetWorthField control={control} />
