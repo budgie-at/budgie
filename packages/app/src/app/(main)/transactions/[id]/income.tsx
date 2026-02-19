@@ -1,11 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    IncomeTransactionCreateInputSchema,
-    PRECISION,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
@@ -15,6 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
@@ -68,7 +64,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
             transactionId,
             transactionType: TransactionTypeEnum.INCOME,
             excludeAccountId: toAccountId ?? 0,
-            sourceAmount: sourceAmount / PRECISION,
+            sourceAmount: convertFromMicroUnits(sourceAmount),
             sourceInstrumentId,
             sourceCode: sourceAccount.instrument.code
         });

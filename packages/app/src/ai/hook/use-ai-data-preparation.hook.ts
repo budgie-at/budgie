@@ -83,7 +83,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             const existingMerchantKeys = new Set(merchantKeys);
             const existingCommentKeys = new Set(commentKeys);
             const totalExisting = existingMerchantKeys.size + existingCommentKeys.size;
-            const estimatedTotal = Math.max(totalExisting + 100, totalExisting);
+            const estimatedTotal = totalExisting + 100;
             const totalSteps = categories.length + tags.length + estimatedTotal;
 
             setTotalContexts(estimatedTotal);

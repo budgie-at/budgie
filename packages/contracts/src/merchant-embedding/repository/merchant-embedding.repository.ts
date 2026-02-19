@@ -105,16 +105,12 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async replaceTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        await this.db.transaction(async transaction => {
-            await transaction
-                .delete(MerchantEmbeddingTagEntityTable)
-                .where(eq(MerchantEmbeddingTagEntityTable.merchantEmbeddingId, embeddingId));
-
-            if (tagIds.length > 0) {
-                await transaction
-                    .insert(MerchantEmbeddingTagEntityTable)
-                    .values(tagIds.map(tagId => ({ merchantEmbeddingId: embeddingId, tagId })));
-            }
+        return this.replaceEmbeddingTags({
+            tagTable: MerchantEmbeddingTagEntityTable,
+            foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+            embeddingId,
+            tagIds,
+            createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
         });
     }
 

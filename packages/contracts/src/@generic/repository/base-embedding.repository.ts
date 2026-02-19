@@ -1,16 +1,15 @@
-import { isNull, sql } from 'drizzle-orm';
+import { eq, isNull, sql } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { CategoryScoreResultInterface } from '../../merchant-embedding/interface/category-score-result.interface';
-import { SimilarTagsParamsInterface } from '../../merchant-embedding/interface/similar-tags-params.interface';
-import { TagScoreResultInterface } from '../../merchant-embedding/interface/tag-score-result.interface';
+import { isNotEmptyArray } from '@rnw-community/shared';
+
+import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
+import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
+import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
+import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB, RawDb } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
-
-interface EmbeddingQueryConfigInterface {
-    readonly similarCategoriesQuery: string;
-    readonly similarTagsQuery: string;
-}
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -60,6 +59,18 @@ export abstract class BaseEmbeddingRepository {
             `INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`,
             []
         );
+    }
+
+    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
+        const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
+
+        await this.db.transaction(async transaction => {
+            await transaction.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+
+            if (isNotEmptyArray(tagIds)) {
+                await transaction.insert(tagTable).values(tagIds.map(createTagRow));
+            }
+        });
     }
 
     protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable, vecTableName: string): Promise<void> {

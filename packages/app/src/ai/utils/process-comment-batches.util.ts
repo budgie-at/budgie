@@ -32,7 +32,7 @@ const commentBatchConfig: BatchConfigInterface<UnembeddedCommentDataInterface, C
     buildContextData: rows => rows.map(buildCommentContextItem).filter(isDefined),
     getContextKey: item => `${item.comment}|${item.categoryId}`,
     upsertEmbedding: (item, serialized, dimensions) =>
-        commentEmbeddingRepository.upsert(item.comment, item.categoryId, serialized, dimensions),
+        commentEmbeddingRepository.upsert({ comment: item.comment, categoryId: item.categoryId, embedding: serialized, dimensions }),
     replaceTags: (embeddingId, tagIds) => commentEmbeddingRepository.replaceTags(embeddingId, tagIds),
     getCursor: batch => batch[batch.length - 1].maxOperatedAt
 };

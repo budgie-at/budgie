@@ -1,7 +1,7 @@
 import { SuggestionStatus } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 const LOADING_DELAY_MS = 400;
 
@@ -15,7 +15,6 @@ interface UseSuggestionLoadingStateReturn {
     readonly showLoading: boolean;
     readonly showContent: boolean;
     readonly isProcessing: boolean;
-    readonly markSelected: () => void;
 }
 
 export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParams): UseSuggestionLoadingStateReturn => {
@@ -60,5 +59,5 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const showLoadingIndicator = showLoading && !isReady;
     const showContent = enabled && (showLoadingIndicator || isReady);
 
-    return { showLoading: showLoadingIndicator, showContent, isProcessing, markSelected: emptyFn };
+    return { showLoading: showLoadingIndicator, showContent, isProcessing };
 };

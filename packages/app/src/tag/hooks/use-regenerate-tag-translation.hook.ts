@@ -1,49 +1,7 @@
-import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { t } from '@lingui/core/macro';
-import { useState } from 'react';
-
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { tagRepository } from '../../@generic/drizzle/db/db';
-import { useLlmContext } from '../../ai/context/llm.context';
+import { UseRegenerateTranslationReturn, useRegenerateTranslation } from '../../@generic/hook/use-regenerate-translation.hook';
 
-interface UseRegenerateTagTranslationReturn {
-    regenerate: (tagId: number, title: string) => Promise<TranslationResultInterface | null>;
-    isRegenerating: boolean;
-    error: string | null;
-}
+const updateTranslation = (id: number, titleEn: string, titleTags: string): Promise<void> =>
+    tagRepository.updateTranslation(id, titleEn, titleTags);
 
-export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn => {
-    const { llm } = useLlmContext();
-    const [isRegenerating, setIsRegenerating] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    /* jscpd:ignore-start - Mirrors category regeneration hook pattern */
-    const regenerate = async (tagId: number, title: string): Promise<TranslationResultInterface | null> => {
-        if (!llm.isReady) {
-            setError(t`LLM not ready`);
-
-            return null;
-        }
-
-        setIsRegenerating(true);
-        setError(null);
-
-        try {
-            const service = new TranslationLlmService(llm);
-            const result = await service.translate(title);
-            await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
-
-            return result;
-        } catch (regenerateError: unknown) {
-            setError(getErrorMessage(regenerateError));
-
-            return null;
-        } finally {
-            setIsRegenerating(false);
-        }
-    };
-
-    /* jscpd:ignore-end */
-    return { regenerate, isRegenerating, error };
-};
+export const useRegenerateTagTranslation = (): UseRegenerateTranslationReturn => useRegenerateTranslation(updateTranslation);

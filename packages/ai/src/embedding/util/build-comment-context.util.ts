@@ -1,6 +1,5 @@
-import { EMBEDDING_CONTEXT_MAX_LENGTH } from '../../@generic/constant/embedding.constant';
-
 import { buildContextParts } from './build-context-parts.util';
+import { truncateContext } from './truncate-context.util';
 
 interface BuildCommentContextParamsInterface {
     readonly comment: string;
@@ -13,5 +12,5 @@ export const buildCommentContext = (params: BuildCommentContextParamsInterface):
         { label: 'Category', value: params.categoryTitle }
     ]);
 
-    return context.length > EMBEDDING_CONTEXT_MAX_LENGTH ? context.slice(0, EMBEDDING_CONTEXT_MAX_LENGTH) : context;
+    return truncateContext(context);
 };

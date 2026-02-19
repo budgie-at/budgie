@@ -10,27 +10,27 @@ import { useStt } from './use-stt.hook';
 type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
 
 interface VoiceInputData {
-    transcription: { committed: string; partial: string };
-    transactions: AITransactionInterface[];
-    error: string | null;
-    audioLevel: number;
+    readonly transcription: { readonly committed: string; readonly partial: string };
+    readonly transactions: AITransactionInterface[];
+    readonly error: string | null;
+    readonly audioLevel: number;
 }
 
 interface VoiceInputCallbacks {
-    onDone?: (transactions: AITransactionInterface[]) => void;
-    onError?: (error: string) => void;
+    readonly onDone?: (transactions: AITransactionInterface[]) => void;
+    readonly onError?: (error: string) => void;
 }
 
 export interface UseVoiceInputReturn {
-    state: VoiceInputState;
-    data: VoiceInputData;
-    isReady: boolean;
-    downloadProgress: number;
-    start: () => void;
-    stop: () => void;
-    confirm: () => void;
-    cancel: () => void;
-    retry: () => void;
+    readonly state: VoiceInputState;
+    readonly data: VoiceInputData;
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly start: () => void;
+    readonly stop: () => void;
+    readonly confirm: () => void;
+    readonly cancel: () => void;
+    readonly retry: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
