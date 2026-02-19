@@ -69,8 +69,15 @@ class AccountService {
         });
     }
 
-    async bulkCreate(inputs: LiabilityAccountCreateInputInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
-        const result = await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
+    async bulkCreate(
+        inputs: LiabilityAccountCreateInputInterface[],
+        tx?: Transaction,
+        batchSize = 100
+    ): Promise<Record<string, AccountEntityInterface>> {
+        const batchProcessor = isDefined(tx)
+            ? (batch: LiabilityAccountCreateInputInterface[]) => this.processBatchInner(batch, tx)
+            : this.processBatch.bind(this);
+        const result = await processInputWithBatches(inputs, batchSize, batchProcessor);
 
         return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
@@ -254,18 +261,20 @@ class AccountService {
     }
 
     private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {
-        return await db.transaction(async tx => {
-            const [{ count }] = await accountRepository.count();
+        return await db.transaction(async tx => this.processBatchInner(batch, tx));
+    }
 
-            const accounts = await accountRepository.bulkCreate(
-                batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
-                tx
-            );
+    private async processBatchInner(batch: LiabilityAccountCreateInputInterface[], tx: Transaction): Promise<AccountEntityInterface[]> {
+        const [{ count }] = await accountRepository.count();
 
-            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
+        const accounts = await accountRepository.bulkCreate(
+            batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
+            tx
+        );
 
-            return accounts;
-        });
+        await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
+
+        return accounts;
     }
 }
 
