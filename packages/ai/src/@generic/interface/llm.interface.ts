@@ -1,17 +1,17 @@
 export interface GenerateOptionsInterface {
-    maxNewTokens?: number;
-    temperature?: number;
+    readonly maxNewTokens?: number;
+    readonly temperature?: number;
 }
 
 export interface LlmInterface {
-    isReady: boolean;
-    isEmbeddingReady: boolean;
-    isInitializing: boolean;
-    isGenerating: boolean;
-    downloadProgress: number;
-    error: string | null;
-    generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
-    embedding: (text: string) => Promise<number[]>;
-    batchEmbedding: (texts: string[]) => Promise<Map<string, number[]>>;
-    interrupt: () => void;
+    readonly isReady: boolean;
+    readonly isEmbeddingReady: boolean;
+    readonly isInitializing: boolean;
+    readonly isGenerating: boolean;
+    readonly downloadProgress: number;
+    readonly error: string | null;
+    readonly generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
+    readonly embedding: (text: string) => Promise<number[]>;
+    readonly batchEmbedding: (texts: string[]) => Promise<Map<string, number[]>>;
+    readonly interrupt: () => void;
 }

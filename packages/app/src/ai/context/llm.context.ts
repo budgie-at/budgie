@@ -2,12 +2,22 @@
 import { createContext, use } from 'react';
 
 import type { LlmInterface } from '@budgie/ai';
-import type { useSpeechToText } from 'react-native-executorch';
+import type { DecodingOptions } from 'react-native-executorch';
+
+export interface SttContextInterface {
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly committedTranscription: string;
+    readonly nonCommittedTranscription: string;
+    readonly stream: (options?: DecodingOptions) => Promise<string>;
+    readonly streamStop: () => void;
+    readonly streamInsert: (waveform: number[] | Float32Array) => void;
+}
 
 export interface LlmContextInterface {
     readonly isAvailable: boolean;
     readonly llm: LlmInterface;
-    readonly stt: ReturnType<typeof useSpeechToText>;
+    readonly stt: SttContextInterface;
 }
 
 export const LlmContext = createContext<LlmContextInterface | null>(null);
