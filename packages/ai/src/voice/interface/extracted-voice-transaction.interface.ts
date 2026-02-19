@@ -1,7 +1,7 @@
 import { CurrencyEnum } from '@budgie/contracts';
 
 export interface ExtractedVoiceTransactionInterface {
-    description: string;
-    amount: number;
-    currency: CurrencyEnum | null;
+    readonly description: string;
+    readonly amount: number;
+    readonly currency: CurrencyEnum | null;
 }

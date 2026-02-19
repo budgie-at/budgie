@@ -9,7 +9,7 @@ import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-conf
 import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
 import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
-import { DB, RawDb } from '../type/db.type';
+import { DB, RawDbInterface } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 
 export { isDefined } from '@rnw-community/shared';
@@ -17,7 +17,7 @@ export { isDefined } from '@rnw-community/shared';
 export abstract class BaseEmbeddingRepository {
     constructor(
         protected readonly db: DB,
-        protected readonly rawDb: RawDb,
+        protected readonly rawDb: RawDbInterface,
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 

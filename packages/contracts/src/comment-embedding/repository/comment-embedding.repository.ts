@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
-import { DB, RawDb } from '../../@generic/type/db.type';
+import { DB, RawDbInterface } from '../../@generic/type/db.type';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -38,7 +38,7 @@ const SIMILAR_TAGS_QUERY = `
 `;
 
 export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB, rawDb: RawDb) {
+    constructor(db: DB, rawDb: RawDbInterface) {
         super(db, rawDb, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
     }
 
