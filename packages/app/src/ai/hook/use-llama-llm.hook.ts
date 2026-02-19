@@ -7,11 +7,11 @@ import { useEffect, useRef, useState } from 'react';
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 interface RunCompletionParams {
-    context: LlamaContext;
-    systemPrompt: string;
-    userMessage: string;
-    maxTokens: number;
-    temperature?: number;
+    readonly context: LlamaContext;
+    readonly systemPrompt: string;
+    readonly userMessage: string;
+    readonly maxTokens: number;
+    readonly temperature?: number;
 }
 
 const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf';

@@ -117,7 +117,8 @@ const generateAndStoreEmbedding = async (
         await generateAndStoreForContext(
             context,
             embeddingService,
-            (serialized, dimensions) => commentEmbeddingRepository.upsert(params.comment, categoryId, serialized, dimensions),
+            (serialized, dimensions) =>
+                commentEmbeddingRepository.upsert({ comment: params.comment, categoryId, embedding: serialized, dimensions }),
             embeddingId => commentEmbeddingRepository.replaceTags(embeddingId, resolvedTagIds)
         );
     }
