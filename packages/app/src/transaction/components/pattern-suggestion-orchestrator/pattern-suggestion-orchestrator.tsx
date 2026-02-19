@@ -1,11 +1,12 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { RepeatedTransactionPatternInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { usePatternSuggestionOrchestrator } from '../../hook/use-pattern-suggestion-orchestrator.hook';
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
+import { PatternCategorySuggestion } from '../../interface/pattern-category-suggestion.type';
 import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator.interface';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
 import { repeatedTransactionService } from '../../service/repeated-transaction.service';
@@ -19,11 +20,6 @@ import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spa
 interface Props extends SuggestionOrchestratorSharedProps {
     readonly config: PatternSuggestionOrchestratorConfig;
 }
-
-type PatternCategorySuggestion = Pick<
-    RepeatedTransactionPatternInterface,
-    'categoryId' | 'categoryTitle' | 'categoryIcon' | 'occurrenceCount'
->;
 
 const getPatternCategoryKey = (category: PatternCategorySuggestion): number => category.categoryId;
 const getPatternCategoryIcon = (category: PatternCategorySuggestion) => category.categoryIcon;
