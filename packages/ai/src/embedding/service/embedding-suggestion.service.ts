@@ -37,24 +37,23 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): Promise<CategoryEntityInterface[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const { context, distanceThreshold } = suggestionContext;
-        const serialized = await this.generateSerializedEmbedding(context, llm);
+        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
 
-        if (!isDefined(serialized)) {
+        if (!isDefined(resolved)) {
             return [];
         }
 
         const [merchantResults, commentResults] = await Promise.all([
             this.repositories.merchant.findSimilarCategories(
-                serialized,
+                resolved.serialized,
                 EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
+                resolved.distanceThreshold,
                 EMBEDDING_CATEGORY_SUGGESTION_LIMIT
             ),
             this.repositories.comment.findSimilarCategories(
-                serialized,
+                resolved.serialized,
                 EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
+                resolved.distanceThreshold,
                 EMBEDDING_CATEGORY_SUGGESTION_LIMIT
             )
         ]);
@@ -75,26 +74,23 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<TagEntityInterface[]> {
-        /* jscpd:ignore-start */
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const { context, distanceThreshold } = suggestionContext;
-        const serialized = await this.generateSerializedEmbedding(context, llm);
+        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
 
-        if (!isDefined(serialized)) {
+        if (!isDefined(resolved)) {
             return [];
         }
-        /* jscpd:ignore-end */
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-            distanceThreshold,
+            distanceThreshold: resolved.distanceThreshold,
             categoryId,
             tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
         };
 
         const [merchantResults, commentResults] = await Promise.all([
-            this.repositories.merchant.findSimilarTags(serialized, tagParams),
-            this.repositories.comment.findSimilarTags(serialized, tagParams)
+            this.repositories.merchant.findSimilarTags(resolved.serialized, tagParams),
+            this.repositories.comment.findSimilarTags(resolved.serialized, tagParams)
         ]);
 
         const merged = this.mergeTagScores(merchantResults, commentResults);
@@ -112,24 +108,34 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<string[]> {
-        /* jscpd:ignore-start */
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const { context, distanceThreshold } = suggestionContext;
-        const serialized = await this.generateSerializedEmbedding(context, llm);
+        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
 
-        if (!isDefined(serialized)) {
+        if (!isDefined(resolved)) {
             return [];
         }
-        /* jscpd:ignore-end */
 
-        const commentResults = await this.repositories.merchant.findSimilarComments(serialized, {
+        const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-            distanceThreshold,
+            distanceThreshold: resolved.distanceThreshold,
             categoryId,
             commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
         });
 
         return commentResults.map(row => row.comment).filter(isNotEmptyString);
+    }
+
+    private async resolveSerializedEmbedding(
+        llm: LlmInterface,
+        suggestionContext: SuggestionContextInterface
+    ): Promise<{ readonly serialized: Uint8Array; readonly distanceThreshold: number } | null> {
+        const serialized = await this.generateSerializedEmbedding(suggestionContext.context, llm);
+
+        if (!isDefined(serialized)) {
+            return null;
+        }
+
+        return { serialized, distanceThreshold: suggestionContext.distanceThreshold };
     }
 
     private resolveSuggestionContext(

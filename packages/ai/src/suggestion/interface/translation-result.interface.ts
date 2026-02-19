@@ -1,4 +1,4 @@
 export interface TranslationResultInterface {
-    titleEn: string;
-    titleTags: string;
+    readonly titleEn: string;
+    readonly titleTags: string;
 }

@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { LlmContext, LlmContextInterface } from '../context/llm.context';
+import { LlmContext, LlmContextInterface, SttContextInterface } from '../context/llm.context';
 
 interface Props {
     readonly children: ReactNode;
@@ -23,10 +23,20 @@ const disabledLlm: LlmInterface = {
     interrupt: emptyFn
 };
 
-const disabledValue = {
+const disabledStt: SttContextInterface = {
+    isReady: false,
+    downloadProgress: 0,
+    committedTranscription: '',
+    nonCommittedTranscription: '',
+    stream: () => Promise.reject(new Error('AI is disabled')),
+    streamStop: emptyFn,
+    streamInsert: emptyFn
+};
+
+const disabledValue: LlmContextInterface = {
     isAvailable: false,
     llm: disabledLlm,
-    stt: { isReady: false, downloadProgress: 0 }
-} as LlmContextInterface;
+    stt: disabledStt
+};
 
 export const LlmDisabledProvider = ({ children }: Props) => <LlmContext value={disabledValue}>{children}</LlmContext>;

@@ -1,6 +1,6 @@
 # Contracts Package
 
-Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by both `app` and `bank-sync` packages.
+Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `bank-sync` packages.
 
 ## Commands
 
@@ -22,7 +22,7 @@ src/
 │   ├── repository/           # BaseTransactionFilterRepository
 │   ├── type/                 # DB, TX types
 │   └── util/                 # Table columns, schema utils, SQL helpers
-├── [entity]/                 # Entity modules (13 total)
+├── [entity]/                 # Entity modules (15 total)
 │   ├── constant/             # Validation limits
 │   ├── entity/               # Inferred entity types
 │   ├── enum/                 # Entity enums
@@ -70,6 +70,8 @@ account/
 | BankSync | `bank_syncs` | Bank integration configuration |
 | MccGroup | `mcc_groups` | Merchant category groups |
 | MccCategory | `mcc_categories` | Merchant category codes |
+| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles |
+| CommentEmbedding | `title_embeddings_comment` | Vector embeddings for transaction comments |
 
 ## Drizzle Table Definitions
 

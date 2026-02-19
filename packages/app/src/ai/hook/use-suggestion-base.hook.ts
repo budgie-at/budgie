@@ -65,8 +65,8 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         };
     }, [isReady, requestKey, refreshVersion, isIncomplete]);
 
-    const currentResult =
-        result.key === requestKey ? result : { key: requestKey, status: 'idle' as SuggestionInternalStatus, suggestions: [] as T[] };
+    const currentResult: { key: string | null; status: SuggestionInternalStatus; suggestions: T[] } =
+        result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;

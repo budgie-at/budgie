@@ -72,9 +72,7 @@ const dbInit = () => {
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
         }
-    } catch {
-        // no-op: sqlite-vec extension not available
-    }
+    } catch {}
 
     return global.__expoSqliteDb__;
 };

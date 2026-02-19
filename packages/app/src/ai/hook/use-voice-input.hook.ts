@@ -82,9 +82,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const recording = useRecording({
-        onAudioBuffer: (samples: Float32Array) => {
-            stt.insertAudio(samples);
-        },
+        onAudioBuffer: stt.insertAudio,
         onSilenceDetected: handleSilenceDetected
     });
 

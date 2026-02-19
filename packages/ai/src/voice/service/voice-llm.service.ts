@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
+import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
 
 const ExtractedItemSchema = z.object({
     description: z.string(),
@@ -14,8 +15,6 @@ const ExtractedItemSchema = z.object({
 });
 
 type ExtractedItemType = z.infer<typeof ExtractedItemSchema>;
-
-const CURRENCY_ENUM_VALUES = new Set<string>(Object.values(CurrencyEnum));
 
 export class VoiceLlmService {
     constructor(private readonly llm: LlmInterface) {}
@@ -75,7 +74,7 @@ export class VoiceLlmService {
 
         const normalized = currency.toUpperCase();
 
-        return CURRENCY_ENUM_VALUES.has(normalized) ? (normalized as CurrencyEnum) : null;
+        return isCurrencyEnum(normalized) ? normalized : null;
     }
 
     private fixMalformedJson(text: string): string {

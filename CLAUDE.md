@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. Monorepo with 4 packages: app (React Native), contracts (shared types), landing (Next.js), and bank-sync (bank integrations).
+Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and bank-sync (bank integrations).
 
 ## Commands
 
@@ -35,6 +35,7 @@ yarn deps:dedupe                          # Deduplicate dependencies
 ```
 packages/
 ├── app/                # React Native (Expo 54) - main mobile app
+├── ai/                 # Pure TypeScript AI/LLM services
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 15 marketing site
 └── bank-sync/          # Bank integration package
@@ -267,6 +268,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 | Package | Stack |
 |---------|-------|
 | **app** | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
+| **ai** | Pure TypeScript, Zod |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod |
 | **landing** | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7 |
 | **bank-sync** | ky HTTP client, date-fns |
@@ -283,7 +285,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 
 Conventional commits: `type(scope): description`
 
-**Scopes:** Use package names without prefix: `app`, `contracts`, `landing`, `bank-sync`
+**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
 
 **Examples:**
 - `feat(app): add dark mode toggle`
