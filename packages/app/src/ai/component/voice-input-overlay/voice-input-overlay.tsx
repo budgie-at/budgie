@@ -7,7 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
-import { buildExpenseUrl } from '../../util/build-expense-url.util';
+import { buildExpenseUrl } from '../../utils/build-expense-url.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 const EXIT_DURATION = 100;

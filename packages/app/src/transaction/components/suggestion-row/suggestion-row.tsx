@@ -17,20 +17,15 @@ interface Props<T> {
 export const SuggestionRow = <T,>(props: Props<T>) => {
     const { suggestions, status, enabled, renderPill, onSelect } = props;
 
-    const { showLoading, showContent, isProcessing, markSelected } = useSuggestionLoadingState({
+    const { showLoading, showContent, isProcessing } = useSuggestionLoadingState({
         status,
         hasResults: isNotEmptyArray(suggestions),
         enabled
     });
 
-    const handleSelect = (item: T): void => {
-        markSelected();
-        onSelect(item);
-    };
-
     return (
         <SuggestionRowLayout showContent={showContent} showLoading={showLoading} isProcessing={isProcessing}>
-            {[...suggestions].reverse().map((item, index) => renderPill(item, index, () => void handleSelect(item)))}
+            {[...suggestions].reverse().map((item, index) => renderPill(item, index, () => void onSelect(item)))}
         </SuggestionRowLayout>
     );
 };

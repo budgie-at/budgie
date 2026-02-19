@@ -10,13 +10,13 @@ import { useLlmContext } from '../context/llm.context';
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
 interface UseLlmCategorizationReturnInterface {
-    status: CategorizationStatus;
-    transactions: AITransactionInterface[];
-    error: string | null;
-    isReady: boolean;
-    downloadProgress: number;
-    categorize: (text: string) => Promise<AITransactionInterface[]>;
-    reset: () => void;
+    readonly status: CategorizationStatus;
+    readonly transactions: AITransactionInterface[];
+    readonly error: string | null;
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly categorize: (text: string) => Promise<AITransactionInterface[]>;
+    readonly reset: () => void;
 }
 
 const mapExtractedToTransactions = (

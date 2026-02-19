@@ -1,8 +1,6 @@
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
-    CommentEmbeddingRepository,
-    MerchantEmbeddingRepository,
     SimilarTagsParamsInterface,
     TagEntityInterface,
     TagScoreResultInterface
@@ -20,15 +18,11 @@ import {
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
+import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
-import { buildQueryContext } from '../util/build-query-context.util';
+import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
-
-interface EmbeddingSuggestionRepositoriesInterface {
-    readonly merchant: MerchantEmbeddingRepository;
-    readonly comment: CommentEmbeddingRepository;
-}
 
 export class EmbeddingSuggestionService {
     constructor(private readonly repositories: EmbeddingSuggestionRepositoriesInterface) {}
@@ -145,7 +139,7 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): SuggestionContextInterface {
         const hasVoiceContext = isNotEmptyString(aiContext);
-        const context = hasVoiceContext ? aiContext : buildQueryContext({ title: transactionTitle, mccDescription, comment });
+        const context = hasVoiceContext ? aiContext : buildTransactionContext({ title: transactionTitle, mccDescription, comment });
         const distanceThreshold = hasVoiceContext ? EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD : EMBEDDING_VEC_DISTANCE_THRESHOLD;
 
         return { context, distanceThreshold };

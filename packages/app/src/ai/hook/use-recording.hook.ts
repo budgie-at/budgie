@@ -10,21 +10,23 @@ import {
 import { useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useAudioManager } from './use-audio-manager.hook';
 
 type RecordingStatus = 'idle' | 'recording';
 
 interface RecordingCallbacks {
-    onAudioBuffer?: (samples: Float32Array) => void;
-    onSilenceDetected?: () => void;
+    readonly onAudioBuffer?: (samples: Float32Array) => void;
+    readonly onSilenceDetected?: () => void;
 }
 
 interface UseRecordingReturn {
-    status: RecordingStatus;
-    audioLevel: number;
-    start: () => void;
-    stop: () => void;
-    cancel: () => void;
+    readonly status: RecordingStatus;
+    readonly audioLevel: number;
+    readonly start: () => void;
+    readonly stop: () => void;
+    readonly cancel: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -42,11 +44,11 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     callbacksRef.current = callbacks;
 
     const clearTimeouts = () => {
-        if (silenceTimeoutRef.current) {
+        if (isDefined(silenceTimeoutRef.current)) {
             clearTimeout(silenceTimeoutRef.current);
             silenceTimeoutRef.current = null;
         }
-        if (recorderInitTimeoutRef.current) {
+        if (isDefined(recorderInitTimeoutRef.current)) {
             clearTimeout(recorderInitTimeoutRef.current);
             recorderInitTimeoutRef.current = null;
         }
@@ -72,7 +74,7 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     };
 
     const resetSilenceTimeout = (sessionId: number) => {
-        if (silenceTimeoutRef.current) {
+        if (isDefined(silenceTimeoutRef.current)) {
             clearTimeout(silenceTimeoutRef.current);
         }
         silenceTimeoutRef.current = setTimeout(() => {

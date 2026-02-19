@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { useCallback } from 'react';
 import { Pressable, Text } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
@@ -16,8 +15,8 @@ export const AiDataCard = () => {
     const { t } = useLingui();
     const { statusLabel, brainProgress, isRunning, start, startFresh } = useAiStatusContext();
 
-    const handlePress = useCallback(() => void start(), [start]);
-    const handleLongPressComplete = useCallback(() => void startFresh(), [startFresh]);
+    const handlePress = () => void start();
+    const handleLongPressComplete = () => void startFresh();
 
     const { holdProgress, pressScale, handlePressIn, handlePressOut } = useLongPressHold({
         onPress: handlePress,

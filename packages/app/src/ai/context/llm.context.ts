@@ -5,9 +5,9 @@ import type { LlmInterface } from '@budgie/ai';
 import type { useSpeechToText } from 'react-native-executorch';
 
 export interface LlmContextInterface {
-    isAvailable: boolean;
-    llm: LlmInterface;
-    stt: ReturnType<typeof useSpeechToText>;
+    readonly isAvailable: boolean;
+    readonly llm: LlmInterface;
+    readonly stt: ReturnType<typeof useSpeechToText>;
 }
 
 export const LlmContext = createContext<LlmContextInterface | null>(null);

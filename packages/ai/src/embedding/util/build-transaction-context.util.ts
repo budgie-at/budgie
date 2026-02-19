@@ -1,8 +1,7 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { EMBEDDING_CONTEXT_MAX_LENGTH } from '../../@generic/constant/embedding.constant';
-
 import { buildContextParts } from './build-context-parts.util';
+import { truncateContext } from './truncate-context.util';
 
 interface BuildTransactionContextParamsInterface {
     readonly title: string;
@@ -24,5 +23,5 @@ export const buildTransactionContext = (params: BuildTransactionContextParamsInt
         { label: 'Tags', value: params.tagTitles }
     ]);
 
-    return context.length > EMBEDDING_CONTEXT_MAX_LENGTH ? context.slice(0, EMBEDDING_CONTEXT_MAX_LENGTH) : context;
+    return truncateContext(context);
 };

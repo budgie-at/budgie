@@ -1,25 +1,25 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
-import { SpeechToTextLanguage } from 'react-native-executorch';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
+import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
 interface UseSttReturn {
-    status: SttStatus;
-    transcription: string;
-    partialTranscription: string;
-    isReady: boolean;
-    downloadProgress: number;
-    startStream: () => void;
-    insertAudio: (samples: Float32Array) => void;
-    stopStream: () => Promise<string>;
-    cancelStream: () => void;
+    readonly status: SttStatus;
+    readonly transcription: string;
+    readonly partialTranscription: string;
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly startStream: () => void;
+    readonly insertAudio: (samples: Float32Array) => void;
+    readonly stopStream: () => Promise<string>;
+    readonly cancelStream: () => void;
 }
 
 // eslint-disable-next-line max-statements
@@ -67,7 +67,8 @@ export const useStt = (): UseSttReturn => {
     const initStream = () => {
         resetState();
         baseTranscriptionRef.current = stt.committedTranscription;
-        streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
+        const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
+        streamPromiseRef.current = stt.stream(streamOptions).catch(() => '');
         setStatus('streaming');
     };
 
