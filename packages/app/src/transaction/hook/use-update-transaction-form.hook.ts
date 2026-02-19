@@ -13,10 +13,10 @@ import { transactionService } from '../service/transaction.service';
 import type { ZodType } from 'zod';
 
 interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
-    schema: ZodType<T, T>;
-    transaction: T;
-    id: number;
-    onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
+    readonly schema: ZodType<T, T>;
+    readonly transaction: T;
+    readonly id: number;
+    readonly onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
 }
 
 export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>({
