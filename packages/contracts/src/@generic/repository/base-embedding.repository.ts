@@ -3,6 +3,7 @@ import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
 import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
@@ -10,6 +11,8 @@ import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.int
 import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB, RawDb } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
+
+export { isDefined } from '@rnw-community/shared';
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -42,6 +45,10 @@ export abstract class BaseEmbeddingRepository {
             categoryId,
             tagLimit
         ]);
+    }
+
+    protected isValidDimensions(dimensions: number): boolean {
+        return dimensions === EMBEDDING_DIMENSIONS;
     }
 
     protected async countRows(table: SQLiteTable, deletedAtColumn: SQLiteColumn): Promise<number> {

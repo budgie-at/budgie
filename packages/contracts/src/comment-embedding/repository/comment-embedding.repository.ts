@@ -1,9 +1,6 @@
 import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { EMBEDDING_DIMENSIONS } from '../../@generic/constant/embedding-dimensions.constant';
-import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
+import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
 import { DB, RawDb } from '../../@generic/type/db.type';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
@@ -48,7 +45,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     async upsert(params: UpsertCommentEmbeddingParamsInterface): Promise<number | null> {
         const { comment, categoryId, embedding, dimensions } = params;
 
-        if (dimensions !== EMBEDDING_DIMENSIONS) {
+        if (!this.isValidDimensions(dimensions)) {
             return null;
         }
 
