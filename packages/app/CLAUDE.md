@@ -371,7 +371,7 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 11 nested providers in this order:
+Root layout has 12 nested providers in this order:
 1. SafeAreaProvider
 2. SQLiteProvider
 3. SettingsProvider
@@ -383,6 +383,7 @@ Root layout has 11 nested providers in this order:
 9. AuthGuard
 10. CreateActionProvider
 11. AiProviderWrapper
+12. ModalProvider (wraps all 10 modal providers internally)
 
 ## AI/LLM Module Patterns
 

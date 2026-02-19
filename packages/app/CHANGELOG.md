@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.34.2](https://github.com/budgie-at/budgie/compare/v2.34.1...v2.34.2) (2026-02-13)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [2.34.1](https://github.com/budgie-at/budgie/compare/v2.34.0...v2.34.1) (2026-02-12)
+
+### Bug Fixes
+
+- **app:** enable long press PDF import for Erste Bank accounts ([83f238e](https://github.com/budgie-at/budgie/commit/83f238e597557265e0071deb06eb3017f5513106))
+- **app:** parallelize entry and tag bulk creation in processBatchInner ([9e2dca5](https://github.com/budgie-at/budgie/commit/9e2dca58118ada271e0615b273a162d350e35161))
+- **app:** wrap file import in db.transaction and thread tx through services ([3145e8b](https://github.com/budgie-at/budgie/commit/3145e8bd044a922eaa0af5adbaf92d0fa058b259))
+
+# [2.34.0](https://github.com/budgie-at/budgie/compare/v2.33.0...v2.34.0) (2026-02-12)
+
+### Features
+
+- **app:** add 3D flip animation and layout fixes for sign toggle ([1614d6b](https://github.com/budgie-at/budgie/commit/1614d6b07df5d0116a177a224010f0aa7938700d))
+- **app:** add negative balance input support for liability accounts ([10583e1](https://github.com/budgie-at/budgie/commit/10583e171bb64fe0de7cb1d58778408455bfe893))
+
+# [2.33.0](https://github.com/budgie-at/budgie/compare/v2.32.2...v2.33.0) (2026-02-05)
+
+### Bug Fixes
+
+- **app,contracts:** fix statistics tags empty state and list bottom padding ([7033256](https://github.com/budgie-at/budgie/commit/703325679a84c1e267ac5272dc39d62c4ea1252c))
+- **app:** exclude tag filter from uncategorized category condition ([c5033ee](https://github.com/budgie-at/budgie/commit/c5033ee624b7e0953d94f1cf956ba9791f8618b2))
+- **app:** patch expo-pdf-text-extract to exclude test files from iOS build ([8515fe0](https://github.com/budgie-at/budgie/commit/8515fe0ad2d12ae532b7d8190c8f61092e55a424))
+- **app:** update Erste Bank icon to use correct branding ([75d09b4](https://github.com/budgie-at/budgie/commit/75d09b40ecf47a4b9bd08e6599347d62ceb7ed73))
+- **app:** update Erste Bank import instructions ([d0881f5](https://github.com/budgie-at/budgie/commit/d0881f5fa9c57b09708b82602766d10cfa126736))
+
+### Features
+
+- **app,bank-sync,contracts:** add Erste Bank PDF import support ([27c7d65](https://github.com/budgie-at/budgie/commit/27c7d656fff96273ce1bfae224ec2b2d5f0cda4f))
+
 ## [2.32.2](https://github.com/budgie-at/budgie/compare/v2.32.1...v2.32.2) (2026-02-04)
 
 ### Bug Fixes

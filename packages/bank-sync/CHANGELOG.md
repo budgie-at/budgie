@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.33.0](https://github.com/budgie-at/budgie/compare/v2.32.2...v2.33.0) (2026-02-05)
+
+### Bug Fixes
+
+- **bank-sync,app:** improve Erste PDF parsing and update icon ([0dc77c0](https://github.com/budgie-at/budgie/commit/0dc77c0fdb8ec5a6f460fc43492b2803350e282a)), closes [#1A3D6](https://github.com/budgie-at/budgie/issues/1A3D6)
+- **bank-sync:** improve Erste Bank parser code quality ([db0da18](https://github.com/budgie-at/budgie/commit/db0da18b31127c6077ecc5232aed8e776727c390))
+- **bank-sync:** use merchant name as transaction title in Erste PDF parser ([b9bc50f](https://github.com/budgie-at/budgie/commit/b9bc50f83810ee75503e577a0ca45ef810c5839e))
+- **bank-sync:** use merchant name as transaction title instead of reference ([0da16cb](https://github.com/budgie-at/budgie/commit/0da16cb387cc36a683ba6e35d824e31fbd55b873))
+
+### Features
+
+- **app,bank-sync,contracts:** add Erste Bank PDF import support ([27c7d65](https://github.com/budgie-at/budgie/commit/27c7d656fff96273ce1bfae224ec2b2d5f0cda4f))
+
 # [2.29.0](https://github.com/budgie-at/budgie/compare/v2.28.0...v2.29.0) (2026-02-03)
 
 ### Bug Fixes

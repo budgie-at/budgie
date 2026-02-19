@@ -1,4 +1,4 @@
-import { AccountEntityInterface, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountEntityInterface, BankSyncStatusEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { View } from 'react-native';
@@ -6,8 +6,9 @@ import { View } from 'react-native';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { quickImportConfigMap } from '../../../sync/constant/quick-import-config-map.constant';
 import { useAccountBankSync } from '../../../sync/hook/use-account-bank-sync.hook';
-import { usePrivatbankQuickImport } from '../../../sync/hook/use-privatbank-quick-import.hook';
+import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
@@ -30,19 +31,17 @@ export const BankSyncAccountCard = (props: Props) => {
 
     const [, hapticImpact] = useVibration();
     const { bankSync } = useAccountBankSync(id);
-    const { handleQuickImport } = usePrivatbankQuickImport();
 
     const shouldShow = isDefined(bankSync);
-    const isPrivatbank = isDefined(bankSync) && bankSync.provider === ExternalSourceEnum.PRIVATBANK;
+    const quickImportConfig = isDefined(bankSync) ? (quickImportConfigMap[bankSync.provider] ?? null) : null;
+    const { handleQuickImport } = useQuickImport(quickImportConfig);
 
     const handleLongPress = () => {
-        if (isPrivatbank) {
-            hapticImpact(ImpactFeedbackStyle.Medium);
-            handleQuickImport();
-        }
+        hapticImpact(ImpactFeedbackStyle.Medium);
+        handleQuickImport();
     };
 
-    const longPressHandler = isPrivatbank ? handleLongPress : emptyFn;
+    const longPressHandler = isDefined(quickImportConfig) ? handleLongPress : emptyFn;
     const statusClassName = shouldShow
         ? syncStatusVariants({ status: bankSync.status })
         : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });
