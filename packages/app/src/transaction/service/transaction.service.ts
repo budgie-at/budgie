@@ -46,8 +46,12 @@ class TransactionService {
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateInputInterface[], batchSize = 500): Promise<TransactionEntityInterface[]> {
-        return await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
+    async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: Transaction, batchSize = 500): Promise<TransactionEntityInterface[]> {
+        const batchProcessor = isDefined(tx)
+            ? (batch: TransactionCreateInputInterface[]) => this.processBatchInner(batch, tx)
+            : this.processBatch.bind(this);
+
+        return await processInputWithBatches(inputs, batchSize, batchProcessor);
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
@@ -353,30 +357,32 @@ class TransactionService {
     }
 
     private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return db.transaction(async tx => {
-            const transactions = await transactionRepository.bulkCreate(batch, tx);
+        return db.transaction(async tx => this.processBatchInner(batch, tx));
+    }
 
-            const batchEntries = transactions.flatMap((transaction, index) =>
-                batch[index].entries.map(entry => ({
-                    transactionId: transaction.id,
-                    accountId: entry.accountId,
-                    categoryId: entry.categoryId,
-                    mccCategoryId: entry.mccCategoryId,
-                    type: entry.type,
-                    amount: convertToMicroUnits(entry.amount),
-                    externalId: entry.externalId ?? null
-                }))
-            );
+    private async processBatchInner(batch: TransactionCreateInputInterface[], tx: Transaction): Promise<TransactionEntityInterface[]> {
+        const transactions = await transactionRepository.bulkCreate(batch, tx);
 
-            const batchTags = transactions.flatMap((transaction, index) =>
-                batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
-            );
+        // HINT: This will work if bulkCreate will preserve the order of the inputs.
+        const batchEntries = transactions.flatMap((transaction, index) =>
+            batch[index].entries.map(entry => ({
+                transactionId: transaction.id,
+                accountId: entry.accountId,
+                categoryId: entry.categoryId,
+                mccCategoryId: entry.mccCategoryId,
+                type: entry.type,
+                amount: convertToMicroUnits(entry.amount),
+                externalId: entry.externalId ?? null
+            }))
+        );
 
-            await transactionEntryRepository.bulkCreate(batchEntries, tx);
-            await transactionTagsRepository.bulkCreate(batchTags, tx);
+        const batchTags = transactions.flatMap((transaction, index) =>
+            batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
+        );
 
-            return transactions;
-        });
+        await Promise.all([transactionEntryRepository.bulkCreate(batchEntries, tx), transactionTagsRepository.bulkCreate(batchTags, tx)]);
+
+        return transactions;
     }
 
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: Transaction): Promise<void> {

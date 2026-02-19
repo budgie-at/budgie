@@ -50,7 +50,7 @@ packages/
 ## Critical Rules
 
 1. **No `any` type** - Everything properly typed
-2. **No type assertions** - Never use `as`, `@ts-ignore`, `@ts-expect-error`
+2. **No type assertions** - Never use `as Type`, `@ts-ignore`, `@ts-expect-error` (`as const` is allowed — it's a const assertion, not a type assertion)
 3. **No comments** - Self-documenting code with clear names
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
 5. **Single const declarations** - Each variable gets its own `const` declaration
@@ -153,6 +153,20 @@ type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 ```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
+
+**Check object property values, not just object existence:**
+```typescript
+// Good - check if date range has actual values before using
+const hasDateRange = isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to));
+if (hasDateRange) {
+    conditions.push(this.buildDateCondition(filters.date));
+}
+
+// Bad - object exists but may have all null properties
+if (isDefined(filters.date)) {
+    conditions.push(this.buildDateCondition(filters.date)); // Returns undefined if both from/to are null!
+}
+```
 
 **Microunits conversion:**
 ```typescript
