@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
-import { DB, RawDb } from '../../@generic/type/db.type';
+import { DB, RawDbInterface } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
@@ -54,7 +54,7 @@ const SIMILAR_COMMENTS_QUERY = `
 `;
 
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB, rawDb: RawDb) {
+    constructor(db: DB, rawDb: RawDbInterface) {
         super(db, rawDb, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
     }
 

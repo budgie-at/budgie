@@ -1,6 +1,5 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
-/* jscpd:ignore-start */
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 
@@ -13,7 +12,6 @@ interface Props {
     readonly enabled: boolean;
     readonly onSelect: (tagId: number) => void;
 }
-/* jscpd:ignore-end */
 
 const getTagKey = (tag: TagEntityInterface): number => tag.id;
 const getTagIcon = (): UserIconNameEnum => UserIconNameEnum.Hash;

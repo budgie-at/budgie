@@ -1,9 +1,9 @@
 import { AccountWithInstrumentEntityInterface, CurrencyEnum } from '@budgie/contracts';
 
 export interface GroupedVoiceTransactionInterface {
-    amount: number;
-    currency: CurrencyEnum | null;
-    account: AccountWithInstrumentEntityInterface | null;
-    comment: string;
-    aiContext: string;
+    readonly amount: number;
+    readonly currency: CurrencyEnum | null;
+    readonly account: AccountWithInstrumentEntityInterface | null;
+    readonly comment: string;
+    readonly aiContext: string;
 }
