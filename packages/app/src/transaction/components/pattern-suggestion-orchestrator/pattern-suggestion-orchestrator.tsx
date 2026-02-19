@@ -22,7 +22,7 @@ interface Props extends SuggestionOrchestratorSharedProps {
 }
 
 const getPatternCategoryKey = (category: PatternCategorySuggestion): number => category.categoryId;
-const getPatternCategoryIcon = (category: PatternCategorySuggestion) => category.categoryIcon;
+const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconNameEnum => category.categoryIcon;
 const getPatternCategoryTitle = (category: PatternCategorySuggestion): string => category.categoryTitle;
 
 const getPatternTagKey = (tag: TagEntityInterface): number => tag.id;
