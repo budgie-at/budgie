@@ -1,6 +1,12 @@
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 
+const SHEET_DETENT = 0.75;
+const SHEET_CORNER_RADIUS = 24;
+
 export const SUGGEST_RULE_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     presentation: 'modal',
-    headerShown: false
+    headerShown: false,
+    sheetGrabberVisible: true,
+    sheetAllowedDetents: [SHEET_DETENT],
+    sheetCornerRadius: SHEET_CORNER_RADIUS
 };
