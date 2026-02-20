@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const SuggestRuleDescription = ({ hasSelectedConditions, selectedFields, suggestRuleData, category, tags }: Props) => (
-    <View className="rounded-2xl bg-secondary-background/50 p-3xl">
+    <View className="rounded-2xl bg-secondary-background p-3xl">
         {hasSelectedConditions ? (
             <SuggestRuleDescriptionContent
                 selectedFields={selectedFields}

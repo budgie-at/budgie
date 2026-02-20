@@ -1,6 +1,5 @@
 import { CategoryEntityInterface, RuleConditionFieldEnum, TagEntityInterface } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -30,12 +29,12 @@ export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData,
     const actionsJoined = joinWithSeparators(actionParts);
 
     return (
-        <Text className="text-xs text-secondary-foreground leading-relaxed">
-            <Trans>When</Trans> {conditionsJoined}
+        <Text className="text-sm text-foreground/70 leading-relaxed">
+            <Trans>Match transactions where</Trans> {conditionsJoined}
             {hasActions ? (
                 <>
-                    {' → '}
-                    <Trans>set</Trans> {actionsJoined}
+                    {', '}
+                    <Trans>then set</Trans> {actionsJoined}
                 </>
             ) : null}
         </Text>

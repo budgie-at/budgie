@@ -4,7 +4,8 @@ import {
     RuleConditionCreateInputInterface,
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
-    TransactionCreateInputInterface
+    TransactionCreateInputInterface,
+    TransactionWithEntriesMccCategoryEntityInterface
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -44,6 +45,13 @@ class RuleEngineService {
 
     async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
         return ruleMatcherService.countMatchingTransactions(params);
+    }
+
+    async findMatchingTransactions(
+        params: CountConditionsParams,
+        limit: number
+    ): Promise<{ transactions: TransactionWithEntriesMccCategoryEntityInterface[]; count: number }> {
+        return ruleMatcherService.findMatchingTransactions(params, limit);
     }
 
     // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking

@@ -1,134 +1,92 @@
+import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { ActivityIndicator, Text, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isDefined } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { typedObjectKeys } from '../../../@generic/utils/typed-object-keys.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { toggleSetItem } from '../../../sync/util/toggle-set-item.util';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { useSuggestRuleModalHook } from '../../hooks/use-suggest-rule-modal.hook';
+import { SUGGEST_RULE_CONDITION_FIELD_LABELS } from '../../constant/suggest-rule-condition-field-labels.constant';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
+import { getSuggestRuleFieldValue } from '../../util/get-suggest-rule-field-value.util';
 import { SuggestRuleConditionSelector } from '../suggest-rule-condition-selector/suggest-rule-condition-selector';
 import { SuggestRuleDescription } from '../suggest-rule-description/suggest-rule-description';
 
+type SuggestRuleConditionField = RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT | RuleConditionFieldEnum.MCC_CODE;
+
 interface Props {
     readonly suggestRuleData: SuggestRuleDataInterface;
-    readonly onCreateRule: () => void;
     readonly onDismiss: () => void;
+    readonly onNext: (selectedFields: SuggestRuleConditionField[]) => void;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Modal component with multiple sections and computed values
-export const SuggestRuleModalContent = ({ suggestRuleData, onCreateRule, onDismiss }: Props) => {
-    const {
-        availableFields,
-        selectedFields,
-        toggleField,
-        applyToExisting,
-        setApplyToExisting,
-        isBusy,
-        progress,
-        hasSelectedConditions,
-        matchingCount,
-        isCountLoading,
-        handleCreateRule,
-        handleDismiss
-    } = useSuggestRuleModalHook({ suggestRuleData, onCreateRule, onDismiss });
+export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onNext }: Props) => {
+    const { bottom } = useSafeAreaInsets();
 
     const { category } = useGetCategoryByIdQuery(suggestRuleData.categoryId ?? 0);
     const { tags } = useGetTagByIdsQuery(suggestRuleData.tagIds);
 
-    const handleCreate = () => void handleCreateRule();
-    const isCreateDisabled = !hasSelectedConditions || isBusy;
-    const displayMatchingCount = matchingCount ?? 0;
-    const processed = progress?.processed ?? 0;
-    const total = progress?.total ?? 0;
-    const buttonText = applyToExisting ? t`Create & update` : t`Create Rule`;
+    const [selectedFields, setSelectedFields] = useState<Set<SuggestRuleConditionField>>(
+        () =>
+            new Set(
+                typedObjectKeys(SUGGEST_RULE_CONDITION_FIELD_LABELS).filter((field): field is SuggestRuleConditionField =>
+                    isNotEmptyString(getSuggestRuleFieldValue(field, suggestRuleData))
+                )
+            )
+    );
+
+    const availableFields: SuggestRuleConditionField[] = typedObjectKeys(SUGGEST_RULE_CONDITION_FIELD_LABELS).filter(
+        (field): field is SuggestRuleConditionField => isNotEmptyString(getSuggestRuleFieldValue(field, suggestRuleData))
+    );
+
+    const toggleField = (field: SuggestRuleConditionField) => {
+        setSelectedFields(previous => toggleSetItem(previous, field));
+    };
+
+    const hasSelectedConditions = selectedFields.size > 0;
+    const handleNext = () => void onNext(Array.from(selectedFields));
+    const footerStyle = { paddingBottom: bottom };
 
     return (
-        <ModalPage header={<PageHeader title={t`Create Automation Rule`} {...(!isBusy && { onGoBack: handleDismiss })} />}>
-            <KeyboardAwareScrollView
+        <View className="flex-1">
+            <ScrollView
                 testID={SuggestRuleSelectors.Modal}
-                contentContainerClassName="pb-3xl"
+                className="flex-1"
+                contentContainerClassName="px-xl pt-4xl pb-xl gap-y-lg"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="px-3xl gap-y-3xl">
-                    <View className="gap-y-lg">
-                        <Text className="text-sm font-medium text-secondary-foreground">
-                            <Trans>Match conditions</Trans>
-                        </Text>
-                        <SuggestRuleConditionSelector
-                            availableFields={availableFields}
-                            selectedFields={selectedFields}
-                            onToggle={toggleField}
-                            suggestRuleData={suggestRuleData}
-                        />
-                    </View>
+                <Text className="text-primary font-medium text-xl">
+                    <Trans>Quick rule</Trans>
+                </Text>
+                <SuggestRuleConditionSelector
+                    availableFields={availableFields}
+                    selectedFields={selectedFields}
+                    onToggle={toggleField}
+                    suggestRuleData={suggestRuleData}
+                />
+                <SuggestRuleDescription
+                    hasSelectedConditions={hasSelectedConditions}
+                    selectedFields={selectedFields}
+                    suggestRuleData={suggestRuleData}
+                    category={category ?? null}
+                    tags={tags ?? null}
+                />
+            </ScrollView>
 
-                    <SuggestRuleDescription
-                        hasSelectedConditions={hasSelectedConditions}
-                        selectedFields={selectedFields}
-                        suggestRuleData={suggestRuleData}
-                        category={category ?? null}
-                        tags={tags ?? null}
-                    />
-
-                    {hasSelectedConditions ? (
-                        <View className="flex-row items-center justify-between gap-x-lg">
-                            <View className="flex-1 flex-row items-center gap-x-sm">
-                                {isCountLoading ? (
-                                    <>
-                                        <ActivityIndicator size="small" />
-                                        <Text className="text-sm text-secondary-foreground">
-                                            <Trans>Checking transactions...</Trans>
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <Text className="text-sm text-primary">
-                                        <Trans>{displayMatchingCount} matching transactions — update them too?</Trans>
-                                    </Text>
-                                )}
-                            </View>
-                            <ThemedSwitch
-                                testID={SuggestRuleSelectors.ApplyToExistingToggle}
-                                value={applyToExisting}
-                                onValueChange={setApplyToExisting}
-                            />
-                        </View>
-                    ) : null}
-                </View>
-            </KeyboardAwareScrollView>
-
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {isDefined(progress) ? (
-                    <View className="flex-row items-center justify-center gap-x-sm">
-                        <ActivityIndicator size="small" />
-                        <Text className="text-sm text-secondary-foreground">
-                            <Trans>
-                                Updating {processed}/{total}...
-                            </Trans>
-                        </Text>
-                    </View>
-                ) : null}
+            <View className="px-xl pb-xl" style={footerStyle}>
                 <View className="flex-row gap-x-md">
-                    <Button className="flex-1" variant="ghost" onPress={handleDismiss} disabled={isBusy} content={t`Cancel`} />
-                    <Button
-                        testID={SuggestRuleSelectors.CreateRuleButton}
-                        className="flex-1"
-                        content={buttonText}
-                        variant="cta"
-                        onPress={handleCreate}
-                        disabled={isCreateDisabled}
-                        isLoading={isBusy}
-                    />
+                    <Button className="flex-1" variant="ghost" onPress={onDismiss} content={t`Cancel`} />
+                    <Button className="flex-1" variant="cta" onPress={handleNext} disabled={!hasSelectedConditions} content={t`Next`} />
                 </View>
             </View>
-        </ModalPage>
+        </View>
     );
 };

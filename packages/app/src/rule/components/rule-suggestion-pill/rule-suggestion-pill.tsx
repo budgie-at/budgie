@@ -95,8 +95,12 @@ export const RuleSuggestionPill = (props: Props) => {
                     className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
                 >
                     <Animated.View style={sparkleAnimatedStyle}>
-                        <Icon icon={UserIconNameEnum.Sparkles} size={SPARKLE_ICON_SIZE} className="text-secondary-foreground" />
+                        <Icon icon={UserIconNameEnum.Cog} size={SPARKLE_ICON_SIZE} className="text-secondary-foreground" />
                     </Animated.View>
+                    <Text className="text-xs text-secondary-foreground font-medium">
+                        <Trans>Quick rule</Trans>
+                    </Text>
+                    <Icon icon={UserIconNameEnum.ChevronRight} size={ACTION_ICON_SIZE} className="text-secondary-foreground" />
                     {hasCategory ? (
                         <>
                             <Icon icon={UserIconNameEnum.FolderOpen} size={ACTION_ICON_SIZE} className="text-secondary-foreground" />
