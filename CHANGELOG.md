@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.35.2](https://github.com/budgie-at/budgie/compare/v2.35.1...v2.35.2) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** increase settings page top padding to clear blur header ([1c72d88](https://github.com/budgie-at/budgie/commit/1c72d88fa3c96fd4ccf14b8ba43953ea6686abc6))
+
 ## [2.35.1](https://github.com/budgie-at/budgie/compare/v2.35.0...v2.35.1) (2026-02-21)
 
 ### Bug Fixes
