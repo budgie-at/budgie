@@ -1,4 +1,4 @@
-import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, isNotNull, isNull, like, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -192,24 +192,38 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    async convertTransfersFromAccountToIncome(accountId: number, tx?: TX): Promise<void> {
+    async convertTransfersFromAccountToIncome(accountId: number, tx?: TX, additionalFilter?: SQL): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
-            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId)));
+            .where(
+                and(
+                    eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                    eq(TransactionEntityTable.fromAccountId, accountId),
+                    additionalFilter
+                )
+            );
     }
 
-    async convertTransfersToAccountToExpense(accountId: number, tx?: TX): Promise<void> {
+    async convertTransfersToAccountToExpense(accountId: number, tx?: TX, additionalFilter?: SQL): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
-            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
+            .where(
+                and(
+                    eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                    eq(TransactionEntityTable.toAccountId, accountId),
+                    additionalFilter
+                )
+            );
     }
 
     async unconsolidateTransfersByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        const autoConsolidatedFilter = like(TransactionEntityTable.comment, '%[Automatically consolidated from:%');
+
         for (const accountId of accountIds) {
-            await this.convertTransfersFromAccountToIncome(accountId, tx);
-            await this.convertTransfersToAccountToExpense(accountId, tx);
+            await this.convertTransfersFromAccountToIncome(accountId, tx, autoConsolidatedFilter);
+            await this.convertTransfersToAccountToExpense(accountId, tx, autoConsolidatedFilter);
         }
     }
 

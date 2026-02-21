@@ -5,11 +5,9 @@ import {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateInputInterface,
-    TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -141,15 +139,16 @@ class TransactionService {
         await db.transaction(async tx => {
             for (const entry of input.entries) {
                 if (isDefined(entry) && isDefined(entry.externalId)) {
-                    const [updatedEntry] = await tx
-                        .update(TransactionEntryEntityTable)
-                        .set({
+                    const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
+                        entry.externalId,
+                        entry.accountId,
+                        {
                             amount: convertToMicroUnits(entry.amount),
                             exchangeRate: entry.exchangeRate,
                             toIban: entry.toIban
-                        })
-                        .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
-                        .returning({ transactionId: TransactionEntryEntityTable.transactionId });
+                        },
+                        tx
+                    );
 
                     if (isDefined(updatedEntry)) {
                         await transactionRepository.updateById(

@@ -2,7 +2,7 @@ import { TransactionTypeEnum, TransferPairCandidateInterface } from '@budgie/con
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     db,
@@ -65,7 +65,9 @@ class TransferConsolidationService {
             }
         }
 
-        await accountBalanceIncrementalService.updateAllBalances(true);
+        if (isPositiveNumber(consolidated)) {
+            await accountBalanceIncrementalService.updateAllBalances(true);
+        }
 
         return consolidated;
     }
@@ -84,23 +86,26 @@ class TransferConsolidationService {
     }
 
     private async consolidatePair(candidate: TransferPairCandidateInterface): Promise<void> {
+        // eslint-disable-next-line max-statements -- Consolidation requires multiple sequential DB operations
         await db.transaction(async tx => {
-            const incomeTags = await transactionTagsRepository.findByTransactionId(candidate.income_transaction_id);
+            const [incomeTags, expenseTags] = await Promise.all([
+                transactionTagsRepository.findByTransactionId(candidate.income_transaction_id, tx),
+                transactionTagsRepository.findByTransactionId(candidate.expense_transaction_id, tx)
+            ]);
 
             const existingComment = candidate.expense_transaction_comment ?? '';
             const incomeTitle = candidate.income_transaction_title ?? '';
             const consolidationNote = `[Automatically consolidated from: ${incomeTitle}]`; // eslint-disable-line lingui/no-unlocalized-strings
             const updatedComment = existingComment ? `${existingComment}\n${consolidationNote}` : consolidationNote;
 
+            const exchangeRate = this.computeExchangeRate(candidate);
+
             await transactionRepository.updateById(
                 candidate.expense_transaction_id,
                 {
                     type: TransactionTypeEnum.TRANSFER,
                     toAccountId: candidate.income_entry_account_id,
-                    exchangeRate:
-                        candidate.income_entry_exchange_rate === 1
-                            ? candidate.expense_entry_exchange_rate
-                            : candidate.income_entry_exchange_rate,
+                    exchangeRate,
                     comment: updatedComment
                 },
                 tx
@@ -123,9 +128,12 @@ class TransferConsolidationService {
                 tx
             );
 
-            if (isNotEmptyArray(incomeTags)) {
+            const existingTagIds = new Set(expenseTags.map(tag => tag.tagId));
+            const newIncomeTags = incomeTags.filter(tag => !existingTagIds.has(tag.tagId));
+
+            if (isNotEmptyArray(newIncomeTags)) {
                 await transactionTagsRepository.bulkCreate(
-                    incomeTags.map(tag => ({
+                    newIncomeTags.map(tag => ({
                         transactionId: candidate.expense_transaction_id,
                         tagId: tag.tagId
                     })),
@@ -133,9 +141,17 @@ class TransferConsolidationService {
                 );
             }
 
-            await transactionRepository.deleteById(candidate.income_transaction_id, tx);
             await transactionTagsRepository.deleteByTransactionId(candidate.income_transaction_id, tx);
+            await transactionRepository.deleteById(candidate.income_transaction_id, tx);
         });
+    }
+
+    private computeExchangeRate(candidate: TransferPairCandidateInterface): number {
+        if (candidate.expense_entry_amount === candidate.income_entry_amount) {
+            return 1;
+        }
+
+        return candidate.income_entry_amount / candidate.expense_entry_amount;
     }
 }
 
