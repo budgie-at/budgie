@@ -14,6 +14,7 @@ import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
+import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
@@ -135,6 +136,10 @@ export default function RootLayout() {
                                                                     <Stack.Screen
                                                                         name="split-entries"
                                                                         options={SPLIT_ENTRIES_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="account-type-selector"
+                                                                        options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
                                                                     />
                                                                 </Stack>
                                                             </ModalProvider>
