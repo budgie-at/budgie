@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.35.0](https://github.com/budgie-at/budgie/compare/v2.34.2...v2.35.0) (2026-02-21)
+
+### Bug Fixes
+
+- add build dependency ordering to TurboRepo config ([e7c8c47](https://github.com/budgie-at/budgie/commit/e7c8c47ce5471bb01487f834d401b7e1e58dc428))
+- **ai,contracts:** replace Buffer with Uint8Array for React Native compatibility ([dcb6f85](https://github.com/budgie-at/budgie/commit/dcb6f858dd8735d1b08835280dd7920e74b618c9))
+- **ai:** prevent concurrent embedding inference and cache results ([d7b6b59](https://github.com/budgie-at/budgie/commit/d7b6b591fd361edf03dff87b9129a040232367e0))
+- **ai:** relax vec search distance threshold from 0.9 to 1.0 ([5f8831e](https://github.com/budgie-at/budgie/commit/5f8831e6441b0b883d0b0fc9a69f44eb9aa818ca))
+- **app,ai,contracts:** address PR review issues and add animated brain progress UI ([d7f3146](https://github.com/budgie-at/budgie/commit/d7f31469a516b5eb32701f84f469c4a4fcad44a4))
+- **app,contracts:** count unique contexts instead of unique titles for embedding status ([52dcd7f](https://github.com/budgie-at/budgie/commit/52dcd7f2cc0b8d8a3135ca376862a84b82da7139))
+- **app,contracts:** optimize findRecentContexts and relax embedding pattern filters ([5e7c39a](https://github.com/budgie-at/budgie/commit/5e7c39a33a73c0740c0cb62bd812f6e9a41211e5))
+- **app,contracts:** process all embedding batches instead of stopping at first ([6dc044f](https://github.com/budgie-at/budgie/commit/6dc044f2b2fbc21847ab8bcc6f316550a12c0d56))
+- **app,contracts:** revert to main pattern logic, widen time window, remove debug logs ([f00c752](https://github.com/budgie-at/budgie/commit/f00c7521f021110e1ed71029df00e917546e4a6f))
+- **app:** add per-batch error handling to embedding sync ([38682c7](https://github.com/budgie-at/budgie/commit/38682c73cf671ec1f900c8d0b11177c135f9b03e))
+- **app:** address PR review — remove debug logs, fix SQL injection, clean up ([f64ef39](https://github.com/budgie-at/budgie/commit/f64ef39ebcbc5c1a82a3ad8eb1849ea77ef3b1dc))
+- **app:** create empty vec0 table in dbInit for migration compatibility ([90f18c9](https://github.com/budgie-at/budgie/commit/90f18c9a6b70e4aaf1d061b67d4624f92953b361))
+- **app:** fix AI progress never reaching 100% ([2627136](https://github.com/budgie-at/budgie/commit/262713608cc52152748809926a30fe7682911f5d))
+- **app:** fix brain pulsation, instant fill, and single brain position ([3d1eab4](https://github.com/budgie-at/budgie/commit/3d1eab45492e2537e1b9735ec2df7315b5d89d39))
+- **app:** guard table-dependent execSync calls in dbInit for fresh installs ([097c755](https://github.com/budgie-at/budgie/commit/097c755a0cfe07ab6037e2b9d3711807846354d0))
+- **app:** hide brain when all suggestion fields filled, update hint text ([357ecfb](https://github.com/budgie-at/budgie/commit/357ecfb28fd3c820fecd7120a02915004e4cf803))
+- **app:** highlight only cards, restore gap, simplify animation ([b261a7f](https://github.com/budgie-at/budgie/commit/b261a7f78bfad531136bb97fa2c2da87bba18be0))
+- **app:** move embedding status to About section in settings ([9f53f70](https://github.com/budgie-at/budgie/commit/9f53f707fe8004ca8b736fbee8acc168c83b3bae))
+- **app:** preserve mccCategoryId when saving transactions ([5e28055](https://github.com/budgie-at/budgie/commit/5e28055f9c8192dec761376be17f95d2cdb9885b))
+- **app:** prevent pattern suggestions from overwriting manual amount ([0b04c4e](https://github.com/budgie-at/budgie/commit/0b04c4ef4a4df4d094cb68724524ba4d8c56d45a))
+- **app:** remove automatic background embedding task from LlmProvider ([d88df87](https://github.com/budgie-at/budgie/commit/d88df87f5f93e9c4add592a1fc7e467bbdd4e19e))
+- **app:** remove initPostMigration from dbInit to fix splash screen hang ([eb1593a](https://github.com/budgie-at/budgie/commit/eb1593a38fee6420ef64a0ce3a42022b81b49151))
+- **app:** reverse suggestion order and improve AI label UX ([3d7ea15](https://github.com/budgie-at/budgie/commit/3d7ea15a7fd3779817258d815580bd8b4f807cf4))
+- **app:** revert suggestion row to vertical layout, add standalone brain and auto-refresh ([16f3013](https://github.com/budgie-at/budgie/commit/16f3013d20738d18df779da039da7c7ae3d806c0))
+- **app:** separate entering and shake animations on account row to prevent flash ([30864af](https://github.com/budgie-at/budgie/commit/30864af55bfc81e48487115454f6383bd12868d8))
+- **app:** support DEBT transactions on transfer detail screen ([bc589d4](https://github.com/budgie-at/budgie/commit/bc589d498c26b4b8ba5a10e2ca9f22dc0f59aaa1))
+- **contracts:** exclude empty-context transactions from embedding queries ([3e52827](https://github.com/budgie-at/budgie/commit/3e52827672f07761d0de04a9c918691717fcdb63))
+- **contracts:** resolve CPD clone between embedding repositories ([291f723](https://github.com/budgie-at/budgie/commit/291f723381b1c2f3ac122c2d22a1b79d6c8f7e75))
+
+### Features
+
+- **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([4088cf3](https://github.com/budgie-at/budgie/commit/4088cf3a48ac706b18547b61eed1f2711867ce98))
+- **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([7799ac1](https://github.com/budgie-at/budgie/commit/7799ac119cd5dd0de97e546d19e02429fea21f11))
+- **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([3703a59](https://github.com/budgie-at/budgie/commit/3703a59b1a4adad03c92461e20dfd6a395a7361e))
+- **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([8a1f53e](https://github.com/budgie-at/budgie/commit/8a1f53e6e33f36423f61566f3a76c1cd83c436a3))
+- **app,ai:** add source debug labels to suggestion pills ([b1b9727](https://github.com/budgie-at/budgie/commit/b1b97276463db91a75bc91cda3698f8900fe684a))
+- **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([ab79e1b](https://github.com/budgie-at/budgie/commit/ab79e1bcb6ebdc7f06a77a6eb95a2620f2453fae))
+- **app,ai:** show AI category suggestion for voice input transactions ([b7c9e13](https://github.com/budgie-at/budgie/commit/b7c9e13e924140d689fdd0301ae1093e0cd4a0b3))
+- **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([3660a42](https://github.com/budgie-at/budgie/commit/3660a42236815fc4ab9cdc4634ea6f4152ef3930))
+- **app:** add background embedding task for bank sync transactions ([2f1a33f](https://github.com/budgie-at/budgie/commit/2f1a33f7d2b52739ceb4dbd0fa7604f076c18588))
+- **app:** add embedding progress provider with brain fill indicator ([02789ff](https://github.com/budgie-at/budgie/commit/02789ffdb7cd865b0e0bf81750672e42d554c01c))
+- **app:** add long-press radial ring to regenerate AI data ([9e5a6c6](https://github.com/budgie-at/budgie/commit/9e5a6c625e88e835e895ab181fe47beb093d2b71))
+- **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([6f88c57](https://github.com/budgie-at/budgie/commit/6f88c5783f8c1ccd6b8a6b0d216f7083fe1f9467))
+- **app:** add unified AI status context with hint labels and brain navigation ([64812ed](https://github.com/budgie-at/budgie/commit/64812ed6be06ed8c322abbbf362c6f355992aae7))
+- **app:** auto-generate embeddings on transaction create/update ([84bbd3b](https://github.com/budgie-at/budgie/commit/84bbd3bdba937abcc1748ac5dd1096948679a070))
+- **app:** decouple embedding suggestions from chat model loading ([f37302f](https://github.com/budgie-at/budgie/commit/f37302f71844643df66d1d9168bba4a17560a968))
+- **app:** scroll to AI section when brain tapped, add missing translations ([568506a](https://github.com/budgie-at/budgie/commit/568506a8e389758c1b3ceb63e5d2dc032bc03cdc))
+- **app:** swap chat model to Qwen3 1.7B Q4_K_M ([0f5081d](https://github.com/budgie-at/budgie/commit/0f5081d152cbdb887f5cde3cbe7aa2d246c49433))
+- **contracts,ai,app:** split title_embeddings into merchant + comment tables ([044d1c2](https://github.com/budgie-at/budgie/commit/044d1c2d3b70119a887580cb350b92cf83fa9ba2))
+- **contracts,app:** add monthly pattern matching for transaction suggestions ([f32ca81](https://github.com/budgie-at/budgie/commit/f32ca8172b900b5fb53497a070566a358b14cfaa))
+- **contracts,app:** add vector embedding pattern matching for transaction suggestions ([506c6ad](https://github.com/budgie-at/budgie/commit/506c6ad0c35bc89a76048dd4dd48bd010fdbe35c))
+- **contracts,app:** replace LLM text generation with embedding-based category & tag suggestions ([005e8d0](https://github.com/budgie-at/budgie/commit/005e8d0a920926104afe796b5eb2036731465c58)), closes [#318](https://github.com/budgie-at/budgie/issues/318)
+
+### Performance Improvements
+
+- **app,ai,contracts:** optimize vector embedding queries and data integrity ([cab9e0c](https://github.com/budgie-at/budgie/commit/cab9e0ce293686adebad202bc5298fed77d8bc77))
+- **app:** cache existing contexts across embedding sync batches ([f676b27](https://github.com/budgie-at/budgie/commit/f676b275df9c05f95711a78994f68dd9a5bb1fe1))
+
 ## [2.34.2](https://github.com/budgie-at/budgie/compare/v2.34.1...v2.34.2) (2026-02-13)
 
 **Note:** Version bump only for package @budgie-at/root
