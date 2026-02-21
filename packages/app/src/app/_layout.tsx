@@ -23,6 +23,7 @@ import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { IMPORT_COLUMN_MAPPER_MODAL_OPTIONS } from '../@generic/constant/import-column-mapper-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
+import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -152,6 +153,10 @@ export default function RootLayout() {
                                                                         options={FILTER_MODAL_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="date-filter" options={FILTER_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="transaction-category-filter"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />
