@@ -1,21 +1,19 @@
+import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { CategoryEntityInterface } from '@budgie/contracts';
-
-import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useLlmContext } from '../context/llm.context';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
-import { CategoryLlmService } from '../service/category-llm.service';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
-    transactionTitle: string;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
@@ -26,23 +24,19 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const hasCategoriesLoaded = categories.length > 0;
-    const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
-        const service = new CategoryLlmService(llm);
-        const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
+        const mccDescription = mccCategory?.fullDescription ?? null;
 
-        return service.suggestCategories({
-            transactionTitle,
-            mccDescription: mccCategory?.fullDescription ?? null,
-            comment: suggestionComment,
-            categories
-        });
+        return embeddingSuggestionService.suggestCategories(llm, categories, transactionTitle, mccDescription, comment, aiContext);
     };
 
-    return useSuggestionBase({
+    const { status, suggestions } = useSuggestionBase({
         enabled,
-        isReady,
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady, categories.length],
         fetchSuggestions
     });
+
+    return { status, suggestions };
 };
