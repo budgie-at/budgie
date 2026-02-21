@@ -15,6 +15,7 @@ import { NoteInputModalProvider } from '../../transaction/provider/note-input-mo
 import { SplitEntriesModalProvider } from '../../transaction/provider/split-entries-modal.provider';
 import { TransactionAccountFilterModalProvider } from '../../transaction/provider/transaction-account-filter-modal.provider';
 import { TransactionCategoryFilterModalProvider } from '../../transaction/provider/transaction-category-filter-modal.provider';
+import { TransactionTagFilterModalProvider } from '../../transaction/provider/transaction-tag-filter-modal.provider';
 import { TransactionTypeFilterModalProvider } from '../../transaction/provider/transaction-type-filter-modal.provider';
 
 import { ContactSelectorModalProvider } from './contact-selector-modal.provider';
@@ -42,7 +43,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                     <DateFilterModalProvider>
                                                                         <TransactionCategoryFilterModalProvider>
                                                                             <TransactionAccountFilterModalProvider>
-                                                                                {children}
+                                                                                <TransactionTagFilterModalProvider>
+                                                                                    {children}
+                                                                                </TransactionTagFilterModalProvider>
                                                                             </TransactionAccountFilterModalProvider>
                                                                         </TransactionCategoryFilterModalProvider>
                                                                     </DateFilterModalProvider>
