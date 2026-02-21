@@ -24,7 +24,6 @@ const MAX_CONSECUTIVE_FAILURES = 3;
 const storeEmbeddings = async <TContextData extends ContextDataWithEmbedding>(
     config: StoreEmbeddingsConfigInterface<TContextData>
 ): Promise<void> => {
-    /* eslint-disable no-await-in-loop -- Sequential embedding storage */
     for (const item of config.items) {
         const embeddingVector = config.embeddings.get(item.context);
 
@@ -42,7 +41,6 @@ const storeEmbeddings = async <TContextData extends ContextDataWithEmbedding>(
             await microPause();
         }
     }
-    /* eslint-enable no-await-in-loop */
 };
 
 // eslint-disable-next-line max-statements -- Batch processing with error recovery
@@ -57,7 +55,6 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
     let hasMore = true;
     let consecutiveFailures = 0;
 
-    /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
         try {
             const rawData = await config.fetchBatch(EMBEDDING_BATCH_LIMIT, cursor);
@@ -88,5 +85,4 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
             consecutiveFailures += 1;
         }
     }
-    /* eslint-enable no-await-in-loop */
 };

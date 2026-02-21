@@ -1,62 +1,69 @@
 {
-    "version": "7",
-    "dialect": "sqlite",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "6",
-            "when": 1766785704262,
-            "tag": "0000_normal_dragon_man",
-            "breakpoints": true
-        },
-        {
-            "idx": 1,
-            "version": "6",
-            "when": 1767193657976,
-            "tag": "0001_late_red_wolf",
-            "breakpoints": true
-        },
-        {
-            "idx": 2,
-            "version": "6",
-            "when": 1767283590405,
-            "tag": "0002_dark_prima",
-            "breakpoints": true
-        },
-        {
-            "idx": 3,
-            "version": "6",
-            "when": 1767359238587,
-            "tag": "0003_unusual_maestro",
-            "breakpoints": true
-        },
-        {
-            "idx": 4,
-            "version": "6",
-            "when": 1767360939861,
-            "tag": "0004_cloudy_juggernaut",
-            "breakpoints": true
-        },
-        {
-            "idx": 5,
-            "version": "6",
-            "when": 1767472006304,
-            "tag": "0005_omniscient_jasper_sitwell",
-            "breakpoints": true
-        },
-        {
-            "idx": 6,
-            "version": "6",
-            "when": 1767517737235,
-            "tag": "0006_nice_warlock",
-            "breakpoints": true
-        },
-        {
-            "idx": 7,
-            "version": "6",
-            "when": 1767682620495,
-            "tag": "0007_careless_risque",
-            "breakpoints": true
-        }
-    ]
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1766785704262,
+      "tag": "0000_normal_dragon_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1767193657976,
+      "tag": "0001_late_red_wolf",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1767283590405,
+      "tag": "0002_dark_prima",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1767359238587,
+      "tag": "0003_unusual_maestro",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1767360939861,
+      "tag": "0004_cloudy_juggernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1767472006304,
+      "tag": "0005_omniscient_jasper_sitwell",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1767517737235,
+      "tag": "0006_nice_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1767682620495,
+      "tag": "0007_careless_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1771686405515,
+      "tag": "0008_jazzy_mandarin",
+      "breakpoints": true
+    }
+  ]
 }

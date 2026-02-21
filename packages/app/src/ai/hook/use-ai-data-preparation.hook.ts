@@ -98,7 +98,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             const translationService = new TranslationLlmService(llm);
 
-            /* eslint-disable no-await-in-loop -- Sequential LLM processing */
             setPhaseLabel(t`Translating categories...`);
             await microPause();
             for (const category of categories) {
@@ -116,7 +115,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 updateProgress();
                 await microPause();
             }
-            /* eslint-enable no-await-in-loop */
 
             setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();

@@ -3,8 +3,6 @@ import { useEffect } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { ExternalSourceEnum } from '@budgie/contracts';
-
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
@@ -27,7 +25,7 @@ export const useAppInitialization = (success: boolean) => {
                     void monobankSyncService.sync();
                     void monobankSyncService.registerBackgroundTask();
 
-                    void transferConsolidationService.consolidate(ExternalSourceEnum.MONOBANK);
+                    void transferConsolidationService.consolidate();
                     void transferConsolidationService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console

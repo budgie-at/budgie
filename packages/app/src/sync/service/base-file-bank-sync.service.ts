@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';

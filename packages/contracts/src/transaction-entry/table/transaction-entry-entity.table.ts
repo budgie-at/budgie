@@ -1,4 +1,4 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
@@ -24,7 +24,7 @@ export const TransactionEntryEntityTable = sqliteTable(
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),
         amount: int('amount', { mode: 'number' }).notNull(),
         externalId: text('external_id'),
-        exchangeRate: int('exchange_rate', { mode: 'number' }).notNull().default(1),
+        exchangeRate: real('exchange_rate').notNull().default(1),
         toIban: text('to_iban')
     })
 );

@@ -1,27 +1,35 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { Button } from '../../../@generic/component/button/button';
-import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { bankSyncService } from '../../service/bank-sync.service';
+import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 
 interface Props {
     readonly accountId: number;
 }
 
 export const ResyncBankSyncAccount = ({ accountId }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleResync = async () => {
+        const confirmed = await confirmAlert({
+            title: t`Re-sync Bank Account?`,
+            message: t`This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data.`,
+            confirmText: t`Re-sync History`,
+            cancelText: t`Cancel`
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        setIsLoading(true);
         try {
-            setIsLoading(true);
-            await bankSyncService.resetForResync(accountId);
-            ref.current?.close();
+            await bankSyncRepository.resetForResync(accountId);
             Toast.show({
                 type: 'success',
                 text1: t`Success`,
@@ -38,22 +46,5 @@ export const ResyncBankSyncAccount = ({ accountId }: Props) => {
         }
     };
 
-    const handleOpen = () => ref.current?.open();
-
-    return (
-        <>
-            <Button onPress={handleOpen} size="sm" variant="positive" leftIcon={UserIconNameEnum.RotateCw} />
-
-            <ConfirmActionBottomSheet
-                ref={ref}
-                isLoading={isLoading}
-                variant="positive"
-                description={t`This will reset the sync history and re-sync all transactions from this bank account. \n\n 💡 Your existing transactions, tags, and categories will be preserved and updated with any new data.`}
-                buttonText={t`Re-sync History`}
-                onSubmit={handleResync}
-                icon={UserIconNameEnum.RotateCw}
-                title={t`Re-sync Bank Account?`}
-            />
-        </>
-    );
+    return <Button onPress={handleResync} isLoading={isLoading} size="sm" variant="positive" leftIcon={UserIconNameEnum.RotateCw} />;
 };

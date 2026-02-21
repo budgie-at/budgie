@@ -46,10 +46,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    async softDeleteById(id: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db).update(TransactionEntityTable).set({ deletedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
-    }
-
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
