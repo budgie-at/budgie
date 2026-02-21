@@ -11,6 +11,7 @@ import { DatePickerModalProvider } from '../../transaction/provider/date-picker-
 import { NoteInputModalProvider } from '../../transaction/provider/note-input-modal.provider';
 import { SplitEntriesModalProvider } from '../../transaction/provider/split-entries-modal.provider';
 
+import { CurrencySelectorModalProvider } from './currency-selector-modal.provider';
 import { IconSelectorModalProvider } from './icon-selector-modal.provider';
 
 export const ModalProvider = ({ children }: PropsWithChildren) => (
@@ -23,7 +24,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                             <DatePickerModalProvider>
                                 <NoteInputModalProvider>
                                     <SplitEntriesModalProvider>
-                                        <ConvertToTransferModalProvider>{children}</ConvertToTransferModalProvider>
+                                        <ConvertToTransferModalProvider>
+                                            <CurrencySelectorModalProvider>{children}</CurrencySelectorModalProvider>
+                                        </ConvertToTransferModalProvider>
                                     </SplitEntriesModalProvider>
                                 </NoteInputModalProvider>
                             </DatePickerModalProvider>
