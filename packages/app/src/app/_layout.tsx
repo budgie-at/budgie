@@ -19,6 +19,7 @@ import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { IMPORT_COLUMN_MAPPER_MODAL_OPTIONS } from '../@generic/constant/import-column-mapper-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
@@ -145,6 +146,10 @@ export default function RootLayout() {
                                                                     <Stack.Screen
                                                                         name="import-column-mapper"
                                                                         options={IMPORT_COLUMN_MAPPER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-type-filter"
+                                                                        options={FILTER_MODAL_OPTIONS}
                                                                     />
                                                                 </Stack>
                                                             </ModalProvider>
