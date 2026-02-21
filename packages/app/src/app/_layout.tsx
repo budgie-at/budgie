@@ -58,6 +58,7 @@ const AiProviderWrapper: typeof LlmDisabledProvider = isAiDisabled
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
+// eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
     useResetDb(error);
@@ -101,6 +102,10 @@ export default function RootLayout() {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="account-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="currency-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
