@@ -1,23 +1,22 @@
+import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { useGetCategoryByIdQuery } from '../../category/query/use-get-category-by-id.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
-import { TagLlmService } from '../service/tag-llm.service';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseTagSuggestionParams {
-    transactionTitle: string;
-    categoryId: number;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly categoryId: number;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
@@ -25,34 +24,35 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
     const { llm } = useLlmContext();
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
-    const { category, isLoading: isCategoryLoading } = useGetCategoryByIdQuery(categoryId);
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const hasTagsLoaded = isNotEmptyArray(allTags);
-    const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
     const fetchSuggestions = async (): Promise<TagEntityInterface[]> => {
         if (!isNotEmptyArray(allTags)) {
             return [];
         }
 
-        const service = new TagLlmService(llm);
-        const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
-        const categoryName = category?.titleEn ?? category?.title ?? null;
 
-        return service.suggestTags({
-            transactionTitle,
-            categoryName,
-            mccDescription,
-            comment: suggestionComment,
-            tags: allTags
-        });
+        return embeddingSuggestionService.suggestTags(llm, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
     };
 
-    return useSuggestionBase({
+    const { status, suggestions } = useSuggestionBase({
         enabled,
-        isReady,
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
+        requestKeyParts: [
+            transactionTitle,
+            categoryId,
+            mccCategoryId,
+            comment,
+            aiContext,
+            enabled,
+            llm.isEmbeddingReady,
+            allTags?.length ?? 0
+        ],
         fetchSuggestions
     });
+
+    return { status, suggestions };
 };

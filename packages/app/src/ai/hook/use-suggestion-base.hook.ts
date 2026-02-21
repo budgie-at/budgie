@@ -1,50 +1,89 @@
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { useFocusEffect } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
-import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
-import { SuggestionStatus } from '../interface/suggestion-status.type';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
+import { useAiEmbeddingProgress } from './use-ai-embedding-progress.hook';
 
 interface UseSuggestionBaseParams<T> {
-    enabled: boolean;
-    isReady: boolean;
-    fetchSuggestions: () => Promise<T[]>;
+    readonly enabled: boolean;
+    readonly readyChecks: readonly boolean[];
+    readonly requestKeyParts: readonly unknown[];
+    readonly fetchSuggestions: () => Promise<T[]>;
 }
 
-export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionReturnInterface<T> => {
-    const { enabled, isReady, fetchSuggestions } = params;
+interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
+    readonly refresh: () => void;
+}
 
-    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [suggestions, setSuggestions] = useState<T[]>([]);
+interface SuggestionResultInterface<T> {
+    readonly key: string | null;
+    readonly status: SuggestionInternalStatus;
+    readonly suggestions: T[];
+}
 
-    const hasTriggeredRef = useRef(false);
+export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
+    const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
+    const requestKey = JSON.stringify(requestKeyParts);
+    const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
+
+    const [result, setResult] = useState<SuggestionResultInterface<T>>({
+        key: null,
+        status: 'idle',
+        suggestions: []
+    });
+    const [refreshVersion, setRefreshVersion] = useState(0);
+    const fetchSuggestionsRef = useRef(fetchSuggestions);
+    const { isIncomplete } = useAiEmbeddingProgress();
 
     useEffect(() => {
-        if (!isReady || hasTriggeredRef.current) {
-            return;
+        fetchSuggestionsRef.current = fetchSuggestions;
+    }, [fetchSuggestions]);
+
+    useEffect(() => {
+        if (!isReady) {
+            return emptyFn;
         }
 
-        hasTriggeredRef.current = true;
+        let cancelled = false;
 
         const suggest = async (): Promise<void> => {
-            setInternalStatus('loading');
+            setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
-                const results = await fetchSuggestions();
+                const results = await fetchSuggestionsRef.current();
 
-                setSuggestions(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+                if (!cancelled) {
+                    setResult({ key: requestKey, status: 'success', suggestions: results });
+                }
             } catch {
-                setInternalStatus('error');
+                if (!cancelled) {
+                    setResult({ key: requestKey, status: 'error', suggestions: [] });
+                }
             }
         };
 
         void suggest();
-    }, [isReady, fetchSuggestions]);
 
-    const isInitializing = enabled && !isReady && internalStatus === 'idle';
-    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
+        return () => {
+            cancelled = true;
+        };
+    }, [isReady, requestKey, refreshVersion, isIncomplete]);
 
-    return { status, suggestions };
+    const currentResult: SuggestionResultInterface<T> =
+        result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
+
+    const isInitializing = enabled && !isReady && currentResult.status === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
+
+    const refresh = (): void => {
+        setRefreshVersion(version => version + 1);
+    };
+
+    useFocusEffect(() => {
+        refresh();
+    });
+
+    return { status, suggestions: currentResult.suggestions, refresh };
 };

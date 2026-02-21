@@ -1,8 +1,10 @@
-import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
     REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES,
@@ -46,21 +48,35 @@ class RepeatedTransactionService {
         const patterns = await transactionPatternRepository.findRepeatedPatterns({
             ...timeWindow,
             type,
-            accountId,
-            categoryId,
+            ...(isPositiveNumber(accountId) && { accountId }),
+            ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         });
 
         return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
     }
 
-    private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
-        const targetAmountMicrounits = targetAmount * PRECISION;
-        const tolerance = targetAmountMicrounits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
-        const minAmount = targetAmountMicrounits - tolerance;
-        const maxAmount = targetAmountMicrounits + tolerance;
+    getLatestAmount(patterns: RepeatedTransactionPatternInterface[], categoryId: number): number {
+        let bestAmount = 0;
+        let bestOccurrenceCount = 0;
 
-        return patterns.filter(pattern => pattern.averageAmount >= minAmount && pattern.averageAmount <= maxAmount);
+        for (const pattern of patterns) {
+            if (pattern.categoryId === categoryId && pattern.occurrenceCount > bestOccurrenceCount) {
+                bestOccurrenceCount = pattern.occurrenceCount;
+                bestAmount = pattern.latestAmount;
+            }
+        }
+
+        return convertFromMicroUnits(bestAmount);
+    }
+
+    private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
+        const targetAmountMicroUnits = convertToMicroUnits(targetAmount);
+        const tolerance = targetAmountMicroUnits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
+        const minAmount = targetAmountMicroUnits - tolerance;
+        const maxAmount = targetAmountMicroUnits + tolerance;
+
+        return patterns.filter(pattern => pattern.latestAmount >= minAmount && pattern.latestAmount <= maxAmount);
     }
 }
 

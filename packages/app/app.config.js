@@ -105,7 +105,8 @@ export default ({ config }) => ({
             'expo-sqlite',
             {
                 enableFTS: true,
-                useSQLCipher: true
+                useSQLCipher: true,
+                withSQLiteVecExtension: true
             }
         ],
         [

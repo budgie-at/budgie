@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. Monorepo with 4 packages: app (React Native), contracts (shared types), landing (Next.js), and bank-sync (bank integrations).
+Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and bank-sync (bank integrations).
 
 ## Commands
 
@@ -15,12 +15,14 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Prettier (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # ESLint
+yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 yarn test                                 # Jest tests
 
 # IMPORTANT: After completing any task, ALWAYS run:
+# During debug sessions (when user says "skip lint"), only run: yarn ts
+# Otherwise run full validation:
 yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
 
 # Utilities
@@ -33,6 +35,7 @@ yarn deps:dedupe                          # Deduplicate dependencies
 ```
 packages/
 ├── app/                # React Native (Expo 54) - main mobile app
+├── ai/                 # Pure TypeScript AI/LLM services
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 15 marketing site
 └── bank-sync/          # Bank integration package
@@ -63,7 +66,7 @@ packages/
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
 15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
-17. **Use existing utility functions** - Use `convertFromMicroUnits()` for amount conversion instead of manual `/ PRECISION`
+17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
 19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
@@ -168,13 +171,16 @@ if (isDefined(filters.date)) {
 
 **Microunits conversion:**
 ```typescript
-// Good - use utility function
+// Good - use utility functions
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+const microAmount = convertToMicroUnits(userInputAmount);
 
-// Bad - manual division
+// Bad - manual arithmetic with PRECISION
 import { PRECISION } from '@budgie/contracts';
 const displayAmount = pattern.averageAmount / PRECISION;
+const microAmount = Math.round(userInputAmount * PRECISION);
 ```
 
 **Optional params with spread syntax:**
@@ -262,6 +268,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 | Package | Stack |
 |---------|-------|
 | **app** | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
+| **ai** | Pure TypeScript, Zod |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod |
 | **landing** | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7 |
 | **bank-sync** | ky HTTP client, date-fns |
@@ -278,7 +285,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 
 Conventional commits: `type(scope): description`
 
-**Scopes:** Use package names without prefix: `app`, `contracts`, `landing`, `bank-sync`
+**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
 
 **Examples:**
 - `feat(app): add dark mode toggle`
@@ -306,7 +313,7 @@ Conventional commits: `type(scope): description`
 - If Prettier keeps reformatting your changes back, stop and use `eslint-disable`
 - Ask for confirmation before attempting complex refactors - do not go back and forth
 - Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
-- Use `jscpd:ignore-start/end` for intentionally similar code patterns (like form components)
+- **NEVER use `jscpd:ignore-start/end` in code files** - only allowed in JSX route files (e.g., `expense.tsx`, `income.tsx`, `transfer.tsx`). Fix duplication in source code by extracting shared logic instead
 
 ## Acceptable ESLint Disable Comments
 

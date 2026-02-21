@@ -1,98 +1,27 @@
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.interface';
+import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
+import { AiSuggestionOrchestrator } from '../ai-suggestion-orchestrator/ai-suggestion-orchestrator';
+import { PatternSuggestionOrchestrator } from '../pattern-suggestion-orchestrator/pattern-suggestion-orchestrator';
 
-import { CategorySuggestionRow } from './category-suggestion-row';
-import { PatternSuggestionRow } from './pattern-suggestion-row';
-import { TagSuggestionRow } from './tag-suggestion-row';
-
-interface Props {
+interface Props extends SuggestionOrchestratorSharedProps {
     readonly isNewTransaction: boolean;
-    readonly isSplitActive: boolean;
-    readonly transactionType: TransactionTypeEnum;
-    readonly transactionTitle: string;
-    readonly categoryId: number | null;
-    readonly mccCategoryId: number | null;
-    readonly comment: string;
-    readonly aiContext: string;
-    readonly accountId: number;
-    readonly amount: number;
-    readonly hasTagsSelected: boolean;
-    readonly onSelectCategory: (categoryId: number) => void;
-    readonly onSelectTag: (tagId: number) => void;
-    readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-// eslint-disable-next-line max-statements -- Conditional rendering requires multiple visibility checks
+const NEW_TRANSACTION_PATTERN_CONFIG: PatternSuggestionOrchestratorConfig = {
+    loadPatternBeforeCategorySelection: true,
+    allowPatternComments: true,
+    autoFillAmountFromPattern: true
+};
+
 export const SuggestionsContainer = (props: Props) => {
-    const {
-        isNewTransaction,
-        isSplitActive,
-        transactionType,
-        transactionTitle,
-        categoryId,
-        mccCategoryId,
-        comment,
-        aiContext,
-        accountId,
-        amount,
-        hasTagsSelected,
-        onSelectCategory,
-        onSelectTag,
-        onSelectRepeatedPattern
-    } = props;
+    const { isNewTransaction, ...orchestratorProps } = props;
+    const isVoiceTransaction = isNewTransaction && isNotEmptyString(orchestratorProps.aiContext);
 
-    const safeCategoryId = categoryId ?? 0;
-    const hasCategorySelected = safeCategoryId > 0;
-    const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
-
-    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
-    const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
-    const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
-
-    if (isSplitActive) {
-        return <SuggestionRowSpacer />;
+    if (!isNewTransaction || isVoiceTransaction) {
+        return <AiSuggestionOrchestrator {...orchestratorProps} />;
     }
 
-    if (showTagSuggestions) {
-        return (
-            <TagSuggestionRow
-                transactionTitle={transactionTitle}
-                categoryId={safeCategoryId}
-                mccCategoryId={mccCategoryId}
-                comment={comment}
-                aiContext={aiContext}
-                enabled={showTagSuggestions}
-                onSelect={onSelectTag}
-            />
-        );
-    }
-
-    if (showRepeatedSuggestions) {
-        return (
-            <PatternSuggestionRow
-                transactionType={transactionType}
-                accountId={accountId}
-                amount={amount}
-                categoryId={safeCategoryId}
-                enabled={showRepeatedSuggestions}
-                onSelect={onSelectRepeatedPattern}
-            />
-        );
-    }
-
-    if (isNewTransaction) {
-        return <SuggestionRowSpacer />;
-    }
-
-    return (
-        <CategorySuggestionRow
-            transactionTitle={transactionTitle}
-            mccCategoryId={mccCategoryId}
-            comment={comment}
-            aiContext={aiContext}
-            enabled={showCategorySuggestions}
-            onSelect={onSelectCategory}
-        />
-    );
+    return <PatternSuggestionOrchestrator {...orchestratorProps} config={NEW_TRANSACTION_PATTERN_CONFIG} />;
 };

@@ -51,24 +51,26 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props)
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} style={shakeStyle}>
-            <HapticPressable
-                className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
-                onPress={handlePress}
-                accessibilityLabel={accessibilityLabel}
-                accessibilityRole="button"
-            >
-                <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
+        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
+            <Animated.View style={shakeStyle}>
+                <HapticPressable
+                    className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
+                    onPress={handlePress}
+                    accessibilityLabel={accessibilityLabel}
+                    accessibilityRole="button"
+                >
+                    <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
 
-                <View className="flex-1">
-                    <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                    <Text className="text-md font-medium text-primary" numberOfLines={1}>
-                        {account?.title ?? t`Select account`}
-                    </Text>
-                </View>
+                    <View className="flex-1">
+                        <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
+                        <Text className="text-md font-medium text-primary" numberOfLines={1}>
+                            {account?.title ?? t`Select account`}
+                        </Text>
+                    </View>
 
-                <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
-            </HapticPressable>
+                    <Icon icon={UserIconNameEnum.ChevronDown} size={16} className="text-secondary-foreground" />
+                </HapticPressable>
+            </Animated.View>
         </Animated.View>
     );
 };

@@ -1,40 +1,55 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
-import { Text } from 'react-native';
-import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { useRouter } from 'expo-router';
+import { Pressable, Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
+import { useAiStatusContext } from '../../../ai/context/ai-status.context';
+import { useAiEmbeddingProgress } from '../../../ai/hook/use-ai-embedding-progress.hook';
 
 interface Props {
-    readonly isAnimating?: boolean;
+    readonly isLoading?: boolean;
+    readonly showArrow?: boolean;
 }
 
-const ANIMATION_DURATION = 800;
-const MIN_OPACITY = 0.4;
+const BRAIN_CONTAINER_SIZE = 26;
+const BRAIN_ICON_SIZE = 16;
 
-export const SuggestionLoadingIndicator = ({ isAnimating = false }: Props) => {
-    const { t } = useLingui();
-    const opacity = useSharedValue(1);
+export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
+    const router = useRouter();
+    const { progress, isEmbedding } = useAiEmbeddingProgress();
+    const { statusLabel } = useAiStatusContext();
 
-    useEffect(() => {
-        if (isAnimating) {
-            opacity.value = MIN_OPACITY;
-            opacity.value = withRepeat(withTiming(1, { duration: ANIMATION_DURATION }), -1, true);
-        } else {
-            cancelAnimation(opacity);
-            opacity.value = 1;
-        }
+    const shouldAnimate = isLoading || isEmbedding;
+    const showHint = !showArrow;
 
-        return () => void cancelAnimation(opacity);
-    }, [isAnimating, opacity]);
-
-    const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    const handleBrainPress = () => void router.push({ pathname: '/settings', params: { anchor: 'ai' } });
 
     return (
-        <Animated.View style={animatedStyle} className="flex-row items-center gap-xs pl-sm pr-[8%] shrink-0">
-            <Icon icon={UserIconNameEnum.Sparkles} size={12} className="text-secondary-foreground" />
-            <Text className="text-xs text-secondary-foreground">{t`AI`}</Text>
-        </Animated.View>
+        <View className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">
+            {showHint ? (
+                <Pressable className="flex-row items-center gap-xs" onPress={handleBrainPress} hitSlop={8}>
+                    <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
+                        {statusLabel}
+                    </Text>
+                    <AiBrainProgress
+                        progress={progress}
+                        size={BRAIN_CONTAINER_SIZE}
+                        iconSize={BRAIN_ICON_SIZE}
+                        isAnimating={shouldAnimate}
+                    />
+                </Pressable>
+            ) : (
+                <>
+                    <Icon icon={UserIconNameEnum.ArrowLeft} size={12} className="text-secondary-foreground" />
+                    <AiBrainProgress
+                        progress={progress}
+                        size={BRAIN_CONTAINER_SIZE}
+                        iconSize={BRAIN_ICON_SIZE}
+                        isAnimating={shouldAnimate}
+                    />
+                </>
+            )}
+        </View>
     );
 };
