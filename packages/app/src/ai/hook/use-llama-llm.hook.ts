@@ -263,7 +263,6 @@ export const useLlamaLlm = (): LlmInterface => {
 
         const results = new Map<string, number[]>();
 
-        /* eslint-disable no-await-in-loop -- Sequential batch embedding to avoid duplicate embeddings from parallel calls */
         for (const text of texts) {
             try {
                 const result = await context.embedding(text);
@@ -275,7 +274,6 @@ export const useLlamaLlm = (): LlmInterface => {
                 emptyFn();
             }
         }
-        /* eslint-enable no-await-in-loop */
 
         return results;
     };

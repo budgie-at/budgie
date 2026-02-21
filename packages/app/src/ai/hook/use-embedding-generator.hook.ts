@@ -130,7 +130,6 @@ const generateAndStoreEmbeddings = async (
 ): Promise<void> => {
     const processed = new Set<string>();
 
-    /* eslint-disable no-await-in-loop -- Sequential to avoid overwhelming LLM */
     for (const transaction of transactions) {
         const key = `${transaction.title}|${transaction.comment}|${transaction.entries[0]?.categoryId ?? ''}`;
 
@@ -146,7 +145,6 @@ const generateAndStoreEmbeddings = async (
             await generateAndStoreEmbedding(embeddingParams, embeddingService);
         }
     }
-    /* eslint-enable no-await-in-loop */
 };
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {

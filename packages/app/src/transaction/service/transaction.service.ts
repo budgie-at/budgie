@@ -4,7 +4,6 @@ import {
     ExternalSourceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
@@ -110,8 +109,7 @@ class TransactionService {
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: toAmount,
                         externalId: toEntry.externalId ?? null
-                    },
-                    ...this.buildAdditionalEntries(input.entries, fromEntry, toEntry, transaction.id)
+                    }
                 ],
                 tx
             );
@@ -142,33 +140,29 @@ class TransactionService {
     async update(input: TransactionCreateInputInterface): Promise<void> {
         await db.transaction(async tx => {
             for (const entry of input.entries) {
-                if (!isDefined(entry) || !isDefined(entry.externalId)) {
-                    return;
+                if (isDefined(entry) && isDefined(entry.externalId)) {
+                    const [updatedEntry] = await tx
+                        .update(TransactionEntryEntityTable)
+                        .set({
+                            amount: convertToMicroUnits(entry.amount),
+                            exchangeRate: entry.exchangeRate,
+                            toIban: entry.toIban
+                        })
+                        .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
+                        .returning({ transactionId: TransactionEntryEntityTable.transactionId });
+
+                    if (isDefined(updatedEntry)) {
+                        await transactionRepository.updateById(
+                            updatedEntry.transactionId,
+                            {
+                                title: input.title,
+                                comment: input.comment,
+                                operatedAt: input.operatedAt
+                            },
+                            tx
+                        );
+                    }
                 }
-
-                const [updatedEntry] = await tx
-                    .update(TransactionEntryEntityTable)
-                    .set({
-                        amount: convertToMicroUnits(entry.amount),
-                        exchangeRate: entry.exchangeRate,
-                        toIban: entry.toIban
-                    })
-                    .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
-                    .returning({ transactionId: TransactionEntryEntityTable.transactionId });
-
-                if (!isDefined(updatedEntry)) {
-                    return;
-                }
-
-                await transactionRepository.updateById(
-                    updatedEntry.transactionId,
-                    {
-                        title: input.title,
-                        comment: input.comment,
-                        operatedAt: input.operatedAt
-                    },
-                    tx
-                );
             }
         });
     }
@@ -176,6 +170,7 @@ class TransactionService {
     /* jscpd:ignore-start */
     async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         const { id, accountId: toAccountId, customExchangeRate } = params;
+
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.getById(id);
@@ -353,27 +348,6 @@ class TransactionService {
 
             return updated;
         });
-    }
-    /* jscpd:ignore-end */
-
-    /* jscpd:ignore-start */
-    private buildAdditionalEntries(
-        entries: TransactionEntryCreateInputInterface[],
-        fromEntry: TransactionEntryCreateInputInterface,
-        toEntry: TransactionEntryCreateInputInterface,
-        transactionId: number
-    ): TransactionEntryCreateEntityInterface[] {
-        return entries
-            .filter(entry => entry !== fromEntry && entry !== toEntry)
-            .map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            }));
     }
     /* jscpd:ignore-end */
 

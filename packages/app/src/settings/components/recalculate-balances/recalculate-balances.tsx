@@ -1,11 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { SettingsCard } from '../settings-card/settings-card';
 
@@ -30,7 +30,7 @@ export const RecalculateBalances = () => {
         try {
             await accountBalanceIncrementalService.updateAllBalances(true);
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+            showErrorToast(t`Error`, getErrorMessage(error));
         } finally {
             setIsLoading(false);
         }

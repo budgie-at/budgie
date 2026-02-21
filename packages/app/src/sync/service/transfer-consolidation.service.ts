@@ -1,27 +1,20 @@
-import { TransactionTypeEnum, TransferPairCandidateInterface, TransitiveEntryCandidateInterface } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferPairCandidateInterface } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     db,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository,
-    transferPairRepository,
-    transitiveEntryRepository
+    transferPairRepository
 } from '../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
-
-interface ConsolidationResultInterface {
-    found: number;
-    consolidated: number;
-    transitiveFound: number;
-    transitiveAttached: number;
-}
+import { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 
 class TransferConsolidationService {
     private isRunning = false;
@@ -39,7 +32,7 @@ class TransferConsolidationService {
 
     async consolidate(): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
-            return { found: 0, consolidated: 0, transitiveFound: 0, transitiveAttached: 0 };
+            return { found: 0, consolidated: 0 };
         }
 
         this.isRunning = true;
@@ -48,17 +41,15 @@ class TransferConsolidationService {
             const pairCandidates = await transferPairRepository.findCandidates();
             const consolidated = await this.processCandidates(pairCandidates);
 
-            const transitiveCandidates = await transitiveEntryRepository.findCandidates();
-            const transitiveAttached = await this.processTransitiveCandidates(transitiveCandidates);
-
             return {
                 found: pairCandidates.length,
-                consolidated,
-                transitiveFound: transitiveCandidates.length,
-                transitiveAttached
+                consolidated
             };
-        } catch {
-            return { found: 0, consolidated: 0, transitiveFound: 0, transitiveAttached: 0 };
+        } catch (error: unknown) {
+            // eslint-disable-next-line no-console
+            console.log(getErrorMessage(error));
+
+            return { found: 0, consolidated: 0 };
         } finally {
             this.isRunning = false;
         }
@@ -72,75 +63,11 @@ class TransferConsolidationService {
             if (success) {
                 consolidated += 1;
             }
-            await accountBalanceIncrementalService.updateAllBalances(true);
         }
+
+        await accountBalanceIncrementalService.updateAllBalances(true);
 
         return consolidated;
-    }
-
-    private async processTransitiveCandidates(candidates: TransitiveEntryCandidateInterface[]): Promise<number> {
-        let attached = 0;
-
-        for (const candidate of candidates) {
-            const success = await this.tryAttachTransitiveEntries(candidate);
-            if (success) {
-                attached += 1;
-            }
-            await accountBalanceIncrementalService.updateAllBalances(true);
-        }
-
-        return attached;
-    }
-
-    private async tryAttachTransitiveEntries(candidate: TransitiveEntryCandidateInterface): Promise<boolean> {
-        try {
-            await this.attachTransitiveEntries(candidate);
-
-            return true;
-        } catch {
-            return false;
-        }
-    }
-
-    private async attachTransitiveEntries(candidate: TransitiveEntryCandidateInterface): Promise<void> {
-        await db.transaction(async tx => {
-            const incomeTransactionTags = await transactionTagsRepository.findByTransactionId(candidate.transitive_income_transaction_id);
-            const expenseTransactionTags = await transactionTagsRepository.findByTransactionId(candidate.transitive_expense_transaction_id);
-
-            await transactionEntryRepository.updateById(
-                candidate.transitive_income_entry_id,
-                {
-                    transactionId: candidate.transfer_transaction_id,
-                    categoryId: null
-                },
-                tx
-            );
-
-            await transactionEntryRepository.updateById(
-                candidate.transitive_expense_entry_id,
-                {
-                    transactionId: candidate.transfer_transaction_id,
-                    categoryId: null
-                },
-                tx
-            );
-
-            const allTags = [...incomeTransactionTags, ...expenseTransactionTags];
-            if (isNotEmptyArray(allTags)) {
-                await transactionTagsRepository.bulkCreate(
-                    allTags.map(tag => ({
-                        transactionId: candidate.transfer_transaction_id,
-                        tagId: tag.tagId
-                    })),
-                    tx
-                );
-            }
-
-            await transactionRepository.deleteById(candidate.transitive_income_transaction_id, tx);
-            await transactionTagsRepository.deleteByTransactionId(candidate.transitive_income_transaction_id, tx);
-            await transactionRepository.deleteById(candidate.transitive_expense_transaction_id, tx);
-            await transactionTagsRepository.deleteByTransactionId(candidate.transitive_expense_transaction_id, tx);
-        });
     }
 
     private async tryConsolidatePair(candidate: TransferPairCandidateInterface): Promise<boolean> {
@@ -148,7 +75,10 @@ class TransferConsolidationService {
             await this.consolidatePair(candidate);
 
             return true;
-        } catch {
+        } catch (error: unknown) {
+            // eslint-disable-next-line no-console
+            console.log(getErrorMessage(error));
+
             return false;
         }
     }
