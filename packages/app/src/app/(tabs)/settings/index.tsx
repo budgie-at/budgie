@@ -50,7 +50,7 @@ export default function SettingsPage() {
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
