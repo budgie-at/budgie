@@ -1,15 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Easing, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 const BACKDROP_OPACITY = 0.3;
 const MENU_SCALE_CLOSED = 0.95;
 const ANIMATION_DURATION = 150;
 
 const TIMING_CONFIG = { duration: ANIMATION_DURATION, easing: Easing.out(Easing.cubic) };
 
-export const usePopoverAnimation = (isOpen: boolean) => {
+// eslint-disable-next-line max-statements -- Animation hook with multiple shared values and animation callbacks
+export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const isMountedRef = useRef(true);
+    const onCloseCompleteRef = useRef(onCloseComplete);
+
+    useEffect(() => {
+        onCloseCompleteRef.current = onCloseComplete;
+    }, [onCloseComplete]);
 
     const isOpenShared = useSharedValue(isOpen);
     const backdropOpacity = useSharedValue(isOpen ? BACKDROP_OPACITY : 0);
@@ -34,6 +42,12 @@ export const usePopoverAnimation = (isOpen: boolean) => {
         }
     };
 
+    const handleCloseComplete = () => {
+        if (isMountedRef.current) {
+            onCloseCompleteRef.current?.();
+        }
+    };
+
     useAnimatedReaction(
         () => isOpenShared.value,
         (current, previous) => {
@@ -48,6 +62,7 @@ export const usePopoverAnimation = (isOpen: boolean) => {
                 menuOpacity.value = withTiming(0, TIMING_CONFIG, finished => {
                     if (finished) {
                         runOnJS(safeSetIsAnimatingOut)(false);
+                        runOnJS(handleCloseComplete)();
                     }
                 });
             }

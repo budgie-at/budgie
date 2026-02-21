@@ -10,7 +10,9 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 
-const TransactionActionsMenuContext = createContext<EmptyFn>(emptyFn);
+type CloseMenuFn = (afterClose?: EmptyFn) => void;
+
+const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
 
 export const useTransactionActionsMenu = () => use(TransactionActionsMenuContext);
 
@@ -24,6 +26,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
     const triggerRef = useRef<View>(null);
+    const pendingActionRef = useRef<EmptyFn | null>(null);
 
     const handleToggleMenu = () => {
         if (isMenuOpen) {
@@ -38,8 +41,15 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
         });
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu: CloseMenuFn = (afterClose?: EmptyFn) => {
+        pendingActionRef.current = afterClose ?? null;
         setIsMenuOpen(false);
+    };
+
+    const handleCloseComplete = () => {
+        const action = pendingActionRef.current;
+        pendingActionRef.current = null;
+        action?.();
     };
 
     const handleDeletePress = () => {
@@ -66,7 +76,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                 </HapticPressable>
             </View>
 
-            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchor={anchor}>
+            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
                 <TransactionActionsMenuContext.Provider value={handleCloseMenu}>
                     <View className="py-sm">
                         {children}
