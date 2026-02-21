@@ -17,6 +17,7 @@ import { TransactionTypeFilterModalProvider } from '../../transaction/provider/t
 
 import { ContactSelectorModalProvider } from './contact-selector-modal.provider';
 import { CurrencySelectorModalProvider } from './currency-selector-modal.provider';
+import { DateFilterModalProvider } from './date-filter-modal.provider';
 import { IconSelectorModalProvider } from './icon-selector-modal.provider';
 
 export const ModalProvider = ({ children }: PropsWithChildren) => (
@@ -36,7 +37,7 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                         <AccountTypeSelectorModalProvider>
                                                             <ImportColumnMapperModalProvider>
                                                                 <TransactionTypeFilterModalProvider>
-                                                                    {children}
+                                                                    <DateFilterModalProvider>{children}</DateFilterModalProvider>
                                                                 </TransactionTypeFilterModalProvider>
                                                             </ImportColumnMapperModalProvider>
                                                         </AccountTypeSelectorModalProvider>

@@ -151,6 +151,7 @@ export default function RootLayout() {
                                                                         name="transaction-type-filter"
                                                                         options={FILTER_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen name="date-filter" options={FILTER_MODAL_OPTIONS} />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />
