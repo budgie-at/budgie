@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode, createContext, use, useRef, useState } from 'react';
 import { Alert, View } from 'react-native';
 
-import { EmptyFn, emptyFn } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -11,6 +11,10 @@ import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popo
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 
 type CloseMenuFn = (afterClose?: EmptyFn) => void;
+
+interface DeferredAction {
+    readonly execute: EmptyFn;
+}
 
 const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
 
@@ -25,8 +29,8 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
+    const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
     const triggerRef = useRef<View>(null);
-    const pendingActionRef = useRef<EmptyFn | null>(null);
 
     const handleToggleMenu = () => {
         if (isMenuOpen) {
@@ -42,14 +46,15 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     };
 
     const handleCloseMenu: CloseMenuFn = (afterClose?: EmptyFn) => {
-        pendingActionRef.current = afterClose ?? null;
+        setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
         setIsMenuOpen(false);
     };
 
     const handleCloseComplete = () => {
-        const action = pendingActionRef.current;
-        pendingActionRef.current = null;
-        action?.();
+        if (isDefined(deferredAction)) {
+            deferredAction.execute();
+            setDeferredAction(null);
+        }
     };
 
     const handleDeletePress = () => {
