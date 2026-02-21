@@ -1,54 +1,54 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { Button } from '../../../@generic/component/button/button';
-import { Footer } from '../../../@generic/component/footer/footer';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { ImportColumnMapperOption } from '../import-column-mapper-option/import-column-mapper-option';
-
-interface Props {
-    readonly headers: string[];
-    readonly selectedHeaders: string[];
-    readonly currentValue: string | undefined;
-    readonly fieldLabel: string;
-    readonly onSelect: (header: string) => void;
-    readonly onClear: () => void;
-    readonly ref: RefObject<BottomSheetInterface | null>;
-}
+import { Button } from '../@generic/component/button/button';
+import { Footer } from '../@generic/component/footer/footer';
+import { Icon } from '../@generic/component/icon/icon';
+import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
+import { useImportColumnMapperModal } from '../import/context/import-column-mapper-modal.context';
 
 const sortHeaders = (first: string, second: string): number => first.localeCompare(second);
 
-const snapPoints = ['70%'];
-
-export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, currentValue, fieldLabel, onSelect, onClear }: Props) => {
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+export default function ImportColumnMapperModal() {
     const { t } = useLingui();
+    const { currentParams, resolveImportColumnMapper } = useImportColumnMapperModal();
+    const { backgroundColor } = useFormsheetListStyles();
+
+    const headers = currentParams?.headers ?? [];
+    const selectedHeaders = currentParams?.selectedHeaders ?? [];
+    const currentValue = currentParams?.currentValue;
+    const fieldLabel = currentParams?.fieldLabel ?? '';
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const hasCurrentValue = isNotEmptyString(currentValue);
     const availableCount = availableHeaders.length;
     const description = t`${availableCount} columns available`;
 
-    const handleClose = () => ref.current?.close();
+    const containerStyle = { flex: 1, backgroundColor };
+
     const handleSelect = (header: string) => () => {
-        onSelect(header);
-        ref.current?.close();
+        resolveImportColumnMapper({ type: 'select', header });
     };
+
     const handleClear = () => {
-        onClear();
-        ref.current?.close();
+        resolveImportColumnMapper({ type: 'clear' });
+    };
+
+    const handleDone = () => {
+        resolveImportColumnMapper(null);
     };
 
     return (
-        <BottomSheet snapPoints={snapPoints} ref={ref}>
-            <BottomSheetHeader className="border-b border-b-secondary-corner" size="md" title={fieldLabel} description={description} />
+        <View style={containerStyle}>
+            <View className="border-b border-b-secondary-corner px-3xl pt-3xl pb-xl">
+                <Text className="text-primary text-lg font-semibold">{fieldLabel}</Text>
+                <Text className="text-secondary-foreground text-sm">{description}</Text>
+            </View>
 
             {hasCurrentValue && (
                 <View className="px-3xl pt-3xl pb-md border-b border-b-secondary-corner">
@@ -66,7 +66,7 @@ export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, c
                 </View>
             )}
 
-            <BottomSheetScrollView contentContainerClassName="pt-3xl px-3xl gap-y-md pb-5xl">
+            <ScrollView contentContainerClassName="pt-3xl px-3xl gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
                 <Text className="text-secondary-foreground uppercase mb-sm text-xs font-medium">{t`Available Columns`}</Text>
 
                 {isNotEmptyArray(availableHeaders) ? (
@@ -85,11 +85,11 @@ export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, c
                         <Text className="text-secondary-foreground text-sm">{t`All columns have been assigned`}</Text>
                     </View>
                 )}
-            </BottomSheetScrollView>
+            </ScrollView>
 
             <Footer>
-                <Button content={t`Done`} variant="secondary" onPress={handleClose} />
+                <Button content={t`Done`} variant="secondary" onPress={handleDone} />
             </Footer>
-        </BottomSheet>
+        </View>
     );
-};
+}

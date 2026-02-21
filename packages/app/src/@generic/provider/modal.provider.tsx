@@ -6,6 +6,7 @@ import { AccountTypeSelectorModalProvider } from '../../account/provider/account
 import { CategoryFormModalProvider } from '../../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
 import { LanguageSelectorModalProvider } from '../../i18n/provider/language-selector-modal.provider';
+import { ImportColumnMapperModalProvider } from '../../import/provider/import-column-mapper-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
 import { ConvertToTransferModalProvider } from '../../transaction/provider/convert-to-transfer-modal.provider';
@@ -31,7 +32,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                             <CurrencySelectorModalProvider>
                                                 <LanguageSelectorModalProvider>
                                                     <ContactSelectorModalProvider>
-                                                        <AccountTypeSelectorModalProvider>{children}</AccountTypeSelectorModalProvider>
+                                                        <AccountTypeSelectorModalProvider>
+                                                            <ImportColumnMapperModalProvider>{children}</ImportColumnMapperModalProvider>
+                                                        </AccountTypeSelectorModalProvider>
                                                     </ContactSelectorModalProvider>
                                                 </LanguageSelectorModalProvider>
                                             </CurrencySelectorModalProvider>
