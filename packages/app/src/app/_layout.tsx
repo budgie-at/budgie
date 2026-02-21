@@ -157,6 +157,10 @@ export default function RootLayout() {
                                                                         name="transaction-category-filter"
                                                                         options={SEARCHABLE_FILTER_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="transaction-account-filter"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />

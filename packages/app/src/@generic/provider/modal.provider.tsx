@@ -13,6 +13,7 @@ import { ConvertToTransferModalProvider } from '../../transaction/provider/conve
 import { DatePickerModalProvider } from '../../transaction/provider/date-picker-modal.provider';
 import { NoteInputModalProvider } from '../../transaction/provider/note-input-modal.provider';
 import { SplitEntriesModalProvider } from '../../transaction/provider/split-entries-modal.provider';
+import { TransactionAccountFilterModalProvider } from '../../transaction/provider/transaction-account-filter-modal.provider';
 import { TransactionCategoryFilterModalProvider } from '../../transaction/provider/transaction-category-filter-modal.provider';
 import { TransactionTypeFilterModalProvider } from '../../transaction/provider/transaction-type-filter-modal.provider';
 
@@ -40,7 +41,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                 <TransactionTypeFilterModalProvider>
                                                                     <DateFilterModalProvider>
                                                                         <TransactionCategoryFilterModalProvider>
-                                                                            {children}
+                                                                            <TransactionAccountFilterModalProvider>
+                                                                                {children}
+                                                                            </TransactionAccountFilterModalProvider>
                                                                         </TransactionCategoryFilterModalProvider>
                                                                     </DateFilterModalProvider>
                                                                 </TransactionTypeFilterModalProvider>
