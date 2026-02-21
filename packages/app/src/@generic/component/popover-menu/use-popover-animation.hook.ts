@@ -9,15 +9,9 @@ const ANIMATION_DURATION = 150;
 
 const TIMING_CONFIG = { duration: ANIMATION_DURATION, easing: Easing.out(Easing.cubic) };
 
-// eslint-disable-next-line max-statements -- Animation hook with multiple shared values and animation callbacks
 export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const isMountedRef = useRef(true);
-    const onCloseCompleteRef = useRef(onCloseComplete);
-
-    useEffect(() => {
-        onCloseCompleteRef.current = onCloseComplete;
-    }, [onCloseComplete]);
 
     const isOpenShared = useSharedValue(isOpen);
     const backdropOpacity = useSharedValue(isOpen ? BACKDROP_OPACITY : 0);
@@ -42,9 +36,10 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
         }
     };
 
-    const handleCloseComplete = () => {
+    const handleCloseAnimationEnd = () => {
         if (isMountedRef.current) {
-            onCloseCompleteRef.current?.();
+            setIsAnimatingOut(false);
+            onCloseComplete?.();
         }
     };
 
@@ -61,8 +56,7 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
                 menuScale.value = withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG);
                 menuOpacity.value = withTiming(0, TIMING_CONFIG, finished => {
                     if (finished) {
-                        runOnJS(safeSetIsAnimatingOut)(false);
-                        runOnJS(handleCloseComplete)();
+                        runOnJS(handleCloseAnimationEnd)();
                     }
                 });
             }
