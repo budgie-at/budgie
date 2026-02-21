@@ -15,6 +15,7 @@ export const AccountBalanceField = <T extends { currentBalance: number }>(props:
 
     const renderInput = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormAmountInput
+            testID="CreateAccount.Amount"
             value={value}
             instrumentSymbol={instrumentSymbol}
             variant={variant}
