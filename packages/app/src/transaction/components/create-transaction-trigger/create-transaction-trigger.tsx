@@ -22,6 +22,7 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
 
     return (
         <HapticPressable
+            testID="ActionButton"
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
             {...(!isOpen && { onPress: handlePress })}
         >

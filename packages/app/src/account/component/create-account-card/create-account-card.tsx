@@ -17,6 +17,7 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
 
     return (
         <SimpleHorizontalCell
+            testID={`CreateAccount.${type}`}
             size="lg"
             left={<CircleIcon icon={icon} variant={ACCOUNT_COLOR[type]} radius={20} border={false} size={52} iconSize={24} />}
             title={title}
