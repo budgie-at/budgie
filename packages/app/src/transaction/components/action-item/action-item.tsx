@@ -72,7 +72,7 @@ export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, on
     };
 
     return (
-        <Animated.View className="absolute right-0" style={animatedStyle}>
+        <Animated.View className="absolute right-0" testID={`ActionItem.${index}`} style={animatedStyle}>
             <Pressable className="flex-row-reverse items-center" onPress={handlePress}>
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
