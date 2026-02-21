@@ -15,8 +15,7 @@ export const ConvertToTransferMenuItem = ({ onConvert }: Props) => {
     const closeMenu = useTransactionActionsMenu();
 
     const handlePress = () => {
-        closeMenu();
-        onConvert();
+        closeMenu(onConvert);
     };
 
     return <PopoverMenuItem icon={UserIconNameEnum.ArrowRightLeft} label={t`Convert to Transfer`} onPress={handlePress} />;
