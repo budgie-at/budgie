@@ -1,7 +1,5 @@
-import {
-    PatternSuggestionOrchestratorConfig,
-    PatternSuggestionOrchestratorFacts
-} from '../interface/pattern-suggestion-orchestrator.interface';
+import { PatternSuggestionOrchestratorConfig } from '../interface/pattern-suggestion-orchestrator-config.interface';
+import { PatternSuggestionOrchestratorFacts } from '../interface/pattern-suggestion-orchestrator-facts.interface';
 import { SuggestionOrchestratorStepEnum } from '../type/suggestion-orchestrator-step.enum';
 
 export enum PatternSuggestionOrchestratorActionTypeEnum {

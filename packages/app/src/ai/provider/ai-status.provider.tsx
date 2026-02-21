@@ -10,9 +10,46 @@ interface Props {
     readonly children: ReactNode;
 }
 
+interface AiStatusLabelAndProgressInterface {
+    readonly statusLabel: string;
+    readonly brainProgress: number;
+}
+
+interface ComputeStatusParams {
+    readonly isRunning: boolean;
+    readonly phaseLabel: string;
+    readonly progress: number;
+    readonly isLlmReady: boolean;
+    readonly isLlmInitializing: boolean;
+    readonly completionRatio: number;
+    readonly downloadPercent: number;
+    readonly totalContexts: number;
+}
+
 const FULL_PROGRESS = 100;
 
-// eslint-disable-next-line max-statements -- Provider computing unified AI status from multiple sources
+const computeStatusLabelAndProgress = (params: ComputeStatusParams): AiStatusLabelAndProgressInterface => {
+    const { isRunning, phaseLabel, progress, isLlmReady, isLlmInitializing, completionRatio, downloadPercent, totalContexts } = params;
+
+    if (isRunning) {
+        return { statusLabel: phaseLabel, brainProgress: progress };
+    }
+
+    if (isLlmReady && isPositiveNumber(totalContexts)) {
+        return { statusLabel: t`${completionRatio}% learned`, brainProgress: completionRatio };
+    }
+
+    if (isLlmReady) {
+        return { statusLabel: t`Long press to learn`, brainProgress: 0 };
+    }
+
+    if (isLlmInitializing) {
+        return { statusLabel: t`Initializing AI model...`, brainProgress: downloadPercent };
+    }
+
+    return { statusLabel: t`Downloading AI model...`, brainProgress: downloadPercent };
+};
+
 export const AiStatusProvider = ({ children }: Props) => {
     const {
         start,
@@ -30,25 +67,16 @@ export const AiStatusProvider = ({ children }: Props) => {
     const completionRatio = isPositiveNumber(totalContexts) ? Math.round((embeddedCount / totalContexts) * FULL_PROGRESS) : 0;
     const downloadPercent = Math.round(llmDownloadProgress * FULL_PROGRESS);
 
-    let statusLabel: string;
-    let brainProgress: number;
-
-    if (isRunning) {
-        statusLabel = phaseLabel;
-        brainProgress = progress;
-    } else if (isLlmReady && isPositiveNumber(totalContexts)) {
-        statusLabel = t`${completionRatio}% learned`;
-        brainProgress = completionRatio;
-    } else if (isLlmReady) {
-        statusLabel = t`Long press to learn`;
-        brainProgress = 0;
-    } else if (isLlmInitializing) {
-        statusLabel = t`Initializing AI model...`;
-        brainProgress = downloadPercent;
-    } else {
-        statusLabel = t`Downloading AI model...`;
-        brainProgress = downloadPercent;
-    }
+    const { statusLabel, brainProgress } = computeStatusLabelAndProgress({
+        isRunning,
+        phaseLabel,
+        progress,
+        isLlmReady,
+        isLlmInitializing,
+        completionRatio,
+        downloadPercent,
+        totalContexts
+    });
 
     const value: AiStatusContextInterface = { statusLabel, brainProgress, isRunning, isLlmReady, start, startFresh };
 
