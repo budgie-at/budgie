@@ -17,12 +17,18 @@ interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
     readonly refresh: () => void;
 }
 
+interface SuggestionResultInterface<T> {
+    readonly key: string | null;
+    readonly status: SuggestionInternalStatus;
+    readonly suggestions: T[];
+}
+
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);
     const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
 
-    const [result, setResult] = useState<{ key: string | null; status: SuggestionInternalStatus; suggestions: T[] }>({
+    const [result, setResult] = useState<SuggestionResultInterface<T>>({
         key: null,
         status: 'idle',
         suggestions: []
@@ -65,7 +71,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         };
     }, [isReady, requestKey, refreshVersion, isIncomplete]);
 
-    const currentResult: { key: string | null; status: SuggestionInternalStatus; suggestions: T[] } =
+    const currentResult: SuggestionResultInterface<T> =
         result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
