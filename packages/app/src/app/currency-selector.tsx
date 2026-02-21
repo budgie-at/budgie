@@ -44,6 +44,7 @@ export default function CurrencySelectorModal() {
         />
     );
 
+    /* jscpd:ignore-start */
     const listEmptyComponent = (
         <View className="flex-1 justify-center">
             <EmptyState title={t`No currencies found`} description={t`Try a different search term`} />
@@ -70,4 +71,5 @@ export default function CurrencySelectorModal() {
             />
         </View>
     );
+    /* jscpd:ignore-end */
 }

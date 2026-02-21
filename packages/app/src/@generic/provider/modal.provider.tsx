@@ -4,6 +4,7 @@ import { type PropsWithChildren } from 'react';
 import { AccountSelectorModalProvider } from '../../account/provider/account-selector-modal.provider';
 import { CategoryFormModalProvider } from '../../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
+import { LanguageSelectorModalProvider } from '../../i18n/provider/language-selector-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
 import { ConvertToTransferModalProvider } from '../../transaction/provider/convert-to-transfer-modal.provider';
@@ -25,7 +26,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                 <NoteInputModalProvider>
                                     <SplitEntriesModalProvider>
                                         <ConvertToTransferModalProvider>
-                                            <CurrencySelectorModalProvider>{children}</CurrencySelectorModalProvider>
+                                            <CurrencySelectorModalProvider>
+                                                <LanguageSelectorModalProvider>{children}</LanguageSelectorModalProvider>
+                                            </CurrencySelectorModalProvider>
                                         </ConvertToTransferModalProvider>
                                     </SplitEntriesModalProvider>
                                 </NoteInputModalProvider>
