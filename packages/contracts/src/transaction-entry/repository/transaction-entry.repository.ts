@@ -1,4 +1,4 @@
-import { eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -30,6 +30,21 @@ export class TransactionEntryRepository {
             .update(TransactionEntryEntityTable)
             .set(input)
             .where(eq(TransactionEntryEntityTable.id, id))
+            .returning();
+
+        return transactionEntry;
+    }
+
+    async updateByExternalIdAndAccountId(
+        externalId: string,
+        accountId: number,
+        input: Partial<TransactionEntryCreateEntityInterface>,
+        tx?: TX
+    ): Promise<TransactionEntryEntityInterface | undefined> {
+        const [transactionEntry] = await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set(input)
+            .where(and(eq(TransactionEntryEntityTable.externalId, externalId), eq(TransactionEntryEntityTable.accountId, accountId)))
             .returning();
 
         return transactionEntry;

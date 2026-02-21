@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { Button } from '../../../@generic/component/button/button';
 import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
@@ -35,11 +37,11 @@ export const ResyncBankSyncAccount = ({ accountId }: Props) => {
                 text1: t`Success`,
                 text2: t`Bank sync has been reset. History will be re-synced on next sync.`
             });
-        } catch {
+        } catch (error) {
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong`,
-                text2: t`Could not reset sync. Please try again later`
+                text2: getErrorMessage(error)
             });
         } finally {
             setIsLoading(false);

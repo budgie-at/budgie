@@ -81,12 +81,12 @@ export class TransferPairRepository {
             iban_matched_entries AS (
                 -- Combine forward and reverse matches, prefer forward matches
                 SELECT * FROM forward_matched
-                UNION
-                SELECT * FROM reverse_matched
+                UNION ALL
+                SELECT * FROM reverse_matched rm
                 WHERE NOT EXISTS (
                     SELECT 1 FROM forward_matched fm
-                    WHERE fm.expense_entry_id = reverse_matched.expense_entry_id
-                    AND fm.income_entry_id = reverse_matched.income_entry_id
+                    WHERE fm.expense_entry_id = rm.expense_entry_id
+                    AND fm.income_entry_id = rm.income_entry_id
                 )
             ),
             amount_based_matched AS (
@@ -128,6 +128,10 @@ export class TransferPairRepository {
                     AND NOT EXISTS (
                         SELECT 1 FROM iban_matched_entries ime
                         WHERE ime.expense_entry_id = expense_entry.id
+                    )
+                    AND NOT EXISTS (
+                        SELECT 1 FROM iban_matched_entries ime
+                        WHERE ime.income_entry_id = income_entry.id
                     )
             ),
             all_matched_entries AS (
@@ -172,6 +176,8 @@ export class TransferPairRepository {
                         OR
                         -- Different currency: within 5% after exchange rate conversion (divide by rate to get base currency)
                         (expense_account.instrument_id != income_account.instrument_id
+                         AND tf.expense_entry_exchange_rate > 0
+                         AND tf.income_entry_exchange_rate > 0
                          AND ABS(tf.expense_entry_amount / tf.expense_entry_exchange_rate - tf.income_entry_amount / tf.income_entry_exchange_rate) < (tf.expense_entry_amount / tf.expense_entry_exchange_rate * 0.05))
                     )
             ),
