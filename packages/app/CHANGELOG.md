@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.35.3](https://github.com/budgie-at/budgie/compare/v2.35.2...v2.35.3) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix convert-to-transfer modal not appearing due to popover Modal conflict ([c7237da](https://github.com/budgie-at/budgie/commit/c7237da12763ce1a909789555781c1e6b54a4bbb))
+
 ## [2.35.2](https://github.com/budgie-at/budgie/compare/v2.35.1...v2.35.2) (2026-02-21)
 
 ### Bug Fixes
