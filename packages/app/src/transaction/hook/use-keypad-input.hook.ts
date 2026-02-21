@@ -32,13 +32,18 @@ const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string =
     return rounded.toString();
 };
 
-// eslint-disable-next-line max-lines-per-function -- Keypad hook with multiple handler functions
+// eslint-disable-next-line max-lines-per-function, max-statements -- Keypad hook with multiple handler functions
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
     const { decimalPlaces } = useSettingsContext();
     const maxDecimals = Math.max(decimalPlaces, 2);
     const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : formatNumericDisplay(initialValue, maxDecimals)));
     const isInitialMount = useRef(true);
+    const onChangeRef = useRef(onChange);
+
+    useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
 
     const numericValue = parseFloat(displayValue) || 0;
 
@@ -49,8 +54,8 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
             return;
         }
 
-        onChange?.(numericValue);
-    }, [numericValue, onChange]);
+        onChangeRef.current?.(numericValue);
+    }, [numericValue]);
 
     const handleDigit = (digit: string) => {
         setDisplayValue(prev => {

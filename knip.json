@@ -6,6 +6,7 @@
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "packages/contracts/babel.config.js",
+        "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
         "jest.config.js",
         "metro.config.js",
