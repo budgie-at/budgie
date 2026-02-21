@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.35.1](https://github.com/budgie-at/budgie/compare/v2.35.0...v2.35.1) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix settings page scroll spacing for top and bottom ([f49e1d8](https://github.com/budgie-at/budgie/commit/f49e1d8c63f099a15cc07184e10202fa9c490ebb))
+
 # [2.35.0](https://github.com/budgie-at/budgie/compare/v2.34.2...v2.35.0) (2026-02-21)
 
 ### Bug Fixes
