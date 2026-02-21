@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import {
+    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -9,7 +10,7 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
@@ -108,17 +109,32 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
-    const handleSelectComment = (selectedComment: string) => {
-        setValue('comment', selectedComment);
-    };
+    const handleSelectRepeatedPattern = async (pattern: RepeatedTransactionPatternInterface): Promise<void> => {
+        const displayAmount = convertFromMicroUnits(pattern.latestAmount);
 
-    const handleFillPatternAmount = (patternAmount: number) => {
-        if (amount > 0) {
-            return;
+        setValue('entries.0.categoryId', pattern.categoryId);
+        setValue('tagIds', pattern.tagIds);
+        setValue('amount', displayAmount);
+        setFromNumeric(displayAmount);
+        setValue('title', pattern.title);
+        if (isNotEmptyString(pattern.comment)) {
+            setValue('comment', pattern.comment);
         }
 
-        setValue('amount', patternAmount);
-        setFromNumeric(patternAmount);
+        const isAccountUsable = pattern.accountIsActive && !isDefined(pattern.accountDeletedAt);
+
+        if (isAccountUsable) {
+            setValue(accountFieldName, pattern.accountId);
+        } else {
+            try {
+                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
+                if (isDefined(fallbackAccount)) {
+                    setValue(accountFieldName, fallbackAccount.id);
+                }
+            } catch {
+                /* empty */
+            }
+        }
     };
 
     const handleSplitPress = async () => {
@@ -255,8 +271,7 @@ export const SimpleQuickForm = (props: Props) => {
                         onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
-                        onSelectComment={handleSelectComment}
-                        onFillPatternAmount={handleFillPatternAmount}
+                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
                     />
                 </View>
             </View>
