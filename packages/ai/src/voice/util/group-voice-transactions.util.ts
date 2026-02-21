@@ -1,5 +1,6 @@
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { sumAmounts } from '../../@generic/util/sum-amounts.util';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 import { GroupedVoiceTransactionInterface } from '../interface/grouped-voice-transaction.interface';
 
@@ -11,7 +12,7 @@ export const groupVoiceTransactions = (
         return null;
     }
 
-    const totalAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+    const totalAmount = sumAmounts(transactions);
     const aiContext = transactions.map(transaction => transaction.comment).join(', ');
     const [firstTransaction] = transactions;
 
