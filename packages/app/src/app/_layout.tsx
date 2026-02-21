@@ -20,6 +20,7 @@ import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
+import { IMPORT_COLUMN_MAPPER_MODAL_OPTIONS } from '../@generic/constant/import-column-mapper-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
@@ -140,6 +141,10 @@ export default function RootLayout() {
                                                                     <Stack.Screen
                                                                         name="account-type-selector"
                                                                         options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="import-column-mapper"
+                                                                        options={IMPORT_COLUMN_MAPPER_MODAL_OPTIONS}
                                                                     />
                                                                 </Stack>
                                                             </ModalProvider>
