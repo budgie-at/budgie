@@ -126,7 +126,7 @@ class TransactionService {
     }
 
     async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        const result = await db.transaction(async tx => {
+        return await db.transaction(async tx => {
             const transaction = await transactionRepository.updateById(id, input, tx);
 
             await this.upsertEntriesAndTags(id, input, tx);
@@ -135,8 +135,6 @@ class TransactionService {
 
             return transaction;
         });
-
-        return result;
     }
 
     /* jscpd:ignore-start */

@@ -1,6 +1,8 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 export interface AiStatusContextInterface {
     readonly statusLabel: string;
     readonly brainProgress: number;
@@ -15,7 +17,7 @@ export const AiStatusContext = createContext<AiStatusContextInterface | null>(nu
 export const useAiStatusContext = (): AiStatusContextInterface => {
     const context = use(AiStatusContext);
 
-    if (context === null) {
+    if (!isDefined(context)) {
         throw new Error('useAiStatusContext must be used within AiStatusProvider');
     }
 
