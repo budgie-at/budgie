@@ -112,6 +112,10 @@ export default function RootLayout() {
                                                                         name="language-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="contact-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-form"
