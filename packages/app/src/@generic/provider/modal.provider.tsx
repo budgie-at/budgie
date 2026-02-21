@@ -2,6 +2,7 @@
 import { type PropsWithChildren } from 'react';
 
 import { AccountSelectorModalProvider } from '../../account/provider/account-selector-modal.provider';
+import { AccountTypeSelectorModalProvider } from '../../account/provider/account-type-selector-modal.provider';
 import { CategoryFormModalProvider } from '../../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
 import { LanguageSelectorModalProvider } from '../../i18n/provider/language-selector-modal.provider';
@@ -29,7 +30,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                         <ConvertToTransferModalProvider>
                                             <CurrencySelectorModalProvider>
                                                 <LanguageSelectorModalProvider>
-                                                    <ContactSelectorModalProvider>{children}</ContactSelectorModalProvider>
+                                                    <ContactSelectorModalProvider>
+                                                        <AccountTypeSelectorModalProvider>{children}</AccountTypeSelectorModalProvider>
+                                                    </ContactSelectorModalProvider>
                                                 </LanguageSelectorModalProvider>
                                             </CurrencySelectorModalProvider>
                                         </ConvertToTransferModalProvider>
