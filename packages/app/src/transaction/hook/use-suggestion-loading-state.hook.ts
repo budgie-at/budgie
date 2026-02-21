@@ -1,8 +1,7 @@
+import { SuggestionStatus } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { SuggestionStatus } from '../../ai/interface/suggestion-status.type';
 
 const LOADING_DELAY_MS = 400;
 
@@ -15,15 +14,13 @@ interface UseSuggestionLoadingStateParams {
 interface UseSuggestionLoadingStateReturn {
     readonly showLoading: boolean;
     readonly showContent: boolean;
-    readonly hasSelected: boolean;
-    readonly markSelected: () => void;
+    readonly isProcessing: boolean;
 }
 
 export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParams): UseSuggestionLoadingStateReturn => {
     const { status, hasResults, enabled } = params;
 
     const [showLoading, setShowLoading] = useState(false);
-    const [hasSelected, setHasSelected] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const wasProcessingRef = useRef(false);
 
@@ -60,11 +57,7 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     }, [isProcessing]);
 
     const showLoadingIndicator = showLoading && !isReady;
-    const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
+    const showContent = enabled && (showLoadingIndicator || isReady);
 
-    const markSelected = () => {
-        setHasSelected(true);
-    };
-
-    return { showLoading: showLoadingIndicator, showContent, hasSelected, markSelected };
+    return { showLoading: showLoadingIndicator, showContent, isProcessing };
 };

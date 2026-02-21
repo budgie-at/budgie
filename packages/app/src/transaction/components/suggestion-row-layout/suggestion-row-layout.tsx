@@ -2,40 +2,48 @@ import { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { useAiEmbeddingProgress } from '../../../ai/hook/use-ai-embedding-progress.hook';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
     readonly showContent: boolean;
     readonly showLoading: boolean;
+    readonly isProcessing?: boolean;
     readonly children: ReactNode;
 }
 
 const ANIMATION_DURATION = 200;
+const ENTER_DELAY = 400;
 
-export const SuggestionRowLayout = ({ showContent, showLoading, children }: Props) => {
-    const pillsContent = showLoading ? (
-        <View className="flex-1" />
-    ) : (
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="flex-1"
-            contentContainerClassName="flex-grow justify-end gap-sm"
-        >
-            {children}
-        </ScrollView>
-    );
+export const SuggestionRowLayout = (props: Props) => {
+    const { showContent, showLoading, isProcessing = false, children } = props;
+    const { isIncomplete } = useAiEmbeddingProgress();
+
+    const showBrain = showContent || isIncomplete || isProcessing;
+    const brainIsLoading = showLoading || isProcessing;
+    const showPills = showContent && !showLoading;
 
     return (
-        <View className="h-10 items-end justify-center overflow-hidden">
-            {showContent ? (
+        <View className="h-10 flex-row items-center justify-end overflow-hidden">
+            {showPills ? (
                 <Animated.View
-                    entering={FadeIn.duration(ANIMATION_DURATION)}
+                    entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}
                     exiting={FadeOut.duration(ANIMATION_DURATION)}
-                    className="flex-row items-center overflow-hidden"
+                    className="flex-row items-center overflow-hidden flex-1"
                 >
-                    {pillsContent}
-                    <SuggestionLoadingIndicator isAnimating={showLoading} />
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        className="flex-1"
+                        contentContainerClassName="flex-grow justify-end gap-sm"
+                    >
+                        {children}
+                    </ScrollView>
+                </Animated.View>
+            ) : null}
+            {showBrain ? (
+                <Animated.View entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}>
+                    <SuggestionLoadingIndicator isLoading={brainIsLoading} showArrow={showPills} />
                 </Animated.View>
             ) : null}
         </View>

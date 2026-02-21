@@ -1,27 +1,23 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
-import type { useSpeechToText } from 'react-native-executorch';
+import type { LlmInterface } from '@budgie/ai';
+import type { DecodingOptions } from 'react-native-executorch';
 
-export interface GenerateOptionsInterface {
-    maxNewTokens?: number;
-    temperature?: number;
-}
-
-export interface LlmInterface {
-    isReady: boolean;
-    isInitializing: boolean;
-    isGenerating: boolean;
-    downloadProgress: number;
-    error: string | null;
-    generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
-    interrupt: () => void;
+export interface SttContextInterface {
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly committedTranscription: string;
+    readonly nonCommittedTranscription: string;
+    readonly stream: (options?: DecodingOptions) => Promise<string>;
+    readonly streamStop: () => void;
+    readonly streamInsert: (waveform: number[] | Float32Array) => void;
 }
 
 export interface LlmContextInterface {
-    isAvailable: boolean;
-    llm: LlmInterface;
-    stt: ReturnType<typeof useSpeechToText>;
+    readonly isAvailable: boolean;
+    readonly llm: LlmInterface;
+    readonly stt: SttContextInterface;
 }
 
 export const LlmContext = createContext<LlmContextInterface | null>(null);

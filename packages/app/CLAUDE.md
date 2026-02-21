@@ -42,6 +42,114 @@ src/
     └── ...
 ```
 
+## Code Quality Rules (from PR reviews)
+
+### Use `isDefined` for null checks in context hooks
+```typescript
+// Good
+if (!isDefined(context)) { throw new Error('...'); }
+
+// Bad
+if (context === null) { throw new Error('...'); }
+```
+
+### Extract inline types to named interfaces
+```typescript
+// Good - named interface for state shape
+interface SuggestionResultInterface<T> {
+    readonly key: string | null;
+    readonly status: SuggestionInternalStatus;
+    readonly suggestions: T[];
+}
+const [result, setResult] = useState<SuggestionResultInterface<T>>({...});
+
+// Bad - inline type in useState/variable declarations
+const [result, setResult] = useState<{ key: string | null; status: SuggestionInternalStatus; suggestions: T[] }>({...});
+```
+
+### One interface per file
+Never put multiple interfaces in the same file. Each gets its own file in `/interface`:
+```
+// Good
+interface/pattern-config.interface.ts
+interface/pattern-facts.interface.ts
+
+// Bad
+interface/pattern.interface.ts  (containing both Config and Facts)
+```
+
+### Extract complex conditional logic to pure functions
+When a component computes derived state through if/else chains, extract to a standalone function:
+```typescript
+// Good - extracted to a pure function
+const computeStatusLabel = (params: StatusParams): StatusResult => {
+    if (params.isRunning) return { label: params.phaseLabel, progress: params.progress };
+    // ...
+};
+
+// Bad - mutable let variables in component body
+let statusLabel: string;
+let brainProgress: number;
+if (isRunning) { statusLabel = phaseLabel; brainProgress = progress; }
+```
+
+### Use `Trans` for JSX text children, `t` for string props
+```typescript
+// Good
+<Text><Trans>Prepare AI Data</Trans></Text>
+
+// Bad - t macro returns string, Trans is preferred for JSX children
+<Text>{t`Prepare AI Data`}</Text>
+```
+
+### Inline redundant handler wrappers
+Don't create named constants that only delegate to another function:
+```typescript
+// Good - inline in the call site
+useLongPressHold({ onPress: () => void start(), onLongPressComplete: () => void startFresh() });
+
+// Bad - redundant intermediaries
+const handlePress = () => void start();
+const handleLongPressComplete = () => void startFresh();
+useLongPressHold({ onPress: handlePress, onLongPressComplete: handleLongPressComplete });
+```
+
+### Simplify return-from-transaction patterns
+```typescript
+// Good - return directly
+async updateById(id: number, input: Input): Promise<Entity> {
+    return await db.transaction(async tx => { ... });
+}
+
+// Bad - unnecessary intermediate variable
+async updateById(id: number, input: Input): Promise<Entity> {
+    const result = await db.transaction(async tx => { ... });
+    return result;
+}
+```
+
+### Use shared utility functions for common operations
+Don't inline `reduce` or similar patterns when a shared util exists:
+```typescript
+// Good - use shared util
+import { sumAmounts } from '../../@generic/util/sum-amounts.util';
+const total = sumAmounts(transactions);
+
+// Bad - inline reduce
+const total = transactions.reduce((sum, t) => sum + t.amount, 0);
+```
+
+### Inline trivial constants used once
+Constants like `ICON_SIZE = 20` used only once add indirection without value — inline them:
+```typescript
+// Good - inline when used once
+<Icon size={20} />
+
+// Bad - unnecessary constant for single use
+const ICON_SIZE = 20;
+<Icon size={ICON_SIZE} />
+```
+
 ## React 19 Rules
 
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
@@ -76,6 +184,22 @@ const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
 
 - **Constants** → module's `constant/` folder: `transaction/constant/pressed-scale.constant.ts`
 - **Utility functions** → module's `utils/` folder: `transaction/utils/format-operated-at.util.ts`
+
+### Microunits Conversion
+
+Always use utility functions for microunits conversion, never manual `* PRECISION` or `/ PRECISION`:
+```typescript
+// Good
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+const microAmount = convertToMicroUnits(userInputAmount);
+
+// Bad
+import { PRECISION } from '@budgie/contracts';
+const displayAmount = pattern.averageAmount / PRECISION;
+const microAmount = Math.round(userInputAmount * PRECISION);
+```
 
 ### Remove Useless Wrappers
 
@@ -381,7 +505,7 @@ export const TRANSLATION_SYSTEM_PROMPT = `...`;
 export const TRANSLATION_TEMPERATURE = 0.7;
 
 // Bad - prompt inline in service
-class CategoryLlmService {
+class TranslationLlmService {
     private readonly PROMPT = `...`; // Move to constant file
 }
 ```
