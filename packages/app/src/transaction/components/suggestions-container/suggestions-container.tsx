@@ -1,6 +1,6 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator.interface';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.interface';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
 import { AiSuggestionOrchestrator } from '../ai-suggestion-orchestrator/ai-suggestion-orchestrator';
 import { PatternSuggestionOrchestrator } from '../pattern-suggestion-orchestrator/pattern-suggestion-orchestrator';

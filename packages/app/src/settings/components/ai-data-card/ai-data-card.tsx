@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Pressable, Text } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
@@ -8,19 +8,12 @@ import { useAiStatusContext } from '../../../ai/context/ai-status.context';
 import { useLongPressHold } from '../../../ai/hook/use-long-press-hold.hook';
 import { AiProgressBar } from '../ai-progress-bar/ai-progress-bar';
 
-const ICON_CONTAINER_SIZE = 36;
-const ICON_SIZE = 20;
-
 export const AiDataCard = () => {
-    const { t } = useLingui();
     const { statusLabel, brainProgress, isRunning, start, startFresh } = useAiStatusContext();
 
-    const handlePress = () => void start();
-    const handleLongPressComplete = () => void startFresh();
-
     const { holdProgress, pressScale, handlePressIn, handlePressOut } = useLongPressHold({
-        onPress: handlePress,
-        onLongPressComplete: handleLongPressComplete,
+        onPress: () => void start(),
+        onLongPressComplete: () => void startFresh(),
         disabled: isRunning
     });
 
@@ -35,8 +28,8 @@ export const AiDataCard = () => {
                     left={
                         <LongPressBrain
                             progress={brainProgress}
-                            size={ICON_CONTAINER_SIZE}
-                            iconSize={ICON_SIZE}
+                            size={36}
+                            iconSize={20}
                             isAnimating={isRunning}
                             holdProgress={holdProgress}
                         />
@@ -45,7 +38,9 @@ export const AiDataCard = () => {
                     variant="secondary"
                     contentClassName="gap-y-xs"
                 >
-                    <Text className="text-sm font-medium text-primary">{t`Prepare AI Data`}</Text>
+                    <Text className="text-sm font-medium text-primary">
+                        <Trans>Prepare AI Data</Trans>
+                    </Text>
                     <Text className="text-xs font-medium text-secondary-foreground">{statusLabel}</Text>
                     <AiProgressBar progress={brainProgress} />
                 </HorizontalCell>
