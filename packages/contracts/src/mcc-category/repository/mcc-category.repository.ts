@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
 import { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
 
@@ -21,17 +21,17 @@ export class MccCategoryRepository {
         });
     }
 
-    async create(input: MccCategoryCreateEntityInterface, tx?: TX): Promise<MccCategoryEntityInterface> {
+    async create(input: MccCategoryCreateEntityInterface, tx?: DB): Promise<MccCategoryEntityInterface> {
         const [mccCategory] = await this.bulkCreate([input], tx);
 
         return mccCategory;
     }
 
-    async bulkCreate(inputs: MccCategoryCreateEntityInterface[], tx?: TX): Promise<MccCategoryEntityInterface[]> {
+    async bulkCreate(inputs: MccCategoryCreateEntityInterface[], tx?: DB): Promise<MccCategoryEntityInterface[]> {
         return await (tx ?? this.db).insert(MccCategoryEntityTable).values(inputs).returning();
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(MccCategoryEntityTable);
     }
 }
