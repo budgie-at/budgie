@@ -2,7 +2,7 @@ import { count, eq, inArray, isNull, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
@@ -112,7 +112,7 @@ export class TagRepository {
         });
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TagEntityTable);
     }
 }

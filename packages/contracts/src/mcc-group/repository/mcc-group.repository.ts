@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
@@ -21,17 +21,17 @@ export class MccGroupRepository {
         });
     }
 
-    async create(input: MccGroupCreateEntityInterface, tx?: TX): Promise<MccGroupEntityInterface> {
+    async create(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
         const [mccGroup] = await this.bulkCreate([input], tx);
 
         return mccGroup;
     }
 
-    async bulkCreate(inputs: MccGroupCreateEntityInterface[], tx?: TX): Promise<MccGroupEntityInterface[]> {
+    async bulkCreate(inputs: MccGroupCreateEntityInterface[], tx?: DB): Promise<MccGroupEntityInterface[]> {
         return await (tx ?? this.db).insert(MccGroupEntityTable).values(inputs).returning();
     }
 
-    async upsert(input: MccGroupCreateEntityInterface, tx?: TX): Promise<MccGroupEntityInterface> {
+    async upsert(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
         const [mccGroup] = await (tx ?? this.db)
             .insert(MccGroupEntityTable)
             .values(input)
@@ -50,7 +50,7 @@ export class MccGroupRepository {
         await this.db.delete(MccGroupEntityTable).where(eq(MccGroupEntityTable.type, type));
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(MccGroupEntityTable);
     }
 }

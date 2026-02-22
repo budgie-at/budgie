@@ -15,7 +15,10 @@ export type { TagScoreResultInterface } from './@generic/interface/tag-score-res
 
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 
+export type { DB } from './@generic/type/db.type';
+
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
+export { transactionAsync } from './@generic/util/transaction-async.util';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
@@ -214,6 +217,7 @@ export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
+export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
@@ -275,20 +279,7 @@ export { StatisticsRepository } from './statistics/repository/statistics.reposit
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
 
-export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
-
-export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embedding-entity.schema';
-
 export { EMBEDDING_DIMENSIONS } from './@generic/constant/embedding-dimensions.constant';
-
-export type { TitleEmbeddingEntityInterface } from './title-embedding/entity/title-embedding-entity.interface';
-export type { CategoryCountResultInterface } from './title-embedding/interface/category-count-result.interface';
-export type { CommentCountResultInterface } from './title-embedding/interface/comment-count-result.interface';
-export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
-export type { TagCountResultInterface } from './title-embedding/interface/tag-count-result.interface';
-export type { UnembeddedTransactionDataInterface } from './title-embedding/interface/unembedded-transaction-data.interface';
-export type { VecDebugResultInterface } from './title-embedding/interface/vec-debug-result.interface';
-export type { VecSearchResultInterface } from './title-embedding/interface/vec-search-result.interface';
 
 export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
 export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
