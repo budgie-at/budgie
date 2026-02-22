@@ -1,6 +1,6 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useFocusEffect } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -27,6 +27,7 @@ export const useRepeatedTransactionSuggestion = (
     const [suggestions, setSuggestions] = useState<RepeatedTransactionPatternInterface[]>([]);
     const [refreshVersion, setRefreshVersion] = useState(0);
 
+    const navigation = useNavigation();
     const currentTimeRef = useRef(new Date());
     const lastAmountRef = useRef<number | null>(null);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -34,17 +35,14 @@ export const useRepeatedTransactionSuggestion = (
     const isReady = enabled && isPositiveNumber(accountId);
     const amountOrNull = isPositiveNumber(amount) ? amount : null;
     const categoryIdOrNull = isPositiveNumber(categoryId) ? categoryId : null;
-    const requestKey = JSON.stringify({
-        type,
-        accountId,
-        amount: amountOrNull,
-        categoryId: categoryIdOrNull,
-        refreshVersion
-    });
 
-    useFocusEffect(() => {
-        setRefreshVersion(version => version + 1);
-    });
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setRefreshVersion(version => version + 1);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {
         const clearDebounceTimer = (): void => {
@@ -100,7 +98,7 @@ export const useRepeatedTransactionSuggestion = (
             cancelled = true;
             clearDebounceTimer();
         };
-    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, requestKey]);
+    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
