@@ -214,6 +214,7 @@ export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
+export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
