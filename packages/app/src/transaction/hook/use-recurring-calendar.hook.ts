@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { recurringCalendarService } from '../service/recurring-calendar.service';
 
@@ -15,6 +16,7 @@ interface UseRecurringCalendarReturnInterface {
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
 export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
+    const { defaultInstrument } = useSettingsContext();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | undefined>();
@@ -26,7 +28,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
             setIsLoading(true);
 
             try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments();
+                const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id);
 
                 if (!cancelled) {
                     setData(result);

@@ -6,9 +6,10 @@ import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
 class RecurringCalendarService {
-    async getMonthlyRecurringPayments(): Promise<RecurringCalendarDataInterface> {
+    async getMonthlyRecurringPayments(defaultInstrumentId: number): Promise<RecurringCalendarDataInterface> {
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
-            type: TransactionTypeEnum.EXPENSE
+            type: TransactionTypeEnum.EXPENSE,
+            defaultInstrumentId
         });
 
         return this.buildCalendarData(patterns);
