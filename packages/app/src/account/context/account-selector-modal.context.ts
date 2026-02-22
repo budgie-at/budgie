@@ -1,7 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface AccountSelectorModalParams {
     readonly initialAccountId?: number | null;
@@ -11,16 +10,8 @@ export interface AccountSelectorModalParams {
     readonly onlyActive?: boolean;
 }
 
-interface AccountSelectorModalContextInterface {
-    openAccountSelector: (params?: AccountSelectorModalParams) => Promise<number | null>;
-    resolveAccountSelector: (accountId: number | null) => void;
-    currentParams: AccountSelectorModalParams | null;
-}
+export type AccountSelectorResult = number | null;
 
-export const AccountSelectorModalContext = createContext<AccountSelectorModalContextInterface>({
-    openAccountSelector: () => Promise.resolve(null),
-    resolveAccountSelector: emptyFn,
-    currentParams: null
-});
-
-export const useAccountSelectorModal = () => use(AccountSelectorModalContext);
+export const [AccountSelectorModalContext, useAccountSelectorModal] = createModalContext<AccountSelectorModalParams, AccountSelectorResult>(
+    null
+);
