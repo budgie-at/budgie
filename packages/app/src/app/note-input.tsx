@@ -12,7 +12,7 @@ import { useNoteInputModal } from '../transaction/context/note-input-modal.conte
 
 export default function NoteInputModal() {
     const { t } = useLingui();
-    const { currentParams, resolveNoteInput } = useNoteInputModal();
+    const [, resolveNoteInput, currentParams] = useNoteInputModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [value, setValue] = useState(currentParams?.initialValue ?? '');
 
