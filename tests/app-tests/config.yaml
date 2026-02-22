@@ -22,3 +22,11 @@ executionOrder:
     - 12.transaction-create-expense.flow
     - 13.transaction-edit.flow
     - 14.transaction-delete.flow
+    - 15.transaction-create-income.flow
+    - 16.transaction-edit-income.flow
+    - 17.transaction-delete-income.flow
+    - 18.transaction-create-transfer.flow
+    - 19.transaction-edit-transfer.flow
+    - 20.transaction-delete-transfer.flow
+    - 21.transaction-create-cross-currency-transfer.flow
+    - 22.transaction-delete-cross-currency-transfer.flow

@@ -2,11 +2,6 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: setup/create-account.flow.yaml
-    env:
-      ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
     file: setup/create-category.flow.yaml
     env:
       CATEGORY_NAME: 'E2E Txn Category'
