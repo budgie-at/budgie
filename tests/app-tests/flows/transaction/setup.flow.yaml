@@ -2,11 +2,11 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: setup/create-category.flow.yaml
+    file: ../setup/create-category.flow.yaml
     env:
       CATEGORY_NAME: 'E2E Txn Category'
 
 - runFlow:
-    file: setup/create-tag.flow.yaml
+    file: ../setup/create-tag.flow.yaml
     env:
       TAG_NAME: 'E2E Txn Tag'

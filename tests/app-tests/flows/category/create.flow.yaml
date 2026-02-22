@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: shared/navigate-to-settings.flow.yaml
+- runFlow: ../shared/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
     element:
@@ -13,18 +13,21 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Categories'
 
-- tapOn: 'E2E Category, Swipe left'
+- tapOn:
+    id: 'ActionButton'
+- waitForAnimationToEnd
+
+- tapOn: 'Category'
 - waitForAnimationToEnd
 
 - tapOn:
     id: 'CategoryForm.Input'
-- eraseText: 50
-- inputText: 'E2E Edited Category'
+- inputText: 'E2E Category'
 - hideKeyboard
 
 - tapOn:
     id: 'CategoryForm.Submit'
 
 - extendedWaitUntil:
-    visible: 'E2E Edited Category, Swipe left'
+    visible: 'E2E Category, Swipe left'
     timeout: 10000
