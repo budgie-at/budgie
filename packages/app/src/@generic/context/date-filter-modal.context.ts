@@ -7,9 +7,7 @@ export interface DateFilterModalParams {
     readonly value: DateRangeInterface | null;
 }
 
-export interface DateFilterResult {
-    readonly value: DateRangeInterface | null;
-}
+export type DateFilterResult = { readonly value: DateRangeInterface | null };
 
 interface DateFilterModalContextInterface {
     openDateFilter: (params: DateFilterModalParams) => Promise<DateFilterResult | null>;

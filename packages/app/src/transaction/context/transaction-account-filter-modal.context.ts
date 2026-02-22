@@ -6,9 +6,7 @@ export interface TransactionAccountFilterModalParams {
     readonly value: number[] | null;
 }
 
-export interface TransactionAccountFilterResult {
-    readonly value: number[] | null;
-}
+export type TransactionAccountFilterResult = { readonly value: number[] | null };
 
 interface TransactionAccountFilterModalContextInterface {
     openTransactionAccountFilter: (params: TransactionAccountFilterModalParams) => Promise<TransactionAccountFilterResult | null>;
