@@ -8,6 +8,7 @@ import {
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
@@ -15,6 +16,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../@generic/drizzle/db/db';
 import { RuleFormResultType } from '../context/rule-form-modal.context';
+import { RuleCreationProgressInterface } from '../interface/rule-creation-progress.interface';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
@@ -52,6 +54,7 @@ interface UseRuleFormOptions {
 export const useRuleForm = (options: UseRuleFormOptions = {}) => {
     const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
+    const [progress, setProgress] = useState<RuleCreationProgressInterface | null>(null);
 
     const getDefaultValues = (): RuleCreateInputInterface => {
         if (isDefined(providedDefaultValues)) {
@@ -85,9 +88,14 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         Toast.show({ type: 'error', text1: t`${applied} updated, ${failed} failed` });
     };
 
+    const handleProgress = (processed: number, total: number) => {
+        setProgress({ processed, total });
+    };
+
     const applyRuleToExisting = async (targetRuleId: number, shouldApply: boolean) => {
         if (shouldApply) {
-            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId);
+            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId, handleProgress);
+            setProgress(null);
             showApplyResultToast(result.applied, result.failed);
         }
     };
@@ -128,5 +136,5 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         }
     };
 
-    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing };
+    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing, progress };
 };

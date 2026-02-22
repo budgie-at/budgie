@@ -27,7 +27,7 @@ msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en lo
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} se restaurará en tu vista principal."
 
-#: src/rule/hooks/use-rule-form.hook.ts:85
+#: src/rule/hooks/use-rule-form.hook.ts:88
 msgid "{applied} updated, {failed} failed"
 msgstr ""
 
@@ -39,8 +39,7 @@ msgstr "{availableCount} columnas disponibles"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% aprendido"
 
-#: src/rule/components/matching-count-display/matching-count-display.tsx:45
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:38
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:57
 msgid "{count} matching transactions"
 msgstr ""
 
@@ -424,8 +423,7 @@ msgstr "Cambiar PIN"
 msgid "Checking Account"
 msgstr "Cuenta corriente"
 
-#: src/rule/components/matching-count-display/matching-count-display.tsx:36
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:17
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:36
 msgid "Checking transactions..."
 msgstr ""
 
@@ -539,7 +537,7 @@ msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
 #: src/rule/hooks/use-create-suggest-rule.hook.ts:78
-#: src/rule/hooks/use-rule-form.hook.ts:108
+#: src/rule/hooks/use-rule-form.hook.ts:116
 msgid "Could not create rule"
 msgstr ""
 
@@ -555,7 +553,7 @@ msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más ta
 msgid "Could not delete account."
 msgstr "No se pudo eliminar la cuenta."
 
-#: src/rule/hooks/use-rule-form.hook.ts:125
+#: src/rule/hooks/use-rule-form.hook.ts:133
 msgid "Could not delete rule."
 msgstr ""
 
@@ -591,7 +589,7 @@ msgstr "No se pudo guardar la categoría"
 msgid "Could not save tag"
 msgstr "No se pudo guardar la etiqueta"
 
-#: src/rule/hooks/use-rule-form.hook.ts:108
+#: src/rule/hooks/use-rule-form.hook.ts:116
 msgid "Could not update rule"
 msgstr ""
 
@@ -1397,7 +1395,7 @@ msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:30
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:49
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
@@ -1615,7 +1613,7 @@ msgstr ""
 msgid "Rule"
 msgstr ""
 
-#: src/rule/hooks/use-rule-form.hook.ts:80
+#: src/rule/hooks/use-rule-form.hook.ts:83
 msgid "Rule applied to {applied} transactions"
 msgstr ""
 
@@ -2187,12 +2185,11 @@ msgstr "Actualizado"
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
-#: src/rule/components/matching-count-display/matching-count-display.tsx:48
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:41
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:60
 msgid "Update them too?"
 msgstr ""
 
-#: src/rule/components/matching-count-display/matching-count-display.tsx:23
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:23
 msgid "Updating {processed}/{total}..."
 msgstr ""
 
