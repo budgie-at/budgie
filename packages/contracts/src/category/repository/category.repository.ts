@@ -2,7 +2,7 @@ import { and, count, eq, getTableColumns, isNull, like, sql } from 'drizzle-orm'
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
@@ -43,13 +43,13 @@ export class CategoryRepository {
         return this.db.select({ count: count() }).from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, false));
     }
 
-    async create(input: CategoryCreateEntityInterface, tx?: TX): Promise<CategoryEntityInterface> {
+    async create(input: CategoryCreateEntityInterface, tx?: DB): Promise<CategoryEntityInterface> {
         const [category] = await this.bulkCreate([input], tx);
 
         return category;
     }
 
-    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: TX): Promise<CategoryEntityInterface[]> {
+    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: DB): Promise<CategoryEntityInterface[]> {
         return await (tx ?? this.db)
             .insert(CategoryEntityTable)
             .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
@@ -101,7 +101,7 @@ export class CategoryRepository {
             .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId));
     }
 
-    async truncate(includeDefault: boolean, tx?: TX): Promise<void> {
+    async truncate(includeDefault: boolean, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .delete(CategoryEntityTable)
             .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false));
