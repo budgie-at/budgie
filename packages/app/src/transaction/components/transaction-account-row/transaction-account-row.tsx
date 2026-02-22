@@ -31,7 +31,7 @@ interface Props {
 export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
     useImperativeHandle(ref, () => ({ shake }));

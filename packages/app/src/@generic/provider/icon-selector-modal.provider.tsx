@@ -1,16 +1,9 @@
-import { ReactNode } from 'react';
+import { IconSelectorModalContext } from '../context/icon-selector-modal.context';
+import { createModalProvider } from '../utils/create-modal-provider/create-modal-provider.util';
 
-import { IconSelectorModalContext, IconSelectorModalParams, IconSelectorResult } from '../context/icon-selector-modal.context';
-import { useModalResolver } from '../hook/use-modal-resolver/use-modal-resolver.hook';
+import type { IconSelectorModalParams, IconSelectorResult } from '../context/icon-selector-modal.context';
 
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const IconSelectorModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<IconSelectorModalParams, IconSelectorResult>('/icon-selector');
-
-    const value = { openIconSelector: open, resolveIconSelector: resolve, currentParams };
-
-    return <IconSelectorModalContext value={value}>{children}</IconSelectorModalContext>;
-};
+export const IconSelectorModalProvider = createModalProvider<IconSelectorModalParams, IconSelectorResult>(
+    IconSelectorModalContext,
+    '/icon-selector'
+);

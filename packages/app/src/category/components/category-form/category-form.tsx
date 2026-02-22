@@ -42,9 +42,9 @@ interface Props {
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openNoteInput } = useNoteInputModal();
-    const { openIconSelector } = useIconSelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openNoteInput] = useNoteInputModal();
+    const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const { llm } = useLlmContext();
 

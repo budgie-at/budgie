@@ -20,7 +20,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
     variant
 }: AccountDetailsFieldsProps<T>) => {
     const { t } = useLingui();
-    const { openIconSelector } = useIconSelectorModal();
+    const [openIconSelector] = useIconSelectorModal();
 
     const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
         const handlePress = async () => {

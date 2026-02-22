@@ -20,8 +20,8 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openCategoryForm } = useCategoryFormModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openCategoryForm] = useCategoryFormModal();
 
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, false);
