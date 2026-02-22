@@ -55,7 +55,12 @@ const SIMILAR_COMMENTS_QUERY = `
 
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     constructor(db: DB) {
-        super(db, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
+        super(db, {
+            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+            similarTagsQuery: SIMILAR_TAGS_QUERY,
+            vecTableName: 'merchant_embedding_vec', // eslint-disable-line lingui/no-unlocalized-strings
+            sourceTableName: 'merchant_embeddings' // eslint-disable-line lingui/no-unlocalized-strings
+        });
     }
 
     async findSimilarComments(
@@ -182,10 +187,10 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async rebuildVecIndex(): Promise<void> {
-        return this.rebuildVec('merchant_embedding_vec', 'merchant_embeddings');
+        return this.rebuildVec();
     }
 
     async truncate(): Promise<void> {
-        return this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable, 'merchant_embedding_vec');
+        return this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable);
     }
 }
