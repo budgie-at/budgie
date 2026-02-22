@@ -113,7 +113,7 @@ export default function IconSelectorModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 columnWrapperClassName="gap-x-lg mb-lg"
-                contentContainerClassName="px-xl"
+                contentContainerClassName="px-3xl"
                 contentContainerStyle={contentContainerStyle}
                 ListEmptyComponent={listEmptyComponent}
             />
