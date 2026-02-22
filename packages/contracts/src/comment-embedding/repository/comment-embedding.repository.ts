@@ -42,8 +42,8 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
         super(db, {
             similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
             similarTagsQuery: SIMILAR_TAGS_QUERY,
-            vecTableName: 'comment_embedding_vec', // eslint-disable-line lingui/no-unlocalized-strings
-            sourceTableName: 'comment_embeddings' // eslint-disable-line lingui/no-unlocalized-strings
+            vecTableName: 'comment_embedding_vec',
+            sourceTableName: 'comment_embeddings'
         });
     }
 
