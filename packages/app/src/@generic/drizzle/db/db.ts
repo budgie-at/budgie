@@ -116,6 +116,8 @@ export let expoDb = dbInit();
 export const __REMOVE_ME_RESET_DB = async () => {
     await expoDb.closeAsync();
     await SQLite.deleteDatabaseAsync(DB_NAME);
+    global.__expoSqliteDb__ = undefined;
+    global.__drizzleDb__ = undefined;
     expoDb = dbInit();
 };
 
