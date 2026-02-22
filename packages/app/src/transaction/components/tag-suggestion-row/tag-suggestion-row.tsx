@@ -1,6 +1,6 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
-import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
+import { useTagSuggestionRow } from '../../hooks/use-tag-suggestion-row.hook';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 
 interface Props {
@@ -18,26 +18,13 @@ const getTagIcon = (): UserIconNameEnum => UserIconNameEnum.Hash;
 const getTagTitle = (tag: TagEntityInterface): string => tag.title;
 
 export const TagSuggestionRow = (props: Props) => {
-    const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
-
-    const { suggestions, status } = useTagSuggestion({
-        transactionTitle,
-        categoryId,
-        mccCategoryId,
-        comment,
-        aiContext,
-        enabled
-    });
-
-    const handleSelect = (tag: TagEntityInterface): void => {
-        onSelect(tag.id);
-    };
+    const { suggestions, status, handleSelect } = useTagSuggestionRow(props);
 
     return (
         <IconTitleSuggestionRow
             suggestions={suggestions}
             status={status}
-            enabled={enabled}
+            enabled={props.enabled}
             onSelect={handleSelect}
             getKey={getTagKey}
             getIcon={getTagIcon}

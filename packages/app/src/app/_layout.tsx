@@ -64,7 +64,7 @@ const AiProviderWrapper: typeof LlmDisabledProvider = isAiDisabled
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
-// eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
+// eslint-disable-next-line max-lines-per-function -- Layout file requires many lines
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
 

@@ -1,6 +1,6 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
-import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
+import { useCategorySuggestionRow } from '../../hooks/use-category-suggestion-row.hook';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 
 interface Props {
@@ -17,25 +17,13 @@ const getCategoryIcon = (category: CategoryEntityInterface): UserIconNameEnum =>
 const getCategoryTitle = (category: CategoryEntityInterface): string => category.title;
 
 export const CategorySuggestionRow = (props: Props) => {
-    const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
-
-    const { suggestions, status } = useCategorySuggestion({
-        transactionTitle,
-        mccCategoryId,
-        comment,
-        aiContext,
-        enabled
-    });
-
-    const handleSelect = (category: CategoryEntityInterface): void => {
-        onSelect(category.id);
-    };
+    const { suggestions, status, handleSelect } = useCategorySuggestionRow(props);
 
     return (
         <IconTitleSuggestionRow
             suggestions={suggestions}
             status={status}
-            enabled={enabled}
+            enabled={props.enabled}
             onSelect={handleSelect}
             getKey={getCategoryKey}
             getIcon={getCategoryIcon}
