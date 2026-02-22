@@ -39,12 +39,9 @@ msgstr "{availableCount} colonnes disponibles"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% appris"
 
+#: src/rule/components/matching-count-display/matching-count-display.tsx:45
 #: src/rule/components/rule-matching-count/rule-matching-count.tsx:37
 msgid "{count} matching transactions"
-msgstr ""
-
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:132
-msgid "{displayMatchingCount} matching transactions"
 msgstr ""
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
@@ -88,6 +85,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx:59
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
+
+#: src/rule/service/rule.service.ts:15
+msgid "A rule with the same conditions already exists"
+msgstr ""
 
 #: src/app/(tabs)/settings/index.tsx:176
 msgid "About"
@@ -138,11 +139,11 @@ msgstr ""
 msgid "Action Type"
 msgstr ""
 
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx:24
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx:35
 msgid "Actions"
 msgstr ""
 
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx:30
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx:41
 msgid "Actions to apply when conditions match"
 msgstr ""
 
@@ -306,10 +307,6 @@ msgstr "Synchroniser automatiquement les comptes et transactions de Monobank"
 msgid "Available Columns"
 msgstr "Colonnes disponibles"
 
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:183
-msgid "Back"
-msgstr ""
-
 #: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Solde"
@@ -371,7 +368,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:86
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -431,8 +428,8 @@ msgstr "Modifier le code PIN"
 msgid "Checking Account"
 msgstr "Compte courant"
 
+#: src/rule/components/matching-count-display/matching-count-display.tsx:36
 #: src/rule/components/rule-matching-count/rule-matching-count.tsx:17
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:126
 msgid "Checking transactions..."
 msgstr ""
 
@@ -480,7 +477,6 @@ msgstr ""
 #: src/app/(tabs)/settings/import.tsx:242
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:14
 #: src/rule/constant/rule-condition-field.constant.ts:7
-#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:7
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -546,7 +542,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:99
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:78
 #: src/rule/hooks/use-rule-form.hook.ts:109
 msgid "Could not create rule"
 msgstr ""
@@ -611,7 +607,7 @@ msgstr "Impossible de mettre à jour la transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:113
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
 msgid "Create & update"
 msgstr ""
 
@@ -656,8 +652,11 @@ msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étique
 msgid "Create one to get started."
 msgstr "Créez-en un pour commencer."
 
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+msgid "Create rule"
+msgstr ""
+
 #: src/rule/components/rule-form-create/rule-form-create.tsx:32
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:113
 msgid "Create Rule"
 msgstr ""
 
@@ -1300,7 +1299,6 @@ msgid "MCC Code"
 msgstr ""
 
 #: src/rule/constant/rule-condition-field.constant.ts:10
-#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:8
 msgid "Merchant code"
 msgstr ""
 
@@ -1341,10 +1339,6 @@ msgstr "Nouveau revenu"
 #: src/app/(main)/create-transaction/transfer.tsx:76
 msgid "New Transfer"
 msgstr "Nouveau transfert"
-
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:87
-msgid "Next"
-msgstr ""
 
 #: src/account/component/account-select-content/account-select-content.tsx:46
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
@@ -1584,8 +1578,7 @@ msgid "PrivatBank"
 msgstr "PrivatBank"
 
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:101
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:162
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:67
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
 msgid "Quick rule"
 msgstr ""
 
@@ -1766,10 +1759,6 @@ msgstr "Tout sélectionner"
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
-#: src/rule/components/suggest-rule-description/suggest-rule-description.tsx:29
-msgid "Select at least one condition"
-msgstr ""
-
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"
 msgstr "Sélectionner la catégorie"
@@ -1864,10 +1853,6 @@ msgstr "Paramètres"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 
-#: src/rule/components/matching-transaction-list/matching-transaction-list.tsx:26
-msgid "Show all ({totalCount})"
-msgstr ""
-
 #: src/app/(tabs)/settings/index.tsx:153
 msgid "Show Cents"
 msgstr "Afficher les centimes"
@@ -1875,6 +1860,10 @@ msgstr "Afficher les centimes"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:21
 msgid "Show this account on the main page"
 msgstr "Afficher ce compte sur la page principale"
+
+#: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx:15
+msgid "Some transactions may match multiple rules. The category from the first matching rule will be applied."
+msgstr ""
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:41
@@ -2063,7 +2052,6 @@ msgstr "Cette année"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:13
 #: src/rule/constant/rule-condition-field.constant.ts:6
-#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:6
 msgid "Title"
 msgstr ""
 
@@ -2084,7 +2072,6 @@ msgid "To Currency"
 msgstr "Devise cible"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/rule/components/matching-transaction-row/matching-transaction-row.tsx:60
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:96
 msgid "Today"
 msgstr "Aujourd'hui"
@@ -2204,11 +2191,11 @@ msgstr "À jour"
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:135
+#: src/rule/components/matching-count-display/matching-count-display.tsx:48
 msgid "Update them too?"
 msgstr ""
 
-#: src/rule/components/suggest-rule-apply-modal-content/suggest-rule-apply-modal-content.tsx:144
+#: src/rule/components/matching-count-display/matching-count-display.tsx:23
 msgid "Updating {processed}/{total}..."
 msgstr ""
 
@@ -2261,7 +2248,6 @@ msgstr "Qui vous doit de l'argent ?"
 msgid "Wise"
 msgstr ""
 
-#: src/rule/components/matching-transaction-row/matching-transaction-row.tsx:61
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:97
 msgid "Yesterday"
 msgstr "Hier"

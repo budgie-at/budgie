@@ -82,7 +82,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
                 >
                     <View className="px-3xl gap-y-3xl">
                         <RuleConditionsSection />
-                        <RuleActionsSection />
+                        <RuleActionsSection ruleId={ruleId} />
                     </View>
                     <View className="px-3xl mt-3xl">
                         <RuleFormApplyToggle />

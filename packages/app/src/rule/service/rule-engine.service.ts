@@ -114,21 +114,28 @@ class RuleEngineService {
             return;
         }
 
+        const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
+
         await db.transaction(async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
-                await this.applyRuleActions(transactionId, rule.actions, transaction);
+                await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             }
         });
     }
 
     private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
         await db.transaction(async transaction => {
-            await this.applyRuleActions(transactionId, actions, transaction);
+            await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
         });
     }
 
-    private async applyRuleActions(transactionId: number, actions: RuleActionEntityInterface[], transaction: Transaction): Promise<void> {
+    private async applyRuleActions(
+        transactionId: number,
+        actions: RuleActionEntityInterface[],
+        transaction: Transaction,
+        appliedExclusiveActions: Set<RuleActionTypeEnum>
+    ): Promise<void> {
         const sortedActions = [...actions].sort((actionA, actionB) => {
             if (actionA.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
                 return 1;
@@ -144,7 +151,8 @@ class RuleEngineService {
         for (const action of sortedActions) {
             switch (action.type) {
                 case RuleActionTypeEnum.SET_CATEGORY:
-                    if (isDefined(action.categoryId)) {
+                    if (isDefined(action.categoryId) && !appliedExclusiveActions.has(RuleActionTypeEnum.SET_CATEGORY)) {
+                        appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
                         // eslint-disable-next-line no-await-in-loop
                         await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, transaction);
                         // eslint-disable-next-line no-await-in-loop
@@ -162,7 +170,8 @@ class RuleEngineService {
                     break;
 
                 case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
-                    if (isDefined(action.accountId)) {
+                    if (isDefined(action.accountId) && !appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
+                        appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
                         // eslint-disable-next-line no-await-in-loop
                         await convertTransactionToTransfer({ transactionId, targetAccountId: action.accountId, tx: transaction });
                     }
