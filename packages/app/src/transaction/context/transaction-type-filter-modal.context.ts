@@ -7,9 +7,7 @@ export interface TransactionTypeFilterModalParams {
     readonly value: TransactionTypeEnum[] | null;
 }
 
-export interface TransactionTypeFilterResult {
-    readonly value: TransactionTypeEnum[] | null;
-}
+export type TransactionTypeFilterResult = { readonly value: TransactionTypeEnum[] | null };
 
 interface TransactionTypeFilterModalContextInterface {
     openTransactionTypeFilter: (params: TransactionTypeFilterModalParams) => Promise<TransactionTypeFilterResult | null>;
