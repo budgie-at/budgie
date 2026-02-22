@@ -51,7 +51,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
           }
         : null;
 
-    const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId, defaultValues, onSuccess });
+    const { form, handleSubmit, handleDelete, progress } = useRuleForm({ ruleId, defaultValues, onSuccess });
     const { isSubmitting } = form.formState;
 
     const handleDeleteConfirm = async () => {
@@ -85,7 +85,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
                         <RuleActionsSection ruleId={ruleId} />
                     </View>
                     <View className="px-3xl mt-3xl">
-                        <RuleFormApplyToggle />
+                        <RuleFormApplyToggle progress={progress} />
                     </View>
                 </KeyboardAwareScrollView>
 
