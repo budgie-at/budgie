@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeContext } from '../../../theme/context/theme.context';
 
 const HEADER_OFFSET = 88;
-const HORIZONTAL_PADDING = 16;
+const HORIZONTAL_PADDING = 12;
 const BG_LIGHT = '#FFFFFF';
 const BG_DARK = '#000000';
 
