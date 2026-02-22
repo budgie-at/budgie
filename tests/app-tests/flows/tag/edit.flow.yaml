@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: shared/navigate-to-settings.flow.yaml
+- runFlow: ../shared/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
     element:

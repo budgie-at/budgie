@@ -8,25 +8,25 @@ platform:
 executionOrder:
   continueOnFailure: false
   flowsOrder:
-    - 01.enter-app.flow
-    - 02.account-create.flow
-    - 03.account-edit.flow
-    - 04.account-archive.flow
-    - 05.category-create.flow
-    - 06.category-edit.flow
-    - 07.category-delete.flow
-    - 08.tag-create.flow
-    - 09.tag-edit.flow
-    - 10.tag-delete.flow
-    - 11.transaction-setup.flow
-    - 12.transaction-create-expense.flow
-    - 13.transaction-edit.flow
-    - 14.transaction-delete.flow
-    - 15.transaction-create-income.flow
-    - 16.transaction-edit-income.flow
-    - 17.transaction-delete-income.flow
-    - 18.transaction-create-transfer.flow
-    - 19.transaction-edit-transfer.flow
-    - 20.transaction-delete-transfer.flow
-    - 21.transaction-create-cross-currency-transfer.flow
-    - 22.transaction-delete-cross-currency-transfer.flow
+    - enter-app.flow
+    - account/create.flow
+    - account/edit.flow
+    - account/archive.flow
+    - category/create.flow
+    - category/edit.flow
+    - category/delete.flow
+    - tag/create.flow
+    - tag/edit.flow
+    - tag/delete.flow
+    - transaction/setup.flow
+    - transaction/create-expense.flow
+    - transaction/edit-expense.flow
+    - transaction/delete-expense.flow
+    - transaction/create-income.flow
+    - transaction/edit-income.flow
+    - transaction/delete-income.flow
+    - transaction/create-transfer.flow
+    - transaction/edit-transfer.flow
+    - transaction/delete-transfer.flow
+    - transaction/create-cross-currency-transfer.flow
+    - transaction/delete-cross-currency-transfer.flow
