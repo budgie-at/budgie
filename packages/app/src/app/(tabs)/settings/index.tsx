@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -106,6 +107,7 @@ export default function SettingsPage() {
                                 description={t`View and delete custom categories`}
                                 icon={UserIconNameEnum.Folder}
                                 variant="default"
+                                testID={SettingsPageSelectors.ManageCategoriesCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToTags}
@@ -113,6 +115,7 @@ export default function SettingsPage() {
                                 description={t`Create and organize transaction tags`}
                                 icon={UserIconNameEnum.Tag}
                                 variant="pink"
+                                testID={SettingsPageSelectors.ManageTagsCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToArchived}
