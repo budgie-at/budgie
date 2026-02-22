@@ -11,7 +11,7 @@ import { RuleConflictWarning } from '../rule-conflict-warning/rule-conflict-warn
 import { RuleFormSectionHeader } from '../rule-form-section-header/rule-form-section-header';
 
 const DEFAULT_ACTION = {
-    type: RuleActionTypeEnum.SET_CATEGORY,
+    type: RuleActionTypeEnum.ADD_TAG,
     categoryId: null,
     tagId: null,
     accountId: null
