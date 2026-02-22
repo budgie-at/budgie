@@ -1,24 +1,7 @@
-import { createContext, use } from 'react';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface NoteInputModalParams {
     readonly initialValue?: string;
 }
 
-interface NoteInputModalContextInterface {
-    readonly openNoteInput: (params?: NoteInputModalParams) => Promise<string | null>;
-    readonly resolveNoteInput: (value: string | null) => void;
-    readonly currentParams: NoteInputModalParams | null;
-}
-
-export const NoteInputModalContext = createContext<NoteInputModalContextInterface | null>(null);
-
-export const useNoteInputModal = () => {
-    const context = use(NoteInputModalContext);
-
-    if (context === null) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-        throw new Error('useNoteInputModal must be used within NoteInputModalProvider');
-    }
-
-    return context;
-};
+export const [NoteInputModalContext, useNoteInputModal] = createModalContext<NoteInputModalParams, string | null>(null);

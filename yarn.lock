@@ -1292,7 +1292,6 @@ __metadata:
     "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.15.4"
     "@formatjs/intl": "npm:^3.1.8"
-    "@gorhom/bottom-sheet": "npm:^5.2.6"
     "@hookform/resolvers": "npm:^5.2.2"
     "@legendapp/list": "npm:^2.0.18"
     "@libsql/client": "npm:^0.15.15"
@@ -2976,40 +2975,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/2e8b992606b8377dc4496fcc06ea0370b4f2b3fb27f4f086172cf618c9d981176831baff6a2b5bffb4a06e7aa580e28a8bda2d71ad2cb51d19f3d4bc4609e90e
-  languageName: node
-  linkType: hard
-
-"@gorhom/bottom-sheet@npm:^5.2.6":
-  version: 5.2.8
-  resolution: "@gorhom/bottom-sheet@npm:5.2.8"
-  dependencies:
-    "@gorhom/portal": "npm:1.0.14"
-    invariant: "npm:^2.2.4"
-  peerDependencies:
-    "@types/react": "*"
-    "@types/react-native": "*"
-    react: "*"
-    react-native: "*"
-    react-native-gesture-handler: ">=2.16.1"
-    react-native-reanimated: "*"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    "@types/react-native":
-      optional: true
-  checksum: 10/b237f04dfd2b7ea2a24b12d2186f38b8debf95a5ef660802f7c2a19998ec8a7f7d599cd9079b9ba5bba2c6958cee2040d3d1adc3d3ace8c4964a469c751f4a5a
-  languageName: node
-  linkType: hard
-
-"@gorhom/portal@npm:1.0.14":
-  version: 1.0.14
-  resolution: "@gorhom/portal@npm:1.0.14"
-  dependencies:
-    nanoid: "npm:^3.3.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10/e0fa06be88b850cccdc6a1417a86e5ac21d82e3bfd1cec7eb05eccf7f3b595babe305541f278fdcbde34f3a9db465097dca2c785445c28bafb83b744e235da0c
   languageName: node
   linkType: hard
 
@@ -15903,7 +15868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+"nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
