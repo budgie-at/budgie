@@ -23,6 +23,26 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
     const entries = entriesByDay.get(day.number);
     const hasEntries = isDefined(entries);
     const isSelected = selectedDay === day.number && day.isCurrentMonth;
+    const isOtherMonth = !day.isCurrentMonth;
+    const showDot = hasEntries && day.isCurrentMonth;
+
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const wrapperClassName = cn(
+        'items-center justify-center rounded-full aspect-square',
+        day.isToday && 'bg-primary/20',
+        isSelected && 'bg-primary'
+    );
+
+    const textClassName = cn(
+        'text-sm',
+        isOtherMonth && 'text-secondary-foreground/30',
+        day.isCurrentMonth && 'text-primary',
+        day.isToday && 'text-primary font-semibold',
+        isSelected && 'text-primary-reverse font-semibold'
+    );
+
+    const dotClassName = cn('absolute bottom-1 h-[5px] w-[5px] rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive-corner');
+    /* eslint-enable lingui/no-unlocalized-strings */
 
     const handlePress = () => {
         if (day.isCurrentMonth && hasEntries) {
@@ -31,33 +51,10 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
     };
 
     return (
-        <Pressable
-            className={cn(
-                'items-center justify-center rounded-full aspect-square',
-                day.isToday && 'bg-primary/20',
-                isSelected && 'bg-primary'
-            )}
-            onPress={handlePress}
-        >
-            <Text
-                className={cn(
-                    'text-sm',
-                    day.isCurrentMonth ? 'text-primary' : 'text-secondary-foreground/30',
-                    day.isToday && 'text-primary font-semibold',
-                    isSelected && 'text-primary-reverse font-semibold'
-                )}
-            >
-                {day.text}
-            </Text>
+        <Pressable className={wrapperClassName} onPress={handlePress}>
+            <Text className={textClassName}>{day.text}</Text>
 
-            {hasEntries && day.isCurrentMonth ? (
-                <View
-                    className={cn(
-                        'absolute bottom-1 h-[5px] w-[5px] rounded-full',
-                        isSelected ? 'bg-primary-reverse' : 'bg-destructive-corner'
-                    )}
-                />
-            ) : null}
+            {showDot ? <View className={dotClassName} /> : null}
         </Pressable>
     );
 };
