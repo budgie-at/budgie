@@ -70,7 +70,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
-    const { openSplitEntries } = useSplitEntriesModal();
+    const [openSplitEntries] = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
 

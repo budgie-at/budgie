@@ -20,7 +20,6 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
-import { BottomSheetsProvider } from '../../../@generic/providers/bottom-sheets.provider';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
@@ -149,7 +148,7 @@ export default function ImportScreen() {
     const buttonContent = hasErrors ? t`Fix Errors` : t`Start Import`;
 
     return (
-        <BottomSheetsProvider>
+        <>
             <Page
                 header={
                     <PageHeader
@@ -269,6 +268,6 @@ export default function ImportScreen() {
                 </View>
             </Page>
             <Toast />
-        </BottomSheetsProvider>
+        </>
     );
 }

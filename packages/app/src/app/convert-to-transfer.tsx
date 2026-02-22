@@ -23,7 +23,7 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
+    const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
 
     const convertExpenseMutation = useConvertExpenseToTransferMutation();
     const convertIncomeMutation = useConvertIncomeToTransferMutation();
