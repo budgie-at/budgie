@@ -58,8 +58,8 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         super(db, {
             similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
             similarTagsQuery: SIMILAR_TAGS_QUERY,
-            vecTableName: 'merchant_embedding_vec', // eslint-disable-line lingui/no-unlocalized-strings
-            sourceTableName: 'merchant_embeddings' // eslint-disable-line lingui/no-unlocalized-strings
+            vecTableName: 'merchant_embedding_vec',
+            sourceTableName: 'merchant_embeddings'
         });
     }
 
