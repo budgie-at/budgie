@@ -1,8 +1,5 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
-
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface CategorySelectorModalParams {
     readonly initialCategoryId?: number | null;
@@ -11,16 +8,9 @@ export interface CategorySelectorModalParams {
     readonly description?: string;
 }
 
-interface CategorySelectorModalContextInterface {
-    openCategorySelector: (params?: CategorySelectorModalParams) => Promise<number | null>;
-    resolveCategorySelector: (categoryId: number | null) => void;
-    currentParams: CategorySelectorModalParams | null;
-}
+export type CategorySelectorResult = number | null;
 
-export const CategorySelectorModalContext = createContext<CategorySelectorModalContextInterface>({
-    openCategorySelector: () => Promise.resolve(null),
-    resolveCategorySelector: emptyFn,
-    currentParams: null
-});
-
-export const useCategorySelectorModal = () => use(CategorySelectorModalContext);
+export const [CategorySelectorModalContext, useCategorySelectorModal] = createModalContext<
+    CategorySelectorModalParams,
+    CategorySelectorResult
+>(null);
