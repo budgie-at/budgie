@@ -6,6 +6,7 @@ import { FlatList, View } from 'react-native';
 import { CurrencySelectorCard } from '../@generic/component/currency-selector-card/currency-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
+import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useCurrencySelectorModal } from '../@generic/context/currency-selector-modal.context';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -64,8 +65,8 @@ export default function CurrencySelectorModal() {
                 renderItem={renderItem}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                contentContainerClassName="px-3xl gap-y-lg"
                 contentContainerStyle={contentContainerStyle}
+                ItemSeparatorComponent={ListItemSeparator}
                 ListEmptyComponent={listEmptyComponent}
                 ListFooterComponent={listFooterComponent}
             />
