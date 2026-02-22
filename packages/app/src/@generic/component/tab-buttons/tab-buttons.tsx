@@ -18,6 +18,10 @@ export const TabButtons = () => (
             <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
         </TabTrigger>
 
+        <TabTrigger name="recurring" asChild reset="always">
+            <TabButton icon={UserIconNameEnum.CalendarSync} />
+        </TabTrigger>
+
         <TabTrigger name="settings" asChild reset="always">
             <TabButton icon={UserIconNameEnum.Settings} />
         </TabTrigger>

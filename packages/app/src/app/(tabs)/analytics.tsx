@@ -1,17 +1,13 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../@generic/component/card/card';
-import { CircleIcon } from '../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../@generic/component/page/page';
 import { PageHeader } from '../../@generic/component/page-header/page-header';
-import { SimpleHorizontalCell } from '../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../category/components/stats-by-categories/stats-by-categories';
@@ -25,10 +21,9 @@ import { useGetIncomeByTagQuery } from '../../transaction/query/use-get-income-b
 import { useGetTotalIncomeAndExpensesQuery } from '../../transaction/query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../transaction/utils/check-if-filters-selected.util';
 
-// eslint-disable-next-line max-lines-per-function -- Page component with multiple query hooks and sections
+ 
 export default function StatisticsPage() {
     const { t } = useLingui();
-    const router = useRouter();
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
         date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
@@ -41,10 +36,6 @@ export default function StatisticsPage() {
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
-
-    const handleRecurringCalendarPress = () => {
-        router.push('/analytics/recurring-calendar');
-    };
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />}>
@@ -119,21 +110,6 @@ export default function StatisticsPage() {
                         isIncome={false}
                     />
                 )}
-                <View className="gap-y-lg">
-                    <Text className="uppercase text-secondary-foreground text-xs">
-                        <Trans>Tools</Trans>
-                    </Text>
-
-                    <Card>
-                        <SimpleHorizontalCell
-                            left={<CircleIcon icon={UserIconNameEnum.CalendarSync} variant="warning" />}
-                            title={t`Recurring Payments`}
-                            description={t`Calendar view of detected recurring payments`}
-                            onPress={handleRecurringCalendarPress}
-                        />
-                    </Card>
-                </View>
-
                 <MenuSpacer />
             </ScrollView>
         </Page>

@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
@@ -18,20 +17,15 @@ import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurrin
 
 export const RecurringCalendarPage = () => {
     const { t } = useLingui();
-    const router = useRouter();
     const { data, isLoading } = useRecurringCalendar();
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
 
     const entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = data?.entriesByDay ?? new Map();
-    const selectedEntries = isDefined(selectedDay) ? entriesByDay.get(selectedDay) : void 0;
-
-    const handleGoBack = () => {
-        router.back();
-    };
+    const selectedEntries = isDefined(selectedDay) ? entriesByDay.get(selectedDay) : null;
 
     if (isLoading) {
         return (
-            <Page header={<PageHeader title={t`Recurring Payments`} onGoBack={handleGoBack} />}>
+            <Page header={<PageHeader className="border-b-0" size="md" title={t`Recurring Payments`} />}>
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator />
                 </View>
@@ -42,7 +36,7 @@ export const RecurringCalendarPage = () => {
     const hasEntries = isDefined(data) && data.entriesByDay.size > 0;
 
     return (
-        <Page header={<PageHeader title={t`Recurring Payments`} onGoBack={handleGoBack} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Recurring Payments`} />}>
             <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
                 {hasEntries ? (
                     <>
