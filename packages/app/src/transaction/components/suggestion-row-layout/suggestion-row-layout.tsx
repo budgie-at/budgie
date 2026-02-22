@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -18,10 +18,15 @@ const ENTER_DELAY = 400;
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, isProcessing = false, children } = props;
     const { isIncomplete } = useAiEmbeddingProgress();
+    const scrollRef = useRef<ScrollView | null>(null);
 
     const showBrain = showContent || isIncomplete || isProcessing;
     const brainIsLoading = showLoading || isProcessing;
     const showPills = showContent && !showLoading;
+
+    const handleContentSizeChange = () => {
+        scrollRef.current?.scrollToEnd({ animated: false });
+    };
 
     return (
         <View className="h-10 flex-row items-center justify-end overflow-hidden">
@@ -32,10 +37,12 @@ export const SuggestionRowLayout = (props: Props) => {
                     className="flex-row items-center overflow-hidden flex-1"
                 >
                     <ScrollView
+                        ref={scrollRef}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         className="flex-1"
                         contentContainerClassName="flex-grow justify-end gap-sm"
+                        onContentSizeChange={handleContentSizeChange}
                     >
                         {children}
                     </ScrollView>

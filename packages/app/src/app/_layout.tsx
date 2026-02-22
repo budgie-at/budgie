@@ -64,9 +64,11 @@ const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSy
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
+
     useResetDb(error);
     useAppInitialization(success);
     useAppState(handleAppStateChange);
+
     if (!success) {
         return null;
     }

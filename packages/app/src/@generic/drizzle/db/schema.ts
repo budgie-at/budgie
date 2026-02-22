@@ -25,7 +25,6 @@ export {
     MccGroupEntityRelations,
     MccCategoryEntityTable,
     MccCategoryEntityRelations,
-    TitleEmbeddingEntityTable,
     MerchantEmbeddingEntityTable,
     MerchantEmbeddingEntityRelations,
     MerchantEmbeddingTagEntityTable,
