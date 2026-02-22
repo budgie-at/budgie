@@ -12,7 +12,7 @@ export class TransactionTagsRepository {
 
     async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: DB): Promise<TransactionTagsEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
-            return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).returning();
+            return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).onConflictDoNothing().returning();
         }
 
         return [];
