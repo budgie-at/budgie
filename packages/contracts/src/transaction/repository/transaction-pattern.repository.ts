@@ -3,6 +3,7 @@ import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } fro
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
+import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -241,6 +242,29 @@ export class TransactionPatternRepository {
         ];
     }
 
+    private getExchangeRateSql(defaultInstrumentId: number) {
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            1.0
+        )`;
+    }
+
+    private getConvertedLatestAmountSubquery(defaultInstrumentId: number) {
+        const exchangeRate = this.getExchangeRateSql(defaultInstrumentId);
+
+        return sql<number>`(
+            SELECT te2.amount
+            FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+              AND t2.title = ${TransactionEntityTable.title}
+              AND t2.deleted_at IS NULL
+            ORDER BY t2.operated_at DESC
+            LIMIT 1
+        ) * ${exchangeRate}`.as('latestAmount');
+    }
+
     private async executeMonthlyPatternQuery(
         entryType: TransactionEntryTypeEnum,
         query: MonthlyPatternQueryInterface
@@ -255,7 +279,7 @@ export class TransactionPatternRepository {
                 categoryTitle: CategoryEntityTable.title,
                 categoryIcon: CategoryEntityTable.icon,
                 title: TransactionEntityTable.title,
-                latestAmount: this.latestAmountSubquery,
+                latestAmount: this.getConvertedLatestAmountSubquery(query.defaultInstrumentId),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonthCount})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 dayOfMonth: sql<number>`${dayOfMonthExpression}`.as('dayOfMonth'),
