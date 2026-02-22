@@ -21,7 +21,6 @@ import { useGetIncomeByTagQuery } from '../../transaction/query/use-get-income-b
 import { useGetTotalIncomeAndExpensesQuery } from '../../transaction/query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../transaction/utils/check-if-filters-selected.util';
 
- 
 export default function StatisticsPage() {
     const { t } = useLingui();
     const [filters, setFilters] = useState<TransactionFilterInterface>({
