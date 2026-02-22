@@ -275,20 +275,7 @@ export { StatisticsRepository } from './statistics/repository/statistics.reposit
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
 
-export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
-
-export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embedding-entity.schema';
-
 export { EMBEDDING_DIMENSIONS } from './@generic/constant/embedding-dimensions.constant';
-
-export type { TitleEmbeddingEntityInterface } from './title-embedding/entity/title-embedding-entity.interface';
-export type { CategoryCountResultInterface } from './title-embedding/interface/category-count-result.interface';
-export type { CommentCountResultInterface } from './title-embedding/interface/comment-count-result.interface';
-export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
-export type { TagCountResultInterface } from './title-embedding/interface/tag-count-result.interface';
-export type { UnembeddedTransactionDataInterface } from './title-embedding/interface/unembedded-transaction-data.interface';
-export type { VecDebugResultInterface } from './title-embedding/interface/vec-debug-result.interface';
-export type { VecSearchResultInterface } from './title-embedding/interface/vec-search-result.interface';
 
 export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
 export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
