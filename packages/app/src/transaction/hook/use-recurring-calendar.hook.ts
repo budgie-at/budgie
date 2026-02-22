@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -18,13 +18,8 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | undefined>();
-    const [refreshVersion, setRefreshVersion] = useState(0);
 
     useFocusEffect(() => {
-        setRefreshVersion(version => version + 1);
-    });
-
-    useEffect(() => {
         let cancelled = false;
 
         const fetchData = async (): Promise<void> => {
@@ -53,7 +48,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
         return () => {
             cancelled = true;
         };
-    }, [refreshVersion]);
+    });
 
     return { data, isLoading, error };
 };
