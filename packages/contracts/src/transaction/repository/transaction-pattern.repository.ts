@@ -1,6 +1,6 @@
 import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -10,6 +10,9 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
+import { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row.interface';
+import { MonthlyPatternRowInterface } from '../interface/monthly-pattern-row.interface';
 import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
@@ -18,6 +21,8 @@ import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard
 
 const DEFAULT_LIMIT = 10;
 const MIN_OCCURRENCES = 2;
+const MIN_MONTHLY_OCCURRENCES = 2;
+const DEFAULT_MONTHLY_LIMIT = 50;
 
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
@@ -27,6 +32,16 @@ export class TransactionPatternRepository {
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
 
         return this.enrichPatternsWithTags(patternRows);
+    }
+
+    async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRowInterface[]> {
+        const entryType = this.getEntryTypeForTransactionType(query.type);
+        const rows = await this.executeMonthlyPatternQuery(entryType, query);
+
+        return rows.filter(
+            (row): row is MonthlyPatternRowInterface =>
+                isDefined(row.categoryId) && isDefined(row.categoryTitle) && isDefined(row.categoryIcon)
+        );
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
@@ -190,5 +205,61 @@ export class TransactionPatternRepository {
 
     private getEntryTypeForTransactionType(type: TransactionTypeEnum): TransactionEntryTypeEnum {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+    }
+
+    private async executeMonthlyPatternQuery(
+        entryType: TransactionEntryTypeEnum,
+        query: MonthlyPatternQueryInterface
+    ): Promise<MonthlyPatternRawRowInterface[]> {
+        return this.db
+            .select({
+                categoryId: TransactionEntryEntityTable.categoryId,
+                categoryTitle: CategoryEntityTable.title,
+                categoryIcon: CategoryEntityTable.icon,
+                title: TransactionEntityTable.title,
+                latestAmount: sql<number>`(
+                    SELECT te2.amount
+                    FROM transactions t2
+                    INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+                    WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+                      AND t2.title = ${TransactionEntityTable.title}
+                      AND t2.deleted_at IS NULL
+                    ORDER BY t2.operated_at DESC
+                    LIMIT 1
+                )`.as('latestAmount'),
+                occurrenceCount: sql<number>`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch'))`.as(
+                    'occurrenceCount'
+                ),
+                lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
+                dayOfMonth: sql<number>`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`.as(
+                    'dayOfMonth'
+                ),
+                accountId: AccountEntityTable.id,
+                instrumentId: AccountEntityTable.instrumentId
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .where(
+                and(
+                    eq(TransactionEntityTable.type, query.type),
+                    isNull(TransactionEntityTable.deletedAt),
+                    eq(TransactionEntryEntityTable.type, entryType),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    isNotNull(TransactionEntryEntityTable.categoryId)
+                )
+            )
+            .groupBy(
+                TransactionEntryEntityTable.categoryId,
+                TransactionEntityTable.title,
+                sql`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`
+            )
+            .having(sql`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')) >= ${MIN_MONTHLY_OCCURRENCES}`)
+            .orderBy(
+                desc(sql`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch'))`),
+                desc(sql`MAX(${TransactionEntityTable.operatedAt})`)
+            )
+            .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
 }
