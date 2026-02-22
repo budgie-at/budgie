@@ -1,9 +1,10 @@
-import { Pressable, Text } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { Pressable, Text, View } from 'react-native';
 import { CalendarDay } from 'react-native-ui-datepicker';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+
+const MAX_VISIBLE_DOTS = 3;
 
 interface Props {
     readonly day: CalendarDay;
@@ -19,6 +20,7 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
     const hasEntries = entryCount > 0;
     const isSelected = selectedDay === dayOfMonth && day.isCurrentMonth;
     const isOtherMonth = !day.isCurrentMonth;
+    const visibleDots = Math.min(entryCount, MAX_VISIBLE_DOTS);
 
     const handlePress = () => {
         if (day.isCurrentMonth && hasEntries) {
@@ -30,8 +32,8 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
     const wrapperClassName = cn(
         'items-center justify-center rounded-full aspect-square mx-0.5',
         isOtherMonth && 'opacity-20',
-        hasEntries && !isSelected && 'bg-destructive-corner/30',
-        day.isToday && !isSelected && 'border border-primary/40',
+        hasEntries && !isSelected && 'bg-destructive-corner/20',
+        day.isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
 
@@ -43,12 +45,7 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
         isSelected && 'text-primary-reverse font-bold'
     );
 
-    const badgeClassName = cn(
-        'absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] rounded-full items-center justify-center px-0.5',
-        isSelected ? 'bg-primary-reverse' : 'bg-destructive'
-    );
-
-    const badgeTextClassName = cn('text-[9px] font-bold', isSelected ? 'text-primary' : 'text-destructive-foreground');
+    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
@@ -56,9 +53,11 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
             <Text className={textClassName}>{day.text}</Text>
 
             {hasEntries && day.isCurrentMonth ? (
-                <Animated.View entering={FadeIn.duration(200)} className={badgeClassName}>
-                    <Text className={badgeTextClassName}>{entryCount}</Text>
-                </Animated.View>
+                <View className="absolute bottom-1.5 flex-row gap-x-0.5">
+                    {Array.from({ length: visibleDots }, (_, index) => (
+                        <View key={index} className={dotClassName} />
+                    ))}
+                </View>
             ) : null}
         </Pressable>
     );
