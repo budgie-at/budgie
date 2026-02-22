@@ -10,6 +10,7 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
 import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
@@ -29,9 +30,14 @@ export class TransactionPatternRepository {
         return this.enrichPatternsWithTags(patternRows);
     }
 
-    private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
-        const entryType = this.getEntryTypeForTransactionType(query.type);
+    async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const conditions = this.buildAmountPatternConditions(query);
+        const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
 
+        return this.enrichPatternsWithTags(patternRows);
+    }
+
+    private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
         const weekdayCondition = sql`CAST(strftime('%w', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) = ${query.weekday}`;
         const timeCondition = sql`
             CAST(strftime('%H', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) * 60 +
@@ -39,22 +45,30 @@ export class TransactionPatternRepository {
             BETWEEN ${query.timeWindowStartMinutes} AND ${query.timeWindowEndMinutes}
         `;
 
+        const conditions = this.buildBasePatternConditions(query);
+        conditions.push(weekdayCondition, timeCondition);
+
+        return conditions;
+    }
+
+    private buildAmountPatternConditions(query: AmountPatternQueryInterface): SQL[] {
+        const conditions = this.buildBasePatternConditions(query);
+        conditions.push(gte(TransactionEntryEntityTable.amount, query.amountMin), lte(TransactionEntryEntityTable.amount, query.amountMax));
+
+        return conditions;
+    }
+
+    private buildBasePatternConditions(query: Pick<AmountPatternQueryInterface, 'type' | 'accountId' | 'categoryId'>): SQL[] {
+        const entryType = this.getEntryTypeForTransactionType(query.type);
+
         const conditions: SQL[] = [
             eq(TransactionEntityTable.type, query.type),
             isNull(TransactionEntityTable.deletedAt),
-            weekdayCondition,
-            timeCondition,
             eq(TransactionEntryEntityTable.type, entryType),
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
             isNotNull(TransactionEntryEntityTable.categoryId)
         ];
 
-        this.addOptionalPatternConditions(conditions, query);
-
-        return conditions;
-    }
-
-    private addOptionalPatternConditions(conditions: SQL[], query: TransactionPatternQueryInterface): void {
         if (isPositiveNumber(query.accountId)) {
             conditions.push(eq(TransactionEntryEntityTable.accountId, query.accountId));
         }
@@ -63,13 +77,7 @@ export class TransactionPatternRepository {
             conditions.push(eq(TransactionEntryEntityTable.categoryId, query.categoryId));
         }
 
-        if (isPositiveNumber(query.amountMin)) {
-            conditions.push(gte(TransactionEntryEntityTable.amount, query.amountMin));
-        }
-
-        if (isPositiveNumber(query.amountMax)) {
-            conditions.push(lte(TransactionEntryEntityTable.amount, query.amountMax));
-        }
+        return conditions;
     }
 
     private async executePatternQuery(conditions: SQL[], limit: number): Promise<PatternRowInterface[]> {
