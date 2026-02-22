@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.36.0](https://github.com/budgie-at/budgie/compare/v2.35.3...v2.36.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app,contracts:** remove unused title_embeddings table and vec index ([6fee1e7](https://github.com/budgie-at/budgie/commit/6fee1e71626e737b6be2e642988f92cbfc480e91))
+- **app:** fix infinite re-render loop in suggestion hooks ([2f77187](https://github.com/budgie-at/budgie/commit/2f77187123e6ea8712a386cb286a9ed5b6ecb98e))
+- **app:** remove vec table reference from migration and fix DB reset ([b2bee3f](https://github.com/budgie-at/budgie/commit/b2bee3f2452c98e9842640a3bc5ed28492f13561))
+- **app:** reorder amount-based suggestions closer to right thumb ([cd1c076](https://github.com/budgie-at/budgie/commit/cd1c0768dd4695ee07380cc704f64765a72ecd68))
+
+### Features
+
+- **app,contracts:** add dual-source category suggestions with amount-based pattern matching ([1cd6397](https://github.com/budgie-at/budgie/commit/1cd63979b3332123d48d729fa9c0661c53efc271))
+- **app:** scroll suggestion list to right on content change ([18d147b](https://github.com/budgie-at/budgie/commit/18d147b510a14d720576f195facc2fb4790ffaf6))
+
+### Reverts
+
+- restore migration 0011 vec table reference ([0a45a21](https://github.com/budgie-at/budgie/commit/0a45a219627285f836ab7c47b2888b0e852e4a5c))
+
 ## [2.35.3](https://github.com/budgie-at/budgie/compare/v2.35.2...v2.35.3) (2026-02-21)
 
 ### Bug Fixes
