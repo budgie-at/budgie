@@ -42,6 +42,7 @@ import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
+import { RULE_SELECTOR_MODAL_OPTIONS } from '../rule/constant/rule-selector-modal-options.constant';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
@@ -104,7 +105,10 @@ export default function RootLayout() {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="rule-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="rule-selector"
+                                                                        options={RULE_SELECTOR_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="rule-mcc-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
