@@ -31,7 +31,7 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-start */
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
-    const { openConvertToTransfer } = useConvertToTransferModal();
+    const [openConvertToTransfer] = useConvertToTransferModal();
     const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
