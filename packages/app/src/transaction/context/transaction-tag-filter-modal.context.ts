@@ -12,7 +12,7 @@ export interface TransactionTagFilterResult {
 
 interface TransactionTagFilterModalContextInterface {
     openTransactionTagFilter: (params: TransactionTagFilterModalParams) => Promise<TransactionTagFilterResult | null>;
-    resolveTransactionTagFilter: (result: TransactionTagFilterResult | null) => void;
+    resolveTransactionTagFilter: (result: TransactionTagFilterResult | null, options?: { readonly skipBack?: boolean }) => void;
     currentParams: TransactionTagFilterModalParams | null;
 }
 

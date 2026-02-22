@@ -12,7 +12,7 @@ export interface TransactionCategoryFilterResult {
 
 interface TransactionCategoryFilterModalContextInterface {
     openTransactionCategoryFilter: (params: TransactionCategoryFilterModalParams) => Promise<TransactionCategoryFilterResult | null>;
-    resolveTransactionCategoryFilter: (result: TransactionCategoryFilterResult | null) => void;
+    resolveTransactionCategoryFilter: (result: TransactionCategoryFilterResult | null, options?: { readonly skipBack?: boolean }) => void;
     currentParams: TransactionCategoryFilterModalParams | null;
 }
 
