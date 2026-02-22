@@ -1,5 +1,5 @@
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -18,24 +18,42 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | undefined>();
+    const [refreshVersion, setRefreshVersion] = useState(0);
 
-    useFocusEffect(
-        useCallback(() => {
+    useFocusEffect(() => {
+        setRefreshVersion(version => version + 1);
+    });
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const fetchData = async (): Promise<void> => {
             setIsLoading(true);
-            recurringCalendarService.getMonthlyRecurringPayments().then(
-                result => {
+
+            try {
+                const result = await recurringCalendarService.getMonthlyRecurringPayments();
+
+                if (!cancelled) {
                     setData(result);
-                    setError(undefined);
-                    setIsLoading(false);
-                },
-                (fetchError: unknown) => {
+                }
+            } catch (fetchError: unknown) {
+                if (!cancelled) {
                     setError(getErrorMessage(fetchError));
                     setData({ entriesByDay: EMPTY_ENTRIES_BY_DAY, totalAmount: 0 });
+                }
+            } finally {
+                if (!cancelled) {
                     setIsLoading(false);
                 }
-            );
-        }, [])
-    );
+            }
+        };
+
+        void fetchData();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [refreshVersion]);
 
     return { data, isLoading, error };
 };
