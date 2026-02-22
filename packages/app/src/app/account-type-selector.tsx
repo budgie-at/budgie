@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
+import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { AccountTypeOption } from '../account/component/account-type-bottom-sheet/account-type-option';
 import { ACCOUNT_COLOR } from '../account/constant/account-color.constant';
@@ -38,7 +38,7 @@ export default function AccountTypeSelectorModal() {
         <View style={containerStyle}>
             <FormsheetHeader size="md" title={t`Account Type`} description={t`Select the type of account`} />
 
-            <Animated.View layout={LinearTransition.duration(ANIMATION_DURATION)} className="gap-y-lg px-xl pb-xl">
+            <Animated.View layout={LinearTransition.duration(ANIMATION_DURATION)} className="gap-y-lg px-3xl pb-xl">
                 {ACCOUNT_TYPES.map(type => (
                     <Animated.View key={type} layout={LinearTransition.duration(ANIMATION_DURATION)}>
                         <AccountTypeOption type={type} isSelected={selectedType === type} onSelect={handleSelectType} />
