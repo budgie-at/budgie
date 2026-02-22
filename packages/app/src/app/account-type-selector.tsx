@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { BottomSheetHeader } from '../@generic/component/bottom-sheet-header/bottom-sheet-header';
+import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -36,7 +36,7 @@ export default function AccountTypeSelectorModal() {
 
     return (
         <View style={containerStyle}>
-            <BottomSheetHeader size="md" title={t`Account Type`} description={t`Select the type of account`} />
+            <FormsheetHeader size="md" title={t`Account Type`} description={t`Select the type of account`} />
 
             <Animated.View layout={LinearTransition.duration(ANIMATION_DURATION)} className="gap-y-lg px-xl pb-xl">
                 {ACCOUNT_TYPES.map(type => (
