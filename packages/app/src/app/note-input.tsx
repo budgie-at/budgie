@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { NoteInputSelectors } from '../@e2e/selectors/note-input.selector';
 import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
@@ -37,6 +38,7 @@ export default function NoteInputModal() {
                         autoCorrect={false}
                         spellCheck={false}
                         autoComplete="off"
+                        testID={NoteInputSelectors.Input}
                     />
                 </View>
 
@@ -45,6 +47,7 @@ export default function NoteInputModal() {
                     accessibilityLabel={t`Apply`}
                     accessibilityRole="button"
                     className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                    testID={NoteInputSelectors.SubmitButton}
                 >
                     <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
                 </HapticPressable>

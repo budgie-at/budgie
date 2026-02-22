@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { AccountPickerBottomSheetSelectors } from '../@e2e/selectors/account-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
 import { useAccountSelectorModal } from '../account/context/account-selector-modal.context';
@@ -31,7 +32,12 @@ export default function AccountSelectorModal() {
 
     return (
         <View style={containerStyle}>
-            <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search accounts...`} />
+            <SelectorModalSearchHeader
+                search={search}
+                onSearchChange={setSearch}
+                placeholder={t`Search accounts...`}
+                testID={AccountPickerBottomSheetSelectors.Input}
+            />
 
             <AccountSelectContent
                 data={accounts}

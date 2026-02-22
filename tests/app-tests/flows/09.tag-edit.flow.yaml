@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+---
+
+- runFlow: shared/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageTagsCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageTagsCard'
+- extendedWaitUntil:
+    visible: 'Tags'
+
+- tapOn: 'E2E Tag, Swipe left'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TagForm.Input'
+- eraseText: 50
+- inputText: 'E2E Edited Tag'
+- hideKeyboard
+
+- tapOn:
+    id: 'TagForm.Submit'
+
+- extendedWaitUntil:
+    visible: 'E2E Edited Tag, Swipe left'
+    timeout: 10000
