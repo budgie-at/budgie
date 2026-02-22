@@ -21,7 +21,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CreateAccount.CASH'
 - extendedWaitUntil:
-    visible: 'Account Name & Icon'
+    visible: 'ACCOUNT NAME & ICON'
 
 - tapOn:
     id: 'AccountForm.NameInput'

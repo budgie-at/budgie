@@ -19,7 +19,7 @@ appId: ${APP_ID}
     direction: LEFT
 
 - tapOn:
-    point: '92%,19%'
+    id: 'DeletableRow.DeleteButton'
 
 - tapOn: 'Delete'
 
