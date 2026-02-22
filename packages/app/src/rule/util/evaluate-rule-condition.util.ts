@@ -84,7 +84,10 @@ const matchOperator = (
     }
 };
 
-export const evaluateRuleCondition = (condition: RuleConditionEntityInterface, input: TransactionCreateInputInterface): boolean => {
+export const evaluateRuleCondition = (
+    condition: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>,
+    input: TransactionCreateInputInterface
+): boolean => {
     const fieldValue = getConditionFieldValue(condition.field, input);
 
     return matchOperator(condition.operator, fieldValue, condition.value, condition.secondaryValue);

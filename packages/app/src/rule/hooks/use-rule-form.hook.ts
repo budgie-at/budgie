@@ -85,22 +85,21 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         Toast.show({ type: 'error', text1: t`${applied} updated, ${failed} failed` });
     };
 
+    const applyRuleToExisting = async (targetRuleId: number, shouldApply: boolean) => {
+        if (shouldApply) {
+            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId);
+            showApplyResultToast(result.applied, result.failed);
+        }
+    };
+
     const handleSubmit = async (values: RuleCreateInputInterface) => {
         try {
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
-
-                if (values.applyToExisting) {
-                    const result = await ruleEngineService.applyRuleToMatchingTransactions(ruleId);
-                    showApplyResultToast(result.applied, result.failed);
-                }
+                await applyRuleToExisting(ruleId, values.applyToExisting);
             } else {
                 const rule = await ruleService.create(values);
-
-                if (values.applyToExisting) {
-                    const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
-                    showApplyResultToast(result.applied, result.failed);
-                }
+                await applyRuleToExisting(rule.id, values.applyToExisting);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
         } catch (error: unknown) {

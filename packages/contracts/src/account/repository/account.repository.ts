@@ -104,8 +104,8 @@ export class AccountRepository {
         });
     }
 
-    findById(id: number) {
-        return this.db.query.AccountEntityTable.findFirst({
+    findById(id: number, tx?: TX) {
+        return (tx ?? this.db).query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });

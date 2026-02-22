@@ -34,7 +34,10 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const originalTagIds = transaction.transactionTags.map(({ tagId }) => tagId);
 
     const categoryChanged = isDefined(categoryId) && categoryId !== originalCategoryId;
-    const tagsChanged = JSON.stringify([...tagIds].sort()) !== JSON.stringify([...originalTagIds].sort());
+    const sortedTagIds = [...tagIds].sort();
+    const sortedOriginalTagIds = [...originalTagIds].sort();
+    const tagsChanged =
+        sortedTagIds.length !== sortedOriginalTagIds.length || sortedTagIds.some((id, index) => id !== sortedOriginalTagIds[index]);
 
     const mccCategory = transaction.entries[0]?.mccCategory ?? null;
 

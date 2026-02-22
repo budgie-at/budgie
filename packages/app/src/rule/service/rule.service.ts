@@ -1,4 +1,4 @@
-import { RuleCreateInputInterface, RuleEntityInterface } from '@budgie/contracts';
+import { RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInputInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -45,7 +45,7 @@ class RuleService {
         return rule;
     }
 
-    async updateById(id: number, input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
+    async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {
         return db.transaction(async tx => {
             const updatedRule = await ruleRepository.updateById(
                 id,

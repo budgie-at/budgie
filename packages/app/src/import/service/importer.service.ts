@@ -57,8 +57,9 @@ export class ImporterService {
                 createdTransactions.map(transaction => transaction.id),
                 transactions
             );
-        } catch {
-            /* empty */
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn(getErrorMessage(error));
         }
 
         return progress;

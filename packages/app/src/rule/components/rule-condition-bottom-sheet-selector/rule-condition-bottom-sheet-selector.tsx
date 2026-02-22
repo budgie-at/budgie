@@ -36,8 +36,9 @@ export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<
             selectedValue: value
         });
 
-        if (isDefined(result)) {
-            onChange(result as T);
+        const matchedOption = translatedOptions.find(option => option.value === result);
+        if (isDefined(matchedOption)) {
+            onChange(matchedOption.value);
         }
     };
 

@@ -15,7 +15,7 @@ interface ConvertToTransferParams {
 export const convertTransactionToTransfer = async (params: ConvertToTransferParams): Promise<void> => {
     const { transactionId, targetAccountId, tx } = params;
 
-    const transaction = await transactionRepository.getById(transactionId);
+    const transaction = await transactionRepository.getById(transactionId, tx);
     if (!isDefined(transaction)) {
         return;
     }
@@ -42,8 +42,8 @@ export const convertTransactionToTransfer = async (params: ConvertToTransferPara
     const toAccountId = isExpense ? targetAccountId : originalAccountId;
 
     const [fromAccount, toAccount] = await Promise.all([
-        accountRepository.findById(fromAccountId),
-        accountRepository.findById(toAccountId)
+        accountRepository.findById(fromAccountId, tx),
+        accountRepository.findById(toAccountId, tx)
     ]);
 
     if (!isDefined(fromAccount) || !isDefined(toAccount)) {

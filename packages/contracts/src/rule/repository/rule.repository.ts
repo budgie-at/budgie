@@ -1,4 +1,4 @@
-import { asc, eq, isNull } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 
 import { TX } from '../../@generic/type/db.type';
 import { RuleCreateEntityInterface } from '../entity/rule-create-entity.interface';
@@ -22,7 +22,7 @@ export class RuleRepository {
 
     findEnabledWithRelations() {
         return this.db.query.RuleEntityTable.findMany({
-            where: eq(RuleEntityTable.enabled, true),
+            where: and(eq(RuleEntityTable.enabled, true), isNull(RuleEntityTable.deletedAt)),
             orderBy: [asc(RuleEntityTable.id)],
             with: {
                 [RuleAssociationEnum.CONDITIONS]: true,
@@ -33,7 +33,7 @@ export class RuleRepository {
 
     findByIdWithRelations(id: number) {
         return this.db.query.RuleEntityTable.findFirst({
-            where: eq(RuleEntityTable.id, id),
+            where: and(eq(RuleEntityTable.id, id), isNull(RuleEntityTable.deletedAt)),
             with: {
                 [RuleAssociationEnum.CONDITIONS]: true,
                 [RuleAssociationEnum.ACTIONS]: true

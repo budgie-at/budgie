@@ -29,8 +29,9 @@ export const RuleActionBottomSheetSelector = <T extends string>(props: Props<T>)
             selectedValue: value
         });
 
-        if (isDefined(result)) {
-            onChange(result as T);
+        const matchedOption = options.find(option => option.value === result);
+        if (isDefined(matchedOption)) {
+            onChange(matchedOption.value);
         }
     };
 
