@@ -13,11 +13,13 @@ import { Input } from '../input/input';
 type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconNameEnum }> = {
     readonly control: Control<T>;
     readonly variant: ColorPaletteVariant;
+    readonly nameInputTestID?: string;
 };
 
 export const AccountDetailsField = <T extends { title: string; icon: UserIconNameEnum }>({
     control,
-    variant
+    variant,
+    nameInputTestID
 }: AccountDetailsFieldsProps<T>) => {
     const { t } = useLingui();
     const { openIconSelector } = useIconSelectorModal();
@@ -54,6 +56,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
                         className="text-ellipsis flex-1"
                         maxLength={ACCOUNT_TITLE_MAX_LENGTH}
                         placeholder={t`e.g. Savings Account`}
+                        testID={nameInputTestID}
                     />
                 </View>
             </FormItem>

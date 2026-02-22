@@ -5,6 +5,7 @@ import { Alert, View } from 'react-native';
 
 import { EmptyFn, emptyFn } from '@rnw-community/shared';
 
+import { TransactionActionsMenuSelectors } from '../../../@e2e/selectors/transaction-actions-menu.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
@@ -61,7 +62,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     return (
         <View>
             <View ref={triggerRef} collapsable={false}>
-                <HapticPressable onPress={handleToggleMenu}>
+                <HapticPressable onPress={handleToggleMenu} testID={TransactionActionsMenuSelectors.TriggerButton}>
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
@@ -76,6 +77,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                             label={t`Delete Transaction`}
                             onPress={handleDeletePress}
                             variant="destructive"
+                            testID={TransactionActionsMenuSelectors.DeleteButton}
                         />
                     </View>
                 </TransactionActionsMenuContext.Provider>
