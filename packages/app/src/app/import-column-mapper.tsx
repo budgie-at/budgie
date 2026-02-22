@@ -16,7 +16,7 @@ const sortHeaders = (first: string, second: string): number => first.localeCompa
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ImportColumnMapperModal() {
     const { t } = useLingui();
-    const { currentParams, resolveImportColumnMapper } = useImportColumnMapperModal();
+    const [, resolveImportColumnMapper, currentParams] = useImportColumnMapperModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const headers = currentParams?.headers ?? [];

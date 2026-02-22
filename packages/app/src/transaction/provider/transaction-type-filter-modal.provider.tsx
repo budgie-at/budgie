@@ -1,22 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { TransactionTypeFilterModalContext } from '../context/transaction-type-filter-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import {
+import type { TransactionTypeFilterModalParams, TransactionTypeFilterResult } from '../context/transaction-type-filter-modal.context';
+
+export const TransactionTypeFilterModalProvider = createModalProvider<TransactionTypeFilterModalParams, TransactionTypeFilterResult | null>(
     TransactionTypeFilterModalContext,
-    TransactionTypeFilterModalParams,
-    TransactionTypeFilterResult
-} from '../context/transaction-type-filter-modal.context';
-
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const TransactionTypeFilterModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<TransactionTypeFilterModalParams, TransactionTypeFilterResult | null>(
-        '/transaction-type-filter'
-    );
-
-    const value = { openTransactionTypeFilter: open, resolveTransactionTypeFilter: resolve, currentParams };
-
-    return <TransactionTypeFilterModalContext value={value}>{children}</TransactionTypeFilterModalContext>;
-};
+    '/transaction-type-filter'
+);
