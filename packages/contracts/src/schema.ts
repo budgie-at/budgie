@@ -18,7 +18,6 @@ export { SettingsEntityTable } from './settings/table/settings-entity.table';
 export { SettingsEntityRelations } from './settings/relations/settings-entity.relations';
 export { TagEntityTable } from './tag/table/tag-entity.table';
 export { TagEntityRelations } from './tag/relations/tag-entity.relations';
-export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
 export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
 export { MerchantEmbeddingEntityRelations } from './merchant-embedding/relations/merchant-embedding-entity.relations';
 export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
