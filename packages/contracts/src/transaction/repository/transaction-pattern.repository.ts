@@ -24,8 +24,33 @@ const MIN_OCCURRENCES = 2;
 const MIN_MONTHLY_OCCURRENCES = 2;
 const DEFAULT_MONTHLY_LIMIT = 50;
 
+const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
+const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
+const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
+
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
+
+    private get dayOfMonthExpression() {
+        return sql`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`;
+    }
+
+    private get distinctMonthCountExpression() {
+        return sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')`;
+    }
+
+    private get latestAmountSubquery() {
+        return sql<number>`(
+            SELECT te2.amount
+            FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+              AND t2.title = ${TransactionEntityTable.title}
+              AND t2.deleted_at IS NULL
+            ORDER BY t2.operated_at DESC
+            LIMIT 1
+        )`.as('latestAmount');
+    }
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const conditions = this.buildPatternConditions(query);
@@ -95,16 +120,7 @@ export class TransactionPatternRepository {
                 categoryIcon: CategoryEntityTable.icon,
                 title: TransactionEntityTable.title,
                 comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
-                latestAmount: sql<number>`(
-                    SELECT te2.amount
-                    FROM transactions t2
-                    INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-                    WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
-                      AND t2.title = ${TransactionEntityTable.title}
-                      AND t2.deleted_at IS NULL
-                    ORDER BY t2.operated_at DESC
-                    LIMIT 1
-                )`.as('latestAmount'),
+                latestAmount: this.latestAmountSubquery,
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 accountId: AccountEntityTable.id,
@@ -113,9 +129,9 @@ export class TransactionPatternRepository {
                 accountDeletedAt: sql<number | null>`${AccountEntityTable.deletedAt}`.as('accountDeletedAt')
             })
             .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
+            .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
+            .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...conditions))
             .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
             .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
@@ -207,59 +223,45 @@ export class TransactionPatternRepository {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     }
 
+    private buildMonthlyPatternConditions(entryType: TransactionEntryTypeEnum, query: MonthlyPatternQueryInterface): SQL[] {
+        return [
+            eq(TransactionEntityTable.type, query.type),
+            isNull(TransactionEntityTable.deletedAt),
+            eq(TransactionEntryEntityTable.type, entryType),
+            ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+            isNotNull(TransactionEntryEntityTable.categoryId)
+        ];
+    }
+
     private async executeMonthlyPatternQuery(
         entryType: TransactionEntryTypeEnum,
         query: MonthlyPatternQueryInterface
     ): Promise<MonthlyPatternRawRowInterface[]> {
+        const monthlyConditions = this.buildMonthlyPatternConditions(entryType, query);
+        const { dayOfMonthExpression } = this;
+        const distinctMonthCount = this.distinctMonthCountExpression;
+
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
                 categoryTitle: CategoryEntityTable.title,
                 categoryIcon: CategoryEntityTable.icon,
                 title: TransactionEntityTable.title,
-                latestAmount: sql<number>`(
-                    SELECT te2.amount
-                    FROM transactions t2
-                    INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-                    WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
-                      AND t2.title = ${TransactionEntityTable.title}
-                      AND t2.deleted_at IS NULL
-                    ORDER BY t2.operated_at DESC
-                    LIMIT 1
-                )`.as('latestAmount'),
-                occurrenceCount: sql<number>`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch'))`.as(
-                    'occurrenceCount'
-                ),
+                latestAmount: this.latestAmountSubquery,
+                occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonthCount})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
-                dayOfMonth: sql<number>`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`.as(
-                    'dayOfMonth'
-                ),
+                dayOfMonth: sql<number>`${dayOfMonthExpression}`.as('dayOfMonth'),
                 accountId: AccountEntityTable.id,
                 instrumentId: AccountEntityTable.instrumentId
             })
             .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(
-                and(
-                    eq(TransactionEntityTable.type, query.type),
-                    isNull(TransactionEntityTable.deletedAt),
-                    eq(TransactionEntryEntityTable.type, entryType),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-                    isNotNull(TransactionEntryEntityTable.categoryId)
-                )
-            )
-            .groupBy(
-                TransactionEntryEntityTable.categoryId,
-                TransactionEntityTable.title,
-                sql`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`
-            )
-            .having(sql`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')) >= ${MIN_MONTHLY_OCCURRENCES}`)
-            .orderBy(
-                desc(sql`COUNT(DISTINCT strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch'))`),
-                desc(sql`MAX(${TransactionEntityTable.operatedAt})`)
-            )
+            .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
+            .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
+            .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
+            .where(and(...monthlyConditions))
+            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title, dayOfMonthExpression)
+            .having(sql`COUNT(DISTINCT ${distinctMonthCount}) >= ${MIN_MONTHLY_OCCURRENCES}`)
+            .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonthCount})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
 }
