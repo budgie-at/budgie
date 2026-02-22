@@ -25,8 +25,10 @@ export const RecurringCalendarDayDetail = ({ day, entries }: Props) => {
             </Text>
 
             {entries.map(entry => {
-                const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
-                const description = t`${formattedAmount} · ${entry.categoryTitle}`;
+                const amount = convertFromMicroUnits(entry.latestAmount);
+                const formattedAmount = formatDigits(amount, defaultInstrument.symbol);
+                const category = entry.categoryTitle;
+                const description = t`${formattedAmount} · ${category}`;
 
                 return (
                     <SimpleHorizontalCell
