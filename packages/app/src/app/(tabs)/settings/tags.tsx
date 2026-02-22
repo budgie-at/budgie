@@ -20,8 +20,8 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Tags() {
     const { t } = useLingui();
-    const { openTagsSelector } = useTagsSelectorModal();
-    const { openTagForm } = useTagFormModal();
+    const [openTagsSelector] = useTagsSelectorModal();
+    const [openTagForm] = useTagFormModal();
 
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);

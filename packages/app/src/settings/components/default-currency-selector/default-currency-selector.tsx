@@ -10,7 +10,7 @@ import { SettingsCard } from '../settings-card/settings-card';
 
 export const DefaultCurrencySelector = () => {
     const { defaultInstrument } = useSettingsContext();
-    const { openCurrencySelector } = useCurrencySelectorModal();
+    const [openCurrencySelector] = useCurrencySelectorModal();
     const { t } = useLingui();
 
     const handleOpen = async () => {

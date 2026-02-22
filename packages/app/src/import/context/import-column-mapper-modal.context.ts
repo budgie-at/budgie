@@ -1,6 +1,4 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface ImportColumnMapperModalParams {
     readonly headers: string[];
@@ -11,16 +9,7 @@ export interface ImportColumnMapperModalParams {
 
 export type ImportColumnMapperResult = { readonly type: 'select'; readonly header: string } | { readonly type: 'clear' } | null;
 
-interface ImportColumnMapperModalContextInterface {
-    openImportColumnMapper: (params: ImportColumnMapperModalParams) => Promise<ImportColumnMapperResult>;
-    resolveImportColumnMapper: (result: ImportColumnMapperResult) => void;
-    currentParams: ImportColumnMapperModalParams | null;
-}
-
-export const ImportColumnMapperModalContext = createContext<ImportColumnMapperModalContextInterface>({
-    openImportColumnMapper: () => Promise.resolve(null),
-    resolveImportColumnMapper: emptyFn,
-    currentParams: null
-});
-
-export const useImportColumnMapperModal = () => use(ImportColumnMapperModalContext);
+export const [ImportColumnMapperModalContext, useImportColumnMapperModal] = createModalContext<
+    ImportColumnMapperModalParams,
+    ImportColumnMapperResult
+>(null);

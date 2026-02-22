@@ -28,7 +28,7 @@ const filterContacts = (contacts: Contact[], search: string): Contact[] =>
 
 export default function ContactSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveContactSelector } = useContactSelectorModal();
+    const [, resolveContactSelector, currentParams] = useContactSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { contacts } = useContacts();

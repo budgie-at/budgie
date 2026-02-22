@@ -12,7 +12,7 @@ import { SettingsCard } from '../settings-card/settings-card';
 export const LanguageSelector = () => {
     const language = useSetting('language');
     const { i18n, t } = useLingui();
-    const { openLanguageSelector } = useLanguageSelectorModal();
+    const [openLanguageSelector] = useLanguageSelectorModal();
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 

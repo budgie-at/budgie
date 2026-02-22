@@ -1,22 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { ImportColumnMapperModalContext } from '../context/import-column-mapper-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import {
+import type { ImportColumnMapperModalParams, ImportColumnMapperResult } from '../context/import-column-mapper-modal.context';
+
+export const ImportColumnMapperModalProvider = createModalProvider<ImportColumnMapperModalParams, ImportColumnMapperResult>(
     ImportColumnMapperModalContext,
-    ImportColumnMapperModalParams,
-    ImportColumnMapperResult
-} from '../context/import-column-mapper-modal.context';
-
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const ImportColumnMapperModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<ImportColumnMapperModalParams, ImportColumnMapperResult>(
-        '/import-column-mapper'
-    );
-
-    const value = { openImportColumnMapper: open, resolveImportColumnMapper: resolve, currentParams };
-
-    return <ImportColumnMapperModalContext value={value}>{children}</ImportColumnMapperModalContext>;
-};
+    '/import-column-mapper'
+);
