@@ -2,6 +2,7 @@ import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts'
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { EXCLUSIVE_ACTION_TYPES } from '../../constant/exclusive-action-types.constant';
 import { RULE_ACTION_TYPE_OPTIONS } from '../../constant/rule-action-type-options.constant';
 import { hasConvertibleTypeCondition } from '../../util/has-convertible-type-condition.util';
 import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
@@ -15,11 +16,19 @@ export const RuleActionTypeSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const conditions = useWatch({ control, name: 'conditions' });
+    const actions = useWatch({ control, name: 'actions' });
 
     const canConvertToTransfer = hasConvertibleTypeCondition(conditions);
 
+    const usedExclusiveTypes = new Set(
+        actions
+            .filter((_, actionIndex) => actionIndex !== index)
+            .map(action => action.type)
+            .filter(type => EXCLUSIVE_ACTION_TYPES.has(type))
+    );
+
     const availableOptions = RULE_ACTION_TYPE_OPTIONS.filter(
-        ({ value }) => value !== RuleActionTypeEnum.CONVERT_TO_TRANSFER || canConvertToTransfer
+        ({ value }) => (value !== RuleActionTypeEnum.CONVERT_TO_TRANSFER || canConvertToTransfer) && !usedExclusiveTypes.has(value)
     );
 
     const options = availableOptions.map(option => ({ value: option.value, label: t(option.label) }));
