@@ -64,6 +64,41 @@
       "when": 1771686405515,
       "tag": "0008_jazzy_mandarin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1771686405516,
+      "tag": "0009_fine_molten_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1771686405517,
+      "tag": "0010_light_loa",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1771686405518,
+      "tag": "0011_windy_lyja",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1771686405519,
+      "tag": "0012_smooth_hedge_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1771686405520,
+      "tag": "0013_fat_wild_child",
+      "breakpoints": true
     }
   ]
 }
