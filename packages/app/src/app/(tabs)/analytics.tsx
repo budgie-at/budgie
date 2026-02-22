@@ -25,6 +25,7 @@ import { useGetIncomeByTagQuery } from '../../transaction/query/use-get-income-b
 import { useGetTotalIncomeAndExpensesQuery } from '../../transaction/query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../transaction/utils/check-if-filters-selected.util';
 
+// eslint-disable-next-line max-lines-per-function -- Page component with multiple query hooks and sections
 export default function StatisticsPage() {
     const { t } = useLingui();
     const router = useRouter();
