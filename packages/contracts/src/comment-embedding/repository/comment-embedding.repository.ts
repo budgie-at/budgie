@@ -39,7 +39,12 @@ const SIMILAR_TAGS_QUERY = `
 
 export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     constructor(db: DB) {
-        super(db, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
+        super(db, {
+            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+            similarTagsQuery: SIMILAR_TAGS_QUERY,
+            vecTableName: 'comment_embedding_vec', // eslint-disable-line lingui/no-unlocalized-strings
+            sourceTableName: 'comment_embeddings' // eslint-disable-line lingui/no-unlocalized-strings
+        });
     }
 
     async upsert(params: UpsertCommentEmbeddingParamsInterface): Promise<number | null> {
@@ -140,10 +145,10 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async rebuildVecIndex(): Promise<void> {
-        return this.rebuildVec('comment_embedding_vec', 'comment_embeddings');
+        return this.rebuildVec();
     }
 
     async truncate(): Promise<void> {
-        return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable, 'comment_embedding_vec');
+        return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
     }
 }
