@@ -28,7 +28,7 @@ export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectD
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const wrapperClassName = cn(
-        'items-center justify-center rounded-2xl aspect-square mx-0.5',
+        'items-center justify-center rounded-full aspect-square mx-0.5',
         isOtherMonth && 'opacity-20',
         hasEntries && !isSelected && 'bg-destructive-corner/30',
         day.isToday && !isSelected && 'border border-primary/40',
