@@ -1,8 +1,6 @@
 import {
     RuleActionEntityInterface,
     RuleActionTypeEnum,
-    RuleConditionCreateInputInterface,
-    RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionCreateInputInterface,
     TransactionWithEntriesMccCategoryEntityInterface
@@ -19,17 +17,13 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
+import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
 
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
-
-interface CountConditionsParams {
-    readonly conditions: RuleConditionCreateInputInterface[];
-    readonly conditionMatchType: RuleConditionMatchTypeEnum;
-}
 
 class RuleEngineService {
     async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
@@ -43,12 +37,12 @@ class RuleEngineService {
         );
     }
 
-    async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
+    async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
         return ruleMatcherService.countMatchingTransactions(params);
     }
 
     async findMatchingTransactions(
-        params: CountConditionsParams,
+        params: CountConditionsParamsInterface,
         limit: number
     ): Promise<{ transactions: TransactionWithEntriesMccCategoryEntityInterface[]; count: number }> {
         return ruleMatcherService.findMatchingTransactions(params, limit);

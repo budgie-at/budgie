@@ -1,6 +1,5 @@
 /* eslint-disable max-lines -- Service with multiple matching strategies (SQL, fallback, legacy) */
 import {
-    RuleConditionCreateInputInterface,
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionAssociationEnum,
@@ -16,6 +15,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
+import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
+import { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
 import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
@@ -24,18 +25,8 @@ import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
 
-interface CountConditionsParams {
-    readonly conditions: RuleConditionCreateInputInterface[];
-    readonly conditionMatchType: RuleConditionMatchTypeEnum;
-}
-
-interface FindMatchingTransactionsResult {
-    readonly transactions: TransactionWithEntriesMccCategoryEntityInterface[];
-    readonly count: number;
-}
-
 class RuleMatcherService {
-    async countMatchingTransactions(params: CountConditionsParams): Promise<number> {
+    async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
@@ -58,9 +49,12 @@ class RuleMatcherService {
     }
 
     // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
-    async findMatchingTransactions(params: CountConditionsParams, limit: number): Promise<FindMatchingTransactionsResult> {
+    async findMatchingTransactions(
+        params: CountConditionsParamsInterface,
+        limit: number
+    ): Promise<FindMatchingTransactionsResultInterface> {
         const { conditions, conditionMatchType } = params;
-        const emptyResult: FindMatchingTransactionsResult = { transactions: [], count: 0 };
+        const emptyResult: FindMatchingTransactionsResultInterface = { transactions: [], count: 0 };
 
         if (!isNotEmptyArray(conditions)) {
             return emptyResult;
@@ -194,7 +188,7 @@ class RuleMatcherService {
     }
 
     // eslint-disable-next-line max-statements -- Batch processing with loop control variables
-    private async countMatchingTransactionsLegacy(params: CountConditionsParams): Promise<number> {
+    private async countMatchingTransactionsLegacy(params: CountConditionsParamsInterface): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
@@ -228,7 +222,10 @@ class RuleMatcherService {
     }
 
     // eslint-disable-next-line max-statements -- Batch processing with loop control variables and result collection
-    private async findMatchingTransactionsLegacy(params: CountConditionsParams, limit: number): Promise<FindMatchingTransactionsResult> {
+    private async findMatchingTransactionsLegacy(
+        params: CountConditionsParamsInterface,
+        limit: number
+    ): Promise<FindMatchingTransactionsResultInterface> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
@@ -305,9 +302,7 @@ class RuleMatcherService {
     ): boolean {
         const evaluator = conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
 
-        return conditions[evaluator](condition =>
-            evaluateRuleCondition({ ...condition, id: 0, ruleId: 0, createdAt: new Date(), updatedAt: new Date(), deletedAt: null }, input)
-        );
+        return conditions[evaluator](condition => evaluateRuleCondition(condition, input));
     }
 
     private calculateAmountForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): number {
