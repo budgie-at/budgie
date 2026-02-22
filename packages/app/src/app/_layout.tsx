@@ -105,7 +105,10 @@ export default function RootLayout() {
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
                                                                     <Stack.Screen name="rule-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="rule-mcc-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="rule-mcc-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="category-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
@@ -171,7 +174,10 @@ export default function RootLayout() {
                                                                         name="transaction-tag-filter"
                                                                         options={SEARCHABLE_FILTER_MODAL_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen name="suggest-rule" options={SUGGEST_RULE_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="suggest-rule"
+                                                                        options={SUGGEST_RULE_MODAL_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />
