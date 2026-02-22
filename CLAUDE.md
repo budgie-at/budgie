@@ -285,12 +285,15 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 
 Conventional commits: `type(scope): description`
 
-**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
+**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`. For root-level changes (e.g. turbo, yarn, CI config), omit the scope entirely.
+
+**NEVER invent scopes** like `root`, `monorepo`, `project`, etc. — only use the 5 package names above or omit the scope.
 
 **Examples:**
 - `feat(app): add dark mode toggle`
 - `fix(contracts): update account schema`
 - `chore(landing): update dependencies`
+- `chore: bump turbo to v2.8.10` (root-level, no scope)
 
 ## PR Review
 
