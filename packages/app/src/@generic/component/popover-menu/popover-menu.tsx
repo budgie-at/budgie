@@ -21,14 +21,15 @@ export interface PopoverMenuAnchor {
 interface Props {
     readonly isOpen: boolean;
     readonly onClose: EmptyFn;
+    readonly onCloseComplete?: EmptyFn;
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
 }
 
-export const PopoverMenu = ({ isOpen, onClose, children, anchor }: Props) => {
+export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor }: Props) => {
     const { t } = useLingui();
     const { width: screenWidth } = useWindowDimensions();
-    const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen);
+    const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
 
     const menuTop = anchor ? anchor.y + anchor.height + ANCHOR_OFFSET : DEFAULT_MENU_TOP;
     const menuRight = anchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
