@@ -101,7 +101,6 @@ export default function RootLayout() {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
-                                                                    <Stack.Screen name="(main)/analytics/recurring-calendar" />
                                                                     <Stack.Screen
                                                                         name="category-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}

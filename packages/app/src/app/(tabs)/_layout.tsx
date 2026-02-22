@@ -56,6 +56,7 @@ export default function TabsLayout() {
                     <TabTrigger name="home" href="/" />
                     <TabTrigger name="transactions" href="/transactions" />
                     <TabTrigger name="analytics" href="/analytics" />
+                    <TabTrigger name="recurring" href="/recurring" />
                     <TabTrigger name="settings" href="/settings" />
                 </TabList>
 
