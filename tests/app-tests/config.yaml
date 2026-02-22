@@ -8,4 +8,17 @@ platform:
 executionOrder:
   continueOnFailure: false
   flowsOrder:
-    - 01.smoke-test.flow
+    - 01.enter-app.flow
+    - 02.account-create.flow
+    - 03.account-edit.flow
+    - 04.account-archive.flow
+    - 05.category-create.flow
+    - 06.category-edit.flow
+    - 07.category-delete.flow
+    - 08.tag-create.flow
+    - 09.tag-edit.flow
+    - 10.tag-delete.flow
+    - 11.transaction-setup.flow
+    - 12.transaction-create-expense.flow
+    - 13.transaction-edit.flow
+    - 14.transaction-delete.flow

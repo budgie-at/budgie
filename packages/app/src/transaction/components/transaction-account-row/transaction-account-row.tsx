@@ -26,9 +26,10 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly fieldName: 'fromAccountId' | 'toAccountId';
     readonly label?: string;
+    readonly testID?: string;
 }
 
-export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props) => {
+export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const { openAccountSelector } = useAccountSelectorModal();
@@ -58,6 +59,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props)
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
+                    testID={testID}
                 >
                     <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
 
