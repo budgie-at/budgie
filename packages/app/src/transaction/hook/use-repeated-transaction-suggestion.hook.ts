@@ -1,10 +1,11 @@
-import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
 const DEBOUNCE_MS = 300;
@@ -18,13 +19,12 @@ interface UseRepeatedTransactionSuggestionParams {
 }
 
 // eslint-disable-next-line max-statements -- Hook coordinates debounce, focus refresh, and async suggestion fetch lifecycle
-export const useRepeatedTransactionSuggestion = (
-    params: UseRepeatedTransactionSuggestionParams
-): UseSuggestionReturnInterface<RepeatedTransactionPatternInterface> => {
+export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionSuggestionParams): PatternSuggestionsResultInterface => {
     const { enabled, type, accountId, amount, categoryId } = params;
 
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [suggestions, setSuggestions] = useState<RepeatedTransactionPatternInterface[]>([]);
+    const [timePatterns, setTimePatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
+    const [amountPatterns, setAmountPatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
     const [refreshVersion, setRefreshVersion] = useState(0);
 
     const navigation = useNavigation();
@@ -75,10 +75,11 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 };
 
-                const results = await repeatedTransactionService.getSuggestions(queryParams);
+                const result = await repeatedTransactionService.getSuggestions(queryParams);
 
                 if (!cancelled) {
-                    setSuggestions(results);
+                    setTimePatterns(result.timePatterns);
+                    setAmountPatterns(result.amountPatterns);
                     setInternalStatus('success');
                 }
             } catch {
@@ -103,5 +104,5 @@ export const useRepeatedTransactionSuggestion = (
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
 
-    return { status, suggestions };
+    return { status, timePatterns, amountPatterns };
 };
