@@ -214,6 +214,9 @@ export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
+export type { MonthlyPatternQueryInterface } from './transaction/interface/monthly-pattern-query.interface';
+export type { MonthlyPatternRawRowInterface } from './transaction/interface/monthly-pattern-raw-row.interface';
+export type { MonthlyPatternRowInterface } from './transaction/interface/monthly-pattern-row.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
