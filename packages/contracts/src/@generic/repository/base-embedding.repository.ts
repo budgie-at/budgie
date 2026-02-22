@@ -85,7 +85,7 @@ export abstract class BaseEmbeddingRepository {
         await transactionAsync(this.db, async txDb => {
             await txDb.delete(tagTable);
             await txDb.delete(embeddingTable);
+            await txDb.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
         });
-        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }
