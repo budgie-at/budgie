@@ -12,8 +12,8 @@ import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query
 import { useCreateSuggestRule } from '../../hooks/use-create-suggest-rule.hook';
 import { useHasConflictingRules } from '../../hooks/use-has-conflicting-rules.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
-import { MatchingCountDisplay } from '../matching-count-display/matching-count-display';
 import { RuleConflictWarning } from '../rule-conflict-warning/rule-conflict-warning';
+import { RuleMatchingCount } from '../rule-matching-count/rule-matching-count';
 import { SuggestRuleDescriptionContent } from '../suggest-rule-description-content/suggest-rule-description-content';
 
 interface Props {
@@ -54,7 +54,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
 
                 <View className="flex-row items-center justify-between gap-x-lg">
                     <View className="flex-1 gap-y-xxs">
-                        <MatchingCountDisplay count={displayMatchingCount} isLoading={isCountLoading} progress={progress} />
+                        <RuleMatchingCount count={displayMatchingCount} isLoading={isCountLoading} progress={progress} />
                     </View>
                     <ThemedSwitch
                         testID={SuggestRuleSelectors.ApplyToExistingToggle}

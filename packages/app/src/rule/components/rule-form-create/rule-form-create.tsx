@@ -23,7 +23,7 @@ interface Props {
 
 export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
-    const { form, handleSubmit } = useRuleForm({ prefillData, onSuccess });
+    const { form, handleSubmit, progress } = useRuleForm({ prefillData, onSuccess });
     const { isSubmitting } = form.formState;
 
     return (
@@ -40,7 +40,7 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
                         <RuleActionsSection />
                     </View>
                     <View className="px-3xl mt-3xl">
-                        <RuleFormApplyToggle />
+                        <RuleFormApplyToggle progress={progress} />
                     </View>
                     {/* jscpd:ignore-end */}
                 </KeyboardAwareScrollView>
