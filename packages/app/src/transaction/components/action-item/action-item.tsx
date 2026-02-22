@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 
+import { ActionButtonSelectors } from '../../../@e2e/selectors/action-button.selector';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -72,7 +73,7 @@ export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, on
     };
 
     return (
-        <Animated.View className="absolute right-0" testID={`ActionItem.${index}`} style={animatedStyle}>
+        <Animated.View className="absolute right-0" testID={ActionButtonSelectors.item(index)} style={animatedStyle}>
             <Pressable className="flex-row-reverse items-center" onPress={handlePress}>
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
