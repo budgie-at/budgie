@@ -1,10 +1,9 @@
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-export interface TransactionPatternQueryInterface {
-    readonly weekday: number;
-    readonly timeWindowStartMinutes: number;
-    readonly timeWindowEndMinutes: number;
+export interface AmountPatternQueryInterface {
     readonly type: TransactionTypeEnum;
+    readonly amountMin: number;
+    readonly amountMax: number;
     readonly accountId?: number;
     readonly categoryId?: number;
     readonly limit?: number;
