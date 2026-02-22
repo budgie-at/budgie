@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.37.1](https://github.com/budgie-at/budgie/compare/v2.37.0...v2.37.1) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** align formsheet padding to 12px and center category card title ([d30be38](https://github.com/budgie-at/budgie/commit/d30be38c63964c38e7d2fa26b3e83669d049a862))
+- **app:** fix formsheet list padding and item spacing ([4de9d8e](https://github.com/budgie-at/budgie/commit/4de9d8eeb563b6498d57abf0eeee6882265caae0))
+
 # [2.37.0](https://github.com/budgie-at/budgie/compare/v2.36.0...v2.37.0) (2026-02-22)
 
 ### Bug Fixes
