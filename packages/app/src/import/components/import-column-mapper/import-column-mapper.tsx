@@ -17,7 +17,7 @@ interface Props {
 
 export const ImportColumnMapper = ({ value, headers, selectedHeaders, fieldLabel, onSelect, onClear, hasError = false }: Props) => {
     const { t } = useLingui();
-    const { openImportColumnMapper } = useImportColumnMapperModal();
+    const [openImportColumnMapper] = useImportColumnMapperModal();
 
     const hasValue = isNotEmptyString(value);
 

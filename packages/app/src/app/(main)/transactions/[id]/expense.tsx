@@ -31,7 +31,7 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
-    const { openConvertToTransfer } = useConvertToTransferModal();
+    const [openConvertToTransfer] = useConvertToTransferModal();
     const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);

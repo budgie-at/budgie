@@ -1,20 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { LanguageSelectorModalContext } from '../context/language-selector-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import {
+import type { LanguageSelectorModalParams, LanguageSelectorResult } from '../context/language-selector-modal.context';
+
+export const LanguageSelectorModalProvider = createModalProvider<LanguageSelectorModalParams, LanguageSelectorResult>(
     LanguageSelectorModalContext,
-    LanguageSelectorModalParams,
-    LanguageSelectorResult
-} from '../context/language-selector-modal.context';
-
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const LanguageSelectorModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<LanguageSelectorModalParams, LanguageSelectorResult>('/language-selector');
-
-    const value = { openLanguageSelector: open, resolveLanguageSelector: resolve, currentParams };
-
-    return <LanguageSelectorModalContext value={value}>{children}</LanguageSelectorModalContext>;
-};
+    '/language-selector'
+);

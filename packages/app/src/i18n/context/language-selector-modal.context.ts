@@ -1,7 +1,6 @@
 import { LanguageEnum } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface LanguageSelectorModalParams {
     readonly selectedLanguage: LanguageEnum;
@@ -9,16 +8,7 @@ export interface LanguageSelectorModalParams {
 
 export type LanguageSelectorResult = LanguageEnum | null;
 
-interface LanguageSelectorModalContextInterface {
-    openLanguageSelector: (params?: LanguageSelectorModalParams) => Promise<LanguageSelectorResult>;
-    resolveLanguageSelector: (result: LanguageSelectorResult) => void;
-    currentParams: LanguageSelectorModalParams | null;
-}
-
-export const LanguageSelectorModalContext = createContext<LanguageSelectorModalContextInterface>({
-    openLanguageSelector: () => Promise.resolve(null),
-    resolveLanguageSelector: emptyFn,
-    currentParams: null
-});
-
-export const useLanguageSelectorModal = () => use(LanguageSelectorModalContext);
+export const [LanguageSelectorModalContext, useLanguageSelectorModal] = createModalContext<
+    LanguageSelectorModalParams,
+    LanguageSelectorResult
+>(null);

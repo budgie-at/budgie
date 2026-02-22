@@ -17,7 +17,7 @@ interface Props {
 
 export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
     const { formatDayAndFullMonthAndYear } = useFormatDate();
-    const { openDatePicker } = useDatePickerModal();
+    const [openDatePicker] = useDatePickerModal();
     const { t } = useLingui();
 
     const handleOpen = async () => {

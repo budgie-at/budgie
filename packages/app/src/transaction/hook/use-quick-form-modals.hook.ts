@@ -13,8 +13,8 @@ interface UseQuickFormModalsResult {
 
 export const useQuickFormModals = (): UseQuickFormModalsResult => {
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openDatePicker } = useDatePickerModal();
-    const { openNoteInput } = useNoteInputModal();
+    const [openDatePicker] = useDatePickerModal();
+    const [openNoteInput] = useNoteInputModal();
 
     const [operatedAt, comment] = useWatch({ control, name: ['operatedAt', 'comment'] });
 

@@ -1,6 +1,4 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface TransactionAccountFilterModalParams {
     readonly value: number[] | null;
@@ -8,16 +6,7 @@ export interface TransactionAccountFilterModalParams {
 
 export type TransactionAccountFilterResult = { readonly value: number[] | null };
 
-interface TransactionAccountFilterModalContextInterface {
-    openTransactionAccountFilter: (params: TransactionAccountFilterModalParams) => Promise<TransactionAccountFilterResult | null>;
-    resolveTransactionAccountFilter: (result: TransactionAccountFilterResult | null, options?: { readonly skipBack?: boolean }) => void;
-    currentParams: TransactionAccountFilterModalParams | null;
-}
-
-export const TransactionAccountFilterModalContext = createContext<TransactionAccountFilterModalContextInterface>({
-    openTransactionAccountFilter: () => Promise.resolve(null),
-    resolveTransactionAccountFilter: emptyFn,
-    currentParams: null
-});
-
-export const useTransactionAccountFilterModal = () => use(TransactionAccountFilterModalContext);
+export const [TransactionAccountFilterModalContext, useTransactionAccountFilterModal] = createModalContext<
+    TransactionAccountFilterModalParams,
+    TransactionAccountFilterResult | null
+>(null);
