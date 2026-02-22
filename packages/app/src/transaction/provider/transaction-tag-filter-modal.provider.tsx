@@ -1,22 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { TransactionTagFilterModalContext } from '../context/transaction-tag-filter-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import {
+import type { TransactionTagFilterModalParams, TransactionTagFilterResult } from '../context/transaction-tag-filter-modal.context';
+
+export const TransactionTagFilterModalProvider = createModalProvider<TransactionTagFilterModalParams, TransactionTagFilterResult | null>(
     TransactionTagFilterModalContext,
-    TransactionTagFilterModalParams,
-    TransactionTagFilterResult
-} from '../context/transaction-tag-filter-modal.context';
-
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const TransactionTagFilterModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<TransactionTagFilterModalParams, TransactionTagFilterResult | null>(
-        '/transaction-tag-filter'
-    );
-
-    const value = { openTransactionTagFilter: open, resolveTransactionTagFilter: resolve, currentParams };
-
-    return <TransactionTagFilterModalContext value={value}>{children}</TransactionTagFilterModalContext>;
-};
+    '/transaction-tag-filter'
+);

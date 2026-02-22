@@ -1,16 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { CategorySelectorModalContext } from '../context/category-selector-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import { CategorySelectorModalContext, CategorySelectorModalParams } from '../context/category-selector-modal.context';
+import type { CategorySelectorModalParams, CategorySelectorResult } from '../context/category-selector-modal.context';
 
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const CategorySelectorModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<CategorySelectorModalParams, number | null>('/category-selector');
-
-    const value = { openCategorySelector: open, resolveCategorySelector: resolve, currentParams };
-
-    return <CategorySelectorModalContext value={value}>{children}</CategorySelectorModalContext>;
-};
+export const CategorySelectorModalProvider = createModalProvider<CategorySelectorModalParams, CategorySelectorResult>(
+    CategorySelectorModalContext,
+    '/category-selector'
+);
