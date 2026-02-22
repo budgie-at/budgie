@@ -73,7 +73,7 @@ export default function LanguageSelectorModal() {
                 renderItem={renderItem}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                contentContainerClassName="px-xl gap-y-lg"
+                contentContainerClassName="px-3xl gap-y-lg"
                 contentContainerStyle={contentContainerStyle}
                 ListEmptyComponent={listEmptyComponent}
                 ListFooterComponent={listFooterComponent}
