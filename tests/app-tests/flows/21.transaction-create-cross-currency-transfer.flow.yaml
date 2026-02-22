@@ -10,20 +10,20 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.0'
+      id: 'ActionItem.2'
 - waitForAnimationToEnd
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.2'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible: 'New Expense'
+    visible: 'New Transfer'
 
-- tapOn: '4'
-- tapOn: '2'
+- tapOn: '7'
+- tapOn: '5'
 
 - tapOn:
-    id: 'TransactionForm.AccountSelector'
+    id: 'TransferForm.FromAccount'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
@@ -38,26 +38,30 @@ appId: ${APP_ID}
     index: 1
 
 - tapOn:
-    id: 'TransactionForm.CategorySelector'
+    id: 'TransferForm.ToAccount'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'CategoryPickerBottomSheet.Input'
+      id: 'AccountPickerBottomSheet.Input'
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Input'
-- inputText: 'E2E Txn Category'
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Foreign Account'
+- extendedWaitUntil:
+    visible: 'E2E Foreign Account'
+- tapOn:
+    text: 'E2E Foreign Account'
+    index: 1
+
 - extendedWaitUntil:
     visible:
-      id: 'CategoryPickerBottomSheet.Card.0'
-- tapOn:
-    id: 'CategoryPickerBottomSheet.Card.0'
+      id: 'TransferForm.ConversionRow'
 
 - tapOn:
     id: 'TransactionForm.CommentInput'
 - waitForAnimationToEnd
 - tapOn:
     id: 'NoteInput.Input'
-- inputText: 'E2E Test Expense'
+- inputText: 'E2E Cross Currency Transfer'
 - tapOn:
     id: 'NoteInput.SubmitButton'
 - waitForAnimationToEnd
@@ -68,4 +72,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Test Expense'
+- assertVisible: 'E2E Cross Currency Transfer'
