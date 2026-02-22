@@ -16,7 +16,6 @@ import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/rec
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
 import { RecurringCalendarSummary } from '../recurring-calendar-summary/recurring-calendar-summary';
 
- 
 export const RecurringCalendarPage = () => {
     const { t } = useLingui();
     const router = useRouter();
@@ -56,11 +55,7 @@ export const RecurringCalendarPage = () => {
                                 <Trans>Calendar</Trans>
                             </Text>
 
-                            <RecurringCalendarGrid
-                                entriesByDay={entriesByDay}
-                                selectedDay={selectedDay}
-                                onSelectDay={setSelectedDay}
-                            />
+                            <RecurringCalendarGrid entriesByDay={entriesByDay} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
                         </View>
 
                         {isDefined(selectedEntries) && isDefined(selectedDay) ? (
