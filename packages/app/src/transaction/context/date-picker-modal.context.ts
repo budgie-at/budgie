@@ -1,24 +1,7 @@
-import { createContext, use } from 'react';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface DatePickerModalParams {
     readonly initialDate?: Date;
 }
 
-interface DatePickerModalContextInterface {
-    readonly openDatePicker: (params?: DatePickerModalParams) => Promise<Date | null>;
-    readonly resolveDatePicker: (date: Date | null) => void;
-    readonly currentParams: DatePickerModalParams | null;
-}
-
-export const DatePickerModalContext = createContext<DatePickerModalContextInterface | null>(null);
-
-export const useDatePickerModal = () => {
-    const context = use(DatePickerModalContext);
-
-    if (context === null) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-        throw new Error('useDatePickerModal must be used within DatePickerModalProvider');
-    }
-
-    return context;
-};
+export const [DatePickerModalContext, useDatePickerModal] = createModalContext<DatePickerModalParams, Date | null>(null);

@@ -5,13 +5,13 @@ import { TextInput } from 'react-native';
 import { FormFieldStatus } from '../../type/form-field-status.type';
 import { cn } from '../../utils/cn.util';
 
-export interface InputProps extends ComponentProps<typeof TextInput> {
+interface InputProps extends ComponentProps<typeof TextInput> {
     readonly status?: FormFieldStatus;
     readonly borderless?: boolean;
     readonly size?: 'sm' | 'md' | 'lg';
 }
 
-export const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     variants: {
         size: {
             sm: 'h-[36px] px-xl text-md/1',
