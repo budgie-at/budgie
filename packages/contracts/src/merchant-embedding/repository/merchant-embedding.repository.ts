@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
-import { DB, RawDbInterface } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
@@ -54,8 +54,8 @@ const SIMILAR_COMMENTS_QUERY = `
 `;
 
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB, rawDb: RawDbInterface) {
-        super(db, rawDb, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
+    constructor(db: DB) {
+        super(db, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
     }
 
     async findSimilarComments(
@@ -64,7 +64,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     ): Promise<CommentDistanceResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
-        return this.rawDb.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+        return this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -93,7 +93,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: MerchantEmbeddingEntityTable.id });
 
-        await this.rawDb.runAsync(
+        await this.db.$client.runAsync(
             'INSERT OR REPLACE INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
             [row.id]
         );

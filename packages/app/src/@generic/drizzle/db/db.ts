@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
@@ -24,9 +24,11 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 
+import type { DB } from '@budgie/contracts';
+
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
-    var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
+    var __drizzleDb__: DB | undefined;
 }
 
 const dbInit = () => {
@@ -65,7 +67,7 @@ export const __REMOVE_ME_RESET_DB = async () => {
     expoDb = dbInit();
 };
 
-export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
+export const db: DB = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
 export const tagRepository = new TagRepository(db);
 export const accountRepository = new AccountRepository(db);
@@ -81,5 +83,5 @@ export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
-export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db, expoDb);
-export const commentEmbeddingRepository = new CommentEmbeddingRepository(db, expoDb);
+export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
+export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);
