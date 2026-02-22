@@ -17,7 +17,7 @@ interface Props {
 export const DateFilter = ({ value, onChange }: Props) => {
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const { t } = useLingui();
-    const { openDateFilter } = useDateFilterModal();
+    const [openDateFilter] = useDateFilterModal();
 
     const handleOpen = async () => {
         const result = await openDateFilter({ value });

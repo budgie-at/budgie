@@ -1,8 +1,5 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
-
 import { Contact } from '../hook/use-contacts.hook';
+import { createModalContext } from '../utils/create-modal-context/create-modal-context.util';
 
 export interface ContactSelectorModalParams {
     readonly selectedContactId: string | null;
@@ -10,16 +7,6 @@ export interface ContactSelectorModalParams {
 
 export type ContactSelectorResult = Contact | null;
 
-interface ContactSelectorModalContextInterface {
-    openContactSelector: (params?: ContactSelectorModalParams) => Promise<ContactSelectorResult>;
-    resolveContactSelector: (result: ContactSelectorResult) => void;
-    currentParams: ContactSelectorModalParams | null;
-}
-
-export const ContactSelectorModalContext = createContext<ContactSelectorModalContextInterface>({
-    openContactSelector: () => Promise.resolve(null),
-    resolveContactSelector: emptyFn,
-    currentParams: null
-});
-
-export const useContactSelectorModal = () => use(ContactSelectorModalContext);
+export const [ContactSelectorModalContext, useContactSelectorModal] = createModalContext<ContactSelectorModalParams, ContactSelectorResult>(
+    null
+);
