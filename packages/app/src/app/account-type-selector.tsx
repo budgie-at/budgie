@@ -8,7 +8,7 @@ import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
-import { AccountTypeOption } from '../account/component/account-type-bottom-sheet/account-type-option';
+import { AccountTypeOption } from '../account/component/account-type-option/account-type-option';
 import { ACCOUNT_COLOR } from '../account/constant/account-color.constant';
 import { useAccountTypeSelectorModal } from '../account/context/account-type-selector-modal.context';
 

@@ -12,7 +12,7 @@ export interface TransactionAccountFilterResult {
 
 interface TransactionAccountFilterModalContextInterface {
     openTransactionAccountFilter: (params: TransactionAccountFilterModalParams) => Promise<TransactionAccountFilterResult | null>;
-    resolveTransactionAccountFilter: (result: TransactionAccountFilterResult | null) => void;
+    resolveTransactionAccountFilter: (result: TransactionAccountFilterResult | null, options?: { readonly skipBack?: boolean }) => void;
     currentParams: TransactionAccountFilterModalParams | null;
 }
 
