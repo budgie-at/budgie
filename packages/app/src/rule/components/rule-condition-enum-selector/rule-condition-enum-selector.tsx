@@ -2,11 +2,10 @@ import { RuleCreateInputInterface } from '@budgie/contracts';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { RuleConditionOptionInterface } from '../../interface/rule-condition-option.interface';
+import { RuleConditionFieldType } from '../../type/rule-condition-field.type';
+import { RuleFieldValueType } from '../../type/rule-field-value.type';
 import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
-
-import { RuleConditionFieldType } from './rule-condition-field.type';
-import { RuleConditionOptionInterface } from './rule-condition-option.interface';
-import { RuleFieldValueType } from './rule-field-value.type';
 
 interface Props<T extends RuleConditionFieldType> {
     readonly index: number;

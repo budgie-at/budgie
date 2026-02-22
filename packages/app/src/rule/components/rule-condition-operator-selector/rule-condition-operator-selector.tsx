@@ -3,10 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { FIELD_OPERATORS } from '../../constant/field-operators.constant';
+import { OPERATOR_LABELS } from '../../constant/operator-options.constant';
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
-
-import { FIELD_OPERATORS } from './field-operators.constant';
-import { OPERATOR_LABELS } from './operator-options.constant';
 
 interface Props {
     readonly index: number;
