@@ -9,15 +9,15 @@ import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-conf
 import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
 import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
-import { DB, RawDbInterface } from '../type/db.type';
+import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
+import { transactionAsync } from '../util/transaction-async.util';
 
 export { isDefined } from '@rnw-community/shared';
 
 export abstract class BaseEmbeddingRepository {
     constructor(
         protected readonly db: DB,
-        protected readonly rawDb: RawDbInterface,
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
@@ -27,7 +27,7 @@ export abstract class BaseEmbeddingRepository {
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        return this.rawDb.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+        return this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -38,7 +38,7 @@ export abstract class BaseEmbeddingRepository {
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
 
-        return this.rawDb.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
+        return this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -60,9 +60,10 @@ export abstract class BaseEmbeddingRepository {
         return result.count;
     }
 
-    protected async rebuildVec(vecTableName: string, sourceTableName: string): Promise<void> {
-        await this.rawDb.runAsync(`DELETE FROM ${vecTableName}`, []);
-        await this.rawDb.runAsync(
+    protected async rebuildVec(): Promise<void> {
+        const { vecTableName, sourceTableName } = this.queryConfig;
+        await this.db.$client.runAsync(`DELETE FROM ${vecTableName}`, []);
+        await this.db.$client.runAsync(
             `INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`,
             []
         );
@@ -71,20 +72,20 @@ export abstract class BaseEmbeddingRepository {
     protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
         const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
 
-        await this.db.transaction(async transaction => {
-            await transaction.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+        await transactionAsync(this.db, async txDb => {
+            await txDb.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
 
             if (isNotEmptyArray(tagIds)) {
-                await transaction.insert(tagTable).values(tagIds.map(createTagRow));
+                await txDb.insert(tagTable).values(tagIds.map(createTagRow));
             }
         });
     }
 
-    protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable, vecTableName: string): Promise<void> {
-        await this.db.transaction(async transaction => {
-            await transaction.delete(tagTable);
-            await transaction.delete(embeddingTable);
-            await this.rawDb.runAsync(`DELETE FROM ${vecTableName}`, []);
+    protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
+        await transactionAsync(this.db, async txDb => {
+            await txDb.delete(tagTable);
+            await txDb.delete(embeddingTable);
         });
+        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }

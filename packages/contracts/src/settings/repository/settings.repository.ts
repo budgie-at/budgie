@@ -3,7 +3,7 @@ import { isDefined } from '@rnw-community/shared';
 import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
-import type { TX } from '../../@generic/type/db.type';
+import type { DB } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
 import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
@@ -12,13 +12,13 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class SettingsRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    async update(input: Partial<SettingsCreateEntityInterface>, tx?: TX): Promise<SettingsEntityInterface> {
+    async update(input: Partial<SettingsCreateEntityInterface>, tx?: DB): Promise<SettingsEntityInterface> {
         const [settings] = await (tx ?? this.db).update(SettingsEntityTable).set(input).returning();
 
         return settings;
     }
 
-    async getSettings(tx?: TX): Promise<SettingsEntityInterface> {
+    async getSettings(tx?: DB): Promise<SettingsEntityInterface> {
         const settings = await (tx ?? this.db).query.SettingsEntityTable.findFirst();
 
         if (!isDefined(settings)) {

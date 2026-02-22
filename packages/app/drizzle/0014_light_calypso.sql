@@ -1,0 +1,1 @@
+DROP TABLE `title_embeddings`;
