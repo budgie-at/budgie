@@ -27,7 +27,7 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
+#: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
@@ -35,7 +35,7 @@ msgstr "{availableCount} стовпців доступно"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% вивчено"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:31
+#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:40
 msgid "{formattedAmount} · {category}"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr "{percentage}% доходів"
 msgid "{splitEntryCount} items"
 msgstr "{splitEntryCount} записів"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:63
+#: src/@generic/component/currency-selector/currency-selector.tsx:64
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
@@ -90,13 +90,13 @@ msgstr "Назва і іконка рахунку"
 msgid "Account Settings"
 msgstr "Налаштування рахунку"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
-#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
+#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:36
+#: src/app/account-type-selector.tsx:39
 msgid "Account Type"
 msgstr "Тип рахунку"
 
+#: src/app/transaction-account-filter.tsx:61
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:27
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
 msgid "Accounts"
 msgstr "Рахунки"
 
@@ -171,7 +171,7 @@ msgstr ""
 "Version {appVersion}Додаток для бюджетування на основі ШІ з повною конфіденційністю. Вся обробка даних відбувається локально на вашому пристрої.\n"
 "Версія {appVersion}"
 
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:85
+#: src/app/import-column-mapper.tsx:85
 msgid "All columns have been assigned"
 msgstr "Усі стовпці було призначено"
 
@@ -187,7 +187,7 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Already syncing"
 msgstr "Вже синхронізується"
 
-#: src/app/(tabs)/settings/import.tsx:196
+#: src/app/(tabs)/settings/import.tsx:195
 msgid "Amount"
 msgstr "Сума"
 
@@ -213,13 +213,19 @@ msgstr "Вигляд"
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/transaction/components/transaction-base-filter/transaction-base-filter.tsx:38
+#: src/app/date-filter.tsx:52
+#: src/app/transaction-type-filter.tsx:25
+#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:16
 msgid "Apply Filter"
 msgstr "Застосувати фільтр"
 
-#: src/transaction/components/transaction-base-filter/transaction-base-filter.tsx:38
-msgid "Apply Filter ({selected})"
-msgstr "Застосувати фільтр ({selected})"
+#: src/app/transaction-type-filter.tsx:25
+msgid "Apply Filter ({localSelectedCount})"
+msgstr ""
+
+#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:16
+msgid "Apply Filter ({selectedCount})"
+msgstr ""
 
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
@@ -247,11 +253,11 @@ msgstr "Ви впевнені?"
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Автоматична синхронізація рахунків та транзакцій з Монобанку"
 
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
+#: src/app/import-column-mapper.tsx:70
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:75
+#: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Баланс"
 
@@ -273,7 +279,7 @@ msgstr "Синхронізація банку"
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
-#: src/@generic/component/currency-selector/currency-selector.tsx:61
+#: src/@generic/component/currency-selector/currency-selector.tsx:62
 msgid "Base currency"
 msgstr "Базова валюта"
 
@@ -289,22 +295,13 @@ msgstr "Позичено"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:55
-msgid "Calendar"
-msgstr "Календар"
-
-#: src/app/(tabs)/analytics.tsx:131
-msgid "Calendar view of detected recurring payments"
-msgstr "Календарний вигляд виявлених регулярних платежів"
-
-#: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
 #: src/account/component/account-action-card/account-action-card.tsx:39
 #: src/account/component/archive-account/archive-account.tsx:26
 #: src/account/component/archived-account-card/archived-account-card.tsx:32
 #: src/account/component/archived-account-card/archived-account-card.tsx:52
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:254
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
@@ -320,18 +317,18 @@ msgstr "Готівка"
 
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:72
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
+#: src/app/transaction-category-filter.tsx:63
+#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:27
 #: src/transaction/components/transaction-list/transaction-list.tsx:39
 msgid "Categories"
 msgstr "Категорії"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
+#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:27
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
-#: src/app/(tabs)/settings/import.tsx:180
+#: src/app/(tabs)/settings/import.tsx:179
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:159
 msgid "Category"
 msgstr "Категорія"
@@ -344,7 +341,7 @@ msgstr "Назва категорії"
 msgid "Change"
 msgstr "Змінити"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:65
+#: src/app/account-type-selector.tsx:52
 msgid "Change Account Type"
 msgstr "Змінити тип рахунку"
 
@@ -394,7 +391,7 @@ msgstr "Закрити"
 msgid "Close menu"
 msgstr "Закрити меню"
 
-#: src/app/(tabs)/settings/import.tsx:240
+#: src/app/(tabs)/settings/import.tsx:239
 msgid "Comment"
 msgstr "Коментар"
 
@@ -503,9 +500,9 @@ msgstr "Створити резервну копію всіх ваших дан�
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:75
-msgid "Create accounts"
-msgstr "Створити рахунки"
+#: src/app/transaction-account-filter.tsx:110
+msgid "Create Accounts"
+msgstr ""
 
 #: src/sync/component/get-token-card/get-token-card.tsx:41
 msgid "Create and copy the personal token"
@@ -515,7 +512,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
+#: src/app/transaction-category-filter.tsx:103
 msgid "Create Categories"
 msgstr "Створити категорії"
 
@@ -523,16 +520,16 @@ msgstr "Створити категорії"
 msgid "Create Category"
 msgstr "Створити категорію"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:71
+#: src/app/transaction-category-filter.tsx:105
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Створіть користувацькі категорії в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:73
+#: src/app/transaction-tag-filter.tsx:108
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Створіть користувацькі теги в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:58
 #: src/account/component/account-select-content/account-select-content.tsx:43
+#: src/app/contact-selector.tsx:43
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
@@ -540,7 +537,7 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Tag"
 msgstr "Створити тег"
 
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:72
+#: src/app/transaction-tag-filter.tsx:106
 msgid "Create Tags"
 msgstr "Створити теги"
 
@@ -548,7 +545,7 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створюйте теги для організації транзакцій"
 
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:78
+#: src/app/transaction-account-filter.tsx:112
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
 
@@ -581,20 +578,20 @@ msgstr "Темний режим"
 msgid "Data management"
 msgstr "Управління даними"
 
-#: src/@generic/component/date-filter/date-filter.tsx:48
-#: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(tabs)/settings/import.tsx:188
+#: src/@generic/component/date-filter/date-filter.tsx:34
+#: src/@generic/component/date-filter/date-filter.tsx:55
+#: src/app/(tabs)/settings/import.tsx:187
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:128
 msgid "Date"
 msgstr "Дата"
 
-#: src/@generic/component/date-filter/date-filter.tsx:81
+#: src/app/date-filter.tsx:39
 msgid "Date Range"
 msgstr "Діапазон дат"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:24
-msgid "Day {day} - Recurring payments"
-msgstr "День {day} - Регулярні платежі"
+#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:31
+msgid "Day {day}"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -635,7 +632,7 @@ msgstr "Видалити назавжди"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
-#: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
+#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:35
 msgid "Deselect All"
 msgstr "Скасувати вибір усіх"
 
@@ -644,7 +641,7 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/ai/hook/use-ai-data-preparation.hook.ts:141
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
+#: src/app/import-column-mapper.tsx:91
 msgid "Done"
 msgstr "Готово"
 
@@ -766,7 +763,7 @@ msgstr "Введіть ваш API-токен Монобанку"
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
-#: src/app/(tabs)/settings/import.tsx:110
+#: src/app/(tabs)/settings/import.tsx:109
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:49
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
@@ -789,7 +786,7 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
 
-#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
+#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
 msgid "Expected return date"
 msgstr "Очікувана дата повернення"
 
@@ -826,7 +823,7 @@ msgstr "Помилка експорту"
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
 msgstr "Експортуйте транзакції як XLSX з додатку Приватбанк24: Меню → Виписки → Експорт в Excel."
 
-#: src/app/(tabs)/settings/import.tsx:212
+#: src/app/(tabs)/settings/import.tsx:211
 msgid "External ID"
 msgstr "Зовнішній ID"
 
@@ -875,7 +872,7 @@ msgstr "Завантаження нових..."
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
-#: src/app/(tabs)/settings/import.tsx:149
+#: src/app/(tabs)/settings/import.tsx:148
 msgid "Fix Errors"
 msgstr "Виправити помилки"
 
@@ -895,15 +892,15 @@ msgstr "від"
 msgid "From"
 msgstr "З"
 
-#: src/app/(tabs)/settings/import.tsx:219
+#: src/app/(tabs)/settings/import.tsx:218
 msgid "From Account"
 msgstr "З рахунку"
 
-#: src/app/(tabs)/settings/import.tsx:233
+#: src/app/(tabs)/settings/import.tsx:232
 msgid "From Amount"
 msgstr "Сума з"
 
-#: src/app/(tabs)/settings/import.tsx:226
+#: src/app/(tabs)/settings/import.tsx:225
 msgid "From Currency"
 msgstr "Валюта з"
 
@@ -967,7 +964,7 @@ msgstr "Імпортувати Erste Bank"
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
-#: src/app/(tabs)/settings/import.tsx:141
+#: src/app/(tabs)/settings/import.tsx:140
 msgid "Import Failed"
 msgstr "Імпорт не вдався"
 
@@ -992,18 +989,18 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:74
+#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:82
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:104
+#: src/app/(tabs)/analytics.tsx:94
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
@@ -1020,7 +1017,7 @@ msgstr "Ініціалізація ШІ моделі..."
 msgid "Invalid file"
 msgstr "Невірний файл"
 
-#: src/app/(tabs)/settings/import.tsx:247
+#: src/app/(tabs)/settings/import.tsx:246
 msgid "Is Planned"
 msgstr "Заплановано"
 
@@ -1028,7 +1025,7 @@ msgstr "Заплановано"
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
 
-#: src/settings/components/language-selector/language-selector.tsx:38
+#: src/settings/components/language-selector/language-selector.tsx:35
 msgid "Language"
 msgstr "Мова"
 
@@ -1056,7 +1053,7 @@ msgstr "Модель ШІ не готова"
 msgid "Long press to learn"
 msgstr "Довге натискання для навчання"
 
-#: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
+#: src/settings/components/default-currency-selector/default-currency-selector.tsx:25
 msgid "Main Currency"
 msgstr "Основна валюта"
 
@@ -1068,11 +1065,11 @@ msgstr "Керування категоріями"
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
-#: src/app/(tabs)/settings/import.tsx:156
+#: src/app/(tabs)/settings/import.tsx:155
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
 
-#: src/app/(tabs)/settings/import.tsx:157
+#: src/app/(tabs)/settings/import.tsx:156
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
@@ -1114,22 +1111,25 @@ msgid "New Transfer"
 msgstr "Новий переказ"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
+#: src/app/transaction-account-filter.tsx:102
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:22
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
+
+#: src/app/transaction-account-filter.tsx:109
+msgid "No Accounts Yet"
+msgstr ""
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
 msgstr "Немає архівованих рахунків"
 
+#: src/app/transaction-category-filter.tsx:95
 #: src/category/components/category-select-content/category-select-content.tsx:54
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Категорій не знайдено"
 
@@ -1137,11 +1137,11 @@ msgstr "Категорій не знайдено"
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:68
+#: src/app/transaction-category-filter.tsx:102
 msgid "No Categories Yet"
 msgstr "Поки немає категорій"
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:63
+#: src/app/contact-selector.tsx:42
 msgid "No contacts found"
 msgstr "Контактів не знайдено"
 
@@ -1149,11 +1149,11 @@ msgstr "Контактів не знайдено"
 msgid "No contacts found on this device."
 msgstr "На цьому пристрої не знайдено контактів."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:63
+#: src/app/contact-selector.tsx:42
 msgid "No contacts yet"
 msgstr "Поки немає контактів"
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:58
+#: src/app/currency-selector.tsx:51
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
@@ -1169,7 +1169,7 @@ msgstr "Іконки не знайдено"
 msgid "No inactive accounts"
 msgstr "Немає неактивних рахунків"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
+#: src/app/language-selector.tsx:60
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
@@ -1178,7 +1178,7 @@ msgstr "Мов не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:68
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:61
 msgid "No recurring payments detected"
 msgstr "Регулярних платежів не виявлено"
 
@@ -1187,8 +1187,8 @@ msgstr "Регулярних платежів не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
+#: src/app/transaction-tag-filter.tsx:98
 #: src/tag/components/tags-select-content/tags-select-content.tsx:44
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
@@ -1196,8 +1196,8 @@ msgstr "Тегів не знайдено"
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
+#: src/app/transaction-tag-filter.tsx:105
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
@@ -1230,7 +1230,7 @@ msgstr "Відкрийте Монобанк, щоб отримати токен"
 msgid "Organization"
 msgstr "Організація"
 
-#: src/app/(tabs)/analytics.tsx:64
+#: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1337,13 +1337,12 @@ msgstr "Отримання {toCode}"
 msgid "Recurring"
 msgstr "Регулярні"
 
-#: src/app/(tabs)/analytics.tsx:130
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:34
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:45
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:28
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:39
 msgid "Recurring Payments"
 msgstr "Регулярні платежі"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:69
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:62
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Регулярні платежі з'являться тут, коли будуть виявлені закономірності у ваших транзакціях"
 
@@ -1382,21 +1381,21 @@ msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
 #: src/app/account-selector.tsx:34
-#: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
+#: src/app/transaction-account-filter.tsx:71
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
 #: src/app/(tabs)/settings/categories.tsx:73
 #: src/app/category-selector.tsx:56
-#: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
+#: src/app/transaction-category-filter.tsx:73
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
+#: src/app/contact-selector.tsx:70
 msgid "Search contacts..."
 msgstr "Шукати контакти..."
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
+#: src/app/currency-selector.tsx:59
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
@@ -1408,13 +1407,13 @@ msgstr "Пошук іконок (напр. гроші, подорожі, їжа)
 msgid "Search Keywords"
 msgstr "Пошукові ключові слова"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
+#: src/app/language-selector.tsx:68
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:74
 #: src/app/tags-selector.tsx:61
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
+#: src/app/transaction-tag-filter.tsx:73
 msgid "Search tags..."
 msgstr "Пошук тегів..."
 
@@ -1446,11 +1445,11 @@ msgstr "Виберіть контакт"
 msgid "Select a tag to merge into"
 msgstr "Виберіть тег для об'єднання"
 
-#: src/app/(tabs)/settings/import.tsx:54
+#: src/app/(tabs)/settings/import.tsx:53
+#: src/app/(tabs)/settings/import.tsx:56
 #: src/app/(tabs)/settings/import.tsx:57
 #: src/app/(tabs)/settings/import.tsx:58
 #: src/app/(tabs)/settings/import.tsx:59
-#: src/app/(tabs)/settings/import.tsx:60
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
@@ -1462,7 +1461,7 @@ msgstr "Виберіть рахунок"
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
+#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:30
 msgid "Select All"
 msgstr "Вибрати все"
 
@@ -1474,7 +1473,7 @@ msgstr "Оберіть усі категорії"
 msgid "Select category"
 msgstr "Обрати категорію"
 
-#: src/import/components/import-column-mapper/import-column-mapper.tsx:31
+#: src/import/components/import-column-mapper/import-column-mapper.tsx:41
 msgid "Select column..."
 msgstr "Виберіть стовпець..."
 
@@ -1494,11 +1493,11 @@ msgstr "Виберіть завантажений PDF-файл:"
 msgid "Select the exported XLSX file:"
 msgstr "Оберіть експортований XLSX-файл:"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
+#: src/app/account-type-selector.tsx:39
 msgid "Select the type of account"
 msgstr "Оберіть тип рахунку"
 
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
+#: src/app/import-column-mapper.tsx:55
 msgid "Selected"
 msgstr "Вибрано"
 
@@ -1506,7 +1505,7 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
+#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:31
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
@@ -1550,15 +1549,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:93
+#: src/app/(tabs)/analytics.tsx:83
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:115
+#: src/app/(tabs)/analytics.tsx:105
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/app/(tabs)/analytics.tsx:70
+#: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1566,7 +1565,7 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
-#: src/app/(tabs)/settings/import.tsx:149
+#: src/app/(tabs)/settings/import.tsx:148
 msgid "Start Import"
 msgstr "Почати імпорт"
 
@@ -1578,7 +1577,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:50
+#: src/app/(tabs)/analytics.tsx:40
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1590,7 +1589,6 @@ msgstr "Інвестиції в акції"
 msgid "Stocks"
 msgstr "Акції"
 
-#: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
 #: src/account/component/create-account-screen/create-account-screen.tsx:42
 msgid "Submit"
 msgstr "Відправити"
@@ -1633,17 +1631,17 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(tabs)/settings/tags.tsx:73
+#: src/app/transaction-tag-filter.tsx:63
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:147
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
+#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:27
 msgid "Tags"
 msgstr "Теги"
 
-#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
+#: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:27
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
-#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
+#: src/app/import-column-mapper.tsx:62
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 
@@ -1700,11 +1698,11 @@ msgstr "до"
 msgid "To"
 msgstr "На"
 
-#: src/app/(tabs)/settings/import.tsx:172
+#: src/app/(tabs)/settings/import.tsx:171
 msgid "To Account"
 msgstr "На рахунок"
 
-#: src/app/(tabs)/settings/import.tsx:204
+#: src/app/(tabs)/settings/import.tsx:203
 msgid "To Currency"
 msgstr "Валюта на"
 
@@ -1716,10 +1714,6 @@ msgstr "Сьогодні"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:36
 msgid "Token required"
 msgstr "Потрібен токен"
-
-#: src/app/(tabs)/analytics.tsx:124
-msgid "Tools"
-msgstr "Інструменти"
 
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:92
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:99
@@ -1738,7 +1732,7 @@ msgstr "Touch ID"
 msgid "Traditional bank accounts"
 msgstr "Традиційні банківські рахунки"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:68
+#: src/app/transaction-type-filter.tsx:53
 msgid "Transaction Type"
 msgstr "Тип транзакції"
 
@@ -1768,12 +1762,12 @@ msgstr "Переклад категорій..."
 msgid "Translating tags..."
 msgstr "Переклад тегів..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/app/contact-selector.tsx:43
+#: src/app/currency-selector.tsx:51
 #: src/app/icon-selector.tsx:95
+#: src/app/language-selector.tsx:60
 #: src/category/components/category-select-content/category-select-content.tsx:54
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -1790,11 +1784,11 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 msgid "Try Again"
 msgstr "Спробувати знову"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
+#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:27
 msgid "Type"
 msgstr "Тип"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
+#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:27
 msgid "Type ({selectedTypesCount})"
 msgstr "Тип ({selectedTypesCount})"
 
@@ -1849,7 +1843,7 @@ msgstr "Перегляд та відновлення архівованих ра
 msgid "Waiting"
 msgstr "Очікування"
 
-#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
+#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 

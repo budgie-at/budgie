@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -37,35 +37,32 @@ export const RecurringCalendarPage = () => {
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Recurring Payments`} />}>
-            <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
-                {hasEntries ? (
-                    <>
+            {hasEntries ? (
+                <View className="flex-1">
+                    <View className="gap-y-xl px-5xl pt-xl">
                         <View className="flex-row">
                             <RecurringCalendarSummary totalAmount={data.totalAmount} />
                         </View>
 
-                        <View className="gap-y-lg">
-                            <Text className="uppercase text-secondary-foreground text-xs">
-                                <Trans>Calendar</Trans>
-                            </Text>
+                        <RecurringCalendarGrid entriesByDay={entriesByDay} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
+                    </View>
 
-                            <RecurringCalendarGrid entriesByDay={entriesByDay} selectedDay={selectedDay} onSelectDay={setSelectedDay} />
-                        </View>
-
-                        {isDefined(selectedEntries) && isDefined(selectedDay) ? (
+                    {isDefined(selectedEntries) && isDefined(selectedDay) ? (
+                        <ScrollView className="flex-1" contentContainerClassName="px-5xl pb-5xl pt-lg" showsVerticalScrollIndicator={false}>
                             <RecurringCalendarDayDetail day={selectedDay} entries={selectedEntries} />
-                        ) : null}
-                    </>
-                ) : (
+                            <MenuSpacer />
+                        </ScrollView>
+                    ) : null}
+                </View>
+            ) : (
+                <ScrollView contentContainerClassName="py-5xl" showsVerticalScrollIndicator={false}>
                     <EmptyState
                         circleIcon={UserIconNameEnum.CalendarSearch}
                         title={t`No recurring payments detected`}
                         description={t`Recurring payments will appear here once patterns are detected from your transactions`}
                     />
-                )}
-
-                <MenuSpacer />
-            </ScrollView>
+                </ScrollView>
+            )}
         </Page>
     );
 };
