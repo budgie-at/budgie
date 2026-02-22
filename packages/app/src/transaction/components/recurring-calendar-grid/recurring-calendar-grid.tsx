@@ -1,3 +1,5 @@
+import { CalendarDay } from 'react-native-ui-datepicker';
+
 import { emptyFn } from '@rnw-community/shared';
 
 import { DatePicker } from '../../../@generic/component/date-picker/date-picker';
@@ -10,18 +12,12 @@ interface Props {
     readonly onSelectDay: (day: number) => void;
 }
 
-const renderDay = (
-    day: { number: number; text: string; isCurrentMonth: boolean; isToday: boolean },
-    entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>,
-    selectedDay: number | undefined,
-    onSelectDay: (day: number) => void
-) => <RecurringCalendarDay day={day} entriesByDay={entriesByDay} selectedDay={selectedDay} onSelectDay={onSelectDay} />;
-
 export const RecurringCalendarGrid = ({ entriesByDay, selectedDay, onSelectDay }: Props) => {
-    const dayRenderer = (day: { number: number; text: string; isCurrentMonth: boolean; isToday: boolean }) =>
-        renderDay(day, entriesByDay, selectedDay, onSelectDay);
+    const renderDay = (day: CalendarDay) => (
+        <RecurringCalendarDay day={day} entriesByDay={entriesByDay} selectedDay={selectedDay} onSelectDay={onSelectDay} />
+    );
 
-    const components = { Day: dayRenderer };
+    const components = { Day: renderDay };
 
-    return <DatePicker mode="single" onChange={emptyFn} components={components} />;
+    return <DatePicker mode="single" onChange={emptyFn} hideHeader components={components} />;
 };
