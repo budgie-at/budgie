@@ -10,17 +10,18 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.0'
+      id: 'ActionItem.1'
 - waitForAnimationToEnd
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.1'
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible: 'New Expense'
+    visible: 'New Income'
 
-- tapOn: '4'
-- tapOn: '2'
+- tapOn: '1'
+- tapOn: '0'
+- tapOn: '0'
 
 - tapOn:
     id: 'TransactionForm.AccountSelector'
@@ -57,7 +58,7 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - tapOn:
     id: 'NoteInput.Input'
-- inputText: 'E2E Test Expense'
+- inputText: 'E2E Test Income'
 - tapOn:
     id: 'NoteInput.SubmitButton'
 - waitForAnimationToEnd
@@ -68,4 +69,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Test Expense'
+- assertVisible: 'E2E Test Income'
