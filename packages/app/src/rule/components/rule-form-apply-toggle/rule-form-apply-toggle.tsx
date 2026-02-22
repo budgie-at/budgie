@@ -1,8 +1,13 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
-import { useController, useFormContext } from 'react-hook-form';
+import { useController, useFormContext, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
-import { RuleApplyToExistingToggle } from '../rule-apply-to-existing-toggle/rule-apply-to-existing-toggle';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { useMatchingTransactionCount } from '../../hooks/use-matching-transaction-count.hook';
+import { RuleMatchingCount } from '../rule-matching-count/rule-matching-count';
 
 export const RuleFormApplyToggle = () => {
     const { control } = useFormContext<RuleCreateInputInterface>();
@@ -10,5 +15,18 @@ export const RuleFormApplyToggle = () => {
         field: { value, onChange }
     } = useController({ control, name: 'applyToExisting' });
 
-    return <RuleApplyToExistingToggle testID={RuleFormSelectors.ApplyToggle} value={value} onChange={onChange} />;
+    const conditions = useWatch({ control, name: 'conditions' });
+    const conditionMatchType = useWatch({ control, name: 'conditionMatchType' });
+
+    const hasNonEmptyCondition = conditions.some(condition => isNotEmptyString(condition.value));
+    const { count, isLoading } = useMatchingTransactionCount({ conditions, conditionMatchType, enabled: hasNonEmptyCondition });
+
+    return (
+        <View className="flex-row items-center justify-between gap-x-lg">
+            <View className="flex-1 gap-y-xxs">
+                <RuleMatchingCount count={count} isLoading={isLoading} />
+            </View>
+            <ThemedSwitch testID={RuleFormSelectors.ApplyToggle} value={value} onValueChange={onChange} />
+        </View>
+    );
 };

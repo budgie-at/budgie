@@ -42,7 +42,7 @@ msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% learned"
 
 #: src/rule/components/matching-count-display/matching-count-display.tsx:45
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:37
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:38
 msgid "{count} matching transactions"
 msgstr "{count} matching transactions"
 
@@ -137,7 +137,7 @@ msgstr "Accounts you mark as inactive will appear here. They won't be shown on t
 msgid "Action {actionNumber}"
 msgstr "Action {actionNumber}"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:33
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:42
 msgid "Action Type"
 msgstr "Action Type"
 
@@ -267,10 +267,6 @@ msgstr "Apply Filter"
 msgid "Apply Filter ({selected})"
 msgstr "Apply Filter ({selected})"
 
-#: src/rule/components/rule-apply-to-existing-toggle/rule-apply-to-existing-toggle.tsx:20
-msgid "Apply to existing transactions"
-msgstr "Apply to existing transactions"
-
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
 msgstr "Archive"
@@ -339,7 +335,7 @@ msgstr "Base currency"
 msgid "between"
 msgstr "between"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:13
+#: src/rule/constant/operator-options.constant.ts:13
 msgid "Between"
 msgstr "Between"
 
@@ -370,7 +366,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:70
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -486,7 +482,7 @@ msgstr "Comment"
 msgid "Condition {conditionNumber}"
 msgstr "Condition {conditionNumber}"
 
-#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:42
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:30
 msgid "Conditions"
 msgstr "Conditions"
 
@@ -510,7 +506,7 @@ msgstr "Contact (optional)"
 msgid "contains"
 msgstr "contains"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:8
+#: src/rule/constant/operator-options.constant.ts:8
 msgid "Contains"
 msgstr "Contains"
 
@@ -545,7 +541,7 @@ msgid "Could not create category"
 msgstr "Could not create category"
 
 #: src/rule/hooks/use-create-suggest-rule.hook.ts:78
-#: src/rule/hooks/use-rule-form.hook.ts:109
+#: src/rule/hooks/use-rule-form.hook.ts:108
 msgid "Could not create rule"
 msgstr "Could not create rule"
 
@@ -561,7 +557,7 @@ msgstr "Could not create transaction. Please try again later."
 msgid "Could not delete account."
 msgstr "Could not delete account."
 
-#: src/rule/hooks/use-rule-form.hook.ts:126
+#: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "Could not delete rule."
 msgstr "Could not delete rule."
 
@@ -597,7 +593,7 @@ msgstr "Could not save category"
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
-#: src/rule/hooks/use-rule-form.hook.ts:109
+#: src/rule/hooks/use-rule-form.hook.ts:108
 msgid "Could not update rule"
 msgstr "Could not update rule"
 
@@ -609,7 +605,7 @@ msgstr "Could not update transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
 
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:34
 msgid "Create & update"
 msgstr "Create & update"
 
@@ -654,7 +650,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:34
 msgid "Create rule"
 msgstr "Create rule"
 
@@ -918,7 +914,7 @@ msgstr "Enter your PIN"
 msgid "equals"
 msgstr "equals"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:6
+#: src/rule/constant/operator-options.constant.ts:6
 msgid "Equals"
 msgstr "Equals"
 
@@ -1095,7 +1091,7 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:11
+#: src/rule/constant/operator-options.constant.ts:11
 msgid "Greater Than"
 msgstr "Greater Than"
 
@@ -1155,7 +1151,7 @@ msgstr "Importing a database will replace all current data. The app will restart
 msgid "in"
 msgstr "in"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:14
+#: src/rule/constant/operator-options.constant.ts:14
 msgid "In List"
 msgstr "In List"
 
@@ -1224,7 +1220,7 @@ msgstr "Last sync"
 msgid "Lent"
 msgstr "Lent"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:12
+#: src/rule/constant/operator-options.constant.ts:12
 msgid "Less Than"
 msgstr "Less Than"
 
@@ -1288,7 +1284,7 @@ msgstr "Match transactions where"
 msgid "matches"
 msgstr "matches"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:10
+#: src/rule/constant/operator-options.constant.ts:10
 msgid "Matches Regex"
 msgstr "Matches Regex"
 
@@ -1451,7 +1447,7 @@ msgstr "None selected"
 msgid "not contains"
 msgstr "not contains"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:9
+#: src/rule/constant/operator-options.constant.ts:9
 msgid "Not Contains"
 msgstr "Not Contains"
 
@@ -1459,7 +1455,7 @@ msgstr "Not Contains"
 msgid "not equals"
 msgstr "not equals"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:7
+#: src/rule/constant/operator-options.constant.ts:7
 msgid "Not Equals"
 msgstr "Not Equals"
 
@@ -1480,7 +1476,7 @@ msgstr "Note"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:36
 msgid "Operator"
 msgstr "Operator"
 
@@ -1580,7 +1576,7 @@ msgid "PrivatBank"
 msgstr "PrivatBank"
 
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:101
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:42
 msgid "Quick rule"
 msgstr "Quick rule"
 
@@ -1749,7 +1745,7 @@ msgstr "Select Account"
 msgid "Select accounts to sync:"
 msgstr "Select accounts to sync:"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:34
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:43
 msgid "Select Action Type"
 msgstr "Select Action Type"
 
@@ -1794,8 +1790,8 @@ msgstr "Select Import Preset"
 msgid "Select MCC code"
 msgstr "Select MCC code"
 
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:38
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:39
 msgid "Select Operator"
 msgstr "Select Operator"
 
@@ -1827,7 +1823,7 @@ msgstr "Select Transaction Type"
 msgid "Select type"
 msgstr "Select type"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:26
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
 msgid "Select Type"
 msgstr "Select Type"
 
@@ -2194,6 +2190,7 @@ msgid "Update Account"
 msgstr "Update Account"
 
 #: src/rule/components/matching-count-display/matching-count-display.tsx:48
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:41
 msgid "Update them too?"
 msgstr "Update them too?"
 

@@ -40,7 +40,7 @@ msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% вивчено"
 
 #: src/rule/components/matching-count-display/matching-count-display.tsx:45
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:37
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:38
 msgid "{count} matching transactions"
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr "Рахунки, які ви позначите як неактивні, 
 msgid "Action {actionNumber}"
 msgstr ""
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:33
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:42
 msgid "Action Type"
 msgstr ""
 
@@ -265,10 +265,6 @@ msgstr "Застосувати фільтр"
 msgid "Apply Filter ({selected})"
 msgstr "Застосувати фільтр ({selected})"
 
-#: src/rule/components/rule-apply-to-existing-toggle/rule-apply-to-existing-toggle.tsx:20
-msgid "Apply to existing transactions"
-msgstr ""
-
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
 msgstr "Архівувати"
@@ -337,7 +333,7 @@ msgstr "Базова валюта"
 msgid "between"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:13
+#: src/rule/constant/operator-options.constant.ts:13
 msgid "Between"
 msgstr ""
 
@@ -368,7 +364,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:70
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -484,7 +480,7 @@ msgstr "Коментар"
 msgid "Condition {conditionNumber}"
 msgstr ""
 
-#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:42
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:30
 msgid "Conditions"
 msgstr ""
 
@@ -508,7 +504,7 @@ msgstr "Контакт (необов'язково)"
 msgid "contains"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:8
+#: src/rule/constant/operator-options.constant.ts:8
 msgid "Contains"
 msgstr ""
 
@@ -543,7 +539,7 @@ msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
 #: src/rule/hooks/use-create-suggest-rule.hook.ts:78
-#: src/rule/hooks/use-rule-form.hook.ts:109
+#: src/rule/hooks/use-rule-form.hook.ts:108
 msgid "Could not create rule"
 msgstr ""
 
@@ -559,7 +555,7 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
 
-#: src/rule/hooks/use-rule-form.hook.ts:126
+#: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "Could not delete rule."
 msgstr ""
 
@@ -595,7 +591,7 @@ msgstr "Не вдалося зберегти категорію"
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
-#: src/rule/hooks/use-rule-form.hook.ts:109
+#: src/rule/hooks/use-rule-form.hook.ts:108
 msgid "Could not update rule"
 msgstr ""
 
@@ -607,7 +603,7 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
 
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:34
 msgid "Create & update"
 msgstr ""
 
@@ -652,7 +648,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:34
 msgid "Create rule"
 msgstr ""
 
@@ -916,7 +912,7 @@ msgstr "Введіть свій PIN-код"
 msgid "equals"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:6
+#: src/rule/constant/operator-options.constant.ts:6
 msgid "Equals"
 msgstr ""
 
@@ -1093,7 +1089,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:11
+#: src/rule/constant/operator-options.constant.ts:11
 msgid "Greater Than"
 msgstr ""
 
@@ -1153,7 +1149,7 @@ msgstr "Імпорт бази даних замінить усі поточні 
 msgid "in"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:14
+#: src/rule/constant/operator-options.constant.ts:14
 msgid "In List"
 msgstr ""
 
@@ -1222,7 +1218,7 @@ msgstr "Остання синхронізація"
 msgid "Lent"
 msgstr "Позичено"
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:12
+#: src/rule/constant/operator-options.constant.ts:12
 msgid "Less Than"
 msgstr ""
 
@@ -1286,7 +1282,7 @@ msgstr ""
 msgid "matches"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:10
+#: src/rule/constant/operator-options.constant.ts:10
 msgid "Matches Regex"
 msgstr ""
 
@@ -1449,7 +1445,7 @@ msgstr "Нічого не вибрано"
 msgid "not contains"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:9
+#: src/rule/constant/operator-options.constant.ts:9
 msgid "Not Contains"
 msgstr ""
 
@@ -1457,7 +1453,7 @@ msgstr ""
 msgid "not equals"
 msgstr ""
 
-#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:7
+#: src/rule/constant/operator-options.constant.ts:7
 msgid "Not Equals"
 msgstr ""
 
@@ -1478,7 +1474,7 @@ msgstr "Нотатка"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:36
 msgid "Operator"
 msgstr ""
 
@@ -1578,7 +1574,7 @@ msgid "PrivatBank"
 msgstr "ПриватБанк"
 
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:101
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:42
 msgid "Quick rule"
 msgstr ""
 
@@ -1747,7 +1743,7 @@ msgstr ""
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:34
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:43
 msgid "Select Action Type"
 msgstr ""
 
@@ -1792,8 +1788,8 @@ msgstr "Вибрати шаблон імпорту"
 msgid "Select MCC code"
 msgstr ""
 
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:38
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:39
 msgid "Select Operator"
 msgstr ""
 
@@ -1825,7 +1821,7 @@ msgstr ""
 msgid "Select type"
 msgstr ""
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:26
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
 msgid "Select Type"
 msgstr ""
 
@@ -2192,6 +2188,7 @@ msgid "Update Account"
 msgstr "Оновити рахунок"
 
 #: src/rule/components/matching-count-display/matching-count-display.tsx:48
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:41
 msgid "Update them too?"
 msgstr ""
 

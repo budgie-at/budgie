@@ -13,7 +13,7 @@ export const RuleMatchingCount = ({ count, isLoading }: Props) => {
         return (
             <View className="flex-row items-center gap-x-sm">
                 <ActivityIndicator size="small" />
-                <Text className="text-xs text-secondary-foreground">
+                <Text className="text-sm text-secondary-foreground">
                     <Trans>Checking transactions...</Trans>
                 </Text>
             </View>
@@ -26,15 +26,20 @@ export const RuleMatchingCount = ({ count, isLoading }: Props) => {
 
     if (count === 0) {
         return (
-            <Text className="text-xs text-secondary-foreground">
+            <Text className="text-sm text-secondary-foreground">
                 <Trans>No matching transactions</Trans>
             </Text>
         );
     }
 
     return (
-        <Text className="text-xs text-secondary-foreground">
-            <Trans>{count} matching transactions</Trans>
-        </Text>
+        <>
+            <Text className="text-sm text-primary font-medium">
+                <Trans>{count} matching transactions</Trans>
+            </Text>
+            <Text className="text-xs text-secondary-foreground">
+                <Trans>Update them too?</Trans>
+            </Text>
+        </>
     );
 };
