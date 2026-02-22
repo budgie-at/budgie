@@ -2,11 +2,11 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 
 import { RuleSuggestionPill } from '../../../rule/components/rule-suggestion-pill/rule-suggestion-pill';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
+import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
+import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
 
-import { CategorySuggestionRow } from './category-suggestion-row';
 import { PatternSuggestionRow } from './pattern-suggestion-row';
-import { TagSuggestionRow } from './tag-suggestion-row';
 
 interface Props {
     readonly isNewTransaction: boolean;
