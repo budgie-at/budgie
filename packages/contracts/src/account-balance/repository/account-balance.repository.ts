@@ -1,7 +1,7 @@
 /* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
-import { DB, TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -18,7 +18,7 @@ export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
     // TODO: change to bulkUpsert when drizzle is updated to the latest version
-    async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
             .values([input])
@@ -299,7 +299,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 
