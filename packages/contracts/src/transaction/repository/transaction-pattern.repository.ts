@@ -23,7 +23,8 @@ import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard
 
 const DEFAULT_LIMIT = 10;
 const MIN_OCCURRENCES = 2;
-const MIN_MONTHLY_OCCURRENCES = 2;
+const MIN_MONTHLY_OCCURRENCES = 3;
+const RECENCY_MONTHS = 12;
 const DEFAULT_MONTHLY_LIMIT = 50;
 
 const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
@@ -32,10 +33,6 @@ const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, Categ
 
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
-
-    private get dayOfMonthExpression() {
-        return sql`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`;
-    }
 
     private get distinctMonthCountExpression() {
         return sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')`;
@@ -54,6 +51,20 @@ export class TransactionPatternRepository {
         )`.as('latestAmount');
     }
 
+    private get modeDayOfMonthSubquery() {
+        return sql<number>`(
+            SELECT CAST(strftime('%d', t3.operated_at, 'unixepoch') AS INTEGER)
+            FROM transactions t3
+            INNER JOIN transaction_entries te3 ON te3.transaction_id = t3.id
+            WHERE te3.category_id = ${TransactionEntryEntityTable.categoryId}
+              AND t3.title = ${TransactionEntityTable.title}
+              AND t3.deleted_at IS NULL
+            GROUP BY CAST(strftime('%d', t3.operated_at, 'unixepoch') AS INTEGER)
+            ORDER BY COUNT(*) DESC
+            LIMIT 1
+        )`.as('dayOfMonth');
+    }
+
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const conditions = this.buildPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
@@ -62,8 +73,7 @@ export class TransactionPatternRepository {
     }
 
     async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRowInterface[]> {
-        const entryType = this.getEntryTypeForTransactionType(query.type);
-        const rows = await this.executeMonthlyPatternQuery(entryType, query);
+        const rows = await this.executeMonthlyPatternQuery(query);
 
         return rows.filter(
             (row): row is MonthlyPatternRowInterface =>
@@ -99,7 +109,7 @@ export class TransactionPatternRepository {
         return conditions;
     }
 
-    private buildBasePatternConditions(query: Pick<AmountPatternQueryInterface, 'type' | 'accountId' | 'categoryId'>): SQL[] {
+    private buildBasePatternConditions(query: { type: TransactionTypeEnum; accountId?: number; categoryId?: number }): SQL[] {
         const entryType = this.getEntryTypeForTransactionType(query.type);
 
         const conditions: SQL[] = [
@@ -156,25 +166,21 @@ export class TransactionPatternRepository {
         const validRows = patternRows.filter(isValidPatternRow);
         const tagMap = await this.findTagsForPatterns(validRows);
 
-        return validRows.map(row => {
-            const patternKey = `${row.categoryId}-${row.title}`;
-
-            return {
-                categoryId: row.categoryId,
-                categoryTitle: row.categoryTitle,
-                categoryIcon: row.categoryIcon,
-                tagIds: tagMap.get(patternKey) ?? [],
-                title: row.title,
-                comment: row.comment,
-                latestAmount: row.latestAmount,
-                occurrenceCount: row.occurrenceCount,
-                lastOccurrence: new Date(row.lastOccurrence * 1000),
-                accountId: row.accountId,
-                instrumentId: row.instrumentId,
-                accountIsActive: row.accountIsActive,
-                accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
-            };
-        });
+        return validRows.map(row => ({
+            categoryId: row.categoryId,
+            categoryTitle: row.categoryTitle,
+            categoryIcon: row.categoryIcon,
+            tagIds: tagMap.get(`${row.categoryId}-${row.title}`) ?? [],
+            title: row.title,
+            comment: row.comment,
+            latestAmount: row.latestAmount,
+            occurrenceCount: row.occurrenceCount,
+            lastOccurrence: new Date(row.lastOccurrence * 1000),
+            accountId: row.accountId,
+            instrumentId: row.instrumentId,
+            accountIsActive: row.accountIsActive,
+            accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
+        }));
     }
 
     // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
@@ -232,26 +238,12 @@ export class TransactionPatternRepository {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     }
 
-    private buildMonthlyPatternConditions(entryType: TransactionEntryTypeEnum, query: MonthlyPatternQueryInterface): SQL[] {
-        return [
-            eq(TransactionEntityTable.type, query.type),
-            isNull(TransactionEntityTable.deletedAt),
-            eq(TransactionEntryEntityTable.type, entryType),
-            ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-            isNotNull(TransactionEntryEntityTable.categoryId)
-        ];
-    }
-
-    private getExchangeRateSql(defaultInstrumentId: number) {
-        return sql`COALESCE(
+    private getConvertedLatestAmountSubquery(defaultInstrumentId: number) {
+        const exchangeRate = sql`COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
             ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
             1.0
         )`;
-    }
-
-    private getConvertedLatestAmountSubquery(defaultInstrumentId: number) {
-        const exchangeRate = this.getExchangeRateSql(defaultInstrumentId);
 
         return sql<number>`(
             SELECT te2.amount
@@ -265,12 +257,11 @@ export class TransactionPatternRepository {
         ) * ${exchangeRate}`.as('latestAmount');
     }
 
-    private async executeMonthlyPatternQuery(
-        entryType: TransactionEntryTypeEnum,
-        query: MonthlyPatternQueryInterface
-    ): Promise<MonthlyPatternRawRowInterface[]> {
-        const monthlyConditions = this.buildMonthlyPatternConditions(entryType, query);
-        const { dayOfMonthExpression } = this;
+    private async executeMonthlyPatternQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+        const monthlyConditions = this.buildBasePatternConditions(query);
+        monthlyConditions.push(
+            sql`${TransactionEntityTable.operatedAt} >= ${Math.floor(Date.now() / 1000) - RECENCY_MONTHS * 30 * 24 * 60 * 60}`
+        );
         const distinctMonthCount = this.distinctMonthCountExpression;
 
         return this.db
@@ -282,7 +273,7 @@ export class TransactionPatternRepository {
                 latestAmount: this.getConvertedLatestAmountSubquery(query.defaultInstrumentId),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonthCount})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
-                dayOfMonth: sql<number>`${dayOfMonthExpression}`.as('dayOfMonth'),
+                dayOfMonth: this.modeDayOfMonthSubquery,
                 accountId: AccountEntityTable.id,
                 instrumentId: AccountEntityTable.instrumentId
             })
@@ -291,7 +282,7 @@ export class TransactionPatternRepository {
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...monthlyConditions))
-            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title, dayOfMonthExpression)
+            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
             .having(sql`COUNT(DISTINCT ${distinctMonthCount}) >= ${MIN_MONTHLY_OCCURRENCES}`)
             .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonthCount})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
