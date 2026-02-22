@@ -1,10 +1,9 @@
 /* eslint-disable no-await-in-loop */
-import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -15,6 +14,7 @@ import type { FileBasedBankSyncClientInterface } from '../interface/file-based-b
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { DB } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
@@ -72,7 +72,7 @@ export abstract class BaseFileBankSyncService {
         return new Set(accounts.map(account => account.externalId).filter(isDefined));
     }
 
-    private async createBankSyncRecord(accountId: number, tx: Transaction): Promise<void> {
+    private async createBankSyncRecord(accountId: number, tx: DB): Promise<void> {
         const existingSync = await bankSyncRepository.getByAccountId(accountId, tx);
         if (isDefined(existingSync)) {
             return;
@@ -122,7 +122,7 @@ export abstract class BaseFileBankSyncService {
             transactionService.findByExternalSource(this.provider)
         ]);
 
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
             const context: ImportContextInterface = { mccCategoryIdMap, existingExternalIds, tx };
 
             for (const bankAccount of bankAccounts) {
