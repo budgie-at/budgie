@@ -60,7 +60,8 @@ export abstract class BaseEmbeddingRepository {
         return result.count;
     }
 
-    protected async rebuildVec(vecTableName: string, sourceTableName: string): Promise<void> {
+    protected async rebuildVec(): Promise<void> {
+        const { vecTableName, sourceTableName } = this.queryConfig;
         await this.db.$client.runAsync(`DELETE FROM ${vecTableName}`, []);
         await this.db.$client.runAsync(
             `INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`,
@@ -80,11 +81,11 @@ export abstract class BaseEmbeddingRepository {
         });
     }
 
-    protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable, vecTableName: string): Promise<void> {
+    protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
         await transactionAsync(this.db, async txDb => {
             await txDb.delete(tagTable);
             await txDb.delete(embeddingTable);
         });
-        await this.db.$client.runAsync(`DELETE FROM ${vecTableName}`, []);
+        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }
