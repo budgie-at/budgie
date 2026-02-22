@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- tapOn: 'E2E Edited Account'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+
+- tapOn: 'Archive'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- assertNotVisible: 'E2E Edited Account'

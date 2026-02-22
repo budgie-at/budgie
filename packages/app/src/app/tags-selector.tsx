@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TagPickerBottomSheetSelectors } from '../@e2e/selectors/tag-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -61,6 +62,7 @@ export default function TagsSelectorModal() {
                 placeholder={t`Search tags...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                testID={TagPickerBottomSheetSelectors.Input}
             />
 
             {isNotEmptyString(description) ? (

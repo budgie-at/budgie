@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageTagsCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageTagsCard'
+- extendedWaitUntil:
+    visible: 'Tags'
+
+- tapOn:
+    id: 'ActionButton'
+
+- waitForAnimationToEnd
+
+- tapOn: Tag
+
+- tapOn:
+    id: TagForm.Input
+- inputText: ${TAG_NAME}
+- hideKeyboard
+
+- tapOn:
+    id: TagForm.Submit
+
+- extendedWaitUntil:
+    visible: '${TAG_NAME}, Swipe left'
+    timeout: 10000
+
+- tapOn:
+    id: 'TabBar.Settings'

@@ -13,10 +13,11 @@ interface Props {
     readonly placeholder?: string;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
+    readonly testID?: string;
 }
 
 export const SelectorModalSearchHeader = (props: Props) => {
-    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress } = props;
+    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress, testID } = props;
     const { t } = useLingui();
 
     const hasRightAction = isDefined(rightActionIcon) && isDefined(rightActionOnPress);
@@ -35,6 +36,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
                         autoCapitalize="none"
                         autoCorrect={false}
                         clearButtonMode="while-editing"
+                        testID={testID}
                     />
                 </View>
                 {hasRightAction && (

@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
@@ -148,7 +149,12 @@ export const CategoryForm = (props: Props) => {
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
-                <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
+                <CategoryTitleInput
+                    value={title}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    testID={CategoryFormSelectors.Input}
+                />
 
                 {/* jscpd:ignore-start */}
                 <AiTranslationFields
@@ -170,7 +176,7 @@ export const CategoryForm = (props: Props) => {
 
                 <View className="flex-row gap-x-md">
                     <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
                 </View>
             </View>
             {/* jscpd:ignore-end */}

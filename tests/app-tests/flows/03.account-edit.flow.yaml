@@ -1,0 +1,25 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- tapOn: 'E2E Account'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- eraseText: 50
+- inputText: 'E2E Edited Account'
+
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible: 'E2E Edited Account'

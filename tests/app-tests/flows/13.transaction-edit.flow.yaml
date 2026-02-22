@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- tapOn: 'E2E Test Expense'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionForm.CommentInput'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'NoteInput.Input'
+- eraseText: 50
+- inputText: 'E2E Edited Expense'
+- tapOn:
+    id: 'NoteInput.SubmitButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Edited Expense'

@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+
+- runFlow: shared/enter-app.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 60000
+
+- assertVisible: 'TOTAL BALANCE'

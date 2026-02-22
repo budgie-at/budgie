@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -51,7 +52,7 @@ export const CreateDebtAccount = () => {
             <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />
+                <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} nameInputTestID={AccountFormSelectors.NameInput} />
 
                 <CreateAccountCurrencyField control={control} />
 

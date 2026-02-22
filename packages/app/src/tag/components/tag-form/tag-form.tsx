@@ -6,6 +6,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TagFormSelectors } from '../../../@e2e/selectors/tag-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
@@ -150,6 +151,7 @@ export const TagForm = (props: Props) => {
                             textContentType="none"
                             spellCheck={false}
                             inputMode="text"
+                            testID={TagFormSelectors.Input}
                         />
                     </FormItem>
                 </Animated.View>
@@ -171,7 +173,7 @@ export const TagForm = (props: Props) => {
 
                 <View className="flex-row gap-x-md">
                     <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
                 </View>
             </View>
         </ModalPage>

@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+
+- runFlow: shared/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageCategoriesCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageCategoriesCard'
+- extendedWaitUntil:
+    visible: 'Categories'
+
+- swipe:
+    from:
+      text: 'E2E Edited Category, Swipe left'
+    direction: LEFT
+
+- tapOn:
+    point: '92%,19%'
+
+- tapOn: 'Delete'
+
+- waitForAnimationToEnd
+
+- assertNotVisible: 'E2E Edited Category, Swipe left'

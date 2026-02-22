@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryPickerBottomSheetSelectors } from '../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -56,6 +57,7 @@ export default function CategorySelectorModal() {
                 placeholder={t`Search categories...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                testID={CategoryPickerBottomSheetSelectors.Input}
             />
 
             {isNotEmptyString(description) ? (
@@ -64,7 +66,13 @@ export default function CategorySelectorModal() {
                 </View>
             ) : null}
 
-            <CategorySelectContent data={data} variant={variant} initialCategoryId={initialCategoryId} onSelect={resolveCategorySelector} />
+            <CategorySelectContent
+                data={data}
+                variant={variant}
+                initialCategoryId={initialCategoryId}
+                onSelect={resolveCategorySelector}
+                cardTestID={CategoryPickerBottomSheetSelectors.Card}
+            />
         </View>
     );
     /* jscpd:ignore-end */
