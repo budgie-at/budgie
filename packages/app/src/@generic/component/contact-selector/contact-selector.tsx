@@ -17,7 +17,7 @@ interface Props {
 
 export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
     const { contacts, error } = useContacts();
-    const { openContactSelector } = useContactSelectorModal();
+    const [openContactSelector] = useContactSelectorModal();
     const { t } = useLingui();
 
     const handleOpen = async () => {

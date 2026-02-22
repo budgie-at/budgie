@@ -13,7 +13,7 @@ interface Props {
 
 export const TransactionTagFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const { openTransactionTagFilter } = useTransactionTagFilterModal();
+    const [openTransactionTagFilter] = useTransactionTagFilterModal();
 
     const handleOpen = async () => {
         const result = await openTransactionTagFilter({ value });

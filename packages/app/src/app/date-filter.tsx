@@ -17,7 +17,7 @@ import { TransactionFilterHeader } from '../transaction/components/transaction-f
 
 export default function DateFilterModal() {
     const { t } = useLingui();
-    const { currentParams, resolveDateFilter } = useDateFilterModal();
+    const [, resolveDateFilter, currentParams] = useDateFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => currentParams?.value ?? null);

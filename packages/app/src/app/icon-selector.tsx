@@ -58,7 +58,7 @@ const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserI
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveIconSelector } = useIconSelectorModal();
+    const [, resolveIconSelector, currentParams] = useIconSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 

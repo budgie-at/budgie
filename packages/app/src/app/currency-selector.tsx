@@ -20,7 +20,7 @@ const filterInstruments = (instruments: InstrumentEntityInterface[], search: str
 
 export default function CurrencySelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveCurrencySelector } = useCurrencySelectorModal();
+    const [, resolveCurrencySelector, currentParams] = useCurrencySelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);

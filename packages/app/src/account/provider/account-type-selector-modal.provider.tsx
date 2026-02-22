@@ -1,22 +1,9 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { AccountTypeSelectorModalContext } from '../context/account-type-selector-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import {
+import type { AccountTypeSelectorModalParams, AccountTypeSelectorResult } from '../context/account-type-selector-modal.context';
+
+export const AccountTypeSelectorModalProvider = createModalProvider<AccountTypeSelectorModalParams, AccountTypeSelectorResult>(
     AccountTypeSelectorModalContext,
-    AccountTypeSelectorModalParams,
-    AccountTypeSelectorResult
-} from '../context/account-type-selector-modal.context';
-
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const AccountTypeSelectorModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<AccountTypeSelectorModalParams, AccountTypeSelectorResult>(
-        '/account-type-selector'
-    );
-
-    const value = { openAccountTypeSelector: open, resolveAccountTypeSelector: resolve, currentParams };
-
-    return <AccountTypeSelectorModalContext value={value}>{children}</AccountTypeSelectorModalContext>;
-};
+    '/account-type-selector'
+);

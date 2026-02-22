@@ -16,7 +16,7 @@ const TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCO
 
 export default function TransactionTypeFilterModal() {
     const { t } = useLingui();
-    const { currentParams, resolveTransactionTypeFilter } = useTransactionTypeFilterModal();
+    const [, resolveTransactionTypeFilter, currentParams] = useTransactionTypeFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const [localValue, setLocalValue] = useState<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);

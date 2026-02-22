@@ -26,7 +26,7 @@ const filterLanguages = (
 
 export default function LanguageSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveLanguageSelector } = useLanguageSelectorModal();
+    const [, resolveLanguageSelector, currentParams] = useLanguageSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 

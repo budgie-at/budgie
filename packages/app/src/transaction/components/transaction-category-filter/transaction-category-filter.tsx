@@ -13,7 +13,7 @@ interface Props {
 
 export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const { openTransactionCategoryFilter } = useTransactionCategoryFilterModal();
+    const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
 
     const handleOpen = async () => {
         const result = await openTransactionCategoryFilter({ value });

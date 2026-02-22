@@ -1,16 +1,6 @@
-import { ReactNode } from 'react';
+import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
+import { NoteInputModalContext } from '../context/note-input-modal.context';
 
-import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
-import { NoteInputModalContext, NoteInputModalParams } from '../context/note-input-modal.context';
+import type { NoteInputModalParams } from '../context/note-input-modal.context';
 
-interface Props {
-    readonly children: ReactNode;
-}
-
-export const NoteInputModalProvider = ({ children }: Props) => {
-    const { currentParams, open, resolve } = useModalResolver<NoteInputModalParams, string | null>('/note-input');
-
-    const value = { openNoteInput: open, resolveNoteInput: resolve, currentParams };
-
-    return <NoteInputModalContext value={value}>{children}</NoteInputModalContext>;
-};
+export const NoteInputModalProvider = createModalProvider<NoteInputModalParams, string | null>(NoteInputModalContext, '/note-input');

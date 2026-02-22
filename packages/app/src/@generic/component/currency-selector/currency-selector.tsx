@@ -20,7 +20,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
-    const { openCurrencySelector } = useCurrencySelectorModal();
+    const [openCurrencySelector] = useCurrencySelectorModal();
 
     const selectedCurrency = instruments.find(({ id }) => id === instrumentId);
 

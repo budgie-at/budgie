@@ -21,7 +21,7 @@ import { toggleFilterSelection } from '../transaction/utils/toggle-filter-select
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
-    const { currentParams, resolveTransactionTagFilter } = useTransactionTagFilterModal();
+    const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const [localValue, setLocalValue] = useState<number[] | null>(() => currentParams?.value ?? null);

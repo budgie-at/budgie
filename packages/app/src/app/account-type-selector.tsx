@@ -18,7 +18,7 @@ const ANIMATION_DURATION = 200;
 
 export default function AccountTypeSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveAccountTypeSelector } = useAccountTypeSelectorModal();
+    const [, resolveAccountTypeSelector, currentParams] = useAccountTypeSelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const initialType = currentParams?.currentType ?? AccountTypeEnum.BANK;

@@ -1,7 +1,6 @@
 import { DateRangeInterface } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../utils/create-modal-context/create-modal-context.util';
 
 export interface DateFilterModalParams {
     readonly value: DateRangeInterface | null;
@@ -9,16 +8,4 @@ export interface DateFilterModalParams {
 
 export type DateFilterResult = { readonly value: DateRangeInterface | null };
 
-interface DateFilterModalContextInterface {
-    openDateFilter: (params: DateFilterModalParams) => Promise<DateFilterResult | null>;
-    resolveDateFilter: (result: DateFilterResult | null) => void;
-    currentParams: DateFilterModalParams | null;
-}
-
-export const DateFilterModalContext = createContext<DateFilterModalContextInterface>({
-    openDateFilter: () => Promise.resolve(null),
-    resolveDateFilter: emptyFn,
-    currentParams: null
-});
-
-export const useDateFilterModal = () => use(DateFilterModalContext);
+export const [DateFilterModalContext, useDateFilterModal] = createModalContext<DateFilterModalParams, DateFilterResult | null>(null);

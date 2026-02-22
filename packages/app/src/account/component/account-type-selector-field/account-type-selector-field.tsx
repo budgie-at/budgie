@@ -19,7 +19,7 @@ interface Props<T extends { type: AccountTypeEnum }> {
 
 export const AccountTypeSelectorField = <T extends { type: AccountTypeEnum }>({ control }: Props<T>) => {
     const { t } = useLingui();
-    const { openAccountTypeSelector } = useAccountTypeSelectorModal();
+    const [openAccountTypeSelector] = useAccountTypeSelectorModal();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => {
         const variant = ACCOUNT_COLOR[value];
