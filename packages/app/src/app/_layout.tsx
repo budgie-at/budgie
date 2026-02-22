@@ -33,7 +33,7 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
-import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AiEmbeddingProgressProvider } from '../ai/provider/ai-embedding-progress.provider';
 import { AiStatusProvider } from '../ai/provider/ai-status.provider';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
@@ -79,7 +79,7 @@ export default function RootLayout() {
                     <I18nProvider>
                         <KeyboardProvider>
                             <ThemeProvider>
-                                <BottomSheetsProvider>
+                                <GestureHandlerRootView className="flex-1">
                                     <AuthProvider>
                                         <AuthGuard>
                                             <CreateActionProvider>
@@ -174,7 +174,7 @@ export default function RootLayout() {
                                             </CreateActionProvider>
                                         </AuthGuard>
                                     </AuthProvider>
-                                </BottomSheetsProvider>
+                                </GestureHandlerRootView>
                             </ThemeProvider>
                         </KeyboardProvider>
                     </I18nProvider>

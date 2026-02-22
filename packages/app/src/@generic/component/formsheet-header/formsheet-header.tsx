@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
+import { FormsheetHeaderAlign } from '../../type/formsheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
@@ -16,7 +16,7 @@ interface Props {
     readonly description?: string;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
-    readonly align?: BottomSheetHeaderAlign;
+    readonly align?: FormsheetHeaderAlign;
 }
 
 const headerVariant = cva('gap-y-1 py-3xl px-lg', {
@@ -56,7 +56,7 @@ const descriptionVariants = cva('text-center text-secondary-foreground', {
     }
 });
 
-export const BottomSheetHeader = (props: Props) => {
+export const FormsheetHeader = (props: Props) => {
     const { size, align = 'center', icon, title, description, className, titleClassName, descriptionClassName } = props;
 
     return (
