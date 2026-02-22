@@ -40,7 +40,7 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { openCategorySelector } = useCategorySelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
     const [hapticNotification] = useVibration();
 
     const [entries, setEntries] = useState<EntryWithLocalIdInterface[]>(() => initialEntries.map(addLocalId));
