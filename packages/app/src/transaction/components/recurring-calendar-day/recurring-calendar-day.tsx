@@ -1,64 +1,67 @@
 import { Pressable, Text, View } from 'react-native';
-import { CalendarDay } from 'react-native-ui-datepicker';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 
-const MAX_VISIBLE_DOTS = 3;
+const MAX_DOTS = 3;
 
 interface Props {
-    readonly day: CalendarDay;
+    readonly day: number;
+    readonly isCurrentMonth: boolean;
+    readonly isToday: boolean;
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly selectedDay: number | undefined;
     readonly onSelectDay: (day: number) => void;
 }
 
-export const RecurringCalendarDay = ({ day, entriesByDay, selectedDay, onSelectDay }: Props) => {
-    const dayOfMonth = day.dayOfMonth ?? Number(day.text);
-    const entries = day.isCurrentMonth ? entriesByDay.get(dayOfMonth) : null;
+export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDay, selectedDay, onSelectDay }: Props) => {
+    const entries = isCurrentMonth ? entriesByDay.get(day) : null;
     const entryCount = entries?.length ?? 0;
     const hasEntries = entryCount > 0;
-    const isSelected = selectedDay === dayOfMonth && day.isCurrentMonth;
-    const isOtherMonth = !day.isCurrentMonth;
-    const visibleDots = Math.min(entryCount, MAX_VISIBLE_DOTS);
+    const isSelected = selectedDay === day && isCurrentMonth;
+    const visibleDots = Math.min(entryCount, MAX_DOTS);
 
     const handlePress = () => {
-        if (day.isCurrentMonth && hasEntries) {
-            onSelectDay(dayOfMonth);
+        if (isCurrentMonth && hasEntries) {
+            onSelectDay(day);
         }
     };
 
     /* eslint-disable lingui/no-unlocalized-strings */
-    const wrapperClassName = cn(
-        'items-center justify-center rounded-full aspect-square mx-0.5',
-        isOtherMonth && 'opacity-20',
-        hasEntries && !isSelected && 'bg-destructive-corner/20',
-        day.isToday && !isSelected && 'border-2 border-primary',
+    const circleClassName = cn(
+        'w-11 h-11 items-center justify-center rounded-full',
+        !isCurrentMonth && 'opacity-15',
+        hasEntries && !isSelected && 'bg-destructive/15',
+        isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
 
     const textClassName = cn(
-        'text-sm font-medium',
+        'text-base',
         !hasEntries && !isSelected && 'text-secondary-foreground',
         hasEntries && !isSelected && 'text-destructive font-bold',
-        day.isToday && !isSelected && 'text-primary font-bold',
+        isToday && !isSelected && 'text-primary font-bold',
         isSelected && 'text-primary-reverse font-bold'
     );
 
-    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
+    const dotClassName = cn('h-1.5 w-1.5 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
-        <Pressable className={wrapperClassName} onPress={handlePress}>
-            <Text className={textClassName}>{day.text}</Text>
+        <Pressable className="flex-1 items-center py-0.5" onPress={handlePress}>
+            <View className={circleClassName}>
+                <Text className={textClassName}>{day}</Text>
+            </View>
 
-            {hasEntries && day.isCurrentMonth ? (
-                <View className="absolute bottom-1.5 flex-row gap-x-0.5">
+            {hasEntries && isCurrentMonth ? (
+                <View className="flex-row gap-x-0.5 mt-0.5 h-1.5">
                     {Array.from({ length: visibleDots }, (_, index) => (
                         <View key={index} className={dotClassName} />
                     ))}
                 </View>
-            ) : null}
+            ) : (
+                <View className="h-1.5 mt-0.5" />
+            )}
         </Pressable>
     );
 };
