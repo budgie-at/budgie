@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { ContactSelectorCard } from '../@generic/component/contact-selector-card/contact-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
+import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useContactSelectorModal } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
@@ -75,8 +76,8 @@ export default function ContactSelectorModal() {
                 renderItem={renderItem}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                contentContainerClassName="px-3xl gap-y-lg"
                 contentContainerStyle={contentContainerStyle}
+                ItemSeparatorComponent={ListItemSeparator}
                 ListEmptyComponent={listEmptyComponent}
                 ListFooterComponent={listFooterComponent}
             />
