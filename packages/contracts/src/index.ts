@@ -15,7 +15,7 @@ export type { TagScoreResultInterface } from './@generic/interface/tag-score-res
 
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 
-export type { DB } from './@generic/type/db.type';
+export type { DB, DBOrTX, TX } from './@generic/type/db.type';
 
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';

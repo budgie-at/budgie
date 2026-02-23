@@ -51,7 +51,9 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                                     <RuleFormModalProvider>
                                                                                         <RuleSelectorModalProvider>
                                                                                             <RuleMccSelectorModalProvider>
-                                                                                                <SuggestRuleModalProvider>{children}</SuggestRuleModalProvider>
+                                                                                                <SuggestRuleModalProvider>
+                                                                                                    {children}
+                                                                                                </SuggestRuleModalProvider>
                                                                                             </RuleMccSelectorModalProvider>
                                                                                         </RuleSelectorModalProvider>
                                                                                     </RuleFormModalProvider>
