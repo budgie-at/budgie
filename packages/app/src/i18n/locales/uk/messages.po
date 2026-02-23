@@ -35,7 +35,7 @@ msgstr "{availableCount} стовпців доступно"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% вивчено"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:40
+#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:29
 msgid "{formattedAmount} · {category}"
 msgstr ""
 
@@ -589,9 +589,9 @@ msgstr "Дата"
 msgid "Date Range"
 msgstr "Діапазон дат"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:31
-msgid "Day {day}"
-msgstr ""
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
+msgid "Day {selectedDay}"
+msgstr "День {selectedDay}"
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -1094,6 +1094,10 @@ msgstr "Гроші, які ви винні або вам винні"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:65
+msgid "Monthly Total"
+msgstr "Місячний підсумок"
+
 #: src/app/(main)/create-account/index.tsx:20
 msgid "New Account"
 msgstr "Новий рахунок"
@@ -1178,7 +1182,7 @@ msgstr "Мов не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:61
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:107
 msgid "No recurring payments detected"
 msgstr "Регулярних платежів не виявлено"
 
@@ -1333,16 +1337,12 @@ msgstr "Перерахувати баланси"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx:13
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:45
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:59
 msgid "Recurring"
 msgstr "Регулярні"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:28
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:39
-msgid "Recurring Payments"
-msgstr "Регулярні платежі"
-
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:62
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:108
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Регулярні платежі з'являться тут, коли будуть виявлені закономірності у ваших транзакціях"
 
