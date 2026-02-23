@@ -29,38 +29,38 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const circleClassName = cn(
-        'w-11 h-11 items-center justify-center rounded-full',
-        !isCurrentMonth && 'opacity-15',
-        hasEntries && !isSelected && 'bg-destructive/15',
+        'w-10 h-10 items-center justify-center rounded-full',
+        !isCurrentMonth && 'opacity-30',
+        hasEntries && !isSelected && 'bg-destructive-background',
         isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
 
     const textClassName = cn(
-        'text-base',
+        'text-sm',
         !hasEntries && !isSelected && 'text-secondary-foreground',
-        hasEntries && !isSelected && 'text-destructive font-bold',
-        isToday && !isSelected && 'text-primary font-bold',
-        isSelected && 'text-primary-reverse font-bold'
+        hasEntries && !isSelected && 'text-destructive font-semibold',
+        isToday && !isSelected && 'text-primary font-semibold',
+        isSelected && 'text-primary-reverse font-semibold'
     );
 
-    const dotClassName = cn('h-1.5 w-1.5 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
+    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
-        <Pressable className="flex-1 items-center py-0.5" onPress={handlePress}>
+        <Pressable className="flex-1 items-center py-px" onPress={handlePress}>
             <View className={circleClassName}>
                 <Text className={textClassName}>{day}</Text>
             </View>
 
             {hasEntries && isCurrentMonth ? (
-                <View className="flex-row gap-x-0.5 mt-0.5 h-1.5">
+                <View className="flex-row gap-x-0.5 mt-px h-1">
                     {Array.from({ length: visibleDots }, (_, index) => (
                         <View key={index} className={dotClassName} />
                     ))}
                 </View>
             ) : (
-                <View className="h-1.5 mt-0.5" />
+                <View className="h-1 mt-px" />
             )}
         </Pressable>
     );

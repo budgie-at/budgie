@@ -35,7 +35,7 @@ msgstr "{availableCount} Spalten verfügbar"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% gelernt"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:40
+#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:29
 msgid "{formattedAmount} · {category}"
 msgstr ""
 
@@ -589,9 +589,9 @@ msgstr "Datum"
 msgid "Date Range"
 msgstr "Datumsbereich"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:31
-msgid "Day {day}"
-msgstr ""
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
+msgid "Day {selectedDay}"
+msgstr "Tag {selectedDay}"
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -1094,6 +1094,10 @@ msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:65
+msgid "Monthly Total"
+msgstr "Monatlich gesamt"
+
 #: src/app/(main)/create-account/index.tsx:20
 msgid "New Account"
 msgstr "Neues Konto"
@@ -1178,7 +1182,7 @@ msgstr "Keine Sprachen gefunden"
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:61
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:107
 msgid "No recurring payments detected"
 msgstr "Keine wiederkehrenden Zahlungen erkannt"
 
@@ -1333,16 +1337,12 @@ msgstr "Salden neu berechnen"
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
-#: src/transaction/components/recurring-calendar-summary/recurring-calendar-summary.tsx:13
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:45
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:59
 msgid "Recurring"
 msgstr "Wiederkehrend"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:28
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:39
-msgid "Recurring Payments"
-msgstr "Wiederkehrende Zahlungen"
-
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:62
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:108
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen werden hier angezeigt, sobald Muster in Ihren Transaktionen erkannt werden"
 
