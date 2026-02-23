@@ -3,3 +3,5 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import type { SQLiteDatabase } from 'expo-sqlite';
 
 export type DB = ExpoSQLiteDatabase<typeof schema> & { $client: SQLiteDatabase };
+export type TX = Parameters<Parameters<DB['transaction']>[0]>[0];
+export type DBOrTX = DB | TX;
