@@ -16,7 +16,7 @@ interface Props {
 export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
-    const { openCategorySelector } = useCategorySelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
 
     const categoryId = useWatch({ control, name: `actions.${index}.categoryId` });
     const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
