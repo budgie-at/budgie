@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { TX } from '../../@generic/type/db.type';
+import { DBOrTX } from '../../@generic/type/db.type';
 import { RuleConditionCreateEntityInterface } from '../entity/rule-condition-create-entity.interface';
 import { RuleConditionEntityTable } from '../table/rule-condition-entity.table';
 
@@ -17,13 +17,13 @@ export class RuleConditionRepository {
         });
     }
 
-    async create(input: RuleConditionCreateEntityInterface, tx?: TX): Promise<RuleConditionEntityInterface> {
+    async create(input: RuleConditionCreateEntityInterface, tx?: DBOrTX): Promise<RuleConditionEntityInterface> {
         const [condition] = await (tx ?? this.db).insert(RuleConditionEntityTable).values([input]).returning();
 
         return condition;
     }
 
-    async bulkCreate(inputs: RuleConditionCreateEntityInterface[], tx?: TX): Promise<RuleConditionEntityInterface[]> {
+    async bulkCreate(inputs: RuleConditionCreateEntityInterface[], tx?: DBOrTX): Promise<RuleConditionEntityInterface[]> {
         if (inputs.length === 0) {
             return [];
         }
@@ -31,11 +31,11 @@ export class RuleConditionRepository {
         return (tx ?? this.db).insert(RuleConditionEntityTable).values(inputs).returning();
     }
 
-    async deleteByRuleId(ruleId: number, tx?: TX): Promise<void> {
+    async deleteByRuleId(ruleId: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).delete(RuleConditionEntityTable).where(eq(RuleConditionEntityTable.ruleId, ruleId));
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).delete(RuleConditionEntityTable);
     }
 }

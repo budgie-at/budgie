@@ -3,7 +3,7 @@ import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-o
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { DB } from '../../@generic/type/db.type';
+import { DBOrTX } from '../../@generic/type/db.type';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -42,21 +42,21 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         [TransactionAssociationEnum.TO_ACCOUNT]: true
     } as const;
 
-    async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
+    async touchUpdatedAt(id: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
     }
 
-    async deleteById(id: number, tx?: DB): Promise<void> {
+    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
+    async create(input: TransactionCreateEntityInterface, tx?: DBOrTX): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
         }
@@ -64,7 +64,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
-    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DB): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DBOrTX): Promise<TransactionEntityInterface> {
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set(input)
@@ -101,14 +101,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getById(id: number, tx?: TX) {
+    getById(id: number, tx?: DBOrTX) {
         return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
     }
 
-    async truncate(tx?: DB): Promise<void> {
+    async truncate(tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
@@ -158,7 +158,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return null;
     }
 
-    async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
+    async archiveByAccountIds(accountIds: number[], tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: new Date() })
@@ -170,28 +170,28 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
+    async restoreByAccountIds(accountIds: number[], tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: null })
             .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
-    async findTransfersByAccountId(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersByAccountId(accountId: number, tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
             with: this.transactionRelations
         });
     }
 
-    async findTransfersForConversion(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersForConversion(accountId: number, tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
             with: { [TransactionAssociationEnum.ENTRIES]: true }
         });
     }
 
-    async deleteByAccountId(accountId: number, tx?: DB): Promise<void> {
+    async deleteByAccountId(accountId: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db)
             .delete(TransactionEntityTable)
             .where(
@@ -202,14 +202,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    async convertTransfersFromAccountToIncome(accountId: number, tx?: DB): Promise<void> {
+    async convertTransfersFromAccountToIncome(accountId: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId)));
     }
 
-    async convertTransfersToAccountToExpense(accountId: number, tx?: DB): Promise<void> {
+    async convertTransfersToAccountToExpense(accountId: number, tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
