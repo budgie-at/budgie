@@ -1,5 +1,5 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -12,27 +12,16 @@ import { RecurringCalendarEntryInterface } from '../../interface/recurring-calen
 const ANIMATION_STAGGER = 50;
 
 interface Props {
-    readonly day: number;
     readonly entries: readonly RecurringCalendarEntryInterface[];
 }
 
-export const RecurringCalendarDayDetail = ({ day, entries }: Props) => {
+export const RecurringCalendarDayDetail = ({ entries }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const dayTotal = entries.reduce((sum, entry) => sum + entry.latestAmount, 0);
-    const formattedDayTotal = formatDigits(convertFromMicroUnits(dayTotal), defaultInstrument.symbol);
-
     return (
         <View className="gap-y-lg">
-            <View className="flex-row items-center justify-between">
-                <Text className="uppercase text-secondary-foreground text-xs font-semibold">
-                    <Trans>Day {day}</Trans>
-                </Text>
-                <Text className="text-destructive text-sm font-bold">{formattedDayTotal}</Text>
-            </View>
-
             {entries.map((entry, index) => {
                 const amount = convertFromMicroUnits(entry.latestAmount);
                 const formattedAmount = formatDigits(amount, defaultInstrument.symbol);
