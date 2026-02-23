@@ -18,7 +18,7 @@ interface Props {
 export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
 
     const value = useWatch({ control, name: `conditions.${index}.value` });
     const accountId = isPositiveNumber(Number(value)) ? Number(value) : 0;

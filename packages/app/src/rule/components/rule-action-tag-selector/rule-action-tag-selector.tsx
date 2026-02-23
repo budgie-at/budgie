@@ -16,7 +16,7 @@ interface Props {
 export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
-    const { openTagsSelector } = useTagsSelectorModal();
+    const [openTagsSelector] = useTagsSelectorModal();
 
     const tagId = useWatch({ control, name: `actions.${index}.tagId` });
     const { tags } = useGetTagByIdsQuery(isDefined(tagId) ? [tagId] : []);

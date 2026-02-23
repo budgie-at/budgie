@@ -20,13 +20,15 @@ const STAGGER_DELAY = 60;
 export const PatternSuggestionRow = (props: Props) => {
     const { transactionType, accountId, amount, categoryId, enabled, onSelect } = props;
 
-    const { suggestions, status } = useRepeatedTransactionSuggestion({
+    const { timePatterns, amountPatterns, status } = useRepeatedTransactionSuggestion({
         enabled,
         type: transactionType,
         accountId,
         amount,
         categoryId
     });
+
+    const suggestions = [...timePatterns, ...amountPatterns];
 
     const renderPill = (pattern: RepeatedTransactionPatternInterface, index: number, onPillSelect: () => void) => (
         <SuggestionPill
