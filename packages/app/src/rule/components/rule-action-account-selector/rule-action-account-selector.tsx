@@ -17,7 +17,7 @@ interface Props {
 export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
 
     const accountId = useWatch({ control, name: `actions.${index}.accountId` });
     const conditions = useWatch({ control, name: 'conditions' });
