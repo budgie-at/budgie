@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -16,58 +15,71 @@ interface Props {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly selectedDay: number | undefined;
     readonly onSelectDay: (day: number) => void;
+    readonly displayMonth: number;
+    readonly displayYear: number;
+    readonly onChangeMonth: (year: number, month: number) => void;
 }
 
 const getWeekdayNames = (locale: string): string[] =>
     Array.from({ length: DAYS_IN_WEEK }, (_, i) =>
-        new Intl.DateTimeFormat(locale, { weekday: 'narrow' }).format(new Date(MONDAY_REFERENCE_YEAR, 0, MONDAY_OFFSET + i))
+        new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(MONDAY_REFERENCE_YEAR, 0, MONDAY_OFFSET + i))
     );
 
 const getMonthLabel = (year: number, month: number, locale: string): string =>
     new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
 
-export const RecurringCalendarGrid = ({ entriesByDay, selectedDay, onSelectDay }: Props) => {
+export const RecurringCalendarGrid = (props: Props) => {
+    const { entriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
+
     const { languageTag } = useLocaleInfo();
     const now = new Date();
-    const [displayMonth, setDisplayMonth] = useState(now.getMonth());
-    const [displayYear, setDisplayYear] = useState(now.getFullYear());
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
 
     const weekdays = getWeekdayNames(languageTag);
     const rows = getCalendarDays(displayYear, displayMonth);
     const monthLabel = getMonthLabel(displayYear, displayMonth, languageTag);
 
+    const isCurrentMonthDisplayed = displayMonth === currentMonth && displayYear === currentYear;
+
     const handlePrevMonth = () => {
         const isJanuary = displayMonth === 0;
-        setDisplayMonth(isJanuary ? 11 : displayMonth - 1);
-        if (isJanuary) {
-            setDisplayYear(displayYear - 1);
-        }
+        const newMonth = isJanuary ? 11 : displayMonth - 1;
+        const newYear = isJanuary ? displayYear - 1 : displayYear;
+        onChangeMonth(newYear, newMonth);
     };
 
     const handleNextMonth = () => {
-        const isDecember = displayMonth === 11;
-        setDisplayMonth(isDecember ? 0 : displayMonth + 1);
-        if (isDecember) {
-            setDisplayYear(displayYear + 1);
+        if (isCurrentMonthDisplayed) {
+            return;
         }
+
+        const isDecember = displayMonth === 11;
+        const newMonth = isDecember ? 0 : displayMonth + 1;
+        const newYear = isDecember ? displayYear + 1 : displayYear;
+        onChangeMonth(newYear, newMonth);
     };
 
+     
+    const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-30' : 'text-primary';
+     
+
     return (
-        <View className="gap-y-md">
+        <View className="gap-y-sm">
             <View className="flex-row items-center justify-between">
                 <Pressable onPress={handlePrevMonth} hitSlop={12} className="p-sm">
                     <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
                 </Pressable>
-                <Text className="text-primary text-base font-semibold capitalize">{monthLabel}</Text>
-                <Pressable onPress={handleNextMonth} hitSlop={12} className="p-sm">
-                    <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={20} />
+                <Text className="text-primary text-sm font-semibold capitalize">{monthLabel}</Text>
+                <Pressable onPress={handleNextMonth} hitSlop={12} className="p-sm" disabled={isCurrentMonthDisplayed}>
+                    <Icon icon={UserIconNameEnum.ChevronRight} className={nextChevronClassName} size={20} />
                 </Pressable>
             </View>
 
             <View className="flex-row">
                 {weekdays.map((name, index) => (
-                    <View key={index} className="flex-1 items-center pb-sm">
-                        <Text className="text-xs text-secondary-foreground font-semibold uppercase">{name}</Text>
+                    <View key={index} className="flex-1 items-center pb-xs">
+                        <Text className="text-xxs text-secondary-foreground font-medium uppercase">{name}</Text>
                     </View>
                 ))}
             </View>
