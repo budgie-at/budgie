@@ -30,6 +30,7 @@ class RecurringCalendarService {
                 categoryIcon: pattern.categoryIcon,
                 title: pattern.title,
                 latestAmount: pattern.latestAmount,
+                latestTransactionId: pattern.latestTransactionId,
                 occurrenceCount: pattern.occurrenceCount,
                 dayOfMonth: pattern.dayOfMonth,
                 accountId: pattern.accountId,
