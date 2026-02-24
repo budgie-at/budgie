@@ -32,7 +32,7 @@ export const RecurringCalendarPage = () => {
 
     const entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = data?.entriesByDay ?? new Map();
     const selectedEntries = isDefined(selectedDay) ? entriesByDay.get(selectedDay) : null;
-    const totalAmount = convertFromMicroUnits(data?.totalAmount ?? 0);
+    const totalAmount = data?.totalAmount ?? 0;
 
     const handleChangeMonth = (year: number, month: number) => {
         setDisplayYear(year);
