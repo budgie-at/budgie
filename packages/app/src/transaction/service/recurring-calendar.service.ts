@@ -48,10 +48,10 @@ class RecurringCalendarService {
         let forecastedTotalAmount = 0;
 
         for (const pattern of patterns) {
-            const isActual =
+            const hasDisplayMonthTransaction =
                 isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
 
-            if (isActual) {
+            if (hasDisplayMonthTransaction) {
                 const entry = this.buildEntryFromPattern(pattern, {
                     dayOfMonth: pattern.dayOfMonth,
                     title: pattern.title,
@@ -60,10 +60,11 @@ class RecurringCalendarService {
                 });
                 this.addEntryToMap(entriesByDay, pattern.dayOfMonth, entry);
                 totalAmount += pattern.latestAmount;
-            } else if (isCurrentMonth && isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
+            } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
                 const clampedDay = Math.min(pattern.modeDayOfMonth, daysInMonth);
+                const isForecastedUpcoming = isCurrentMonth && clampedDay > today;
 
-                if (clampedDay > today) {
+                if (isForecastedUpcoming) {
                     const entry = this.buildEntryFromPattern(pattern, {
                         dayOfMonth: clampedDay,
                         title: pattern.latestOverallTitle,
@@ -72,6 +73,15 @@ class RecurringCalendarService {
                     });
                     this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
                     forecastedTotalAmount += pattern.latestAmount;
+                } else {
+                    const entry = this.buildEntryFromPattern(pattern, {
+                        dayOfMonth: clampedDay,
+                        title: pattern.latestOverallTitle,
+                        latestTransactionId: null,
+                        isForecast: false
+                    });
+                    this.addEntryToMap(entriesByDay, clampedDay, entry);
+                    totalAmount += pattern.latestAmount;
                 }
             }
         }
