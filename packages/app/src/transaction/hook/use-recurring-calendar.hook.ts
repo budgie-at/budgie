@@ -15,7 +15,7 @@ interface UseRecurringCalendarReturnInterface {
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
-export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
+export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
     const { defaultInstrument } = useSettingsContext();
     const focusKey = useFocusKey();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
@@ -29,7 +29,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
             setIsLoading(true);
 
             try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id);
+                const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id, displayYear, displayMonth);
 
                 if (!cancelled) {
                     setData(result);
@@ -51,7 +51,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
         return () => {
             cancelled = true;
         };
-    }, [focusKey, defaultInstrument.id]);
+    }, [focusKey, defaultInstrument.id, displayYear, displayMonth]);
 
     return { data, isLoading, error };
 };

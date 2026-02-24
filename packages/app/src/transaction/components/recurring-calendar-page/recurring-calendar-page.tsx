@@ -21,13 +21,13 @@ import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-cale
 // eslint-disable-next-line max-statements -- Page orchestration component with multiple hooks and state
 export const RecurringCalendarPage = () => {
     const { t } = useLingui();
-    const { data, isLoading } = useRecurringCalendar();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const now = new Date();
     const [displayMonth, setDisplayMonth] = useState(now.getMonth());
     const [displayYear, setDisplayYear] = useState(now.getFullYear());
+    const { data, isLoading } = useRecurringCalendar(displayYear, displayMonth);
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
 
     const entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = data?.entriesByDay ?? new Map();
