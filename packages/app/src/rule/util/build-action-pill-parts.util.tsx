@@ -16,7 +16,7 @@ export const buildActionPillParts = (
         parts.push(
             <Fragment key="category">
                 <Trans>
-                    category to <Text className="font-semibold text-foreground">{categoryTitle}</Text>
+                    category to <Text className="font-semibold text-primary">{categoryTitle}</Text>
                 </Trans>
             </Fragment>
         );
@@ -28,7 +28,7 @@ export const buildActionPillParts = (
             parts.push(
                 <Fragment key={`tag-${tagTitle}`}>
                     <Trans>
-                        tag <Text className="font-semibold text-foreground">{tagTitle}</Text>
+                        tag <Text className="font-semibold text-primary">{tagTitle}</Text>
                     </Trans>
                 </Fragment>
             );
