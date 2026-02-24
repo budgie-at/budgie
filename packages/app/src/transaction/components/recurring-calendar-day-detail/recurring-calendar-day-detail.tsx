@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -25,14 +26,15 @@ export const RecurringCalendarDayDetail = ({ entries }: Props) => {
             {entries.map((entry, index) => {
                 const amount = convertFromMicroUnits(entry.latestAmount);
                 const formattedAmount = formatDigits(amount, defaultInstrument.symbol);
-                const category = entry.categoryTitle;
+                const category = entry.categoryTitle ?? entry.title;
                 const description = t`${formattedAmount} · ${category}`;
+                const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
                 const animationDelay = index * ANIMATION_STAGGER;
 
                 return (
-                    <Animated.View key={`${entry.categoryId}-${entry.title}`} entering={FadeInDown.delay(animationDelay).duration(200)}>
+                    <Animated.View key={entry.title} entering={FadeInDown.delay(animationDelay).duration(200)}>
                         <SimpleHorizontalCell
-                            left={<CircleIcon icon={entry.categoryIcon} variant="destructive" />}
+                            left={<CircleIcon icon={icon} variant="destructive" />}
                             title={entry.title}
                             description={description}
                         />
