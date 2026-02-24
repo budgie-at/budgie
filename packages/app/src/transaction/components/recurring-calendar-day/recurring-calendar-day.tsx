@@ -1,5 +1,6 @@
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 
@@ -48,20 +49,20 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
-        <Pressable className="flex-1 items-center py-px" onPress={handlePress}>
+        <HapticPressable className="flex-1 items-center py-px" onPress={handlePress}>
             <View className={circleClassName}>
                 <Text className={textClassName}>{day}</Text>
             </View>
 
             {hasEntries && isCurrentMonth ? (
-                <View className="flex-row gap-x-0.5 mt-px h-1">
+                <View className="flex-row gap-x-0.5 mt-0.5 h-1">
                     {Array.from({ length: visibleDots }, (_, index) => (
                         <View key={index} className={dotClassName} />
                     ))}
                 </View>
             ) : (
-                <View className="h-1 mt-px" />
+                <View className="h-1 mt-0.5" />
             )}
-        </Pressable>
+        </HapticPressable>
     );
 };
