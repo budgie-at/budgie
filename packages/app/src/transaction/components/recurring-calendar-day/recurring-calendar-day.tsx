@@ -31,7 +31,7 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
     const circleClassName = cn(
         'w-10 h-10 items-center justify-center rounded-full',
         !isCurrentMonth && 'opacity-30',
-        hasEntries && !isSelected && 'bg-destructive-background',
+        hasEntries && !isSelected && 'bg-warning-background',
         isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
@@ -39,12 +39,12 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
     const textClassName = cn(
         'text-sm',
         !hasEntries && !isSelected && 'text-secondary-foreground',
-        hasEntries && !isSelected && 'text-destructive font-semibold',
+        hasEntries && !isSelected && 'text-primary font-semibold',
         isToday && !isSelected && 'text-primary font-semibold',
         isSelected && 'text-primary-reverse font-semibold'
     );
 
-    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-destructive');
+    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-warning-foreground');
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
