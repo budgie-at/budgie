@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { recurringCalendarService } from '../service/recurring-calendar.service';
 
@@ -15,6 +16,7 @@ interface UseRecurringCalendarReturnInterface {
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
 export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
+    const { defaultInstrument } = useSettingsContext();
     const focusKey = useFocusKey();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +29,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
             setIsLoading(true);
 
             try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments();
+                const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id);
 
                 if (!cancelled) {
                     setData(result);
@@ -49,7 +51,7 @@ export const useRecurringCalendar = (): UseRecurringCalendarReturnInterface => {
         return () => {
             cancelled = true;
         };
-    }, [focusKey]);
+    }, [focusKey, defaultInstrument.id]);
 
     return { data, isLoading, error };
 };
