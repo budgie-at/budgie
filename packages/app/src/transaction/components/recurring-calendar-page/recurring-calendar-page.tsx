@@ -8,6 +8,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -89,7 +90,7 @@ export const RecurringCalendarPage = () => {
                                 <Text className="uppercase text-secondary-foreground text-xs font-semibold">
                                     <Trans>Day {selectedDay}</Trans>
                                 </Text>
-                                <Text className="text-destructive text-sm font-bold">{formattedDayTotal}</Text>
+                                <ProtectedText className="text-destructive text-sm font-bold">{formattedDayTotal}</ProtectedText>
                             </View>
 
                             <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
