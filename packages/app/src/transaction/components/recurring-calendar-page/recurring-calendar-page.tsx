@@ -1,11 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -16,6 +14,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
+import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
 
 // eslint-disable-next-line max-statements -- Page orchestration component with multiple hooks and state
@@ -102,11 +101,7 @@ export const RecurringCalendarPage = () => {
                 </View>
             ) : (
                 <ScrollView contentContainerClassName="py-5xl" showsVerticalScrollIndicator={false}>
-                    <EmptyState
-                        circleIcon={UserIconNameEnum.CalendarSearch}
-                        title={t`No recurring payments detected`}
-                        description={t`Recurring payments will appear here once patterns are detected from your transactions`}
-                    />
+                    <RecurringCalendarEmptyState />
                 </ScrollView>
             )}
         </Page>

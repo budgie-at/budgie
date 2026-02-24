@@ -1,6 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
 
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
@@ -28,6 +30,7 @@ const getWeekdayNames = (locale: string): string[] =>
 const getMonthLabel = (year: number, month: number, locale: string): string =>
     new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
 
+// eslint-disable-next-line max-statements -- Component with gesture handlers and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
     const { entriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
@@ -62,41 +65,47 @@ export const RecurringCalendarGrid = (props: Props) => {
 
     const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-30' : 'text-primary';
 
-    return (
-        <View className="gap-y-sm">
-            <View className="flex-row items-center justify-between">
-                <Pressable onPress={handlePrevMonth} hitSlop={12} className="p-sm">
-                    <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
-                </Pressable>
-                <Text className="text-primary text-sm font-semibold capitalize">{monthLabel}</Text>
-                <Pressable onPress={handleNextMonth} hitSlop={12} className="p-sm" disabled={isCurrentMonthDisplayed}>
-                    <Icon icon={UserIconNameEnum.ChevronRight} className={nextChevronClassName} size={20} />
-                </Pressable>
-            </View>
+    const swipeLeft = Gesture.Fling().direction(Directions.LEFT).onEnd(handleNextMonth);
+    const swipeRight = Gesture.Fling().direction(Directions.RIGHT).onEnd(handlePrevMonth);
+    const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
 
-            <View className="flex-row">
-                {weekdays.map((name, index) => (
-                    <View key={index} className="flex-1 items-center pb-xs">
-                        <Text className="text-xxs text-secondary-foreground font-medium uppercase">{name}</Text>
+    return (
+        <GestureDetector gesture={swipeGesture}>
+            <View className="gap-y-sm">
+                <View className="flex-row items-center justify-between">
+                    <HapticPressable onPress={handlePrevMonth} hitSlop={12} className="p-sm">
+                        <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
+                    </HapticPressable>
+                    <Text className="text-primary text-sm font-semibold capitalize">{monthLabel}</Text>
+                    <HapticPressable onPress={handleNextMonth} hitSlop={12} className="p-sm" disabled={isCurrentMonthDisplayed}>
+                        <Icon icon={UserIconNameEnum.ChevronRight} className={nextChevronClassName} size={20} />
+                    </HapticPressable>
+                </View>
+
+                <View className="flex-row">
+                    {weekdays.map((name, index) => (
+                        <View key={index} className="flex-1 items-center pb-xs">
+                            <Text className="text-xxs text-secondary-foreground font-medium uppercase">{name}</Text>
+                        </View>
+                    ))}
+                </View>
+
+                {rows.map((row, rowIndex) => (
+                    <View key={rowIndex} className="flex-row">
+                        {row.map((dayData, columnIndex) => (
+                            <RecurringCalendarDay
+                                key={`${rowIndex}-${columnIndex}`}
+                                day={dayData.day}
+                                isCurrentMonth={dayData.isCurrentMonth}
+                                isToday={dayData.isToday}
+                                entriesByDay={entriesByDay}
+                                selectedDay={selectedDay}
+                                onSelectDay={onSelectDay}
+                            />
+                        ))}
                     </View>
                 ))}
             </View>
-
-            {rows.map((row, rowIndex) => (
-                <View key={rowIndex} className="flex-row">
-                    {row.map((dayData, columnIndex) => (
-                        <RecurringCalendarDay
-                            key={`${rowIndex}-${columnIndex}`}
-                            day={dayData.day}
-                            isCurrentMonth={dayData.isCurrentMonth}
-                            isToday={dayData.isToday}
-                            entriesByDay={entriesByDay}
-                            selectedDay={selectedDay}
-                            onSelectDay={onSelectDay}
-                        />
-                    ))}
-                </View>
-            ))}
-        </View>
+        </GestureDetector>
     );
 };
