@@ -24,9 +24,6 @@ const MIN_OCCURRENCES = 2;
 const MIN_MONTHLY_OCCURRENCES = 3;
 const RECENCY_MONTHS = 12;
 const DEFAULT_MONTHLY_LIMIT = 50;
-const AMOUNT_VARIANCE_MULTIPLIER = 2;
-const DAY_CONCENTRATION_NUMERATOR = 4;
-const DAY_CONCENTRATION_DENOMINATOR = 10;
 
 const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
@@ -75,14 +72,18 @@ export class TransactionPatternRepository {
         `;
 
         const conditions = this.buildBasePatternConditions(query);
-        conditions.push(weekdayCondition, timeCondition);
+        conditions.push(weekdayCondition, timeCondition, sql`${TransactionEntityTable.title} != ''`);
 
         return conditions;
     }
 
     private buildAmountPatternConditions(query: AmountPatternQueryInterface): SQL[] {
         const conditions = this.buildBasePatternConditions(query);
-        conditions.push(gte(TransactionEntryEntityTable.amount, query.amountMin), lte(TransactionEntryEntityTable.amount, query.amountMax));
+        conditions.push(
+            gte(TransactionEntryEntityTable.amount, query.amountMin),
+            lte(TransactionEntryEntityTable.amount, query.amountMax),
+            sql`${TransactionEntityTable.title} != ''`
+        );
 
         return conditions;
     }
@@ -94,8 +95,7 @@ export class TransactionPatternRepository {
             eq(TransactionEntityTable.type, query.type),
             isNull(TransactionEntityTable.deletedAt),
             eq(TransactionEntryEntityTable.type, entryType),
-            ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-            sql`${TransactionEntityTable.title} != ''`
+            ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
         ];
 
         if (isPositiveNumber(query.accountId)) {
@@ -205,7 +205,6 @@ export class TransactionPatternRepository {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     }
 
-    // eslint-disable-next-line max-lines-per-function -- Complex SQL query with multiple correlated subqueries
     private async executeMonthlyPatternQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
         const entryType = this.getEntryTypeForTransactionType(query.type);
         const recencyTimestamp = Math.floor(Date.now() / 1000) - RECENCY_MONTHS * 30 * 24 * 60 * 60;
@@ -215,32 +214,26 @@ export class TransactionPatternRepository {
 
         const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
 
+        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE te2.amount = ${TransactionEntryEntityTable.amount} AND te2.account_id = ${AccountEntityTable.id}
+            AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
+            ORDER BY t2.operated_at DESC LIMIT 1)`.as('title');
+
         const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             FROM transactions t3 INNER JOIN transaction_entries te3 ON te3.transaction_id = t3.id
-            WHERE t3.title = ${TransactionEntityTable.title}
+            WHERE te3.amount = ${TransactionEntryEntityTable.amount} AND te3.account_id = ${AccountEntityTable.id}
             AND t3.deleted_at IS NULL AND t3.type = ${query.type} AND te3.type = ${entryType} AND t3.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             ORDER BY COUNT(DISTINCT t3.id) DESC LIMIT 1)`.as('dayOfMonth');
-
-        const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
-            FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
-            WHERE t4.title = ${TransactionEntityTable.title}
-            AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
-            GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
-
-        const latestAmount = sql<number>`(SELECT te2.amount FROM transactions t2
-            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-            WHERE t2.title = ${TransactionEntityTable.title}
-            AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
-            ORDER BY t2.operated_at DESC LIMIT 1)`.as('latestAmount');
 
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
                 categoryTitle: CategoryEntityTable.title,
                 categoryIcon: CategoryEntityTable.icon,
-                title: TransactionEntityTable.title,
-                latestAmount,
+                title: latestTitle,
+                latestAmount: TransactionEntryEntityTable.amount,
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonth})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 dayOfMonth: modeDayOfMonth,
@@ -252,14 +245,8 @@ export class TransactionPatternRepository {
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...monthlyConditions))
-            .groupBy(TransactionEntityTable.title)
-            .having(
-                and(
-                    sql`COUNT(DISTINCT ${distinctMonth}) >= ${MIN_MONTHLY_OCCURRENCES}`,
-                    sql`MAX(${TransactionEntryEntityTable.amount}) <= MIN(${TransactionEntryEntityTable.amount}) * ${AMOUNT_VARIANCE_MULTIPLIER}`,
-                    sql`${modeDayCount} * ${DAY_CONCENTRATION_DENOMINATOR} >= COUNT(DISTINCT ${TransactionEntityTable.id}) * ${DAY_CONCENTRATION_NUMERATOR}`
-                )
-            )
+            .groupBy(TransactionEntryEntityTable.amount, AccountEntityTable.id)
+            .having(sql`COUNT(DISTINCT ${distinctMonth}) >= ${MIN_MONTHLY_OCCURRENCES}`)
             .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonth})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
