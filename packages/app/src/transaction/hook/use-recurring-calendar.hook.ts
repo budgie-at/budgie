@@ -37,7 +37,12 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
             } catch (fetchError: unknown) {
                 if (!cancelled) {
                     setError(getErrorMessage(fetchError));
-                    setData({ entriesByDay: EMPTY_ENTRIES_BY_DAY, totalAmount: 0 });
+                    setData({
+                        entriesByDay: EMPTY_ENTRIES_BY_DAY,
+                        forecastedEntriesByDay: EMPTY_ENTRIES_BY_DAY,
+                        totalAmount: 0,
+                        forecastedTotalAmount: 0
+                    });
                 }
             } finally {
                 if (!cancelled) {
