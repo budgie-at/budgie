@@ -51,18 +51,15 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
     return (
         <HapticPressable className="flex-1 items-center py-px" onPress={handlePress}>
             <View className={circleClassName}>
-                <Text className={textClassName}>{day}</Text>
+                <Text className={cn(textClassName, hasEntries && isCurrentMonth && '-mt-1')}>{day}</Text>
+                {hasEntries && isCurrentMonth ? (
+                    <View className="flex-row gap-x-0.5 -mt-0.5">
+                        {Array.from({ length: visibleDots }, (_, index) => (
+                            <View key={index} className={dotClassName} />
+                        ))}
+                    </View>
+                ) : null}
             </View>
-
-            {hasEntries && isCurrentMonth ? (
-                <View className="flex-row gap-x-0.5 mt-0.5 h-1">
-                    {Array.from({ length: visibleDots }, (_, index) => (
-                        <View key={index} className={dotClassName} />
-                    ))}
-                </View>
-            ) : (
-                <View className="h-1 mt-0.5" />
-            )}
         </HapticPressable>
     );
 };
