@@ -7,6 +7,7 @@ export interface MonthlyPatternRowInterface {
     readonly title: string;
     readonly latestAmount: number;
     readonly occurrenceCount: number;
+    readonly latestTransactionId: number;
     readonly lastOccurrence: number;
     readonly dayOfMonth: number;
     readonly accountId: number;

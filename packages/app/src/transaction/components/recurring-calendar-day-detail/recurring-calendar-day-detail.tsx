@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
@@ -18,6 +19,7 @@ interface Props {
 
 export const RecurringCalendarDayDetail = ({ entries }: Props) => {
     const { t } = useLingui();
+    const router = useRouter();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -30,13 +32,19 @@ export const RecurringCalendarDayDetail = ({ entries }: Props) => {
                 const description = t`${formattedAmount} · ${category}`;
                 const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
                 const animationDelay = index * ANIMATION_STAGGER;
+                const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}`;
+
+                const handlePress = () => {
+                    router.push(`/transactions/${entry.latestTransactionId}/expense`);
+                };
 
                 return (
-                    <Animated.View key={entry.title} entering={FadeInDown.delay(animationDelay).duration(200)}>
+                    <Animated.View key={key} entering={FadeInDown.delay(animationDelay).duration(200)}>
                         <SimpleHorizontalCell
                             left={<CircleIcon icon={icon} variant="destructive" />}
                             title={entry.title}
                             description={description}
+                            onPress={handlePress}
                         />
                     </Animated.View>
                 );

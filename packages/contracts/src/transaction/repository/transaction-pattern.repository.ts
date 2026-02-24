@@ -223,12 +223,15 @@ export class TransactionPatternRepository {
             1.0)`;
         const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
 
-        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2
+        const latestTransaction = sql`(SELECT t2.id FROM transactions t2
             INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
             WHERE te2.amount = ${TransactionEntryEntityTable.amount} AND te2.account_id = ${AccountEntityTable.id}
             AND te2.category_id = ${TransactionEntryEntityTable.categoryId}
             AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
-            ORDER BY t2.operated_at DESC LIMIT 1)`.as('title');
+            ORDER BY t2.operated_at DESC LIMIT 1)`;
+
+        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${latestTransaction})`.as('title');
+        const latestTransactionId = sql<number>`${latestTransaction}`.as('latestTransactionId');
 
         const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             FROM transactions t3 INNER JOIN transaction_entries te3 ON te3.transaction_id = t3.id
@@ -252,6 +255,7 @@ export class TransactionPatternRepository {
                 categoryIcon: CategoryEntityTable.icon,
                 title: latestTitle,
                 latestAmount: sql<number>`${TransactionEntryEntityTable.amount} * ${exchangeRate}`.as('latestAmount'),
+                latestTransactionId,
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonth})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 dayOfMonth: modeDayOfMonth,
