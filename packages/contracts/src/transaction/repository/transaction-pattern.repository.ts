@@ -244,6 +244,24 @@ export class TransactionPatternRepository {
             AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
 
+        const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER) AS dom
+            FROM transactions t5 INNER JOIN transaction_entries te5 ON te5.transaction_id = t5.id
+            WHERE te5.amount = ${TransactionEntryEntityTable.amount} AND te5.account_id = ${AccountEntityTable.id}
+            AND te5.category_id = ${TransactionEntryEntityTable.categoryId}
+            AND t5.deleted_at IS NULL AND t5.type = ${query.type} AND te5.type = ${entryType} AND t5.operated_at >= ${recencyTimestamp}
+            GROUP BY dom ORDER BY COUNT(DISTINCT t5.id) DESC LIMIT 1)`.as('modeDayOfMonth');
+
+        const latestOverallTransaction = sql`(SELECT t6.id FROM transactions t6
+            INNER JOIN transaction_entries te6 ON te6.transaction_id = t6.id
+            WHERE te6.amount = ${TransactionEntryEntityTable.amount} AND te6.account_id = ${AccountEntityTable.id}
+            AND te6.category_id = ${TransactionEntryEntityTable.categoryId}
+            AND t6.deleted_at IS NULL AND t6.type = ${query.type} AND te6.type = ${entryType}
+            ORDER BY t6.operated_at DESC LIMIT 1)`;
+
+        const latestOverallTitle = sql<string>`(SELECT t7.title FROM transactions t7 WHERE t7.id = ${latestOverallTransaction})`.as(
+            'latestOverallTitle'
+        );
+
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
@@ -255,6 +273,8 @@ export class TransactionPatternRepository {
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonth})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 dayOfMonth: displayMonthDay,
+                modeDayOfMonth,
+                latestOverallTitle,
                 accountId: AccountEntityTable.id,
                 instrumentId: AccountEntityTable.instrumentId
             })
