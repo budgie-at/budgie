@@ -1,5 +1,5 @@
 import { MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { addMonths, getDaysInMonth, getUnixTime, startOfMonth } from 'date-fns';
+import { getDaysInMonth } from 'date-fns';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -18,16 +18,14 @@ class RecurringCalendarService {
     ): Promise<RecurringCalendarDataInterface> {
         const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
         const monthDate = new Date(displayYear, displayMonth);
-        const displayMonthStart = getUnixTime(startOfMonth(monthDate));
-        const displayMonthEnd = getUnixTime(startOfMonth(addMonths(monthDate, 1)));
         const daysInMonth = getDaysInMonth(monthDate);
+        const displayMonthString = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}`;
 
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
             type: TransactionTypeEnum.EXPENSE,
             defaultInstrumentId,
             timezoneOffsetSeconds,
-            displayMonthStart,
-            displayMonthEnd
+            displayMonth: displayMonthString
         });
 
         const now = new Date();

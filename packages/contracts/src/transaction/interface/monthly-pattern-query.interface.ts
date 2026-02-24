@@ -4,7 +4,6 @@ export interface MonthlyPatternQueryInterface {
     readonly type: TransactionTypeEnum;
     readonly defaultInstrumentId: number;
     readonly timezoneOffsetSeconds: number;
-    readonly displayMonthStart: number;
-    readonly displayMonthEnd: number;
+    readonly displayMonth: string;
     readonly limit?: number;
 }
