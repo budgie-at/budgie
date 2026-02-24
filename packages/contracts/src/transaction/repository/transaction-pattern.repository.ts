@@ -228,7 +228,7 @@ export class TransactionPatternRepository {
             WHERE te2.amount = ${TransactionEntryEntityTable.amount} AND te2.account_id = ${AccountEntityTable.id}
             AND te2.category_id = ${TransactionEntryEntityTable.categoryId}
             AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
-            AND t2.operated_at >= ${query.displayMonthStart} AND t2.operated_at < ${query.displayMonthEnd}
+            AND strftime('%Y-%m', t2.operated_at + ${timezoneOffset}, 'unixepoch') = ${query.displayMonth}
             ORDER BY t2.operated_at DESC LIMIT 1)`;
 
         const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${displayMonthTransaction})`.as('title');
