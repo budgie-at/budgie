@@ -1,4 +1,5 @@
 import { MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { addMonths, getDaysInMonth, getUnixTime, startOfMonth } from 'date-fns';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -16,8 +17,10 @@ class RecurringCalendarService {
         displayMonth: number
     ): Promise<RecurringCalendarDataInterface> {
         const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
-        const displayMonthStart = Math.floor(new Date(displayYear, displayMonth, 1).getTime() / 1000);
-        const displayMonthEnd = Math.floor(new Date(displayYear, displayMonth + 1, 1).getTime() / 1000);
+        const monthDate = new Date(displayYear, displayMonth);
+        const displayMonthStart = getUnixTime(startOfMonth(monthDate));
+        const displayMonthEnd = getUnixTime(startOfMonth(addMonths(monthDate, 1)));
+        const daysInMonth = getDaysInMonth(monthDate);
 
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
             type: TransactionTypeEnum.EXPENSE,
@@ -31,14 +34,15 @@ class RecurringCalendarService {
         const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
         const today = now.getDate();
 
-        return this.buildCalendarData(patterns, isCurrentMonth, today);
+        return this.buildCalendarData(patterns, isCurrentMonth, today, daysInMonth);
     }
 
     // eslint-disable-next-line max-statements -- Splits patterns into actual and forecasted entries with separate maps
     private buildCalendarData(
         patterns: readonly MonthlyPatternRawRowInterface[],
         isCurrentMonth: boolean,
-        today: number
+        today: number,
+        daysInMonth: number
     ): RecurringCalendarDataInterface {
         const entriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
         const forecastedEntriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
@@ -58,20 +62,19 @@ class RecurringCalendarService {
                 });
                 this.addEntryToMap(entriesByDay, pattern.dayOfMonth, entry);
                 totalAmount += pattern.latestAmount;
-            } else if (
-                isCurrentMonth &&
-                isPositiveNumber(pattern.modeDayOfMonth) &&
-                pattern.modeDayOfMonth > today &&
-                isDefined(pattern.latestOverallTitle)
-            ) {
-                const entry = this.buildEntryFromPattern(pattern, {
-                    dayOfMonth: pattern.modeDayOfMonth,
-                    title: pattern.latestOverallTitle,
-                    latestTransactionId: null,
-                    isForecast: true
-                });
-                this.addEntryToMap(forecastedEntriesByDay, pattern.modeDayOfMonth, entry);
-                forecastedTotalAmount += pattern.latestAmount;
+            } else if (isCurrentMonth && isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
+                const clampedDay = Math.min(pattern.modeDayOfMonth, daysInMonth);
+
+                if (clampedDay > today) {
+                    const entry = this.buildEntryFromPattern(pattern, {
+                        dayOfMonth: clampedDay,
+                        title: pattern.latestOverallTitle,
+                        latestTransactionId: null,
+                        isForecast: true
+                    });
+                    this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
+                    forecastedTotalAmount += pattern.latestAmount;
+                }
             }
         }
 

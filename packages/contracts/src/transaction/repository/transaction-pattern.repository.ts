@@ -244,12 +244,13 @@ export class TransactionPatternRepository {
             AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
 
-        const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER) AS dom
+        const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             FROM transactions t5 INNER JOIN transaction_entries te5 ON te5.transaction_id = t5.id
             WHERE te5.amount = ${TransactionEntryEntityTable.amount} AND te5.account_id = ${AccountEntityTable.id}
             AND te5.category_id = ${TransactionEntryEntityTable.categoryId}
             AND t5.deleted_at IS NULL AND t5.type = ${query.type} AND te5.type = ${entryType} AND t5.operated_at >= ${recencyTimestamp}
-            GROUP BY dom ORDER BY COUNT(DISTINCT t5.id) DESC LIMIT 1)`.as('modeDayOfMonth');
+            GROUP BY CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
+            ORDER BY COUNT(DISTINCT t5.id) DESC LIMIT 1)`.as('modeDayOfMonth');
 
         const latestOverallTransaction = sql`(SELECT t6.id FROM transactions t6
             INNER JOIN transaction_entries te6 ON te6.transaction_id = t6.id
