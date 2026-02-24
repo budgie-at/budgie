@@ -90,11 +90,11 @@ export const RecurringCalendarPage = () => {
 
                     {isDefined(selectedEntries) && isDefined(selectedDay) ? (
                         <View className="flex-1 pt-lg">
-                            <View className="flex-row items-center justify-between pb-md">
-                                <Text className="uppercase text-secondary-foreground text-xs font-semibold">
+                            <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
+                                <Text className="text-xs uppercase text-secondary-foreground">
                                     <Trans>Day {selectedDay}</Trans>
                                 </Text>
-                                <ProtectedText className="text-destructive text-sm font-bold">{formattedDayTotal}</ProtectedText>
+                                <ProtectedText className="text-xs text-secondary-foreground">{formattedDayTotal}</ProtectedText>
                             </View>
 
                             <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
