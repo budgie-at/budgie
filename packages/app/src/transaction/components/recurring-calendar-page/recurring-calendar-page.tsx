@@ -60,10 +60,7 @@ export const RecurringCalendarPage = () => {
             {hasEntries ? (
                 <View className="flex-1">
                     <View className="gap-y-xl pt-md">
-                        <View className="items-center gap-y-xs">
-                            <Text className="font-medium text-xs uppercase text-secondary-foreground">
-                                <Trans>Monthly Total</Trans>
-                            </Text>
+                        <View className="items-center gap-y-lg">
                             <ProtectedMoney
                                 minFontSize={10}
                                 maxFontSize={32}
@@ -72,6 +69,9 @@ export const RecurringCalendarPage = () => {
                             >
                                 {totalAmount}
                             </ProtectedMoney>
+                            <Text className="font-medium text-xs uppercase text-secondary-foreground">
+                                <Trans>Monthly Total</Trans>
+                            </Text>
                         </View>
 
                         <RecurringCalendarGrid
