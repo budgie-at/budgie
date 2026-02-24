@@ -8,10 +8,11 @@ import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar
 const MINUTES_TO_SECONDS = -60;
 
 class RecurringCalendarService {
-    async getMonthlyRecurringPayments(): Promise<RecurringCalendarDataInterface> {
+    async getMonthlyRecurringPayments(defaultInstrumentId: number): Promise<RecurringCalendarDataInterface> {
         const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
             type: TransactionTypeEnum.EXPENSE,
+            defaultInstrumentId,
             timezoneOffsetSeconds
         });
 
