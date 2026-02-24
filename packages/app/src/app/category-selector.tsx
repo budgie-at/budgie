@@ -62,7 +62,7 @@ export default function CategorySelectorModal() {
 
             {isNotEmptyString(description) ? (
                 <View className="px-xl pb-md">
-                    <Text className="text-foreground text-sm">{description}</Text>
+                    <Text className="text-primary text-sm">{description}</Text>
                 </View>
             ) : null}
 

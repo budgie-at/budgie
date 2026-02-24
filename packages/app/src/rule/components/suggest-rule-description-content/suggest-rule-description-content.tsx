@@ -29,7 +29,7 @@ export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData,
     const actionsJoined = joinWithSeparators(actionParts);
 
     return (
-        <Text className="text-sm text-foreground/70 leading-relaxed">
+        <Text className="text-sm text-primary/70 leading-relaxed">
             <Trans>Match transactions where</Trans> {conditionsJoined}
             {hasActions ? (
                 <>
