@@ -77,7 +77,7 @@ class RecurringCalendarService {
                     const entry = this.buildEntryFromPattern(pattern, {
                         dayOfMonth: clampedDay,
                         title: pattern.latestOverallTitle,
-                        latestTransactionId: null,
+                        latestTransactionId: pattern.latestOverallTransactionId,
                         isForecast: false
                     });
                     this.addEntryToMap(entriesByDay, clampedDay, entry);
