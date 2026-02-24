@@ -223,23 +223,19 @@ export class TransactionPatternRepository {
             1.0)`;
         const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
 
-        const latestTransaction = sql`(SELECT t2.id FROM transactions t2
+        const displayMonthTransaction = sql`(SELECT t2.id FROM transactions t2
             INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
             WHERE te2.amount = ${TransactionEntryEntityTable.amount} AND te2.account_id = ${AccountEntityTable.id}
             AND te2.category_id = ${TransactionEntryEntityTable.categoryId}
             AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
+            AND t2.operated_at >= ${query.displayMonthStart} AND t2.operated_at < ${query.displayMonthEnd}
             ORDER BY t2.operated_at DESC LIMIT 1)`;
 
-        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${latestTransaction})`.as('title');
-        const latestTransactionId = sql<number>`${latestTransaction}`.as('latestTransactionId');
+        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${displayMonthTransaction})`.as('title');
+        const latestTransactionId = sql<number>`${displayMonthTransaction}`.as('latestTransactionId');
 
-        const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
-            FROM transactions t3 INNER JOIN transaction_entries te3 ON te3.transaction_id = t3.id
-            WHERE te3.amount = ${TransactionEntryEntityTable.amount} AND te3.account_id = ${AccountEntityTable.id}
-            AND te3.category_id = ${TransactionEntryEntityTable.categoryId}
-            AND t3.deleted_at IS NULL AND t3.type = ${query.type} AND te3.type = ${entryType} AND t3.operated_at >= ${recencyTimestamp}
-            GROUP BY CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
-            ORDER BY COUNT(DISTINCT t3.id) DESC LIMIT 1)`.as('dayOfMonth');
+        const displayMonthDay = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
+            FROM transactions t3 WHERE t3.id = ${displayMonthTransaction})`.as('dayOfMonth');
 
         const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
             FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
@@ -258,7 +254,7 @@ export class TransactionPatternRepository {
                 latestTransactionId,
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonth})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
-                dayOfMonth: modeDayOfMonth,
+                dayOfMonth: displayMonthDay,
                 accountId: AccountEntityTable.id,
                 instrumentId: AccountEntityTable.instrumentId
             })
