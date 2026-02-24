@@ -26,6 +26,9 @@ const MIN_OCCURRENCES = 2;
 const MIN_MONTHLY_OCCURRENCES = 3;
 const RECENCY_MONTHS = 12;
 const DEFAULT_MONTHLY_LIMIT = 50;
+const AMOUNT_VARIANCE_MULTIPLIER = 2;
+const DAY_CONCENTRATION_NUMERATOR = 4;
+const DAY_CONCENTRATION_DENOMINATOR = 10;
 
 const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
@@ -63,6 +66,20 @@ export class TransactionPatternRepository {
             ORDER BY COUNT(*) DESC
             LIMIT 1
         )`.as('dayOfMonth');
+    }
+
+    private get modeDayCountSubquery() {
+        return sql<number>`(
+            SELECT MAX(day_count) FROM (
+                SELECT COUNT(*) AS day_count
+                FROM transactions t4
+                INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
+                WHERE te4.category_id = ${TransactionEntryEntityTable.categoryId}
+                  AND t4.title = ${TransactionEntityTable.title}
+                  AND t4.deleted_at IS NULL
+                GROUP BY CAST(strftime('%d', t4.operated_at, 'unixepoch') AS INTEGER)
+            )
+        )`;
     }
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
@@ -159,26 +176,14 @@ export class TransactionPatternRepository {
     }
 
     private async enrichPatternsWithTags(patternRows: PatternRowInterface[]): Promise<RepeatedTransactionPatternInterface[]> {
-        if (!isNotEmptyArray(patternRows)) {
-            return [];
-        }
-
+        if (!isNotEmptyArray(patternRows)) {return [];}
         const validRows = patternRows.filter(isValidPatternRow);
         const tagMap = await this.findTagsForPatterns(validRows);
 
         return validRows.map(row => ({
-            categoryId: row.categoryId,
-            categoryTitle: row.categoryTitle,
-            categoryIcon: row.categoryIcon,
+            ...row,
             tagIds: tagMap.get(`${row.categoryId}-${row.title}`) ?? [],
-            title: row.title,
-            comment: row.comment,
-            latestAmount: row.latestAmount,
-            occurrenceCount: row.occurrenceCount,
             lastOccurrence: new Date(row.lastOccurrence * 1000),
-            accountId: row.accountId,
-            instrumentId: row.instrumentId,
-            accountIsActive: row.accountIsActive,
             accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
         }));
     }
@@ -186,10 +191,7 @@ export class TransactionPatternRepository {
     // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
     private async findTagsForPatterns(patterns: { categoryId: number; title: string }[]): Promise<Map<string, number[]>> {
         const tagMap = new Map<string, number[]>();
-
-        if (!isNotEmptyArray(patterns)) {
-            return tagMap;
-        }
+        if (!isNotEmptyArray(patterns)) {return tagMap;}
 
         const titles = [...new Set(patterns.map(pattern => pattern.title))];
         const categoryIds = [...new Set(patterns.map(pattern => pattern.categoryId))];
@@ -283,7 +285,13 @@ export class TransactionPatternRepository {
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...monthlyConditions))
             .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
-            .having(sql`COUNT(DISTINCT ${distinctMonthCount}) >= ${MIN_MONTHLY_OCCURRENCES}`)
+            .having(
+                and(
+                    sql`COUNT(DISTINCT ${distinctMonthCount}) >= ${MIN_MONTHLY_OCCURRENCES}`,
+                    sql`MAX(${TransactionEntryEntityTable.amount}) <= MIN(${TransactionEntryEntityTable.amount}) * ${AMOUNT_VARIANCE_MULTIPLIER}`,
+                    sql`${this.modeDayCountSubquery} * ${DAY_CONCENTRATION_DENOMINATOR} >= COUNT(*) * ${DAY_CONCENTRATION_NUMERATOR}`
+                )
+            )
             .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonthCount})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
