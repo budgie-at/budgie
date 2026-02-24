@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
@@ -17,8 +17,11 @@ import { RecurringCalendarEntryInterface } from '../../interface/recurring-calen
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
+import { RecurringCalendarUpcoming } from '../recurring-calendar-upcoming/recurring-calendar-upcoming';
 
-// eslint-disable-next-line max-statements -- Page orchestration component with multiple hooks and state
+const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
+
+// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarPage = () => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
@@ -30,9 +33,33 @@ export const RecurringCalendarPage = () => {
     const { data, isLoading } = useRecurringCalendar(displayYear, displayMonth);
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
 
-    const entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = data?.entriesByDay ?? new Map();
-    const selectedEntries = isDefined(selectedDay) ? entriesByDay.get(selectedDay) : null;
+    const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
+    const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const totalAmount = data?.totalAmount ?? 0;
+    const forecastedTotalAmount = data?.forecastedTotalAmount ?? 0;
+
+    const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
+
+    const selectedEntries = useMemo(() => {
+        if (!isDefined(selectedDay)) {
+            return [];
+        }
+        const actual = entriesByDay.get(selectedDay) ?? [];
+        const forecasted = forecastedEntriesByDay.get(selectedDay) ?? [];
+
+        return [...actual, ...forecasted];
+    }, [selectedDay, entriesByDay, forecastedEntriesByDay]);
+    const hasSelectedEntries = isNotEmptyArray(selectedEntries);
+
+    const allForecastedEntries = useMemo(() => {
+        const entries: RecurringCalendarEntryInterface[] = [];
+        for (const dayEntries of forecastedEntriesByDay.values()) {
+            entries.push(...dayEntries);
+        }
+
+        return entries.sort((left, right) => left.dayOfMonth - right.dayOfMonth);
+    }, [forecastedEntriesByDay]);
+    const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
 
     const handleSelectDay = (day: number) => {
         setSelectedDay(current => (current === day ? undefined : day)); // eslint-disable-line no-undefined -- Toggle selection
@@ -54,10 +81,11 @@ export const RecurringCalendarPage = () => {
         );
     }
 
-    const hasEntries = isDefined(data) && data.entriesByDay.size > 0;
+    const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
 
-    const selectedDayTotal = isDefined(selectedEntries) ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
+    const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
+    const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
 
     return (
         <Page header={<PageHeader className="border-b-0" title={t`Recurring`} />}>
@@ -80,6 +108,7 @@ export const RecurringCalendarPage = () => {
 
                         <RecurringCalendarGrid
                             entriesByDay={entriesByDay}
+                            forecastedEntriesByDay={forecastedEntriesByDay}
                             selectedDay={selectedDay}
                             onSelectDay={handleSelectDay}
                             displayMonth={displayMonth}
@@ -88,7 +117,7 @@ export const RecurringCalendarPage = () => {
                         />
                     </View>
 
-                    {isDefined(selectedEntries) && isDefined(selectedDay) ? (
+                    {hasSelectedEntries && isDefined(selectedDay) ? (
                         <View className="flex-1 pt-lg">
                             <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
                                 <Text className="text-xs uppercase text-secondary-foreground">
@@ -99,6 +128,15 @@ export const RecurringCalendarPage = () => {
 
                             <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
                                 <RecurringCalendarDayDetail entries={selectedEntries} />
+                                <MenuSpacer />
+                            </ScrollView>
+                        </View>
+                    ) : null}
+
+                    {showUpcomingList ? (
+                        <View className="flex-1 pt-lg">
+                            <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
+                                <RecurringCalendarUpcoming entries={allForecastedEntries} totalAmount={formattedForecastedTotal} />
                                 <MenuSpacer />
                             </ScrollView>
                         </View>

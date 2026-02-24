@@ -10,4 +10,6 @@ export interface MonthlyPatternRawRowInterface extends Omit<
     readonly title: string | null;
     readonly latestTransactionId: number | null;
     readonly dayOfMonth: number | null;
+    readonly modeDayOfMonth: number | null;
+    readonly latestOverallTitle: string | null;
 }

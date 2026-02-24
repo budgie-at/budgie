@@ -27,40 +27,82 @@ class RecurringCalendarService {
             displayMonthEnd
         });
 
-        return this.buildCalendarData(patterns);
+        const now = new Date();
+        const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
+        const today = now.getDate();
+
+        return this.buildCalendarData(patterns, isCurrentMonth, today);
     }
 
-    private buildCalendarData(patterns: readonly MonthlyPatternRawRowInterface[]): RecurringCalendarDataInterface {
+    // eslint-disable-next-line max-statements -- Splits patterns into actual and forecasted entries with separate maps
+    private buildCalendarData(
+        patterns: readonly MonthlyPatternRawRowInterface[],
+        isCurrentMonth: boolean,
+        today: number
+    ): RecurringCalendarDataInterface {
         const entriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
+        const forecastedEntriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
         let totalAmount = 0;
+        let forecastedTotalAmount = 0;
 
         for (const pattern of patterns) {
-            if (isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title)) {
-                const entry: RecurringCalendarEntryInterface = {
-                    categoryId: pattern.categoryId,
-                    categoryTitle: pattern.categoryTitle,
-                    categoryIcon: pattern.categoryIcon,
-                    title: pattern.title,
-                    latestAmount: pattern.latestAmount,
-                    latestTransactionId: pattern.latestTransactionId,
-                    occurrenceCount: pattern.occurrenceCount,
+            const isActual =
+                isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
+
+            if (isActual) {
+                const entry = this.buildEntryFromPattern(pattern, {
                     dayOfMonth: pattern.dayOfMonth,
-                    accountId: pattern.accountId,
-                    instrumentId: pattern.instrumentId
-                };
-
-                const existing = entriesByDay.get(pattern.dayOfMonth) ?? [];
-                existing.push(entry);
-                entriesByDay.set(pattern.dayOfMonth, existing);
-
+                    title: pattern.title,
+                    latestTransactionId: pattern.latestTransactionId,
+                    isForecast: false
+                });
+                this.addEntryToMap(entriesByDay, pattern.dayOfMonth, entry);
                 totalAmount += pattern.latestAmount;
+            } else if (
+                isCurrentMonth &&
+                isPositiveNumber(pattern.modeDayOfMonth) &&
+                pattern.modeDayOfMonth > today &&
+                isDefined(pattern.latestOverallTitle)
+            ) {
+                const entry = this.buildEntryFromPattern(pattern, {
+                    dayOfMonth: pattern.modeDayOfMonth,
+                    title: pattern.latestOverallTitle,
+                    latestTransactionId: null,
+                    isForecast: true
+                });
+                this.addEntryToMap(forecastedEntriesByDay, pattern.modeDayOfMonth, entry);
+                forecastedTotalAmount += pattern.latestAmount;
             }
         }
 
         return {
             entriesByDay,
-            totalAmount: convertFromMicroUnits(totalAmount)
+            forecastedEntriesByDay,
+            totalAmount: convertFromMicroUnits(totalAmount),
+            forecastedTotalAmount: convertFromMicroUnits(forecastedTotalAmount)
         };
+    }
+
+    private buildEntryFromPattern(
+        pattern: MonthlyPatternRawRowInterface,
+        overrides: Pick<RecurringCalendarEntryInterface, 'dayOfMonth' | 'title' | 'latestTransactionId' | 'isForecast'>
+    ): RecurringCalendarEntryInterface {
+        return {
+            categoryId: pattern.categoryId,
+            categoryTitle: pattern.categoryTitle,
+            categoryIcon: pattern.categoryIcon,
+            latestAmount: pattern.latestAmount,
+            occurrenceCount: pattern.occurrenceCount,
+            accountId: pattern.accountId,
+            instrumentId: pattern.instrumentId,
+            ...overrides
+        };
+    }
+
+    private addEntryToMap(map: Map<number, RecurringCalendarEntryInterface[]>, day: number, entry: RecurringCalendarEntryInterface): void {
+        const existing = map.get(day) ?? [];
+        existing.push(entry);
+        map.set(day, existing);
     }
 }
 

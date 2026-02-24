@@ -16,6 +16,7 @@ const DAYS_IN_WEEK = 7;
 
 interface Props {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
+    readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly selectedDay: number | undefined;
     readonly onSelectDay: (day: number) => void;
     readonly displayMonth: number;
@@ -33,7 +34,7 @@ const getMonthLabel = (year: number, month: number, locale: string): string =>
 
 // eslint-disable-next-line max-statements -- Component with gesture handlers and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
-    const { entriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
+    const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
     const { languageTag } = useLocaleInfo();
     const now = new Date();
@@ -108,6 +109,7 @@ export const RecurringCalendarGrid = (props: Props) => {
                                 isCurrentMonth={dayData.isCurrentMonth}
                                 isToday={dayData.isToday}
                                 entriesByDay={entriesByDay}
+                                forecastedEntriesByDay={forecastedEntriesByDay}
                                 selectedDay={selectedDay}
                                 onSelectDay={onSelectDay}
                             />

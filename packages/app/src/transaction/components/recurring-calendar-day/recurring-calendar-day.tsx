@@ -11,16 +11,27 @@ interface Props {
     readonly isCurrentMonth: boolean;
     readonly isToday: boolean;
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
+    readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly selectedDay: number | undefined;
     readonly onSelectDay: (day: number) => void;
 }
 
-export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDay, selectedDay, onSelectDay }: Props) => {
+// eslint-disable-next-line max-statements, complexity -- Calendar day with actual + forecasted dot rendering and conditional styles
+export const RecurringCalendarDay = (props: Props) => {
+    const { day, isCurrentMonth, isToday, entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay } = props;
+
     const entries = isCurrentMonth ? entriesByDay.get(day) : null;
+    const forecastedEntries = isCurrentMonth ? forecastedEntriesByDay.get(day) : null;
     const entryCount = entries?.length ?? 0;
-    const hasEntries = entryCount > 0;
+    const forecastedCount = forecastedEntries?.length ?? 0;
+    const totalCount = entryCount + forecastedCount;
+    const hasEntries = totalCount > 0;
+    const hasOnlyForecasted = entryCount === 0 && forecastedCount > 0;
     const isSelected = selectedDay === day && isCurrentMonth;
-    const visibleDots = Math.min(entryCount, MAX_DOTS);
+
+    const actualDots = Math.min(entryCount, MAX_DOTS);
+    const remainingSlots = MAX_DOTS - actualDots;
+    const forecastedDots = Math.min(forecastedCount, remainingSlots);
 
     const handlePress = () => {
         if (isCurrentMonth && hasEntries) {
@@ -32,7 +43,8 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
     const circleClassName = cn(
         'w-10 h-10 items-center justify-center rounded-full',
         !isCurrentMonth && 'opacity-30',
-        hasEntries && !isSelected && 'bg-warning-background',
+        hasEntries && !isSelected && !hasOnlyForecasted && 'bg-warning-background',
+        hasOnlyForecasted && !isSelected && 'border border-dashed border-warning-foreground',
         isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
@@ -45,7 +57,11 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
         isSelected && 'text-primary-reverse font-semibold'
     );
 
-    const dotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-warning-foreground');
+    const solidDotClassName = cn('h-1 w-1 rounded-full', isSelected ? 'bg-primary-reverse' : 'bg-warning-foreground');
+    const hollowDotClassName = cn(
+        'h-1 w-1 rounded-full',
+        isSelected ? 'border border-primary-reverse' : 'border border-warning-foreground'
+    );
     /* eslint-enable lingui/no-unlocalized-strings */
 
     return (
@@ -54,8 +70,11 @@ export const RecurringCalendarDay = ({ day, isCurrentMonth, isToday, entriesByDa
                 <Text className={cn(textClassName, hasEntries && isCurrentMonth && '-mt-1')}>{day}</Text>
                 {hasEntries && isCurrentMonth ? (
                     <View className="flex-row gap-x-0.5 -mt-0.5">
-                        {Array.from({ length: visibleDots }, (_, index) => (
-                            <View key={index} className={dotClassName} />
+                        {Array.from({ length: actualDots }, (_, index) => (
+                            <View key={`a-${index}`} className={solidDotClassName} />
+                        ))}
+                        {Array.from({ length: forecastedDots }, (_, index) => (
+                            <View key={`f-${index}`} className={hollowDotClassName} />
                         ))}
                     </View>
                 ) : null}
