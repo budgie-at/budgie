@@ -1,4 +1,4 @@
-import { MonthlyPatternRowInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { MonthlyPatternRawRowInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -8,18 +8,17 @@ import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar
 const MINUTES_TO_SECONDS = -60;
 
 class RecurringCalendarService {
-    async getMonthlyRecurringPayments(defaultInstrumentId: number): Promise<RecurringCalendarDataInterface> {
+    async getMonthlyRecurringPayments(): Promise<RecurringCalendarDataInterface> {
         const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
             type: TransactionTypeEnum.EXPENSE,
-            defaultInstrumentId,
             timezoneOffsetSeconds
         });
 
         return this.buildCalendarData(patterns);
     }
 
-    private buildCalendarData(patterns: readonly MonthlyPatternRowInterface[]): RecurringCalendarDataInterface {
+    private buildCalendarData(patterns: readonly MonthlyPatternRawRowInterface[]): RecurringCalendarDataInterface {
         const entriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
         let totalAmount = 0;
 

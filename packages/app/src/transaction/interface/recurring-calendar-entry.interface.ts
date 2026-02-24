@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 
 export interface RecurringCalendarEntryInterface {
-    readonly categoryId: number;
-    readonly categoryTitle: string;
-    readonly categoryIcon: UserIconNameEnum;
+    readonly categoryId: number | null;
+    readonly categoryTitle: string | null;
+    readonly categoryIcon: UserIconNameEnum | null;
     readonly title: string;
     readonly latestAmount: number;
     readonly occurrenceCount: number;
