@@ -60,9 +60,7 @@ export const RecurringCalendarGrid = (props: Props) => {
         onChangeMonth(newYear, newMonth);
     };
 
-     
     const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-30' : 'text-primary';
-     
 
     return (
         <View className="gap-y-sm">
