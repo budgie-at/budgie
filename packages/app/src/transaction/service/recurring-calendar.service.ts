@@ -5,11 +5,15 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
+const MINUTES_TO_SECONDS = -60;
+
 class RecurringCalendarService {
     async getMonthlyRecurringPayments(defaultInstrumentId: number): Promise<RecurringCalendarDataInterface> {
+        const timezoneOffsetSeconds = new Date().getTimezoneOffset() * MINUTES_TO_SECONDS;
         const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
             type: TransactionTypeEnum.EXPENSE,
-            defaultInstrumentId
+            defaultInstrumentId,
+            timezoneOffsetSeconds
         });
 
         return this.buildCalendarData(patterns);
