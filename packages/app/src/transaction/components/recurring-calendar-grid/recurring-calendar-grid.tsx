@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -65,8 +66,16 @@ export const RecurringCalendarGrid = (props: Props) => {
 
     const nextChevronClassName = isCurrentMonthDisplayed ? 'text-secondary-foreground opacity-30' : 'text-primary';
 
-    const swipeLeft = Gesture.Fling().direction(Directions.LEFT).onEnd(handleNextMonth);
-    const swipeRight = Gesture.Fling().direction(Directions.RIGHT).onEnd(handlePrevMonth);
+    const swipeLeft = Gesture.Fling()
+        .direction(Directions.LEFT)
+        .onEnd(() => {
+            runOnJS(handleNextMonth)();
+        });
+    const swipeRight = Gesture.Fling()
+        .direction(Directions.RIGHT)
+        .onEnd(() => {
+            runOnJS(handlePrevMonth)();
+        });
     const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
 
     return (

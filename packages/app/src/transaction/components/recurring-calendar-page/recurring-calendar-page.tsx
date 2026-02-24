@@ -34,6 +34,10 @@ export const RecurringCalendarPage = () => {
     const selectedEntries = isDefined(selectedDay) ? entriesByDay.get(selectedDay) : null;
     const totalAmount = data?.totalAmount ?? 0;
 
+    const handleSelectDay = (day: number) => {
+        setSelectedDay(current => (current === day ? undefined : day)); // eslint-disable-line no-undefined -- Toggle selection
+    };
+
     const handleChangeMonth = (year: number, month: number) => {
         setDisplayYear(year);
         setDisplayMonth(month);
@@ -77,7 +81,7 @@ export const RecurringCalendarPage = () => {
                         <RecurringCalendarGrid
                             entriesByDay={entriesByDay}
                             selectedDay={selectedDay}
-                            onSelectDay={setSelectedDay}
+                            onSelectDay={handleSelectDay}
                             displayMonth={displayMonth}
                             displayYear={displayYear}
                             onChangeMonth={handleChangeMonth}
