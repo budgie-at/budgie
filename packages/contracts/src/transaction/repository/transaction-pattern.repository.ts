@@ -259,6 +259,7 @@ export class TransactionPatternRepository {
             AND t6.deleted_at IS NULL AND t6.type = ${query.type} AND te6.type = ${entryType}
             ORDER BY t6.operated_at DESC LIMIT 1)`;
 
+        const latestOverallTransactionId = sql<number>`${latestOverallTransaction}`.as('latestOverallTransactionId');
         const latestOverallTitle = sql<string>`(SELECT t7.title FROM transactions t7 WHERE t7.id = ${latestOverallTransaction})`.as(
             'latestOverallTitle'
         );
@@ -275,6 +276,7 @@ export class TransactionPatternRepository {
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 dayOfMonth: displayMonthDay,
                 modeDayOfMonth,
+                latestOverallTransactionId,
                 latestOverallTitle,
                 accountId: AccountEntityTable.id,
                 instrumentId: AccountEntityTable.instrumentId
