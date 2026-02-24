@@ -1,9 +1,8 @@
-import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, gte, inArray, isNull, lte, ne, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
-import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -14,7 +13,6 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
 import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
 import { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row.interface';
-import { MonthlyPatternRowInterface } from '../interface/monthly-pattern-row.interface';
 import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
@@ -57,13 +55,8 @@ export class TransactionPatternRepository {
         return this.enrichPatternsWithTags(patternRows);
     }
 
-    async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRowInterface[]> {
-        const rows = await this.executeMonthlyPatternQuery(query);
-
-        return rows.filter(
-            (row): row is MonthlyPatternRowInterface =>
-                isDefined(row.categoryId) && isDefined(row.categoryTitle) && isDefined(row.categoryIcon)
-        );
+    async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+        return this.executeMonthlyPatternQuery(query);
     }
 
     async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
@@ -102,7 +95,7 @@ export class TransactionPatternRepository {
             isNull(TransactionEntityTable.deletedAt),
             eq(TransactionEntryEntityTable.type, entryType),
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-            isNotNull(TransactionEntryEntityTable.categoryId)
+            sql`${TransactionEntityTable.title} != ''`
         ];
 
         if (isPositiveNumber(query.accountId)) {
@@ -212,6 +205,7 @@ export class TransactionPatternRepository {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     }
 
+    // eslint-disable-next-line max-lines-per-function -- Complex SQL query with multiple correlated subqueries
     private async executeMonthlyPatternQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
         const entryType = this.getEntryTypeForTransactionType(query.type);
         const recencyTimestamp = Math.floor(Date.now() / 1000) - RECENCY_MONTHS * 30 * 24 * 60 * 60;
@@ -219,31 +213,26 @@ export class TransactionPatternRepository {
         const monthlyConditions = this.buildBasePatternConditions(query);
         monthlyConditions.push(sql`${TransactionEntityTable.operatedAt} >= ${recencyTimestamp}`);
 
-        const exchangeRate = sql`COALESCE(
-            ${getDirectExchangeRateSql(query.defaultInstrumentId, AccountEntityTable.instrumentId)},
-            ${getInverseExchangeRateSql(query.defaultInstrumentId, AccountEntityTable.instrumentId)},
-            1.0)`;
         const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
-        const convertedAmount = sql`${TransactionEntryEntityTable.amount} * ${exchangeRate}`;
 
         const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             FROM transactions t3 INNER JOIN transaction_entries te3 ON te3.transaction_id = t3.id
-            WHERE te3.category_id = ${TransactionEntryEntityTable.categoryId} AND t3.title = ${TransactionEntityTable.title}
+            WHERE t3.title = ${TransactionEntityTable.title}
             AND t3.deleted_at IS NULL AND t3.type = ${query.type} AND te3.type = ${entryType} AND t3.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             ORDER BY COUNT(DISTINCT t3.id) DESC LIMIT 1)`.as('dayOfMonth');
 
         const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
             FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
-            WHERE te4.category_id = ${TransactionEntryEntityTable.categoryId} AND t4.title = ${TransactionEntityTable.title}
+            WHERE t4.title = ${TransactionEntityTable.title}
             AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
 
         const latestAmount = sql<number>`(SELECT te2.amount FROM transactions t2
             INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-            WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId} AND t2.title = ${TransactionEntityTable.title}
+            WHERE t2.title = ${TransactionEntityTable.title}
             AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
-            ORDER BY t2.operated_at DESC LIMIT 1) * ${exchangeRate}`.as('latestAmount');
+            ORDER BY t2.operated_at DESC LIMIT 1)`.as('latestAmount');
 
         return this.db
             .select({
@@ -263,11 +252,11 @@ export class TransactionPatternRepository {
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...monthlyConditions))
-            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
+            .groupBy(TransactionEntityTable.title)
             .having(
                 and(
                     sql`COUNT(DISTINCT ${distinctMonth}) >= ${MIN_MONTHLY_OCCURRENCES}`,
-                    sql`MAX(${convertedAmount}) <= MIN(${convertedAmount}) * ${AMOUNT_VARIANCE_MULTIPLIER}`,
+                    sql`MAX(${TransactionEntryEntityTable.amount}) <= MIN(${TransactionEntryEntityTable.amount}) * ${AMOUNT_VARIANCE_MULTIPLIER}`,
                     sql`${modeDayCount} * ${DAY_CONCENTRATION_DENOMINATOR} >= COUNT(DISTINCT ${TransactionEntityTable.id}) * ${DAY_CONCENTRATION_NUMERATOR}`
                 )
             )
