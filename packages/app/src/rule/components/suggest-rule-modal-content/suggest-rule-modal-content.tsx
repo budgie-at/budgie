@@ -43,7 +43,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
                     </Text>
                 </View>
 
-                <View className="rounded-3xl bg-secondary-background p-4xl">
+                <View className="rounded-3xl bg-secondary-background border border-secondary-corner p-4xl">
                     <SuggestRuleDescriptionContent
                         selectedFields={selectedFields}
                         suggestRuleData={suggestRuleData}
