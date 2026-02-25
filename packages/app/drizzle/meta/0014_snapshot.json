@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "175416ea-57b2-489d-9846-fa468df8cfa3",
+  "id": "42137a70-7329-4df3-b435-d65f4808017b",
   "prevId": "18c8e4d0-2860-42bb-8a6c-b189d3d82ad9",
   "tables": {
     "account_balances": {
@@ -456,6 +456,7 @@
           "autoincrement": false,
           "default": "''"
         },
+<<<<<<< HEAD
         "title_en": {
           "name": "title_en",
           "type": "text",
@@ -477,6 +478,8 @@
           "notNull": false,
           "autoincrement": false
         },
+=======
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
         "icon": {
           "name": "icon",
           "type": "text",
@@ -514,6 +517,7 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+<<<<<<< HEAD
     "comment_embeddings": {
       "name": "comment_embeddings",
       "columns": {
@@ -664,6 +668,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+=======
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
     "exchange_rates": {
       "name": "exchange_rates",
       "columns": {
@@ -961,8 +967,13 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+<<<<<<< HEAD
     "merchant_embeddings": {
       "name": "merchant_embeddings",
+=======
+    "rule_actions": {
+      "name": "rule_actions",
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
       "columns": {
         "id": {
           "name": "id",
@@ -994,13 +1005,20 @@
           "notNull": false,
           "autoincrement": false
         },
+<<<<<<< HEAD
         "title": {
           "name": "title",
           "type": "text",
+=======
+        "rule_id": {
+          "name": "rule_id",
+          "type": "integer",
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
+<<<<<<< HEAD
         "mcc_description": {
           "name": "mcc_description",
           "type": "text",
@@ -1008,11 +1026,20 @@
           "notNull": true,
           "autoincrement": false,
           "default": "''"
+=======
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
         },
         "category_id": {
           "name": "category_id",
           "type": "integer",
           "primaryKey": false,
+<<<<<<< HEAD
           "notNull": true,
           "autoincrement": false
         },
@@ -1077,24 +1104,47 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+=======
+          "notNull": false,
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
           "autoincrement": false
         },
         "tag_id": {
           "name": "tag_id",
           "type": "integer",
           "primaryKey": false,
+<<<<<<< HEAD
           "notNull": true,
+=======
+          "notNull": false,
+          "autoincrement": false
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
           "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {
+<<<<<<< HEAD
         "merchant_embedding_tags_merchant_embedding_id_merchant_embeddings_id_fk": {
           "name": "merchant_embedding_tags_merchant_embedding_id_merchant_embeddings_id_fk",
           "tableFrom": "merchant_embedding_tags",
           "tableTo": "merchant_embeddings",
           "columnsFrom": [
             "merchant_embedding_id"
+=======
+        "rule_actions_rule_id_rules_id_fk": {
+          "name": "rule_actions_rule_id_rules_id_fk",
+          "tableFrom": "rule_actions",
+          "tableTo": "rules",
+          "columnsFrom": [
+            "rule_id"
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
           ],
           "columnsTo": [
             "id"
@@ -1102,9 +1152,28 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
+<<<<<<< HEAD
         "merchant_embedding_tags_tag_id_tags_id_fk": {
           "name": "merchant_embedding_tags_tag_id_tags_id_fk",
           "tableFrom": "merchant_embedding_tags",
+=======
+        "rule_actions_category_id_categories_id_fk": {
+          "name": "rule_actions_category_id_categories_id_fk",
+          "tableFrom": "rule_actions",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "rule_actions_tag_id_tags_id_fk": {
+          "name": "rule_actions_tag_id_tags_id_fk",
+          "tableFrom": "rule_actions",
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
           "tableTo": "tags",
           "columnsFrom": [
             "tag_id"
@@ -1114,6 +1183,7 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+<<<<<<< HEAD
         }
       },
       "compositePrimaryKeys": {
@@ -1125,6 +1195,187 @@
           "name": "merchant_embedding_tags_merchant_embedding_id_tag_id_pk"
         }
       },
+=======
+        },
+        "rule_actions_account_id_accounts_id_fk": {
+          "name": "rule_actions_account_id_accounts_id_fk",
+          "tableFrom": "rule_actions",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "rule_action_set_category_requires_category_id": {
+          "name": "rule_action_set_category_requires_category_id",
+          "value": "type != 'SET_CATEGORY' OR category_id IS NOT NULL"
+        },
+        "rule_action_add_tag_requires_tag_id": {
+          "name": "rule_action_add_tag_requires_tag_id",
+          "value": "type != 'ADD_TAG' OR tag_id IS NOT NULL"
+        },
+        "rule_action_convert_to_transfer_requires_account_id": {
+          "name": "rule_action_convert_to_transfer_requires_account_id",
+          "value": "type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL"
+        }
+      }
+    },
+    "rule_conditions": {
+      "name": "rule_conditions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rule_id": {
+          "name": "rule_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "field": {
+          "name": "field",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "operator": {
+          "name": "operator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "secondary_value": {
+          "name": "secondary_value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rule_conditions_rule_id_rules_id_fk": {
+          "name": "rule_conditions_rule_id_rules_id_fk",
+          "tableFrom": "rule_conditions",
+          "tableTo": "rules",
+          "columnsFrom": [
+            "rule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "rule_condition_between_requires_secondary_value": {
+          "name": "rule_condition_between_requires_secondary_value",
+          "value": "operator != 'BETWEEN' OR secondary_value IS NOT NULL"
+        }
+      }
+    },
+    "rules": {
+      "name": "rules",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "condition_match_type": {
+          "name": "condition_match_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ALL'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
@@ -1312,6 +1563,7 @@
           "notNull": true,
           "autoincrement": false,
           "default": "''"
+<<<<<<< HEAD
         },
         "title_en": {
           "name": "title_en",
@@ -1333,6 +1585,8 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+=======
+>>>>>>> a273337b8 (feat(app): add rules engine with suggest-rule UI and E2E tests)
         }
       },
       "indexes": {},
