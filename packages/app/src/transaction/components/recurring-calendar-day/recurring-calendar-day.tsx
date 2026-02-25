@@ -44,7 +44,7 @@ export const RecurringCalendarDay = (props: Props) => {
         'w-10 h-10 items-center justify-center rounded-full',
         !isCurrentMonth && 'opacity-30',
         hasEntries && !isSelected && !hasOnlyForecasted && 'bg-warning-background',
-        hasOnlyForecasted && !isSelected && 'border border-dashed border-warning-foreground',
+        hasOnlyForecasted && !isSelected && 'bg-warning-background opacity-50',
         isToday && !isSelected && 'border-2 border-primary',
         isSelected && 'bg-primary'
     );
