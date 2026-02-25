@@ -167,8 +167,6 @@ msgid ""
 "Version {appVersion}"
 msgstr ""
 "KI-gestützte Budgetierungs-App mit vollständigem Datenschutz. Alle Datenverarbeitung erfolgt lokal auf Ihrem Gerät.\n"
-"Version {appVersion}KI-gestützte Budgetierungs-App mit vollständigem Datenschutz. Alle Datenverarbeitung erfolgt lokal auf Ihrem Gerät.\n"
-"Version {appVersion}KI-gestützte Budgetierungs-App mit vollständigem Datenschutz. Alle Datenverarbeitung erfolgt lokal auf Ihrem Gerät.\n"
 "Version {appVersion}"
 
 #: src/app/import-column-mapper.tsx:85
