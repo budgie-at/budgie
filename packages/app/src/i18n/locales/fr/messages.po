@@ -35,9 +35,9 @@ msgstr "{availableCount} colonnes disponibles"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% appris"
 
-#: src/transaction/components/recurring-calendar-day-detail/recurring-calendar-day-detail.tsx:29
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:30
 msgid "{formattedAmount} · {category}"
-msgstr ""
+msgstr "{formattedAmount} · {category}"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
@@ -221,11 +221,11 @@ msgstr "Appliquer le filtre"
 
 #: src/app/transaction-type-filter.tsx:25
 msgid "Apply Filter ({localSelectedCount})"
-msgstr ""
+msgstr "Appliquer le filtre ({localSelectedCount})"
 
 #: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:16
 msgid "Apply Filter ({selectedCount})"
-msgstr ""
+msgstr "Appliquer le filtre ({selectedCount})"
 
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
@@ -282,6 +282,10 @@ msgstr "Synchronisation bancaire"
 #: src/@generic/component/currency-selector/currency-selector.tsx:62
 msgid "Base currency"
 msgstr "Devise de base"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:30
+msgid "Billing Dates"
+msgstr "Dates de facturation"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:40
 msgid "Biometric Authentication"
@@ -502,7 +506,7 @@ msgstr "Créer un code PIN"
 
 #: src/app/transaction-account-filter.tsx:110
 msgid "Create Accounts"
-msgstr ""
+msgstr "Créer des comptes"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:41
 msgid "Create and copy the personal token"
@@ -589,7 +593,11 @@ msgstr "Date"
 msgid "Date Range"
 msgstr "Plage de dates"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
+#: src/transaction/components/recurring-calendar-upcoming/recurring-calendar-upcoming.tsx:18
+msgid "Day {day}"
+msgstr "Jour {day}"
+
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:124
 msgid "Day {selectedDay}"
 msgstr "Jour {selectedDay}"
 
@@ -1094,7 +1102,11 @@ msgstr "Argent que vous devez ou qu'on vous doit"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:65
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:31
+msgid "Monthly Costs"
+msgstr "Coûts mensuels"
+
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:105
 msgid "Monthly Total"
 msgstr "Total mensuel"
 
@@ -1126,7 +1138,7 @@ msgstr "Aucun compte pour le moment"
 
 #: src/app/transaction-account-filter.tsx:109
 msgid "No Accounts Yet"
-msgstr ""
+msgstr "Pas encore de comptes"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
@@ -1182,7 +1194,7 @@ msgstr "Aucune langue trouvée"
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:107
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:69
 msgid "No recurring payments detected"
 msgstr "Aucun paiement récurrent détecté"
 
@@ -1337,12 +1349,12 @@ msgstr "Recalculer les soldes"
 msgid "Receiving {toCode}"
 msgstr "Réception {toCode}"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:45
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:59
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:76
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
 msgid "Recurring"
 msgstr "Récurrent"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:108
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:72
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des tendances seront détectées dans vos transactions"
 
@@ -1593,6 +1605,10 @@ msgstr "Actions"
 msgid "Submit"
 msgstr "Soumettre"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:29
+msgid "Subscriptions"
+msgstr "Abonnements"
+
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:76
 msgid "Swap accounts"
 msgstr "Échanger les comptes"
@@ -1809,6 +1825,10 @@ msgstr "Inconnu"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "À jour"
+
+#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:140
+msgid "Upcoming"
+msgstr "À venir"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx:72
 msgid "Update Account"
