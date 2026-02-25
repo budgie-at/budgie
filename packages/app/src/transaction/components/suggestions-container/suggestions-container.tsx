@@ -1,5 +1,6 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { RuleSuggestionPill } from '../../../rule/components/rule-suggestion-pill/rule-suggestion-pill';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
@@ -50,13 +51,16 @@ export const SuggestionsContainer = (props: Props) => {
         onSelectRepeatedPattern
     } = props;
 
+    const { isAvailable: isAiAvailable } = useLlmContext();
+
     const safeCategoryId = categoryId ?? 0;
     const hasCategorySelected = safeCategoryId > 0;
     const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
 
     const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
-    const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
+    const showTagSuggestions =
+        isAiAvailable && !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
