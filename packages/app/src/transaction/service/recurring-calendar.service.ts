@@ -32,15 +32,6 @@ class RecurringCalendarService {
         const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
         const today = now.getDate();
 
-        console.log('[RECURRING] Query context', {
-            displayMonthString,
-            isCurrentMonth,
-            today,
-            daysInMonth,
-            timezoneOffsetSeconds,
-            patternCount: patterns.length
-        });
-
         return this.buildCalendarData(patterns, isCurrentMonth, today, daysInMonth);
     }
 
@@ -61,14 +52,6 @@ class RecurringCalendarService {
                 isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
 
             if (hasDisplayMonthTransaction) {
-                console.log('[RECURRING] PATH-A (display month hit)', {
-                    title: pattern.title,
-                    dayOfMonth: pattern.dayOfMonth,
-                    latestTransactionId: pattern.latestTransactionId,
-                    latestOverallTransactionId: pattern.latestOverallTransactionId,
-                    categoryTitle: pattern.categoryTitle,
-                    occurrenceCount: pattern.occurrenceCount
-                });
                 const entry = this.buildEntryFromPattern(pattern, {
                     dayOfMonth: pattern.dayOfMonth,
                     title: pattern.title,
@@ -82,14 +65,6 @@ class RecurringCalendarService {
                 const isForecastedUpcoming = isCurrentMonth && clampedDay > today;
 
                 if (isForecastedUpcoming) {
-                    console.log('[RECURRING] PATH-B (forecasted upcoming)', {
-                        title: pattern.latestOverallTitle,
-                        modeDayOfMonth: pattern.modeDayOfMonth,
-                        clampedDay,
-                        latestOverallTransactionId: pattern.latestOverallTransactionId,
-                        categoryTitle: pattern.categoryTitle,
-                        occurrenceCount: pattern.occurrenceCount
-                    });
                     const entry = this.buildEntryFromPattern(pattern, {
                         dayOfMonth: clampedDay,
                         title: pattern.latestOverallTitle,
@@ -98,26 +73,7 @@ class RecurringCalendarService {
                     });
                     this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
                     forecastedTotalAmount += pattern.latestAmount;
-                } else {
-                    console.log('[RECURRING] PATH-C DROPPED (past day, no display month tx)', {
-                        title: pattern.latestOverallTitle,
-                        modeDayOfMonth: pattern.modeDayOfMonth,
-                        clampedDay,
-                        latestOverallTransactionId: pattern.latestOverallTransactionId,
-                        categoryTitle: pattern.categoryTitle,
-                        occurrenceCount: pattern.occurrenceCount
-                    });
                 }
-            } else {
-                console.log('[RECURRING] SKIPPED (no display month tx, no mode day)', {
-                    title: pattern.title,
-                    latestOverallTitle: pattern.latestOverallTitle,
-                    dayOfMonth: pattern.dayOfMonth,
-                    modeDayOfMonth: pattern.modeDayOfMonth,
-                    latestTransactionId: pattern.latestTransactionId,
-                    latestOverallTransactionId: pattern.latestOverallTransactionId,
-                    categoryTitle: pattern.categoryTitle
-                });
             }
         }
 
