@@ -135,8 +135,15 @@ export const RecurringCalendarPage = () => {
 
                     {showUpcomingList ? (
                         <View className="flex-1 pt-lg">
+                            <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
+                                <Text className="text-xs uppercase text-secondary-foreground">
+                                    <Trans>Upcoming</Trans>
+                                </Text>
+                                <ProtectedText className="text-xs text-secondary-foreground">{formattedForecastedTotal}</ProtectedText>
+                            </View>
+
                             <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                                <RecurringCalendarUpcoming entries={allForecastedEntries} totalAmount={formattedForecastedTotal} />
+                                <RecurringCalendarUpcoming entries={allForecastedEntries} />
                                 <MenuSpacer />
                             </ScrollView>
                         </View>
