@@ -100,7 +100,7 @@ class RecurringCalendarService {
     ): RecurringCalendarEntryInterface {
         return {
             categoryId: pattern.categoryId,
-            categoryTitle: pattern.categoryTitle,
+            categoryTitle: pattern.categoryTitle ?? pattern.mccCategoryTitle,
             categoryIcon: pattern.categoryIcon,
             latestAmount: pattern.latestAmount,
             occurrenceCount: pattern.occurrenceCount,

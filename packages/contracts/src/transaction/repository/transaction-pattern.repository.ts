@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Two-path monthly detection (bank-synced + manual) with correlated subqueries */
 import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -7,6 +8,7 @@ import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@gene
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
@@ -27,10 +29,12 @@ const RECENCY_MONTHS = 12;
 const DEFAULT_MONTHLY_LIMIT = 50;
 const DAY_CONCENTRATION_NUMERATOR = 4;
 const DAY_CONCENTRATION_DENOMINATOR = 10;
+const AMOUNT_VARIANCE_MULTIPLIER = 2;
 
 const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id);
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
 const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
+const MCC_CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.mccCategoryId, MccCategoryEntityTable.id);
 
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
@@ -56,7 +60,20 @@ export class TransactionPatternRepository {
     }
 
     async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
-        return this.executeMonthlyPatternQuery(query);
+        const bankPatterns = await this.executeBankSyncedMonthlyQuery(query);
+        const manualPatterns = await this.executeManualMonthlyQuery(query);
+        const allPatterns = [...bankPatterns, ...manualPatterns];
+
+        allPatterns.sort((first, second) => {
+            const occurrenceDiff = second.occurrenceCount - first.occurrenceCount;
+            if (occurrenceDiff !== 0) {
+                return occurrenceDiff;
+            }
+
+            return second.lastOccurrence - first.lastOccurrence;
+        });
+
+        return allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
 
     async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
@@ -209,91 +226,199 @@ export class TransactionPatternRepository {
         return type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     }
 
-    // eslint-disable-next-line max-statements -- Monthly pattern query with exchange rate, day concentration, and correlated subqueries
-    private async executeMonthlyPatternQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+    private buildMonthlyBaseConditions(query: MonthlyPatternQueryInterface): {
+        conditions: SQL[];
+        entryType: TransactionEntryTypeEnum;
+        recencyTimestamp: number;
+    } {
         const entryType = this.getEntryTypeForTransactionType(query.type);
         const recencyTimestamp = Math.floor(Date.now() / 1000) - RECENCY_MONTHS * 30 * 24 * 60 * 60;
-        const timezoneOffset = query.timezoneOffsetSeconds;
-        const monthlyConditions = this.buildBasePatternConditions(query);
-        monthlyConditions.push(sql`${TransactionEntityTable.operatedAt} >= ${recencyTimestamp}`);
 
-        const exchangeRate = sql`COALESCE(
-            ${getDirectExchangeRateSql(query.defaultInstrumentId, AccountEntityTable.instrumentId)},
-            ${getInverseExchangeRateSql(query.defaultInstrumentId, AccountEntityTable.instrumentId)},
+        const conditions: SQL[] = [
+            eq(TransactionEntityTable.type, query.type),
+            isNull(TransactionEntityTable.deletedAt),
+            eq(TransactionEntryEntityTable.type, entryType),
+            ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+            sql`${TransactionEntityTable.operatedAt} >= ${recencyTimestamp}`
+        ];
+
+        return { conditions, entryType, recencyTimestamp };
+    }
+
+    private getExchangeRateSql(defaultInstrumentId: number): SQL {
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
             1.0)`;
+    }
+
+    private buildMonthlyHavingConditions(distinctMonth: SQL, modeDayCount: SQL<number>): SQL | undefined {
+        return and(
+            sql`COUNT(DISTINCT ${distinctMonth}) >= ${MIN_MONTHLY_OCCURRENCES}`,
+            sql`MAX(${TransactionEntryEntityTable.amount}) <= MIN(${TransactionEntryEntityTable.amount}) * ${AMOUNT_VARIANCE_MULTIPLIER}`,
+            sql`${modeDayCount} * ${DAY_CONCENTRATION_DENOMINATOR} >= COUNT(DISTINCT ${TransactionEntityTable.id}) * ${DAY_CONCENTRATION_NUMERATOR}`
+        );
+    }
+
+    private buildCommonMonthlySelectFields(params: {
+        displayMonthTransaction: SQL;
+        distinctMonth: SQL;
+        timezoneOffset: number;
+        latestOverallTransaction: SQL;
+    }) {
+        return {
+            categoryId: TransactionEntryEntityTable.categoryId,
+            categoryTitle: CategoryEntityTable.title,
+            categoryIcon: CategoryEntityTable.icon,
+            latestTransactionId: sql<number>`${params.displayMonthTransaction}`.as('latestTransactionId'),
+            occurrenceCount: sql<number>`COUNT(DISTINCT ${params.distinctMonth})`.as('occurrenceCount'),
+            lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
+            dayOfMonth: sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${params.timezoneOffset}, 'unixepoch') AS INTEGER)
+                FROM transactions t3 WHERE t3.id = ${params.displayMonthTransaction})`.as('dayOfMonth'),
+            latestOverallTransactionId: sql<number>`${params.latestOverallTransaction}`.as('latestOverallTransactionId'),
+            accountId: AccountEntityTable.id,
+            instrumentId: AccountEntityTable.instrumentId
+        };
+    }
+
+    private async executeBankSyncedMonthlyQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+        const { conditions, entryType, recencyTimestamp } = this.buildMonthlyBaseConditions(query);
+        conditions.push(sql`${TransactionEntityTable.title} != ''`);
+
+        const timezoneOffset = query.timezoneOffsetSeconds;
+        const exchangeRate = this.getExchangeRateSql(query.defaultInstrumentId);
         const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
+
+        const bankMatchCondition = sql`t2.title = ${TransactionEntityTable.title} AND te2.account_id = ${AccountEntityTable.id}
+            AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}`;
 
         const displayMonthTransaction = sql`(SELECT t2.id FROM transactions t2
             INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-            WHERE te2.amount = ${TransactionEntryEntityTable.amount} AND te2.account_id = ${AccountEntityTable.id}
-            AND te2.category_id = ${TransactionEntryEntityTable.categoryId}
-            AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}
+            WHERE ${bankMatchCondition}
             AND strftime('%Y-%m', t2.operated_at + ${timezoneOffset}, 'unixepoch') = ${query.displayMonth}
             ORDER BY t2.operated_at DESC LIMIT 1)`;
 
-        const latestTitle = sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${displayMonthTransaction})`.as('title');
-        const latestTransactionId = sql<number>`${displayMonthTransaction}`.as('latestTransactionId');
-
-        const displayMonthDay = sql<number>`(SELECT CAST(strftime('%d', t3.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
-            FROM transactions t3 WHERE t3.id = ${displayMonthTransaction})`.as('dayOfMonth');
-
-        const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
-            FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
-            WHERE te4.amount = ${TransactionEntryEntityTable.amount} AND te4.account_id = ${AccountEntityTable.id}
-            AND te4.category_id = ${TransactionEntryEntityTable.categoryId}
-            AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
-            GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
+        const latestAmount = sql<number>`(SELECT te2.amount FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE ${bankMatchCondition}
+            ORDER BY t2.operated_at DESC LIMIT 1) * ${exchangeRate}`.as('latestAmount');
 
         const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             FROM transactions t5 INNER JOIN transaction_entries te5 ON te5.transaction_id = t5.id
-            WHERE te5.amount = ${TransactionEntryEntityTable.amount} AND te5.account_id = ${AccountEntityTable.id}
-            AND te5.category_id = ${TransactionEntryEntityTable.categoryId}
+            WHERE t5.title = ${TransactionEntityTable.title} AND te5.account_id = ${AccountEntityTable.id}
             AND t5.deleted_at IS NULL AND t5.type = ${query.type} AND te5.type = ${entryType} AND t5.operated_at >= ${recencyTimestamp}
             GROUP BY CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
             ORDER BY COUNT(DISTINCT t5.id) DESC LIMIT 1)`.as('modeDayOfMonth');
 
+        const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
+            FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
+            WHERE t4.title = ${TransactionEntityTable.title} AND te4.account_id = ${AccountEntityTable.id}
+            AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
+            GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
+
         const latestOverallTransaction = sql`(SELECT t6.id FROM transactions t6
             INNER JOIN transaction_entries te6 ON te6.transaction_id = t6.id
-            WHERE te6.amount = ${TransactionEntryEntityTable.amount} AND te6.account_id = ${AccountEntityTable.id}
-            AND te6.category_id = ${TransactionEntryEntityTable.categoryId}
+            WHERE t6.title = ${TransactionEntityTable.title} AND te6.account_id = ${AccountEntityTable.id}
             AND t6.deleted_at IS NULL AND t6.type = ${query.type} AND te6.type = ${entryType}
             ORDER BY t6.operated_at DESC LIMIT 1)`;
 
-        const latestOverallTransactionId = sql<number>`${latestOverallTransaction}`.as('latestOverallTransactionId');
-        const latestOverallTitle = sql<string>`(SELECT t7.title FROM transactions t7 WHERE t7.id = ${latestOverallTransaction})`.as(
-            'latestOverallTitle'
-        );
-
         return this.db
             .select({
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitle: CategoryEntityTable.title,
-                categoryIcon: CategoryEntityTable.icon,
-                title: latestTitle,
-                latestAmount: sql<number>`${TransactionEntryEntityTable.amount} * ${exchangeRate}`.as('latestAmount'),
-                latestTransactionId,
-                occurrenceCount: sql<number>`COUNT(DISTINCT ${distinctMonth})`.as('occurrenceCount'),
-                lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
-                dayOfMonth: displayMonthDay,
+                ...this.buildCommonMonthlySelectFields({
+                    displayMonthTransaction,
+                    distinctMonth,
+                    timezoneOffset,
+                    latestOverallTransaction
+                }),
+                mccCategoryTitle: MccCategoryEntityTable.shortDescription,
+                title: sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${displayMonthTransaction})`.as('title'),
+                latestAmount,
                 modeDayOfMonth,
-                latestOverallTransactionId,
-                latestOverallTitle,
-                accountId: AccountEntityTable.id,
-                instrumentId: AccountEntityTable.instrumentId
+                latestOverallTitle: sql<string>`(SELECT t7.title FROM transactions t7 WHERE t7.id = ${latestOverallTransaction})`.as(
+                    'latestOverallTitle'
+                )
             })
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
-            .where(and(...monthlyConditions))
-            .groupBy(TransactionEntryEntityTable.amount, AccountEntityTable.id, TransactionEntryEntityTable.categoryId)
-            .having(
-                and(
-                    sql`COUNT(DISTINCT ${distinctMonth}) >= ${MIN_MONTHLY_OCCURRENCES}`,
-                    sql`${modeDayCount} * ${DAY_CONCENTRATION_DENOMINATOR} >= COUNT(DISTINCT ${TransactionEntityTable.id}) * ${DAY_CONCENTRATION_NUMERATOR}`
-                )
-            )
-            .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonth})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(query.limit ?? DEFAULT_MONTHLY_LIMIT);
+            .leftJoin(MccCategoryEntityTable, MCC_CATEGORY_JOIN_CONDITION)
+            .where(and(...conditions))
+            .groupBy(TransactionEntityTable.title, AccountEntityTable.id)
+            .having(this.buildMonthlyHavingConditions(distinctMonth, modeDayCount))
+            .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonth})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`));
+    }
+
+    private async executeManualMonthlyQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+        const { conditions, entryType, recencyTimestamp } = this.buildMonthlyBaseConditions(query);
+        conditions.push(
+            sql`${TransactionEntityTable.title} = ''`,
+            sql`${TransactionEntityTable.comment} != ''`,
+            isNotNull(TransactionEntryEntityTable.categoryId)
+        );
+
+        const timezoneOffset = query.timezoneOffsetSeconds;
+        const exchangeRate = this.getExchangeRateSql(query.defaultInstrumentId);
+        const distinctMonth = sql`strftime('%Y-%m', ${TransactionEntityTable.operatedAt} + ${timezoneOffset}, 'unixepoch')`;
+
+        const manualMatchCondition = sql`t2.comment = ${TransactionEntityTable.comment}
+            AND te2.category_id = ${TransactionEntryEntityTable.categoryId} AND te2.account_id = ${AccountEntityTable.id}
+            AND t2.title = '' AND t2.deleted_at IS NULL AND t2.type = ${query.type} AND te2.type = ${entryType}`;
+
+        const displayMonthTransaction = sql`(SELECT t2.id FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE ${manualMatchCondition}
+            AND strftime('%Y-%m', t2.operated_at + ${timezoneOffset}, 'unixepoch') = ${query.displayMonth}
+            ORDER BY t2.operated_at DESC LIMIT 1)`;
+
+        const latestAmount = sql<number>`(SELECT te2.amount FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE ${manualMatchCondition}
+            ORDER BY t2.operated_at DESC LIMIT 1) * ${exchangeRate}`.as('latestAmount');
+
+        const modeDayOfMonth = sql<number>`(SELECT CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
+            FROM transactions t5 INNER JOIN transaction_entries te5 ON te5.transaction_id = t5.id
+            WHERE t5.comment = ${TransactionEntityTable.comment}
+            AND te5.category_id = ${TransactionEntryEntityTable.categoryId} AND te5.account_id = ${AccountEntityTable.id}
+            AND t5.title = '' AND t5.deleted_at IS NULL AND t5.type = ${query.type} AND te5.type = ${entryType} AND t5.operated_at >= ${recencyTimestamp}
+            GROUP BY CAST(strftime('%d', t5.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)
+            ORDER BY COUNT(DISTINCT t5.id) DESC LIMIT 1)`.as('modeDayOfMonth');
+
+        const modeDayCount = sql<number>`(SELECT MAX(dc) FROM (SELECT COUNT(DISTINCT t4.id) AS dc
+            FROM transactions t4 INNER JOIN transaction_entries te4 ON te4.transaction_id = t4.id
+            WHERE t4.comment = ${TransactionEntityTable.comment}
+            AND te4.category_id = ${TransactionEntryEntityTable.categoryId} AND te4.account_id = ${AccountEntityTable.id}
+            AND t4.title = '' AND t4.deleted_at IS NULL AND t4.type = ${query.type} AND te4.type = ${entryType} AND t4.operated_at >= ${recencyTimestamp}
+            GROUP BY CAST(strftime('%d', t4.operated_at + ${timezoneOffset}, 'unixepoch') AS INTEGER)))`;
+
+        const latestOverallTransaction = sql`(SELECT t6.id FROM transactions t6
+            INNER JOIN transaction_entries te6 ON te6.transaction_id = t6.id
+            WHERE t6.comment = ${TransactionEntityTable.comment}
+            AND te6.category_id = ${TransactionEntryEntityTable.categoryId} AND te6.account_id = ${AccountEntityTable.id}
+            AND t6.title = '' AND t6.deleted_at IS NULL AND t6.type = ${query.type} AND te6.type = ${entryType}
+            ORDER BY t6.operated_at DESC LIMIT 1)`;
+
+        return this.db
+            .select({
+                ...this.buildCommonMonthlySelectFields({
+                    displayMonthTransaction,
+                    distinctMonth,
+                    timezoneOffset,
+                    latestOverallTransaction
+                }),
+                mccCategoryTitle: sql<null>`NULL`.as('mccCategoryTitle'),
+                title: sql<string>`${TransactionEntityTable.comment}`.as('title'),
+                latestAmount,
+                modeDayOfMonth,
+                latestOverallTitle: sql<string>`${TransactionEntityTable.comment}`.as('latestOverallTitle')
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
+            .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
+            .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
+            .where(and(...conditions))
+            .groupBy(TransactionEntityTable.comment, TransactionEntryEntityTable.categoryId, AccountEntityTable.id)
+            .having(this.buildMonthlyHavingConditions(distinctMonth, modeDayCount))
+            .orderBy(desc(sql`COUNT(DISTINCT ${distinctMonth})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`));
     }
 }
