@@ -62,15 +62,27 @@ class RecurringCalendarService {
                 totalAmount += pattern.latestAmount;
             } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
                 const clampedDay = Math.min(pattern.modeDayOfMonth, daysInMonth);
-                const isForecast = !isCurrentMonth || clampedDay > today;
-                const entry = this.buildEntryFromPattern(pattern, {
-                    dayOfMonth: clampedDay,
-                    title: pattern.latestOverallTitle,
-                    latestTransactionId: null,
-                    isForecast
-                });
-                this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
-                forecastedTotalAmount += pattern.latestAmount;
+                const isForecastedUpcoming = isCurrentMonth && clampedDay > today;
+
+                if (isForecastedUpcoming) {
+                    const entry = this.buildEntryFromPattern(pattern, {
+                        dayOfMonth: clampedDay,
+                        title: pattern.latestOverallTitle,
+                        latestTransactionId: null,
+                        isForecast: true
+                    });
+                    this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
+                    forecastedTotalAmount += pattern.latestAmount;
+                } else {
+                    const entry = this.buildEntryFromPattern(pattern, {
+                        dayOfMonth: clampedDay,
+                        title: pattern.latestOverallTitle,
+                        latestTransactionId: pattern.latestOverallTransactionId,
+                        isForecast: false
+                    });
+                    this.addEntryToMap(entriesByDay, clampedDay, entry);
+                    totalAmount += pattern.latestAmount;
+                }
             }
         }
 
