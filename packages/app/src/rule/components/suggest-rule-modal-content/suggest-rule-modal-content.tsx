@@ -1,11 +1,10 @@
-import { RuleActionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { RuleActionTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -36,12 +35,9 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
     return (
         <View testID={SuggestRuleSelectors.Modal} className="flex-1 justify-between px-4xl pt-4xl pb-4xl gap-y-3xl">
             <View className="gap-y-3xl">
-                <View className="flex-row items-center gap-x-md">
-                    <Icon icon={UserIconNameEnum.Cog} size={20} className="text-primary" />
-                    <Text className="text-primary font-medium text-xl">
-                        <Trans>Quick rule</Trans>
-                    </Text>
-                </View>
+                <Text className="text-primary font-medium text-xl">
+                    <Trans>Quick rule</Trans>
+                </Text>
 
                 <View className="rounded-3xl bg-secondary-background border border-secondary-corner p-4xl">
                     <SuggestRuleDescriptionContent
