@@ -50,10 +50,6 @@ export const SuggestionsContainer = (props: Props) => {
         onSelectRepeatedPattern
     } = props;
 
-    if (shouldSuggestRule && suggestRuleData && onRuleCreated) {
-        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
-    }
-
     const safeCategoryId = categoryId ?? 0;
     const hasCategorySelected = safeCategoryId > 0;
     const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
@@ -78,6 +74,10 @@ export const SuggestionsContainer = (props: Props) => {
                 onSelect={onSelectTag}
             />
         );
+    }
+
+    if (shouldSuggestRule && suggestRuleData && onRuleCreated) {
+        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
     }
 
     if (showRepeatedSuggestions) {
