@@ -7,6 +7,7 @@ export interface MonthlyPatternRawRowInterface extends Omit<
     readonly categoryId: number | null;
     readonly categoryTitle: string | null;
     readonly categoryIcon: MonthlyPatternRowInterface['categoryIcon'] | null;
+    readonly mccCategoryTitle: string | null;
     readonly title: string | null;
     readonly latestTransactionId: number | null;
     readonly dayOfMonth: number | null;
