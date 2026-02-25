@@ -166,9 +166,7 @@ msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
 msgstr ""
-"Application de budget alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
-"Version {appVersion}Application de budget alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
-"Version {appVersion}Application de budgétisation alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
+"Application de budgétisation alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
 "Version {appVersion}"
 
 #: src/app/import-column-mapper.tsx:85
