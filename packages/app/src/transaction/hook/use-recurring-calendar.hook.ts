@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -19,30 +19,36 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
     const { defaultInstrument } = useSettingsContext();
     const focusKey = useFocusKey();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | undefined>();
+    const hasLoadedRef = useRef(false);
 
     useEffect(() => {
         let cancelled = false;
 
-        const fetchData = async (): Promise<void> => {
+        if (!hasLoadedRef.current) {
             setIsLoading(true);
+        }
 
+        const fetchData = async (): Promise<void> => {
             try {
                 const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id, displayYear, displayMonth);
 
                 if (!cancelled) {
+                    hasLoadedRef.current = true;
                     setData(result);
                 }
             } catch (fetchError: unknown) {
                 if (!cancelled) {
                     setError(getErrorMessage(fetchError));
-                    setData({
+                    const emptyData = {
                         entriesByDay: EMPTY_ENTRIES_BY_DAY,
                         forecastedEntriesByDay: EMPTY_ENTRIES_BY_DAY,
                         totalAmount: 0,
                         forecastedTotalAmount: 0
-                    });
+                    };
+                    hasLoadedRef.current = true;
+                    setData(emptyData);
                 }
             } finally {
                 if (!cancelled) {

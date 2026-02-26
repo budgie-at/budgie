@@ -12,6 +12,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
+import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -21,9 +22,10 @@ const amountVariants = cva('text-sm font-semibold text-right', {
     variants: { type: FOREGROUND_COLOR_PALETTE }
 });
 
+// eslint-disable-next-line max-statements -- Cross-currency display requires additional variables
 export const TransactionAmount = ({ transaction }: Props) => {
     const type = getTransactionType(transaction);
-    const { decimalPlaces } = useSettingsContext();
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
 
     const fromEntries = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
     const toEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
@@ -49,18 +51,28 @@ export const TransactionAmount = ({ transaction }: Props) => {
     }
 
     if (isDefined(fromEntry)) {
+        const isCrossCurrency = fromEntry.account.instrument.id !== defaultInstrument.id;
+
         return (
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
-            </Text>
+            <View className="items-end">
+                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
+                    {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
+                </Text>
+                {isCrossCurrency ? <ConvertedAmountLabel instrumentId={fromEntry.account.instrument.id} amount={fromEntry.amount} /> : null}
+            </View>
         );
     }
 
     if (isDefined(toEntry)) {
+        const isCrossCurrency = toEntry.account.instrument.id !== defaultInstrument.id;
+
         return (
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
-            </Text>
+            <View className="items-end">
+                <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
+                    {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
+                </Text>
+                {isCrossCurrency ? <ConvertedAmountLabel instrumentId={toEntry.account.instrument.id} amount={toEntry.amount} /> : null}
+            </View>
         );
     }
 
