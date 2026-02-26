@@ -31,6 +31,10 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/ai/provider/ai-status.provider.tsx:40
+msgid "{completionRatio}% learned"
+msgstr "{completionRatio}% вивчено"
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
@@ -65,7 +69,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(tabs)/settings/index.tsx:136
+#: src/app/(tabs)/settings/index.tsx:163
 msgid "About"
 msgstr "Про застосунок"
 
@@ -137,15 +141,23 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:37
+#: src/app/(tabs)/settings/index.tsx:93
 msgid "AI"
 msgstr "ШІ"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:243
+msgid "AI data preparation failed"
+msgstr "Підготовка даних ШІ не вдалася"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:159
+msgid "AI model is loading, please wait..."
+msgstr "ШІ модель завантажується, зачекайте..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
 msgstr "Метадані, згенеровані ШІ"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/app/(tabs)/settings/index.tsx:168
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -173,8 +185,8 @@ msgstr "Вже синхронізується"
 msgid "Amount"
 msgstr "Сума"
 
-#: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:60
+#: src/app/(main)/transactions/[id]/transfer.tsx:65
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -187,7 +199,7 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(tabs)/settings/index.tsx:115
+#: src/app/(tabs)/settings/index.tsx:136
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -212,11 +224,11 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(tabs)/settings/archived.tsx:17
-#: src/app/(tabs)/settings/index.tsx:101
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:18
+#: src/settings/components/truncate-data/truncate-data.tsx:20
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
@@ -267,7 +279,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(tabs)/settings/index.tsx:139
+#: src/app/(tabs)/settings/index.tsx:166
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -275,10 +287,14 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
 #: src/account/component/account-action-card/account-action-card.tsx:39
+#: src/account/component/archive-account/archive-account.tsx:26
 #: src/account/component/archived-account-card/archived-account-card.tsx:32
 #: src/account/component/archived-account-card/archived-account-card.tsx:52
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/confirm-action.tsx:43
+#: src/app/convert-to-transfer.tsx:74
+#: src/import/components/import-database/import-database.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
@@ -343,14 +359,18 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:17
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:40
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:172
+msgid "Clearing old data..."
+msgstr "Видалення старих даних…"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:43
 msgid "Close"
@@ -384,17 +404,20 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/app/convert-to-transfer.tsx:77
-#: src/app/convert-to-transfer.tsx:113
+#: src/app/convert-to-transfer.tsx:73
+msgid "Convert"
+msgstr "Конвертувати"
+
+#: src/app/convert-to-transfer.tsx:109
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
-#: src/app/convert-to-transfer.tsx:75
+#: src/app/convert-to-transfer.tsx:71
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -402,11 +425,7 @@ msgstr "Конвертувати у переказ?"
 msgid "Could not activate account."
 msgstr "Не вдалося активувати рахунок."
 
-#: src/account/component/archive-account/archive-account.tsx:41
-msgid "Could not archive account. Please try again later"
-msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
-
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
@@ -422,11 +441,11 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+#: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:121
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
 
@@ -446,7 +465,7 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not save category"
 msgstr "Не вдалося зберегти категорію"
 
@@ -454,7 +473,7 @@ msgstr "Не вдалося зберегти категорію"
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+#: src/transaction/hook/use-update-transaction-form.hook.ts:44
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
@@ -478,7 +497,7 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(tabs)/settings/index.tsx:95
+#: src/app/(tabs)/settings/index.tsx:113
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -486,7 +505,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -544,7 +563,7 @@ msgstr "Власні категорії, які ви створите, з'явл
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(tabs)/settings/index.tsx:126
+#: src/app/(tabs)/settings/index.tsx:151
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -582,11 +601,11 @@ msgstr "Видалити"
 msgid "Delete Account Permanently?"
 msgstr "Видалити рахунок назавжди?"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:49
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:21
 msgid "Delete data"
 msgstr "Видалити дані"
 
@@ -606,9 +625,18 @@ msgstr "Скасувати вибір усіх"
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
+#: src/ai/hook/use-ai-data-preparation.hook.ts:237
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
 msgid "Done"
 msgstr "Готово"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:109
+msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
+msgstr "Завантажте виписку з рахунку у форматі PDF з George (онлайн-банкінг Erste Bank): Рахунок → Виписки → Завантажити PDF."
+
+#: src/ai/provider/ai-status.provider.tsx:49
+msgid "Downloading AI model..."
+msgstr "Завантаження ШІ моделі..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -626,15 +654,15 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:74
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -642,7 +670,7 @@ msgstr "Редагувати дохід"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:78
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -722,14 +750,18 @@ msgstr "Введіть свій PIN-код"
 
 #: src/app/(tabs)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
-#: src/import/components/import-database/import-database.tsx:50
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:32
+#: src/import/components/import-database/import-database.tsx:49
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
 msgid "Error"
 msgstr "Помилка"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:85
 msgid "Errors"
 msgstr "Помилки"
+
+#: src/app/(main)/create-account/index.tsx:61
+msgid "Erste Bank"
+msgstr "Erste Bank"
 
 #: src/app/(main)/create-account/index.tsx:25
 msgid "Everyday transactions and spending"
@@ -772,7 +804,7 @@ msgstr "Експортувати базу даних"
 msgid "Export Failed"
 msgstr "Помилка експорту"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:23
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
 msgstr "Експортуйте транзакції як XLSX з додатку Приватбанк24: Меню → Виписки → Експорт в Excel."
 
@@ -789,6 +821,10 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
+#: src/settings/components/truncate-data/truncate-data.tsx:37
+msgid "Failed to clear data"
+msgstr "Не вдалося очистити дані"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
 msgstr "Не вдалося отримати рахунки"
@@ -796,10 +832,6 @@ msgstr "Не вдалося отримати рахунки"
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
 msgstr "Не вдалося завантажити контакти."
-
-#: src/category/hooks/use-regenerate-all-categories.hook.ts:36
-msgid "Failed to regenerate category translations"
-msgstr "Не вдалося перегенерувати переклади категорій"
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -857,9 +889,13 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(tabs)/settings/index.tsx:78
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "General"
 msgstr "Загальне"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:219
+msgid "Generating embeddings..."
+msgstr "Генерація вбудовувань..."
 
 #: src/i18n/constant/languages.constant.ts:26
 msgid "German"
@@ -873,7 +909,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:69
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -881,8 +917,13 @@ msgstr "Приховувати баланси рахунків та загаль
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
+#: src/app/(main)/create-account/index.tsx:60
+#: src/sync/component/create-erste-account/create-erste-account.tsx:99
+msgid "Import accounts and transactions from Erste Bank PDF statement"
+msgstr "Імпорт рахунків та транзакцій з PDF-виписки Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:54
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:99
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Імпорт рахунків та транзакцій з XLSX-експорту Приватбанку"
 
@@ -890,13 +931,18 @@ msgstr "Імпорт рахунків та транзакцій з XLSX-експ
 msgid "Import CSV"
 msgstr "Імпортувати CSV"
 
-#: src/import/components/import-database/import-database.tsx:38
-#: src/import/components/import-database/import-database.tsx:40
-#: src/import/components/import-database/import-database.tsx:58
+#: src/import/components/import-database/import-database.tsx:35
+#: src/import/components/import-database/import-database.tsx:37
+#: src/import/components/import-database/import-database.tsx:57
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
+#: src/sync/component/create-erste-account/create-erste-account.tsx:98
+msgid "Import Erste Bank"
+msgstr "Імпортувати Erste Bank"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:85
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:86
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
@@ -904,7 +950,7 @@ msgstr "Помилка імпорту"
 msgid "Import Failed"
 msgstr "Імпорт не вдався"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:97
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
 
@@ -912,12 +958,12 @@ msgstr "Імпорт Приватбанку"
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
-#: src/import/components/import-database/import-database.tsx:39
+#: src/import/components/import-database/import-database.tsx:36
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
 #: src/app/(tabs)/settings/inactive.tsx:17
-#: src/app/(tabs)/settings/index.tsx:108
+#: src/app/(tabs)/settings/index.tsx:126
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -945,7 +991,12 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
+#: src/ai/provider/ai-status.provider.tsx:46
+msgid "Initializing AI model..."
+msgstr "Ініціалізація ШІ моделі..."
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:57
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:56
 msgid "Invalid file"
 msgstr "Невірний файл"
 
@@ -982,15 +1033,19 @@ msgstr "Слухаю..."
 msgid "LLM not ready"
 msgstr "Модель ШІ не готова"
 
+#: src/ai/provider/ai-status.provider.tsx:43
+msgid "Long press to learn"
+msgstr "Довге натискання для навчання"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings/index.tsx:87
+#: src/app/(tabs)/settings/index.tsx:105
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(tabs)/settings/index.tsx:94
+#: src/app/(tabs)/settings/index.tsx:112
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -1002,7 +1057,7 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/category/components/category-form/category-form.tsx:171
+#: src/category/components/category-form/category-form.tsx:169
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
 
@@ -1027,15 +1082,15 @@ msgstr "Монобанк"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:50
+#: src/app/(main)/create-transaction/expense.tsx:66
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/app/(main)/create-transaction/income.tsx:39
+#: src/app/(main)/create-transaction/income.tsx:46
 msgid "New Income"
 msgstr "Новий дохід"
 
-#: src/app/(main)/create-transaction/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:70
 msgid "New Transfer"
 msgstr "Новий переказ"
 
@@ -1148,13 +1203,17 @@ msgstr "Нотатка"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:101
 msgid "Organization"
 msgstr "Організація"
 
 #: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Огляд"
+
+#: src/account/constant/debt-section-kind-label.constant.ts:8
+msgid "Owed to you"
+msgstr "Вам винні"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Owes you"
@@ -1193,14 +1252,14 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:122
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:142
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1213,6 +1272,10 @@ msgstr "Польська (Польща)"
 #: src/i18n/constant/locales.constant.ts:160
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
+
+#: src/settings/components/ai-data-card/ai-data-card.tsx:49
+msgid "Prepare AI Data"
+msgstr "Підготувати дані ШІ"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
@@ -1234,26 +1297,18 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
 msgstr "Перерахувати"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
-
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
-msgid "Regenerate AI Data"
-msgstr "Перегенерувати дані ШІ"
-
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
-msgid "Regenerate translations and search keywords for all categories and tags"
-msgstr "Перегенерувати переклади та пошукові ключові слова для всіх категорій і тегів"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
@@ -1263,7 +1318,7 @@ msgstr "Відновити"
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
-#: src/import/components/import-database/import-database.tsx:59
+#: src/import/components/import-database/import-database.tsx:58
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
@@ -1285,7 +1340,7 @@ msgstr "Ощадний рахунок"
 msgid "Savings accounts"
 msgstr "Ощадні рахунки"
 
-#: src/app/(tabs)/settings/index.tsx:66
+#: src/app/(tabs)/settings/index.tsx:68
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -1334,7 +1389,7 @@ msgstr "Пошук..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:62
 msgid "Security"
 msgstr "Безпека"
 
@@ -1342,7 +1397,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
 
@@ -1362,7 +1417,7 @@ msgstr "Виберіть тег для об'єднання"
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:66
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:67
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
@@ -1394,7 +1449,11 @@ msgstr "Обрати файл"
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:28
+#: src/sync/component/create-erste-account/create-erste-account.tsx:110
+msgid "Select the downloaded PDF file:"
+msgstr "Виберіть завантажений PDF-файл:"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:110
 msgid "Select the exported XLSX file:"
 msgstr "Оберіть експортований XLSX-файл:"
 
@@ -1414,15 +1473,15 @@ msgstr "Відправлення {fromCode}"
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(tabs)/settings/index.tsx:49
+#: src/app/(tabs)/settings/index.tsx:51
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/app/(tabs)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:140
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -1431,7 +1490,7 @@ msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:40
+#: src/account/component/archive-account/archive-account.tsx:41
 #: src/ai/component/voice-input-error/voice-input-error.tsx:29
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
@@ -1556,14 +1615,8 @@ msgid "Target balance"
 msgstr "Цільовий баланс"
 
 #: src/account/component/archive-account/archive-account.tsx:24
-msgid ""
-"This account will be hidden from your main view and won't be included in totals. \n"
-"\n"
-" 💡 You can restore it anytime from Settings → Archived Accounts"
-msgstr ""
-"Цей рахунок буде прихований з вашого головного перегляду і не буде включено до підсумків.\n"
-"\n"
-" 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
+msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
+msgstr "Цей рахунок буде приховано з головного екрану і не враховуватиметься в загальних підсумках. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
@@ -1586,15 +1639,15 @@ msgstr "Цей тег має транзакції. Виберіть інший �
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/app/convert-to-transfer.tsx:63
+#: src/app/convert-to-transfer.tsx:61
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
 
-#: src/app/convert-to-transfer.tsx:64
+#: src/app/convert-to-transfer.tsx:62
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
@@ -1657,7 +1710,7 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/ai/hook/use-stt.hook.ts:104
+#: src/ai/hook/use-stt.hook.ts:105
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
@@ -1665,6 +1718,14 @@ msgstr "Помилка транскрипції"
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:200
+msgid "Translating categories..."
+msgstr "Переклад категорій..."
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:209
+msgid "Translating tags..."
+msgstr "Переклад тегів..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
@@ -1731,15 +1792,15 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
-#: src/app/(tabs)/settings/index.tsx:109
+#: src/app/(tabs)/settings/index.tsx:127
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(tabs)/settings/index.tsx:88
+#: src/app/(tabs)/settings/index.tsx:106
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(tabs)/settings/index.tsx:102
+#: src/app/(tabs)/settings/index.tsx:120
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
@@ -1762,6 +1823,10 @@ msgstr "Вчора"
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
 msgstr "Ви дали гроші"
+
+#: src/account/constant/debt-section-kind-label.constant.ts:7
+msgid "You owe"
+msgstr "Ви винні"
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"

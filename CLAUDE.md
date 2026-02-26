@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. Monorepo with 4 packages: app (React Native), contracts (shared types), landing (Next.js), and bank-sync (bank integrations).
+Budgie is an offline-first mobile expenses tracker. Monorepo with 5 packages: app (React Native), contracts (shared types), ai (AI/LLM services), landing (Next.js), and bank-sync (bank integrations).
 
 ## Commands
 
@@ -15,12 +15,14 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Prettier (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # ESLint
+yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 yarn test                                 # Jest tests
 
 # IMPORTANT: After completing any task, ALWAYS run:
+# During debug sessions (when user says "skip lint"), only run: yarn ts
+# Otherwise run full validation:
 yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
 
 # Utilities
@@ -33,6 +35,7 @@ yarn deps:dedupe                          # Deduplicate dependencies
 ```
 packages/
 ├── app/                # React Native (Expo 54) - main mobile app
+├── ai/                 # Pure TypeScript AI/LLM services
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 15 marketing site
 └── bank-sync/          # Bank integration package
@@ -48,12 +51,12 @@ packages/
 ## Critical Rules
 
 1. **No `any` type** - Everything properly typed
-2. **No type assertions** - Never use `as`, `@ts-ignore`, `@ts-expect-error`
+2. **No type assertions** - Never use `as Type`, `@ts-ignore`, `@ts-expect-error` (`as const` is allowed — it's a const assertion, not a type assertion)
 3. **No comments** - Self-documenting code with clear names
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
 5. **Single const declarations** - Each variable gets its own `const` declaration
 6. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0`
-7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()` 
+7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per folder** - Each component file lives in its own folder
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
@@ -63,11 +66,15 @@ packages/
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
 15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
-17. **Use existing utility functions** - Use `convertFromMicroUnits()` for amount conversion instead of manual `/ PRECISION`
+17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
 19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
+22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
+23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
+24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
+25. **Class method ordering** - Public methods come before private methods in class definitions
 
 ### Naming Conventions
 
@@ -107,6 +114,16 @@ items.map(transform).filter(isDefined)
 items.map(transform).filter((item): item is ItemType => item !== null)
 ```
 
+**Only use `.filter(isDefined)` when nulls are possible:**
+```typescript
+// Good - when transform can return null
+items.map(item => item.optionalField).filter(isDefined)
+
+// Bad - unnecessary filter when array type doesn't allow null
+const numbers: number[] = [1, 2, 3];
+numbers.filter(isDefined)  // Unnecessary, array can't have nulls
+```
+
 **Prefer Zod for complex object validation:**
 ```typescript
 // Good - Zod schema
@@ -138,15 +155,32 @@ type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
 
+**Check object property values, not just object existence:**
+```typescript
+// Good - check if date range has actual values before using
+const hasDateRange = isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to));
+if (hasDateRange) {
+    conditions.push(this.buildDateCondition(filters.date));
+}
+
+// Bad - object exists but may have all null properties
+if (isDefined(filters.date)) {
+    conditions.push(this.buildDateCondition(filters.date)); // Returns undefined if both from/to are null!
+}
+```
+
 **Microunits conversion:**
 ```typescript
-// Good - use utility function
+// Good - use utility functions
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+const microAmount = convertToMicroUnits(userInputAmount);
 
-// Bad - manual division
+// Bad - manual arithmetic with PRECISION
 import { PRECISION } from '@budgie/contracts';
 const displayAmount = pattern.averageAmount / PRECISION;
+const microAmount = Math.round(userInputAmount * PRECISION);
 ```
 
 **Optional params with spread syntax:**
@@ -234,6 +268,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 | Package | Stack |
 |---------|-------|
 | **app** | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
+| **ai** | Pure TypeScript, Zod |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod |
 | **landing** | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7 |
 | **bank-sync** | ky HTTP client, date-fns |
@@ -250,7 +285,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 
 Conventional commits: `type(scope): description`
 
-**Scopes:** Use package names without prefix: `app`, `contracts`, `landing`, `bank-sync`
+**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
 
 **Examples:**
 - `feat(app): add dark mode toggle`
@@ -278,7 +313,7 @@ Conventional commits: `type(scope): description`
 - If Prettier keeps reformatting your changes back, stop and use `eslint-disable`
 - Ask for confirmation before attempting complex refactors - do not go back and forth
 - Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
-- Use `jscpd:ignore-start/end` for intentionally similar code patterns (like form components)
+- **NEVER use `jscpd:ignore-start/end` in code files** - only allowed in JSX route files (e.g., `expense.tsx`, `income.tsx`, `transfer.tsx`). Fix duplication in source code by extracting shared logic instead
 
 ## Acceptable ESLint Disable Comments
 

@@ -1,0 +1,10 @@
+diff --git a/ios/PdfExtractor.podspec b/ios/PdfExtractor.podspec
+index 65f8044619109f405a30bf078ec772fa12978963..18d54ef61f801b76d25343047dc2f16ad51003ac 100644
+--- a/ios/PdfExtractor.podspec
++++ b/ios/PdfExtractor.podspec
+@@ -26,4 +26,5 @@ Pod::Spec.new do |s|
+   }
+ 
+   s.source_files = "**/*.{h,m,swift}"
++  s.exclude_files = "**/*Tests.swift"
+ end

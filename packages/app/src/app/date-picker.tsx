@@ -5,7 +5,7 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { useDatePickerModal } from '../transaction/context/date-picker-modal.context';
 
 export default function DatePickerModal() {
-    const { currentParams, resolveDatePicker } = useDatePickerModal();
+    const [, resolveDatePicker, currentParams] = useDatePickerModal();
     const { backgroundColor } = useFormsheetListStyles();
     const initialDate = currentParams?.initialDate ?? new Date();
 
