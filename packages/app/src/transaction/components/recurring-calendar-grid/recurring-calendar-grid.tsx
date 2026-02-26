@@ -8,11 +8,9 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { getCalendarDays } from '../../utils/get-calendar-days.util';
+import { getMonthLabel } from '../../utils/get-month-label.util';
+import { getWeekdayNames } from '../../utils/get-weekday-names.util';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
-
-const MONDAY_OFFSET = 6;
-const MONDAY_REFERENCE_YEAR = 2025;
-const DAYS_IN_WEEK = 7;
 
 interface Props {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
@@ -23,14 +21,6 @@ interface Props {
     readonly displayYear: number;
     readonly onChangeMonth: (year: number, month: number) => void;
 }
-
-const getWeekdayNames = (locale: string): string[] =>
-    Array.from({ length: DAYS_IN_WEEK }, (_, i) =>
-        new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(MONDAY_REFERENCE_YEAR, 0, MONDAY_OFFSET + i))
-    );
-
-const getMonthLabel = (year: number, month: number, locale: string): string =>
-    new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
 
 // eslint-disable-next-line max-statements -- Component with gesture handlers and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
