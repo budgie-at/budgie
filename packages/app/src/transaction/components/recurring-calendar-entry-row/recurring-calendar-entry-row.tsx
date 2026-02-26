@@ -11,6 +11,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 
 const ANIMATION_STAGGER = 50;
 
@@ -32,7 +33,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const description = t`${formattedAmount} · ${category}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
     const animationDelay = index * ANIMATION_STAGGER;
-    const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}-${entry.isForecast ? 'f' : 'a'}`;
+    const key = getRecurringEntryKey(entry);
 
     const right = isNotEmptyString(dayLabel) ? (
         <View className="ml-auto">

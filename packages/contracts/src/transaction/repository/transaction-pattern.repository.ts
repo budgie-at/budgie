@@ -265,7 +265,18 @@ export class TransactionPatternRepository {
         distinctMonth: SQL;
         timezoneOffset: number;
         latestOverallTransaction: SQL;
-    }) {
+    }): {
+        categoryId: typeof TransactionEntryEntityTable.categoryId;
+        categoryTitle: typeof CategoryEntityTable.title;
+        categoryIcon: typeof CategoryEntityTable.icon;
+        latestTransactionId: SQL.Aliased<number>;
+        occurrenceCount: SQL.Aliased<number>;
+        lastOccurrence: SQL.Aliased<number>;
+        dayOfMonth: SQL.Aliased<number>;
+        latestOverallTransactionId: SQL.Aliased<number>;
+        accountId: typeof AccountEntityTable.id;
+        instrumentId: typeof AccountEntityTable.instrumentId;
+    } {
         return {
             categoryId: TransactionEntryEntityTable.categoryId,
             categoryTitle: CategoryEntityTable.title,

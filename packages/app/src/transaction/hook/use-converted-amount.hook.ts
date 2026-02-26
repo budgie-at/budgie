@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: number, amountInMicroUnits: number): number | undefined => {
@@ -10,18 +12,13 @@ export const useConvertedAmount = (fromInstrumentId: number, toInstrumentId: num
         let cancelled = false;
 
         if (!isSameCurrency) {
-            void exchangeRatesService.convert(fromInstrumentId, toInstrumentId, amountInMicroUnits).then(
-                result => {
-                    if (!cancelled) {
-                        setConvertedAmount(result.amount);
-                    }
-
-                    return result;
-                },
-                () => {
-                    // Conversion failed, keep undefined
+            void exchangeRatesService.convert(fromInstrumentId, toInstrumentId, amountInMicroUnits).then(result => {
+                if (!cancelled) {
+                    setConvertedAmount(result.amount);
                 }
-            );
+
+                return result;
+            }, emptyFn);
         }
 
         return () => {

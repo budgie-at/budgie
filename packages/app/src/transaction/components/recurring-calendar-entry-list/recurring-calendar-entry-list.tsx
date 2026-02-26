@@ -3,7 +3,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
-import { RecurringCalendarUpcoming } from '../recurring-calendar-upcoming/recurring-calendar-upcoming';
+import { RecurringCalendarEntryRows } from '../recurring-calendar-entry-rows/recurring-calendar-entry-rows';
 
 import type { ReactNode } from 'react';
 
@@ -23,7 +23,7 @@ export const RecurringCalendarEntryList = ({ title, formattedTotal, entries, dis
         </View>
 
         <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-            <RecurringCalendarUpcoming entries={entries} displayMonth={displayMonth} displayYear={displayYear} />
+            <RecurringCalendarEntryRows entries={entries} displayMonth={displayMonth} displayYear={displayYear} />
             <MenuSpacer />
         </ScrollView>
     </View>
