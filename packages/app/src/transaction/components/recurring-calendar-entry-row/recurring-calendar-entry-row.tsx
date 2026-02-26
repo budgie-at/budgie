@@ -1,7 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode } from 'react';
+import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -16,10 +18,10 @@ interface Props {
     readonly entry: RecurringCalendarEntryInterface;
     readonly index: number;
     readonly onPress?: () => void;
-    readonly right?: ReactNode;
+    readonly dayLabel?: string;
 }
 
-export const RecurringCalendarEntryRow = ({ entry, index, onPress, right }: Props) => {
+export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -32,14 +34,20 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, right }: Prop
     const animationDelay = index * ANIMATION_STAGGER;
     const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}-${entry.isForecast ? 'f' : 'a'}`;
 
+    const right = isNotEmptyString(dayLabel) ? (
+        <View className="ml-auto">
+            <Text className="text-xs text-secondary-foreground">{dayLabel}</Text>
+        </View>
+    ) : null;
+
     return (
         <Animated.View key={key} entering={FadeInDown.delay(animationDelay).duration(200)}>
             <SimpleHorizontalCell
                 left={<CircleIcon icon={icon} variant="destructive" />}
                 title={entry.title}
                 description={description}
-                {...(onPress !== undefined && { onPress })} // eslint-disable-line no-undefined -- Conditionally pass onPress
-                {...(right !== undefined && { right })} // eslint-disable-line no-undefined -- Conditionally pass right
+                {...(onPress && { onPress })}
+                {...(right && { right })}
             />
         </Animated.View>
     );

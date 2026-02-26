@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
@@ -16,15 +16,9 @@ export const RecurringCalendarUpcoming = ({ entries }: Props) => {
             {entries.map((entry, index) => {
                 const day = entry.dayOfMonth;
                 const dayLabel = t`Day ${day}`;
-                const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}`;
+                const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}-${entry.isForecast ? 'f' : 'a'}`;
 
-                const rightContent = (
-                    <View className="ml-auto">
-                        <Text className="text-xs text-secondary-foreground">{dayLabel}</Text>
-                    </View>
-                );
-
-                return <RecurringCalendarEntryRow key={key} entry={entry} index={index} right={rightContent} />;
+                return <RecurringCalendarEntryRow key={key} entry={entry} index={index} dayLabel={dayLabel} />;
             })}
         </View>
     );
