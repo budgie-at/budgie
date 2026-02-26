@@ -47,7 +47,7 @@ export const StatisticsContent = () => {
             </View>
 
             <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
-                <View className="gap-y-lg ">
+                <View className="gap-y-lg">
                     <Text className="uppercase text-secondary-foreground text-xs">
                         <Trans>Overview</Trans>
                     </Text>
