@@ -26,8 +26,8 @@ export const RecalculateBalances = () => {
             return;
         }
 
+        setIsLoading(true);
         try {
-            setIsLoading(true);
             await accountBalanceIncrementalService.updateAllBalances(true);
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });

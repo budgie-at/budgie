@@ -3,6 +3,210 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.37.1](https://github.com/budgie-at/budgie/compare/v2.37.0...v2.37.1) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** align formsheet padding to 12px and center category card title ([d30be38](https://github.com/budgie-at/budgie/commit/d30be38c63964c38e7d2fa26b3e83669d049a862))
+- **app:** fix formsheet list padding and item spacing ([4de9d8e](https://github.com/budgie-at/budgie/commit/4de9d8eeb563b6498d57abf0eeee6882265caae0))
+
+# [2.37.0](https://github.com/budgie-at/budgie/compare/v2.36.0...v2.37.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** increase horizontal padding on formsheet list containers ([47b4c25](https://github.com/budgie-at/budgie/commit/47b4c25005ca2eb2cd8fc88cef2595be03fe165b))
+- **app:** standardize Result type declarations in modal contexts ([4098729](https://github.com/budgie-at/budgie/commit/40987297546315ec8f5ddb26d31ed807ee7d43b6))
+- **app:** unexport unused InputProps and inputVariant ([3e04d44](https://github.com/budgie-at/budgie/commit/3e04d4490664462fccf35688d7b6076e3308ff66))
+
+### Features
+
+- **app:** convert account type selector from bottom sheet to formsheet modal ([89721d1](https://github.com/budgie-at/budgie/commit/89721d1885d6f910e52286b9c812f809d6bec5b4))
+- **app:** convert contact selector from bottom sheet to formsheet modal ([0d5cfc9](https://github.com/budgie-at/budgie/commit/0d5cfc9a2fa3b67671fe94ed5eadd65fa7292358))
+- **app:** convert currency selector from bottom sheet to formsheet modal ([103f398](https://github.com/budgie-at/budgie/commit/103f398a35562032df391d7d6692dd77b3cfe235))
+- **app:** convert date filter from bottom sheet to formsheet modal ([6db5448](https://github.com/budgie-at/budgie/commit/6db54488f7154948df0ba82e57152c695fab2c7c))
+- **app:** convert import column mapper from bottom sheet to formsheet modal ([19de276](https://github.com/budgie-at/budgie/commit/19de2767c40087eb8cd07cdd855313dfa49a1836))
+- **app:** convert language selector from bottom sheet to formsheet modal ([9113897](https://github.com/budgie-at/budgie/commit/9113897bec7cf88c09d99defe5821c2f8f05483c))
+- **app:** convert transaction account filter from bottom sheet to formsheet modal ([1f6cac3](https://github.com/budgie-at/budgie/commit/1f6cac3e2f417daa270b7e4f6821d469c9a49e60))
+- **app:** convert transaction category filter from bottom sheet to formsheet modal ([7c0e83b](https://github.com/budgie-at/budgie/commit/7c0e83be0397f3dda374518abdbf3fb408bfc87f))
+- **app:** convert transaction tag filter from bottom sheet to formsheet modal ([ac2148f](https://github.com/budgie-at/budgie/commit/ac2148f7e9af77d5e329196a5b5de400ec89f0e1))
+- **app:** convert transaction type filter from bottom sheet to formsheet modal ([95e0fac](https://github.com/budgie-at/budgie/commit/95e0facc10ff6e11104d84b8f1d0dbf84f9d80df))
+- **app:** reuse existing date picker formsheet for account form date picker ([e782afb](https://github.com/budgie-at/budgie/commit/e782afbe4cd5d16b9936bdec7b3a3811c20867a7))
+
+# [2.36.0](https://github.com/budgie-at/budgie/compare/v2.35.3...v2.36.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app,contracts:** remove unused title_embeddings table and vec index ([6fee1e7](https://github.com/budgie-at/budgie/commit/6fee1e71626e737b6be2e642988f92cbfc480e91))
+- **app:** fix infinite re-render loop in suggestion hooks ([2f77187](https://github.com/budgie-at/budgie/commit/2f77187123e6ea8712a386cb286a9ed5b6ecb98e))
+- **app:** remove vec table reference from migration and fix DB reset ([b2bee3f](https://github.com/budgie-at/budgie/commit/b2bee3f2452c98e9842640a3bc5ed28492f13561))
+- **app:** reorder amount-based suggestions closer to right thumb ([cd1c076](https://github.com/budgie-at/budgie/commit/cd1c0768dd4695ee07380cc704f64765a72ecd68))
+
+### Features
+
+- **app,contracts:** add dual-source category suggestions with amount-based pattern matching ([1cd6397](https://github.com/budgie-at/budgie/commit/1cd63979b3332123d48d729fa9c0661c53efc271))
+- **app:** scroll suggestion list to right on content change ([18d147b](https://github.com/budgie-at/budgie/commit/18d147b510a14d720576f195facc2fb4790ffaf6))
+
+### Reverts
+
+- restore migration 0011 vec table reference ([0a45a21](https://github.com/budgie-at/budgie/commit/0a45a219627285f836ab7c47b2888b0e852e4a5c))
+
+## [2.35.3](https://github.com/budgie-at/budgie/compare/v2.35.2...v2.35.3) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix convert-to-transfer modal not appearing due to popover Modal conflict ([c7237da](https://github.com/budgie-at/budgie/commit/c7237da12763ce1a909789555781c1e6b54a4bbb))
+
+## [2.35.2](https://github.com/budgie-at/budgie/compare/v2.35.1...v2.35.2) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** increase settings page top padding to clear blur header ([1c72d88](https://github.com/budgie-at/budgie/commit/1c72d88fa3c96fd4ccf14b8ba43953ea6686abc6))
+
+## [2.35.1](https://github.com/budgie-at/budgie/compare/v2.35.0...v2.35.1) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix settings page scroll spacing for top and bottom ([f49e1d8](https://github.com/budgie-at/budgie/commit/f49e1d8c63f099a15cc07184e10202fa9c490ebb))
+
+# [2.35.0](https://github.com/budgie-at/budgie/compare/v2.34.2...v2.35.0) (2026-02-21)
+
+### Bug Fixes
+
+- **ai:** prevent concurrent embedding inference and cache results ([d7b6b59](https://github.com/budgie-at/budgie/commit/d7b6b591fd361edf03dff87b9129a040232367e0))
+- **app,ai,contracts:** address PR review issues and add animated brain progress UI ([d7f3146](https://github.com/budgie-at/budgie/commit/d7f31469a516b5eb32701f84f469c4a4fcad44a4))
+- **app,contracts:** count unique contexts instead of unique titles for embedding status ([52dcd7f](https://github.com/budgie-at/budgie/commit/52dcd7f2cc0b8d8a3135ca376862a84b82da7139))
+- **app,contracts:** optimize findRecentContexts and relax embedding pattern filters ([5e7c39a](https://github.com/budgie-at/budgie/commit/5e7c39a33a73c0740c0cb62bd812f6e9a41211e5))
+- **app,contracts:** process all embedding batches instead of stopping at first ([6dc044f](https://github.com/budgie-at/budgie/commit/6dc044f2b2fbc21847ab8bcc6f316550a12c0d56))
+- **app,contracts:** revert to main pattern logic, widen time window, remove debug logs ([f00c752](https://github.com/budgie-at/budgie/commit/f00c7521f021110e1ed71029df00e917546e4a6f))
+- **app:** add per-batch error handling to embedding sync ([38682c7](https://github.com/budgie-at/budgie/commit/38682c73cf671ec1f900c8d0b11177c135f9b03e))
+- **app:** address PR review — remove debug logs, fix SQL injection, clean up ([f64ef39](https://github.com/budgie-at/budgie/commit/f64ef39ebcbc5c1a82a3ad8eb1849ea77ef3b1dc))
+- **app:** create empty vec0 table in dbInit for migration compatibility ([90f18c9](https://github.com/budgie-at/budgie/commit/90f18c9a6b70e4aaf1d061b67d4624f92953b361))
+- **app:** fix AI progress never reaching 100% ([2627136](https://github.com/budgie-at/budgie/commit/262713608cc52152748809926a30fe7682911f5d))
+- **app:** fix brain pulsation, instant fill, and single brain position ([3d1eab4](https://github.com/budgie-at/budgie/commit/3d1eab45492e2537e1b9735ec2df7315b5d89d39))
+- **app:** guard table-dependent execSync calls in dbInit for fresh installs ([097c755](https://github.com/budgie-at/budgie/commit/097c755a0cfe07ab6037e2b9d3711807846354d0))
+- **app:** hide brain when all suggestion fields filled, update hint text ([357ecfb](https://github.com/budgie-at/budgie/commit/357ecfb28fd3c820fecd7120a02915004e4cf803))
+- **app:** highlight only cards, restore gap, simplify animation ([b261a7f](https://github.com/budgie-at/budgie/commit/b261a7f78bfad531136bb97fa2c2da87bba18be0))
+- **app:** move embedding status to About section in settings ([9f53f70](https://github.com/budgie-at/budgie/commit/9f53f707fe8004ca8b736fbee8acc168c83b3bae))
+- **app:** preserve mccCategoryId when saving transactions ([5e28055](https://github.com/budgie-at/budgie/commit/5e28055f9c8192dec761376be17f95d2cdb9885b))
+- **app:** prevent pattern suggestions from overwriting manual amount ([0b04c4e](https://github.com/budgie-at/budgie/commit/0b04c4ef4a4df4d094cb68724524ba4d8c56d45a))
+- **app:** remove automatic background embedding task from LlmProvider ([d88df87](https://github.com/budgie-at/budgie/commit/d88df87f5f93e9c4add592a1fc7e467bbdd4e19e))
+- **app:** remove initPostMigration from dbInit to fix splash screen hang ([eb1593a](https://github.com/budgie-at/budgie/commit/eb1593a38fee6420ef64a0ce3a42022b81b49151))
+- **app:** reverse suggestion order and improve AI label UX ([3d7ea15](https://github.com/budgie-at/budgie/commit/3d7ea15a7fd3779817258d815580bd8b4f807cf4))
+- **app:** revert suggestion row to vertical layout, add standalone brain and auto-refresh ([16f3013](https://github.com/budgie-at/budgie/commit/16f3013d20738d18df779da039da7c7ae3d806c0))
+- **app:** separate entering and shake animations on account row to prevent flash ([30864af](https://github.com/budgie-at/budgie/commit/30864af55bfc81e48487115454f6383bd12868d8))
+- **app:** support DEBT transactions on transfer detail screen ([bc589d4](https://github.com/budgie-at/budgie/commit/bc589d498c26b4b8ba5a10e2ca9f22dc0f59aaa1))
+
+### Features
+
+- **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([4088cf3](https://github.com/budgie-at/budgie/commit/4088cf3a48ac706b18547b61eed1f2711867ce98))
+- **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([7799ac1](https://github.com/budgie-at/budgie/commit/7799ac119cd5dd0de97e546d19e02429fea21f11))
+- **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([3703a59](https://github.com/budgie-at/budgie/commit/3703a59b1a4adad03c92461e20dfd6a395a7361e))
+- **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([8a1f53e](https://github.com/budgie-at/budgie/commit/8a1f53e6e33f36423f61566f3a76c1cd83c436a3))
+- **app,ai:** add source debug labels to suggestion pills ([b1b9727](https://github.com/budgie-at/budgie/commit/b1b97276463db91a75bc91cda3698f8900fe684a))
+- **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([ab79e1b](https://github.com/budgie-at/budgie/commit/ab79e1bcb6ebdc7f06a77a6eb95a2620f2453fae))
+- **app,ai:** show AI category suggestion for voice input transactions ([b7c9e13](https://github.com/budgie-at/budgie/commit/b7c9e13e924140d689fdd0301ae1093e0cd4a0b3))
+- **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([3660a42](https://github.com/budgie-at/budgie/commit/3660a42236815fc4ab9cdc4634ea6f4152ef3930))
+- **app:** add background embedding task for bank sync transactions ([2f1a33f](https://github.com/budgie-at/budgie/commit/2f1a33f7d2b52739ceb4dbd0fa7604f076c18588))
+- **app:** add embedding progress provider with brain fill indicator ([02789ff](https://github.com/budgie-at/budgie/commit/02789ffdb7cd865b0e0bf81750672e42d554c01c))
+- **app:** add long-press radial ring to regenerate AI data ([9e5a6c6](https://github.com/budgie-at/budgie/commit/9e5a6c625e88e835e895ab181fe47beb093d2b71))
+- **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([6f88c57](https://github.com/budgie-at/budgie/commit/6f88c5783f8c1ccd6b8a6b0d216f7083fe1f9467))
+- **app:** add unified AI status context with hint labels and brain navigation ([64812ed](https://github.com/budgie-at/budgie/commit/64812ed6be06ed8c322abbbf362c6f355992aae7))
+- **app:** auto-generate embeddings on transaction create/update ([84bbd3b](https://github.com/budgie-at/budgie/commit/84bbd3bdba937abcc1748ac5dd1096948679a070))
+- **app:** decouple embedding suggestions from chat model loading ([f37302f](https://github.com/budgie-at/budgie/commit/f37302f71844643df66d1d9168bba4a17560a968))
+- **app:** scroll to AI section when brain tapped, add missing translations ([568506a](https://github.com/budgie-at/budgie/commit/568506a8e389758c1b3ceb63e5d2dc032bc03cdc))
+- **app:** swap chat model to Qwen3 1.7B Q4_K_M ([0f5081d](https://github.com/budgie-at/budgie/commit/0f5081d152cbdb887f5cde3cbe7aa2d246c49433))
+- **contracts,ai,app:** split title_embeddings into merchant + comment tables ([044d1c2](https://github.com/budgie-at/budgie/commit/044d1c2d3b70119a887580cb350b92cf83fa9ba2))
+- **contracts,app:** add monthly pattern matching for transaction suggestions ([f32ca81](https://github.com/budgie-at/budgie/commit/f32ca8172b900b5fb53497a070566a358b14cfaa))
+- **contracts,app:** add vector embedding pattern matching for transaction suggestions ([506c6ad](https://github.com/budgie-at/budgie/commit/506c6ad0c35bc89a76048dd4dd48bd010fdbe35c))
+- **contracts,app:** replace LLM text generation with embedding-based category & tag suggestions ([005e8d0](https://github.com/budgie-at/budgie/commit/005e8d0a920926104afe796b5eb2036731465c58)), closes [#318](https://github.com/budgie-at/budgie/issues/318)
+
+### Performance Improvements
+
+- **app,ai,contracts:** optimize vector embedding queries and data integrity ([cab9e0c](https://github.com/budgie-at/budgie/commit/cab9e0ce293686adebad202bc5298fed77d8bc77))
+- **app:** cache existing contexts across embedding sync batches ([f676b27](https://github.com/budgie-at/budgie/commit/f676b275df9c05f95711a78994f68dd9a5bb1fe1))
+
+## [2.34.2](https://github.com/budgie-at/budgie/compare/v2.34.1...v2.34.2) (2026-02-13)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [2.34.1](https://github.com/budgie-at/budgie/compare/v2.34.0...v2.34.1) (2026-02-12)
+
+### Bug Fixes
+
+- **app:** enable long press PDF import for Erste Bank accounts ([83f238e](https://github.com/budgie-at/budgie/commit/83f238e597557265e0071deb06eb3017f5513106))
+- **app:** parallelize entry and tag bulk creation in processBatchInner ([9e2dca5](https://github.com/budgie-at/budgie/commit/9e2dca58118ada271e0615b273a162d350e35161))
+- **app:** wrap file import in db.transaction and thread tx through services ([3145e8b](https://github.com/budgie-at/budgie/commit/3145e8bd044a922eaa0af5adbaf92d0fa058b259))
+
+# [2.34.0](https://github.com/budgie-at/budgie/compare/v2.33.0...v2.34.0) (2026-02-12)
+
+### Features
+
+- **app:** add 3D flip animation and layout fixes for sign toggle ([1614d6b](https://github.com/budgie-at/budgie/commit/1614d6b07df5d0116a177a224010f0aa7938700d))
+- **app:** add negative balance input support for liability accounts ([10583e1](https://github.com/budgie-at/budgie/commit/10583e171bb64fe0de7cb1d58778408455bfe893))
+
+# [2.33.0](https://github.com/budgie-at/budgie/compare/v2.32.2...v2.33.0) (2026-02-05)
+
+### Bug Fixes
+
+- **app,contracts:** fix statistics tags empty state and list bottom padding ([7033256](https://github.com/budgie-at/budgie/commit/703325679a84c1e267ac5272dc39d62c4ea1252c))
+- **app:** exclude tag filter from uncategorized category condition ([c5033ee](https://github.com/budgie-at/budgie/commit/c5033ee624b7e0953d94f1cf956ba9791f8618b2))
+- **app:** patch expo-pdf-text-extract to exclude test files from iOS build ([8515fe0](https://github.com/budgie-at/budgie/commit/8515fe0ad2d12ae532b7d8190c8f61092e55a424))
+- **app:** update Erste Bank icon to use correct branding ([75d09b4](https://github.com/budgie-at/budgie/commit/75d09b40ecf47a4b9bd08e6599347d62ceb7ed73))
+- **app:** update Erste Bank import instructions ([d0881f5](https://github.com/budgie-at/budgie/commit/d0881f5fa9c57b09708b82602766d10cfa126736))
+
+### Features
+
+- **app,bank-sync,contracts:** add Erste Bank PDF import support ([27c7d65](https://github.com/budgie-at/budgie/commit/27c7d656fff96273ce1bfae224ec2b2d5f0cda4f))
+
+## [2.32.2](https://github.com/budgie-at/budgie/compare/v2.32.1...v2.32.2) (2026-02-04)
+
+### Bug Fixes
+
+- **app,contracts:** improve transaction suggestion accuracy and ordering ([f3908d0](https://github.com/budgie-at/budgie/commit/f3908d0886713c28d193d239998ca6dd8066e362))
+
+## [2.32.1](https://github.com/budgie-at/budgie/compare/v2.32.0...v2.32.1) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** change category/tag forms to modal presentation ([50ae65c](https://github.com/budgie-at/budgie/commit/50ae65c68420b009ba32df4746678af57032f0f6))
+- **app:** migrate category form to ModalPage component ([b39e7f0](https://github.com/budgie-at/budgie/commit/b39e7f0f6375c95f7c9a0c7346a04d8e5941b1e6))
+- **app:** use fixed top padding for modal pages ([29706e1](https://github.com/budgie-at/budgie/commit/29706e19f600a907cddbf910257d28c50236534b))
+
+# [2.32.0](https://github.com/budgie-at/budgie/compare/v2.31.0...v2.32.0) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** address PR review - use Tailwind className for shadow ([e3ee891](https://github.com/budgie-at/budgie/commit/e3ee8914a68a3488aef2bcec62f992d9d9270d63))
+- **app:** reduce gap between icon and text in suggestion pill ([35e0276](https://github.com/budgie-at/budgie/commit/35e027646f5348bfbf040e4705a7de9c1010009f))
+- **app:** remove dot separator from suggestion pill badge ([e73f675](https://github.com/budgie-at/budgie/commit/e73f675325331c2fa827eb1f2d9e8a6e378f71ab))
+- **app:** return spacer for new transactions without pattern suggestions ([7ed6a34](https://github.com/budgie-at/budgie/commit/7ed6a34e70d75a07ff4c0514857148c918061a10))
+- **app:** separate AI suggestions for existing vs pattern suggestions for new transactions ([ca65572](https://github.com/budgie-at/budgie/commit/ca65572e886924a2fccf271c6aae9e2bc02173dc))
+- **app:** show pattern suggestions for new transactions and redesign pill UI ([32e2b65](https://github.com/budgie-at/budgie/commit/32e2b65e8cdc67dcbc1c3ecf1fe45e4a89bc073e))
+- **contracts,app:** address PR review issues ([28a85f8](https://github.com/budgie-at/budgie/commit/28a85f82242143d85ce0836afc81d57c3f2272e2))
+
+### Features
+
+- **app:** smart account selection for transaction suggestions ([c36caaf](https://github.com/budgie-at/budgie/commit/c36caafd01e131d474eec1f3b885c916b36e9495))
+
+# [2.31.0](https://github.com/budgie-at/budgie/compare/v2.30.1...v2.31.0) (2026-02-04)
+
+### Bug Fixes
+
+- **contracts:** calculate remaining debt instead of current balance in getTotalRemainingDebtByType ([60330ad](https://github.com/budgie-at/budgie/commit/60330ad1d7902f25634dd85edfa5103ff7c944f6))
+
+### Features
+
+- **app:** add debt section kind label constants ([4ee8ab2](https://github.com/budgie-at/budgie/commit/4ee8ab22500dc5da5127ab3aff6c2bef853d5667))
+- **app:** add debt section kinds to HomeSectionKindEnum ([119c9f6](https://github.com/budgie-at/budgie/commit/119c9f6951cd0364e649b51da7f8251fd483896e))
+- **app:** add DebtSectionHeader component ([478c0ee](https://github.com/budgie-at/budgie/commit/478c0ee230c3fc2c5b810a985f60ec6be03cca21))
+- **app:** add DebtSectionInterface and update home page for debt sections ([3324901](https://github.com/budgie-at/budgie/commit/33249016557dcf7ac6aecc06f1c7f551c7d94aae))
+- **app:** add useDebtTypeTotalQuery hook ([aa1c0c0](https://github.com/budgie-at/budgie/commit/aa1c0c068ac211bec35d4279820833e0376f80eb))
+- **app:** split debt accounts by debtType in buildHomePageSections ([3543b45](https://github.com/budgie-at/budgie/commit/3543b455a055430e579f3c9fdd3f116eb0449716))
+
+## [2.30.1](https://github.com/budgie-at/budgie/compare/v2.30.0...v2.30.1) (2026-02-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
 # [2.30.0](https://github.com/budgie-at/budgie/compare/v2.29.0...v2.30.0) (2026-02-03)
 
 ### Bug Fixes

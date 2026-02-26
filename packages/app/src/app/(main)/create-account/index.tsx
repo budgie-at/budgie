@@ -56,6 +56,12 @@ export default function Index() {
                     route={`/create-account/${ExternalSourceEnum.PRIVATBANK}`}
                     bankProvider={ExternalSourceEnum.PRIVATBANK}
                 />
+                <CreateBankSyncCard
+                    description={t`Import accounts and transactions from Erste Bank PDF statement`}
+                    title={t`Erste Bank`}
+                    route={`/create-account/${ExternalSourceEnum.ERSTE}`}
+                    bankProvider={ExternalSourceEnum.ERSTE}
+                />
             </ScrollView>
         </Page>
     );

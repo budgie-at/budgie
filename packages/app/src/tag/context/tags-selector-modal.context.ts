@@ -1,6 +1,4 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface TagsSelectorModalParams {
     readonly initialTagIds?: number[];
@@ -9,16 +7,6 @@ export interface TagsSelectorModalParams {
     readonly singleSelect?: boolean;
 }
 
-interface TagsSelectorModalContextInterface {
-    openTagsSelector: (params?: TagsSelectorModalParams) => Promise<number[] | null>;
-    resolveTagsSelector: (tagIds: number[] | null) => void;
-    currentParams: TagsSelectorModalParams | null;
-}
+export type TagsSelectorResult = number[] | null;
 
-export const TagsSelectorModalContext = createContext<TagsSelectorModalContextInterface>({
-    openTagsSelector: () => Promise.resolve(null),
-    resolveTagsSelector: emptyFn,
-    currentParams: null
-});
-
-export const useTagsSelectorModal = () => use(TagsSelectorModalContext);
+export const [TagsSelectorModalContext, useTagsSelectorModal] = createModalContext<TagsSelectorModalParams, TagsSelectorResult>(null);

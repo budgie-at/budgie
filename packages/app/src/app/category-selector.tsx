@@ -30,8 +30,8 @@ const prepareCategoryData = (
 
 export default function CategorySelectorModal() {
     const { t } = useLingui();
-    const { openCategoryForm } = useCategoryFormModal();
-    const { currentParams, resolveCategorySelector } = useCategorySelectorModal();
+    const [openCategoryForm] = useCategoryFormModal();
+    const [, resolveCategorySelector, currentParams] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);

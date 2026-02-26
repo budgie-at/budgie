@@ -1,24 +1,22 @@
+import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
-import { useEffect, useRef, useState } from 'react';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { useGetCategoryByIdQuery } from '../../category/query/use-get-category-by-id.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
-import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
-import { SuggestionStatus } from '../interface/suggestion-status.type';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
-import { TagLlmService } from '../service/tag-llm.service';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
+
+import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseTagSuggestionParams {
-    transactionTitle: string;
-    categoryId: number;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly categoryId: number;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
@@ -26,53 +24,35 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
     const { llm } = useLlmContext();
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
-    const { category, isLoading: isCategoryLoading } = useGetCategoryByIdQuery(categoryId);
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [suggestedTags, setSuggestedTags] = useState<TagEntityInterface[]>([]);
-
-    const hasTriggeredRef = useRef(false);
-
     const hasTagsLoaded = isNotEmptyArray(allTags);
-    const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
-    useEffect(() => {
-        if (!isReady || hasTriggeredRef.current || !isNotEmptyArray(allTags)) {
-            return;
+    const fetchSuggestions = async (): Promise<TagEntityInterface[]> => {
+        if (!isNotEmptyArray(allTags)) {
+            return [];
         }
 
-        hasTriggeredRef.current = true;
+        const mccDescription = mccCategory?.fullDescription ?? null;
 
-        const suggest = async (): Promise<void> => {
-            setInternalStatus('loading');
+        return embeddingSuggestionService.suggestTags(llm, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
+    };
 
-            try {
-                const service = new TagLlmService(llm);
-                const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
-                const mccDescription = mccCategory?.fullDescription ?? null;
-                const categoryName = category?.titleEn ?? category?.title ?? null;
+    const { status, suggestions } = useSuggestionBase({
+        enabled,
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
+        requestKeyParts: [
+            transactionTitle,
+            categoryId,
+            mccCategoryId,
+            comment,
+            aiContext,
+            enabled,
+            llm.isEmbeddingReady,
+            allTags?.length ?? 0
+        ],
+        fetchSuggestions
+    });
 
-                const results = await service.suggestTags({
-                    transactionTitle,
-                    categoryName,
-                    mccDescription,
-                    comment: suggestionComment,
-                    tags: allTags
-                });
-
-                setSuggestedTags(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch {
-                setInternalStatus('error');
-            }
-        };
-
-        void suggest();
-    }, [isReady]);
-
-    const isInitializing = enabled && !isReady && internalStatus === 'idle';
-    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
-
-    return { status, suggestions: suggestedTags };
+    return { status, suggestions };
 };

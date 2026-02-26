@@ -8,5 +8,5 @@ import { Page } from './page';
 const safeEdges: Edge[] = ['bottom'];
 
 export const ModalPage = ({ className, ...rest }: ComponentProps<typeof Page>) => (
-    <Page {...rest} className={cn('pt-3xl', className)} safeEdges={safeEdges} />
+    <Page {...rest} className={cn('pt-xl', className)} safeEdges={safeEdges} />
 );

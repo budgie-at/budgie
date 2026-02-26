@@ -1,8 +1,13 @@
-import { and, count, desc, eq, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
+import { subDays } from 'date-fns';
+import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { DB, TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -14,7 +19,7 @@ import type { AccountEntityInterface } from '../entity/account-entity.interface'
 export class AccountRepository {
     constructor(private db: DB) {}
 
-    async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
+    async create(input: AccountCreateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
 
         return account;
@@ -24,7 +29,7 @@ export class AccountRepository {
         return this.db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
         const [account] = await (tx ?? this.db)
             .update(AccountEntityTable)
             .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
@@ -34,15 +39,15 @@ export class AccountRepository {
         return account;
     }
 
-    async archiveById(id: number, tx?: TX): Promise<void> {
+    async archiveById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
     }
 
-    async restoreById(id: number, tx?: TX): Promise<void> {
+    async restoreById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
-    async deleteById(id: number, tx?: TX): Promise<void> {
+    async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
     }
 
@@ -136,15 +141,50 @@ export class AccountRepository {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: TX): Promise<AccountEntityInterface[]> {
+    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db)
             .insert(AccountEntityTable)
             .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
             .returning();
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable);
+    }
+
+    async findMostActiveByInstrumentAndType(
+        instrumentId: number,
+        transactionType: TransactionTypeEnum,
+        days = 30
+    ): Promise<AccountEntityInterface | undefined> {
+        const cutoffDate = subDays(new Date(), days);
+        const entryType =
+            transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+
+        const result = await this.db
+            .select({
+                account: AccountEntityTable,
+                transactionCount: count(TransactionEntryEntityTable.id)
+            })
+            .from(AccountEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+            .where(
+                and(
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt),
+                    eq(AccountEntityTable.instrumentId, instrumentId),
+                    eq(TransactionEntityTable.type, transactionType),
+                    isNull(TransactionEntityTable.deletedAt),
+                    eq(TransactionEntryEntityTable.type, entryType),
+                    gte(TransactionEntityTable.operatedAt, cutoffDate)
+                )
+            )
+            .groupBy(AccountEntityTable.id)
+            .orderBy(desc(count(TransactionEntryEntityTable.id)))
+            .limit(1);
+
+        return result[0]?.account;
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {

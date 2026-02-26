@@ -3,7 +3,6 @@ import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budg
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
@@ -24,8 +23,7 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
 
     const convertExpenseMutation = useConvertExpenseToTransferMutation();
     const convertIncomeMutation = useConvertIncomeToTransferMutation();
@@ -72,8 +70,9 @@ export default function ConvertToTransferModal() {
         const confirmed = await confirmAlert({
             title: t`Convert to Transfer?`,
             message: description,
-            confirmText: t`Convert to Transfer`,
-            cancelText: t`Cancel`
+            confirmText: t`Convert`,
+            cancelText: t`Cancel`,
+            isDestructive: false
         });
 
         if (!confirmed) {
@@ -81,8 +80,6 @@ export default function ConvertToTransferModal() {
         }
 
         try {
-            setIsSubmitting(true);
-
             const formValues = form.getValues();
             const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
             const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
@@ -104,15 +101,13 @@ export default function ConvertToTransferModal() {
             router.replace(transferRoute);
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
     return (
         <FormProvider {...form}>
             <ModalPage header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}>
-                <TransferQuickForm variant={colorVariant} isSubmitting={isSubmitting} onSubmit={handleSubmit} onCancel={handleCancel} />
+                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>
     );

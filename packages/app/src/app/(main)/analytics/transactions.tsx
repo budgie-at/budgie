@@ -26,7 +26,7 @@ const buildCategoryIds = (params: RouteParams): number[] | null => {
         return [Number(params.categoryId)];
     }
 
-    if (isDefined(params.type)) {
+    if (isDefined(params.type) && !isDefined(params.tagId)) {
         return [];
     }
 
@@ -55,7 +55,7 @@ export default function AnalyticsTransactionsPage() {
 
     const handleGoBack = () => void router.back();
 
-    const isUncategorized = !isDefined(params.categoryId) && isDefined(params.type);
+    const isUncategorized = !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
 
@@ -91,6 +91,7 @@ export default function AnalyticsTransactionsPage() {
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
+                footerSpacerMultiplier={3}
             />
         </Page>
     );

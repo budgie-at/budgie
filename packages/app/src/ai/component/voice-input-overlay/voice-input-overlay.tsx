@@ -1,3 +1,4 @@
+import { AITransactionInterface, groupVoiceTransactions } from '@budgie/ai';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -6,9 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
-import { AITransactionInterface } from '../../interface/ai-transaction.interface';
-import { groupVoiceTransactions } from '../../service/voice-llm.service';
-import { buildExpenseUrl } from '../../util/build-expense-url.util';
+import { buildExpenseUrl } from '../../utils/build-expense-url.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 const EXIT_DURATION = 100;

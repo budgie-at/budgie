@@ -8,11 +8,12 @@ import { accountService } from '../../account/service/account.service';
 
 import { mapBankAccountToCreateInput } from './map-bank-account-to-create-input.util';
 
-import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, DB, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
 export const getOrCreateBankAccount = async (
     bankAccount: BankAccountInterface,
-    provider: ExternalSourceEnum
+    provider: ExternalSourceEnum,
+    tx?: DB
 ): Promise<AccountEntityInterface> => {
     const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
     if (isNotEmptyArray(existingByExternalId)) {
@@ -35,7 +36,7 @@ export const getOrCreateBankAccount = async (
 
     const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id, provider);
 
-    const [createdAccount] = Object.values(await accountService.bulkCreate([input]));
+    const [createdAccount] = Object.values(await accountService.bulkCreate([input], tx));
     if (!isDefined(createdAccount)) {
         // eslint-disable-next-line lingui/no-unlocalized-strings
         throw new Error('Failed to create bank account');

@@ -1,45 +1,7 @@
-import { t } from '@lingui/core/macro';
-import { useState } from 'react';
+import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { UseRegenerateTranslationReturn, useRegenerateTranslation } from '../../@generic/hook/use-regenerate-translation.hook';
 
-import { getErrorMessage } from '@rnw-community/shared';
+const updateTranslation = (id: number, titleEn: string, titleTags: string): Promise<void> =>
+    categoryRepository.updateTranslation(id, titleEn, titleTags);
 
-import { useLlmContext } from '../../ai/context/llm.context';
-import { TranslationResultInterface } from '../../ai/service/base-llm.service';
-import { CategoryLlmService } from '../../ai/service/category-llm.service';
-
-interface UseRegenerateCategoryTranslationReturn {
-    regenerate: (categoryId: number, title: string) => Promise<TranslationResultInterface | null>;
-    isRegenerating: boolean;
-    error: string | null;
-}
-
-export const useRegenerateCategoryTranslation = (): UseRegenerateCategoryTranslationReturn => {
-    const { llm } = useLlmContext();
-    const [isRegenerating, setIsRegenerating] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const regenerate = async (categoryId: number, title: string): Promise<TranslationResultInterface | null> => {
-        if (!llm.isReady) {
-            setError(t`LLM not ready`);
-
-            return null;
-        }
-
-        setIsRegenerating(true);
-        setError(null);
-
-        try {
-            const service = new CategoryLlmService(llm);
-
-            return await service.regenerateOne(categoryId, title);
-        } catch (regenerateError: unknown) {
-            setError(getErrorMessage(regenerateError));
-
-            return null;
-        } finally {
-            setIsRegenerating(false);
-        }
-    };
-
-    return { regenerate, isRegenerating, error };
-};
+export const useRegenerateCategoryTranslation = (): UseRegenerateTranslationReturn => useRegenerateTranslation(updateTranslation);

@@ -1,6 +1,6 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -58,9 +58,11 @@ export const CategorySelectorCard = (props: Props) => {
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
             <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
-            <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
-                {title}
-            </Text>
+            <View className="flex-1 justify-center">
+                <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
+                    {title}
+                </Text>
+            </View>
         </HapticPressable>
     );
 };

@@ -1,5 +1,5 @@
 import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import type { SQLiteDatabase } from 'expo-sqlite';
 
-export type DB = ExpoSQLiteDatabase<typeof schema>;
-export type TX = Parameters<Parameters<ExpoSQLiteDatabase<typeof schema>['transaction']>[0]>[0];
+export type DB = ExpoSQLiteDatabase<typeof schema> & { $client: SQLiteDatabase };

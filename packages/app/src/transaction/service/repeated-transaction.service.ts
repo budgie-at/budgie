@@ -3,13 +3,15 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
-    REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
     REPEATED_TRANSACTION_DEFAULT_LIMIT,
     REPEATED_TRANSACTION_TIME_WINDOW_MINUTES
 } from '../constant/repeated-transaction.constant';
+import { SuggestionsResultInterface } from '../interface/suggestions-result.interface';
 
 interface GetSuggestionsParamsInterface {
     readonly currentTime: Date;
@@ -25,41 +27,72 @@ interface TimeWindowInterface {
     readonly timeWindowEndMinutes: number;
 }
 
-const calculateTimeWindow = (currentTime: Date, hasAmount: boolean): TimeWindowInterface => {
+const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
     const weekday = currentTime.getDay();
     const currentTimeMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const timeWindow = hasAmount ? REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES : REPEATED_TRANSACTION_TIME_WINDOW_MINUTES;
 
     return {
         weekday,
-        timeWindowStartMinutes: Math.max(0, currentTimeMinutes - timeWindow),
-        timeWindowEndMinutes: Math.min(MINUTES_IN_DAY, currentTimeMinutes + timeWindow)
+        timeWindowStartMinutes: Math.max(0, currentTimeMinutes - REPEATED_TRANSACTION_TIME_WINDOW_MINUTES),
+        timeWindowEndMinutes: Math.min(MINUTES_IN_DAY, currentTimeMinutes + REPEATED_TRANSACTION_TIME_WINDOW_MINUTES)
     };
 };
 
 class RepeatedTransactionService {
-    async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
+    async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
         const { currentTime, type, accountId, amount, categoryId } = params;
-        const hasAmount = isPositiveNumber(amount);
-        const timeWindow = calculateTimeWindow(currentTime, hasAmount);
+        const timeWindow = calculateTimeWindow(currentTime);
 
-        const patterns = await transactionPatternRepository.findRepeatedPatterns({
+        const timeQuery = transactionPatternRepository.findRepeatedPatterns({
             ...timeWindow,
             type,
-            accountId,
-            categoryId,
+            ...(isPositiveNumber(accountId) && { accountId }),
+            ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         });
 
-        return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
+        const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
+
+        const [timePatterns, amountPatterns] = await Promise.all([timeQuery, amountQuery]);
+
+        return { timePatterns, amountPatterns };
     }
 
-    private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
-        const tolerance = targetAmount * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
-        const minAmount = targetAmount - tolerance;
-        const maxAmount = targetAmount + tolerance;
+    getLatestAmount(patterns: RepeatedTransactionPatternInterface[], categoryId: number): number {
+        let bestAmount = 0;
+        let bestOccurrenceCount = 0;
 
-        return patterns.filter(pattern => pattern.averageAmount >= minAmount && pattern.averageAmount <= maxAmount);
+        for (const pattern of patterns) {
+            if (pattern.categoryId === categoryId && pattern.occurrenceCount > bestOccurrenceCount) {
+                bestOccurrenceCount = pattern.occurrenceCount;
+                bestAmount = pattern.latestAmount;
+            }
+        }
+
+        return convertFromMicroUnits(bestAmount);
+    }
+
+    private buildAmountQuery(
+        type: TransactionTypeEnum,
+        amount: number | undefined,
+        accountId: number | undefined,
+        categoryId: number | undefined
+    ): Promise<RepeatedTransactionPatternInterface[]> {
+        if (!isPositiveNumber(amount)) {
+            return Promise.resolve([]);
+        }
+
+        const amountMicroUnits = convertToMicroUnits(amount);
+        const tolerance = amountMicroUnits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
+
+        return transactionPatternRepository.findAmountBasedPatterns({
+            type,
+            amountMin: amountMicroUnits - tolerance,
+            amountMax: amountMicroUnits + tolerance,
+            ...(isPositiveNumber(accountId) && { accountId }),
+            ...(isPositiveNumber(categoryId) && { categoryId }),
+            limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
+        });
     }
 }
 

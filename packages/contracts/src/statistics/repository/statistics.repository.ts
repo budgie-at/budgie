@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
@@ -133,11 +133,18 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     /* jscpd:ignore-end */
 
     private buildStatisticsFilterWhere(filters: StatisticsFilterInterface) {
-        return and(
-            isDefined(filters.date) ? this.buildDateCondition(filters.date) : sql`1=1`,
-            isDefined(filters.categoryIds) ? this.buildCategoryCondition(filters.categoryIds) : sql`1=1`,
-            isDefined(filters.tagIds) ? this.buildTagCondition(filters.tagIds) : sql`1=1`
-        );
+        const dateCondition =
+            isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to))
+                ? this.buildDateCondition(filters.date)
+                : null;
+        const conditions = [
+            ...(isDefined(dateCondition) ? [dateCondition] : []),
+            ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
+            ...(isNotEmptyArray(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
+        ].filter(isDefined);
+
+        // eslint-disable-next-line no-undefined
+        return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
     }
 
     private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {

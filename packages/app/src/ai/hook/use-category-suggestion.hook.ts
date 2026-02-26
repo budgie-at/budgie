@@ -1,22 +1,19 @@
+import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { CategoryEntityInterface } from '@budgie/contracts';
-import { useEffect, useRef, useState } from 'react';
-
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useLlmContext } from '../context/llm.context';
-import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
-import { SuggestionStatus } from '../interface/suggestion-status.type';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
-import { CategoryLlmService } from '../service/category-llm.service';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
+
+import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
-    transactionTitle: string;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
@@ -26,48 +23,20 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [suggestedCategories, setSuggestedCategories] = useState<CategoryEntityInterface[]>([]);
-
-    const hasTriggeredRef = useRef(false);
-
     const hasCategoriesLoaded = categories.length > 0;
-    const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
-    /* jscpd:ignore-start -- Category suggestion hook mirrors tag suggestion hook pattern */
-    useEffect(() => {
-        if (!isReady || hasTriggeredRef.current) {
-            return;
-        }
+    const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
+        const mccDescription = mccCategory?.fullDescription ?? null;
 
-        hasTriggeredRef.current = true;
+        return embeddingSuggestionService.suggestCategories(llm, categories, transactionTitle, mccDescription, comment, aiContext);
+    };
 
-        const suggest = async (): Promise<void> => {
-            setInternalStatus('loading');
+    const { status, suggestions } = useSuggestionBase({
+        enabled,
+        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady, categories.length],
+        fetchSuggestions
+    });
 
-            try {
-                const service = new CategoryLlmService(llm);
-                const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
-                const results = await service.suggestCategories({
-                    transactionTitle,
-                    mccDescription: mccCategory?.fullDescription ?? null,
-                    comment: suggestionComment,
-                    categories
-                });
-
-                setSuggestedCategories(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch {
-                setInternalStatus('error');
-            }
-        };
-
-        void suggest();
-    }, [isReady]);
-    /* jscpd:ignore-end */
-
-    const isInitializing = enabled && !isReady && internalStatus === 'idle';
-    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
-
-    return { status, suggestions: suggestedCategories };
+    return { status, suggestions };
 };

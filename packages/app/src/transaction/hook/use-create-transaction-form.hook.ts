@@ -11,14 +11,14 @@ import { createTransactionInput } from '../utils/create-transaction-input.util';
 import type { ZodType } from 'zod';
 
 interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
-    onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
-    fromAccountId: number | null;
-    toAccountId: number | null;
-    type: TransactionTypeEnum;
-    schema: ZodType<T, T>;
-    categoryId?: number;
-    comment?: string;
-    amount?: number;
+    readonly onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
+    readonly fromAccountId: number | null;
+    readonly toAccountId: number | null;
+    readonly type: TransactionTypeEnum;
+    readonly schema: ZodType<T, T>;
+    readonly categoryId?: number;
+    readonly comment?: string;
+    readonly amount?: number;
 }
 
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
@@ -43,7 +43,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             comment,
             amount,
             type,
-            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0 })
+            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0, mccCategoryId: null })
         })
     });
 
