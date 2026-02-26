@@ -44,14 +44,27 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // eslint-disable-line lingui/no-unlocalized-strings
 
     try {
+        console.log('[DB] bundledExtensions:', JSON.stringify(Object.keys(SQLite.bundledExtensions))); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+        console.log('[DB] sqlite-vec extension:', JSON.stringify(extension)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
-            global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+            if (isNotEmptyString(extension.libPath)) {
+                console.log('[DB] Loading sqlite-vec from:', extension.libPath); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+                global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+            } else {
+                console.log('[DB] sqlite-vec libPath is null, skipping loadExtensionSync'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            }
+            console.log('[DB] Creating vec tables...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            console.log('[DB] Vec tables ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        } else {
+            console.log('[DB] sqlite-vec extension NOT found in bundledExtensions'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         }
-    } catch {}
+    } catch (dbError) {
+        console.log('[DB] sqlite-vec init error:', dbError); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+    }
 
     return global.__expoSqliteDb__;
 };
