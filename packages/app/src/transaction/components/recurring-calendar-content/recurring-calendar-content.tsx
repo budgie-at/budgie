@@ -14,12 +14,12 @@ import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
+import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
-import { RecurringCalendarUpcoming } from '../recurring-calendar-upcoming/recurring-calendar-upcoming';
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
+// eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -43,7 +43,9 @@ export const RecurringCalendarContent = () => {
     const hasSelectedEntries = isNotEmptyArray(selectedEntries);
 
     const allForecastedEntries = [...forecastedEntriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
+    const allActualEntries = [...entriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
     const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
+    const showMonthlyList = !isDefined(selectedDay) && !isCurrentMonth && isNotEmptyArray(allActualEntries);
 
     const handleSelectDay = (day: number) => {
         setSelectedDay(current => (current === day ? undefined : day)); // eslint-disable-line no-undefined -- Toggle selection
@@ -68,6 +70,7 @@ export const RecurringCalendarContent = () => {
     const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
+    const formattedTotalAmount = formatDigits(totalAmount, defaultInstrument.symbol);
 
     if (!hasEntries) {
         return (
@@ -122,19 +125,23 @@ export const RecurringCalendarContent = () => {
             ) : null}
 
             {showUpcomingList ? (
-                <View className="flex-1 pt-lg">
-                    <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
-                        <Text className="text-xs uppercase text-secondary-foreground">
-                            <Trans>Upcoming</Trans>
-                        </Text>
-                        <ProtectedText className="text-xs text-secondary-foreground">{formattedForecastedTotal}</ProtectedText>
-                    </View>
+                <RecurringCalendarEntryList
+                    title={<Trans>Upcoming</Trans>}
+                    formattedTotal={formattedForecastedTotal}
+                    entries={allForecastedEntries}
+                    displayMonth={displayMonth}
+                    displayYear={displayYear}
+                />
+            ) : null}
 
-                    <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                        <RecurringCalendarUpcoming entries={allForecastedEntries} displayMonth={displayMonth} displayYear={displayYear} />
-                        <MenuSpacer />
-                    </ScrollView>
-                </View>
+            {showMonthlyList ? (
+                <RecurringCalendarEntryList
+                    title={<Trans>All Recurring</Trans>}
+                    formattedTotal={formattedTotalAmount}
+                    entries={allActualEntries}
+                    displayMonth={displayMonth}
+                    displayYear={displayYear}
+                />
             ) : null}
         </View>
     );
