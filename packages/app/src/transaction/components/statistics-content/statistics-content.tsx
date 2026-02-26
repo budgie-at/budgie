@@ -10,14 +10,14 @@ import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-fil
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../../category/components/stats-by-categories/stats-by-categories';
 import { StatsByTags } from '../../../tag/components/stats-by-tags/stats-by-tags';
-import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
-import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { useGetExpenseByCategoryQuery } from '../../query/use-get-expense-by-category.query';
 import { useGetExpenseByTagQuery } from '../../query/use-get-expense-by-tag.query';
 import { useGetIncomeByCategoryQuery } from '../../query/use-get-income-by-category.query';
 import { useGetIncomeByTagQuery } from '../../query/use-get-income-by-tag.query';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
+import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
+import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 export const StatisticsContent = () => {
     const { t } = useLingui();

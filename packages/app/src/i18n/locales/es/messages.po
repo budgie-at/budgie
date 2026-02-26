@@ -255,7 +255,7 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 msgid "Available Columns"
 msgstr "Columnas disponibles"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Balance"
 msgstr "Saldo"
 
@@ -595,7 +595,7 @@ msgstr "Rango de fechas"
 msgid "Day {day}"
 msgstr "Día {day}"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:124
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:125
 msgid "Day {selectedDay}"
 msgstr "Día {selectedDay}"
 
@@ -995,18 +995,18 @@ msgstr "Cuentas inactivas"
 msgid "Include in Net Worth"
 msgstr "Incluir en patrimonio neto"
 
-#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
+#: src/transaction/components/statistics-content/statistics-content.tsx:62
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Income by category"
 msgstr "Ingresos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:94
+#: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
@@ -1104,7 +1104,7 @@ msgstr "Monobank"
 msgid "Monthly Costs"
 msgstr "Costes mensuales"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:105
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:106
 msgid "Monthly Total"
 msgstr "Total mensual"
 
@@ -1244,7 +1244,7 @@ msgstr "Abra Monobank para obtener su token"
 msgid "Organization"
 msgstr "Organización"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/transaction/components/statistics-content/statistics-content.tsx:52
 msgid "Overview"
 msgstr "Resumen"
 
@@ -1347,8 +1347,7 @@ msgstr "Recalcular saldos"
 msgid "Receiving {toCode}"
 msgstr "Recibiendo {toCode}"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:76
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:45
 msgid "Recurring"
 msgstr "Recurrente"
 
@@ -1559,15 +1558,15 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/transaction/components/statistics-content/statistics-content.tsx:81
 msgid "Spending by Category"
 msgstr "Gastos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:105
+#: src/transaction/components/statistics-content/statistics-content.tsx:103
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/transaction/components/statistics-content/statistics-content.tsx:58
 msgid "Spent"
 msgstr "Gastado"
 
@@ -1587,7 +1586,7 @@ msgstr "Iniciar sincronización"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:39
 msgid "Statistics"
 msgstr "Estadísticas"
 
@@ -1824,7 +1823,7 @@ msgstr "Desconocido"
 msgid "Up to date"
 msgstr "Actualizado"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:140
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:141
 msgid "Upcoming"
 msgstr "Próximos"
 

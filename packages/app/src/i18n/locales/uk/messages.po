@@ -255,7 +255,7 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Balance"
 msgstr "Баланс"
 
@@ -595,7 +595,7 @@ msgstr "Діапазон дат"
 msgid "Day {day}"
 msgstr "День {day}"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:124
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:125
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
 
@@ -995,18 +995,18 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
+#: src/transaction/components/statistics-content/statistics-content.tsx:62
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:94
+#: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
@@ -1104,7 +1104,7 @@ msgstr "Монобанк"
 msgid "Monthly Costs"
 msgstr "Щомісячні витрати"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:105
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:106
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
 
@@ -1244,7 +1244,7 @@ msgstr "Відкрийте Монобанк, щоб отримати токен"
 msgid "Organization"
 msgstr "Організація"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/transaction/components/statistics-content/statistics-content.tsx:52
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1347,8 +1347,7 @@ msgstr "Перерахувати баланси"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:76
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:91
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:45
 msgid "Recurring"
 msgstr "Регулярні"
 
@@ -1559,15 +1558,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/transaction/components/statistics-content/statistics-content.tsx:81
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:105
+#: src/transaction/components/statistics-content/statistics-content.tsx:103
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/transaction/components/statistics-content/statistics-content.tsx:58
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1587,7 +1586,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:39
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1824,7 +1823,7 @@ msgstr "Невідомо"
 msgid "Up to date"
 msgstr "Актуальний"
 
-#: src/transaction/components/recurring-calendar-page/recurring-calendar-page.tsx:140
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:141
 msgid "Upcoming"
 msgstr "Очікувані"
 

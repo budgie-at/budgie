@@ -29,9 +29,7 @@ export default function AnalyticsPage() {
     return (
         <Page header={header}>
             <GestureDetector gesture={swipeGesture}>
-                <View className="flex-1">
-                    {activeTab === 'statistics' ? <StatisticsContent /> : <RecurringCalendarContent />}
-                </View>
+                <View className="flex-1">{activeTab === 'statistics' ? <StatisticsContent /> : <RecurringCalendarContent />}</View>
             </GestureDetector>
         </Page>
     );
