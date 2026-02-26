@@ -89,9 +89,17 @@ export default ({ config }) => ({
     },
     owner: 'vitalyiegorov',
     updates: {
-        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
+        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36',
+        enableBsdiffPatchSupport: true
     },
     plugins: [
+        [
+            'expo-build-properties',
+            {
+                buildReactNativeFromSource: true,
+                useHermesV1: true
+            }
+        ],
         'expo-asset',
         'expo-image',
         'expo-sharing',
