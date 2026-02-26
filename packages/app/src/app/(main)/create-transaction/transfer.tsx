@@ -12,6 +12,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
@@ -25,12 +26,24 @@ const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 /* jscpd:ignore-start */
 export default function CreateTransferTransactionPage() {
     const { t } = useLingui();
+    const { generateForTransaction } = useEmbeddingGenerator();
     const { accountId } = useLocalSearchParams<{ accountId?: string }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternalTransfer(data),
+        onSubmit: async data => {
+            const result = await transactionService.createInternalTransfer(data);
+            generateForTransaction({
+                title: data.title,
+                comment: data.comment,
+                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
+                categoryId: data.entries[0]?.categoryId ?? null,
+                tagIds: data.tagIds
+            });
+
+            return result;
+        },
         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,

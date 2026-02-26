@@ -1,4 +1,4 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryEntityInterface, transactionAsync } from '@budgie/contracts';
 
 import { categoryRepository, db } from '../../@generic/drizzle/db/db';
 
@@ -9,7 +9,7 @@ class CategoryService {
             const batch = inputs.slice(i, i + batchSize);
 
             // eslint-disable-next-line no-await-in-loop
-            results.push(...(await db.transaction(async tx => categoryRepository.bulkCreate(batch, tx))));
+            results.push(...(await transactionAsync(db, async tx => categoryRepository.bulkCreate(batch, tx))));
         }
 
         return results.reduce<Record<string, CategoryEntityInterface>>((acc, category) => ({ ...acc, [category.title]: category }), {});

@@ -1,6 +1,6 @@
 # Contracts Package
 
-Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by both `app` and `bank-sync` packages.
+Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `bank-sync` packages.
 
 ## Commands
 
@@ -22,7 +22,7 @@ src/
 │   ├── repository/           # BaseTransactionFilterRepository
 │   ├── type/                 # DB, TX types
 │   └── util/                 # Table columns, schema utils, SQL helpers
-├── [entity]/                 # Entity modules (13 total)
+├── [entity]/                 # Entity modules (15 total)
 │   ├── constant/             # Validation limits
 │   ├── entity/               # Inferred entity types
 │   ├── enum/                 # Entity enums
@@ -70,6 +70,8 @@ account/
 | BankSync | `bank_syncs` | Bank integration configuration |
 | MccGroup | `mcc_groups` | Merchant category groups |
 | MccCategory | `mcc_categories` | Merchant category codes |
+| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles |
+| CommentEmbedding | `title_embeddings_comment` | Vector embeddings for transaction comments |
 
 ## Drizzle Table Definitions
 
@@ -156,7 +158,7 @@ export class AccountRepository {
 
 ### Transaction Support
 
-All write methods accept optional `tx?: TX` parameter:
+All write methods and read methods used within transactions accept optional `tx?: TX` parameter:
 
 ```typescript
 async updateById(id: number, input: Partial<AccountInterface>, tx?: TX): Promise<void> {
@@ -164,6 +166,37 @@ async updateById(id: number, input: Partial<AccountInterface>, tx?: TX): Promise
         .update(AccountEntityTable)
         .set(input)
         .where(eq(AccountEntityTable.id, id));
+}
+
+async getByAccountId(accountId: number, tx?: TX): Promise<EntityInterface | undefined> {
+    return await (tx ?? this.db).query.EntityTable.findFirst({
+        where: eq(EntityTable.accountId, accountId)
+    });
+}
+```
+
+**When to add `tx?: TX`:**
+- All write methods (create, update, delete) — always
+- Read methods used inside transactions (e.g., check-before-create patterns) — add `tx` so reads see uncommitted writes within the same transaction
+
+**expo-sqlite does NOT support nested transactions.** Services that wrap operations in `db.transaction` must also accept `tx` and skip `db.transaction` when `tx` is provided:
+
+```typescript
+// In the app package (services):
+async bulkCreate(inputs: InputInterface[], batchSize = 100, tx?: Transaction) {
+    const batchProcessor = isDefined(tx)
+        ? (batch: InputInterface[]) => this.processBatchInner(batch, tx)
+        : this.processBatch.bind(this);
+
+    return processInputWithBatches(inputs, batchSize, batchProcessor);
+}
+
+private processBatch(batch: InputInterface[]) {
+    return db.transaction(async tx => this.processBatchInner(batch, tx));
+}
+
+private async processBatchInner(batch: InputInterface[], tx: Transaction) {
+    // All DB operations use tx
 }
 ```
 

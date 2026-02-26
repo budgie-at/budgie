@@ -7,7 +7,11 @@ export interface RepeatedTransactionPatternInterface {
     readonly tagIds: number[];
     readonly title: string;
     readonly comment: string | null;
-    readonly averageAmount: number;
+    readonly latestAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: Date;
+    readonly accountId: number;
+    readonly instrumentId: number;
+    readonly accountIsActive: boolean;
+    readonly accountDeletedAt: Date | null;
 }
