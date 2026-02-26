@@ -121,6 +121,7 @@ export const useLlamaLlm = (): LlmInterface => {
         // eslint-disable-next-line max-statements -- Dual model initialization requires sequential context setup with mount checks
         const initializeModels = async (): Promise<void> => {
             try {
+                console.log('[LLM] Starting model initialization'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 for (const filename of DEPRECATED_MODEL_FILES) {
                     try {
                         const deprecatedFile = new File(`${Paths.document.uri}${filename}`);
@@ -133,17 +134,22 @@ export const useLlamaLlm = (): LlmInterface => {
                     }
                 }
 
+                console.log('[LLM] Downloading models...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 const [chatModelPath, embeddingModelPath] = await Promise.all([
                     downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, handleChatDownloadProgress),
                     downloadModel(EMBEDDING_MODEL_URL, EMBEDDING_MODEL_FILENAME, handleEmbeddingDownloadProgress)
                 ]);
+                console.log('[LLM] Models downloaded:', { chatModelPath, embeddingModelPath }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
                 if (!isMounted()) {
+                    console.log('[LLM] Unmounted after download, aborting'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
                     return;
                 }
 
                 setIsInitializing(true);
 
+                console.log('[LLM] Initializing embedding context...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 embeddingContextRef.current = await initLlama({
                     model: embeddingModelPath,
                     n_ctx: EMBEDDING_CONTEXT_SIZE,
@@ -152,8 +158,10 @@ export const useLlamaLlm = (): LlmInterface => {
                     embedding: true,
                     pooling_type: 'mean'
                 });
+                console.log('[LLM] Embedding context ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
                 if (!isMounted()) {
+                    console.log('[LLM] Unmounted after embedding init, aborting'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                     void releaseAllLlama();
 
                     return;
@@ -161,6 +169,7 @@ export const useLlamaLlm = (): LlmInterface => {
 
                 setIsEmbeddingReady(true);
 
+                console.log('[LLM] Initializing chat context...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 chatContextRef.current = await initLlama({
                     model: chatModelPath,
                     n_ctx: CHAT_CONTEXT_SIZE,
@@ -168,15 +177,19 @@ export const useLlamaLlm = (): LlmInterface => {
                     use_mlock: true,
                     embedding: false
                 });
+                console.log('[LLM] Chat context ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
                 if (!isMounted()) {
+                    console.log('[LLM] Unmounted after chat init, aborting'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                     void releaseAllLlama();
 
                     return;
                 }
 
                 setIsReady(true);
+                console.log('[LLM] Both models ready!'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             } catch (err: unknown) {
+                console.log('[LLM] Initialization error:', getErrorMessage(err)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 if (isMounted()) {
                     setError(getErrorMessage(err));
                 }
@@ -198,10 +211,12 @@ export const useLlamaLlm = (): LlmInterface => {
 
     const generateInternal = async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
         if (!isDefined(chatContextRef.current)) {
+            console.log('[LLM] generate called but chatContext is null'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             // eslint-disable-next-line lingui/no-unlocalized-strings
             throw new Error('Model not loaded');
         }
 
+        console.log('[LLM] generate start:', { userMessage: userMessage.slice(0, 80) }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         setIsGenerating(true);
         setError(null);
 
@@ -214,8 +229,11 @@ export const useLlamaLlm = (): LlmInterface => {
                 temperature: options?.temperature
             });
 
+            console.log('[LLM] generate result:', result.slice(0, 80)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return result;
         } catch (err: unknown) {
+            console.log('[LLM] generate error:', getErrorMessage(err)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setError(getErrorMessage(err));
             throw err;
         } finally {
@@ -242,14 +260,19 @@ export const useLlamaLlm = (): LlmInterface => {
 
     const embedding = async (text: string): Promise<number[]> => {
         if (!isDefined(embeddingContextRef.current)) {
+            console.log('[LLM] embedding called but embeddingContext is null'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return [];
         }
 
         try {
             const result = await embeddingContextRef.current.embedding(text);
+            console.log('[LLM] embedding result dims:', result.embedding.length); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
             return result.embedding;
-        } catch {
+        } catch (err: unknown) {
+            console.log('[LLM] embedding error:', getErrorMessage(err)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return [];
         }
     };
