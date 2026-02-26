@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { AnalyticsTabType } from '../../type/analytics-tab.type';
+import { TransactionsTabType } from '../../type/transactions-tab.type';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { LayoutChangeEvent } from 'react-native';
@@ -15,8 +15,8 @@ interface TabLayoutInterface {
 }
 
 interface Props {
-    readonly activeTab: AnalyticsTabType;
-    readonly onChangeTab: (tab: AnalyticsTabType) => void;
+    readonly activeTab: TransactionsTabType;
+    readonly onChangeTab: (tab: TransactionsTabType) => void;
 }
 
 const INDICATOR_SPRING = { damping: 28, stiffness: 400, mass: 0.8 };
@@ -30,12 +30,12 @@ const titleVariants = cva('text-3xl font-medium', {
     }
 });
 
-export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => {
-    const isStatisticsActive = activeTab === 'statistics';
+export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
+    const isTransactionsActive = activeTab === 'transactions';
     const isRecurringActive = activeTab === 'recurring';
 
-    const tabLayouts = useRef<Record<AnalyticsTabType, TabLayoutInterface>>({
-        statistics: { x: 0, width: 0 },
+    const tabLayouts = useRef<Record<TransactionsTabType, TabLayoutInterface>>({
+        transactions: { x: 0, width: 0 },
         recurring: { x: 0, width: 0 }
     });
     const isIndicatorReady = useRef(false);
@@ -43,19 +43,19 @@ export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const indicatorX = useSharedValue(0);
     const indicatorWidth = useSharedValue(0);
 
-    const handleStatisticsPress = () => {
-        onChangeTab('statistics');
+    const handleTransactionsPress = () => {
+        onChangeTab('transactions');
     };
 
     const handleRecurringPress = () => {
         onChangeTab('recurring');
     };
 
-    const handleStatisticsLayout = (event: LayoutChangeEvent) => {
+    const handleTransactionsLayout = (event: LayoutChangeEvent) => {
         const { x, width } = event.nativeEvent.layout;
-        tabLayouts.current.statistics = { x, width };
+        tabLayouts.current.transactions = { x, width };
 
-        if (isStatisticsActive && !isIndicatorReady.current) {
+        if (isTransactionsActive && !isIndicatorReady.current) {
             indicatorX.set(x);
             indicatorWidth.set(width);
             isIndicatorReady.current = true;
@@ -91,9 +91,9 @@ export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     return (
         <View className="px-5xl pb-md gap-y-sm">
             <View className="flex-row items-center gap-x-xl">
-                <HapticPressable onPress={handleStatisticsPress} onLayout={handleStatisticsLayout}>
-                    <Text className={titleVariants({ isActive: isStatisticsActive })}>
-                        <Trans>Statistics</Trans>
+                <HapticPressable onPress={handleTransactionsPress} onLayout={handleTransactionsLayout}>
+                    <Text className={titleVariants({ isActive: isTransactionsActive })}>
+                        <Trans>Transactions</Trans>
                     </Text>
                 </HapticPressable>
 
