@@ -12,6 +12,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
@@ -51,16 +52,7 @@ export const CreateMonobankAccount = () => {
     };
 
     const handleToggleAccountSelection = (externalId: string) => {
-        setSelectedAccounts(prev => {
-            const next = new Set(prev);
-            if (next.has(externalId)) {
-                next.delete(externalId);
-            } else {
-                next.add(externalId);
-            }
-
-            return next;
-        });
+        setSelectedAccounts(prev => toggleSetItem(prev, externalId));
     };
 
     const handleSetupSync = async () => {

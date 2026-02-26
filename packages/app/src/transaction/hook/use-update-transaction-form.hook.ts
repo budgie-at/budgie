@@ -13,15 +13,17 @@ import { transactionService } from '../service/transaction.service';
 import type { ZodType } from 'zod';
 
 interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
-    schema: ZodType<T, T>;
-    transaction: T;
-    id: number;
+    readonly schema: ZodType<T, T>;
+    readonly transaction: T;
+    readonly id: number;
+    readonly onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
 }
 
 export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>({
     id,
     schema,
-    transaction
+    transaction,
+    onAfterSubmit
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
@@ -34,6 +36,7 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
             await transactionService.updateById(id, data);
+            onAfterSubmit?.(data);
             goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

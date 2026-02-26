@@ -1,8 +1,10 @@
 /* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
-import { DB, TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -16,7 +18,7 @@ export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
     // TODO: change to bulkUpsert when drizzle is updated to the latest version
-    async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
             .values([input])
@@ -188,6 +190,42 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
+    getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+        const exchangeRateSql = sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
+
+        const remainingDebtSql = sql<number>`
+            MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
+        `;
+
+        const totalSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (${remainingDebtSql}) * ${exchangeRateSql}
+                    )
+                    FROM ${AccountEntityTable}
+                    WHERE ${AccountEntityTable.type} = ${AccountTypeEnum.DEBT}
+                      AND ${AccountEntityTable.debtType} = ${debtType}
+                      AND ${AccountEntityTable.isActive} = 1
+                      AND ${AccountEntityTable.deletedAt} IS NULL
+                ),
+                0
+            )
+        `;
+
+        return this.db
+            .select({
+                total: totalSubquerySql
+            })
+            .from(TransactionEntryEntityTable)
+            .limit(1);
+    }
+
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
         const totalSubquerySql = sql<number>`
             COALESCE(
@@ -261,7 +299,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 

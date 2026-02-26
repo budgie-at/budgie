@@ -1,6 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
 import { appService } from '../../../@generic/service/app.service';
@@ -25,8 +28,18 @@ export const TruncateData = () => {
         }
 
         setIsLoading(true);
-        await appService.truncateData();
-        await bankSyncRepository.truncate();
+        try {
+            await appService.truncateData();
+            await bankSyncRepository.truncate();
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t`Failed to clear data`,
+                text2: getErrorMessage(error)
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

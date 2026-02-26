@@ -13,6 +13,7 @@ const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) =
     if (
         transaction.type === TransactionTypeEnum.EXPENSE ||
         transaction.type === TransactionTypeEnum.TRANSFER ||
+        transaction.type === TransactionTypeEnum.DEBT ||
         isNegativeAdjustmentTransaction(transaction)
     ) {
         return transaction.entries.reduce((acc, curr) => (curr.type === TransactionEntryTypeEnum.CREDIT ? acc + curr.amount : acc), 0);

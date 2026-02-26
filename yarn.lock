@@ -1170,11 +1170,11 @@ __metadata:
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
     "@babel/core": "npm:^7.28.6"
+    "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.16.5"
     "@formatjs/intl": "npm:^3.1.8"
-    "@gorhom/bottom-sheet": "npm:^5.2.6"
     "@hookform/resolvers": "npm:^5.2.2"
     "@legendapp/list": "npm:^2.0.18"
     "@libsql/client": "npm:^0.15.15"
@@ -1214,6 +1214,7 @@ __metadata:
     expo-linking: "npm:~55.0.7"
     expo-local-authentication: "npm:~55.0.8"
     expo-localization: "npm:~55.0.8"
+    expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~55.0.2"
     expo-screen-capture: "npm:~55.0.8"
     expo-secure-store: "npm:~55.0.8"
@@ -1328,9 +1329,19 @@ __metadata:
     rimraf: "npm:^6.0.1"
     rnsec: "npm:^1.0.1"
     sort-package-json: "npm:^3.4.0"
-    turbo: "npm:^2.7.2"
+    turbo: "npm:^2.8.10"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.46.3"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/ai@workspace:^, @budgie/ai@workspace:packages/ai":
+  version: 0.0.0-use.local
+  resolution: "@budgie/ai@workspace:packages/ai"
+  dependencies:
+    "@budgie/contracts": "workspace:^"
+    "@rnw-community/shared": "npm:^1.8.2"
+    zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
 
@@ -1350,6 +1361,7 @@ __metadata:
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
     "@rnw-community/shared": "npm:^1.8.2"
+    date-fns: "npm:^4.1.0"
     drizzle-orm: "npm:^0.44.7"
     drizzle-zod: "npm:^0.8.3"
     expo-sqlite: "npm:~55.0.10"
@@ -2918,40 +2930,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/2e8b992606b8377dc4496fcc06ea0370b4f2b3fb27f4f086172cf618c9d981176831baff6a2b5bffb4a06e7aa580e28a8bda2d71ad2cb51d19f3d4bc4609e90e
-  languageName: node
-  linkType: hard
-
-"@gorhom/bottom-sheet@npm:^5.2.6":
-  version: 5.2.8
-  resolution: "@gorhom/bottom-sheet@npm:5.2.8"
-  dependencies:
-    "@gorhom/portal": "npm:1.0.14"
-    invariant: "npm:^2.2.4"
-  peerDependencies:
-    "@types/react": "*"
-    "@types/react-native": "*"
-    react: "*"
-    react-native: "*"
-    react-native-gesture-handler: ">=2.16.1"
-    react-native-reanimated: "*"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    "@types/react-native":
-      optional: true
-  checksum: 10/b237f04dfd2b7ea2a24b12d2186f38b8debf95a5ef660802f7c2a19998ec8a7f7d599cd9079b9ba5bba2c6958cee2040d3d1adc3d3ace8c4964a469c751f4a5a
-  languageName: node
-  linkType: hard
-
-"@gorhom/portal@npm:1.0.14":
-  version: 1.0.14
-  resolution: "@gorhom/portal@npm:1.0.14"
-  dependencies:
-    nanoid: "npm:^3.3.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10/e0fa06be88b850cccdc6a1417a86e5ac21d82e3bfd1cec7eb05eccf7f3b595babe305541f278fdcbde34f3a9db465097dca2c785445c28bafb83b744e235da0c
   languageName: node
   linkType: hard
 
@@ -10787,6 +10765,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-pdf-text-extract@npm:1.0.0":
+  version: 1.0.0
+  resolution: "expo-pdf-text-extract@npm:1.0.0"
+  peerDependencies:
+    expo: ">=49.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.72.0"
+  checksum: 10/3d827cb7a90b0c9a4dad65a5b84ae26889c1f3b0acf8ccd0036184190144a59c16d94262b291f50cefff5511b33750f3ad947d3944cff67d820093ca010e9d41
+  languageName: node
+  linkType: hard
+
+"expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch":
+  version: 1.0.0
+  resolution: "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch::version=1.0.0&hash=cb1605"
+  peerDependencies:
+    expo: ">=49.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.72.0"
+  checksum: 10/be381b00c2e1eb6fe49f13a6b3d1f99bd73f7ea88ba78c47df7fbfaa803fd1aa3ec48dbea27bb3ac4268d013779f8f111d1606be5154de8dcb0abdb0cbbf0a5a
+  languageName: node
+  linkType: hard
+
 "expo-router@npm:~55.0.2":
   version: 55.0.2
   resolution: "expo-router@npm:55.0.2"
@@ -15888,7 +15888,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+"nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
@@ -20179,58 +20179,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-64@npm:2.7.2"
+"turbo-darwin-64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-darwin-64@npm:2.8.11"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-arm64@npm:2.7.2"
+"turbo-darwin-arm64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-darwin-arm64@npm:2.8.11"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-64@npm:2.7.2"
+"turbo-linux-64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-linux-64@npm:2.8.11"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-arm64@npm:2.7.2"
+"turbo-linux-arm64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-linux-arm64@npm:2.8.11"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-64@npm:2.7.2"
+"turbo-windows-64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-windows-64@npm:2.8.11"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-arm64@npm:2.7.2"
+"turbo-windows-arm64@npm:2.8.11":
+  version: 2.8.11
+  resolution: "turbo-windows-arm64@npm:2.8.11"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:^2.7.2":
-  version: 2.7.2
-  resolution: "turbo@npm:2.7.2"
+"turbo@npm:^2.8.10":
+  version: 2.8.11
+  resolution: "turbo@npm:2.8.11"
   dependencies:
-    turbo-darwin-64: "npm:2.7.2"
-    turbo-darwin-arm64: "npm:2.7.2"
-    turbo-linux-64: "npm:2.7.2"
-    turbo-linux-arm64: "npm:2.7.2"
-    turbo-windows-64: "npm:2.7.2"
-    turbo-windows-arm64: "npm:2.7.2"
+    turbo-darwin-64: "npm:2.8.11"
+    turbo-darwin-arm64: "npm:2.8.11"
+    turbo-linux-64: "npm:2.8.11"
+    turbo-linux-arm64: "npm:2.8.11"
+    turbo-windows-64: "npm:2.8.11"
+    turbo-windows-arm64: "npm:2.8.11"
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -20246,7 +20246,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10/a0fb2c34ddd68bbe0fe763ef87131c687edf8caafa8b50be8df1606d82a586bd8362276f99bf34e905c9217521634b5a7c2926bad08228b29b84d54d9b4ad49b
+  checksum: 10/5ac765e3f35b69ad9daf398a35c44b5db237640f17a234bbbd344594e4b1da014ed592dbc0e87d908548a8c6ad72037c2526baba57091e99765160b14ed4cd2a
   languageName: node
   linkType: hard
 

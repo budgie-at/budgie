@@ -31,6 +31,7 @@ import { ArchiveAccount } from '../archive-account/archive-account';
 interface Props<T extends FieldValues> {
     readonly account: AccountEntityInterface;
     readonly instrumentSymbol: string;
+    readonly allowNegativeBalance?: boolean;
     readonly children?: ReactNode;
     readonly control: Control<T>;
     readonly onSubmit: EmptyFn;
@@ -41,7 +42,7 @@ const descriptionVariants = cva('uppercase', {
 });
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { children, account, onSubmit, control, instrumentSymbol } = props;
+    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance } = props;
     const { t } = useLingui();
 
     const formValues = useWatch({ control });
@@ -79,7 +80,12 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+                <AccountBalanceField
+                    variant={variant}
+                    instrumentSymbol={instrumentSymbol}
+                    control={control}
+                    allowNegative={allowNegativeBalance}
+                />
 
                 <FormLayoutGroup>
                     <AccountDetailsField control={control} variant={variant} />
