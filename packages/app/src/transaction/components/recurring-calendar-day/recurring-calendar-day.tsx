@@ -113,12 +113,14 @@ export const RecurringCalendarDay = (props: Props) => {
 
     const circleClassName = circleVariants({ isCurrentMonth, isSelected, hasEntries, hasOnlyForecasted, isToday });
     const textClassName = textVariants({ hasEntries, isSelected, isToday });
+    const hasDots = hasEntries && isCurrentMonth;
+    const dayTextClassName = cn(textClassName, hasDots && '-mt-1');
 
     return (
         <HapticPressable className="flex-1 items-center py-px" onPress={handlePress}>
             <View className={circleClassName}>
-                <Text className={cn(textClassName, hasEntries && isCurrentMonth && '-mt-1')}>{day}</Text>
-                {hasEntries && isCurrentMonth ? (
+                <Text className={dayTextClassName}>{day}</Text>
+                {hasDots ? (
                     <View className="flex-row gap-x-0.5 -mt-0.5">
                         {Array.from({ length: actualDots }, (_, index) => (
                             <View key={`a-${index}`} className={dotVariants({ isSelected, type: 'solid' })} />
