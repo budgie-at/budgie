@@ -1,5 +1,4 @@
 import {
-    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -9,17 +8,16 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { SuggestionRowSwitcher } from '../suggestion-row-switcher/suggestion-row-switcher';
+import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
@@ -31,6 +29,7 @@ interface BuildEntryParams {
     readonly accountId: number;
     readonly categoryId: number;
     readonly amount: number;
+    readonly mccCategoryId: number | null;
 }
 
 interface Props {
@@ -40,6 +39,7 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
+    readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -60,6 +60,7 @@ export const SimpleQuickForm = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         aiContext = '',
+        isNewTransaction = false,
         buildEntries,
         onSubmit,
         onCancel
@@ -69,7 +70,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
-    const { openSplitEntries } = useSplitEntriesModal();
+    const [openSplitEntries] = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
 
@@ -96,17 +97,17 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
-    const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
-        const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+    const handleSelectComment = (selectedComment: string) => {
+        setValue('comment', selectedComment);
+    };
 
-        setValue('entries.0.categoryId', pattern.categoryId);
-        setValue('tagIds', pattern.tagIds);
-        setValue('amount', displayAmount);
-        setFromNumeric(displayAmount);
-        setValue('title', pattern.title);
-        if (isNotEmptyString(pattern.comment)) {
-            setValue('comment', pattern.comment);
+    const handleFillPatternAmount = (patternAmount: number) => {
+        if (amount > 0) {
+            return;
         }
+
+        setValue('amount', patternAmount);
+        setFromNumeric(patternAmount);
     };
 
     const handleSplitPress = async () => {
@@ -150,12 +151,7 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const isSplitActive = splitEntryCount > 1;
-    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
-    const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showRepeatedSuggestions = !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
-    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive && !showRepeatedSuggestions;
-    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -172,7 +168,7 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount });
+        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
 
         setValue('entries', builtEntries, { shouldValidate: false });
 
@@ -218,22 +214,22 @@ export const SimpleQuickForm = (props: Props) => {
                 <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                    <SuggestionRowSwitcher
+                    <SuggestionsContainer
+                        isNewTransaction={isNewTransaction}
                         isSplitActive={isSplitActive}
-                        showTagSuggestions={showTagSuggestions}
-                        showCategorySuggestions={showCategorySuggestions}
-                        showRepeatedSuggestions={showRepeatedSuggestions}
                         transactionType={transactionType}
-                        accountId={accountId}
-                        amount={amount}
                         transactionTitle={transactionTitle}
                         categoryId={categoryId}
                         mccCategoryId={mccCategoryId}
                         comment={comment}
                         aiContext={aiContext}
-                        onSelectTag={handleSelectTag}
+                        accountId={accountId}
+                        amount={amount}
+                        hasTagsSelected={hasTagsSelected}
                         onSelectCategory={handleSelectCategory}
-                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
+                        onSelectTag={handleSelectTag}
+                        onSelectComment={handleSelectComment}
+                        onFillPatternAmount={handleFillPatternAmount}
                     />
                 </View>
             </View>

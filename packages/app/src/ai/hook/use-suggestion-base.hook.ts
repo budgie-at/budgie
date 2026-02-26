@@ -1,0 +1,95 @@
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { useNavigation } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+
+import { emptyFn } from '@rnw-community/shared';
+
+import { useAiEmbeddingProgress } from './use-ai-embedding-progress.hook';
+
+interface UseSuggestionBaseParams<T> {
+    readonly enabled: boolean;
+    readonly readyChecks: readonly boolean[];
+    readonly requestKeyParts: readonly unknown[];
+    readonly fetchSuggestions: () => Promise<T[]>;
+}
+
+interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
+    readonly refresh: () => void;
+}
+
+interface SuggestionResultInterface<T> {
+    readonly key: string | null;
+    readonly status: SuggestionInternalStatus;
+    readonly suggestions: T[];
+}
+
+// eslint-disable-next-line max-statements -- Hook coordinates focus refresh, async suggestion fetch, and state management
+export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
+    const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
+    const requestKey = JSON.stringify(requestKeyParts);
+    const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
+
+    const [result, setResult] = useState<SuggestionResultInterface<T>>({
+        key: null,
+        status: 'idle',
+        suggestions: []
+    });
+    const [refreshVersion, setRefreshVersion] = useState(0);
+    const fetchSuggestionsRef = useRef(fetchSuggestions);
+    const navigation = useNavigation();
+    const { isIncomplete } = useAiEmbeddingProgress();
+
+    useEffect(() => {
+        fetchSuggestionsRef.current = fetchSuggestions;
+    }, [fetchSuggestions]);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setRefreshVersion(version => version + 1);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    useEffect(() => {
+        if (!isReady) {
+            return emptyFn;
+        }
+
+        let cancelled = false;
+
+        const suggest = async (): Promise<void> => {
+            setResult({ key: requestKey, status: 'loading', suggestions: [] });
+
+            try {
+                const results = await fetchSuggestionsRef.current();
+
+                if (!cancelled) {
+                    setResult({ key: requestKey, status: 'success', suggestions: results });
+                }
+            } catch {
+                if (!cancelled) {
+                    setResult({ key: requestKey, status: 'error', suggestions: [] });
+                }
+            }
+        };
+
+        void suggest();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [isReady, requestKey, refreshVersion, isIncomplete]);
+
+    const currentResult: SuggestionResultInterface<T> =
+        result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };
+
+    const isInitializing = enabled && !isReady && currentResult.status === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
+
+    const refresh = (): void => {
+        setRefreshVersion(version => version + 1);
+    };
+
+    return { status, suggestions: currentResult.suggestions, refresh };
+};
