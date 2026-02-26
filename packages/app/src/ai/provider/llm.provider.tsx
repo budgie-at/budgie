@@ -9,9 +9,11 @@ interface Props {
 }
 
 export const LlmProvider = ({ children }: Props) => {
+    console.log('[LLM-PROVIDER] Mounting LlmProvider'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
     const llm = useLlamaLlm();
     const stt = useSpeechToText({ model: WHISPER_SMALL });
 
+    console.log('[LLM-PROVIDER] LLM state:', { isReady: llm.isReady, isEmbeddingReady: llm.isEmbeddingReady, isInitializing: llm.isInitializing, error: llm.error, downloadProgress: llm.downloadProgress }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
     const value = { isAvailable: true, llm, stt };
 
     return <LlmContext value={value}>{children}</LlmContext>;
