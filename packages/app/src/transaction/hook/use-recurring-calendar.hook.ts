@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
@@ -10,7 +8,6 @@ import { recurringCalendarService } from '../service/recurring-calendar.service'
 interface UseRecurringCalendarReturnInterface {
     readonly data: RecurringCalendarDataInterface | undefined;
     readonly isLoading: boolean;
-    readonly error: string | undefined;
 }
 
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
@@ -20,7 +17,6 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
     const focusKey = useFocusKey();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | undefined>();
     const hasLoadedRef = useRef(false);
 
     useEffect(() => {
@@ -38,9 +34,8 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
                     hasLoadedRef.current = true;
                     setData(result);
                 }
-            } catch (fetchError: unknown) {
+            } catch {
                 if (!cancelled) {
-                    setError(getErrorMessage(fetchError));
                     const emptyData = {
                         entriesByDay: EMPTY_ENTRIES_BY_DAY,
                         forecastedEntriesByDay: EMPTY_ENTRIES_BY_DAY,
@@ -64,5 +59,5 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
         };
     }, [focusKey, defaultInstrument.id, displayYear, displayMonth]);
 
-    return { data, isLoading, error };
+    return { data, isLoading };
 };
