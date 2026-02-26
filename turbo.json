@@ -19,6 +19,7 @@
             "outputs": []
         },
         "build": {
+            "dependsOn": ["^build"],
             "outputs": ["dist/**", ".next/**"]
         },
         "test": {},

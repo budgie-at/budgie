@@ -1,8 +1,7 @@
+import { TranslationResultInterface } from '@budgie/ai';
 import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
-
-import { TranslationResultInterface } from '../../ai/service/base-llm.service';
 
 interface AiTranslationEntity {
     title: string;
