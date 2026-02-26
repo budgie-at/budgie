@@ -19,7 +19,7 @@ interface Props {
     readonly onChangeTab: (tab: AnalyticsTabType) => void;
 }
 
-const INDICATOR_SPRING = { damping: 20, stiffness: 200 };
+const INDICATOR_SPRING = { damping: 28, stiffness: 400, mass: 0.8 };
 
 const titleVariants = cva('text-3xl font-medium', {
     variants: {
