@@ -55,7 +55,7 @@ export const RecurringCalendarContent = () => {
         setSelectedDay(undefined); // eslint-disable-line no-undefined -- Reset selection on month change
     };
 
-    if (isLoading) {
+    if (isLoading && !isDefined(data)) {
         return (
             <View className="flex-1 items-center justify-center">
                 <ActivityIndicator />
@@ -131,7 +131,7 @@ export const RecurringCalendarContent = () => {
                     </View>
 
                     <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                        <RecurringCalendarUpcoming entries={allForecastedEntries} />
+                        <RecurringCalendarUpcoming entries={allForecastedEntries} displayMonth={displayMonth} displayYear={displayYear} />
                         <MenuSpacer />
                     </ScrollView>
                 </View>
