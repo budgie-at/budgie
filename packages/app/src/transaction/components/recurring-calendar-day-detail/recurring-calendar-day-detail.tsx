@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
 
 interface Props {
@@ -22,7 +23,7 @@ export const RecurringCalendarDayDetail = ({ entries }: Props) => {
                       }
                     : undefined; // eslint-disable-line no-undefined -- No navigation for forecasted entries
 
-                const key = `${entry.categoryId}-${entry.accountId}-${entry.latestAmount}-${entry.isForecast ? 'f' : 'a'}`;
+                const key = getRecurringEntryKey(entry);
 
                 return <RecurringCalendarEntryRow key={key} entry={entry} index={index} onPress={handlePress} />;
             })}
