@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -37,25 +37,12 @@ export const RecurringCalendarContent = () => {
 
     const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
 
-    const selectedEntries = useMemo(() => {
-        if (!isDefined(selectedDay)) {
-            return [];
-        }
-        const actual = entriesByDay.get(selectedDay) ?? [];
-        const forecasted = forecastedEntriesByDay.get(selectedDay) ?? [];
-
-        return [...actual, ...forecasted];
-    }, [selectedDay, entriesByDay, forecastedEntriesByDay]);
+    const selectedEntries = isDefined(selectedDay)
+        ? [...(entriesByDay.get(selectedDay) ?? []), ...(forecastedEntriesByDay.get(selectedDay) ?? [])]
+        : [];
     const hasSelectedEntries = isNotEmptyArray(selectedEntries);
 
-    const allForecastedEntries = useMemo(() => {
-        const entries: RecurringCalendarEntryInterface[] = [];
-        for (const dayEntries of forecastedEntriesByDay.values()) {
-            entries.push(...dayEntries);
-        }
-
-        return entries.sort((left, right) => left.dayOfMonth - right.dayOfMonth);
-    }, [forecastedEntriesByDay]);
+    const allForecastedEntries = [...forecastedEntriesByDay.values()].flat().sort((left, right) => left.dayOfMonth - right.dayOfMonth);
     const showUpcomingList = !isDefined(selectedDay) && isCurrentMonth && isNotEmptyArray(allForecastedEntries);
 
     const handleSelectDay = (day: number) => {
