@@ -187,7 +187,6 @@ class RuleMatcherService {
         return matchingIds;
     }
 
-    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
     private async countMatchingTransactionsLegacy(params: CountConditionsParamsInterface): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
@@ -196,37 +195,18 @@ class RuleMatcherService {
         }
 
         let count = 0;
-        let offset = 0;
-        let hasMore = true;
 
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
-            });
-
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            const matchCount = transactions.filter(transaction => {
+        await this.forEachTransactionBatch(transactions => {
+            count += transactions.filter(transaction => {
                 const input = this.convertTransactionForRuleEvaluation(transaction);
 
                 return this.evaluateConditions(conditions, conditionMatchType, input);
             }).length;
-
-            count += matchCount;
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
-        }
+        });
 
         return count;
     }
 
-    // eslint-disable-next-line max-statements -- Batch processing with loop control variables and result collection
     private async findMatchingTransactionsLegacy(
         params: CountConditionsParamsInterface,
         limit: number
@@ -238,22 +218,8 @@ class RuleMatcherService {
         }
 
         const matchingIds: number[] = [];
-        let offset = 0;
-        let hasMore = true;
 
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
-            });
-
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
+        await this.forEachTransactionBatch(transactions => {
             for (const transaction of transactions) {
                 const input = this.convertTransactionForRuleEvaluation(transaction);
 
@@ -261,10 +227,7 @@ class RuleMatcherService {
                     matchingIds.push(transaction.id);
                 }
             }
-
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
-        }
+        });
 
         const count = matchingIds.length;
         const slicedIds = matchingIds.slice(0, limit);
@@ -275,6 +238,24 @@ class RuleMatcherService {
 
     private async collectMatchingTransactionIdsLegacy(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
         const matchingIds: number[] = [];
+
+        await this.forEachTransactionBatch(transactions => {
+            for (const transaction of transactions) {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                if (this.evaluateRule(rule, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            }
+        });
+
+        return matchingIds;
+    }
+
+    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
+    private async forEachTransactionBatch(
+        callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
+    ): Promise<void> {
         let offset = 0;
         let hasMore = true;
 
@@ -291,18 +272,11 @@ class RuleMatcherService {
                 break;
             }
 
-            transactions.forEach(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-                if (this.evaluateRule(rule, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            });
+            callback(transactions);
 
             hasMore = transactions.length >= BATCH_SIZE;
             offset += BATCH_SIZE;
         }
-
-        return matchingIds;
     }
 
     private evaluateConditions(
