@@ -7,16 +7,24 @@ import { db, ruleActionRepository, ruleConditionRepository, ruleRepository } fro
 import { hasDuplicateRuleConditions } from '../util/has-duplicate-rule-conditions.util';
 
 class RuleService {
+    async toggleEnabled(id: number, enabled: boolean): Promise<void> {
+        await ruleRepository.updateById(id, { enabled });
+    }
+
+    async archiveById(id: number): Promise<void> {
+        await ruleRepository.archiveById(id);
+    }
+
     async create(input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
         if (isNotEmptyArray(input.conditions)) {
-            const existingRules = await ruleRepository.findEnabledWithRelations();
+            const existingRules = await ruleRepository.findAllWithActionsAndCategories();
 
             if (hasDuplicateRuleConditions(input.conditions, input.conditionMatchType, existingRules)) {
                 throw new Error(t`A rule with the same conditions already exists`);
             }
         }
 
-        const rule = await db.transaction(async tx => {
+        return db.transaction(async tx => {
             const createdRule = await ruleRepository.create(
                 {
                     enabled: input.enabled,
@@ -41,8 +49,6 @@ class RuleService {
 
             return createdRule;
         });
-
-        return rule;
     }
 
     async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {

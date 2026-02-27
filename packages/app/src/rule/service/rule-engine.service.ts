@@ -32,9 +32,20 @@ class RuleEngineService {
             return;
         }
 
-        await Promise.all(
-            transactionIds.map((transactionId, index) => this.applyRulesToTransaction(transactionId, transactionInputs[index], rules))
-        );
+        for (let batchStart = 0; batchStart < transactionIds.length; batchStart += BATCH_SIZE) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
+
+            const batchIds = transactionIds.slice(batchStart, batchStart + BATCH_SIZE);
+            // eslint-disable-next-line no-await-in-loop
+            await Promise.allSettled(
+                batchIds.map((transactionId, offset) =>
+                    this.applyRulesToTransaction(transactionId, transactionInputs[batchStart + offset], rules)
+                )
+            );
+        }
     }
 
     async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
@@ -167,7 +178,11 @@ class RuleEngineService {
                     if (isDefined(action.accountId) && !appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
                         appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
                         // eslint-disable-next-line no-await-in-loop
-                        await convertTransactionToTransfer({ transactionId, targetAccountId: action.accountId, tx: transaction });
+                        await convertTransactionToTransfer({
+                            transactionId,
+                            targetAccountId: action.accountId,
+                            dbTransaction: transaction
+                        });
                     }
                     break;
 

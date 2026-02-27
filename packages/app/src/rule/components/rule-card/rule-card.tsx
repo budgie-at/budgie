@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { ruleRepository } from '../../../@generic/drizzle/db/db';
+import { ruleService } from '../../service/rule.service';
 import { RuleSummaryPills } from '../rule-summary-pills/rule-summary-pills';
 
 interface Props {
@@ -19,14 +19,14 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadge
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
-        await ruleRepository.updateById(rule.id, { enabled });
+        await ruleService.toggleEnabled(rule.id, enabled);
     };
 
     return (
         <Card testID={testID} onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">
             <View
                 testID={orderBadgeTestID}
-                className="w-10 h-10 rounded-full bg-secondary-foreground/20 items-center justify-center border border-secondary-foreground"
+                className="w-10 h-10 rounded-full bg-ghost-background items-center justify-center border border-secondary-foreground"
             >
                 <Text className="text-sm font-semibold text-primary">{order}</Text>
             </View>

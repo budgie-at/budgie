@@ -1,15 +1,14 @@
-import { CategoryEntityInterface, RuleConditionFieldEnum, TagEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { SuggestRuleConditionField } from '../../constant/suggest-rule-condition-fields.constant';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { buildActionPillParts } from '../../util/build-action-pill-parts.util';
 import { buildConditionParts } from '../../util/build-condition-parts.util';
 import { joinWithSeparators } from '../../util/join-with-separators.util';
-
-type SuggestRuleConditionField = RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT | RuleConditionFieldEnum.MCC_CODE;
 
 interface Props {
     readonly selectedFields: Set<SuggestRuleConditionField>;
@@ -29,7 +28,7 @@ export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData,
     const actionsJoined = joinWithSeparators(actionParts);
 
     return (
-        <Text className="text-sm text-primary/70 leading-relaxed">
+        <Text className="text-sm text-secondary-foreground leading-relaxed">
             <Trans>Match transactions where</Trans> {conditionsJoined}
             {hasActions ? (
                 <>

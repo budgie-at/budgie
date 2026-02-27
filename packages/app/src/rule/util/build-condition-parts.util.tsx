@@ -1,4 +1,3 @@
-import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { Fragment, type ReactNode } from 'react';
 import { Text } from 'react-native';
@@ -6,13 +5,12 @@ import { Text } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { RULE_CONDITION_FIELD } from '../constant/rule-condition-field.constant';
+import { SuggestRuleConditionField } from '../constant/suggest-rule-condition-fields.constant';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 
 import { getSuggestRuleFieldValue } from './get-suggest-rule-field-value.util';
 
 const IS_OPERATOR = msg`is`;
-
-type SuggestRuleConditionField = RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT | RuleConditionFieldEnum.MCC_CODE;
 
 export const buildConditionParts = (
     selectedFields: Set<SuggestRuleConditionField>,

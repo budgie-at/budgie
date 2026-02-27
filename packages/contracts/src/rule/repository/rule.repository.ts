@@ -69,8 +69,8 @@ export class RuleRepository {
         return rule;
     }
 
-    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
-        await (tx ?? this.db).delete(RuleEntityTable).where(eq(RuleEntityTable.id, id));
+    async archiveById(id: number, tx?: DBOrTX): Promise<void> {
+        await (tx ?? this.db).update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id));
     }
 
     async truncate(tx?: DBOrTX): Promise<void> {

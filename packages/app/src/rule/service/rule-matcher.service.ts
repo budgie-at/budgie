@@ -63,8 +63,8 @@ class RuleMatcherService {
         const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            const count = await transactionRuleRepository.countByRuleConditions(sqlWhere);
             const allIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const count = allIds.length;
             const slicedIds = allIds.slice(0, limit);
             const transactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
 
@@ -201,6 +201,11 @@ class RuleMatcherService {
 
         while (hasMore) {
             // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
+
+            // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
 
             if (!isNotEmptyArray(transactions)) {
@@ -237,6 +242,11 @@ class RuleMatcherService {
         let hasMore = true;
 
         while (hasMore) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
+
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
 

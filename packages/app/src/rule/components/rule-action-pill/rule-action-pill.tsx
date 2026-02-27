@@ -20,7 +20,7 @@ export const RuleActionPill = ({ action }: Props) => {
         const categoryTitle = category.title;
 
         return (
-            <View className="flex-row items-center gap-x-sm rounded-2xl border border-primary/15 bg-ghost-background px-lg py-md">
+            <View className="flex-row items-center gap-x-sm rounded-2xl border border-secondary-corner bg-ghost-background px-lg py-md">
                 <Icon icon={UserIconNameEnum.FolderOpen} size={ICON_SIZE} className="text-primary" />
                 <Text className="text-xs text-primary">
                     <Trans>Category → {categoryTitle}</Trans>
@@ -34,7 +34,7 @@ export const RuleActionPill = ({ action }: Props) => {
         const tagTitle = tag.title;
 
         return (
-            <View className="flex-row items-center gap-x-sm rounded-2xl border border-primary/15 bg-ghost-background px-lg py-md">
+            <View className="flex-row items-center gap-x-sm rounded-2xl border border-secondary-corner bg-ghost-background px-lg py-md">
                 <Icon icon={UserIconNameEnum.Tag} size={ICON_SIZE} className="text-primary" />
                 <Text className="text-xs text-primary">
                     <Trans>Tag → {tagTitle}</Trans>
@@ -45,7 +45,7 @@ export const RuleActionPill = ({ action }: Props) => {
 
     if (type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
         return (
-            <View className="flex-row items-center gap-x-sm rounded-2xl border border-primary/15 bg-ghost-background px-lg py-md">
+            <View className="flex-row items-center gap-x-sm rounded-2xl border border-secondary-corner bg-ghost-background px-lg py-md">
                 <Icon icon={UserIconNameEnum.ArrowRightLeft} size={ICON_SIZE} className="text-primary" />
                 <Text className="text-xs text-primary">
                     <Trans>Transfer</Trans>
