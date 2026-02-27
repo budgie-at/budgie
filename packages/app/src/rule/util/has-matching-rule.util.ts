@@ -13,6 +13,8 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 import { evaluateRuleCondition } from './evaluate-rule-condition.util';
 import { getSuggestRuleFieldValue } from './get-suggest-rule-field-value.util';
 
+const MAX_REGEX_LENGTH = 200;
+
 const matchStringCondition = (operator: RuleConditionOperatorEnum, fieldValue: string, conditionValue: string): boolean => {
     const fieldLower = fieldValue.toLowerCase();
     const valueLower = conditionValue.toLowerCase();
@@ -27,6 +29,9 @@ const matchStringCondition = (operator: RuleConditionOperatorEnum, fieldValue: s
         case RuleConditionOperatorEnum.NOT_CONTAINS:
             return !fieldLower.includes(valueLower);
         case RuleConditionOperatorEnum.MATCHES_REGEX:
+            if (conditionValue.length > MAX_REGEX_LENGTH) {
+                return false;
+            }
             try {
                 return new RegExp(conditionValue, 'iu').test(fieldValue);
             } catch {

@@ -1,5 +1,7 @@
 import { eq } from 'drizzle-orm';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { DBOrTX } from '../../@generic/type/db.type';
 import { RuleActionCreateEntityInterface } from '../entity/rule-action-create-entity.interface';
 import { RuleActionEntityTable } from '../table/rule-action-entity.table';
@@ -24,7 +26,7 @@ export class RuleActionRepository {
     }
 
     async bulkCreate(inputs: RuleActionCreateEntityInterface[], tx?: DBOrTX): Promise<RuleActionEntityInterface[]> {
-        if (inputs.length === 0) {
+        if (isEmptyArray(inputs)) {
             return [];
         }
 

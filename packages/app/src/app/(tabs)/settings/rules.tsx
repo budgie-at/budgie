@@ -19,13 +19,13 @@ import {
     LEGEND_LIST_HEADER_HEIGHT,
     LEGEND_LIST_STYLE
 } from '../../../@generic/constant/legend-list.constant';
-import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleCard } from '../../../rule/components/rule-card/rule-card';
 import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
+import { ruleService } from '../../../rule/service/rule.service';
 
 type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
 
@@ -44,7 +44,7 @@ export default function RulesPage() {
     const { openRuleForm } = useRuleFormModal();
 
     const handleDeleteRule = async (id: number) => {
-        await ruleRepository.deleteById(id);
+        await ruleService.archiveById(id);
         notify(NotificationFeedbackType.Success);
     };
 

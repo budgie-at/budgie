@@ -1,5 +1,7 @@
 import { eq } from 'drizzle-orm';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { DBOrTX } from '../../@generic/type/db.type';
 import { RuleConditionCreateEntityInterface } from '../entity/rule-condition-create-entity.interface';
 import { RuleConditionEntityTable } from '../table/rule-condition-entity.table';
@@ -24,7 +26,7 @@ export class RuleConditionRepository {
     }
 
     async bulkCreate(inputs: RuleConditionCreateEntityInterface[], tx?: DBOrTX): Promise<RuleConditionEntityInterface[]> {
-        if (inputs.length === 0) {
+        if (isEmptyArray(inputs)) {
             return [];
         }
 

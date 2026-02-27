@@ -14,7 +14,6 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { ruleRepository } from '../../@generic/drizzle/db/db';
 import { RuleFormResultType } from '../context/rule-form-modal.context';
 import { RuleCreationProgressInterface } from '../interface/rule-creation-progress.interface';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
@@ -125,7 +124,7 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         }
 
         try {
-            await ruleRepository.deleteById(ruleId);
+            await ruleService.archiveById(ruleId);
             onSuccess?.('deleted');
         } catch (error: unknown) {
             Toast.show({
