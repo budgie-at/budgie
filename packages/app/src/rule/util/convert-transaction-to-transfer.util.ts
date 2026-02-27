@@ -9,13 +9,13 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 interface ConvertToTransferParams {
     readonly transactionId: number;
     readonly targetAccountId: number;
-    readonly tx: Transaction;
+    readonly dbTransaction: Transaction;
 }
 
 export const convertTransactionToTransfer = async (params: ConvertToTransferParams): Promise<void> => {
-    const { transactionId, targetAccountId, tx } = params;
+    const { transactionId, targetAccountId, dbTransaction } = params;
 
-    const transaction = await transactionRepository.getById(transactionId, tx);
+    const transaction = await transactionRepository.getById(transactionId, dbTransaction);
     if (!isDefined(transaction)) {
         return;
     }
@@ -42,8 +42,8 @@ export const convertTransactionToTransfer = async (params: ConvertToTransferPara
     const toAccountId = isExpense ? targetAccountId : originalAccountId;
 
     const [fromAccount, toAccount] = await Promise.all([
-        accountRepository.findById(fromAccountId, tx),
-        accountRepository.findById(toAccountId, tx)
+        accountRepository.findById(fromAccountId, dbTransaction),
+        accountRepository.findById(toAccountId, dbTransaction)
     ]);
 
     if (!isDefined(fromAccount) || !isDefined(toAccount)) {
@@ -67,10 +67,10 @@ export const convertTransactionToTransfer = async (params: ConvertToTransferPara
             toAccountId,
             exchangeRate
         },
-        tx
+        dbTransaction
     );
 
-    await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
+    await transactionEntryRepository.deleteByTransactionId(transactionId, dbTransaction);
 
     await transactionEntryRepository.bulkCreate(
         [
@@ -93,6 +93,6 @@ export const convertTransactionToTransfer = async (params: ConvertToTransferPara
                 externalId: null
             }
         ],
-        tx
+        dbTransaction
     );
 };

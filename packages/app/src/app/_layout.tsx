@@ -24,6 +24,7 @@ import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
+import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
 import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
@@ -42,7 +43,6 @@ import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
-import { RULE_SELECTOR_MODAL_OPTIONS } from '../rule/constant/rule-selector-modal-options.constant';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';

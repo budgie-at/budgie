@@ -1,9 +1,4 @@
-import { RuleConditionFieldEnum } from '@budgie/contracts';
-
-interface RulePrefillConditionInterface {
-    readonly field: RuleConditionFieldEnum;
-    readonly value: string;
-}
+import { RulePrefillConditionInterface } from './rule-prefill-condition.interface';
 
 export interface RulePrefillDataInterface {
     readonly conditions: RulePrefillConditionInterface[];

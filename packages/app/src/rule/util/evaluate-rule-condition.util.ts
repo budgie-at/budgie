@@ -5,7 +5,9 @@ import {
     TransactionCreateInputInterface
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
+
+const MAX_REGEX_LENGTH = 200;
 
 const getConditionFieldValue = (field: RuleConditionFieldEnum, input: TransactionCreateInputInterface): string | number | null => {
     switch (field) {
@@ -52,6 +54,9 @@ const matchOperator = (
             return !String(fieldValue).toLowerCase().includes(conditionValue.toLowerCase());
 
         case RuleConditionOperatorEnum.MATCHES_REGEX:
+            if (conditionValue.length > MAX_REGEX_LENGTH) {
+                return false;
+            }
             try {
                 const regex = new RegExp(conditionValue, 'iu');
 
@@ -61,20 +66,20 @@ const matchOperator = (
             }
 
         case RuleConditionOperatorEnum.GREATER_THAN:
-            return typeof fieldValue === 'number' && fieldValue > Number(conditionValue);
+            return isNumber(fieldValue) && fieldValue > Number(conditionValue);
 
         case RuleConditionOperatorEnum.LESS_THAN:
-            return typeof fieldValue === 'number' && fieldValue < Number(conditionValue);
+            return isNumber(fieldValue) && fieldValue < Number(conditionValue);
 
         case RuleConditionOperatorEnum.BETWEEN:
-            if (typeof fieldValue !== 'number' || !isNotEmptyString(secondaryValue)) {
+            if (!isNumber(fieldValue) || !isNotEmptyString(secondaryValue)) {
                 return false;
             }
 
             return fieldValue >= Number(conditionValue) && fieldValue <= Number(secondaryValue);
 
         case RuleConditionOperatorEnum.IN: {
-            const inValues = conditionValue.split(',').map(val => val.trim().toLowerCase());
+            const inValues = conditionValue.split(',').map(item => item.trim().toLowerCase());
 
             return inValues.includes(String(fieldValue).toLowerCase());
         }

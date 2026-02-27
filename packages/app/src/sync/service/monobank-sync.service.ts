@@ -248,8 +248,9 @@ class AppMonobankSyncService {
                     createdTransactions.map(({ id }) => id),
                     inputs
                 );
-            } catch {
-                /* empty */
+            } catch (error) {
+                // eslint-disable-next-line no-console
+                console.warn(getErrorMessage(error));
             }
         }
     }

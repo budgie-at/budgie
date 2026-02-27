@@ -4,8 +4,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../@generic/drizzle/db/db';
-
-const EXCLUSIVE_ACTION_TYPES: readonly RuleActionTypeEnum[] = [RuleActionTypeEnum.SET_CATEGORY, RuleActionTypeEnum.CONVERT_TO_TRANSFER];
+import { EXCLUSIVE_ACTION_TYPES } from '../constant/exclusive-action-types.constant';
 
 export const useHasConflictingRules = (actionTypes: RuleActionTypeEnum[], excludeRuleId?: number): boolean => {
     const { data: enabledRules, updatedAt } = useLiveQuery(ruleRepository.findEnabledWithRelations());
@@ -14,7 +13,7 @@ export const useHasConflictingRules = (actionTypes: RuleActionTypeEnum[], exclud
         return false;
     }
 
-    const currentExclusiveTypes = actionTypes.filter(type => EXCLUSIVE_ACTION_TYPES.includes(type));
+    const currentExclusiveTypes = actionTypes.filter(type => EXCLUSIVE_ACTION_TYPES.has(type));
 
     if (!isNotEmptyArray(currentExclusiveTypes)) {
         return false;
