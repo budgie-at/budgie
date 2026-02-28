@@ -1,11 +1,7 @@
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankSyncError } from '../../core/error/bank-sync.error';
-import {
-    ERSTE_MODERN_END_MARKER,
-    ERSTE_MODERN_FORMAT_MARKER,
-    ERSTE_MODERN_TRANSACTION_DATE_REGEX
-} from '../constant/erste.constant';
+import { ERSTE_MODERN_END_MARKER, ERSTE_MODERN_FORMAT_MARKER, ERSTE_MODERN_TRANSACTION_DATE_REGEX } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
 import { ErsteBaseTextParser } from './erste-base-text-parser';
@@ -120,7 +116,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
             description,
             details,
             amount: parsedAmount,
-            isCredit: !isDebit,
+            isCredit: !isDebit
         };
     }
 
