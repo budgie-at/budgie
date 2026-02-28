@@ -14,7 +14,7 @@ export abstract class ErsteBaseTextParser implements ErsteTextParserInterface {
     protected extractIban(text: string): string {
         const match = text.match(ERSTE_IBAN_REGEX);
 
-        if (!match) {
+        if (!isDefined(match)) {
             throw this.createParseError('Could not find IBAN in Erste PDF');
         }
 

@@ -114,7 +114,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
     private parseTransactionLine(line: string): TransactionParseStateInterface | null {
         const match = line.trim().match(/^(.+?)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
 
-        if (!match) {
+        if (!isDefined(match)) {
             return null;
         }
 
