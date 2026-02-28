@@ -74,7 +74,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
             if (line.includes(keyword)) {
                 const match = line.match(/([\d.,]+)\s*$/u);
 
-                if (match) {
+                if (isDefined(match)) {
                     return parseErsteAmount(match[1], false);
                 }
             }

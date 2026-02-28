@@ -1,17 +1,20 @@
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankSyncError } from '../../core/error/bank-sync.error';
-import { ERSTE_MODERN_END_MARKER, ERSTE_MODERN_FORMAT_MARKER, ERSTE_MODERN_TRANSACTION_DATE_REGEX } from '../constant/erste.constant';
+import {
+    ERSTE_MODERN_BALANCE_AMOUNT_REGEX,
+    ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT,
+    ERSTE_MODERN_END_MARKER,
+    ERSTE_MODERN_FORMAT_MARKER,
+    ERSTE_MODERN_SAME_LINE_BALANCE_REGEX,
+    ERSTE_MODERN_TRANSACTION_DATE_REGEX
+} from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
 import { ErsteBaseTextParser } from './erste-base-text-parser';
 
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
-
-const BALANCE_SEARCH_LINES_LIMIT = 3;
-const BALANCE_AMOUNT_REGEX = /^[\d.,]+$/u;
-const SAME_LINE_BALANCE_REGEX = /([\d.,]+)\s*$/u;
 
 export class ErsteModernTextParser extends ErsteBaseTextParser {
     parse(text: string): ErsteParsedDataInterface {
@@ -61,10 +64,10 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         for (const line of lines) {
             const trimmed = line.trim();
 
-            if (!isInSection && trimmed.includes(ERSTE_MODERN_FORMAT_MARKER)) {
+            if (trimmed.includes(ERSTE_MODERN_FORMAT_MARKER)) {
                 isInSection = true;
             } else if (isInSection && trimmed.includes(ERSTE_MODERN_END_MARKER)) {
-                break;
+                isInSection = false;
             } else if (isInSection) {
                 sectionLines.push(trimmed);
             }
@@ -121,7 +124,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
     }
 
     private parseBalanceFromLine(line: string, keyword: string, lines: string[], lineIndex: number): number | null {
-        const sameLineMatch = line.match(SAME_LINE_BALANCE_REGEX);
+        const sameLineMatch = line.match(ERSTE_MODERN_SAME_LINE_BALANCE_REGEX);
         const keywordEndIndex = line.indexOf(keyword) + keyword.length;
         const afterKeyword = line.slice(keywordEndIndex).trim();
 
@@ -133,7 +136,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
     }
 
     private findBalanceInNextLines(lines: string[], startIndex: number): number | null {
-        for (let offset = 1; offset <= BALANCE_SEARCH_LINES_LIMIT; offset += 1) {
+        for (let offset = 1; offset <= ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT; offset += 1) {
             const nextLineIndex = startIndex + offset;
 
             if (nextLineIndex >= lines.length) {
@@ -142,7 +145,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
 
             const nextLine = lines[nextLineIndex].trim();
 
-            if (BALANCE_AMOUNT_REGEX.test(nextLine)) {
+            if (ERSTE_MODERN_BALANCE_AMOUNT_REGEX.test(nextLine)) {
                 return parseErsteAmount(nextLine, false);
             }
         }
