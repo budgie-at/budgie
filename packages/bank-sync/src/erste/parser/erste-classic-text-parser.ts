@@ -49,7 +49,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
         /^Eine Änderung/u,
         /^den in den Allgemeinen/u,
         /^Änderungsklauseln/u,
-        /^Reklamationen bitte/u,
+        /^Reklamationen bitte/u
     ];
 
     parse(text: string): ErsteParsedDataInterface {
@@ -125,7 +125,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
             currentContinuationLines: [],
             currentDate: dateCode,
             currentAmount: amount,
-            currentIsDebit: debitMarker === '-',
+            currentIsDebit: debitMarker === '-'
         };
     }
 
@@ -140,7 +140,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
             description,
             details,
             amount,
-            isCredit: !state.currentIsDebit,
+            isCredit: !state.currentIsDebit
         };
     }
 
@@ -188,5 +188,4 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
 
         return transactions;
     }
-
 }
