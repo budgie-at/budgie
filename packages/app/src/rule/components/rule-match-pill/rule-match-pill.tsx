@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -24,6 +24,7 @@ interface Props {
     readonly compact?: boolean;
 }
 
+// eslint-disable-next-line max-lines-per-function -- Component with popover menu handlers
 export const RuleMatchPill = ({ matchingRule, compact = false }: Props) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
@@ -32,6 +33,10 @@ export const RuleMatchPill = ({ matchingRule, compact = false }: Props) => {
 
     const handlePillPress = () => {
         triggerRef.current?.measureInWindow((x, y, width, height) => {
+            if (!isPositiveNumber(width) || !isPositiveNumber(height)) {
+                return;
+            }
+
             setAnchor({ x, y, width, height });
             setIsMenuOpen(true);
         });
@@ -114,7 +119,7 @@ export const RuleMatchPill = ({ matchingRule, compact = false }: Props) => {
     }
 
     return (
-        <View className="items-center">
+        <View className="items-start">
             <Animated.View entering={FadeIn.delay(ENTRY_DELAY_MS).duration(200)} exiting={FadeOut.duration(200)}>
                 {pillContent}
             </Animated.View>

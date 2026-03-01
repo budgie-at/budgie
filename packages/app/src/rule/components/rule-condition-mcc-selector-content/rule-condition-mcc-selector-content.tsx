@@ -17,7 +17,7 @@ interface Props {
 export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange } = useRuleConditionValueField(index);
-    const { openRuleMccSelector } = useRuleMccSelectorModal();
+    const [openRuleMccSelector] = useRuleMccSelectorModal();
     const { mccCategories, isLoading } = useGetAllMccCategoriesQuery();
 
     const handleOpen = async () => {
@@ -31,6 +31,8 @@ export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
     const selectedMcc = mccCategories.find(({ mcc }) => mcc === value);
     const displayLabel = selectedMcc ? formatMccDisplay(selectedMcc) : t`Select MCC code`;
 
+    const content = isLoading ? <Trans>Loading...</Trans> : displayLabel;
+
     return (
         <HapticPressable
             testID={testID}
@@ -38,7 +40,7 @@ export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
             className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
         >
             <Text className="text-primary text-sm" numberOfLines={1}>
-                {isLoading ? <Trans>Loading...</Trans> : displayLabel}
+                {content}
             </Text>
         </HapticPressable>
     );
