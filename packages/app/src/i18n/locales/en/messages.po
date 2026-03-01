@@ -13,12 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. placeholder {0}: result.applied
-#. placeholder {1}: result.failed
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:59
-msgid "{0} updated, {1} failed"
-msgstr "{0} updated, {1} failed"
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -35,6 +29,7 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:59
 #: src/rule/hooks/use-rule-form.hook.ts:87
 msgid "{applied} updated, {failed} failed"
 msgstr "{applied} updated, {failed} failed"
@@ -47,7 +42,7 @@ msgstr "{availableCount} columns available"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% learned"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:60
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:62
 msgid "{count} matching transactions"
 msgstr "{count} matching transactions"
 
@@ -93,9 +88,9 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/rule/service/rule.service.ts:23
-msgid "A rule with the same conditions already exists"
-msgstr "A rule with the same conditions already exists"
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+msgid "A rule with the same conditions already exists."
+msgstr "A rule with the same conditions already exists."
 
 #: src/app/(tabs)/settings/index.tsx:176
 msgid "About"
@@ -278,7 +273,7 @@ msgstr "Apply Filter ({localSelectedCount})"
 msgid "Apply Filter ({selectedCount})"
 msgstr "Apply Filter ({selectedCount})"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:102
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:101
 msgid "Apply to similar"
 msgstr "Apply to similar"
 
@@ -380,6 +375,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:91
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -440,7 +436,7 @@ msgstr "Change PIN"
 msgid "Checking Account"
 msgstr "Checking Account"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:37
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:42
 msgid "Checking transactions..."
 msgstr "Checking transactions..."
 
@@ -557,7 +553,7 @@ msgstr "Could not apply rule"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/rule/hooks/use-create-suggest-rule.hook.ts:78
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:71
 #: src/rule/hooks/use-rule-form.hook.ts:115
 msgid "Could not create rule"
 msgstr "Could not create rule"
@@ -649,6 +645,10 @@ msgstr "Create and copy the personal token"
 #: src/app/(tabs)/settings/index.tsx:118
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
+
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:93
+msgid "Create anyway"
+msgstr "Create anyway"
 
 #: src/app/transaction-category-filter.tsx:103
 msgid "Create Categories"
@@ -795,7 +795,7 @@ msgstr "Deselect All"
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:103
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:102
 msgid "Disable rule"
 msgstr "Disable rule"
 
@@ -811,6 +811,10 @@ msgstr "Download your account statement as PDF from George (Erste Bank online ba
 #: src/ai/provider/ai-status.provider.tsx:50
 msgid "Downloading AI model..."
 msgstr "Downloading AI model..."
+
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+msgid "Duplicate rule"
+msgstr "Duplicate rule"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -832,15 +836,19 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:84
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:92
+msgid "Edit existing"
+msgstr "Edit existing"
+
+#: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:84
+#: src/app/(main)/transactions/[id]/income.tsx:89
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:101
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:100
 msgid "Edit rule"
 msgstr "Edit rule"
 
@@ -1431,7 +1439,7 @@ msgid "No languages found"
 msgstr "No languages found"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:51
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:53
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1607,7 +1615,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:101
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:121
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
 msgid "Quick rule"
 msgstr "Quick rule"
@@ -1649,20 +1657,16 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Rule"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:93
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:91
 msgid "Rule active"
 msgstr "Rule active"
 
-#. placeholder {0}: result.applied
 #: src/rule/components/rule-match-pill/rule-match-pill.tsx:57
-msgid "Rule applied to {0} transactions"
-msgstr "Rule applied to {0} transactions"
-
 #: src/rule/hooks/use-rule-form.hook.ts:82
 msgid "Rule applied to {applied} transactions"
 msgstr "Rule applied to {applied} transactions"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:83
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:107
 msgid "Rule created"
 msgstr "Rule created"
 
@@ -2229,11 +2233,11 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:63
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:65
 msgid "Update them too?"
 msgstr "Update them too?"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:24
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:35
 msgid "Updating {processed}/{total}..."
 msgstr "Updating {processed}/{total}..."
 

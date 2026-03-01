@@ -1,20 +1,25 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, cancelAnimation, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { getTagsDisplayValue } from '../../../transaction/utils/get-tags-display-value.util';
+import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { useSuggestRuleModal } from '../../context/suggest-rule-modal.context';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
+import { buildSuggestRuleConditions } from '../../util/build-suggest-rule-conditions.util';
+import { findDuplicateRule } from '../../util/find-duplicate-rule.util';
 
 const ENTRY_DELAY_MS = 500;
 const SPARKLE_ANIMATION_DURATION = 600;
@@ -38,6 +43,7 @@ export const RuleSuggestionPill = (props: Props) => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [hapticNotification] = useVibration();
     const [openSuggestRule] = useSuggestRuleModal();
+    const { openRuleForm } = useRuleFormModal();
 
     const categoryId = suggestRuleData.categoryId ?? 0;
     const { category } = useGetCategoryByIdQuery(categoryId);
@@ -60,7 +66,7 @@ export const RuleSuggestionPill = (props: Props) => {
         transform: [{ rotate: `${sparkleRotation.value}deg` }]
     }));
 
-    const handlePress = async () => {
+    const handleOpenSuggestRule = async () => {
         const result = await openSuggestRule({ suggestRuleData });
 
         if (result === 'created') {
@@ -68,6 +74,24 @@ export const RuleSuggestionPill = (props: Props) => {
             hapticNotification(NotificationFeedbackType.Success);
             setTimeout(onRuleCreated, SUCCESS_TOTAL_DURATION_MS);
         }
+    };
+
+    const handlePress = async () => {
+        const conditions = buildSuggestRuleConditions(suggestRuleData);
+        const existingRules = await ruleRepository.findAllWithActionsAndCategories();
+        const duplicateRule = findDuplicateRule(conditions, RuleConditionMatchTypeEnum.ALL, existingRules);
+
+        if (!isDefined(duplicateRule)) {
+            await handleOpenSuggestRule();
+
+            return;
+        }
+
+        Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
+            { text: t`Cancel`, style: 'cancel' },
+            { text: t`Edit existing`, onPress: () => void openRuleForm({ ruleId: duplicateRule.id }) },
+            { text: t`Create anyway`, onPress: () => void handleOpenSuggestRule() }
+        ]);
     };
 
     const handlePillPress = () => void handlePress();

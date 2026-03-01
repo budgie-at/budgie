@@ -11,12 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. placeholder {0}: result.applied
-#. placeholder {1}: result.failed
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:59
-msgid "{0} updated, {1} failed"
-msgstr ""
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -33,6 +27,7 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:59
 #: src/rule/hooks/use-rule-form.hook.ts:87
 msgid "{applied} updated, {failed} failed"
 msgstr ""
@@ -45,7 +40,7 @@ msgstr "{availableCount} стовпців доступно"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% вивчено"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:60
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:62
 msgid "{count} matching transactions"
 msgstr ""
 
@@ -91,9 +86,9 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/rule/service/rule.service.ts:23
-msgid "A rule with the same conditions already exists"
-msgstr ""
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+msgid "A rule with the same conditions already exists."
+msgstr "Правило з такими самими умовами вже існує."
 
 #: src/app/(tabs)/settings/index.tsx:176
 msgid "About"
@@ -276,7 +271,7 @@ msgstr ""
 msgid "Apply Filter ({selectedCount})"
 msgstr ""
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:102
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:101
 msgid "Apply to similar"
 msgstr "Застосувати до подібних"
 
@@ -378,6 +373,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:91
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -438,7 +434,7 @@ msgstr "Змінити PIN-код"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:37
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:42
 msgid "Checking transactions..."
 msgstr ""
 
@@ -555,7 +551,7 @@ msgstr "Не вдалося застосувати правило"
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/rule/hooks/use-create-suggest-rule.hook.ts:78
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:71
 #: src/rule/hooks/use-rule-form.hook.ts:115
 msgid "Could not create rule"
 msgstr ""
@@ -647,6 +643,10 @@ msgstr "Створити та скопіювати персональний то
 #: src/app/(tabs)/settings/index.tsx:118
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
+
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:93
+msgid "Create anyway"
+msgstr "Створити все одно"
 
 #: src/app/transaction-category-filter.tsx:103
 msgid "Create Categories"
@@ -793,7 +793,7 @@ msgstr "Скасувати вибір усіх"
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:103
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:102
 msgid "Disable rule"
 msgstr "Вимкнути правило"
 
@@ -809,6 +809,10 @@ msgstr "Завантажте виписку з рахунку у форматі 
 #: src/ai/provider/ai-status.provider.tsx:50
 msgid "Downloading AI model..."
 msgstr "Завантаження ШІ моделі..."
+
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+msgid "Duplicate rule"
+msgstr "Дублікат правила"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -830,15 +834,19 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:84
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:92
+msgid "Edit existing"
+msgstr "Редагувати існуюче"
+
+#: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:84
+#: src/app/(main)/transactions/[id]/income.tsx:89
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:101
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:100
 msgid "Edit rule"
 msgstr "Редагувати правило"
 
@@ -1429,7 +1437,7 @@ msgid "No languages found"
 msgstr "Мов не знайдено"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:51
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:53
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -1605,7 +1613,7 @@ msgstr "Приватбанк"
 msgid "PrivatBank"
 msgstr "ПриватБанк"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:101
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:121
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
 msgid "Quick rule"
 msgstr ""
@@ -1647,20 +1655,16 @@ msgstr ""
 msgid "Rule"
 msgstr ""
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:93
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:91
 msgid "Rule active"
 msgstr "Правило активне"
 
-#. placeholder {0}: result.applied
 #: src/rule/components/rule-match-pill/rule-match-pill.tsx:57
-msgid "Rule applied to {0} transactions"
-msgstr ""
-
 #: src/rule/hooks/use-rule-form.hook.ts:82
 msgid "Rule applied to {applied} transactions"
 msgstr ""
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:83
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:107
 msgid "Rule created"
 msgstr ""
 
@@ -2227,11 +2231,11 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:63
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:65
 msgid "Update them too?"
 msgstr ""
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:24
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:35
 msgid "Updating {processed}/{total}..."
 msgstr ""
 
