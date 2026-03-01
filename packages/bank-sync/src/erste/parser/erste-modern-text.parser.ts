@@ -6,7 +6,6 @@ import {
     ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT,
     ERSTE_MODERN_END_MARKER,
     ERSTE_MODERN_FORMAT_MARKER,
-    ERSTE_MODERN_SAME_LINE_BALANCE_REGEX,
     ERSTE_MODERN_TRANSACTION_DATE_REGEX
 } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
@@ -124,12 +123,15 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
     }
 
     private parseBalanceFromLine(line: string, keyword: string, lines: string[], lineIndex: number): number | null {
-        const sameLineMatch = line.match(ERSTE_MODERN_SAME_LINE_BALANCE_REGEX);
         const keywordEndIndex = line.indexOf(keyword) + keyword.length;
         const afterKeyword = line.slice(keywordEndIndex).trim();
 
-        if (isDefined(sameLineMatch) && isNotEmptyString(afterKeyword)) {
-            return parseErsteAmount(sameLineMatch[1], false);
+        if (isNotEmptyString(afterKeyword)) {
+            const amountMatch = afterKeyword.match(ERSTE_MODERN_BALANCE_AMOUNT_REGEX);
+
+            if (isDefined(amountMatch)) {
+                return parseErsteAmount(amountMatch[0], false);
+            }
         }
 
         return this.findBalanceInNextLines(lines, lineIndex);
