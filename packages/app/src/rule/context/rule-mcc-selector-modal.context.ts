@@ -1,21 +1,7 @@
-import { createContext, use } from 'react';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
-import { emptyFn } from '@rnw-community/shared';
-
-export interface RuleMccSelectorModalParams {
+interface RuleMccSelectorModalParams {
     readonly selectedMcc: string | null;
 }
 
-interface RuleMccSelectorModalContextInterface {
-    openRuleMccSelector: (params?: RuleMccSelectorModalParams) => Promise<string | null>;
-    resolveRuleMccSelector: (result: string | null) => void;
-    currentParams: RuleMccSelectorModalParams | null;
-}
-
-export const RuleMccSelectorModalContext = createContext<RuleMccSelectorModalContextInterface>({
-    openRuleMccSelector: () => Promise.resolve(null),
-    resolveRuleMccSelector: emptyFn,
-    currentParams: null
-});
-
-export const useRuleMccSelectorModal = () => use(RuleMccSelectorModalContext);
+export const [RuleMccSelectorModalContext, useRuleMccSelectorModal] = createModalContext<RuleMccSelectorModalParams, string | null>(null);

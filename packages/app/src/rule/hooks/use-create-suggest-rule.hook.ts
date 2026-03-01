@@ -3,7 +3,7 @@ import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SUGGEST_RULE_CONDITION_FIELDS, SuggestRuleConditionField } from '../constant/suggest-rule-condition-fields.constant';
 import { useMatchingTransactionCount } from '../hooks/use-matching-transaction-count.hook';
@@ -35,7 +35,7 @@ export const useCreateSuggestRule = ({ suggestRuleData, onCreateRule }: UseCreat
     const { count: matchingCount, isLoading: isCountLoading } = useMatchingTransactionCount({
         conditions,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        enabled: availableFields.length > 0
+        enabled: isNotEmptyArray(availableFields)
     });
 
     const handleCreateRule = async () => {

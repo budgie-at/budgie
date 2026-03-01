@@ -29,8 +29,8 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:59
-#: src/rule/hooks/use-rule-form.hook.ts:87
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:64
+#: src/rule/hooks/use-rule-form.hook.ts:79
 msgid "{applied} updated, {failed} failed"
 msgstr "{applied} updated, {failed} failed"
 
@@ -42,7 +42,7 @@ msgstr "{availableCount} columns available"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% learned"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:62
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:61
 msgid "{count} matching transactions"
 msgstr "{count} matching transactions"
 
@@ -88,7 +88,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:77
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
@@ -237,7 +237,7 @@ msgstr "Amount"
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:36
+#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
 #: src/rule/util/join-with-separators.util.tsx:6
 msgid "and"
 msgstr "and"
@@ -273,7 +273,7 @@ msgstr "Apply Filter ({localSelectedCount})"
 msgid "Apply Filter ({selectedCount})"
 msgstr "Apply Filter ({selectedCount})"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:101
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:106
 msgid "Apply to similar"
 msgstr "Apply to similar"
 
@@ -294,7 +294,7 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:59
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:53
 msgid "Are you sure you want to delete this rule?"
 msgstr "Are you sure you want to delete this rule?"
 
@@ -374,8 +374,8 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:256
 #: src/app/convert-to-transfer.tsx:74
 #: src/import/components/import-database/import-database.tsx:38
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:62
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:91
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:78
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -407,7 +407,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:26
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:20
 msgid "Category → {categoryTitle}"
 msgstr "Category → {categoryTitle}"
 
@@ -436,7 +436,7 @@ msgstr "Change PIN"
 msgid "Checking Account"
 msgstr "Checking Account"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:42
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:41
 msgid "Checking transactions..."
 msgstr "Checking transactions..."
 
@@ -545,7 +545,7 @@ msgstr "Convert to Transfer?"
 msgid "Could not activate account."
 msgstr "Could not activate account."
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:62
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:67
 msgid "Could not apply rule"
 msgstr "Could not apply rule"
 
@@ -554,7 +554,7 @@ msgid "Could not create category"
 msgstr "Could not create category"
 
 #: src/rule/hooks/use-create-suggest-rule.hook.ts:71
-#: src/rule/hooks/use-rule-form.hook.ts:115
+#: src/rule/hooks/use-rule-form.hook.ts:107
 msgid "Could not create rule"
 msgstr "Could not create rule"
 
@@ -570,7 +570,7 @@ msgstr "Could not create transaction. Please try again later."
 msgid "Could not delete account."
 msgstr "Could not delete account."
 
-#: src/rule/hooks/use-rule-form.hook.ts:132
+#: src/rule/hooks/use-rule-form.hook.ts:124
 msgid "Could not delete rule."
 msgstr "Could not delete rule."
 
@@ -578,7 +578,7 @@ msgstr "Could not delete rule."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:76
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:81
 msgid "Could not disable rule"
 msgstr "Could not disable rule"
 
@@ -610,7 +610,7 @@ msgstr "Could not save category"
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
-#: src/rule/hooks/use-rule-form.hook.ts:115
+#: src/rule/hooks/use-rule-form.hook.ts:107
 msgid "Could not update rule"
 msgstr "Could not update rule"
 
@@ -646,7 +646,7 @@ msgstr "Create and copy the personal token"
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:93
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:80
 msgid "Create anyway"
 msgstr "Create anyway"
 
@@ -675,7 +675,7 @@ msgstr "Create one to get started."
 msgid "Create rule"
 msgstr "Create rule"
 
-#: src/rule/components/rule-form-create/rule-form-create.tsx:32
+#: src/rule/components/rule-form-create/rule-form-create.tsx:23
 msgid "Create Rule"
 msgstr "Create Rule"
 
@@ -778,8 +778,8 @@ msgstr "Delete data"
 msgid "Delete Permanently"
 msgstr "Delete Permanently"
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:61
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:98
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:55
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:78
 msgid "Delete rule"
 msgstr "Delete rule"
 
@@ -795,7 +795,7 @@ msgstr "Deselect All"
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:102
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:107
 msgid "Disable rule"
 msgstr "Disable rule"
 
@@ -812,7 +812,7 @@ msgstr "Download your account statement as PDF from George (Erste Bank online ba
 msgid "Downloading AI model..."
 msgstr "Downloading AI model..."
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:90
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:77
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
@@ -836,7 +836,7 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:92
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:79
 msgid "Edit existing"
 msgstr "Edit existing"
 
@@ -848,11 +848,11 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:100
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:105
 msgid "Edit rule"
 msgstr "Edit rule"
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:77
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:69
 msgid "Edit Rule"
 msgstr "Edit Rule"
 
@@ -1269,7 +1269,7 @@ msgstr "Listening..."
 msgid "LLM not ready"
 msgstr "LLM not ready"
 
-#: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:41
+#: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:34
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -1439,7 +1439,7 @@ msgid "No languages found"
 msgstr "No languages found"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:53
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:52
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1520,7 +1520,7 @@ msgstr "Open Monobank to get your token"
 msgid "Operator"
 msgstr "Operator"
 
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:36
+#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
 msgid "or"
 msgstr "or"
 
@@ -1615,7 +1615,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:121
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:108
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
 msgid "Quick rule"
 msgstr "Quick rule"
@@ -1657,16 +1657,16 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Rule"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:91
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:96
 msgid "Rule active"
 msgstr "Rule active"
 
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:57
-#: src/rule/hooks/use-rule-form.hook.ts:82
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:62
+#: src/rule/hooks/use-rule-form.hook.ts:74
 msgid "Rule applied to {applied} transactions"
 msgstr "Rule applied to {applied} transactions"
 
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:107
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:94
 msgid "Rule created"
 msgstr "Rule created"
 
@@ -2015,7 +2015,7 @@ msgstr "Syncing history..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:40
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:30
 msgid "Tag → {tagTitle}"
 msgstr "Tag → {tagTitle}"
 
@@ -2055,7 +2055,7 @@ msgid "This account will be hidden from your main view and won't be included in 
 msgstr "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:24
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:60
+#: src/rule/components/rule-form-edit/rule-form-edit.tsx:54
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:63
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
@@ -2156,7 +2156,7 @@ msgstr "Transactions synced"
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:51
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:38
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
@@ -2233,11 +2233,11 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:65
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:64
 msgid "Update them too?"
 msgstr "Update them too?"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:35
+#: src/rule/components/rule-matching-count/rule-matching-count.tsx:34
 msgid "Updating {processed}/{total}..."
 msgstr "Updating {processed}/{total}..."
 

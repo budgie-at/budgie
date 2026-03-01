@@ -18,6 +18,7 @@ import {
 import { Transaction } from '../../@generic/type/transaction.type';
 import { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
+import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
@@ -32,6 +33,8 @@ class RuleEngineService {
             return;
         }
 
+        const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input));
+
         for (let batchStart = 0; batchStart < transactionIds.length; batchStart += BATCH_SIZE) {
             // eslint-disable-next-line no-await-in-loop
             await new Promise<void>(resolve => {
@@ -42,7 +45,7 @@ class RuleEngineService {
             // eslint-disable-next-line no-await-in-loop
             await Promise.allSettled(
                 batchIds.map((transactionId, offset) =>
-                    this.applyRulesToTransaction(transactionId, transactionInputs[batchStart + offset], rules)
+                    this.applyRulesToTransaction(transactionId, evaluationInputs[batchStart + offset], rules)
                 )
             );
         }
@@ -110,7 +113,7 @@ class RuleEngineService {
 
     private async applyRulesToTransaction(
         transactionId: number,
-        input: TransactionCreateInputInterface,
+        input: RuleEvaluationInputInterface,
         rules: RuleWithRelationsEntityInterface[]
     ): Promise<void> {
         const matchingRules = rules.filter(rule => ruleMatcherService.evaluateRule(rule, input));
@@ -120,14 +123,14 @@ class RuleEngineService {
         }
 
         const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
-        const lastMatchingRule = matchingRules[matchingRules.length - 1];
+        const [firstMatchingRule] = matchingRules;
 
         await db.transaction(async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
                 await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             }
-            await transactionRepository.updateById(transactionId, { appliedRuleId: lastMatchingRule.id }, transaction);
+            await transactionRepository.updateById(transactionId, { appliedRuleId: firstMatchingRule.id }, transaction);
         });
     }
 
@@ -140,6 +143,16 @@ class RuleEngineService {
             await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
             await transactionRepository.updateById(transactionId, { appliedRuleId: ruleId }, transaction);
         });
+    }
+
+    private toRuleEvaluationInput(input: TransactionCreateInputInterface): RuleEvaluationInputInterface {
+        return {
+            ...input,
+            entries: input.entries.map(entry => ({
+                ...entry,
+                mccCode: null
+            }))
+        };
     }
 
     private async applyRuleActions(

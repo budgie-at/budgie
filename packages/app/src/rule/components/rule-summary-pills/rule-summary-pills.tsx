@@ -25,20 +25,17 @@ export const RuleSummaryPills = ({ conditions, actions, conditionMatchType }: Pr
 
     return (
         <View className="flex-row flex-wrap items-center gap-sm">
-            {/* jscpd:ignore-start */}
             {conditions.map((condition, index) => {
                 const isLast = index === conditions.length - 1;
+                const separator = isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>;
 
                 return (
                     <Fragment key={condition.id}>
                         <RuleConditionPill condition={condition} />
-                        {isLast ? null : (
-                            <Text className="text-xs text-secondary-foreground">{isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>}</Text>
-                        )}
+                        {isLast ? null : <Text className="text-xs text-secondary-foreground">{separator}</Text>}
                     </Fragment>
                 );
             })}
-            {/* jscpd:ignore-end */}
 
             <Icon icon={UserIconNameEnum.ArrowRight} size={ARROW_ICON_SIZE} className="text-secondary-foreground" />
 

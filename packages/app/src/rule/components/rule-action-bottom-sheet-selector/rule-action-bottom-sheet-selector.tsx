@@ -20,7 +20,7 @@ interface Props<T extends string> {
 
 export const RuleActionBottomSheetSelector = <T extends string>(props: Props<T>) => {
     const { value, onChange, options, label, sheetTitle, displayValue, testID } = props;
-    const { openRuleSelector } = useRuleSelectorModal();
+    const [openRuleSelector] = useRuleSelectorModal();
 
     const handleOpen = async () => {
         const result = await openRuleSelector({

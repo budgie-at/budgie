@@ -1,19 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
-import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
-import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
-import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../interface/rule-prefill-data.interface';
-import { RuleActionsSection } from '../rule-actions-section/rule-actions-section';
-import { RuleConditionsSection } from '../rule-conditions-section/rule-conditions-section';
-import { RuleFormApplyToggle } from '../rule-form-apply-toggle/rule-form-apply-toggle';
+import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
+import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
 
 interface Props {
     readonly prefillData?: RulePrefillDataInterface;
@@ -26,32 +20,13 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { form, handleSubmit, progress } = useRuleForm({ prefillData, onSuccess });
     const { isSubmitting } = form.formState;
 
+    const header = <PageHeader testID={RuleFormSelectors.Page} title={t`Create Rule`} onGoBack={onCancel} />;
+
+    const footer = <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting} />;
+
     return (
         <FormProvider {...form}>
-            {/* jscpd:ignore-start */}
-            <ModalPage header={<PageHeader testID={RuleFormSelectors.Page} title={t`Create Rule`} onGoBack={onCancel} />}>
-                <KeyboardAwareScrollView
-                    contentContainerClassName="pb-5xl"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <View className="px-3xl gap-y-3xl">
-                        <RuleConditionsSection />
-                        <RuleActionsSection />
-                    </View>
-                    <View className="px-3xl mt-3xl">
-                        <RuleFormApplyToggle progress={progress} />
-                    </View>
-                    {/* jscpd:ignore-end */}
-                </KeyboardAwareScrollView>
-
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} isLoading={isSubmitting} />
-                    </View>
-                </View>
-            </ModalPage>
+            <RuleFormLayout header={header} footer={footer} progress={progress} />
         </FormProvider>
     );
 };

@@ -1,15 +1,12 @@
-import {
-    RuleConditionEntityInterface,
-    RuleConditionFieldEnum,
-    RuleConditionOperatorEnum,
-    TransactionCreateInputInterface
-} from '@budgie/contracts';
+import { RuleConditionEntityInterface, RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
+import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+
 const MAX_REGEX_LENGTH = 200;
 
-const getConditionFieldValue = (field: RuleConditionFieldEnum, input: TransactionCreateInputInterface): string | number | null => {
+const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvaluationInputInterface): string | number | null => {
     switch (field) {
         case RuleConditionFieldEnum.TITLE:
             return input.title;
@@ -20,7 +17,7 @@ const getConditionFieldValue = (field: RuleConditionFieldEnum, input: Transactio
         case RuleConditionFieldEnum.ACCOUNT_ID:
             return input.fromAccountId ?? input.toAccountId;
         case RuleConditionFieldEnum.MCC_CODE:
-            return input.entries[0]?.mccCategoryId ?? null;
+            return input.entries[0]?.mccCode ?? null;
         case RuleConditionFieldEnum.TRANSACTION_TYPE:
             return input.type;
         case RuleConditionFieldEnum.EXTERNAL_SOURCE:
@@ -91,7 +88,7 @@ const matchOperator = (
 
 export const evaluateRuleCondition = (
     condition: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>,
-    input: TransactionCreateInputInterface
+    input: RuleEvaluationInputInterface
 ): boolean => {
     const fieldValue = getConditionFieldValue(condition.field, input);
 

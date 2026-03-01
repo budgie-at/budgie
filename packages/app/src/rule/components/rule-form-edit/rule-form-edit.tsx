@@ -1,25 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
-import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
-import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
-import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { useGetRuleByIdQuery } from '../../query/use-get-rule-by-id.query';
-import { RuleActionsSection } from '../rule-actions-section/rule-actions-section';
-import { RuleConditionsSection } from '../rule-conditions-section/rule-conditions-section';
-import { RuleFormApplyToggle } from '../rule-form-apply-toggle/rule-form-apply-toggle';
+import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
+import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
 
 interface Props {
     readonly ruleId: number;
@@ -72,37 +66,23 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
         return <LoadingScreen />;
     }
 
+    const header = <PageHeader testID={RuleFormSelectors.Page} title={t`Edit Rule`} onGoBack={onCancel} />;
+
+    const footer = (
+        <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+            <Button
+                testID={RuleFormSelectors.DeleteButton}
+                leftIcon={UserIconNameEnum.Trash2}
+                onPress={handleDeleteConfirm}
+                variant="destructive"
+                content={t`Delete rule`}
+            />
+        </RuleFormButtons>
+    );
+
     return (
         <FormProvider {...form}>
-            <ModalPage header={<PageHeader testID={RuleFormSelectors.Page} title={t`Edit Rule`} onGoBack={onCancel} />}>
-                <KeyboardAwareScrollView
-                    contentContainerClassName="pb-5xl"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <View className="px-3xl gap-y-3xl">
-                        <RuleConditionsSection />
-                        <RuleActionsSection ruleId={ruleId} />
-                    </View>
-                    <View className="px-3xl mt-3xl">
-                        <RuleFormApplyToggle progress={progress} />
-                    </View>
-                </KeyboardAwareScrollView>
-
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    <Button
-                        testID={RuleFormSelectors.DeleteButton}
-                        leftIcon={UserIconNameEnum.Trash2}
-                        onPress={handleDeleteConfirm}
-                        variant="destructive"
-                        content={t`Delete rule`}
-                    />
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={handleSubmit} isLoading={isSubmitting} />
-                    </View>
-                </View>
-            </ModalPage>
+            <RuleFormLayout header={header} footer={footer} progress={progress} ruleId={ruleId} />
         </FormProvider>
     );
 };

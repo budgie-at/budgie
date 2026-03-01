@@ -14,9 +14,8 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { RuleFormResultType } from '../context/rule-form-modal.context';
 import { RuleCreationProgressInterface } from '../interface/rule-creation-progress.interface';
-import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
+import { UseRuleFormOptionsInterface } from '../interface/use-rule-form-options.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
@@ -43,14 +42,7 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
     applyToExisting: false
 };
 
-interface UseRuleFormOptions {
-    ruleId?: number;
-    defaultValues?: RuleCreateInputInterface | null;
-    prefillData?: RulePrefillDataInterface | null;
-    onSuccess?: (result: RuleFormResultType) => void;
-}
-
-export const useRuleForm = (options: UseRuleFormOptions = {}) => {
+export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
     const [progress, setProgress] = useState<RuleCreationProgressInterface | null>(null);
