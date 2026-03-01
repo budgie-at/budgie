@@ -90,7 +90,7 @@ class RuleEngineService {
             const batchIds = matchingIds.slice(batchStart, batchStart + BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const results = await Promise.allSettled(
-                batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions))
+                batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.id, rule.actions))
             );
 
             for (const result of results) {
@@ -120,18 +120,25 @@ class RuleEngineService {
         }
 
         const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
+        const lastMatchingRule = matchingRules[matchingRules.length - 1];
 
         await db.transaction(async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
                 await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             }
+            await transactionRepository.updateById(transactionId, { appliedRuleId: lastMatchingRule.id }, transaction);
         });
     }
 
-    private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
+    private async applyRuleActionsToTransaction(
+        transactionId: number,
+        ruleId: number,
+        actions: RuleActionEntityInterface[]
+    ): Promise<void> {
         await db.transaction(async transaction => {
             await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
+            await transactionRepository.updateById(transactionId, { appliedRuleId: ruleId }, transaction);
         });
     }
 
