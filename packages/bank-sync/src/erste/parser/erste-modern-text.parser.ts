@@ -11,7 +11,7 @@ import {
 } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
-import { ErsteBaseTextParser } from './erste-base-text-parser';
+import { ErsteBaseTextParser } from './erste-base-text.parser';
 
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';

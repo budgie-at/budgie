@@ -1,6 +1,6 @@
 import { ErsteFormatEnum } from '../enum/erste-format.enum';
-import { ErsteClassicTextParser } from '../parser/erste-classic-text-parser';
-import { ErsteModernTextParser } from '../parser/erste-modern-text-parser';
+import { ErsteClassicTextParser } from '../parser/erste-classic-text.parser';
+import { ErsteModernTextParser } from '../parser/erste-modern-text.parser';
 
 import { detectErsteFormat } from './detect-erste-format.util';
 
