@@ -57,6 +57,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const transactionInput = convertTransactionToInput(transaction);
     const matchingRule = findMatchingRule(enabledRules, transactionInput, suggestRuleData);
+    const { appliedRule } = transaction;
     const hasChanges = categoryChanged || tagsChanged;
 
     let mode: RuleDetectionModeType = 'none';
@@ -64,11 +65,15 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         mode = 'suggest';
     } else if (isBankSynced && isDefined(matchingRule)) {
         mode = 'match';
+    } else if (isBankSynced && isDefined(appliedRule)) {
+        mode = 'match';
     }
 
     const onRuleCreated = () => {
         setRuleCreated(true);
     };
 
-    return { mode, suggestRuleData, matchingRule, onRuleCreated };
+    const resolvedRule = matchingRule ?? (isDefined(appliedRule) ? appliedRule : matchingRule);
+
+    return { mode, suggestRuleData, matchingRule: resolvedRule, onRuleCreated };
 };
