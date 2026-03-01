@@ -24,17 +24,21 @@ interface Props {
     readonly onCloseComplete?: EmptyFn;
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
+    readonly alignment?: 'left' | 'right';
 }
 
-export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor }: Props) => {
+export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor, alignment = 'right' }: Props) => {
     const { t } = useLingui();
     const { width: screenWidth } = useWindowDimensions();
     const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
 
     const menuTop = anchor ? anchor.y + anchor.height + ANCHOR_OFFSET : DEFAULT_MENU_TOP;
-    const menuRight = anchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
+    const horizontalPosition =
+        alignment === 'left'
+            ? { left: anchor ? anchor.x : MENU_MARGIN }
+            : { right: anchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN };
 
-    const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, right: menuRight };
+    const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, ...horizontalPosition };
 
     const shouldRender = isOpen || isAnimatingOut;
 

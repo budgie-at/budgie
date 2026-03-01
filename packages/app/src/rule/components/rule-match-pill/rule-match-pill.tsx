@@ -100,7 +100,7 @@ export const RuleMatchPill = ({ matchingRule, compact = false }: Props) => {
     );
 
     const popoverMenu = (
-        <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchor={anchor}>
+        <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchor={anchor} alignment="left">
             <View className="py-sm">
                 <PopoverMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit rule`} onPress={handleEditRule} />
                 <PopoverMenuItem icon={UserIconNameEnum.Play} label={t`Apply to similar`} onPress={handleApplyToSimilar} />
