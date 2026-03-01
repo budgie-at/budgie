@@ -1,6 +1,7 @@
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankSyncError } from '../../core/error/bank-sync.error';
+import { ERSTE_CLASSIC_BALANCE_AMOUNT_REGEX, ERSTE_CLASSIC_TRANSACTION_TAIL_REGEX } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 import { parseErsteValueDate } from '../util/parse-erste-value-date.util';
 
@@ -72,7 +73,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
 
         for (const line of lines) {
             if (line.includes(keyword)) {
-                const match = line.match(/(\d[\d.,]*)\s*$/u);
+                const match = line.trimEnd().match(ERSTE_CLASSIC_BALANCE_AMOUNT_REGEX);
 
                 if (isDefined(match)) {
                     return parseErsteAmount(match[1], false);
@@ -90,9 +91,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
             return false;
         }
 
-        const match = trimmed.match(/^(.+)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
-
-        return isDefined(match);
+        return ERSTE_CLASSIC_TRANSACTION_TAIL_REGEX.test(trimmed);
     }
 
     private isSkippableLine(line: string): boolean {
@@ -112,16 +111,18 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
     }
 
     private parseTransactionLine(line: string): TransactionParseStateInterface | null {
-        const match = line.trim().match(/^(.+)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
+        const trimmed = line.trim();
+        const match = trimmed.match(ERSTE_CLASSIC_TRANSACTION_TAIL_REGEX);
 
-        if (!isDefined(match)) {
+        if (!isDefined(match) || !isDefined(match.index)) {
             return null;
         }
 
-        const [, reference, dateCode, amount, debitMarker] = match;
+        const reference = trimmed.slice(0, match.index).trim();
+        const [, dateCode, amount, debitMarker] = match;
 
         return {
-            currentReference: reference.trim(),
+            currentReference: reference,
             currentContinuationLines: [],
             currentDate: dateCode,
             currentAmount: amount,
