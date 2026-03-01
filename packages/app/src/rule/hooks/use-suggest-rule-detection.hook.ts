@@ -1,4 +1,8 @@
-import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    RuleWithRelationsEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { useState } from 'react';
 import { Control, useWatch } from 'react-hook-form';
 
@@ -7,7 +11,8 @@ import { isDefined } from '@rnw-community/shared';
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
-import { hasMatchingRule } from '../util/has-matching-rule.util';
+import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
+import { findMatchingRule } from '../util/find-matching-rule.util';
 
 interface UseSuggestRuleDetectionParams {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -15,8 +20,9 @@ interface UseSuggestRuleDetectionParams {
 }
 
 interface UseSuggestRuleDetectionResult {
-    readonly shouldSuggestRule: boolean;
+    readonly mode: RuleDetectionModeType;
     readonly suggestRuleData: SuggestRuleDataInterface;
+    readonly matchingRule: RuleWithRelationsEntityInterface | undefined;
     readonly onRuleCreated: () => void;
 }
 
@@ -50,12 +56,19 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     };
 
     const transactionInput = convertTransactionToInput(transaction);
-    const matchingRuleExists = hasMatchingRule(enabledRules, transactionInput, suggestRuleData);
+    const matchingRule = findMatchingRule(enabledRules, transactionInput, suggestRuleData);
+    const hasChanges = categoryChanged || tagsChanged;
 
-    const shouldSuggestRule = isBankSynced && (categoryChanged || tagsChanged) && !ruleCreated && !matchingRuleExists;
+    let mode: RuleDetectionModeType = 'none';
+    if (isBankSynced && hasChanges && !ruleCreated && !isDefined(matchingRule)) {
+        mode = 'suggest';
+    } else if (isBankSynced && isDefined(matchingRule)) {
+        mode = 'match';
+    }
+
     const onRuleCreated = () => {
         setRuleCreated(true);
     };
 
-    return { shouldSuggestRule, suggestRuleData, onRuleCreated };
+    return { mode, suggestRuleData, matchingRule, onRuleCreated };
 };

@@ -83,17 +83,20 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             const existingMerchantKeys = new Set(merchantKeys);
             const existingCommentKeys = new Set(commentKeys);
             const totalExisting = existingMerchantKeys.size + existingCommentKeys.size;
-            const estimatedTotal = totalExisting + 100;
-            const totalSteps = categories.length + tags.length + estimatedTotal;
 
-            setTotalContexts(estimatedTotal);
+            setTotalContexts(totalExisting);
             setEmbeddedCount(totalExisting);
             await microPause();
 
             let completedSteps = 0;
+            let totalSteps = categories.length + tags.length;
             const updateProgress = () => {
                 completedSteps += 1;
-                setProgress(Math.min(100, Math.round((completedSteps / totalSteps) * 100)));
+                const percent = totalSteps === 0 ? 100 : Math.round((completedSteps / totalSteps) * 100);
+                setProgress(Math.min(100, percent));
+            };
+            const addSteps = (count: number) => {
+                totalSteps += count;
             };
 
             const translationService = new TranslationLlmService(llm);
@@ -118,36 +121,45 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             }
             /* eslint-enable no-await-in-loop */
 
+            console.log('[AI Prep] Starting merchant embeddings phase');
             setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();
             await processMerchantBatches(llm, existingMerchantKeys, {
                 onStep: updateProgress,
+                onBatchDiscovered: addSteps,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(count + existingCommentKeys.size);
                 }
             });
 
+            console.log('[AI Prep] Merchant done. Starting comment embeddings phase');
             setPhaseLabel(t`Generating comment embeddings...`);
             await microPause();
             await processCommentBatches(llm, existingCommentKeys, {
                 onStep: updateProgress,
+                onBatchDiscovered: addSteps,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(existingMerchantKeys.size + count);
                 }
             });
 
+            console.log('[AI Prep] All phases done');
             setIsEmbedding(false);
             setProgress(100);
             setPhaseLabel(t`Done`);
             setTotalContexts(existingMerchantKeys.size + existingCommentKeys.size);
             refreshProgress();
         } catch (error: unknown) {
+            console.log('[AI Prep] catch block hit, resetting progress. Error:', getErrorMessage(error));
+            setProgress(0);
+            setPhaseLabel('');
             Toast.show({
                 type: 'error',
                 text1: t`AI data preparation failed`,
                 text2: getErrorMessage(error)
             });
         } finally {
+            console.log('[AI Prep] finally block hit, setting isRunning=false');
             isRunningRef.current = false; // eslint-disable-line require-atomic-updates -- Intentional: ref is only written by this function
             setIsEmbedding(false);
             setIsRunning(false);
