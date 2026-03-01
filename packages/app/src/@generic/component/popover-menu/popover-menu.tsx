@@ -43,9 +43,9 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     }
 
     return (
-        <Modal transparent visible={shouldRender} animationType="none" onRequestClose={() => void onClose()}>
+        <Modal transparent visible={shouldRender} animationType="none" onRequestClose={onClose}>
             <View className="flex-1" accessibilityViewIsModal>
-                <Pressable onPress={() => void onClose()} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
+                <Pressable onPress={onClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
                     <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
                 </Pressable>
 
