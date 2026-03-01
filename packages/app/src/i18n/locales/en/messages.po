@@ -190,7 +190,7 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:158
+#: src/ai/hook/use-ai-data-preparation.hook.ts:154
 msgid "AI data preparation failed"
 msgstr "AI data preparation failed"
 
@@ -473,7 +473,7 @@ msgstr "Clearing old data..."
 msgid "Close"
 msgstr "Close"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:48
+#: src/@generic/component/popover-menu/popover-menu.tsx:52
 msgid "Close menu"
 msgstr "Close menu"
 
@@ -799,7 +799,7 @@ msgstr "Disable App Lock"
 msgid "Disable rule"
 msgstr "Disable rule"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:149
+#: src/ai/hook/use-ai-data-preparation.hook.ts:146
 #: src/app/import-column-mapper.tsx:91
 msgid "Done"
 msgstr "Done"
@@ -1108,11 +1108,11 @@ msgstr "From Currency"
 msgid "General"
 msgstr "General"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:136
+#: src/ai/hook/use-ai-data-preparation.hook.ts:134
 msgid "Generating comment embeddings..."
 msgstr "Generating comment embeddings..."
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:125
+#: src/ai/hook/use-ai-data-preparation.hook.ts:124
 msgid "Generating merchant embeddings..."
 msgstr "Generating merchant embeddings..."
 
@@ -1905,8 +1905,8 @@ msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx:15
-msgid "Some transactions may match multiple rules. The category from the first matching rule will be applied."
-msgstr "Some transactions may match multiple rules. The category from the first matching rule will be applied."
+msgid "Some transactions may match multiple rules. The first matching rule will take priority."
+msgstr "Some transactions may match multiple rules. The first matching rule will take priority."
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:41
