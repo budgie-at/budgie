@@ -10,6 +10,7 @@ export const createTransactionInput = (
     comment: input.comment ?? '',
     externalId: null,
     externalSource: null,
+    appliedRuleId: null,
     operatedAt: new Date(),
     entries: input.entries
 });
