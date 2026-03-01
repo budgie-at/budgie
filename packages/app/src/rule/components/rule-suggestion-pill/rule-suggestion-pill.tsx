@@ -37,7 +37,7 @@ export const RuleSuggestionPill = (props: Props) => {
 
     const [isSuccess, setIsSuccess] = useState(false);
     const [hapticNotification] = useVibration();
-    const { openSuggestRule } = useSuggestRuleModal();
+    const [openSuggestRule] = useSuggestRuleModal();
 
     const categoryId = suggestRuleData.categoryId ?? 0;
     const { category } = useGetCategoryByIdQuery(categoryId);
