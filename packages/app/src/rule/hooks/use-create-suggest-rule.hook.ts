@@ -1,4 +1,4 @@
-import { RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -12,6 +12,7 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
+import { buildSuggestRuleConditions } from '../util/build-suggest-rule-conditions.util';
 import { getSuggestRuleFieldValue } from '../util/get-suggest-rule-field-value.util';
 
 interface UseCreateSuggestRuleParams {
@@ -29,15 +30,7 @@ export const useCreateSuggestRule = ({ suggestRuleData, onCreateRule }: UseCreat
         isNotEmptyString(getSuggestRuleFieldValue(field, suggestRuleData))
     );
 
-    const conditions = availableFields.flatMap(field => {
-        const value = getSuggestRuleFieldValue(field, suggestRuleData);
-
-        if (!isDefined(value)) {
-            return [];
-        }
-
-        return { field, operator: RuleConditionOperatorEnum.CONTAINS, value, secondaryValue: null };
-    });
+    const conditions = buildSuggestRuleConditions(suggestRuleData);
 
     const { count: matchingCount, isLoading: isCountLoading } = useMatchingTransactionCount({
         conditions,
