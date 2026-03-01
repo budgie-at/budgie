@@ -2,12 +2,12 @@ import {
     RuleConditionEntityInterface,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
-    RuleWithRelationsEntityInterface,
-    TransactionCreateInputInterface
+    RuleWithRelationsEntityInterface
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 
 import { evaluateRuleCondition } from './evaluate-rule-condition.util';
@@ -44,7 +44,7 @@ const matchStringCondition = (operator: RuleConditionOperatorEnum, fieldValue: s
 
 const evaluateConditionForDetection = (
     condition: RuleConditionEntityInterface,
-    transactionInput: TransactionCreateInputInterface,
+    transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
 ): boolean => {
     const suggestValue = getSuggestRuleFieldValue(condition.field, suggestRuleData);
@@ -58,7 +58,7 @@ const evaluateConditionForDetection = (
 
 export const doesRuleMatchTransaction = (
     rule: RuleWithRelationsEntityInterface,
-    transactionInput: TransactionCreateInputInterface,
+    transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
 ): boolean => {
     if (!isNotEmptyArray(rule.conditions)) {

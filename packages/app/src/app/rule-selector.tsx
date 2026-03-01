@@ -5,7 +5,7 @@ import { SelectorCard } from '../@generic/component/selector-card/selector-card'
 import { useRuleSelectorModal } from '../rule/context/rule-selector-modal.context';
 
 export default function RuleSelectorModal() {
-    const { currentParams, resolveRuleSelector } = useRuleSelectorModal();
+    const [, resolveRuleSelector, currentParams] = useRuleSelectorModal();
 
     const options = currentParams?.options ?? [];
     const selectedValue = currentParams?.selectedValue ?? null;

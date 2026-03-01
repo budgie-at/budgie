@@ -8,7 +8,9 @@ import {
 } from '@budgie/contracts';
 import { SQL, and, sql } from 'drizzle-orm';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { escapeSqlLikeValue } from './escape-sql-like-value.util';
 
 import type { Column } from 'drizzle-orm';
 
@@ -43,13 +45,13 @@ const buildOperatorSql = (
 ): SQL | null => {
     switch (operator) {
         case RuleConditionOperatorEnum.CONTAINS:
-            return sql`CAST(${column} AS TEXT) LIKE ${`%${value}%`}`;
+            return sql`CAST(${column} AS TEXT) LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
         case RuleConditionOperatorEnum.NOT_CONTAINS:
-            return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${value}%`}`;
+            return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
         case RuleConditionOperatorEnum.EQUALS:
-            return sql`CAST(${column} AS TEXT) = ${value} COLLATE NOCASE`;
+            return sql`CAST(${column} AS TEXT) COLLATE NOCASE = ${value}`;
         case RuleConditionOperatorEnum.NOT_EQUALS:
-            return sql`CAST(${column} AS TEXT) != ${value} COLLATE NOCASE`;
+            return sql`CAST(${column} AS TEXT) COLLATE NOCASE != ${value}`;
         case RuleConditionOperatorEnum.GREATER_THAN:
             return sql`${column} > ${Number(value)}`;
         case RuleConditionOperatorEnum.LESS_THAN:
@@ -80,7 +82,7 @@ const buildOperatorSql = (
 export const buildRuleConditionSql = (condition: RuleConditionInput): SQL | null => {
     const column = getColumnForField(condition.field);
 
-    if (column === null) {
+    if (!isDefined(column)) {
         return null;
     }
 

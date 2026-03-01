@@ -8,12 +8,12 @@ import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmen
 import { RULE_CONDITION_MATCH_TYPE_LABELS } from '../../constant/rule-condition-match-type-labels.constant';
 
 export const RuleConditionMatchTypeSelector = () => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     const options = [
-        { value: RuleConditionMatchTypeEnum.ALL, label: i18n.t(RULE_CONDITION_MATCH_TYPE_LABELS[RuleConditionMatchTypeEnum.ALL]) },
-        { value: RuleConditionMatchTypeEnum.ANY, label: i18n.t(RULE_CONDITION_MATCH_TYPE_LABELS[RuleConditionMatchTypeEnum.ANY]) }
+        { value: RuleConditionMatchTypeEnum.ALL, label: t(RULE_CONDITION_MATCH_TYPE_LABELS[RuleConditionMatchTypeEnum.ALL]) },
+        { value: RuleConditionMatchTypeEnum.ANY, label: t(RULE_CONDITION_MATCH_TYPE_LABELS[RuleConditionMatchTypeEnum.ANY]) }
     ];
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, 'conditionMatchType'>) => (

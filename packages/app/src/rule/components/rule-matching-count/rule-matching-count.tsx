@@ -28,8 +28,7 @@ const renderLoadingState = (children: ReactNode) => (
 
 export const RuleMatchingCount = ({ count, isLoading, progress }: Props) => {
     if (isDefined(progress)) {
-        const { processed } = progress;
-        const { total } = progress;
+        const { processed, total } = progress;
 
         return renderLoadingState(
             <Trans>

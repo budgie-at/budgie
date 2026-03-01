@@ -2,7 +2,7 @@ import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -25,7 +25,7 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
         const handleOpen = async () => {
             const selectedTagIds = await openTagsSelector({ initialTagIds: isDefined(tagId) ? [tagId] : [], singleSelect: true });
 
-            if (isDefined(selectedTagIds) && selectedTagIds.length > 0) {
+            if (isNotEmptyArray(selectedTagIds)) {
                 onChange(selectedTagIds[0]);
             }
         };

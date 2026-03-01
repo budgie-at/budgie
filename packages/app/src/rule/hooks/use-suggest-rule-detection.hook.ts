@@ -12,6 +12,7 @@ import { convertTransactionToInput } from '../../transaction/utils/convert-trans
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
+import { computeDetectionMode } from '../util/compute-detection-mode.util';
 import { findMatchingRule } from '../util/find-matching-rule.util';
 
 interface UseSuggestRuleDetectionParams {
@@ -60,14 +61,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const { appliedRule } = transaction;
     const hasChanges = categoryChanged || tagsChanged;
 
-    let mode: RuleDetectionModeType = 'none';
-    if (isBankSynced && hasChanges && !ruleCreated && !isDefined(matchingRule)) {
-        mode = 'suggest';
-    } else if (isBankSynced && isDefined(matchingRule)) {
-        mode = 'match';
-    } else if (isBankSynced && isDefined(appliedRule)) {
-        mode = 'match';
-    }
+    const mode = computeDetectionMode({ isBankSynced, hasChanges, ruleCreated, matchingRule, appliedRule });
 
     const onRuleCreated = () => {
         setRuleCreated(true);

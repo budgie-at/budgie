@@ -24,7 +24,7 @@ interface Props<T extends string> {
 export const RuleConditionBottomSheetSelector = <T extends string>(props: Props<T>) => {
     const { value, onChange, options, sheetTitle, defaultLabel, testID } = props;
     const { t } = useLingui();
-    const { openRuleSelector } = useRuleSelectorModal();
+    const [openRuleSelector] = useRuleSelectorModal();
 
     const translatedOptions = options.map(option => ({ value: option.value, label: t(option.label) }));
     const displayLabel = translatedOptions.find(option => option.value === value)?.label ?? defaultLabel;

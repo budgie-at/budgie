@@ -3,7 +3,6 @@ import {
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionAssociationEnum,
-    TransactionCreateInputInterface,
     TransactionEntryAssociationEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -17,6 +16,7 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
+import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
@@ -104,7 +104,7 @@ class RuleMatcherService {
         return this.collectMatchingTransactionIdsLegacy(rule);
     }
 
-    evaluateRule(rule: RuleWithRelationsEntityInterface, input: TransactionCreateInputInterface): boolean {
+    evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         if (!isNotEmptyArray(rule.conditions)) {
             return false;
         }
@@ -114,7 +114,7 @@ class RuleMatcherService {
         return rule.conditions[evaluator](condition => evaluateRuleCondition(condition, input));
     }
 
-    convertTransactionForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): TransactionCreateInputInterface {
+    convertTransactionForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): RuleEvaluationInputInterface {
         const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
         return {
@@ -126,7 +126,8 @@ class RuleMatcherService {
                 categoryId: entry.categoryId,
                 accountId: entry.accountId,
                 amount: convertFromMicroUnits(entry.amount),
-                mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null
+                mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
+                mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
             }))
         };
     }
@@ -281,7 +282,7 @@ class RuleMatcherService {
     private evaluateConditions(
         conditions: readonly RuleConditionInput[],
         conditionMatchType: RuleConditionMatchTypeEnum,
-        input: TransactionCreateInputInterface
+        input: RuleEvaluationInputInterface
     ): boolean {
         const evaluator = conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
 

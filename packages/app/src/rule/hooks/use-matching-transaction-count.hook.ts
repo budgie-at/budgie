@@ -1,11 +1,14 @@
-import { RuleConditionCreateInputInterface, RuleConditionMatchTypeEnum } from '@budgie/contracts';
+import { RuleConditionCreateInputInterface, RuleConditionCreateInputSchema, RuleConditionMatchTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
+import { z } from 'zod';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ruleEngineService } from '../service/rule-engine.service';
 
 const DEBOUNCE_MS = 300;
+
+const ConditionsSchema = z.array(RuleConditionCreateInputSchema);
 
 interface UseMatchingTransactionCountParams {
     readonly conditions: RuleConditionCreateInputInterface[];
@@ -23,6 +26,7 @@ export const useMatchingTransactionCount = (params: UseMatchingTransactionCountP
     const [result, setResult] = useState<number | null>(null);
     const requestIdRef = useRef(0);
     const hasConditions = enabled && isNotEmptyArray(conditions);
+    const conditionsKey = JSON.stringify(conditions);
 
     useEffect(() => {
         if (!hasConditions) {
@@ -36,7 +40,10 @@ export const useMatchingTransactionCount = (params: UseMatchingTransactionCountP
 
         const timer = setTimeout(() => {
             const fetchCount = async (): Promise<void> => {
-                const count = await ruleEngineService.countMatchingTransactions({ conditions, conditionMatchType });
+                const count = await ruleEngineService.countMatchingTransactions({
+                    conditions: ConditionsSchema.parse(JSON.parse(conditionsKey)),
+                    conditionMatchType
+                });
 
                 if (requestIdRef.current === currentRequestId) {
                     setResult(count);
@@ -49,7 +56,7 @@ export const useMatchingTransactionCount = (params: UseMatchingTransactionCountP
         return () => {
             clearTimeout(timer);
         };
-    }, [hasConditions, conditions, conditionMatchType]);
+    }, [hasConditions, conditionsKey, conditionMatchType]);
 
     const count = hasConditions ? result : null;
     const isLoading = hasConditions && !isDefined(count);

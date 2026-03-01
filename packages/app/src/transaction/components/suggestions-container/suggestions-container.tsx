@@ -2,19 +2,19 @@ import { RepeatedTransactionPatternInterface, RuleWithRelationsEntityInterface, 
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../../ai/context/llm.context';
 import { RuleMatchPill } from '../../../rule/components/rule-match-pill/rule-match-pill';
 import { RuleSuggestionPill } from '../../../rule/components/rule-suggestion-pill/rule-suggestion-pill';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
+import { BuildAiSuggestionRowParamsInterface } from '../../interface/build-ai-suggestion-row-params.interface';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
+import { PatternSuggestionRow } from '../pattern-suggestion-row/pattern-suggestion-row';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
-
-import { PatternSuggestionRow } from './pattern-suggestion-row';
-import { RulePillSlot } from './rule-pill-slot';
 
 interface Props {
     readonly isNewTransaction: boolean;
@@ -37,24 +37,7 @@ interface Props {
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-interface BuildAiSuggestionRowParams {
-    readonly showTagSuggestions: boolean;
-    readonly showRepeatedSuggestions: boolean;
-    readonly showCategorySuggestions: boolean;
-    readonly transactionTitle: string;
-    readonly safeCategoryId: number;
-    readonly mccCategoryId: number | null;
-    readonly comment: string;
-    readonly aiContext: string;
-    readonly transactionType: TransactionTypeEnum;
-    readonly accountId: number;
-    readonly amount: number;
-    readonly onSelectTag: (tagId: number) => void;
-    readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
-    readonly onSelectCategory: (categoryId: number) => void;
-}
-
-const buildAiSuggestionRow = (params: BuildAiSuggestionRowParams): ReactNode => {
+const buildAiSuggestionRow = (params: BuildAiSuggestionRowParamsInterface): ReactNode => {
     if (params.showTagSuggestions) {
         return (
             <TagSuggestionRow
@@ -141,7 +124,7 @@ export const SuggestionsContainer = (props: Props) => {
 
     const safeCategoryId = categoryId ?? 0;
     const hasCategorySelected = safeCategoryId > 0;
-    const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
+    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
     const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;

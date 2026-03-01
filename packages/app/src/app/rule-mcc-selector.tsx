@@ -35,7 +35,7 @@ const getEmptyIcon = (search: string) => (isNotEmptyString(search) ? UserIconNam
 
 export default function RuleMccSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveRuleMccSelector } = useRuleMccSelectorModal();
+    const [, resolveRuleMccSelector, currentParams] = useRuleMccSelectorModal();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { mccCategories } = useGetAllMccCategoriesQuery();

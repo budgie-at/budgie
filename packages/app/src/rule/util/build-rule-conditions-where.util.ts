@@ -1,21 +1,19 @@
 import { RuleConditionMatchTypeEnum } from '@budgie/contracts';
-import { SQL, and, or } from 'drizzle-orm';
+import { and, or } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
+import { BuildRuleConditionsWhereResultInterface } from '../interface/build-rule-conditions-where-result.interface';
 
 import { buildRuleConditionSql } from './build-rule-condition-sql.util';
 
 import type { RuleConditionInput } from './build-rule-condition-sql.util';
-
-interface BuildRuleConditionsWhereResult {
-    readonly sqlWhere: SQL | null;
-    readonly fallbackConditions: RuleConditionInput[];
-}
+import type { SQL } from 'drizzle-orm';
 
 export const buildRuleConditionsWhere = (
     conditions: RuleConditionInput[],
     conditionMatchType: RuleConditionMatchTypeEnum
-): BuildRuleConditionsWhereResult => {
+): BuildRuleConditionsWhereResultInterface => {
     const sqlConditions: SQL[] = [];
     const fallbackConditions: RuleConditionInput[] = [];
 
