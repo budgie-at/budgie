@@ -64,7 +64,6 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
             const rawData = await config.fetchBatch(EMBEDDING_BATCH_LIMIT, cursor);
 
             if (!isNotEmptyArray(rawData)) {
-                console.log('[Batch] No more data, breaking. consecutiveFailures:', consecutiveFailures);
                 break;
             }
 
@@ -72,12 +71,10 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
 
             const contextData = config.buildContextData(rawData);
             const unembedded = contextData.filter(item => !existingKeys.has(config.getContextKey(item)));
-            console.log('[Batch] rawData:', rawData.length, 'contextData:', contextData.length, 'unembedded:', unembedded.length);
 
             if (isNotEmptyArray(unembedded)) {
                 callbacks.onBatchDiscovered(unembedded.length);
                 const embeddings = await embeddingService.generateEmbeddings(unembedded.map(item => item.context));
-                console.log('[Batch] embeddings.size:', embeddings.size);
 
                 if (embeddings.size === 0) {
                     // eslint-disable-next-line lingui/no-unlocalized-strings
@@ -91,15 +88,12 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
 
             if (consecutiveFailures === 0) {
                 hasMore = rawData.length === EMBEDDING_BATCH_LIMIT;
-                console.log('[Batch] hasMore:', hasMore);
             }
         } catch (error: unknown) {
-            console.log('[Batch] catch error:', getErrorMessage(error));
             lastError = error;
             consecutiveFailures += 1;
         }
     }
-    console.log('[Batch] loop exited. hasMore:', hasMore, 'consecutiveFailures:', consecutiveFailures);
     /* eslint-enable no-await-in-loop */
 
     if (consecutiveFailures > 0) {
