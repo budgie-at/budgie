@@ -72,7 +72,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
 
         for (const line of lines) {
             if (line.includes(keyword)) {
-                const match = line.match(/([\d.,]+)\s*$/u);
+                const match = line.match(/(\d[\d.,]*)\s*$/u);
 
                 if (isDefined(match)) {
                     return parseErsteAmount(match[1], false);
@@ -90,7 +90,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
             return false;
         }
 
-        const match = trimmed.match(/^(.+?)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
+        const match = trimmed.match(/^(.+)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
 
         return isDefined(match);
     }
@@ -112,7 +112,7 @@ export class ErsteClassicTextParser extends ErsteBaseTextParser {
     }
 
     private parseTransactionLine(line: string): TransactionParseStateInterface | null {
-        const match = line.trim().match(/^(.+?)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
+        const match = line.trim().match(/^(.+)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
 
         if (!isDefined(match)) {
             return null;
