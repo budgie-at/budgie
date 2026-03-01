@@ -1,7 +1,4 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
-
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 
 export interface SuggestRuleModalParams {
@@ -10,16 +7,6 @@ export interface SuggestRuleModalParams {
 
 export type SuggestRuleResultType = 'created' | 'dismissed';
 
-interface SuggestRuleModalContextInterface {
-    openSuggestRule: (params: SuggestRuleModalParams) => Promise<SuggestRuleResultType>;
-    resolveSuggestRule: (result: SuggestRuleResultType) => void;
-    currentParams: SuggestRuleModalParams | null;
-}
-
-export const SuggestRuleModalContext = createContext<SuggestRuleModalContextInterface>({
-    openSuggestRule: () => Promise.resolve('dismissed' as const),
-    resolveSuggestRule: emptyFn,
-    currentParams: null
-});
-
-export const useSuggestRuleModal = () => use(SuggestRuleModalContext);
+export const [SuggestRuleModalContext, useSuggestRuleModal] = createModalContext<SuggestRuleModalParams, SuggestRuleResultType>(
+    'dismissed'
+);
