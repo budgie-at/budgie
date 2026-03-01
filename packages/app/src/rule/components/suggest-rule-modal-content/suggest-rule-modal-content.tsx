@@ -33,13 +33,13 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
     const buttonText = applyToExisting ? t`Create & update` : t`Create rule`;
 
     return (
-        <View testID={SuggestRuleSelectors.Modal} className="flex-1 justify-between px-4xl pt-4xl pb-4xl gap-y-3xl">
-            <View className="gap-y-3xl">
+        <View testID={SuggestRuleSelectors.Modal} className="flex-1 justify-between px-4xl pt-4xl pb-4xl gap-y-4xl">
+            <View className="gap-y-4xl">
                 <Text className="text-primary font-medium text-xl">
                     <Trans>Quick rule</Trans>
                 </Text>
 
-                <View className="rounded-3xl bg-secondary-background border border-secondary-corner p-4xl">
+                <View className="rounded-3xl bg-secondary-background border border-secondary-corner p-5xl">
                     <SuggestRuleDescriptionContent
                         selectedFields={selectedFields}
                         suggestRuleData={suggestRuleData}
@@ -49,7 +49,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
                 </View>
 
                 <View className="flex-row items-center justify-between gap-x-lg">
-                    <View className="flex-1 gap-y-xxs">
+                    <View className="flex-1 gap-y-xxs min-h-[44px] justify-center">
                         <RuleMatchingCount count={displayMatchingCount} isLoading={isCountLoading} progress={progress} />
                     </View>
                     <ThemedSwitch

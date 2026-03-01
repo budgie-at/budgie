@@ -55,7 +55,15 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     });
 
     const fromAccountId = form.watch('fromAccountId');
-    const { shouldSuggestRule, suggestRuleData, onRuleCreated } = useSuggestRuleDetection({ transaction, control: form.control });
+    const {
+        mode: ruleDetectionMode,
+        suggestRuleData,
+        matchingRule,
+        onRuleCreated
+    } = useSuggestRuleDetection({
+        transaction,
+        control: form.control
+    });
 
     const [sourceEntry] = transaction.entries;
     const sourceAmount = sourceEntry.amount;
@@ -94,8 +102,9 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    shouldSuggestRule={shouldSuggestRule}
+                    ruleDetectionMode={ruleDetectionMode}
                     suggestRuleData={suggestRuleData}
+                    matchingRule={matchingRule}
                     onRuleCreated={onRuleCreated}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}

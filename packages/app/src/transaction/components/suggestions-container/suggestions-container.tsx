@@ -1,13 +1,20 @@
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, RuleWithRelationsEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { ReactNode } from 'react';
+import { View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../../ai/context/llm.context';
+import { RuleMatchPill } from '../../../rule/components/rule-match-pill/rule-match-pill';
 import { RuleSuggestionPill } from '../../../rule/components/rule-suggestion-pill/rule-suggestion-pill';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
+import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
 
 import { PatternSuggestionRow } from './pattern-suggestion-row';
+import { RulePillSlot } from './rule-pill-slot';
 
 interface Props {
     readonly isNewTransaction: boolean;
@@ -21,15 +28,93 @@ interface Props {
     readonly accountId: number;
     readonly amount: number;
     readonly hasTagsSelected: boolean;
-    readonly shouldSuggestRule?: boolean;
+    readonly ruleDetectionMode?: RuleDetectionModeType;
     readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly matchingRule?: RuleWithRelationsEntityInterface;
     readonly onRuleCreated?: () => void;
     readonly onSelectCategory: (categoryId: number) => void;
     readonly onSelectTag: (tagId: number) => void;
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-// eslint-disable-next-line max-statements -- Conditional rendering requires multiple visibility checks
+interface BuildAiSuggestionRowParams {
+    readonly showTagSuggestions: boolean;
+    readonly showRepeatedSuggestions: boolean;
+    readonly showCategorySuggestions: boolean;
+    readonly transactionTitle: string;
+    readonly safeCategoryId: number;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly transactionType: TransactionTypeEnum;
+    readonly accountId: number;
+    readonly amount: number;
+    readonly onSelectTag: (tagId: number) => void;
+    readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
+    readonly onSelectCategory: (categoryId: number) => void;
+}
+
+const buildAiSuggestionRow = (params: BuildAiSuggestionRowParams): ReactNode => {
+    if (params.showTagSuggestions) {
+        return (
+            <TagSuggestionRow
+                transactionTitle={params.transactionTitle}
+                categoryId={params.safeCategoryId}
+                mccCategoryId={params.mccCategoryId}
+                comment={params.comment}
+                aiContext={params.aiContext}
+                enabled={params.showTagSuggestions}
+                onSelect={params.onSelectTag}
+            />
+        );
+    }
+
+    if (params.showRepeatedSuggestions) {
+        return (
+            <PatternSuggestionRow
+                transactionType={params.transactionType}
+                accountId={params.accountId}
+                amount={params.amount}
+                categoryId={params.safeCategoryId}
+                enabled={params.showRepeatedSuggestions}
+                onSelect={params.onSelectRepeatedPattern}
+            />
+        );
+    }
+
+    if (params.showCategorySuggestions) {
+        return (
+            <CategorySuggestionRow
+                transactionTitle={params.transactionTitle}
+                mccCategoryId={params.mccCategoryId}
+                comment={params.comment}
+                aiContext={params.aiContext}
+                enabled={params.showCategorySuggestions}
+                onSelect={params.onSelectCategory}
+            />
+        );
+    }
+
+    return null;
+};
+
+const renderStandaloneRulePill = (
+    ruleDetectionMode: RuleDetectionModeType,
+    suggestRuleData: SuggestRuleDataInterface | undefined,
+    matchingRule: RuleWithRelationsEntityInterface | undefined,
+    onRuleCreated: (() => void) | undefined
+): ReactNode => {
+    if (ruleDetectionMode === 'suggest' && isDefined(suggestRuleData) && isDefined(onRuleCreated)) {
+        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
+    }
+
+    if (ruleDetectionMode === 'match' && isDefined(matchingRule)) {
+        return <RuleMatchPill matchingRule={matchingRule} />;
+    }
+
+    return <SuggestionRowSpacer />;
+};
+
 export const SuggestionsContainer = (props: Props) => {
     const {
         isNewTransaction,
@@ -43,8 +128,9 @@ export const SuggestionsContainer = (props: Props) => {
         accountId,
         amount,
         hasTagsSelected,
-        shouldSuggestRule = false,
+        ruleDetectionMode = 'none',
         suggestRuleData,
+        matchingRule,
         onRuleCreated,
         onSelectCategory,
         onSelectTag,
@@ -66,49 +152,36 @@ export const SuggestionsContainer = (props: Props) => {
         return <SuggestionRowSpacer />;
     }
 
-    if (showTagSuggestions) {
-        return (
-            <TagSuggestionRow
-                transactionTitle={transactionTitle}
-                categoryId={safeCategoryId}
-                mccCategoryId={mccCategoryId}
-                comment={comment}
-                aiContext={aiContext}
-                enabled={showTagSuggestions}
-                onSelect={onSelectTag}
-            />
-        );
-    }
+    const aiSuggestionRow = buildAiSuggestionRow({
+        showTagSuggestions,
+        showRepeatedSuggestions,
+        showCategorySuggestions,
+        transactionTitle,
+        safeCategoryId,
+        mccCategoryId,
+        comment,
+        aiContext,
+        transactionType,
+        accountId,
+        amount,
+        onSelectTag,
+        onSelectRepeatedPattern,
+        onSelectCategory
+    });
 
-    if (shouldSuggestRule && suggestRuleData && onRuleCreated) {
-        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
-    }
-
-    if (showRepeatedSuggestions) {
-        return (
-            <PatternSuggestionRow
-                transactionType={transactionType}
-                accountId={accountId}
-                amount={amount}
-                categoryId={safeCategoryId}
-                enabled={showRepeatedSuggestions}
-                onSelect={onSelectRepeatedPattern}
-            />
-        );
-    }
-
-    if (isNewTransaction) {
-        return <SuggestionRowSpacer />;
+    if (!isDefined(aiSuggestionRow)) {
+        return renderStandaloneRulePill(ruleDetectionMode, suggestRuleData, matchingRule, onRuleCreated);
     }
 
     return (
-        <CategorySuggestionRow
-            transactionTitle={transactionTitle}
-            mccCategoryId={mccCategoryId}
-            comment={comment}
-            aiContext={aiContext}
-            enabled={showCategorySuggestions}
-            onSelect={onSelectCategory}
-        />
+        <View className="h-10 flex-row items-center overflow-hidden">
+            <RulePillSlot
+                ruleDetectionMode={ruleDetectionMode}
+                suggestRuleData={suggestRuleData}
+                matchingRule={matchingRule}
+                onRuleCreated={onRuleCreated}
+            />
+            <View className="flex-1">{aiSuggestionRow}</View>
+        </View>
     );
 };

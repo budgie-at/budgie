@@ -55,7 +55,15 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     });
 
     const toAccountId = form.watch('toAccountId');
-    const { shouldSuggestRule, suggestRuleData, onRuleCreated } = useSuggestRuleDetection({ transaction, control: form.control });
+    const {
+        mode: ruleDetectionMode,
+        suggestRuleData,
+        matchingRule,
+        onRuleCreated
+    } = useSuggestRuleDetection({
+        transaction,
+        control: form.control
+    });
 
     const [sourceEntry] = transaction.entries;
     const sourceAmount = sourceEntry.amount;
@@ -94,8 +102,9 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    shouldSuggestRule={shouldSuggestRule}
+                    ruleDetectionMode={ruleDetectionMode}
                     suggestRuleData={suggestRuleData}
+                    matchingRule={matchingRule}
                     onRuleCreated={onRuleCreated}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}

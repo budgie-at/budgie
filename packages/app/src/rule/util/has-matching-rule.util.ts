@@ -56,7 +56,7 @@ const evaluateConditionForDetection = (
     return evaluateRuleCondition(condition, transactionInput);
 };
 
-const doesRuleMatchTransaction = (
+export const doesRuleMatchTransaction = (
     rule: RuleWithRelationsEntityInterface,
     transactionInput: TransactionCreateInputInterface,
     suggestRuleData: SuggestRuleDataInterface
@@ -69,9 +69,3 @@ const doesRuleMatchTransaction = (
 
     return rule.conditions[evaluator](condition => evaluateConditionForDetection(condition, transactionInput, suggestRuleData));
 };
-
-export const hasMatchingRule = (
-    rules: RuleWithRelationsEntityInterface[],
-    transactionInput: TransactionCreateInputInterface,
-    suggestRuleData: SuggestRuleDataInterface
-): boolean => rules.some(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));

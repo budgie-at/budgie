@@ -252,7 +252,6 @@ class RuleMatcherService {
         return matchingIds;
     }
 
-    // eslint-disable-next-line max-statements -- Batch processing with loop control variables
     private async forEachTransactionBatch(
         callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
     ): Promise<void> {

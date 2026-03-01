@@ -1,6 +1,6 @@
 import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -28,14 +28,16 @@ export const SuggestRuleDescriptionContent = ({ selectedFields, suggestRuleData,
     const actionsJoined = joinWithSeparators(actionParts);
 
     return (
-        <Text className="text-sm text-secondary-foreground leading-relaxed">
-            <Trans>Match transactions where</Trans> {conditionsJoined}
+        <View className="gap-y-sm">
+            <Text className="text-sm text-primary font-medium leading-loose">
+                <Trans>Match transactions where</Trans>
+            </Text>
+            <Text className="text-sm text-secondary-foreground leading-loose">{conditionsJoined}</Text>
             {hasActions ? (
-                <>
-                    {', '}
+                <Text className="text-sm text-secondary-foreground leading-loose">
                     <Trans>then set</Trans> {actionsJoined}
-                </>
+                </Text>
             ) : null}
-        </Text>
+        </View>
     );
 };

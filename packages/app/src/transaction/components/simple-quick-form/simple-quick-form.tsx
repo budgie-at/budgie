@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import {
     RepeatedTransactionPatternInterface,
+    RuleWithRelationsEntityInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -17,6 +18,7 @@ import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
+import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -44,8 +46,9 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly shouldSuggestRule?: boolean;
+    readonly ruleDetectionMode?: RuleDetectionModeType;
     readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly matchingRule?: RuleWithRelationsEntityInterface;
     readonly onRuleCreated?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
@@ -68,8 +71,9 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
-        shouldSuggestRule = false,
+        ruleDetectionMode = 'none',
         suggestRuleData,
+        matchingRule,
         onRuleCreated,
         aiContext = '',
         isNewTransaction = false,
@@ -266,8 +270,9 @@ export const SimpleQuickForm = (props: Props) => {
                         accountId={accountId}
                         amount={amount}
                         hasTagsSelected={hasTagsSelected}
-                        shouldSuggestRule={shouldSuggestRule}
+                        ruleDetectionMode={ruleDetectionMode}
                         suggestRuleData={suggestRuleData}
+                        matchingRule={matchingRule}
                         onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
