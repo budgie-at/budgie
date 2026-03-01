@@ -247,6 +247,12 @@ jobs:
         with:
           model: 'iPhone 16 Pro'
 
+      - name: Pre-copy vec.xcframework for ExpoSQLite
+        run: |
+          XCFW_DIR=~/Library/Developer/Xcode/DerivedData/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite
+          mkdir -p "$XCFW_DIR"
+          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
+
       - name: Build app
         working-directory: packages/app
         env:
