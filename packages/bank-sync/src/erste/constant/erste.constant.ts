@@ -12,4 +12,3 @@ export const ERSTE_MODERN_TRANSACTION_DATE_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s
 export const ERSTE_MODERN_END_MARKER = 'Neuer Kontostand/New Balance';
 export const ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT = 3;
 export const ERSTE_MODERN_BALANCE_AMOUNT_REGEX = /^\d[\d.,]*$/u;
-export const ERSTE_MODERN_SAME_LINE_BALANCE_REGEX = /(\d[\d.,]*)$/u;
