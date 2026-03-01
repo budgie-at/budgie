@@ -4,7 +4,7 @@ import { BankSyncError } from '../../core/error/bank-sync.error';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 import { parseErsteValueDate } from '../util/parse-erste-value-date.util';
 
-import { ErsteBaseTextParser } from './erste-base-text-parser';
+import { ErsteBaseTextParser } from './erste-base-text.parser';
 
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
