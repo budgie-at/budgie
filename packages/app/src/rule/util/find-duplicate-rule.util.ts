@@ -23,12 +23,12 @@ const areConditionsEqual = (inputConditions: ConditionInput[], existingCondition
     return inputKeys.every((key, index) => key === existingKeys[index]);
 };
 
-export const hasDuplicateRuleConditions = (
+export const findDuplicateRule = (
     conditions: ConditionInput[],
     conditionMatchType: RuleConditionMatchTypeEnum,
     existingRules: RuleWithRelationsEntityInterface[]
-): boolean =>
-    existingRules.some(
+): RuleWithRelationsEntityInterface | undefined =>
+    existingRules.find(
         rule =>
             rule.conditionMatchType === conditionMatchType &&
             isNotEmptyArray(rule.conditions) &&
