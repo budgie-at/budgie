@@ -188,7 +188,7 @@ msgstr "Ajuste"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:158
+#: src/ai/hook/use-ai-data-preparation.hook.ts:154
 msgid "AI data preparation failed"
 msgstr "La preparación de datos de IA falló"
 
@@ -471,7 +471,7 @@ msgstr "Eliminando datos antiguos…"
 msgid "Close"
 msgstr "Cerrar"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:48
+#: src/@generic/component/popover-menu/popover-menu.tsx:52
 msgid "Close menu"
 msgstr "Cerrar menú"
 
@@ -797,7 +797,7 @@ msgstr "Desactivar bloqueo"
 msgid "Disable rule"
 msgstr "Desactivar regla"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:149
+#: src/ai/hook/use-ai-data-preparation.hook.ts:146
 #: src/app/import-column-mapper.tsx:91
 msgid "Done"
 msgstr "Listo"
@@ -1106,11 +1106,11 @@ msgstr "Moneda origen"
 msgid "General"
 msgstr "General"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:136
+#: src/ai/hook/use-ai-data-preparation.hook.ts:134
 msgid "Generating comment embeddings..."
 msgstr "Generando embeddings de comentarios..."
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:125
+#: src/ai/hook/use-ai-data-preparation.hook.ts:124
 msgid "Generating merchant embeddings..."
 msgstr "Generando embeddings de comercios..."
 
@@ -1903,8 +1903,8 @@ msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx:15
-msgid "Some transactions may match multiple rules. The category from the first matching rule will be applied."
-msgstr "Algunas transacciones pueden coincidir con varias reglas. Se aplicará la categoría de la primera regla coincidente."
+msgid "Some transactions may match multiple rules. The first matching rule will take priority."
+msgstr "Algunas transacciones pueden coincidir con varias reglas. La primera regla coincidente tendrá prioridad."
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:41

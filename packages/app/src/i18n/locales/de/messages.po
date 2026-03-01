@@ -188,7 +188,7 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:158
+#: src/ai/hook/use-ai-data-preparation.hook.ts:154
 msgid "AI data preparation failed"
 msgstr "KI-Datenvorbereitung fehlgeschlagen"
 
@@ -471,7 +471,7 @@ msgstr "Alte Daten werden gelöscht…"
 msgid "Close"
 msgstr "Schließen"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:48
+#: src/@generic/component/popover-menu/popover-menu.tsx:52
 msgid "Close menu"
 msgstr "Menü schließen"
 
@@ -797,7 +797,7 @@ msgstr "App-Sperre deaktivieren"
 msgid "Disable rule"
 msgstr "Regel deaktivieren"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:149
+#: src/ai/hook/use-ai-data-preparation.hook.ts:146
 #: src/app/import-column-mapper.tsx:91
 msgid "Done"
 msgstr "Fertig"
@@ -1106,11 +1106,11 @@ msgstr "Von Währung"
 msgid "General"
 msgstr "Allgemein"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:136
+#: src/ai/hook/use-ai-data-preparation.hook.ts:134
 msgid "Generating comment embeddings..."
 msgstr "Kommentar-Embeddings werden generiert..."
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:125
+#: src/ai/hook/use-ai-data-preparation.hook.ts:124
 msgid "Generating merchant embeddings..."
 msgstr "Händler-Embeddings werden generiert..."
 
@@ -1903,8 +1903,8 @@ msgid "Show this account on the main page"
 msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx:15
-msgid "Some transactions may match multiple rules. The category from the first matching rule will be applied."
-msgstr "Einige Transaktionen können mehreren Regeln entsprechen. Die Kategorie der ersten übereinstimmenden Regel wird angewendet."
+msgid "Some transactions may match multiple rules. The first matching rule will take priority."
+msgstr "Einige Transaktionen können mehreren Regeln entsprechen. Die erste übereinstimmende Regel hat Vorrang."
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:41
