@@ -1292,7 +1292,6 @@ __metadata:
     "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.15.4"
     "@formatjs/intl": "npm:^3.1.8"
-    "@gorhom/bottom-sheet": "npm:^5.2.6"
     "@hookform/resolvers": "npm:^5.2.2"
     "@legendapp/list": "npm:^2.0.18"
     "@libsql/client": "npm:^0.15.15"
@@ -1446,7 +1445,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     rnsec: "npm:^1.0.1"
     sort-package-json: "npm:^3.4.0"
-    turbo: "npm:^2.7.2"
+    turbo: "npm:^2.8.10"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.46.3"
   languageName: unknown
@@ -2976,40 +2975,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/2e8b992606b8377dc4496fcc06ea0370b4f2b3fb27f4f086172cf618c9d981176831baff6a2b5bffb4a06e7aa580e28a8bda2d71ad2cb51d19f3d4bc4609e90e
-  languageName: node
-  linkType: hard
-
-"@gorhom/bottom-sheet@npm:^5.2.6":
-  version: 5.2.8
-  resolution: "@gorhom/bottom-sheet@npm:5.2.8"
-  dependencies:
-    "@gorhom/portal": "npm:1.0.14"
-    invariant: "npm:^2.2.4"
-  peerDependencies:
-    "@types/react": "*"
-    "@types/react-native": "*"
-    react: "*"
-    react-native: "*"
-    react-native-gesture-handler: ">=2.16.1"
-    react-native-reanimated: "*"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    "@types/react-native":
-      optional: true
-  checksum: 10/b237f04dfd2b7ea2a24b12d2186f38b8debf95a5ef660802f7c2a19998ec8a7f7d599cd9079b9ba5bba2c6958cee2040d3d1adc3d3ace8c4964a469c751f4a5a
-  languageName: node
-  linkType: hard
-
-"@gorhom/portal@npm:1.0.14":
-  version: 1.0.14
-  resolution: "@gorhom/portal@npm:1.0.14"
-  dependencies:
-    nanoid: "npm:^3.3.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10/e0fa06be88b850cccdc6a1417a86e5ac21d82e3bfd1cec7eb05eccf7f3b595babe305541f278fdcbde34f3a9db465097dca2c785445c28bafb83b744e235da0c
   languageName: node
   linkType: hard
 
@@ -15903,7 +15868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+"nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
@@ -20310,58 +20275,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-64@npm:2.7.2"
+"turbo-darwin-64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-darwin-64@npm:2.8.10"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-arm64@npm:2.7.2"
+"turbo-darwin-arm64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-darwin-arm64@npm:2.8.10"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-64@npm:2.7.2"
+"turbo-linux-64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-linux-64@npm:2.8.10"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-arm64@npm:2.7.2"
+"turbo-linux-arm64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-linux-arm64@npm:2.8.10"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-64@npm:2.7.2"
+"turbo-windows-64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-windows-64@npm:2.8.10"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-arm64@npm:2.7.2"
+"turbo-windows-arm64@npm:2.8.10":
+  version: 2.8.10
+  resolution: "turbo-windows-arm64@npm:2.8.10"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:^2.7.2":
-  version: 2.7.2
-  resolution: "turbo@npm:2.7.2"
+"turbo@npm:^2.8.10":
+  version: 2.8.10
+  resolution: "turbo@npm:2.8.10"
   dependencies:
-    turbo-darwin-64: "npm:2.7.2"
-    turbo-darwin-arm64: "npm:2.7.2"
-    turbo-linux-64: "npm:2.7.2"
-    turbo-linux-arm64: "npm:2.7.2"
-    turbo-windows-64: "npm:2.7.2"
-    turbo-windows-arm64: "npm:2.7.2"
+    turbo-darwin-64: "npm:2.8.10"
+    turbo-darwin-arm64: "npm:2.8.10"
+    turbo-linux-64: "npm:2.8.10"
+    turbo-linux-arm64: "npm:2.8.10"
+    turbo-windows-64: "npm:2.8.10"
+    turbo-windows-arm64: "npm:2.8.10"
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -20377,7 +20342,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10/a0fb2c34ddd68bbe0fe763ef87131c687edf8caafa8b50be8df1606d82a586bd8362276f99bf34e905c9217521634b5a7c2926bad08228b29b84d54d9b4ad49b
+  checksum: 10/2f3390b14c9c928343359ee0a0b438d6aba577377809983107ad6839851c4ccb37b903372c3faf985ac95d7cbb8cc6593cd0e8c5b7202ddcba9093a392e74ed2
   languageName: node
   linkType: hard
 

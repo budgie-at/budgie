@@ -5,12 +5,13 @@ import * as TaskManager from 'expo-task-manager';
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
 import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
+import type { DB } from '@budgie/contracts';
+
 class AccountBalanceIncrementalService {
-    async updateAllBalances(truncate: boolean, tx?: Transaction): Promise<void> {
+    async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
         const accounts = await accountRepository.getAllActiveAccounts();
         if (isEmptyArray(accounts)) {
             return;

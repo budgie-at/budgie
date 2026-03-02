@@ -4,6 +4,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
@@ -14,12 +15,15 @@ import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
+import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
+import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -29,7 +33,6 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
-import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { AiEmbeddingProgressProvider } from '../ai/provider/ai-embedding-progress.provider';
 import { AiStatusProvider } from '../ai/provider/ai-status.provider';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
@@ -58,11 +61,14 @@ const AiProviderWrapper: typeof LlmDisabledProvider = isAiDisabled
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
+// eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
+
     useResetDb(error);
     useAppInitialization(success);
     useAppState(handleAppStateChange);
+
     if (!success) {
         return null;
     }
@@ -74,7 +80,7 @@ export default function RootLayout() {
                     <I18nProvider>
                         <KeyboardProvider>
                             <ThemeProvider>
-                                <BottomSheetsProvider>
+                                <GestureHandlerRootView className="flex-1">
                                     <AuthProvider>
                                         <AuthGuard>
                                             <CreateActionProvider>
@@ -103,6 +109,18 @@ export default function RootLayout() {
                                                                         name="account-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="currency-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="language-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="contact-selector"
+                                                                        options={SELECTOR_MODAL_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="category-form"
@@ -123,6 +141,31 @@ export default function RootLayout() {
                                                                         name="split-entries"
                                                                         options={SPLIT_ENTRIES_MODAL_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="account-type-selector"
+                                                                        options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="import-column-mapper"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-type-filter"
+                                                                        options={FILTER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen name="date-filter" options={FILTER_MODAL_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="transaction-category-filter"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-account-filter"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="transaction-tag-filter"
+                                                                        options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                    />
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />
@@ -132,7 +175,7 @@ export default function RootLayout() {
                                             </CreateActionProvider>
                                         </AuthGuard>
                                     </AuthProvider>
-                                </BottomSheetsProvider>
+                                </GestureHandlerRootView>
                             </ThemeProvider>
                         </KeyboardProvider>
                     </I18nProvider>
