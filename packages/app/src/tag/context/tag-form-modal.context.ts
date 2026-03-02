@@ -1,8 +1,6 @@
 import { TagEntityInterface } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 import { TagFormResult } from '../components/tag-form/tag-form';
 
 export interface TagFormModalParams {
@@ -10,16 +8,6 @@ export interface TagFormModalParams {
     readonly defaultTitle?: string;
 }
 
-interface TagFormModalContextInterface {
-    openTagForm: (params?: TagFormModalParams) => Promise<TagFormResult | null>;
-    resolveTagForm: (result: TagFormResult | null) => void;
-    currentParams: TagFormModalParams | null;
-}
+export type TagFormModalResult = TagFormResult | null;
 
-export const TagFormModalContext = createContext<TagFormModalContextInterface>({
-    openTagForm: () => Promise.resolve(null),
-    resolveTagForm: emptyFn,
-    currentParams: null
-});
-
-export const useTagFormModal = () => use(TagFormModalContext);
+export const [TagFormModalContext, useTagFormModal] = createModalContext<TagFormModalParams, TagFormModalResult>(null);

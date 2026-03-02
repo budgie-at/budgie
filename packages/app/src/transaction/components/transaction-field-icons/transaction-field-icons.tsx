@@ -60,8 +60,8 @@ export const TransactionFieldIcons = (props: Props) => {
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openTagsSelector } = useTagsSelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openTagsSelector] = useTagsSelectorModal();
 
     const categoryIconRef = useRef<TransactionFieldIconRef>(null);
 
