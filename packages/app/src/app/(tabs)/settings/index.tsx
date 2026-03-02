@@ -7,6 +7,7 @@ import Animated from 'react-native-reanimated';
 
 import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -50,7 +51,7 @@ export default function SettingsPage() {
 
     return (
         <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView ref={scrollViewRef} contentContainerClassName="pt-md pb-5xl gap-y-7xl" showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
@@ -173,6 +174,7 @@ export default function SettingsPage() {
                         variant="ghost"
                     />
                 </SettingsGroup>
+                <MenuSpacer />
             </ScrollView>
         </Page>
     );

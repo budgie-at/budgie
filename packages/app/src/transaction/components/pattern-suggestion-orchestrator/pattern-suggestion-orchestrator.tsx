@@ -11,9 +11,9 @@ import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-sug
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
 import { repeatedTransactionService } from '../../service/repeated-transaction.service';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
-import { deduplicatePatternCategories } from '../../utils/deduplicate-pattern-categories.util';
 import { getPatternComments } from '../../utils/get-pattern-comments.util';
 import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
+import { mergePatternCategories } from '../../utils/merge-pattern-categories.util';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 
@@ -57,7 +57,11 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
 
     const patternEnabled = !isSplitActive && canUsePattern && (config.loadPatternBeforeCategorySelection || hasCategorySelected);
 
-    const { suggestions: patterns, status: patternStatus } = useRepeatedTransactionSuggestion({
+    const {
+        timePatterns,
+        amountPatterns,
+        status: patternStatus
+    } = useRepeatedTransactionSuggestion({
         enabled: patternEnabled,
         type: transactionType,
         accountId,
@@ -65,9 +69,10 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         categoryId: hasCategorySelected ? safeCategoryId : 0
     });
 
-    const patternTagIds = hasCategorySelected ? getPatternTagIds(patterns, safeCategoryId) : [];
-    const patternComments = hasCategorySelected ? getPatternComments(patterns, safeCategoryId) : [];
-    const patternCategories = deduplicatePatternCategories(patterns);
+    const allPatterns = [...timePatterns, ...amountPatterns];
+    const patternTagIds = hasCategorySelected ? getPatternTagIds(allPatterns, safeCategoryId) : [];
+    const patternComments = hasCategorySelected ? getPatternComments(allPatterns, safeCategoryId) : [];
+    const patternCategories = mergePatternCategories(timePatterns, amountPatterns);
     const { tags: patternTags } = useGetTagByIdsQuery(patternTagIds);
     const resolvedPatternTags = patternTags ?? [];
     const patternTagStatus: SuggestionStatus = isNotEmptyArray(resolvedPatternTags) ? patternStatus : 'loading';
@@ -89,14 +94,14 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
             return;
         }
 
-        onFillPatternAmount(repeatedTransactionService.getLatestAmount(patterns, selectedCategoryId));
+        onFillPatternAmount(repeatedTransactionService.getLatestAmount(allPatterns, selectedCategoryId));
     };
 
     const handleSelectPatternCategory = (selectedCategoryId: number): void => {
         onSelectCategory(selectedCategoryId);
 
-        const categoryPatternTagIds = getPatternTagIds(patterns, selectedCategoryId);
-        const categoryPatternComments = getPatternComments(patterns, selectedCategoryId);
+        const categoryPatternTagIds = getPatternTagIds(allPatterns, selectedCategoryId);
+        const categoryPatternComments = getPatternComments(allPatterns, selectedCategoryId);
         const hasNextTagStep = isNotEmptyArray(categoryPatternTagIds);
         const hasNextCommentStep =
             !hasNextTagStep && !hasComment && config.allowPatternComments && isNotEmptyArray(categoryPatternComments);

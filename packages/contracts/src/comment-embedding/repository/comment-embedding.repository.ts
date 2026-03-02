@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
 
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
-import { DB, RawDbInterface } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -38,8 +38,13 @@ const SIMILAR_TAGS_QUERY = `
 `;
 
 export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB, rawDb: RawDbInterface) {
-        super(db, rawDb, { similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY, similarTagsQuery: SIMILAR_TAGS_QUERY });
+    constructor(db: DB) {
+        super(db, {
+            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+            similarTagsQuery: SIMILAR_TAGS_QUERY,
+            vecTableName: 'comment_embedding_vec',
+            sourceTableName: 'comment_embeddings'
+        });
     }
 
     async upsert(params: UpsertCommentEmbeddingParamsInterface): Promise<number | null> {
@@ -58,7 +63,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: CommentEmbeddingEntityTable.id });
 
-        await this.rawDb.runAsync(
+        await this.db.$client.runAsync(
             'INSERT OR REPLACE INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
             [row.id]
         );
@@ -140,10 +145,10 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async rebuildVecIndex(): Promise<void> {
-        return this.rebuildVec('comment_embedding_vec', 'comment_embeddings');
+        return this.rebuildVec();
     }
 
     async truncate(): Promise<void> {
-        return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable, 'comment_embedding_vec');
+        return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
     }
 }

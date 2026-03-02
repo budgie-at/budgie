@@ -4,17 +4,16 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { accountService } from '../../account/service/account.service';
 
 import { mapBankAccountToCreateInput } from './map-bank-account-to-create-input.util';
 
-import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, DB, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
 export const getOrCreateBankAccount = async (
     bankAccount: BankAccountInterface,
     provider: ExternalSourceEnum,
-    tx?: Transaction
+    tx?: DB
 ): Promise<AccountEntityInterface> => {
     const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
     if (isNotEmptyArray(existingByExternalId)) {

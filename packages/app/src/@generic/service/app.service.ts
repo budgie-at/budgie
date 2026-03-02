@@ -1,3 +1,5 @@
+import { transactionAsync } from '@budgie/contracts';
+
 import {
     accountRepository,
     categoryRepository,
@@ -10,7 +12,7 @@ import {
 
 class AppService {
     async truncateData() {
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
             await tagRepository.truncate(tx);
             await categoryRepository.truncate(false, tx);
             await transactionEntryRepository.truncate(tx);

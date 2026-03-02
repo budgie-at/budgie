@@ -45,8 +45,8 @@ const TITLE_ANIMATION_DELAY = 100;
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { openTagsSelector } = useTagsSelectorModal();
-    const { openNoteInput } = useNoteInputModal();
+    const [openTagsSelector] = useTagsSelectorModal();
+    const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
     const { llm } = useLlmContext();
 

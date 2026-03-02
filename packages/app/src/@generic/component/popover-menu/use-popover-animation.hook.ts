@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Easing, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 const BACKDROP_OPACITY = 0.3;
 const MENU_SCALE_CLOSED = 0.95;
 const ANIMATION_DURATION = 150;
 
 const TIMING_CONFIG = { duration: ANIMATION_DURATION, easing: Easing.out(Easing.cubic) };
 
-export const usePopoverAnimation = (isOpen: boolean) => {
+export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const isMountedRef = useRef(true);
 
@@ -34,6 +36,13 @@ export const usePopoverAnimation = (isOpen: boolean) => {
         }
     };
 
+    const handleCloseAnimationEnd = () => {
+        if (isMountedRef.current) {
+            setIsAnimatingOut(false);
+            onCloseComplete?.();
+        }
+    };
+
     useAnimatedReaction(
         () => isOpenShared.value,
         (current, previous) => {
@@ -47,7 +56,7 @@ export const usePopoverAnimation = (isOpen: boolean) => {
                 menuScale.value = withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG);
                 menuOpacity.value = withTiming(0, TIMING_CONFIG, finished => {
                     if (finished) {
-                        runOnJS(safeSetIsAnimatingOut)(false);
+                        runOnJS(handleCloseAnimationEnd)();
                     }
                 });
             }

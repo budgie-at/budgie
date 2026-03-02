@@ -14,7 +14,7 @@ const BG_DARK = '#000000';
 
 export default function AccountSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveAccountSelector } = useAccountSelectorModal();
+    const [, resolveAccountSelector, currentParams] = useAccountSelectorModal();
     const { isDarkColorSchema } = useThemeContext();
 
     const [search, setSearch] = useState('');

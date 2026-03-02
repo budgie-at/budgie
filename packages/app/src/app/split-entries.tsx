@@ -10,7 +10,7 @@ import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export default function SplitEntriesModal() {
     const router = useRouter();
-    const { currentParams, resolveSplitEntries } = useSplitEntriesModal();
+    const [, resolveSplitEntries, currentParams] = useSplitEntriesModal();
     const { backgroundColor } = useFormsheetListStyles();
 
     const screenOptions = { contentStyle: { backgroundColor } };

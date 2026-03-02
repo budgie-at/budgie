@@ -30,7 +30,7 @@ interface Props {
 export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();

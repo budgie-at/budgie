@@ -56,7 +56,6 @@ export const AccountSelectContent = (props: Props) => {
             renderItem={renderItem}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-xl pt-3"
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
             ItemSeparatorComponent={ListItemSeparator}

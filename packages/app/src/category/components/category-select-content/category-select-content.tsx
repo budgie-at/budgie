@@ -67,7 +67,6 @@ export const CategorySelectContent = (props: Props) => {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             columnWrapperClassName="gap-x-lg mb-lg"
-            contentContainerClassName="px-3"
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
         />

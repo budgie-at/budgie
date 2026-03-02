@@ -1,7 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface ConvertToTransferModalParams {
     readonly transactionId: number;
@@ -12,16 +11,4 @@ export interface ConvertToTransferModalParams {
     readonly sourceCode: string;
 }
 
-interface ConvertToTransferModalContextInterface {
-    openConvertToTransfer: (params: ConvertToTransferModalParams) => Promise<boolean>;
-    resolveConvertToTransfer: (result: boolean, options?: { readonly skipBack?: boolean }) => void;
-    currentParams: ConvertToTransferModalParams | null;
-}
-
-export const ConvertToTransferModalContext = createContext<ConvertToTransferModalContextInterface>({
-    openConvertToTransfer: () => Promise.resolve(false),
-    resolveConvertToTransfer: emptyFn,
-    currentParams: null
-});
-
-export const useConvertToTransferModal = () => use(ConvertToTransferModalContext);
+export const [ConvertToTransferModalContext, useConvertToTransferModal] = createModalContext<ConvertToTransferModalParams, boolean>(false);

@@ -3,6 +3,89 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.38.0](https://github.com/budgie-at/budgie/compare/v2.37.1...v2.38.0) (2026-03-01)
+
+### Bug Fixes
+
+- **bank-sync:** address code review feedback for Erste parsers ([a15a50d](https://github.com/budgie-at/budgie/commit/a15a50d497d5ad032e282004c8b8adee93e61938))
+- **bank-sync:** address CodeQL polynomial regex warnings ([736a128](https://github.com/budgie-at/budgie/commit/736a128d85c5c50a13e1553274fd27d1b10ad091))
+- **bank-sync:** address deep review feedback for Erste parsers ([626d13c](https://github.com/budgie-at/budgie/commit/626d13c2204a75db0769595bf81e6095a63c06a1))
+- **bank-sync:** eliminate last CodeQL alert in modern balance parser ([7132917](https://github.com/budgie-at/budgie/commit/7132917423666cc5324198fb7683f2eba9e78f93))
+- **bank-sync:** eliminate polynomial regex backtracking for CodeQL ([41e5b8a](https://github.com/budgie-at/budgie/commit/41e5b8a70a4c8e39256043eeeae2144739da0cad))
+- **ci:** pre-copy vec.xcframework before iOS E2E build ([1b77e38](https://github.com/budgie-at/budgie/commit/1b77e389baf80e8e60f47853909eee2b4e276f1d))
+- **e2e:** increase smoke test timeout to 30s for CI simulators ([b744ce2](https://github.com/budgie-at/budgie/commit/b744ce26ea5c7ee25443559692b5f75d7d6bcacc))
+
+### Features
+
+- **bank-sync:** add Erste modern PDF format support with strategy pattern ([58357b6](https://github.com/budgie-at/budgie/commit/58357b6d687b3f56d1b73faceb7d390e225a0d6f))
+
+## [2.37.1](https://github.com/budgie-at/budgie/compare/v2.37.0...v2.37.1) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** align formsheet padding to 12px and center category card title ([d30be38](https://github.com/budgie-at/budgie/commit/d30be38c63964c38e7d2fa26b3e83669d049a862))
+- **app:** fix formsheet list padding and item spacing ([4de9d8e](https://github.com/budgie-at/budgie/commit/4de9d8eeb563b6498d57abf0eeee6882265caae0))
+
+# [2.37.0](https://github.com/budgie-at/budgie/compare/v2.36.0...v2.37.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** increase horizontal padding on formsheet list containers ([47b4c25](https://github.com/budgie-at/budgie/commit/47b4c25005ca2eb2cd8fc88cef2595be03fe165b))
+- **app:** standardize Result type declarations in modal contexts ([4098729](https://github.com/budgie-at/budgie/commit/40987297546315ec8f5ddb26d31ed807ee7d43b6))
+- **app:** unexport unused InputProps and inputVariant ([3e04d44](https://github.com/budgie-at/budgie/commit/3e04d4490664462fccf35688d7b6076e3308ff66))
+
+### Features
+
+- **app:** convert account type selector from bottom sheet to formsheet modal ([89721d1](https://github.com/budgie-at/budgie/commit/89721d1885d6f910e52286b9c812f809d6bec5b4))
+- **app:** convert contact selector from bottom sheet to formsheet modal ([0d5cfc9](https://github.com/budgie-at/budgie/commit/0d5cfc9a2fa3b67671fe94ed5eadd65fa7292358))
+- **app:** convert currency selector from bottom sheet to formsheet modal ([103f398](https://github.com/budgie-at/budgie/commit/103f398a35562032df391d7d6692dd77b3cfe235))
+- **app:** convert date filter from bottom sheet to formsheet modal ([6db5448](https://github.com/budgie-at/budgie/commit/6db54488f7154948df0ba82e57152c695fab2c7c))
+- **app:** convert import column mapper from bottom sheet to formsheet modal ([19de276](https://github.com/budgie-at/budgie/commit/19de2767c40087eb8cd07cdd855313dfa49a1836))
+- **app:** convert language selector from bottom sheet to formsheet modal ([9113897](https://github.com/budgie-at/budgie/commit/9113897bec7cf88c09d99defe5821c2f8f05483c))
+- **app:** convert transaction account filter from bottom sheet to formsheet modal ([1f6cac3](https://github.com/budgie-at/budgie/commit/1f6cac3e2f417daa270b7e4f6821d469c9a49e60))
+- **app:** convert transaction category filter from bottom sheet to formsheet modal ([7c0e83b](https://github.com/budgie-at/budgie/commit/7c0e83be0397f3dda374518abdbf3fb408bfc87f))
+- **app:** convert transaction tag filter from bottom sheet to formsheet modal ([ac2148f](https://github.com/budgie-at/budgie/commit/ac2148f7e9af77d5e329196a5b5de400ec89f0e1))
+- **app:** convert transaction type filter from bottom sheet to formsheet modal ([95e0fac](https://github.com/budgie-at/budgie/commit/95e0facc10ff6e11104d84b8f1d0dbf84f9d80df))
+- **app:** reuse existing date picker formsheet for account form date picker ([e782afb](https://github.com/budgie-at/budgie/commit/e782afbe4cd5d16b9936bdec7b3a3811c20867a7))
+
+# [2.36.0](https://github.com/budgie-at/budgie/compare/v2.35.3...v2.36.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app,contracts:** remove unused title_embeddings table and vec index ([6fee1e7](https://github.com/budgie-at/budgie/commit/6fee1e71626e737b6be2e642988f92cbfc480e91))
+- **app:** fix infinite re-render loop in suggestion hooks ([2f77187](https://github.com/budgie-at/budgie/commit/2f77187123e6ea8712a386cb286a9ed5b6ecb98e))
+- **app:** remove vec table reference from migration and fix DB reset ([b2bee3f](https://github.com/budgie-at/budgie/commit/b2bee3f2452c98e9842640a3bc5ed28492f13561))
+- **app:** reorder amount-based suggestions closer to right thumb ([cd1c076](https://github.com/budgie-at/budgie/commit/cd1c0768dd4695ee07380cc704f64765a72ecd68))
+- **contracts:** move vec table ops outside transactionAsync ([de7f862](https://github.com/budgie-at/budgie/commit/de7f8628627eb28caee26b29c589a024b032fa7f))
+- **contracts:** remove lingui eslint-disable from contracts package ([7ef66d6](https://github.com/budgie-at/budgie/commit/7ef66d665e3f402a7caff694fb48388a052b37ce))
+
+### Features
+
+- **app,contracts:** add dual-source category suggestions with amount-based pattern matching ([1cd6397](https://github.com/budgie-at/budgie/commit/1cd63979b3332123d48d729fa9c0661c53efc271))
+- **app:** scroll suggestion list to right on content change ([18d147b](https://github.com/budgie-at/budgie/commit/18d147b510a14d720576f195facc2fb4790ffaf6))
+
+### Reverts
+
+- restore migration 0011 vec table reference ([0a45a21](https://github.com/budgie-at/budgie/commit/0a45a219627285f836ab7c47b2888b0e852e4a5c))
+
+## [2.35.3](https://github.com/budgie-at/budgie/compare/v2.35.2...v2.35.3) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix convert-to-transfer modal not appearing due to popover Modal conflict ([c7237da](https://github.com/budgie-at/budgie/commit/c7237da12763ce1a909789555781c1e6b54a4bbb))
+
+## [2.35.2](https://github.com/budgie-at/budgie/compare/v2.35.1...v2.35.2) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** increase settings page top padding to clear blur header ([1c72d88](https://github.com/budgie-at/budgie/commit/1c72d88fa3c96fd4ccf14b8ba43953ea6686abc6))
+
+## [2.35.1](https://github.com/budgie-at/budgie/compare/v2.35.0...v2.35.1) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix settings page scroll spacing for top and bottom ([f49e1d8](https://github.com/budgie-at/budgie/commit/f49e1d8c63f099a15cc07184e10202fa9c490ebb))
+
 # [2.35.0](https://github.com/budgie-at/budgie/compare/v2.34.2...v2.35.0) (2026-02-21)
 
 ### Bug Fixes
