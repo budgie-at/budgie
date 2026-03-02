@@ -92,6 +92,7 @@ export default ({ config }) => ({
         url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
     },
     plugins: [
+        './plugins/with-vec-xcframework-fix',
         'expo-localization',
         'expo-secure-store',
         'expo-background-task',
