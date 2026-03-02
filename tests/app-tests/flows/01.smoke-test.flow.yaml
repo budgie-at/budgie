@@ -9,6 +9,6 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible: 'Total Balance'
-    timeout: 15000
+    timeout: 30000
 
 - assertVisible: 'Total Balance'

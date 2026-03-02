@@ -1,5 +1,5 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
-import { useFocusEffect } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -23,6 +23,7 @@ interface SuggestionResultInterface<T> {
     readonly suggestions: T[];
 }
 
+// eslint-disable-next-line max-statements -- Hook coordinates focus refresh, async suggestion fetch, and state management
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);
@@ -35,11 +36,20 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     });
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
+    const navigation = useNavigation();
     const { isIncomplete } = useAiEmbeddingProgress();
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
     }, [fetchSuggestions]);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setRefreshVersion(version => version + 1);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {
         if (!isReady) {
@@ -80,10 +90,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const refresh = (): void => {
         setRefreshVersion(version => version + 1);
     };
-
-    useFocusEffect(() => {
-        refresh();
-    });
 
     return { status, suggestions: currentResult.suggestions, refresh };
 };

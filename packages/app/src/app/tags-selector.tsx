@@ -27,8 +27,8 @@ const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number
 
 export default function TagsSelectorModal() {
     const { t } = useLingui();
-    const { openTagForm } = useTagFormModal();
-    const { currentParams, resolveTagsSelector } = useTagsSelectorModal();
+    const [openTagForm] = useTagFormModal();
+    const [, resolveTagsSelector, currentParams] = useTagsSelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);

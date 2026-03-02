@@ -11,7 +11,7 @@ import { SettingsCard } from '../settings-card/settings-card';
 export const DefaultAccountSelector = () => {
     const { defaultAccount } = useSettingsContext();
     const { t } = useLingui();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
 
     const { selectedAccount, icon } = useAccountSelector({ accountId: defaultAccount?.id ?? null });
 
