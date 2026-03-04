@@ -37,7 +37,7 @@ const tabIconVariants = cva('', {
     }
 });
 
-export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, ...rest }: TabButtonProps) => {
+export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, testID, ...rest }: TabButtonProps) => {
     const [, hapticImpact] = useVibration();
 
     const handlePress = (event: GestureResponderEvent) => {
@@ -54,7 +54,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
 
     return (
         <Pressable {...rest} onPress={handlePress}>
-            <View className={tabVariants({ isFocused })} style={tabStyle}>
+            <View testID={testID} className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
         </Pressable>

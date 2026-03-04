@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Alert, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import { ArchivedAccountCardSelectors } from '../../../@e2e/selectors/archived-account-card.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -74,11 +75,11 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                         {formatDigits(balance, account.instrument.symbol)}
                     </ProtectedText>
 
-                    <HapticPressable onPress={handleRestore}>
+                    <HapticPressable testID={ArchivedAccountCardSelectors.RestoreButton} onPress={handleRestore}>
                         <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
                     </HapticPressable>
 
-                    <HapticPressable onPress={handleDelete}>
+                    <HapticPressable testID={ArchivedAccountCardSelectors.DeleteButton} onPress={handleDelete}>
                         <CircleIcon variant="destructive" icon={UserIconNameEnum.Trash2} />
                     </HapticPressable>
                 </View>
