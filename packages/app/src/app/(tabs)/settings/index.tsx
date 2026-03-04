@@ -32,6 +32,8 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
+    // eslint-disable-next-line no-console
+    console.log('[E2E_DEBUG] SettingsPage render');
     const { t } = useLingui();
     const { scrollViewRef, anchorLayout, anchorHighlight } = useScrollToRef();
 
@@ -50,7 +52,11 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
+        <Page
+            testID={SettingsPageSelectors.Container}
+            header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}
+            withBlur
+        >
             <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
@@ -124,6 +130,7 @@ export default function SettingsPage() {
                                 description={t`View and restore archived accounts`}
                                 icon={UserIconNameEnum.Archive}
                                 variant="dark-warning"
+                                testID={SettingsPageSelectors.ArchivedCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToInactive}
@@ -131,6 +138,7 @@ export default function SettingsPage() {
                                 description={t`View and activate hidden accounts`}
                                 icon={UserIconNameEnum.EyeOff}
                                 variant="dark-warning"
+                                testID={SettingsPageSelectors.InactiveCard}
                             />
                         </Animated.View>
                     </SettingsGroup>
