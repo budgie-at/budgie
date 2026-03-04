@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { NoteInputSelectors } from '../@e2e/selectors/note-input.selector';
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { Input } from '../@generic/component/input/input';
@@ -24,8 +23,8 @@ export default function NoteInputModal() {
     };
 
     return (
-        <View style={containerStyle}>
-            <View className="flex-row items-center gap-md px-xl py-lg">
+        <View style={containerStyle} collapsable={false}>
+            <View collapsable={false} className="flex-row items-center gap-md px-xl py-lg">
                 <View className="flex-1">
                     <Input
                         value={value}
@@ -52,8 +51,6 @@ export default function NoteInputModal() {
                     <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
                 </HapticPressable>
             </View>
-
-            <FormSheetSpacer />
         </View>
     );
 }
