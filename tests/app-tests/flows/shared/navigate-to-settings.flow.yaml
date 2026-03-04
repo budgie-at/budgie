@@ -1,7 +1,0 @@
-appId: ${APP_ID}
----
-
-- tapOn:
-    id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible: 'Settings'
