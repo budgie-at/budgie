@@ -1,7 +1,6 @@
 import { View } from 'react-native';
 
 import { SingleDatePicker } from '../@generic/component/date-picker/single-date-picker';
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useDatePickerModal } from '../transaction/context/date-picker-modal.context';
 
@@ -13,10 +12,8 @@ export default function DatePickerModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SingleDatePicker date={initialDate} onChange={resolveDatePicker} />
-
-            <FormSheetSpacer />
         </View>
     );
 }
