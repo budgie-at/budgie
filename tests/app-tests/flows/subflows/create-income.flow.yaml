@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+---
+- runFlow: navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.1'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.1'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Income'
+
+- tapOn: ${DIGIT_1}
+- tapOn: ${DIGIT_2}
+- tapOn: ${DIGIT_3}
+
+- runFlow:
+    file: select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- runFlow:
+    file: select-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+    file: enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 15000
+
+- assertVisible: ${COMMENT}

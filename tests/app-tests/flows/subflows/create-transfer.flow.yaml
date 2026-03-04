@@ -1,0 +1,63 @@
+appId: ${APP_ID}
+---
+- runFlow: navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.2'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.2'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Transfer'
+
+- tapOn: ${DIGIT_1}
+- tapOn: ${DIGIT_2}
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${FROM_ACCOUNT}
+- extendedWaitUntil:
+    visible: ${FROM_ACCOUNT}
+- tapOn:
+    text: ${FROM_ACCOUNT}
+    index: 1
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${TO_ACCOUNT}
+- extendedWaitUntil:
+    visible: ${TO_ACCOUNT}
+- tapOn:
+    text: ${TO_ACCOUNT}
+    index: 1
+
+- runFlow:
+    file: enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 15000
+
+- assertVisible: ${COMMENT}

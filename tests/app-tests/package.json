@@ -1,5 +1,9 @@
 {
     "name": "@budgie-at/app-tests",
     "version": "1.18.0",
-    "private": true
+    "private": true,
+    "scripts": {
+        "test:ios": "maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --config config.yaml",
+        "test:android": "maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml"
+    }
 }

@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+- waitForAnimationToEnd

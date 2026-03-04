@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TabBar.Analytics'
+- extendedWaitUntil:
+    visible:
+      id: 'AnalyticsPage.Container'

@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const TabBarSelectors = {
     Home: 'TabBar.Home',
     Transactions: 'TabBar.Transactions',

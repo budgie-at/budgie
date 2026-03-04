@@ -1,0 +1,103 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+# --- Create Account ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+- waitForAnimationToEnd
+
+- tapOn:
+    text: 'Account'
+- extendedWaitUntil:
+    visible: 'New Account'
+
+- tapOn:
+    id: 'CreateAccount.CASH'
+- extendedWaitUntil:
+    visible: 'ACCOUNT NAME & ICON'
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: 'E2E Archive Account'
+
+- tapOn:
+    id: 'CreateAccount.Amount'
+- inputText: 200
+
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- runFlow: subflows/relaunch-app.flow.yaml
+- assertVisible: 'E2E Archive Account.*'
+
+# --- Archive Account ---
+
+- tapOn: 'E2E Archive Account.*'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+
+- tapOn: 'Archive'
+
+- runFlow: subflows/relaunch-app.flow.yaml
+- assertNotVisible: 'E2E Archive Account.*'
+
+# --- Navigate to Archived Accounts ---
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ArchivedCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ArchivedCard'
+- extendedWaitUntil:
+    visible: 'Archived'
+
+# --- Verify Archived Account Visible ---
+
+- assertVisible: 'E2E Archive Account'
+
+# --- Restore Account ---
+
+- tapOn:
+    id: 'ArchivedAccountCard.RestoreButton'
+
+- tapOn: 'Restore'
+
+- extendedWaitUntil:
+    notVisible: 'E2E Archive Account'
+    timeout: 10000
+
+# --- Verify Account Back on Home ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- assertVisible: 'E2E Archive Account.*'

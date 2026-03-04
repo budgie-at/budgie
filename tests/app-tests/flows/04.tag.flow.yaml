@@ -1,0 +1,69 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageTagsCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageTagsCard'
+- extendedWaitUntil:
+    visible: 'Tags'
+
+# --- Create Tag ---
+
+- tapOn:
+    id: 'ActionButton'
+- waitForAnimationToEnd
+
+- tapOn: 'Tag'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TagForm.Input'
+- inputText: 'E2E Tag'
+
+- tapOn:
+    id: 'TagForm.Submit'
+
+- extendedWaitUntil:
+    visible: 'E2E Tag, Swipe left'
+    timeout: 10000
+
+# --- Edit Tag ---
+
+- tapOn: 'E2E Tag, Swipe left'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TagForm.Input'
+- eraseText: 50
+- inputText: 'E2E Edited Tag'
+
+- tapOn:
+    id: 'TagForm.Submit'
+
+- extendedWaitUntil:
+    visible: 'E2E Edited Tag, Swipe left'
+    timeout: 10000
+
+# --- Delete Tag ---
+
+- swipe:
+    from:
+      text: 'E2E Edited Tag, Swipe left'
+    direction: LEFT
+
+- tapOn:
+    id: 'DeletableRow.DeleteButton'
+
+- tapOn: 'Delete'
+
+- waitForAnimationToEnd
+
+- assertNotVisible: 'E2E Edited Tag, Swipe left'

@@ -1,0 +1,35 @@
+appId: ${APP_ID}
+---
+# Relaunch app to recover from Maestro black screen after modal dismiss
+- stopApp
+- launchApp
+
+- runFlow:
+    when:
+      visible: 'http://localhost:8081'
+    commands:
+      - tapOn: 'http://localhost:8081'
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- runFlow:
+    when:
+      visible: 'Continue'
+    commands:
+      - tapOn: 'Continue'
+
+- runFlow:
+    when:
+      visible: 'Close'
+    commands:
+      - tapOn: 'Close'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 30000

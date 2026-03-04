@@ -1,0 +1,93 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Foreign Account'
+
+# --- Create Cross-Currency Transfer ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.2'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.2'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Transfer'
+
+- tapOn: '7'
+- tapOn: '5'
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Txn Account'
+- extendedWaitUntil:
+    visible: 'E2E Txn Account'
+- tapOn:
+    text: 'E2E Txn Account'
+    index: 1
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Foreign Account'
+- extendedWaitUntil:
+    visible: 'E2E Foreign Account'
+- tapOn:
+    text: 'E2E Foreign Account'
+    index: 1
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransferForm.ConversionRow'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Cross Currency Transfer'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Cross Currency Transfer'
+
+# --- Delete Cross-Currency Transfer ---
+
+- tapOn: 'E2E Cross Currency Transfer'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertNotVisible: 'E2E Cross Currency Transfer'

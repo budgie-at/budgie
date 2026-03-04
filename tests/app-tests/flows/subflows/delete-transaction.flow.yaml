@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionActionsMenu.DeleteButton'
+
+- tapOn: 'Delete'

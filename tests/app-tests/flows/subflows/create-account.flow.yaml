@@ -1,0 +1,29 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+- waitForAnimationToEnd
+- tapOn:
+    text: 'Account'
+- extendedWaitUntil:
+    visible: 'New Account'
+- tapOn:
+    id: 'CreateAccount.CASH'
+- extendedWaitUntil:
+    visible: 'ACCOUNT NAME & ICON'
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+- tapOn:
+    id: 'CreateAccount.Amount'
+- inputText: 100
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+- runFlow: relaunch-app.flow.yaml

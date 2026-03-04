@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+---
+
+- clearState
+- launchApp
+
+- runFlow:
+    when:
+      visible: 'http://localhost:8081'
+    commands:
+      - tapOn: 'http://localhost:8081'
+
+- runFlow:
+    when:
+      visible: '.*:8081.*'
+    commands:
+      - tapOn:
+          text: '.*:8081.*'
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- runFlow:
+    when:
+      visible: 'Continue'
+    commands:
+      - tapOn: 'Continue'
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Close'
+    commands:
+      - tapOn: 'Close'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 60000

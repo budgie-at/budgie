@@ -9,6 +9,8 @@ import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
         const init = async () => {
+            // eslint-disable-next-line no-console
+            console.log('[E2E_DEBUG] useAppInitialization', { success });
             if (success) {
                 try {
                     void exchangeRatesSyncService.sync();

@@ -1,0 +1,121 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+# --- Setup: Create Account with $500 ---
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Balance Account'
+
+- runFlow:
+    file: subflows/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Balance Category'
+
+- assertVisible:
+    id: 'HomePage.TotalBalance'
+
+# --- Create Expense of $42 ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- runFlow: subflows/open-action-menu.flow.yaml
+
+- tapOn:
+    text: 'Expense'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Expense'
+
+- tapOn: '4'
+- tapOn: '2'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Balance Account'
+
+- runFlow:
+    file: subflows/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Balance Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Balance Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Balance Expense'
+
+# --- Verify Balance Area After Expense ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- assertVisible:
+    id: 'HomePage.TotalBalance'
+
+# --- Create Income of $100 ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.1'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.1'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Income'
+
+- tapOn: '1'
+- tapOn: '0'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Balance Account'
+
+- runFlow:
+    file: subflows/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Balance Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Balance Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Balance Income'
+
+# --- Verify Balance Area After Income ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- assertVisible:
+    id: 'HomePage.TotalBalance'
