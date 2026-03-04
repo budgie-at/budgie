@@ -1,0 +1,70 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+# --- Manage Categories ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageCategoriesCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageCategoriesCard'
+- extendedWaitUntil:
+    visible: 'Categories'
+- back
+
+- extendedWaitUntil:
+    visible: 'Settings'
+
+# --- Manage Tags ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageTagsCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ManageTagsCard'
+- extendedWaitUntil:
+    visible: 'Tags'
+- back
+
+- extendedWaitUntil:
+    visible: 'Settings'
+
+# --- Archived Accounts ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ArchivedCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ArchivedCard'
+- extendedWaitUntil:
+    visible: 'Archived'
+- back
+
+- extendedWaitUntil:
+    visible: 'Settings'
+
+# --- Inactive Accounts ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.InactiveCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.InactiveCard'
+- extendedWaitUntil:
+    visible: 'Inactive'
+- back
+
+- extendedWaitUntil:
+    visible: 'Settings'

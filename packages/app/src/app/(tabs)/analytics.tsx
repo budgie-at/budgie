@@ -5,6 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { AnalyticsPageSelectors } from '../../@e2e/selectors/analytics-page.selector';
 import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../@generic/component/page/page';
 import { PageHeader } from '../../@generic/component/page-header/page-header';
@@ -37,7 +38,7 @@ export default function StatisticsPage() {
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />}>
+        <Page testID={AnalyticsPageSelectors.Container} header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />}>
             <View className="pb-2xl">
                 <TransactionFilters
                     accountId={null}
