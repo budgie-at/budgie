@@ -38,12 +38,9 @@ export const VoiceInputBubble = ({ isVisible, committedText, partialText }: Prop
     const containerAnimatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
         transform: [{ scale: scale.value }],
-        marginBottom: BUBBLE_MARGIN_BOTTOM
+        marginBottom: BUBBLE_MARGIN_BOTTOM,
+        display: opacity.value === 0 ? 'none' : 'flex'
     }));
-
-    if (!isVisible && opacity.value === 0) {
-        return null;
-    }
 
     const bubbleStyle = [containerAnimatedStyle, { minWidth: MIN_BUBBLE_WIDTH, maxWidth: MAX_BUBBLE_WIDTH }];
 

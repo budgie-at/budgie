@@ -23,7 +23,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
     const hasRightAction = isDefined(rightActionIcon) && isDefined(rightActionOnPress);
 
     return (
-        <View className="absolute top-0 left-0 right-0 z-10 pt-4xl pb-lg px-xl bg-primary-reverse">
+        <View collapsable={false} className="absolute top-0 left-0 right-0 z-10 pt-4xl pb-lg px-xl bg-primary-reverse">
             <View className="flex-row items-center gap-x-md">
                 <View className="flex-1 flex-row items-center rounded-5xl bg-secondary-background h-[50px] px-lg border border-secondary-corner">
                     <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
