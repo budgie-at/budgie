@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ContactSelectorCard } from '../@generic/component/contact-selector-card/contact-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useContactSelectorModal } from '../@generic/context/contact-selector-modal.context';
@@ -15,8 +14,6 @@ import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
 const keyExtractor = (item: Contact) => item.id;
-
-const listFooterComponent = <FormSheetSpacer />;
 
 const filterContacts = (contacts: Contact[], search: string): Contact[] =>
     contacts.filter(({ name, emails, phoneNumbers }) => {
@@ -79,7 +76,6 @@ export default function ContactSelectorModal() {
                 contentContainerStyle={contentContainerStyle}
                 ItemSeparatorComponent={ListItemSeparator}
                 ListEmptyComponent={listEmptyComponent}
-                ListFooterComponent={listFooterComponent}
             />
         </View>
     );

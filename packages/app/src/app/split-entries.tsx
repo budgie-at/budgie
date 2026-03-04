@@ -45,7 +45,7 @@ export default function SplitEntriesModal() {
     }
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <SplitEntriesModalContent
                 initialEntries={currentParams.entries}

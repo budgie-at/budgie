@@ -29,13 +29,14 @@ import {
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
+    readonly isSubmitting?: boolean;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const { variant, initialDestinationAmount, onSubmit, onCancel } = props;
+    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel } = props;
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -221,6 +222,7 @@ export const TransferQuickForm = (props: Props) => {
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
                 confirmTestID={TransactionFormSelectors.SubmitButton}
+                isConfirmDisabled={isSubmitting}
             />
         </View>
     );

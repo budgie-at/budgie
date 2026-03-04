@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -61,8 +60,6 @@ export default function LanguageSelectorModal() {
         </View>
     );
 
-    const listFooterComponent = <FormSheetSpacer />;
-
     return (
         <View style={containerStyle}>
             <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search languages...`} />
@@ -77,7 +74,6 @@ export default function LanguageSelectorModal() {
                 contentContainerStyle={contentContainerStyle}
                 ItemSeparatorComponent={ListItemSeparator}
                 ListEmptyComponent={listEmptyComponent}
-                ListFooterComponent={listFooterComponent}
             />
         </View>
     );

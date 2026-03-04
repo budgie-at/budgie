@@ -31,7 +31,7 @@ export default function AccountSelectorModal() {
     const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
