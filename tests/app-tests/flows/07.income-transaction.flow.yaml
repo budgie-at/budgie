@@ -1,0 +1,88 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+# --- Create Income ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.1'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.1'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Income'
+
+- tapOn: '1'
+- tapOn: '0'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Test Income'
+
+# --- Edit Income ---
+
+- tapOn: 'E2E Test Income'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Edited Income'
+
+# --- Delete Income ---
+
+- tapOn: 'E2E Edited Income'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertNotVisible: 'E2E Edited Income'

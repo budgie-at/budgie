@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { HomePageSelectors } from '../../../@e2e/selectors/home-page.selector';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -83,7 +84,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
         <View style={containerStyle}>
             <Animated.View className="absolute inset-x-0 bottom-0 top-0 bg-background" style={headerBackgroundStyle} />
 
-            <Animated.View className="relative" style={headerContainerStyle}>
+            <Animated.View className="relative" style={headerContainerStyle} testID={HomePageSelectors.TotalBalance}>
                 <Animated.View
                     className="absolute inset-x-0 top-0 bottom-0 flex-row items-center justify-between px-5xl"
                     style={collapsedHeaderStyle}

@@ -1,0 +1,107 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Transfer Account'
+
+# --- Create Transfer ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.2'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.2'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Transfer'
+
+- tapOn: '5'
+- tapOn: '0'
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Txn Account'
+- extendedWaitUntil:
+    visible: 'E2E Txn Account'
+- tapOn:
+    text: 'E2E Txn Account'
+    index: 1
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Transfer Account'
+- extendedWaitUntil:
+    visible: 'E2E Transfer Account'
+- tapOn:
+    text: 'E2E Transfer Account'
+    index: 1
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Transfer'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Test Transfer'
+
+# --- Edit Transfer ---
+
+- tapOn: 'E2E Test Transfer'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Transfer'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible: 'E2E Edited Transfer'
+
+# --- Delete Transfer ---
+
+- tapOn: 'E2E Edited Transfer'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertNotVisible: 'E2E Edited Transfer'

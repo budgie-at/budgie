@@ -1,32 +1,12 @@
 platform:
-  ios:
-    snapshotKeyHonorModalViews: false
-    disableAnimations: true
-  android:
-    disableAnimations: true
+    ios:
+        snapshotKeyHonorModalViews: false
+        disableAnimations: true
+    android:
+        disableAnimations: true
+
+flows:
+    - '*'
 
 executionOrder:
-  continueOnFailure: false
-  flowsOrder:
-    - enter-app.flow
-    - account/create.flow
-    - account/edit.flow
-    - account/archive.flow
-    - category/create.flow
-    - category/edit.flow
-    - category/delete.flow
-    - tag/create.flow
-    - tag/edit.flow
-    - tag/delete.flow
-    - transaction/setup.flow
-    - transaction/create-expense.flow
-    - transaction/edit-expense.flow
-    - transaction/delete-expense.flow
-    - transaction/create-income.flow
-    - transaction/edit-income.flow
-    - transaction/delete-income.flow
-    - transaction/create-transfer.flow
-    - transaction/edit-transfer.flow
-    - transaction/delete-transfer.flow
-    - transaction/create-cross-currency-transfer.flow
-    - transaction/delete-cross-currency-transfer.flow
+    continueOnFailure: true
