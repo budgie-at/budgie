@@ -21,11 +21,11 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.1'
+      id: 'ActionItem.Income'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'ActionItem.1'
+    id: 'ActionItem.Income'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Income'
@@ -55,11 +55,13 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Test Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Test_Income'
 
 # --- Edit Income ---
 
-- tapOn: 'E2E Test Income'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Income'
 - waitForAnimationToEnd
 
 - runFlow:
@@ -73,16 +75,17 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Edited Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
 
 # --- Delete Income ---
 
-- tapOn: 'E2E Edited Income'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
 - waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible: 'Transactions'
-
-- assertNotVisible: 'E2E Edited Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Income'

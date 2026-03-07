@@ -14,6 +14,7 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
+import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
 import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
@@ -81,6 +82,7 @@ export default function RootLayout() {
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                 <SettingsProvider>
+                    <DevMenuController />
                     <ScreenshotProtectionController />
                     <I18nProvider>
                         <KeyboardProvider>
