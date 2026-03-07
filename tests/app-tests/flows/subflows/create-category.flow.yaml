@@ -31,11 +31,13 @@ appId: ${APP_ID}
     id: CategoryForm.Input
 - inputText: ${CATEGORY_NAME}
 
+- tapOn: 'Create Category'
 - tapOn:
     id: CategoryForm.Submit
 
 - extendedWaitUntil:
-    visible: '${CATEGORY_NAME}, Swipe left'
+    visible:
+      id: 'CategoryCard.${CATEGORY_NAME}'
     timeout: 10000
 
 - tapOn:

@@ -1,7 +1,7 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -135,7 +135,7 @@ export const TagForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
                 <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
                     <FormItem label={t`Tag Name`}>
                         <Input
@@ -168,14 +168,18 @@ export const TagForm = (props: Props) => {
                 />
             </KeyboardAwareScrollView>
 
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={t`Merge into another tag`} /> : null}
+            <KeyboardStickyView>
+                <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                    {isEditing ? (
+                        <ModalFormMergeButton testID={TagFormSelectors.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
+                    ) : null}
 
-                <View className="flex-row gap-x-md">
-                    <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
+                    <View className="flex-row gap-x-md">
+                        <ModalFormCancelButton onPress={onCancel} />
+                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
+                    </View>
                 </View>
-            </View>
+            </KeyboardStickyView>
         </ModalPage>
     );
 };
