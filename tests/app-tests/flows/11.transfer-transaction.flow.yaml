@@ -21,11 +21,11 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.2'
+      id: 'ActionItem.Transfer'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'ActionItem.2'
+    id: 'ActionItem.Transfer'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Transfer'
@@ -43,10 +43,13 @@ appId: ${APP_ID}
     id: 'AccountPickerBottomSheet.Input'
 - inputText: 'E2E Txn Account'
 - extendedWaitUntil:
-    visible: 'E2E Txn Account'
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
 - tapOn:
-    text: 'E2E Txn Account'
-    index: 1
+    id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
 
 - tapOn:
     id: 'TransferForm.ToAccount'
@@ -58,10 +61,13 @@ appId: ${APP_ID}
     id: 'AccountPickerBottomSheet.Input'
 - inputText: 'E2E Transfer Account'
 - extendedWaitUntil:
-    visible: 'E2E Transfer Account'
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Transfer Account'
 - tapOn:
-    text: 'E2E Transfer Account'
-    index: 1
+    id: 'AccountPickerBottomSheet.Option.E2E Transfer Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
 
 - runFlow:
     file: subflows/enter-comment.flow.yaml
@@ -74,11 +80,13 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Test Transfer'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Test_Transfer'
 
 # --- Edit Transfer ---
 
-- tapOn: 'E2E Test Transfer'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Transfer'
 - waitForAnimationToEnd
 
 - runFlow:
@@ -92,16 +100,17 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Edited Transfer'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Transfer'
 
 # --- Delete Transfer ---
 
-- tapOn: 'E2E Edited Transfer'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Transfer'
 - waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible: 'Transactions'
-
-- assertNotVisible: 'E2E Edited Transfer'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Transfer'

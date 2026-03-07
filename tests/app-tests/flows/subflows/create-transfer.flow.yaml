@@ -6,11 +6,11 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.2'
+      id: 'ActionItem.Transfer'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'ActionItem.2'
+    id: 'ActionItem.Transfer'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Transfer'

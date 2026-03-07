@@ -22,7 +22,7 @@ appId: ${APP_ID}
 - runFlow: subflows/open-action-menu.flow.yaml
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.Expense'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'
@@ -52,11 +52,13 @@ appId: ${APP_ID}
     visible: 'Transactions'
     timeout: 15000
 
-- assertVisible: 'E2E Test Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
 
 # --- Edit Expense ---
 
-- tapOn: 'E2E Test Expense'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
 - waitForAnimationToEnd
 
 - runFlow:
@@ -71,17 +73,17 @@ appId: ${APP_ID}
     visible: 'Transactions'
     timeout: 15000
 
-- assertVisible: 'E2E Edited Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
 
 # --- Delete Expense ---
 
-- tapOn: 'E2E Edited Expense'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
 - waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
-
-- assertNotVisible: 'E2E Edited Expense'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'

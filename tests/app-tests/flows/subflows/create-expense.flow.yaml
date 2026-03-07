@@ -5,7 +5,7 @@ appId: ${APP_ID}
 - runFlow: open-action-menu.flow.yaml
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.Expense'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'

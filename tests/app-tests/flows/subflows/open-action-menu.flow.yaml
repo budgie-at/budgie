@@ -4,5 +4,5 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.0'
+      id: 'ActionItem.Expense'
 - waitForAnimationToEnd
