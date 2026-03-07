@@ -13,5 +13,5 @@ export const DEFAULT_SETTINGS = {
     isVibrationEnabled: true,
     isBiometricEnabled: false,
     language: LanguageEnum.EN,
-    isScreenshotProtectionEnabled: true
+    isScreenshotProtectionEnabled: false
 } satisfies SettingsEntityInterface;
