@@ -11,11 +11,12 @@ import { useDatePickerModal } from '../../../transaction/context/date-picker-mod
 
 interface Props {
     readonly date: Date | null;
+    readonly testID?: string;
     readonly variant: ColorPaletteVariant;
     readonly onChange: (date: Date) => void;
 }
 
-export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
+export const AccountFormDatePicker = ({ date, onChange, testID, variant }: Props) => {
     const { formatDayAndFullMonthAndYear } = useFormatDate();
     const [openDatePicker] = useDatePickerModal();
     const { t } = useLingui();
@@ -37,6 +38,7 @@ export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
             title={title}
             description={description}
             singleLine
+            testID={testID}
         />
     );
 };

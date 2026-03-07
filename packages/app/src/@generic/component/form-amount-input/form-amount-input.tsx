@@ -70,7 +70,7 @@ export const FormAmountInput = (props: Props) => {
     };
 
     return (
-        <View testID={testID} className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5">
+        <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5">
             {allowNegative ? (
                 <View className="mr-xl flex-shrink-0">
                     <SignTogglePill isNegative={isNegative} variant={effectiveVariant} onToggle={handleToggleSign} />
@@ -83,6 +83,7 @@ export const FormAmountInput = (props: Props) => {
                 </Text>
 
                 <AmountInput
+                    testID={testID}
                     value={absoluteValue}
                     onChangeValue={handleAmountChange}
                     inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}

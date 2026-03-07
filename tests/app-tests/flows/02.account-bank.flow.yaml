@@ -7,12 +7,15 @@ appId: ${APP_ID}
     file: subflows/account/create-bank-account.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Checking Account'
+      CURRENCY_CODE: 'EUR'
       ACCOUNT_AMOUNT: '100'
 
 - runFlow:
-    file: subflows/account/verify-checking-adjustments.flow.yaml
+    file: subflows/account/exercise-liability-account.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Checking Account'
+      UPDATED_ACCOUNT_NAME: 'E2E Checking Account EUR'
+      INITIAL_AMOUNT: '100'
       INCREASE_TO: '175'
       INCREASE_DELTA: '75'
       DECREASE_TO: '125'

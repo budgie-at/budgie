@@ -1,0 +1,72 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- runFlow:
+    file: rename-account.flow.yaml
+    env:
+      UPDATED_ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- runFlow:
+    file: open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- runFlow:
+    file: update-account-balance.flow.yaml
+    env:
+      NEW_BALANCE: ${INCREASE_TO}
+
+- runFlow:
+    file: open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- runFlow:
+    file: update-account-balance.flow.yaml
+    env:
+      NEW_BALANCE: ${DECREASE_TO}
+
+- runFlow:
+    file: open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'

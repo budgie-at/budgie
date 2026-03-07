@@ -8,19 +8,16 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'ACCOUNT NAME & ICON'
 
-# Fill the secondary amount first to avoid Maestro focus handoff issues between fields.
-- hideKeyboard
 - scrollUntilVisible:
     element:
       id: 'AccountForm.TargetBalanceInput'
     direction: DOWN
 
-- doubleTapOn:
+- tapOn:
     id: 'AccountForm.TargetBalanceInput'
 - waitForAnimationToEnd
 - inputText: ${TARGET_BALANCE}
 
-- hideKeyboard
 - scrollUntilVisible:
     element:
       id: 'AccountForm.NameInput'
@@ -30,7 +27,24 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 
+- hideKeyboard
 - tapOn: 'Debt Account'
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.CurrencySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountForm.CurrencySelector'
+- tapOn: 'Search currencies...'
+- inputText: ${CURRENCY_CODE}
+- tapOn:
+    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+
+- tapOn: 'Debt Account'
+- tapOn:
+    id: 'AccountForm.DebtType.${DEBT_TYPE}'
+
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
@@ -39,6 +53,7 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      text: '${ACCOUNT_NAME}.*'
+      id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-- assertVisible: '${ACCOUNT_NAME}.*'
+- assertVisible:
+    id: 'AccountCard.${ACCOUNT_NAME}'

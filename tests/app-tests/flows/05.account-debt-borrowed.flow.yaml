@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/account/create-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Borrowed Account'
+      CURRENCY_CODE: 'CHF'
+      DEBT_TYPE: 'BORROW'
+      TARGET_BALANCE: '800'
+
+- assertVisible: 'You owe'
+
+- runFlow:
+    file: subflows/account/exercise-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Borrowed Account'
+      CONTACT_NAME: 'Maestro E2E Contact'
+      CONTACT_NAME_ID: 'Maestro_E2E_Contact'
+      UPDATED_ACCOUNT_NAME: 'E2E Borrowed CHF'
+      RETURN_DAY: '18'
+      RETURN_DATE_LABEL: '.*18,.*'
+      INCREASE_TO: '300'
+      INCREASE_DELTA: '300'
+      DECREASE_TO: '175'
+      DECREASE_DELTA: '125'

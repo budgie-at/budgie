@@ -3,10 +3,11 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      text: '${ACCOUNT_NAME}.*'
+      id: 'AccountCard.${ACCOUNT_NAME}'
     direction: UP
 
-- tapOn: '${ACCOUNT_NAME}.*'
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
 - extendedWaitUntil:
     visible:
       id: 'AccountDetails.EditButton'
@@ -36,10 +37,11 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      text: '${ACCOUNT_NAME}.*'
+      id: 'AccountCard.${ACCOUNT_NAME}'
     direction: UP
 
-- tapOn: '${ACCOUNT_NAME}.*'
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
 - extendedWaitUntil:
     visible:
       id: 'AccountDetails.EditButton'
@@ -69,10 +71,11 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      text: '${ACCOUNT_NAME}.*'
+      id: 'AccountCard.${ACCOUNT_NAME}'
     direction: UP
 
-- tapOn: '${ACCOUNT_NAME}.*'
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
 - extendedWaitUntil:
     visible:
       id: 'AccountDetails.EditButton'

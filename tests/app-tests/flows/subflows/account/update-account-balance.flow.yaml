@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'CreateAccount.Amount'
+- eraseText: 100
+- inputText: ${NEW_BALANCE}
+
+- tapOn: 'Account Settings'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 10000
