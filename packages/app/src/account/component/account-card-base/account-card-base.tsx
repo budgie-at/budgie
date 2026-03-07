@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { OnEventFn } from '@rnw-community/shared';
 
+import { AccountCardSelectors } from '../../../@e2e/selectors/account-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -67,7 +68,12 @@ export const AccountCardBase = (props: Props) => {
     const accountBalance = formatDigits(balance, instrumentSymbol);
 
     return (
-        <Card onPress={navigateToAccount} onLongPress={onLongPress} className={cn(cardVariants({ deadlinePriority }), className)}>
+        <Card
+            testID={AccountCardSelectors.Card(title)}
+            onPress={navigateToAccount}
+            onLongPress={onLongPress}
+            className={cn(cardVariants({ deadlinePriority }), className)}
+        >
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
                     <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
