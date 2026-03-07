@@ -36,6 +36,11 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
+    const cardTestID = isAdjustment
+        ? TransactionCardSelectors.AdjustmentCard(transaction.id)
+        : isNotEmptyString(title)
+          ? TransactionCardSelectors.LabelCard(title)
+          : TransactionCardSelectors.Card(transaction.id);
 
     const getHref = (): Href => {
         const { id } = transaction;
@@ -57,10 +62,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     return (
         <Link href={getHref()} asChild>
-            <Card
-                className="p-xl gap-y-8"
-                testID={isAdjustment ? TransactionCardSelectors.AdjustmentCard(transaction.id) : TransactionCardSelectors.Card(transaction.id)}
-            >
+            <Card className="p-xl gap-y-8" testID={cardTestID}>
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 

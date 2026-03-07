@@ -71,7 +71,7 @@ appId: ${APP_ID}
     id: 'AccountPickerBottomSheet.Input'
 - inputText: 'E2E Settings Cash'
 - tapOn:
-    id: 'AccountPickerBottomSheet.Option.E2E_Settings_Cash'
+    id: 'AccountPickerBottomSheet.Option.E2E Settings Cash'
 - extendedWaitUntil:
     visible:
       id: 'SettingsPage.DefaultAccountValue.E2E_Settings_Cash'
