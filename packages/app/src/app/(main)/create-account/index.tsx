@@ -20,7 +20,7 @@ export default function Index() {
                 <PageHeader title={t`New Account`} description={t`Choose the type of account you want to add`} onGoBack={handleGoBack} />
             }
         >
-            <ScrollView contentContainerClassName="gap-y-xl py-7xl">
+            <ScrollView contentContainerClassName="gap-y-xl py-7xl" showsVerticalScrollIndicator={false}>
                 <CreateAccountCard
                     description={t`Everyday transactions and spending`}
                     icon={ACCOUNT_ICON.BANK}

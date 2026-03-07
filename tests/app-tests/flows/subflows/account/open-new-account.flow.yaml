@@ -1,0 +1,19 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.AddAccount'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.AddAccount'
+- extendedWaitUntil:
+    visible: 'New Account'
