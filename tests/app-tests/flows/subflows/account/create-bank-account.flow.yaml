@@ -6,5 +6,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_TYPE_ID: 'CreateAccount.BANK'
       ACCOUNT_SCREEN_TITLE: 'Checking Account'
+      CURRENCY_CODE: ${CURRENCY_CODE}
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       ACCOUNT_AMOUNT: ${ACCOUNT_AMOUNT}

@@ -96,7 +96,12 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 />
 
                 <FormLayoutGroup>
-                    <AccountDetailsField control={control} variant={variant} nameInputTestID={AccountFormSelectors.NameInput} />
+                    <AccountDetailsField
+                        control={control}
+                        variant={variant}
+                        nameInputTestID={AccountFormSelectors.NameInput}
+                        selectNameOnFocus
+                    />
 
                     {children}
 
