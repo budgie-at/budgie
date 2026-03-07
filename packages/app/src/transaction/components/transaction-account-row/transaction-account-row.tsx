@@ -7,6 +7,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -65,7 +66,11 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
 
                     <View className="flex-1">
                         <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text className="text-md font-medium text-primary" numberOfLines={1}>
+                        <Text
+                            className="text-md font-medium text-primary"
+                            numberOfLines={1}
+                            {...(isDefined(account?.title) && { testID: TransactionFormSelectors.SelectedAccount(account.title) })}
+                        >
                             {account?.title ?? t`Select account`}
                         </Text>
                     </View>

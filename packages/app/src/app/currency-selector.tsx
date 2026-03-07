@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 
+import { CurrencySelectorSelectors } from '../@e2e/selectors/currency-selector.selector';
 import { CurrencySelectorCard } from '../@generic/component/currency-selector-card/currency-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
@@ -53,7 +54,12 @@ export default function CurrencySelectorModal() {
 
     return (
         <View style={containerStyle}>
-            <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search currencies...`} />
+            <SelectorModalSearchHeader
+                search={search}
+                onSearchChange={setSearch}
+                placeholder={t`Search currencies...`}
+                testID={CurrencySelectorSelectors.SearchInput}
+            />
 
             <FlatList
                 style={flatListStyle}

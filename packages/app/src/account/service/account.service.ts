@@ -58,7 +58,6 @@ class AccountService {
                 {
                     ...input,
                     order: count + 1,
-                    includeInNetWorth: false,
                     nature: AccountNatureEnum.LIABILITY,
                     targetBalance: convertToMicroUnits(input.targetBalance)
                 },

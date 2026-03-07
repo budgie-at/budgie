@@ -20,6 +20,7 @@ import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/a
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
+import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 const DEFAULT_ICON = UserIconNameEnum.HandCoins;
 
@@ -36,6 +37,7 @@ export const CreateDebtAccount = () => {
             targetBalance: 0,
             currentBalance: 0,
             icon: DEFAULT_ICON,
+            includeInNetWorth: false,
             type: AccountTypeEnum.DEBT,
             debtType: AccountDebtTypeEnum.LENT,
             instrumentId: defaultInstrument.id
@@ -63,6 +65,8 @@ export const CreateDebtAccount = () => {
                 <DebtAccountContactField control={control} />
 
                 <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
+
+                <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
         </CreateAccountScreen>
     );

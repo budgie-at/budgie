@@ -1,6 +1,7 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { InactiveAccountCardSelectors } from '../../../@e2e/selectors/inactive-account-card.selector';
 import { accountService } from '../../service/account.service';
 import { AccountActionCard } from '../account-action-card/account-action-card';
 
@@ -27,6 +28,8 @@ export const InactiveAccountCard = ({ account }: Props) => {
             errorText={t`Could not activate account.`}
             currencySymbol={account.instrument.symbol}
             onAction={handleActivate}
+            testID={InactiveAccountCardSelectors.Card(accountTitle)}
+            actionButtonTestID={InactiveAccountCardSelectors.ActivateButton(accountTitle)}
         />
     );
 };

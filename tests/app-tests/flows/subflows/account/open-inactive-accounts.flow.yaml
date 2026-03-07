@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+
+- runFlow: ../navigate-to-settings.flow.yaml
+
+- swipe:
+    from:
+      id: 'SettingsPage.Container'
+    direction: UP
+- tapOn:
+    id: 'SettingsPage.InactiveCard'
+- extendedWaitUntil:
+    visible:
+      id: 'InactiveAccountsPage.Container'
+    timeout: 10000

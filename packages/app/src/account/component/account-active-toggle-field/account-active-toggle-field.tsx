@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 import { Text } from 'react-native';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 
@@ -16,8 +17,21 @@ export const AccountActiveToggleField = <T extends LiabilityAccountCreateInputIn
     const { t } = useLingui();
 
     const renderField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
-        <HorizontalCell right={<ThemedSwitch className="my-auto" onValueChange={onChange} value={value as boolean} />}>
-            <Text className="text-sm font-medium text-primary">{t`Active`}</Text>
+        <HorizontalCell
+            onPress={() => onChange(!(value as boolean))}
+            testID={AccountFormSelectors.ActiveRow}
+            right={
+                <ThemedSwitch
+                    className="my-auto"
+                    onValueChange={onChange}
+                    value={value as boolean}
+                    testID={AccountFormSelectors.ActiveSwitch}
+                />
+            }
+        >
+            <Text className="text-sm font-medium text-primary" testID={AccountFormSelectors.ActiveTitle}>
+                {t`Active`}
+            </Text>
             <Text className="text-sm font-medium text-secondary-foreground">{t`Show this account on the main page`}</Text>
         </HorizontalCell>
     );

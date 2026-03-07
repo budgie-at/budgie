@@ -17,6 +17,7 @@ appId: ${APP_ID}
     file: subflows/account/exercise-debt-account.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Borrowed Account'
+      CURRENCY_CODE: 'CHF'
       CONTACT_NAME: 'Maestro E2E Contact'
       CONTACT_NAME_ID: 'Maestro_E2E_Contact'
       UPDATED_ACCOUNT_NAME: 'E2E Borrowed CHF'

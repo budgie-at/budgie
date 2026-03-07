@@ -69,17 +69,18 @@ export const ArchivedAccountCard = ({ account }: Props) => {
 
     return (
         <SimpleHorizontalCell
+            testID={ArchivedAccountCardSelectors.Card(accountTitle)}
             right={
                 <View className="flex-row items-center gap-x-xl">
                     <ProtectedText className="text-destructive-foreground text-sm font-semibold">
                         {formatDigits(balance, account.instrument.symbol)}
                     </ProtectedText>
 
-                    <HapticPressable testID={ArchivedAccountCardSelectors.RestoreButton} onPress={handleRestore}>
+                    <HapticPressable testID={ArchivedAccountCardSelectors.RestoreButton(accountTitle)} onPress={handleRestore}>
                         <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
                     </HapticPressable>
 
-                    <HapticPressable testID={ArchivedAccountCardSelectors.DeleteButton} onPress={handleDelete}>
+                    <HapticPressable testID={ArchivedAccountCardSelectors.DeleteButton(accountTitle)} onPress={handleDelete}>
                         <CircleIcon variant="destructive" icon={UserIconNameEnum.Trash2} />
                     </HapticPressable>
                 </View>

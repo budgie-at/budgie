@@ -35,6 +35,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
+    const netWorthValueTestID = HomePageSelectors.NetWorthValue(netWorth);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);
@@ -92,7 +93,9 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                     <Text className="text-xs uppercase text-secondary-foreground">
                         <Trans>Total Balance</Trans>
                     </Text>
-                    <ProtectedText className="text-lg font-medium text-primary">{formattedNetWorth}</ProtectedText>
+                    <ProtectedText className="text-lg font-medium text-primary" testID={netWorthValueTestID}>
+                        {formattedNetWorth}
+                    </ProtectedText>
                 </Animated.View>
 
                 <Animated.View className="absolute inset-x-0 top-0 bottom-0 px-5xl items-center justify-center" style={expandedHeaderStyle}>
@@ -100,14 +103,16 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <ProtectedMoney
-                        decimalPlaces={decimalPlaces}
-                        minFontSize={24}
-                        maxFontSize={60}
-                        instrumentSymbol={defaultInstrument.symbol}
-                    >
-                        {netWorth}
-                    </ProtectedMoney>
+                    <View testID={netWorthValueTestID}>
+                        <ProtectedMoney
+                            decimalPlaces={decimalPlaces}
+                            minFontSize={24}
+                            maxFontSize={60}
+                            instrumentSymbol={defaultInstrument.symbol}
+                        >
+                            {netWorth}
+                        </ProtectedMoney>
+                    </View>
                 </Animated.View>
             </Animated.View>
         </View>

@@ -14,6 +14,7 @@ appId: ${APP_ID}
     file: subflows/account/exercise-liability-account.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Savings Account'
+      CURRENCY_CODE: 'CAD'
       UPDATED_ACCOUNT_NAME: 'E2E Savings Account CAD'
       INITIAL_AMOUNT: '250'
       INCREASE_TO: '325'
