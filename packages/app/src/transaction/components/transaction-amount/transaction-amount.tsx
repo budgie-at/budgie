@@ -1,9 +1,15 @@
-import { TransactionWithRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import {
+    TransactionWithRelationsEntityInterface,
+    UserIconNameEnum,
+    isNegativeAdjustmentTransaction,
+    isPositiveAdjustmentTransaction
+} from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -24,6 +30,7 @@ const amountVariants = cva('text-sm font-semibold text-right', {
 export const TransactionAmount = ({ transaction }: Props) => {
     const type = getTransactionType(transaction);
     const { decimalPlaces } = useSettingsContext();
+    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     const fromEntries = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
     const toEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
@@ -34,7 +41,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
-            <View className="gap-y-xxl items-end">
+            <View className="gap-y-xxl items-end" testID={TransactionCardSelectors.Amount(transaction.id)}>
                 <Text className={amountVariants({ type: 'default' })}>
                     {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
                 </Text>
@@ -49,17 +56,27 @@ export const TransactionAmount = ({ transaction }: Props) => {
     }
 
     if (isDefined(fromEntry)) {
+        const amount = convertFromMicroUnits(fromEntry.amount);
+
         return (
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
+            <Text
+                className={amountVariants({ type: TRANSACTION_COLOR[type] })}
+                testID={isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transaction.id)}
+            >
+                {formatDigits(amount, fromEntry.account.instrument.symbol)}
             </Text>
         );
     }
 
     if (isDefined(toEntry)) {
+        const amount = convertFromMicroUnits(toEntry.amount);
+
         return (
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
+            <Text
+                className={amountVariants({ type: TRANSACTION_COLOR[type] })}
+                testID={isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transaction.id)}
+            >
+                {formatDigits(amount, toEntry.account.instrument.symbol)}
             </Text>
         );
     }

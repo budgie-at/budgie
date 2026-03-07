@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { ActionButtonSelectors } from '../../../@e2e/selectors/action-button.selector';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -87,14 +88,38 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const showAiButton = isAiAvailable && !isDefined(createAction);
 
-    const defaultItems: CreateActionInterface[] = [
-        { icon: UserIconNameEnum.TrendingDown, label: t`Expense`, variant: 'destructive', onPress: handleCreateExpense },
-        { icon: UserIconNameEnum.TrendingUp, label: t`Income`, variant: 'positive', onPress: handleCreateIncome },
-        { icon: UserIconNameEnum.ArrowLeftRight, label: t`Transfer`, variant: 'warning', onPress: handleCreateTransfer },
-        { icon: UserIconNameEnum.Wallet, label: t`Account`, variant: 'secondary', onPress: handleCreateAccount }
+    const defaultItems: (CreateActionInterface & { testID?: string })[] = [
+        {
+            icon: UserIconNameEnum.TrendingDown,
+            label: t`Expense`,
+            testID: ActionButtonSelectors.Expense,
+            variant: 'destructive',
+            onPress: handleCreateExpense
+        },
+        {
+            icon: UserIconNameEnum.TrendingUp,
+            label: t`Income`,
+            testID: ActionButtonSelectors.Income,
+            variant: 'positive',
+            onPress: handleCreateIncome
+        },
+        {
+            icon: UserIconNameEnum.ArrowLeftRight,
+            label: t`Transfer`,
+            testID: ActionButtonSelectors.Transfer,
+            variant: 'warning',
+            onPress: handleCreateTransfer
+        },
+        {
+            icon: UserIconNameEnum.Wallet,
+            label: t`Account`,
+            testID: ActionButtonSelectors.AddAccount,
+            variant: 'secondary',
+            onPress: handleCreateAccount
+        }
     ];
 
-    const actionItems: CreateActionInterface[] = isDefined(createAction)
+    const actionItems: (CreateActionInterface & { testID?: string })[] = isDefined(createAction)
         ? [{ ...createAction, onPress: handleCreateAction }, ...defaultItems]
         : defaultItems;
 
@@ -147,6 +172,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                             key={item.label}
                             icon={item.icon}
                             label={item.label}
+                            testID={item.testID}
                             variant={item.variant}
                             index={index}
                             totalItems={actionItems.length}
