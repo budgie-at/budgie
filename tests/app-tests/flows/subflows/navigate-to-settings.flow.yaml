@@ -7,6 +7,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Settings'
 - waitForAnimationToEnd
+- tapOn:
+    id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible: 'PRIVACY'
+    visible:
+      id: 'SettingsPage.Container'
     timeout: 15000
