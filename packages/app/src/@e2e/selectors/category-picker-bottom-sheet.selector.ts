@@ -1,5 +1,5 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 export const CategoryPickerBottomSheetSelectors = {
     Input: 'CategoryPickerBottomSheet.Input',
-    Card: (index: number) => `CategoryPickerBottomSheet.Card.${index}`
+    Card: (title: string) => `CategoryPickerBottomSheet.Card.${title.trim()}` as const
 } as const;

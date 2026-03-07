@@ -24,6 +24,7 @@ interface Props<T extends IdInterface> {
     onSearchChange: (search: string) => void;
     onDelete: (id: number) => Promise<void>;
     renderCard: (item: T) => ReactNode;
+    searchInputTestID?: string;
     children?: ReactNode;
 }
 
@@ -37,6 +38,7 @@ export const SearchablePage = <T extends IdInterface>({
     onSearchChange,
     emptyState,
     onGoBack,
+    searchInputTestID,
     children
 }: Props<T>) => {
     const { bottom } = useSafeAreaInsets();
@@ -64,6 +66,7 @@ export const SearchablePage = <T extends IdInterface>({
                 onSearchChange={onSearchChange}
                 inputBottom={searchInputBottom}
                 keyboardGap={SEARCH_KEYBOARD_GAP}
+                testID={searchInputTestID}
             />
         </View>
     );
