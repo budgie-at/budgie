@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { CategoryPageSelectors } from '../../../@e2e/selectors/category-page.selector';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -75,6 +76,7 @@ export default function Categories() {
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
+            searchInputTestID={CategoryPageSelectors.SearchInput}
             emptyState={<CategoryEmptyState search={search} />}
         />
     );
