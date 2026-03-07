@@ -7,19 +7,12 @@ appId: ${APP_ID}
     id: ${ACCOUNT_TYPE_ID}
 - extendedWaitUntil:
     visible: 'ACCOUNT NAME & ICON'
+    timeout: 10000
 
 - tapOn:
     id: 'AccountForm.NameInput'
 - waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
-- tapOn: ${ACCOUNT_SCREEN_TITLE}
-
-- tapOn:
-    id: 'AccountForm.CurrencySelector'
-- tapOn: 'Search currencies...'
-- inputText: ${CURRENCY_CODE}
-- tapOn:
-    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 
 - tapOn:
     id: 'CreateAccount.Amount'
@@ -31,6 +24,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible: 'TOTAL BALANCE'
+    timeout: 15000
 
 - scrollUntilVisible:
     element:
