@@ -15,6 +15,7 @@ import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
+import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
 import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
@@ -80,6 +81,7 @@ export default function RootLayout() {
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                 <SettingsProvider>
+                    <ScreenshotProtectionController />
                     <I18nProvider>
                         <KeyboardProvider>
                             <ThemeProvider>
