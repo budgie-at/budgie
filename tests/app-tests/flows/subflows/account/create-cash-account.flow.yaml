@@ -6,5 +6,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
       ACCOUNT_SCREEN_TITLE: 'Savings Account'
+      CURRENCY_CODE: ${CURRENCY_CODE}
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       ACCOUNT_AMOUNT: ${ACCOUNT_AMOUNT}

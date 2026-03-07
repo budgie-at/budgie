@@ -1,6 +1,7 @@
 import { InstrumentEntityInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { SelectorCard } from '../selector-card/selector-card';
 
 interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'name'> {
@@ -15,6 +16,7 @@ export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, co
         isSelected={isSelected}
         onSelect={onSelect}
         className={className}
+        testID={AccountFormSelectors.CurrencyOption(code)}
         iconSlot={
             <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
                 <Text className="text-primary text-md">{symbol}</Text>
