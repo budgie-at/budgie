@@ -17,6 +17,7 @@ appId: ${APP_ID}
     file: subflows/account/exercise-debt-account.flow.yaml
     env:
       ACCOUNT_NAME: 'E2E Lent Account'
+      CURRENCY_CODE: 'GBP'
       CONTACT_NAME: 'Maestro E2E Contact'
       CONTACT_NAME_ID: 'Maestro_E2E_Contact'
       UPDATED_ACCOUNT_NAME: 'E2E Lent GBP'

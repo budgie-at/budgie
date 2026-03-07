@@ -70,3 +70,133 @@ appId: ${APP_ID}
     id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 - assertVisible:
     id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow:
+    file: set-main-currency.flow.yaml
+    env:
+      CURRENCY_CODE: ${CURRENCY_CODE}
+
+- assertVisible:
+    id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+- assertVisible:
+    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.ActiveTitle'
+    direction: DOWN
+- assertVisible:
+    id: 'AccountForm.ActiveTitle'
+- tapOn:
+    id: 'AccountForm.ActiveTitle'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+    timeout: 10000
+
+- assertNotVisible:
+    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+
+- runFlow:
+    file: open-inactive-accounts.flow.yaml
+
+- assertVisible:
+    id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
+- tapOn:
+    id: 'InactiveAccountCard.ActivateButton.${UPDATED_ACCOUNT_NAME}'
+- tapOn: 'Activate'
+- tapOn:
+    id: 'TabBar.Home'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+    timeout: 10000
+
+- assertVisible:
+    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.IncludeInNetWorthTitle'
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: 'AccountForm.IncludeInNetWorthTitle'
+- tapOn:
+    id: 'AccountForm.IncludeInNetWorthTitle'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.0'
+    timeout: 10000
+
+- assertVisible:
+    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.IncludeInNetWorthTitle'
+    direction: DOWN
+    centerElement: true
+- assertVisible:
+    id: 'AccountForm.IncludeInNetWorthTitle'
+- tapOn:
+    id: 'AccountForm.IncludeInNetWorthTitle'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+    timeout: 10000
+
+- runFlow:
+    file: open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
+
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+- tapOn: 'Archive'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.0'
+    timeout: 10000
+
+- assertNotVisible:
+    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+
+- runFlow:
+    file: open-archived-accounts.flow.yaml
+
+- assertVisible:
+    id: 'ArchivedAccountCard.${UPDATED_ACCOUNT_NAME}'
