@@ -9,6 +9,13 @@ appId: ${APP_ID}
     visible: 'ACCOUNT NAME & ICON'
 
 - tapOn:
+    id: 'AccountForm.CurrencySelector'
+- tapOn: 'Search currencies...'
+- inputText: ${CURRENCY_CODE}
+- tapOn:
+    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+
+- tapOn:
     id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 
@@ -25,6 +32,7 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      text: '${ACCOUNT_NAME}.*'
+      id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-- assertVisible: '${ACCOUNT_NAME}.*'
+- assertVisible:
+    id: 'AccountCard.${ACCOUNT_NAME}'

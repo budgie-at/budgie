@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { useContactSelectorModal } from '../../context/contact-selector-modal.context';
 import { useContacts } from '../../hook/use-contacts.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -11,11 +12,14 @@ import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizonta
 
 interface Props {
     readonly contactId: string | null;
+    readonly testID?: string;
     readonly variant: ColorPaletteVariant;
+    readonly emptyDescription: string;
+    readonly selectedDescription: string;
     readonly onSelect: (contactId: string) => void;
 }
 
-export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
+export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDescription, selectedDescription }: Props) => {
     const { contacts, error } = useContacts();
     const [openContactSelector] = useContactSelectorModal();
     const { t } = useLingui();
@@ -34,14 +38,17 @@ export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
 
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
-    const description = isDefined(contact) ? t`Owes you` : t`Who owes you?`;
+    const description = isDefined(contact) ? selectedDescription : emptyDescription;
+    const titleTestID = isDefined(contact) ? AccountFormSelectors.SelectedContact(contact.name) : undefined;
 
     return (
         <SimpleHorizontalCell
             title={title}
+            titleTestID={titleTestID}
             description={description}
             left={<CircleIcon icon={UserIconNameEnum.User} variant={iconVariant} />}
             onPress={handleOpen}
+            testID={testID}
         />
     );
 };

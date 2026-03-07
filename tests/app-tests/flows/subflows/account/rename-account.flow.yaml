@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- eraseText: 60
+- inputText: ${UPDATED_ACCOUNT_NAME}
+
+- tapOn: 'Account Settings'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 10000
