@@ -74,11 +74,11 @@ appId: ${APP_ID}
     id: 'ActionButton'
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.1'
+      id: 'ActionItem.Income'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'ActionItem.1'
+    id: 'ActionItem.Income'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Income'
