@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+---
+
+- runFlow: open-new-account.flow.yaml
+
+- tapOn:
+    id: ${ACCOUNT_TYPE_ID}
+- extendedWaitUntil:
+    visible: 'ACCOUNT NAME & ICON'
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'CreateAccount.Amount'
+- inputText: ${ACCOUNT_AMOUNT}
+
+- tapOn: ${ACCOUNT_SCREEN_TITLE}
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- scrollUntilVisible:
+    element:
+      text: '${ACCOUNT_NAME}.*'
+    direction: DOWN
+- assertVisible: '${ACCOUNT_NAME}.*'
