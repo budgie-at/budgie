@@ -22,3 +22,11 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'AnalyticsPage.Container'
+
+# --- Settings Tab Renders ---
+
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
