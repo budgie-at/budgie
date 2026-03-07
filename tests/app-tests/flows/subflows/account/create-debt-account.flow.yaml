@@ -1,6 +1,10 @@
 appId: ${APP_ID}
 ---
 
+- setPermissions:
+    permissions:
+      contacts: allow
+
 - runFlow: open-new-account.flow.yaml
 
 - tapOn:
