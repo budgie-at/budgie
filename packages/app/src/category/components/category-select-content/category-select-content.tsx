@@ -15,7 +15,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly initialCategoryId: number | null;
     readonly onSelect: (categoryId: number) => void;
-    readonly cardTestID?: (index: number) => string;
+    readonly cardTestID?: (title: string) => string;
 }
 
 const NUM_COLUMNS = 3;
@@ -28,7 +28,7 @@ export const CategorySelectContent = (props: Props) => {
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
-    const renderItem = ({ item, index }: { item: FlatListDataItem<CategoryEntityInterface>; index: number }) =>
+    const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
             <CategorySelectorCard
                 className="opacity-0"
@@ -47,7 +47,7 @@ export const CategorySelectContent = (props: Props) => {
                 variant={variant}
                 icon={item.icon}
                 id={item.id}
-                testID={cardTestID?.(index)}
+                testID={cardTestID?.(item.title)}
             />
         );
 

@@ -15,7 +15,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Categories'
 
-# --- Create Category ---
+# --- Create Primary Category With Icon ---
 
 - tapOn:
     id: 'ActionButton'
@@ -25,45 +25,135 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'CategoryForm.Input'
-- inputText: 'E2E Category'
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'bike'
+- tapOn:
+    id: 'IconSelector.Icon.Bike'
 
+- tapOn:
+    id: 'CategoryForm.Input'
+- inputText: 'E2E Category Primary'
+- tapOn: 'Create Category'
 - tapOn:
     id: 'CategoryForm.Submit'
 
-- extendedWaitUntil:
-    visible: 'E2E Category, Swipe left'
-    timeout: 10000
+- assertVisible:
+    id: 'CategoryCard.E2E Category Primary'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Primary.Bike'
 
-# --- Edit Category ---
+# --- Create Second Category For Search ---
 
-- tapOn: 'E2E Category, Swipe left'
+- tapOn:
+    id: 'ActionButton'
+- waitForAnimationToEnd
+
+- tapOn: 'Category'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'CategoryForm.Input'
-- eraseText: 50
-- inputText: 'E2E Edited Category'
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'home'
+- tapOn:
+    id: 'IconSelector.Icon.Home'
 
+- tapOn:
+    id: 'CategoryForm.Input'
+- inputText: 'E2E Category Search'
+- tapOn: 'Create Category'
 - tapOn:
     id: 'CategoryForm.Submit'
 
-- extendedWaitUntil:
-    visible: 'E2E Edited Category, Swipe left'
-    timeout: 10000
+- assertVisible:
+    id: 'CategoryCard.E2E Category Search'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Search.Home'
 
-# --- Delete Category ---
+# --- Search And Open Result ---
+
+- tapOn:
+    id: 'CategoryPage.SearchInput'
+- inputText: 'Search'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Search'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Primary'
+
+- tapOn:
+    id: 'CategoryCard.E2E Category Search'
+- waitForAnimationToEnd
+
+- assertVisible: 'E2E Category Search.*'
+- tapOn:
+    id: 'CategoryForm.Merge'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
+- inputText: 'Primary'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+    timeout: 10000
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Search'
+
+- tapOn:
+    id: 'CategoryPage.SearchInput'
+- eraseText: 50
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Primary'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Search'
+
+# --- Edit Primary Category Text + Icon ---
+
+- tapOn:
+    id: 'CategoryCard.E2E Category Primary'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'heart'
+- tapOn:
+    id: 'IconSelector.Icon.Heart'
+
+- tapOn:
+    id: 'CategoryForm.Input'
+- eraseText: 80
+- inputText: 'E2E Category Updated'
+- tapOn: 'Edit Category'
+- tapOn:
+    id: 'CategoryForm.Submit'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Updated'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Updated.Heart'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Primary'
 
 - swipe:
     from:
-      text: 'E2E Edited Category, Swipe left'
+      id: 'CategoryCard.E2E Category Updated'
     direction: LEFT
-
+- extendedWaitUntil:
+    visible:
+      id: 'DeletableRow.DeleteButton'
+    timeout: 10000
 - tapOn:
     id: 'DeletableRow.DeleteButton'
-
 - tapOn: 'Delete'
-
 - waitForAnimationToEnd
 
-- assertNotVisible: 'E2E Edited Category, Swipe left'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Updated'
