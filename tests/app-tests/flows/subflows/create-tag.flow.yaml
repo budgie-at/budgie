@@ -31,11 +31,13 @@ appId: ${APP_ID}
     id: TagForm.Input
 - inputText: ${TAG_NAME}
 
+- tapOn: 'Create Tag'
 - tapOn:
     id: TagForm.Submit
 
 - extendedWaitUntil:
-    visible: '${TAG_NAME}, Swipe left'
+    visible:
+      id: 'TagCard.${TAG_NAME}'
     timeout: 10000
 
 - tapOn:
