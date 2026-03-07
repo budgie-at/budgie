@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+---
+
+- runFlow: open-new-account.flow.yaml
+
+- tapOn:
+    id: 'CreateAccount.DEBT'
+- extendedWaitUntil:
+    visible: 'ACCOUNT NAME & ICON'
+
+# Fill the secondary amount first to avoid Maestro focus handoff issues between fields.
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.TargetBalanceInput'
+    direction: DOWN
+
+- doubleTapOn:
+    id: 'AccountForm.TargetBalanceInput'
+- waitForAnimationToEnd
+- inputText: ${TARGET_BALANCE}
+
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.NameInput'
+    direction: UP
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+
+- tapOn: 'Debt Account'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+
+- scrollUntilVisible:
+    element:
+      text: '${ACCOUNT_NAME}.*'
+    direction: DOWN
+- assertVisible: '${ACCOUNT_NAME}.*'
