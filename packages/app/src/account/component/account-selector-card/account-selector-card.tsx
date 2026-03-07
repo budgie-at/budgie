@@ -29,6 +29,7 @@ export const AccountSelectorCard = (props: Props) => {
         <SelectorCard
             identifier={id}
             isSelected={isSelected}
+            allowReselect
             onSelect={onSelect}
             className={className}
             testID={AccountPickerBottomSheetSelectors.Option(title)}
