@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/account/create-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Debt Account'
+      TARGET_BALANCE: '1000'

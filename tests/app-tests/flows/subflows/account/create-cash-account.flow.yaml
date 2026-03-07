@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: create-liability-account.flow.yaml
+    env:
+      ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
+      ACCOUNT_SCREEN_TITLE: 'Savings Account'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      ACCOUNT_AMOUNT: ${ACCOUNT_AMOUNT}

@@ -17,6 +17,7 @@ import type { ClassValue } from 'clsx';
 interface Props {
     readonly icon: UserIconNameEnum;
     readonly label: string;
+    readonly testID?: string;
     readonly variant: ColorPaletteVariant;
     readonly index: number;
     readonly totalItems: number;
@@ -38,7 +39,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, onPress }: Props) => {
+export const ActionItem = ({ icon, label, testID, variant, index, totalItems, isOpen, onPress }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const translateY = useSharedValue(0);
@@ -73,8 +74,8 @@ export const ActionItem = ({ icon, label, variant, index, totalItems, isOpen, on
     };
 
     return (
-        <Animated.View className="absolute right-0" testID={ActionButtonSelectors.item(index)} style={animatedStyle}>
-            <Pressable className="flex-row-reverse items-center" onPress={handlePress}>
+        <Animated.View className="absolute right-0" style={animatedStyle}>
+            <Pressable className="flex-row-reverse items-center" onPress={handlePress} testID={testID ?? ActionButtonSelectors.item(index)}>
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>
