@@ -53,8 +53,8 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <Pressable {...rest} onPress={handlePress}>
-            <View testID={testID} className={tabVariants({ isFocused })} style={tabStyle}>
+        <Pressable {...rest} onPress={handlePress} testID={testID}>
+            <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
         </Pressable>
