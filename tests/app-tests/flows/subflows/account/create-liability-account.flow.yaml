@@ -12,11 +12,20 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
+- hideKeyboard
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.CurrencySelector'
+    direction: DOWN
 - tapOn:
     id: 'AccountForm.CurrencySelector'
-- tapOn: 'Search currencies...'
+- extendedWaitUntil:
+    visible:
+      id: 'CurrencySelector.SearchInput'
+- tapOn:
+    id: 'CurrencySelector.SearchInput'
 - inputText: ${CURRENCY_CODE}
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
