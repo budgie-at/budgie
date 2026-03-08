@@ -90,7 +90,11 @@ export const AccountCardBase = (props: Props) => {
                     {title}
                 </Text>
 
-                {balanceContent ?? <ProtectedText className="text-primary font-medium">{accountBalance}</ProtectedText>}
+                {balanceContent ?? (
+                    <ProtectedText className="text-primary font-medium" testID={AccountCardSelectors.Balance(title, balance)}>
+                        {accountBalance}
+                    </ProtectedText>
+                )}
             </View>
 
             {children}

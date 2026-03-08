@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TransactionForm.TagsSelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- inputText: ${TAG_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+- tapOn:
+    id: 'TagPickerBottomSheet.Card.${TAG_NAME}'

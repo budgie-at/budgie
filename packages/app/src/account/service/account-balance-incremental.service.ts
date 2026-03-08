@@ -12,7 +12,7 @@ import type { DB } from '@budgie/contracts';
 
 class AccountBalanceIncrementalService {
     async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccounts();
+        const accounts = await accountRepository.getAllActiveAccounts(tx);
         if (isEmptyArray(accounts)) {
             return;
         }
@@ -24,8 +24,8 @@ class AccountBalanceIncrementalService {
         const accountIds = accounts.map(({ id }) => id);
 
         const [currentBalances, deltaMap] = await Promise.all([
-            accountBalanceRepository.getByAccountIds(accountIds),
-            accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds)
+            accountBalanceRepository.getByAccountIds(accountIds, tx),
+            accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx)
         ]);
 
         const balancesMap = this.buildBalancesMap(currentBalances);

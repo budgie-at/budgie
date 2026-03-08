@@ -30,6 +30,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'New Income'
 
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
 - tapOn: '1'
 - tapOn: '0'
 - tapOn: '0'
@@ -57,6 +61,17 @@ appId: ${APP_ID}
 
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Test_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.200'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
 # --- Edit Income ---
 
@@ -89,3 +104,12 @@ appId: ${APP_ID}
 
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Edited_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'

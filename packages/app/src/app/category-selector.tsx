@@ -57,6 +57,7 @@ export default function CategorySelectorModal() {
                 placeholder={t`Search categories...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                rightActionTestID={CategoryPickerBottomSheetSelectors.CreateButton}
                 testID={CategoryPickerBottomSheetSelectors.Input}
             />
 

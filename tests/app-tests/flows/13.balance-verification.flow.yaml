@@ -15,6 +15,10 @@ appId: ${APP_ID}
     env:
       CATEGORY_NAME: 'E2E Balance Category'
 
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
 - assertVisible:
     id: 'HomePage.TotalBalance'
 
@@ -25,7 +29,7 @@ appId: ${APP_ID}
 - runFlow: subflows/open-action-menu.flow.yaml
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.Expense'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'
@@ -54,7 +58,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Balance Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Balance_Expense'
 
 # --- Verify Balance Area After Expense ---
 
@@ -108,7 +113,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible: 'E2E Balance Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Balance_Income'
 
 # --- Verify Balance Area After Income ---
 
