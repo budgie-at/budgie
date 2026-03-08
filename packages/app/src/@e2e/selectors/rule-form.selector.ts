@@ -4,7 +4,6 @@ export const RuleFormSelectors = {
     Header: 'RuleForm.Header',
     SubmitButton: 'RuleForm.Footer.SubmitButton',
     DeleteButton: 'RuleForm.Footer.DeleteButton',
-    ApplyToggle: 'RuleForm.ApplyToExistingToggle',
     ConditionSectionHeader: 'RuleForm.ConditionSection.Header',
     ConditionAddButton: 'RuleForm.ConditionSection.AddButton',
     ActionSectionHeader: 'RuleForm.ActionSection.Header',

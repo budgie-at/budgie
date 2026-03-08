@@ -28,7 +28,7 @@ msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 
 #: src/rule/components/rule-match-pill/rule-match-pill.tsx:64
-#: src/rule/hooks/use-rule-form.hook.ts:79
+#: src/rule/hooks/use-rule-form.hook.ts:78
 msgid "{applied} updated, {failed} failed"
 msgstr "{applied} aktualisiert, {failed} fehlgeschlagen"
 
@@ -40,9 +40,10 @@ msgstr "{availableCount} Spalten verfügbar"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% gelernt"
 
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:61
-msgid "{count} matching transactions"
-msgstr "{count} passende Transaktionen"
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:42
+#: src/rule/hooks/use-rule-form.hook.ts:98
+msgid "{count} existing transactions match this rule."
+msgstr "{count} bestehende Transaktionen entsprechen dieser Regel."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
@@ -254,6 +255,8 @@ msgid "Appearance"
 msgstr "Erscheinungsbild"
 
 #: src/app/note-input.tsx:45
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:43
+#: src/rule/hooks/use-rule-form.hook.ts:99
 msgid "Apply"
 msgstr "Anwenden"
 
@@ -270,6 +273,11 @@ msgstr "Filter anwenden ({localSelectedCount})"
 #: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:16
 msgid "Apply Filter ({selectedCount})"
 msgstr "Filter anwenden ({selectedCount})"
+
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:41
+#: src/rule/hooks/use-rule-form.hook.ts:97
+msgid "Apply to existing transactions?"
+msgstr "Auf bestehende Transaktionen anwenden?"
 
 #: src/rule/components/rule-match-pill/rule-match-pill.tsx:106
 msgid "Apply to similar"
@@ -374,7 +382,7 @@ msgstr "Budgie"
 #: src/import/components/import-database/import-database.tsx:38
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:78
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:66
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:50
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -433,10 +441,6 @@ msgstr "PIN ändern"
 #: src/app/(main)/create-account/index.tsx:27
 msgid "Checking Account"
 msgstr "Girokonto"
-
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:41
-msgid "Checking transactions..."
-msgstr "Transaktionen werden überprüft..."
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:30
 msgid "Choose a preset to auto-fill column mappings"
@@ -551,8 +555,8 @@ msgstr "Regel konnte nicht angewendet werden"
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
-#: src/rule/hooks/use-create-suggest-rule.hook.ts:71
-#: src/rule/hooks/use-rule-form.hook.ts:107
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:70
+#: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not create rule"
 msgstr "Regel konnte nicht erstellt werden"
 
@@ -568,7 +572,7 @@ msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später
 msgid "Could not delete account."
 msgstr "Konto konnte nicht gelöscht werden."
 
-#: src/rule/hooks/use-rule-form.hook.ts:124
+#: src/rule/hooks/use-rule-form.hook.ts:143
 msgid "Could not delete rule."
 msgstr "Regel konnte nicht gelöscht werden."
 
@@ -608,7 +612,7 @@ msgstr "Kategorie konnte nicht gespeichert werden"
 msgid "Could not save tag"
 msgstr "Tag konnte nicht gespeichert werden"
 
-#: src/rule/hooks/use-rule-form.hook.ts:107
+#: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not update rule"
 msgstr "Regel konnte nicht aktualisiert werden"
 
@@ -619,10 +623,6 @@ msgstr "Transaktion konnte nicht aktualisiert werden."
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
 msgid "Count this account in your net worth calculation"
 msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
-
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
-msgid "Create & update"
-msgstr "Erstellen & aktualisieren"
 
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
@@ -669,7 +669,7 @@ msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Tran
 msgid "Create one to get started."
 msgstr "Erstellen Sie eines, um zu beginnen."
 
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:54
 msgid "Create rule"
 msgstr "Regel erstellen"
 
@@ -1437,7 +1437,6 @@ msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:52
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
@@ -1614,7 +1613,7 @@ msgid "PrivatBank"
 msgstr "PrivatBank"
 
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:108
-#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:39
+#: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
 msgid "Quick rule"
 msgstr "Schnellregel"
 
@@ -1660,7 +1659,7 @@ msgid "Rule active"
 msgstr "Regel aktiv"
 
 #: src/rule/components/rule-match-pill/rule-match-pill.tsx:62
-#: src/rule/hooks/use-rule-form.hook.ts:74
+#: src/rule/hooks/use-rule-form.hook.ts:73
 msgid "Rule applied to {applied} transactions"
 msgstr "Regel auf {applied} Transaktionen angewendet"
 
@@ -1901,6 +1900,11 @@ msgstr "Cent anzeigen"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:21
 msgid "Show this account on the main page"
 msgstr "Dieses Konto auf der Hauptseite anzeigen"
+
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:44
+#: src/rule/hooks/use-rule-form.hook.ts:100
+msgid "Skip"
+msgstr "Überspringen"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx:15
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -2230,14 +2234,6 @@ msgstr "Auf dem neuesten Stand"
 #: src/account/component/create-account-screen/update-account-screen.tsx:72
 msgid "Update Account"
 msgstr "Konto aktualisieren"
-
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:64
-msgid "Update them too?"
-msgstr "Diese auch aktualisieren?"
-
-#: src/rule/components/rule-matching-count/rule-matching-count.tsx:34
-msgid "Updating {processed}/{total}..."
-msgstr "Aktualisierung {processed}/{total}..."
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
