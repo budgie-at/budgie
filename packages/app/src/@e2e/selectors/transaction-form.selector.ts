@@ -1,4 +1,4 @@
-const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/g, '_');
+const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
 
 /* eslint-disable lingui/no-unlocalized-strings */
 export const TransactionFormSelectors = {

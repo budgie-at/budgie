@@ -15,6 +15,7 @@ export const DevMenuController = () => {
             return;
         }
 
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Native Expo module name.
         const devMenuPreferences = requireOptionalNativeModule<DevMenuPreferencesModule>('DevMenuPreferences');
 
         if (!devMenuPreferences) {

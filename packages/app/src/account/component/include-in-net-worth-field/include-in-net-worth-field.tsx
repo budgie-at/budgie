@@ -14,24 +14,34 @@ interface Props<T extends { includeInNetWorth?: boolean }> {
 export const IncludeInNetWorthField = <T extends { includeInNetWorth?: boolean }>({ control }: Props<T>) => {
     const { t } = useLingui();
 
-    const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
-        <HorizontalCell
-            testID={AccountFormSelectors.IncludeInNetWorthRow}
-            right={
-                <ThemedSwitch
-                    className="my-auto"
-                    value={value}
-                    onValueChange={onChange}
-                    testID={AccountFormSelectors.IncludeInNetWorthSwitch}
-                />
-            }
-        >
-            <HapticPressable className="flex-1" onPress={() => onChange(!value)} testID={AccountFormSelectors.IncludeInNetWorthTitle}>
-                <Text className="text-sm font-medium text-primary">{t`Include in Net Worth`}</Text>
-                <Text className="text-sm font-medium text-secondary-foreground">{t`Count this account in your net worth calculation`}</Text>
-            </HapticPressable>
-        </HorizontalCell>
-    );
+    const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => {
+        const handlePress = () => void onChange(!value);
+
+        return (
+            <HorizontalCell
+                testID={AccountFormSelectors.IncludeInNetWorthRow}
+                right={
+                    <ThemedSwitch
+                        className="my-auto"
+                        value={value}
+                        onValueChange={onChange}
+                        testID={AccountFormSelectors.IncludeInNetWorthSwitch}
+                    />
+                }
+            >
+                <HapticPressable
+                    className="flex-1"
+                    onPress={handlePress}
+                    testID={AccountFormSelectors.IncludeInNetWorthTitle}
+                >
+                    <Text className="text-sm font-medium text-primary">{t`Include in Net Worth`}</Text>
+                    <Text className="text-sm font-medium text-secondary-foreground">
+                        {t`Count this account in your net worth calculation`}
+                    </Text>
+                </HapticPressable>
+            </HorizontalCell>
+        );
+    };
 
     return <Controller control={control} name={'includeInNetWorth' as Path<T>} render={render} />;
 };
