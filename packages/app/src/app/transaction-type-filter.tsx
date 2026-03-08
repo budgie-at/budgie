@@ -1,13 +1,14 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { Button } from '../@generic/component/button/button';
 import { Footer } from '../@generic/component/footer/footer';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
@@ -19,7 +20,7 @@ export default function TransactionTypeFilterModal() {
     const [, resolveTransactionTypeFilter, currentParams] = useTransactionTypeFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const [localValue, setLocalValue] = useState<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);
+    const [localValue, setLocalValue, localValueRef] = useStateRef<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);
 
     const localSelectedCount = localValue?.length ?? 0;
     const buttonText = isPositiveNumber(localSelectedCount) ? t`Apply Filter (${localSelectedCount})` : t`Apply Filter`;
@@ -44,7 +45,7 @@ export default function TransactionTypeFilterModal() {
     const handleClear = () => void setLocalValue(null);
 
     const handleApply = () => {
-        resolveTransactionTypeFilter({ value: localValue });
+        resolveTransactionTypeFilter({ value: localValueRef.current });
     };
 
     return (
@@ -65,7 +66,12 @@ export default function TransactionTypeFilterModal() {
             </View>
 
             <Footer>
-                <Button variant="ghost" onPress={handleApply} content={buttonText} />
+                <Button
+                    variant="ghost"
+                    onPress={handleApply}
+                    content={buttonText}
+                    testID={TransactionFiltersSelectors.TypeApplyButton}
+                />
             </Footer>
         </View>
     );

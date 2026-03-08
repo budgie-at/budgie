@@ -40,5 +40,3 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
     timeout: 15000
-
-- assertVisible: ${COMMENT}

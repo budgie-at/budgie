@@ -56,7 +56,10 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
 
     return (
         <View className="flex-row gap-xs">
-            <View className={wrapperClassName} testID={isAdjustment ? TransactionCardSelectors.AdjustmentBadge : undefined}>
+            <View
+                className={wrapperClassName}
+                testID={isAdjustment ? TransactionCardSelectors.AdjustmentBadge : TransactionCardSelectors.Category(categoryLabel)}
+            >
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>
             {showMccChip && isDefined(mccCategory) ? <MccCategoryChip mccCategory={mccCategory} /> : null}
