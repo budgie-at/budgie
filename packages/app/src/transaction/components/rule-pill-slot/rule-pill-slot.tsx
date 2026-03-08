@@ -18,11 +18,11 @@ export const RulePillSlot = (props: Props) => {
     const { ruleDetectionMode, suggestRuleData, matchingRule, onRuleCreated } = props;
 
     if (ruleDetectionMode === 'suggest' && isDefined(suggestRuleData) && isDefined(onRuleCreated)) {
-        return <RuleSuggestionPill suggestRuleData={suggestRuleData} compact onRuleCreated={onRuleCreated} />;
+        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
     }
 
     if (ruleDetectionMode === 'match' && isDefined(matchingRule)) {
-        return <RuleMatchPill matchingRule={matchingRule} compact />;
+        return <RuleMatchPill matchingRule={matchingRule} />;
     }
 
     return null;

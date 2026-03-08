@@ -5,14 +5,12 @@ import { Text, View } from 'react-native';
 
 import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { useCreateSuggestRule } from '../../hooks/use-create-suggest-rule.hook';
 import { useHasConflictingRules } from '../../hooks/use-has-conflicting-rules.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { RuleConflictWarning } from '../rule-conflict-warning/rule-conflict-warning';
-import { RuleMatchingCount } from '../rule-matching-count/rule-matching-count';
 import { SuggestRuleDescriptionContent } from '../suggest-rule-description-content/suggest-rule-description-content';
 
 interface Props {
@@ -26,11 +24,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
     const { tags } = useGetTagByIdsQuery(suggestRuleData.tagIds);
     const hasConflict = useHasConflictingRules([RuleActionTypeEnum.SET_CATEGORY]);
 
-    const { applyToExisting, setApplyToExisting, isBusy, progress, matchingCount, isCountLoading, selectedFields, handleCreate } =
-        useCreateSuggestRule({ suggestRuleData, onCreateRule });
-
-    const displayMatchingCount = matchingCount ?? 0;
-    const buttonText = applyToExisting ? t`Create & update` : t`Create rule`;
+    const { isBusy, selectedFields, handleCreate } = useCreateSuggestRule({ suggestRuleData, onCreateRule });
 
     return (
         <View testID={SuggestRuleSelectors.Modal} className="flex-1 justify-between px-4xl pt-4xl pb-4xl gap-y-4xl">
@@ -48,16 +42,6 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
                     />
                 </View>
 
-                <View className="flex-row items-center justify-between gap-x-lg">
-                    <View className="flex-1 gap-y-xxs min-h-[44px] justify-center">
-                        <RuleMatchingCount count={displayMatchingCount} isLoading={isCountLoading} progress={progress} />
-                    </View>
-                    <ThemedSwitch
-                        testID={SuggestRuleSelectors.ApplyToExistingToggle}
-                        value={applyToExisting}
-                        onValueChange={setApplyToExisting}
-                    />
-                </View>
                 <RuleConflictWarning hasConflict={hasConflict} />
             </View>
 
@@ -67,7 +51,7 @@ export const SuggestRuleModalContent = ({ suggestRuleData, onDismiss, onCreateRu
                     <Button
                         testID={SuggestRuleSelectors.CreateRuleButton}
                         className="flex-1"
-                        content={buttonText}
+                        content={t`Create rule`}
                         variant="cta"
                         onPress={handleCreate}
                         disabled={isBusy}

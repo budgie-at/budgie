@@ -3,11 +3,10 @@ import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SUGGEST_RULE_CONDITION_FIELDS, SuggestRuleConditionField } from '../constant/suggest-rule-condition-fields.constant';
-import { useMatchingTransactionCount } from '../hooks/use-matching-transaction-count.hook';
-import { RuleCreationProgressInterface } from '../interface/rule-creation-progress.interface';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
@@ -21,26 +20,31 @@ interface UseCreateSuggestRuleParams {
 }
 
 export const useCreateSuggestRule = ({ suggestRuleData, onCreateRule }: UseCreateSuggestRuleParams) => {
-    const [applyToExisting, setApplyToExisting] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
-    const [isApplying, setIsApplying] = useState(false);
-    const [progress, setProgress] = useState<RuleCreationProgressInterface | null>(null);
+    const [isBusy, setIsBusy] = useState(false);
 
     const availableFields = SUGGEST_RULE_CONDITION_FIELDS.filter(field =>
         isNotEmptyString(getSuggestRuleFieldValue(field, suggestRuleData))
     );
 
-    const conditions = buildSuggestRuleConditions(suggestRuleData);
-
-    const { count: matchingCount, isLoading: isCountLoading } = useMatchingTransactionCount({
-        conditions,
-        conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        enabled: isNotEmptyArray(availableFields)
-    });
-
     const handleCreateRule = async () => {
-        setIsCreating(true);
+        setIsBusy(true);
         try {
+            const conditions = buildSuggestRuleConditions(suggestRuleData);
+            const count = await ruleEngineService.countMatchingTransactions({
+                conditions,
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL
+            });
+
+            let shouldApply = false;
+            if (count > 0) {
+                shouldApply = await confirmAlert({
+                    title: t`Apply to existing transactions?`,
+                    message: t`${count} existing transactions match this rule.`,
+                    confirmText: t`Apply`,
+                    cancelText: t`Skip`
+                });
+            }
+
             const prefillData = {
                 conditions: availableFields.flatMap(field => {
                     const value = getSuggestRuleFieldValue(field, suggestRuleData);
@@ -49,19 +53,14 @@ export const useCreateSuggestRule = ({ suggestRuleData, onCreateRule }: UseCreat
                 }),
                 categoryId: suggestRuleData.categoryId,
                 tagIds: suggestRuleData.tagIds,
-                applyToExisting
+                applyToExisting: false
             };
 
             const input = buildRuleInputFromPrefill(prefillData);
             const rule = await ruleService.create(input);
 
-            if (applyToExisting) {
-                setIsApplying(true);
-                const handleProgress = (processed: number, total: number) => {
-                    setProgress({ processed, total });
-                };
-                await ruleEngineService.applyRuleToMatchingTransactions(rule.id, handleProgress);
-                setIsApplying(false);
+            if (shouldApply) {
+                await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
             }
 
             onCreateRule();
@@ -72,23 +71,15 @@ export const useCreateSuggestRule = ({ suggestRuleData, onCreateRule }: UseCreat
                 text2: getErrorMessage(error)
             });
         } finally {
-            setIsCreating(false);
-            setIsApplying(false);
-            setProgress(null);
+            setIsBusy(false);
         }
     };
 
-    const isBusy = isCreating || isApplying;
     const selectedFields = new Set<SuggestRuleConditionField>(availableFields);
     const handleCreate = () => void handleCreateRule();
 
     return {
-        applyToExisting,
-        setApplyToExisting,
         isBusy,
-        progress,
-        matchingCount,
-        isCountLoading,
         selectedFields,
         handleCreate
     };
