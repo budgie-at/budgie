@@ -25,6 +25,7 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -257,6 +258,14 @@ export const SimpleQuickForm = (props: Props) => {
                     currencySymbol={currencySymbol}
                     variant={variant}
                 />
+                <View className="items-center mt-md">
+                    <RulePillSlot
+                        ruleDetectionMode={ruleDetectionMode}
+                        suggestRuleData={suggestRuleData}
+                        matchingRule={matchingRule}
+                        onRuleCreated={onRuleCreated}
+                    />
+                </View>
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <SuggestionsContainer
                         isNewTransaction={isNewTransaction}
@@ -270,10 +279,6 @@ export const SimpleQuickForm = (props: Props) => {
                         accountId={accountId}
                         amount={amount}
                         hasTagsSelected={hasTagsSelected}
-                        ruleDetectionMode={ruleDetectionMode}
-                        suggestRuleData={suggestRuleData}
-                        matchingRule={matchingRule}
-                        onRuleCreated={onRuleCreated}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
                         onSelectRepeatedPattern={handleSelectRepeatedPattern}

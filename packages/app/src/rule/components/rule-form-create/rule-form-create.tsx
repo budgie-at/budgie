@@ -17,7 +17,7 @@ interface Props {
 
 export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
-    const { form, handleSubmit, progress } = useRuleForm({ prefillData, onSuccess });
+    const { form, handleSubmit } = useRuleForm({ prefillData, onSuccess });
     const { isSubmitting } = form.formState;
 
     const header = <PageHeader testID={RuleFormSelectors.Page} title={t`Create Rule`} onGoBack={onCancel} />;
@@ -26,7 +26,7 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <RuleFormLayout header={header} footer={footer} progress={progress} />
+            <RuleFormLayout header={header} footer={footer} />
         </FormProvider>
     );
 };

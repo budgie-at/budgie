@@ -1,18 +1,13 @@
-import { RepeatedTransactionPatternInterface, RuleWithRelationsEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../../ai/context/llm.context';
-import { RuleMatchPill } from '../../../rule/components/rule-match-pill/rule-match-pill';
-import { RuleSuggestionPill } from '../../../rule/components/rule-suggestion-pill/rule-suggestion-pill';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { BuildAiSuggestionRowParamsInterface } from '../../interface/build-ai-suggestion-row-params.interface';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { PatternSuggestionRow } from '../pattern-suggestion-row/pattern-suggestion-row';
-import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
 
@@ -28,10 +23,6 @@ interface Props {
     readonly accountId: number;
     readonly amount: number;
     readonly hasTagsSelected: boolean;
-    readonly ruleDetectionMode?: RuleDetectionModeType;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly matchingRule?: RuleWithRelationsEntityInterface;
-    readonly onRuleCreated?: () => void;
     readonly onSelectCategory: (categoryId: number) => void;
     readonly onSelectTag: (tagId: number) => void;
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
@@ -81,23 +72,6 @@ const buildAiSuggestionRow = (params: BuildAiSuggestionRowParamsInterface): Reac
     return null;
 };
 
-const renderStandaloneRulePill = (
-    ruleDetectionMode: RuleDetectionModeType,
-    suggestRuleData: SuggestRuleDataInterface | undefined,
-    matchingRule: RuleWithRelationsEntityInterface | undefined,
-    onRuleCreated: (() => void) | undefined
-): ReactNode => {
-    if (ruleDetectionMode === 'suggest' && isDefined(suggestRuleData) && isDefined(onRuleCreated)) {
-        return <RuleSuggestionPill suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} />;
-    }
-
-    if (ruleDetectionMode === 'match' && isDefined(matchingRule)) {
-        return <RuleMatchPill matchingRule={matchingRule} />;
-    }
-
-    return <SuggestionRowSpacer />;
-};
-
 export const SuggestionsContainer = (props: Props) => {
     const {
         isNewTransaction,
@@ -111,10 +85,6 @@ export const SuggestionsContainer = (props: Props) => {
         accountId,
         amount,
         hasTagsSelected,
-        ruleDetectionMode = 'none',
-        suggestRuleData,
-        matchingRule,
-        onRuleCreated,
         onSelectCategory,
         onSelectTag,
         onSelectRepeatedPattern
@@ -153,17 +123,11 @@ export const SuggestionsContainer = (props: Props) => {
     });
 
     if (!isDefined(aiSuggestionRow)) {
-        return renderStandaloneRulePill(ruleDetectionMode, suggestRuleData, matchingRule, onRuleCreated);
+        return <SuggestionRowSpacer />;
     }
 
     return (
         <View className="h-10 flex-row items-center overflow-hidden">
-            <RulePillSlot
-                ruleDetectionMode={ruleDetectionMode}
-                suggestRuleData={suggestRuleData}
-                matchingRule={matchingRule}
-                onRuleCreated={onRuleCreated}
-            />
             <View className="flex-1">{aiSuggestionRow}</View>
         </View>
     );
