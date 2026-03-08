@@ -29,6 +29,9 @@
         },
         "e2e": {
             "extends": "preview",
+            "env": {
+                "APP_VARIANT": "e2e"
+            },
             "ios": {
                 "simulator": true
             },

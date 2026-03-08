@@ -238,7 +238,7 @@ jobs:
       - name: Expo Prebuild
         working-directory: packages/app
         env:
-          APP_VARIANT: preview
+          APP_VARIANT: e2e
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios
@@ -264,7 +264,7 @@ jobs:
       - name: Build app
         working-directory: packages/app
         env:
-          APP_VARIANT: preview
+          APP_VARIANT: e2e
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -1)
@@ -298,7 +298,7 @@ jobs:
         working-directory: tests/app-tests
         run: |
           sh ./scripts/setup-ios-simulator.sh
-          maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --format junit --config config.yaml --debug-output ./
+          maestro test flows -e APP_ID=com.vitalyiegorov.budgie.e2e --format junit --config config.yaml --debug-output ./
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
@@ -414,7 +414,7 @@ jobs:
           working-directory: tests/app-tests
           script: |
             cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+            maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
