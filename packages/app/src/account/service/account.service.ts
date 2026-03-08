@@ -30,15 +30,7 @@ class AccountService {
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
-
-            const account = await accountRepository.create(
-                {
-                    ...input,
-                    order: count + 1,
-                    nature: AccountNatureEnum.LIABILITY
-                },
-                tx
-            );
+            const account = await this.createLiabilityAccount({ ...input }, count, tx);
 
             await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
@@ -53,14 +45,9 @@ class AccountService {
     async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const [{ count }] = await accountRepository.count();
-
-            const account = await accountRepository.create(
-                {
-                    ...input,
-                    order: count + 1,
-                    nature: AccountNatureEnum.LIABILITY,
-                    targetBalance: convertToMicroUnits(input.targetBalance)
-                },
+            const account = await this.createLiabilityAccount(
+                { ...input, targetBalance: convertToMicroUnits(input.targetBalance) },
+                count,
                 tx
             );
 
@@ -256,6 +243,21 @@ class AccountService {
                 mccCategoryId: null,
                 amount: absDelta,
                 type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
+            },
+            tx
+        );
+    }
+
+    private async createLiabilityAccount(
+        input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
+        count: number,
+        tx: DB
+    ): Promise<AccountEntityInterface> {
+        return accountRepository.create(
+            {
+                ...input,
+                order: count + 1,
+                nature: AccountNatureEnum.LIABILITY
             },
             tx
         );
