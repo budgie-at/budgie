@@ -11,18 +11,29 @@ interface Props {
     readonly onDelete: (id: number) => void;
     readonly children: ReactNode;
     readonly id: number;
+    readonly confirmation?: DeleteConfirmation;
+}
+
+export interface DeleteConfirmation {
+    readonly title?: string;
+    readonly description?: string;
+    readonly buttonText?: string;
 }
 
 const Swipable = styled(ReanimatedSwipeable, { containerClassName: 'containerStyle' });
 
-export const DeletableRow = ({ children, onDelete, id }: Props) => {
+export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
+    const confirmTitle = confirmation?.title ?? t`Are you sure?`;
+    const confirmDescription = confirmation?.description ?? t`This action cannot be undone.`;
+    const confirmButtonText = confirmation?.buttonText ?? t`Delete`;
+
     const confirm = () =>
-        void Alert.alert(t`Are you sure?`, t`This action cannot be undone.`, [
+        void Alert.alert(confirmTitle, confirmDescription, [
             {
-                text: t`Delete`,
+                text: confirmButtonText,
                 onPress: () => void onDelete(id),
                 style: 'destructive'
             },
