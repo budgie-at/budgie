@@ -1,6 +1,6 @@
-const normalizePart = (value: string | number) => String(value).replace(/[^a-zA-Z0-9]+/g, '_');
+const normalizePart = (value: string | number) => String(value).replace(/[^a-zA-Z0-9]+/gu, '_');
 
-/* eslint-disable lingui/no-unlocalized-strings */
+ 
 export const AccountCardSelectors = {
     Card: (title: string) => `AccountCard.${title}` as const,
     Balance: (title: string, value: string | number) => `AccountCard.Balance.${normalizePart(title)}.${normalizePart(value)}` as const

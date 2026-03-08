@@ -32,8 +32,6 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
-    // eslint-disable-next-line no-console
-    console.log('[E2E_DEBUG] SettingsPage render');
     const { t } = useLingui();
     const { scrollViewRef, anchorLayout, anchorHighlight } = useScrollToRef();
 

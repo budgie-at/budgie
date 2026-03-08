@@ -26,6 +26,9 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
 
     const selectedAccountsCount = value?.length ?? 0;
     const label = isPositiveNumber(selectedAccountsCount) ? t`Accounts (${selectedAccountsCount})` : t`Accounts`;
+    const chipTestID = isPositiveNumber(selectedAccountsCount)
+        ? TransactionFiltersSelectors.AccountChipActive
+        : TransactionFiltersSelectors.AccountChip;
 
     return (
         <TransactionFilterChip
@@ -33,7 +36,7 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
             icon={UserIconNameEnum.Wallet}
             label={label}
             onPress={handleOpen}
-            testID={isPositiveNumber(selectedAccountsCount) ? TransactionFiltersSelectors.AccountChipActive : TransactionFiltersSelectors.AccountChip}
+            testID={chipTestID}
         />
     );
 };

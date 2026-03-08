@@ -20,9 +20,7 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
     const [error, setError] = useState<string | null>(null);
 
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
-        console.log('[REGEN] regenerate called:', { entityId, title, isReady: llm.isReady }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (!llm.isReady) {
-            console.log('[REGEN] LLM not ready, aborting'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setError(t`LLM not ready`);
 
             return null;
@@ -33,14 +31,11 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
 
         try {
             const service = new TranslationLlmService(llm);
-            console.log('[REGEN] Calling translate...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             const result = await service.translate(title);
-            console.log('[REGEN] Translation result:', result); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             await updateTranslation(entityId, result.titleEn, result.titleTags);
 
             return result;
         } catch (regenerateError: unknown) {
-            console.log('[REGEN] Error:', getErrorMessage(regenerateError)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setError(getErrorMessage(regenerateError));
 
             return null;

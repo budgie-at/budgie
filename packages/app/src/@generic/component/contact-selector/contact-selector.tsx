@@ -39,16 +39,15 @@ export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDes
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
     const description = isDefined(contact) ? selectedDescription : emptyDescription;
-    const titleTestID = isDefined(contact) ? AccountFormSelectors.SelectedContact(contact.name) : undefined;
-
-    return (
+    
+return (
         <SimpleHorizontalCell
             title={title}
-            titleTestID={titleTestID}
             description={description}
             left={<CircleIcon icon={UserIconNameEnum.User} variant={iconVariant} />}
             onPress={handleOpen}
             testID={testID}
+            {...(isDefined(contact) && { titleTestID: AccountFormSelectors.SelectedContact(contact.name) })}
         />
     );
 };

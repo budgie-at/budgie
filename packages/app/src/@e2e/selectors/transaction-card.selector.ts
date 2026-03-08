@@ -1,5 +1,5 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-const normalizePart = (value: number | string) => String(value).replace(/[^a-zA-Z0-9]+/g, '_');
+const normalizePart = (value: number | string) => String(value).replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const TransactionCardSelectors = {
     Card: (id: number) => `TransactionCard.${id}` as const,

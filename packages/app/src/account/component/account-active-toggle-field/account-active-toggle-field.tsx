@@ -16,25 +16,29 @@ export const AccountActiveToggleField = <T extends LiabilityAccountCreateInputIn
 }: Props<T>) => {
     const { t } = useLingui();
 
-    const renderField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
-        <HorizontalCell
-            onPress={() => onChange(!(value as boolean))}
-            testID={AccountFormSelectors.ActiveRow}
-            right={
-                <ThemedSwitch
-                    className="my-auto"
-                    onValueChange={onChange}
-                    value={value as boolean}
-                    testID={AccountFormSelectors.ActiveSwitch}
-                />
-            }
-        >
-            <Text className="text-sm font-medium text-primary" testID={AccountFormSelectors.ActiveTitle}>
-                {t`Active`}
-            </Text>
-            <Text className="text-sm font-medium text-secondary-foreground">{t`Show this account on the main page`}</Text>
-        </HorizontalCell>
-    );
+    const renderField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
+        const handlePress = () => void onChange(!(value as boolean));
+
+        return (
+            <HorizontalCell
+                onPress={handlePress}
+                testID={AccountFormSelectors.ActiveRow}
+                right={
+                    <ThemedSwitch
+                        className="my-auto"
+                        onValueChange={onChange}
+                        value={value as boolean}
+                        testID={AccountFormSelectors.ActiveSwitch}
+                    />
+                }
+            >
+                <Text className="text-sm font-medium text-primary" testID={AccountFormSelectors.ActiveTitle}>
+                    {t`Active`}
+                </Text>
+                <Text className="text-sm font-medium text-secondary-foreground">{t`Show this account on the main page`}</Text>
+            </HorizontalCell>
+        );
+    };
 
     return <Controller control={control} name={'isActive' as Path<T>} render={renderField} />;
 };
