@@ -107,7 +107,10 @@ export default ({ config }) => ({
             'expo-build-properties',
             {
                 buildReactNativeFromSource: true,
-                useHermesV1: true
+                useHermesV1: true,
+                ios: {
+                    ccacheEnabled: process.env.CI === 'true' || IS_E2E
+                }
             }
         ],
         './plugins/with-vec-xcframework-fix',
