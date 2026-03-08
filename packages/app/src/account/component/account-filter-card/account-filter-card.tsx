@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
@@ -10,6 +11,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+/* jscpd:ignore-end */
 
 interface Props {
     readonly selectedAccountIds: number[];
