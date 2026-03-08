@@ -289,6 +289,7 @@ jobs:
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         run: |
+          sh ./scripts/setup-ios-simulator.sh
           maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --format junit --config config.yaml --debug-output ./
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
