@@ -57,6 +57,7 @@
         "expo-linking": "~55.0.7",
         "expo-local-authentication": "~55.0.8",
         "expo-localization": "~55.0.8",
+        "expo-modules-core": "~55.0.13",
         "expo-pdf-text-extract": "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch",
         "expo-router": "~55.0.3",
         "expo-screen-capture": "~55.0.8",
