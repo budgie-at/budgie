@@ -2,6 +2,7 @@ import rootPkg from './package.json';
 
 const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
+const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
 
 const getUniqueIdentifier = isAndroid => {
@@ -15,6 +16,10 @@ const getUniqueIdentifier = isAndroid => {
         return `${prefix}.preview`;
     }
 
+    if (IS_E2E) {
+        return `${prefix}.e2e`;
+    }
+
     return prefix;
 };
 
@@ -25,6 +30,10 @@ const getAppName = () => {
 
     if (IS_PREVIEW) {
         return 'budgie (Preview)';
+    }
+
+    if (IS_E2E) {
+        return 'budgie (E2E)';
     }
 
     return 'budgie';
@@ -89,6 +98,7 @@ export default ({ config }) => ({
     },
     owner: 'vitalyiegorov',
     updates: {
+        enabled: !IS_E2E,
         url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36',
         enableBsdiffPatchSupport: true
     },
