@@ -17,6 +17,7 @@ interface Props {
     readonly iconClassName?: string;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
+    readonly testID?: string;
 }
 
 const wrapperVariants = cva('items-center justify-center', {
@@ -29,10 +30,10 @@ const wrapperVariants = cva('items-center justify-center', {
 });
 
 export const EmptyState = (props: Props) => {
-    const { title, description, className, circleIcon, titleClassName, descriptionClassName, icon, iconClassName } = props;
+    const { title, description, className, circleIcon, titleClassName, descriptionClassName, icon, iconClassName, testID } = props;
 
     return (
-        <View className={cn(wrapperVariants({ hasIcon: isNotEmptyString(icon) }), className)}>
+        <View className={cn(wrapperVariants({ hasIcon: isNotEmptyString(icon) }), className)} testID={testID}>
             {isNotEmptyString(icon) && <Icon icon={icon} className={cn('text-secondary-foreground mb-xl', iconClassName)} size={48} />}
             {isNotEmptyString(circleIcon) && (
                 <CircleIcon

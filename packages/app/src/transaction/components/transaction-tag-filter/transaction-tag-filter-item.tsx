@@ -2,6 +2,7 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -49,9 +50,20 @@ export const TransactionTagFilterItem = ({ onSelect, tag, isFirst, isLast, isSel
     const handleSelect = () => void onSelect(tag.id);
 
     return (
-        <HapticPressable onPress={handleSelect} className={tagVariants({ isSelected, isFirst, isLast })}>
+        <HapticPressable
+            onPress={handleSelect}
+            className={tagVariants({ isSelected, isFirst, isLast })}
+            testID={TransactionFiltersSelectors.TagOption(tag.title)}
+        >
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>#{tag.title}</Text>
-            {isSelected ? <Icon size={16} icon={UserIconNameEnum.Check} className="text-primary" /> : null}
+            {isSelected ? (
+                <Icon
+                    size={16}
+                    icon={UserIconNameEnum.Check}
+                    className="text-primary"
+                    testID={TransactionFiltersSelectors.TagOptionSelected(tag.title)}
+                />
+            ) : null}
         </HapticPressable>
     );
 };

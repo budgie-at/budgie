@@ -7,7 +7,9 @@ import { ScrollView, View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 /* jscpd:ignore-end */
 import { SearchableFilterControls } from '../transaction/components/searchable-filter-controls/searchable-filter-controls';
@@ -26,7 +28,7 @@ export default function TransactionCategoryFilterModal() {
     const [, resolveTransactionCategoryFilter, currentParams] = useTransactionCategoryFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const [localValue, setLocalValue] = useState<number[] | null>(() => currentParams?.value ?? null);
+    const [localValue, setLocalValue, localValueRef] = useStateRef<number[] | null>(() => currentParams?.value ?? null);
     const [search, setSearch] = useState('');
 
     const { categories, total } = useSearchCategoriesQuery(search, true);
@@ -47,7 +49,7 @@ export default function TransactionCategoryFilterModal() {
     const handleClear = () => void setLocalValue(null);
 
     const handleApply = () => {
-        resolveTransactionCategoryFilter({ value: localValue });
+        resolveTransactionCategoryFilter({ value: localValueRef.current });
     };
     /* jscpd:ignore-end */
 
@@ -74,6 +76,9 @@ export default function TransactionCategoryFilterModal() {
                     onSelectAll={handleSelectAll}
                     onDeselectAll={handleDeselectAll}
                     isVisible={showControls}
+                    searchInputTestID={TransactionFiltersSelectors.CategorySearchInput}
+                    selectAllButtonTestID={TransactionFiltersSelectors.CategorySelectAllButton}
+                    deselectAllButtonTestID={TransactionFiltersSelectors.CategoryDeselectAllButton}
                 />
 
                 {isNotEmptyArray(items) ? (
@@ -107,7 +112,11 @@ export default function TransactionCategoryFilterModal() {
                 ) : null}
             </ScrollView>
 
-            <SearchableFilterFooter selectedCount={localSelectedCount} onApply={handleApply} />
+            <SearchableFilterFooter
+                selectedCount={localSelectedCount}
+                onApply={handleApply}
+                applyButtonTestID={TransactionFiltersSelectors.CategoryApplyButton}
+            />
         </View>
     );
     /* jscpd:ignore-end */

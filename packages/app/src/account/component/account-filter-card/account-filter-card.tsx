@@ -2,6 +2,7 @@ import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -36,14 +37,25 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
     const handleSelect = () => void onSelect(account.id);
 
     return (
-        <HapticPressable onPress={handleSelect} className={accountVariants({ isSelected })}>
+        <HapticPressable
+            onPress={handleSelect}
+            className={accountVariants({ isSelected })}
+            testID={TransactionFiltersSelectors.AccountOption(account.title)}
+        >
             <CircleIcon icon={account.icon} variant="ghost" />
 
             <Text className="text-sm font-medium text-secondary-foreground mr-auto">{account.title}</Text>
 
             <ProtectedText className="text-primary">{formatDigits(balance, account.instrument.symbol)}</ProtectedText>
 
-            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
+            {isSelected ? (
+                <Icon
+                    icon={UserIconNameEnum.Check}
+                    size={16}
+                    className="text-primary"
+                    testID={TransactionFiltersSelectors.AccountOptionSelected(account.title)}
+                />
+            ) : null}
         </HapticPressable>
     );
 };

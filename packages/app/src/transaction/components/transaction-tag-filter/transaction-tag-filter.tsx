@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 
@@ -32,6 +33,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
             icon={UserIconNameEnum.Hash}
             label={label}
             onPress={handleOpen}
+            testID={TransactionFiltersSelectors.TagChip}
         />
     );
 };

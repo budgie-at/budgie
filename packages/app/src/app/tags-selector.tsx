@@ -62,6 +62,7 @@ export default function TagsSelectorModal() {
                 placeholder={t`Search tags...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                rightActionTestID={TagPickerBottomSheetSelectors.CreateButton}
                 testID={TagPickerBottomSheetSelectors.Input}
             />
 

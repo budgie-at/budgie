@@ -30,6 +30,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'New Transfer'
 
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Transfer'
+
 - tapOn: '5'
 - tapOn: '0'
 
@@ -83,6 +87,19 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Test_Transfer'
 
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.50'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Transfer_Account.150'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
 # --- Edit Transfer ---
 
 - tapOn:
@@ -114,3 +131,14 @@ appId: ${APP_ID}
 
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Edited_Transfer'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Transfer_Account.100'

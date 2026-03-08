@@ -1,0 +1,158 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Income Target'
+
+- runFlow:
+    file: subflows/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Income Source'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.Income'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.Income'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Income'
+
+- tapOn: '0'
+- tapOn: '3'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Income Target'
+
+- runFlow:
+    file: subflows/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Income Convert Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Convert Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.230'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Target.130'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Source.100'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Convert_Income'
+- waitForAnimationToEnd
+
+- tapOn:
+    point: '80%,8%'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ConvertToTransfer.Page'
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Income Source'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Income Source'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Income Source'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- runFlow: subflows/confirm-convert-to-transfer.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Edit Transfer'
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Income'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Income_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Income_Target'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Target.130'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Source.70'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Convert_Income'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Target.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Income_Source.100'
