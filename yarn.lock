@@ -1214,6 +1214,7 @@ __metadata:
     expo-linking: "npm:~55.0.7"
     expo-local-authentication: "npm:~55.0.8"
     expo-localization: "npm:~55.0.8"
+    expo-modules-core: "npm:~55.0.13"
     expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~55.0.3"
     expo-screen-capture: "npm:~55.0.8"
@@ -10747,6 +10748,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/69d9df4bef870ba6789b63a8a00fd5fa0d7632e177575caaae098f411d5f6b0cdaf6591d2c264641bf39dcb19899ec2bbf4b16442068e4249e58b32955610c01
+  languageName: node
+  linkType: hard
+
+"expo-modules-core@npm:~55.0.13":
+  version: 55.0.14
+  resolution: "expo-modules-core@npm:55.0.14"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/0108ffa89364e6d293fe77c034b4a00a2b54c599b5e1ab44ea4a53f0f0b427dd1491f2bf986eaf9545e5d6ab06f0870ce6d3160255ff5dab4d1c484128575aad
   languageName: node
   linkType: hard
 
