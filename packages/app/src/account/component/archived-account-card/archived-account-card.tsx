@@ -45,28 +45,6 @@ export const ArchivedAccountCard = ({ account }: Props) => {
         ]);
     };
 
-    const handleDelete = () => {
-        Alert.alert(
-            t`Delete Account Permanently?`,
-            t`${accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone.`,
-            [
-                { text: t`Cancel`, style: 'cancel' },
-                {
-                    text: t`Delete Permanently`,
-                    style: 'destructive',
-                    onPress: () =>
-                        void accountService.deleteById(account.id).catch(() => {
-                            Toast.show({
-                                type: 'error',
-                                text1: t`Could not delete account.`,
-                                text2: t`Something went wrong. Please try again later.`
-                            });
-                        })
-                }
-            ]
-        );
-    };
-
     return (
         <SimpleHorizontalCell
             testID={ArchivedAccountCardSelectors.Card(accountTitle)}
@@ -78,10 +56,6 @@ export const ArchivedAccountCard = ({ account }: Props) => {
 
                     <HapticPressable testID={ArchivedAccountCardSelectors.RestoreButton(accountTitle)} onPress={handleRestore}>
                         <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
-                    </HapticPressable>
-
-                    <HapticPressable testID={ArchivedAccountCardSelectors.DeleteButton(accountTitle)} onPress={handleDelete}>
-                        <CircleIcon variant="destructive" icon={UserIconNameEnum.Trash2} />
                     </HapticPressable>
                 </View>
             }
