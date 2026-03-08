@@ -36,7 +36,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
-    let cardTestID = TransactionCardSelectors.Card(transaction.id);
+    let cardTestID: string = TransactionCardSelectors.Card(transaction.id);
 
     if (isAdjustment) {
         cardTestID = TransactionCardSelectors.AdjustmentCard(transaction.id);
