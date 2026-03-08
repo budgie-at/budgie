@@ -18,7 +18,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
-    visible: 'Categories'
+    visible:
+      id: 'CategoryPage.SearchInput'
 
 - tapOn:
     id: 'ActionButton'

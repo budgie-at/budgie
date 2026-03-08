@@ -5,40 +5,20 @@ appId: ${APP_ID}
 
 # --- Create Account ---
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.AddAccount'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'ActionItem.AddAccount'
-- extendedWaitUntil:
-    visible: 'New Account'
-
-- tapOn:
-    id: 'CreateAccount.CASH'
-- extendedWaitUntil:
-    visible: 'ACCOUNT NAME & ICON'
-
-- tapOn:
-    id: 'AccountForm.NameInput'
-- inputText: 'E2E Archive Account'
-
-- tapOn:
-    id: 'CreateAccount.Amount'
-- inputText: 200
-
-- tapOn:
-    id: 'AccountForm.SubmitButton'
-
-- runFlow: subflows/relaunch-app.flow.yaml
-- assertVisible: 'E2E Archive Account.*'
+- runFlow:
+    file: subflows/account/create-basic-account.flow.yaml
+    env:
+      ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
+      ACCOUNT_SCREEN_TITLE: 'Savings Account'
+      ACCOUNT_NAME: 'E2E Archive Account'
+      ACCOUNT_AMOUNT: '200'
+- assertVisible:
+    id: 'AccountCard.E2E Archive Account'
 
 # --- Archive Account ---
 
-- tapOn: 'E2E Archive Account.*'
+- tapOn:
+    id: 'AccountCard.E2E Archive Account'
 - extendedWaitUntil:
     visible:
       id: 'AccountDetails.EditButton'
@@ -61,36 +41,32 @@ appId: ${APP_ID}
 
 - tapOn: 'Archive'
 
-- runFlow: subflows/relaunch-app.flow.yaml
-- assertNotVisible: 'E2E Archive Account.*'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.0'
+    timeout: 10000
+- assertNotVisible:
+    id: 'AccountCard.E2E Archive Account'
 
 # --- Navigate to Archived Accounts ---
 
-- runFlow: subflows/navigate-to-settings.flow.yaml
-
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ArchivedCard'
-    direction: DOWN
-    speed: 20
-- tapOn:
-    id: 'SettingsPage.ArchivedCard'
-- extendedWaitUntil:
-    visible: 'Archived'
+- runFlow: subflows/account/open-archived-accounts.flow.yaml
 
 # --- Verify Archived Account Visible ---
 
-- assertVisible: 'E2E Archive Account'
+- assertVisible:
+    id: 'ArchivedAccountCard.E2E Archive Account'
 
 # --- Restore Account ---
 
 - tapOn:
-    id: 'ArchivedAccountCard.RestoreButton'
+    id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
 
 - tapOn: 'Restore'
 
 - extendedWaitUntil:
-    notVisible: 'E2E Archive Account'
+    notVisible:
+      id: 'ArchivedAccountCard.E2E Archive Account'
     timeout: 10000
 
 # --- Verify Account Back on Home ---
@@ -100,4 +76,5 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'TOTAL BALANCE'
 
-- assertVisible: 'E2E Archive Account.*'
+- assertVisible:
+    id: 'AccountCard.E2E Archive Account'
