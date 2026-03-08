@@ -66,9 +66,6 @@ jobs:
       issues: write
     outputs:
       deployment_url: ${{ steps.deploy-web.outputs.deployment_url }}
-      projectId: ${{ steps.create-preview.outputs.projectId }}
-      iosGroupId: ${{ steps.create-preview.outputs.iosGroupId }}
-      androidGroupId: ${{ steps.create-preview.outputs.androidGroupId }}
     steps:
       - name: Check for EXPO_TOKEN
         run: |
@@ -98,9 +95,17 @@ jobs:
 
       - name: Create preview
         id: create-preview
+        continue-on-error: true
         working-directory: packages/app
+        env:
+          APP_VARIANT: preview
         run: |
-          eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+          eas update --environment preview --channel preview --non-interactive \
+            --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+
+      - name: Warn when preview update fails
+        if: steps.create-preview.outcome == 'failure'
+        run: echo "::warning::EAS preview update failed; continuing with the remaining preview deploy steps."
 
       - name: Build web app
         working-directory: packages/app
