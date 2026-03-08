@@ -67,9 +67,6 @@ const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSy
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
 
-    // eslint-disable-next-line no-console
-    console.log('[E2E_DEBUG] RootLayout render', { success, error: error?.message ?? null, isAiDisabled });
-
     useResetDb(error);
     useAppInitialization(success);
     useAppState(handleAppStateChange);

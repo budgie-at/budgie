@@ -1,7 +1,7 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { AccountDebtTypeEnum } from '@budgie/contracts';
 
-const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/g, '_');
+const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const AccountFormSelectors = {
     NameInput: 'AccountForm.NameInput',

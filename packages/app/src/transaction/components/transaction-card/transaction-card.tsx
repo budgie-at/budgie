@@ -36,11 +36,13 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
-    const cardTestID = isAdjustment
-        ? TransactionCardSelectors.AdjustmentCard(transaction.id)
-        : isNotEmptyString(title)
-          ? TransactionCardSelectors.LabelCard(title)
-          : TransactionCardSelectors.Card(transaction.id);
+    let cardTestID = TransactionCardSelectors.Card(transaction.id);
+
+    if (isAdjustment) {
+        cardTestID = TransactionCardSelectors.AdjustmentCard(transaction.id);
+    } else if (isNotEmptyString(title)) {
+        cardTestID = TransactionCardSelectors.LabelCard(title);
+    }
 
     const getHref = (): Href => {
         const { id } = transaction;
