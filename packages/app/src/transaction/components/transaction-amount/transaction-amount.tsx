@@ -23,21 +23,38 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
+interface AggregatedEntry {
+    readonly amount: number;
+    readonly account: TransactionWithRelationsEntityInterface['entries'][number]['account'];
+}
+
 const amountVariants = cva('text-sm font-semibold text-right', {
     variants: { type: FOREGROUND_COLOR_PALETTE }
 });
 
+const getAggregatedEntry = (
+    transaction: TransactionWithRelationsEntityInterface,
+    accountId: number | null
+): AggregatedEntry | null => {
+    const entries = transaction.entries.filter(entry => entry.accountId === accountId);
+
+    return isNotEmptyArray(entries) ? { ...entries[0], amount: sumEntryAmounts(entries) } : null;
+};
+
+const getAmountTestID = (isAdjustment: boolean, amount: number, transactionId: number) =>
+    isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transactionId);
+
+const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) => ({
+    type: getTransactionType(transaction),
+    isAdjustment: isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction),
+    fromEntry: getAggregatedEntry(transaction, transaction.fromAccountId),
+    toEntry: getAggregatedEntry(transaction, transaction.toAccountId)
+});
+
 export const TransactionAmount = ({ transaction }: Props) => {
-    const type = getTransactionType(transaction);
     const { decimalPlaces } = useSettingsContext();
-    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-
-    const fromEntries = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
-    const toEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
-    const fromEntry = isNotEmptyArray(fromEntries) ? { ...fromEntries[0], amount: sumEntryAmounts(fromEntries) } : null;
-    const toEntry = isNotEmptyArray(toEntries) ? { ...toEntries[0], amount: sumEntryAmounts(toEntries) } : null;
-
     const formatDigits = useFormatDigits(decimalPlaces);
+    const { type, isAdjustment, fromEntry, toEntry } = getDisplayState(transaction);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
@@ -57,12 +74,10 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
     if (isDefined(fromEntry)) {
         const amount = convertFromMicroUnits(fromEntry.amount);
+        const amountTestID = getAmountTestID(isAdjustment, amount, transaction.id);
 
         return (
-            <Text
-                className={amountVariants({ type: TRANSACTION_COLOR[type] })}
-                testID={isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transaction.id)}
-            >
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })} testID={amountTestID}>
                 {formatDigits(amount, fromEntry.account.instrument.symbol)}
             </Text>
         );
@@ -70,12 +85,10 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
     if (isDefined(toEntry)) {
         const amount = convertFromMicroUnits(toEntry.amount);
+        const amountTestID = getAmountTestID(isAdjustment, amount, transaction.id);
 
         return (
-            <Text
-                className={amountVariants({ type: TRANSACTION_COLOR[type] })}
-                testID={isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transaction.id)}
-            >
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })} testID={amountTestID}>
                 {formatDigits(amount, toEntry.account.instrument.symbol)}
             </Text>
         );

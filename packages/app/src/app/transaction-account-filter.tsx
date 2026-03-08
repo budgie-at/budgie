@@ -19,7 +19,7 @@ import { TransactionFilterEmptyState } from '../transaction/components/transacti
 import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
