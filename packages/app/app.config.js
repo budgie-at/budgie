@@ -100,6 +100,7 @@ export default ({ config }) => ({
                 useHermesV1: true
             }
         ],
+        './plugins/with-vec-xcframework-fix',
         'expo-asset',
         'expo-image',
         'expo-sharing',

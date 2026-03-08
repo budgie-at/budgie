@@ -13,7 +13,7 @@ import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
-export interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'contactId' | 'deadline'> {
+interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'contactId' | 'deadline'> {
     readonly contactId: string | null;
     readonly deadline: Date | null;
     readonly includeInNetWorth?: boolean;
