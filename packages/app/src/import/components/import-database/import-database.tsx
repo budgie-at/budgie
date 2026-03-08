@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { databaseImportService } from '../../service/database-import.service';
@@ -60,6 +61,7 @@ export const ImportDatabase = () => {
             icon={UserIconNameEnum.Database}
             variant="ghost"
             isLoading={isLoading}
+            testID={SettingsPageSelectors.ImportDatabaseCard}
         />
     );
 };

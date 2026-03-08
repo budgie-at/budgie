@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+---
+- runFlow: navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ImportDatabaseCard'
+    direction: DOWN
+    speed: 20
+- tapOn:
+    id: 'SettingsPage.ImportDatabaseCard'
+
+- tapOn: 'Search'
+- inputText: ${FIXTURE_QUERY}
+- tapOn: 'Name Contains “${FIXTURE_QUERY}”'
+- hideKeyboard
+- tapOn:
+    point: '18%,29%'
+
+- extendedWaitUntil:
+    visible: 'Import Database'
+    timeout: 10000
+- tapOn:
+    point: '50%,56%'
+
+- extendedWaitUntil:
+    notVisible: 'This action cannot be undone.'
+    timeout: 15000
+
+- runFlow: relaunch-app.flow.yaml

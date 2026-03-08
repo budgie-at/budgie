@@ -12,5 +12,7 @@ export const SettingsPageSelectors = {
     ManageCategoriesCard: 'SettingsPage.ManageCategoriesCard',
     ManageTagsCard: 'SettingsPage.ManageTagsCard',
     ArchivedCard: 'SettingsPage.ArchivedCard',
-    InactiveCard: 'SettingsPage.InactiveCard'
+    InactiveCard: 'SettingsPage.InactiveCard',
+    ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
+    ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard'
 } as const;
