@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.38.1](https://github.com/budgie-at/budgie/compare/v2.38.0...v2.38.1) (2026-03-08)
+
+**Note:** Version bump only for package @budgie-at/root
+
 # [2.38.0](https://github.com/budgie-at/budgie/compare/v2.37.1...v2.38.0) (2026-03-01)
 
 ### Bug Fixes
