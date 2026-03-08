@@ -5,6 +5,7 @@
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
+        "packages/app/plugins/with-vec-xcframework-fix.js",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
@@ -37,5 +38,5 @@
         "@types/react-dom",
         "rimraf"
     ],
-    "ignoreBinaries": ["run"]
+    "ignoreBinaries": ["run", "maestro"]
 }
