@@ -13,13 +13,15 @@ import {
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { DeletableRow } from '../deletable-row/deletable-row';
+import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
 
 interface Props<T extends IdInterface> {
     data: T[];
-    onDelete: (id: number) => Promise<void>;
+    onDelete?: (id: number) => Promise<void>;
     renderCard: (item: T) => ReactNode;
+    getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     children?: ReactNode;
 }
 
@@ -31,19 +33,34 @@ const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
 const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
-export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, children }: Props<T>) => {
+export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, getDeleteConfirmation, children }: Props<T>) => {
     const [notify] = useVibration();
 
     const handleDeleteItem = async (id: number) => {
-        await onDelete(id);
-        notify(NotificationFeedbackType.Success);
+        if (onDelete === undefined) {
+            return;
+        }
+
+        try {
+            await onDelete(id);
+            notify(NotificationFeedbackType.Success);
+        } catch {
+            return;
+        }
     };
 
-    const renderItem = ({ item }: { item: T }) => (
-        <DeletableRow id={item.id} onDelete={handleDeleteItem}>
-            {renderCard(item)}
-        </DeletableRow>
-    );
+    const renderItem = ({ item }: { item: T }) => {
+        const card = renderCard(item);
+        if (onDelete === undefined) {
+            return card;
+        }
+
+        return (
+            <DeletableRow id={item.id} onDelete={handleDeleteItem} confirmation={getDeleteConfirmation?.(item)}>
+                {card}
+            </DeletableRow>
+        );
+    };
 
     return (
         <>
