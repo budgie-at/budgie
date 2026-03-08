@@ -4,13 +4,17 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/account/create-cash-account.flow.yaml
     env:
+      CURRENCY_CODE: 'USD'
+      ACCOUNT_AMOUNT: '100'
       ACCOUNT_NAME: 'E2E Txn Account'
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/account/create-cash-account.flow.yaml
     env:
+      CURRENCY_CODE: 'EUR'
+      ACCOUNT_AMOUNT: '100'
       ACCOUNT_NAME: 'E2E Foreign Account'
 
 # --- Create Cross-Currency Transfer ---
