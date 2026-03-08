@@ -203,6 +203,15 @@ jobs:
     needs: [code-quality]
     name: E2E Tests on iOS
     runs-on: macos-15
+    env:
+      APP_VARIANT: e2e
+      IOS_DERIVED_DATA: /Users/runner/Library/Developer/Xcode/DerivedData/budgie-e2e
+      USE_CCACHE: "1"
+      CCACHE_DIR: /Users/runner/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPRESS: "true"
+      CCACHE_MAXSIZE: 2G
+      CCACHE_NOHASHDIR: "true"
     steps:
       - uses: actions/checkout@v4
 
@@ -214,6 +223,30 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Apply E2E autolinking excludes
+        working-directory: packages/app
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const packageJsonPath = 'package.json';
+          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+          packageJson.expo ??= {};
+          packageJson.expo.autolinking ??= {};
+          packageJson.expo.autolinking.exclude = [
+            'expo-dev-client',
+            'expo-dev-launcher',
+            'expo-dev-menu',
+            'expo-dev-menu-interface'
+          ];
+
+          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
+          console.log('Applied expo.autolinking.exclude for e2e build');
+          NODE
+
+      - name: Build internal workspace packages
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -232,13 +265,31 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: pods-${{ runner.os }}-
+          key: pods-${{ runner.os }}-xcode26_2-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          restore-keys: |
+            pods-${{ runner.os }}-xcode26_2-
+            pods-${{ runner.os }}-
+
+      - name: Setup ccache
+        run: |
+          if ! command -v ccache >/dev/null; then
+            brew install ccache
+          fi
+          ccache --version
+          ccache --zero-stats || true
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ runner.os }}-xcode26_2-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-xcode26_2-e2e-
+            ccache-${{ runner.os }}-
 
       - name: Expo Prebuild
         working-directory: packages/app
         env:
-          APP_VARIANT: e2e
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios
@@ -246,9 +297,11 @@ jobs:
       - name: Restore Xcode DerivedData cache
         uses: actions/cache/restore@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
-          restore-keys: deriveddata-${{ runner.os }}-
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_2-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-xcode26_2-e2e-release-
+            deriveddata-${{ runner.os }}-xcode26_2-e2e-
 
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
@@ -257,14 +310,12 @@ jobs:
 
       - name: Pre-copy vec.xcframework for ExpoSQLite
         run: |
-          XCFW_DIR=~/Library/Developer/Xcode/DerivedData/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite
+          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
           mkdir -p "$XCFW_DIR"
           cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
 
       - name: Build app
         working-directory: packages/app
-        env:
-          APP_VARIANT: e2e
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -1)
@@ -275,17 +326,20 @@ jobs:
             -scheme "$SCHEME" \
             -sdk iphonesimulator \
             -configuration Release \
-            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -derivedDataPath "$IOS_DERIVED_DATA" \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
             -jobs $(sysctl -n hw.ncpu) \
             CODE_SIGN_IDENTITY="-" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             PROVISIONING_PROFILE_SPECIFIER="" \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            ARCHS=arm64 \
+            EXCLUDED_ARCHS=x86_64
 
       - name: Install app on Simulator
         run: |
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
           xcrun simctl install booted "$APP_PATH"
 
@@ -317,14 +371,21 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
+          key: pods-${{ runner.os }}-xcode26_2-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+      - name: Save ccache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ runner.os }}-xcode26_2-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save Xcode DerivedData cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_2-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
 
   e2e-android:
     if: false
@@ -355,6 +416,27 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
+
+      - name: Apply E2E autolinking excludes
+        working-directory: packages/app
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const packageJsonPath = 'package.json';
+          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+          packageJson.expo ??= {};
+          packageJson.expo.autolinking ??= {};
+          packageJson.expo.autolinking.exclude = [
+            'expo-dev-client',
+            'expo-dev-launcher',
+            'expo-dev-menu',
+            'expo-dev-menu-interface'
+          ];
+
+          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
+          console.log('Applied expo.autolinking.exclude for e2e build');
+          NODE
 
       - name: Expo Prebuild
         working-directory: packages/app
