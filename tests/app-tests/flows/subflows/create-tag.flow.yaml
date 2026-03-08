@@ -18,7 +18,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ManageTagsCard'
 - extendedWaitUntil:
-    visible: 'Tags'
+    visible:
+      id: 'TagPage.SearchInput'
 
 - tapOn:
     id: 'ActionButton'

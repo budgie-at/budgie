@@ -10,14 +10,20 @@ appId: ${APP_ID}
 # --- Create two accounts ---
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/account/create-basic-account.flow.yaml
     env:
+      ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
+      ACCOUNT_SCREEN_TITLE: 'Savings Account'
       ACCOUNT_NAME: 'E2E Cash'
+      ACCOUNT_AMOUNT: '100'
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/account/create-basic-account.flow.yaml
     env:
+      ACCOUNT_TYPE_ID: 'CreateAccount.BANK'
+      ACCOUNT_SCREEN_TITLE: 'Checking Account'
       ACCOUNT_NAME: 'E2E Bank'
+      ACCOUNT_AMOUNT: '100'
 
 # --- Create category ---
 
@@ -71,6 +77,9 @@ appId: ${APP_ID}
       TO_ACCOUNT: 'E2E Cash'
       COMMENT: 'E2E ATM Withdrawal'
 
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_ATM_Withdrawal'
+
 # ===========================
 # NAVIGATION: Verify all tabs
 # ===========================
@@ -84,16 +93,21 @@ appId: ${APP_ID}
 
 - assertVisible:
     id: 'HomePage.TotalBalance'
-- assertVisible: 'E2E Cash.*'
-- assertVisible: 'E2E Bank.*'
+- assertVisible:
+    id: 'AccountCard.E2E Cash'
+- assertVisible:
+    id: 'AccountCard.E2E Bank'
 
 # --- Transactions Tab ---
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- assertVisible: 'E2E Lunch'
-- assertVisible: 'E2E Salary'
-- assertVisible: 'E2E ATM Withdrawal'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Lunch'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Salary'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_ATM_Withdrawal'
 
 # --- Analytics Tab ---
 
@@ -109,7 +123,8 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- tapOn: 'E2E Lunch'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Lunch'
 - waitForAnimationToEnd
 
 - runFlow:
@@ -124,23 +139,24 @@ appId: ${APP_ID}
     visible: 'Transactions'
     timeout: 15000
 
-- assertVisible: 'E2E Dinner'
-- assertNotVisible: 'E2E Lunch'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Dinner'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Lunch'
 
 # ===========================
 # DELETE: Remove a transaction
 # ===========================
 
-- tapOn: 'E2E Dinner'
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Dinner'
 - waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
-
-- assertNotVisible: 'E2E Dinner'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Dinner'
 
 # ===========================
 # VERIFY: Balance after operations
