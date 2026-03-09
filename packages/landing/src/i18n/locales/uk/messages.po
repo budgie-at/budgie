@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/generic/component/faq-section/faq-section.tsx:72
+#: src/generic/component/faq-section/faq-section.tsx:60
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "Так! Ви можете синхронізувати свої дані між пристроями, використовуючи власне хмарне сховище (iCloud, Google Drive, Dropbox). Ваші дані залишаються зашифрованими та приватними — ми ніколи не бачимо їх під час синхронізації."
 
@@ -24,15 +24,6 @@ msgstr "(Бета-тестери)"
 #: src/generic/component/waitlist-form/waitlist-form.tsx:95
 msgid "{formattedCount}+ people already waiting"
 msgstr "{formattedCount}+ людей вже чекають"
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:29
-msgid "/14 days"
-msgstr "/14 днів"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:49
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:30
-msgid "/month"
-msgstr "/місяць"
 
 #: src/generic/component/open-source-section/open-source-visual-code.tsx:11
 msgid "# Audit the code yourself"
@@ -46,25 +37,17 @@ msgstr "© {date} Budgie. Всі права захищено."
 msgid "← Back to Blog"
 msgstr "← Назад до блогу"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:112
-msgid "<0>Limited Offer:</0> Only 500 whitelist spots available. Get 25% off your first year of Budgie Pro when you join the whitelist."
-msgstr "<0>Обмежена пропозиція:</0> Лише 500 місць у білому списку. Отримайте 25% знижки на перший рік Budgie Pro, приєднавшись до білого списку."
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:84
+msgid "<0>Limited Spots:</0> Only 500 whitelist spots available. Get early access to Budgie Pro when you join the whitelist."
+msgstr "<0>Обмежена кількість місць:</0> Лише 500 місць у whitelist. Отримайте ранній доступ до Budgie Pro, приєднавшись до whitelist."
 
 #: src/generic/component/whitelist-section/whitelist-section.tsx:30
 msgid "🎉 EXCLUSIVE WHITELIST OFFER"
 msgstr "🎉 ЕКСКЛЮЗИВНА ПРОПОЗИЦІЯ ДЛЯ БІЛОГО СПИСКУ"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:45
-msgid "$15/month"
-msgstr "$15/місяць"
-
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:31
 msgid "$2,800 left"
 msgstr "Залишилось $2 800"
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:33
-msgid "$20/month"
-msgstr "$20/місяць"
 
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:29
 msgid "$7,200 of $10,000"
@@ -80,18 +63,6 @@ msgstr "100% офлайн"
 msgid "100% Private"
 msgstr "100% приватність"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:49
-msgid "25% off for the first year"
-msgstr "Знижка 25% на перший рік"
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:62
-msgid "25% off your first year of Budgie Pro"
-msgstr "25% знижки на перший рік Budgie Pro"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:42
-msgid "30-day money-back guarantee"
-msgstr "30-денна гарантія повернення коштів"
-
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:23
 msgid "72% paid"
 msgstr "72% сплачено"
@@ -100,18 +71,6 @@ msgstr "72% сплачено"
 msgid "AI That Never Leaks Your Secrets"
 msgstr "ШІ, який ніколи не видає ваших секретів"
 
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:33
-msgid "AI-powered insights"
-msgstr "AI-аналітика"
-
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:19
-msgid "All annual features"
-msgstr "Усі функції річного плану"
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:18
-msgid "All features included"
-msgstr "Усі функції включено"
-
 #: src/generic/component/security-section/security-section-cards.tsx:24
 msgid "All your data is stored locally on your device. We have no servers storing your information—because we never see it in the first place."
 msgstr "Усі ваші дані зберігаються локально на вашому пристрої. Ми не маємо серверів для зберігання вашої інформації — тому що ми ніколи її не бачимо."
@@ -119,10 +78,6 @@ msgstr "Усі ваші дані зберігаються локально на 
 #: src/generic/component/features-section/features-section-header.tsx:22
 msgid "All-in-One"
 msgstr "Все в одному"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:51
-msgid "Annual"
-msgstr "Річний"
 
 #: src/generic/component/footer/footer.tsx:74
 msgid "App"
@@ -184,7 +139,7 @@ msgstr "Синхронізація з банком"
 msgid "Bank sync available"
 msgstr "Синхронізація з банком"
 
-#: src/generic/component/faq-section/faq-section.tsx:60
+#: src/generic/component/faq-section/faq-section.tsx:48
 msgid "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
 msgstr "Синхронізація з банком потребує підключення до Інтернету для отримання нових транзакцій, але після синхронізації ви можете переглядати й категоризувати все офлайн. Додаток повністю працює офлайн для ручного введення витрат і перегляду даних."
 
@@ -197,16 +152,8 @@ msgid "Bank, Crypto & Cash"
 msgstr "Банк, крипто та готівка"
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:19
-msgid "Be among the first to experience Budgie Pro with exclusive early access pricing. Limited spots available for privacy-conscious early adopters."
-msgstr "Станьте одним із перших, хто спробує Budgie Pro за ексклюзивною ціною раннього доступу. Кількість місць обмежена для тих, хто цінує приватність."
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:50
-msgid "Best value for power users"
-msgstr "Найвигідніше для досвідчених користувачів"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:48
-msgid "Billed annually ($192/year) — Save 20%"
-msgstr "Оплата щорічно ($192/рік) — Економія 20%"
+msgid "Be among the first to experience Budgie Pro with exclusive early access. Limited spots available for privacy-conscious early adopters."
+msgstr "Будьте серед перших, хто спробує Budgie Pro з ексклюзивним раннім доступом. Обмежена кількість місць для тих, хто цінує приватність."
 
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:32
 msgid "Binance"
@@ -274,11 +221,7 @@ msgstr "Логотип Budgie"
 msgid "Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types"
 msgstr "Інтерфейс мобільного додатку Budgie з оглядом балансу та мультивалютними банківськими рахунками, включаючи картки Monobank та різні типи рахунків"
 
-#: src/generic/component/faq-section/faq-section.tsx:42
-msgid "Budgie Pro costs $20/month or $16/month when billed annually (20% savings). Whitelist members get an exclusive 25% discount for their first year. This premium pricing ensures we can maintain the highest privacy and security standards without relying on data monetization."
-msgstr "Budgie Pro коштує $20/місяць або $16/місяць при оплаті за рік (економія 20%). Учасники білого списку отримують ексклюзивну знижку 25% на перший рік. Така преміум-ціна дозволяє підтримувати найвищі стандарти приватності й безпеки без монетизації даних."
-
-#: src/generic/component/faq-section/faq-section.tsx:66
+#: src/generic/component/faq-section/faq-section.tsx:54
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie підтримує облік основних криптовалют, акцій, ETF і традиційних банківських рахунків. Ви можете додати будь-який актив вручну або підключити підтримувані біржі та брокерів для автоматичного обліку."
 
@@ -286,7 +229,7 @@ msgstr "Budgie підтримує облік основних криптовал
 msgid "Budgie Team"
 msgstr "Команда Budgie"
 
-#: src/generic/component/faq-section/faq-section.tsx:78
+#: src/generic/component/faq-section/faq-section.tsx:66
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie використовує ліцензію з відкритим кодом, яка дозволяє переглядати, змінювати та вносити вклад у код, але лише ми можемо монетизувати офіційний додаток. Це забезпечує прозорість та стійкість проєкту."
 
@@ -310,12 +253,11 @@ msgstr "Автор"
 msgid "Can be hacked or subpoenaed"
 msgstr "Можуть зламати або вилучити за повісткою"
 
-#: src/generic/component/faq-section/faq-section.tsx:74
+#: src/generic/component/faq-section/faq-section.tsx:62
 msgid "Can I use Budgie across multiple devices?"
 msgstr "Чи можу я використовувати Budgie на кількох пристроях?"
 
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:25
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:96
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:68
 msgid "Cancel anytime"
 msgstr "Скасувати можна в будь-який момент"
 
@@ -461,7 +403,7 @@ msgstr "DeFi-гаманці"
 msgid "Device-Only Storage"
 msgstr "Зберігання лише на пристрої"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:68
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:40
 msgid "Direct line to our development team"
 msgstr "Прямий зв'язок із командою розробки"
 
@@ -469,7 +411,7 @@ msgstr "Прямий зв'язок із командою розробки"
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
 msgstr "Відкрийте для себе інформацію про фінансову конфіденційність, найкращі практики безпеки та як взяти під контроль свої гроші."
 
-#: src/generic/component/faq-section/faq-section.tsx:62
+#: src/generic/component/faq-section/faq-section.tsx:50
 msgid "Does bank sync work offline?"
 msgstr "Чи працює синхронізація з банком офлайн?"
 
@@ -493,21 +435,13 @@ msgstr "До 15 лютого 2025"
 msgid "Due Jan 30, 2025"
 msgstr "До 30 січня 2025"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:58
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:30
 msgid "Early Access"
 msgstr "Ранній доступ"
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx:59
 msgid "Early access members get 50% off lifetime"
 msgstr "Учасники раннього доступу отримують 50% знижки назавжди"
-
-#: src/generic/component/cta-section/cta-section.tsx:56
-msgid "Early access pricing"
-msgstr "Ціна раннього доступу"
-
-#: src/generic/component/pricing-section/pricing-section-cta.tsx:17
-msgid "Early adopter? Join the whitelist and get 25% off your first year!"
-msgstr "Ранній користувач? Приєднуйтесь до білого списку та отримайте 25% знижки на перший рік!"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:27
 msgid "Emily Johnson"
@@ -541,6 +475,14 @@ msgstr "Кожен рядок коду публічний на GitHub. Досл�
 msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
 msgstr "Все, що потрібно знати про підхід Budgie до обліку витрат із пріоритетом приватності."
 
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:34
+msgid "Exclusive benefits for early supporters"
+msgstr "Ексклюзивні переваги для ранніх підтримувачів"
+
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:36
+msgid "Exclusive Perks"
+msgstr "Ексклюзивні переваги"
+
 #: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
@@ -569,14 +511,6 @@ msgstr "Нарешті бачити криптовалюту, акції та б
 msgid "Find Hidden Patterns"
 msgstr "Знайдіть приховані закономірності"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:64
-msgid "First Year Discount"
-msgstr "Знижка на перший рік"
-
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:31
-msgid "Flexible, cancel anytime"
-msgstr "Гнучко, скасуйте будь-коли"
-
 #: src/generic/component/analytics-section/analytics-section-chart-bars.tsx:14
 msgid "Food & Dining"
 msgstr "Їжа та ресторани"
@@ -588,14 +522,6 @@ msgstr "Форки"
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:37
 msgid "Found $1,020/year in wasted subscriptions"
 msgstr "Знайшов $1 020/рік на непотрібних підписках"
-
-#: src/generic/component/faq-section/faq-section.tsx:48
-msgid "Free expense apps make money by selling your financial data or showing ads. Budgie's premium model means we work for you, not advertisers. Your subscription funds ongoing development, security updates, and ensures your data remains completely private—never sold or monetized."
-msgstr "Безкоштовні додатки для обліку витрат заробляють, продаючи ваші фінансові дані або показуючи рекламу. Преміум-модель Budgie означає, що ми працюємо для вас, а не для рекламодавців. Ваша підписка фінансує розвиток, оновлення безпеки і гарантує, що ваші дані залишаються цілком приватними — ніколи не продаються й не монетизуються."
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:31
-msgid "Free Trial"
-msgstr "Безкоштовна пробна версія"
 
 #: src/generic/component/faq-section/faq-section.tsx:31
 msgid "Frequently Asked Questions"
@@ -609,18 +535,13 @@ msgstr "Повна прозорість коду"
 msgid "Get Budgie from the app store. No registration required—your privacy starts immediately."
 msgstr "Завантажте Budgie з магазину додатків. Реєстрація не потрібна — ваша приватність зберігається з першого запуску."
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:56
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:28
 msgid "Get Budgie Pro before the public launch"
 msgstr "Отримайте Budgie Pro до офіційного запуску"
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:36
 msgid "Get complete control over your finances with just a few simple steps. No accounts, no cloud storage, no compromises."
 msgstr "Отримайте повний контроль над фінансами за кілька простих кроків. Без акаунтів, без хмарного сховища, без компромісів."
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:22
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:12
-msgid "Get Started"
-msgstr "Почати"
 
 #: src/generic/component/footer/footer.tsx:45
 msgid "GitHub"
@@ -642,21 +563,17 @@ msgstr "Чесне порівняння"
 msgid "Housing"
 msgstr "Житло"
 
-#: src/generic/component/faq-section/faq-section.tsx:80
+#: src/generic/component/faq-section/faq-section.tsx:68
 msgid "How does the open source license work?"
 msgstr "Як працює ліцензія з відкритим кодом?"
 
-#: src/generic/component/faq-section/faq-section.tsx:56
+#: src/generic/component/faq-section/faq-section.tsx:44
 msgid "How is my financial data kept private?"
 msgstr "Як захищаються мої фінансові дані?"
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:28
 msgid "How It Works"
 msgstr "Як це працює"
-
-#: src/generic/component/faq-section/faq-section.tsx:44
-msgid "How much does Budgie cost?"
-msgstr "Скільки коштує Budgie?"
 
 #: src/generic/component/ai-section-details/ai-section-details.tsx:34
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
@@ -706,10 +623,6 @@ msgstr "Інвестиційний портфель"
 msgid "iOS & Android"
 msgstr "iOS та Android"
 
-#: src/generic/component/faq-section/faq-section.tsx:86
-msgid "Is there a free trial or money-back guarantee?"
-msgstr "Чи є безкоштовний пробний період або гарантія повернення грошей?"
-
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:48
 msgid "James Wilson"
 msgstr "James Wilson"
@@ -731,8 +644,8 @@ msgid "Join the Budgie waitlist and be among the first to experience truly priva
 msgstr "Приєднуйтесь до списку очікування Budgie та будьте серед перших, хто відчує справжнє приватне фінансове управління."
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:15
-msgid "Join the Whitelist & Save 25%"
-msgstr "Приєднуйтесь до білого списку та заощаджуйте 25%"
+msgid "Join the Whitelist"
+msgstr "Приєднатися до Whitelist"
 
 #: src/generic/component/header/header.tsx:100
 #: src/generic/component/waitlist-form/waitlist-form.tsx:116
@@ -741,12 +654,9 @@ msgstr "Приєднатися до списку очікування"
 
 #: src/app/[lang]/blog/[slug]/page.tsx:175
 #: src/generic/component/mobile-menu/mobile-menu.tsx:53
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:51
 msgid "Join Whitelist"
 msgstr "Приєднатися до білого списку"
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:79
-msgid "Join Whitelist - Save 25%"
-msgstr "Приєднайтесь до білого списку — заощадьте 25%"
 
 #: src/generic/component/mobile-menu/mobile-menu.tsx:47
 msgid "Language"
@@ -768,11 +678,7 @@ msgstr "Юридична інформація"
 msgid "License"
 msgstr "Ліцензія"
 
-#: src/generic/component/cta-section/cta-section.tsx:64
-msgid "Lifetime 50% discount"
-msgstr "50% знижка назавжди"
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:104
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:76
 msgid "Limited time"
 msgstr "Обмежений час"
 
@@ -817,20 +723,11 @@ msgstr "Контролюйте, що ви винні іншим"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:32
-msgid "Monthly"
-msgstr "Щомісячний"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:16
-msgid "Most Popular"
-msgstr "Найпопулярніший"
-
 #: src/generic/component/features-section/features-section-grid.tsx:82
 msgid "Multi-Currency"
 msgstr "Мультивалютність"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:16
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:36
 msgid "Multi-currency support"
 msgstr "Підтримка багатьох валют"
 
@@ -850,14 +747,9 @@ msgstr "Без реєстрації"
 msgid "No articles found"
 msgstr "Статей не знайдено"
 
-#: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:22
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:88
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:60
 msgid "No commitment"
 msgstr "Без зобов'язань"
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:21
-msgid "No credit card required"
-msgstr "Кредитна картка не потрібна"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:13
 msgid "No data mining"
@@ -866,10 +758,6 @@ msgstr "Без збору даних"
 #: src/generic/component/security-section/security-section-visual.tsx:44
 msgid "No Data Mining"
 msgstr "Без збору даних"
-
-#: src/generic/component/pricing-section/pricing-section-header.tsx:30
-msgid "No hidden fees, no feature restrictions. Get full access to all features with a simple, transparent price."
-msgstr "Без прихованих платежів, без обмежень функцій. Отримайте повний доступ до всіх можливостей за простою та прозорою ціною."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:50
 msgid "No server round-trips. Every action is instant. The app works even in airplane mode."
@@ -887,6 +775,10 @@ msgstr "Офлайн і приватно"
 msgid "Offline-First"
 msgstr "Офлайн-перший"
 
+#: src/generic/component/cta-section/cta-section.tsx:64
+msgid "Offline-first architecture"
+msgstr "Offline-first архітектура"
+
 #: src/generic/component/open-source-section/open-source-visual-header.tsx:16
 msgid "Offline-first budgeting app"
 msgstr "Бюджетний додаток офлайн-перший"
@@ -902,10 +794,6 @@ msgstr "Локальний ШІ (Budgie)"
 #: src/generic/component/ai-section-details/ai-section-details.tsx:19
 msgid "On-device assistant"
 msgstr "Асистент на пристрої"
-
-#: src/generic/component/pricing-section/pricing-section-header.tsx:26
-msgid "One Plan, Everything Included"
-msgstr "Один план, все включено"
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:88
 msgid "Only you see your data"
@@ -950,11 +838,7 @@ msgstr "Люди, які припинили перевитрачати"
 msgid "PIN Protection"
 msgstr "Захист PIN-кодом"
 
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:39
-msgid "Priority support"
-msgstr "Пріоритетна підтримка"
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:70
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:42
 msgid "Priority Support"
 msgstr "Пріоритетна підтримка"
 
@@ -966,6 +850,10 @@ msgstr "Прихильник приватності"
 #: src/generic/component/footer/footer.tsx:170
 msgid "Privacy Policy"
 msgstr "Політика конфіденційності"
+
+#: src/generic/component/cta-section/cta-section.tsx:56
+msgid "Privacy-first design"
+msgstr "Дизайн з пріоритетом приватності"
 
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:17
 msgid "PrivatBank"
@@ -982,10 +870,6 @@ msgstr "Реальні результати"
 #: src/generic/component/testimonials-section/testimonials-header.tsx:30
 msgid "Real stories from users who took control of their money and never looked back."
 msgstr "Реальні історії користувачів, які взяли під контроль свої гроші й ніколи не пошкодували."
-
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:29
-msgid "Regular Price"
-msgstr "Звичайна ціна"
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:56
 #: src/generic/component/problem-solution-section/problem-items.tsx:23
@@ -1089,10 +973,6 @@ msgstr "Встановлюйте цільові суми та терміни"
 msgid "Showing results for: <0>{searchQuery}</0>"
 msgstr "Показані результати для: <0>{searchQuery}</0>"
 
-#: src/generic/component/pricing-section/pricing-section-header.tsx:22
-msgid "Simple Pricing"
-msgstr "Проста ціна"
-
 #: src/generic/component/waitlist-form/waitlist-form.tsx:81
 msgid "Something went wrong. Please try again."
 msgstr "Щось пішло не так. Спробуйте ще раз."
@@ -1124,10 +1004,6 @@ msgstr "Спонсорувати проєкт"
 #: src/generic/component/open-source-section/open-source-visual-stats.tsx:8
 msgid "Stars"
 msgstr "Зірки"
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:12
-msgid "Start Free Trial"
-msgstr "Почати безкоштовно"
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
@@ -1284,10 +1160,6 @@ msgstr "Справжня приватність, а не лише обіцянк
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Спробуйте налаштувати пошуковий запит або перегляньте всі статті."
 
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:30
-msgid "Try everything risk-free"
-msgstr "Спробуйте все без ризику"
-
 #: src/generic/component/footer/footer.tsx:66
 msgid "Twitter"
 msgstr "Twitter"
@@ -1303,14 +1175,6 @@ msgstr "На відміну від додатків із закритим код
 #: src/generic/component/security-section/security-section-visual.tsx:34
 msgid "Unlike other apps, we can't access your data even if we wanted to. That's privacy by design."
 msgstr "На відміну від інших додатків, ми не можемо отримати доступ до ваших даних, навіть якби хотіли. Це приватність за задумом."
-
-#: src/generic/component/pricing-section/pricing-section-card-trial.tsx:24
-msgid "Unlimited accounts"
-msgstr "Необмежена кількість рахунків"
-
-#: src/generic/component/pricing-section/pricing-section-card-annual.tsx:30
-msgid "Unlimited bank syncs"
-msgstr "Необмежена синхронізація з банками"
 
 #: src/generic/component/blog-section/blog-section.tsx:51
 msgid "View All Articles"
@@ -1348,10 +1212,6 @@ msgstr "Ми віримо в прозорість. Ось чесне порів�
 msgid "We literally cannot see your data"
 msgstr "Ми буквально не можемо бачити ваші дані"
 
-#: src/generic/component/faq-section/faq-section.tsx:84
-msgid "We offer a 14-day free trial so you can experience Budgie's privacy-first approach risk-free. If you're not completely satisfied within 30 days, we provide a full refund—no questions asked."
-msgstr "Ми пропонуємо 14-денний безкоштовний пробний період, щоб ви могли спробувати підхід Budgie до приватності без ризику. Якщо ви не будете повністю задоволені протягом 30 днів, ми повернемо кошти — без зайвих питань."
-
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:33
 msgid "We took the opposite approach to every other budgeting app. Here's why that matters for you."
 msgstr "Ми обрали протилежний підхід до всіх інших бюджетних додатків. Ось чому це важливо для вас."
@@ -1360,7 +1220,7 @@ msgstr "Ми обрали протилежний підхід до всіх ін
 msgid "Wells Fargo"
 msgstr "Wells Fargo"
 
-#: src/generic/component/faq-section/faq-section.tsx:68
+#: src/generic/component/faq-section/faq-section.tsx:56
 msgid "What cryptocurrencies and assets can I track?"
 msgstr "Які криптовалюти й активи можна відстежувати?"
 
@@ -1374,17 +1234,9 @@ msgstr "Що робить нас особливими"
 msgid "Whitelist"
 msgstr "Білий список"
 
-#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:41
-msgid "Whitelist Price"
-msgstr "Ціна для білого списку"
-
 #: src/generic/component/ai-section-details/ai-section-details.tsx:28
 msgid "Why is there so little money left?"
 msgstr "Чому залишилося так мало грошей?"
-
-#: src/generic/component/faq-section/faq-section.tsx:50
-msgid "Why isn't Budgie free like other expense trackers?"
-msgstr "Чому Budgie не безкоштовний, як інші трекери витрат?"
 
 #: src/generic/component/problem-solution-section/problem-solution-section.tsx:23
 msgid "Why Most Budgeting Apps Get It Wrong"
@@ -1447,7 +1299,7 @@ msgstr "Ваш банк знає все. Mint продав ваші дані. YN
 msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
 msgstr "Ваші дані зашифровані за допомогою Face ID або відбитка пальця. Лише ви маєте до них доступ."
 
-#: src/generic/component/faq-section/faq-section.tsx:54
+#: src/generic/component/faq-section/faq-section.tsx:42
 msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
 msgstr "Ваші дані не залишають пристрій, якщо ви самі не синхронізуєте їх із власним хмарним сховищем. Ми не маємо серверів для зберігання вашої фінансової інформації і не можемо бачити ваші транзакції. Усе шифрується локально на вашому пристрої."
 
