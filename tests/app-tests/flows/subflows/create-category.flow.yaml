@@ -16,6 +16,9 @@ appId: ${APP_ID}
       id: 'SettingsPage.ManageCategoriesCard'
     direction: DOWN
     speed: 20
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageCategoriesCard'
 - tapOn:
     id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
