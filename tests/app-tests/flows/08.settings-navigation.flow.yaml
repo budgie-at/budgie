@@ -61,6 +61,9 @@ appId: ${APP_ID}
       id: 'SettingsPage.DefaultAccountCard'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.DefaultAccountCard'
 - tapOn:
     id: 'SettingsPage.DefaultAccountCard'
 - extendedWaitUntil:
