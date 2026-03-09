@@ -327,7 +327,7 @@ jobs:
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
-          model: 'iPhone 16 Pro'
+          model: 'iPhone 17 Pro'
 
       - name: Pre-copy vec.xcframework for ExpoSQLite
         run: |
@@ -348,7 +348,7 @@ jobs:
             -sdk iphonesimulator \
             -configuration Release \
             -derivedDataPath "$IOS_DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,arch=arm64' \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,arch=arm64' \
             -jobs $(sysctl -n hw.ncpu) \
             CODE_SIGN_IDENTITY="-" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
