@@ -3,10 +3,9 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { RecurringCalendarEmptyStateDay } from '../recurring-calendar-empty-state-day/recurring-calendar-empty-state-day';
+import { RecurringCalendarEmptyStateHint } from '../recurring-calendar-empty-state-hint/recurring-calendar-empty-state-hint';
 
 const HIGHLIGHTED_DAYS = [5, 9, 15, 24];
 const TOTAL_DAYS = 28;
@@ -45,19 +44,12 @@ export const RecurringCalendarEmptyState = () => {
                             const highlightDelay = HIGHLIGHT_DELAYS.get(day);
 
                             return (
-                                <View key={day} className="w-10 h-10 items-center justify-center">
-                                    {isDefined(highlightDelay) ? (
-                                        <Animated.View
-                                            entering={FadeIn.delay(highlightDelay).duration(ANIMATION_DURATION)}
-                                            className="w-10 h-10 rounded-full bg-warning-background items-center justify-center"
-                                        >
-                                            <Text className="text-xs text-warning-foreground font-semibold">{day}</Text>
-                                            <View className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-warning-foreground" />
-                                        </Animated.View>
-                                    ) : (
-                                        <Text className="text-xs text-secondary-foreground/40">{day}</Text>
-                                    )}
-                                </View>
+                                <RecurringCalendarEmptyStateDay
+                                    key={day}
+                                    day={day}
+                                    highlightDelay={highlightDelay}
+                                    animationDuration={ANIMATION_DURATION}
+                                />
                             );
                         })}
                     </View>
@@ -78,14 +70,13 @@ export const RecurringCalendarEmptyState = () => {
                     const hintDelay = HINT_BASE_DELAY + index * HINT_STAGGER;
 
                     return (
-                        <Animated.View
+                        <RecurringCalendarEmptyStateHint
                             key={hint.label}
-                            entering={FadeInUp.delay(hintDelay).duration(ANIMATION_DURATION)}
-                            className="items-center gap-y-sm"
-                        >
-                            <Icon icon={hint.icon} size={18} className="text-secondary-foreground/50" />
-                            <Text className="text-xxs text-secondary-foreground/50">{hint.label}</Text>
-                        </Animated.View>
+                            icon={hint.icon}
+                            label={hint.label}
+                            delay={hintDelay}
+                            animationDuration={ANIMATION_DURATION}
+                        />
                     );
                 })}
             </View>
