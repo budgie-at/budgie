@@ -45,5 +45,6 @@ appId: ${APP_ID}
       - tapOn: 'Close'
 
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
     timeout: 60000
