@@ -202,18 +202,24 @@ jobs:
   e2e-ios:
     needs: [code-quality]
     name: E2E Tests on iOS
-    runs-on: macos-15
+    runs-on: [self-hosted, macOS, ARM64, macstudio]
     env:
       APP_VARIANT: e2e
-      IOS_DERIVED_DATA: /Users/runner/Library/Developer/Xcode/DerivedData/budgie-e2e
+      IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
       USE_CCACHE: "1"
-      CCACHE_DIR: /Users/runner/.ccache
+      CCACHE_DIR: ${{ github.workspace }}/.ci-cache/ccache
       CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_COMPRESS: "true"
       CCACHE_MAXSIZE: 2G
       CCACHE_NOHASHDIR: "true"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Runner diagnostics
+        run: |
+          whoami
+          uname -m
+          hostname
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -272,6 +278,7 @@ jobs:
 
       - name: Setup ccache
         run: |
+          mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
           if ! command -v ccache >/dev/null; then
             brew install ccache
           fi
