@@ -2,14 +2,16 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
+import { CalendarComponents, DateType } from 'react-native-ui-datepicker';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { DatePicker } from '../../../@generic/component/date-picker/date-picker';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
-import { getCalendarDays } from '../../utils/get-calendar-days.util';
 import { getMonthLabel } from '../../utils/get-month-label.util';
-import { getWeekdayNames } from '../../utils/get-weekday-names.util';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 
 interface Props {
@@ -22,7 +24,7 @@ interface Props {
     readonly onChangeMonth: (year: number, month: number) => void;
 }
 
-// eslint-disable-next-line max-statements -- Component with gesture handlers and month navigation logic
+// eslint-disable-next-line max-statements, max-lines-per-function -- Component with shared date-picker integration and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
     const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
 
@@ -31,9 +33,9 @@ export const RecurringCalendarGrid = (props: Props) => {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    const weekdays = getWeekdayNames(languageTag);
-    const rows = getCalendarDays(displayYear, displayMonth);
     const monthLabel = getMonthLabel(displayYear, displayMonth, languageTag);
+    const maxDate = new Date(currentYear, currentMonth + 1, 0);
+    const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay) : null;
 
     const isCurrentMonthDisplayed = displayMonth === currentMonth && displayYear === currentYear;
 
@@ -68,6 +70,34 @@ export const RecurringCalendarGrid = (props: Props) => {
             runOnJS(handlePrevMonth)();
         });
     const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
+    const renderDay: CalendarComponents['Day'] = day => (
+        <RecurringCalendarDay day={day} entriesByDay={entriesByDay} forecastedEntriesByDay={forecastedEntriesByDay} />
+    );
+    const components: CalendarComponents = { Day: renderDay };
+
+    const handleDateChange = (value: { date: DateType }) => {
+        if (!isDefined(value.date)) {
+            return;
+        }
+
+        const date = new Date(value.date.toString());
+
+        if (date.getFullYear() !== displayYear || date.getMonth() !== displayMonth) {
+            return;
+        }
+
+        onSelectDay(date.getDate());
+    };
+
+    const disabledDates = (value: DateType) => {
+        if (!isDefined(value)) {
+            return false;
+        }
+
+        const date = new Date(value.toString());
+
+        return date.getFullYear() !== displayYear || date.getMonth() !== displayMonth;
+    };
 
     return (
         <GestureDetector gesture={swipeGesture}>
@@ -82,30 +112,18 @@ export const RecurringCalendarGrid = (props: Props) => {
                     </HapticPressable>
                 </View>
 
-                <View className="flex-row">
-                    {weekdays.map((name, index) => (
-                        <View key={index} className="flex-1 items-center pb-xs">
-                            <Text className="text-xxs text-secondary-foreground font-medium uppercase">{name}</Text>
-                        </View>
-                    ))}
-                </View>
-
-                {rows.map((row, rowIndex) => (
-                    <View key={rowIndex} className="flex-row">
-                        {row.map((dayData, columnIndex) => (
-                            <RecurringCalendarDay
-                                key={`${rowIndex}-${columnIndex}`}
-                                day={dayData.day}
-                                isCurrentMonth={dayData.isCurrentMonth}
-                                isToday={dayData.isToday}
-                                entriesByDay={entriesByDay}
-                                forecastedEntriesByDay={forecastedEntriesByDay}
-                                selectedDay={selectedDay}
-                                onSelectDay={onSelectDay}
-                            />
-                        ))}
-                    </View>
-                ))}
+                <DatePicker
+                    mode="single"
+                    hideHeader
+                    showOutsideDays
+                    date={selectedDate}
+                    month={displayMonth}
+                    year={displayYear}
+                    maxDate={maxDate}
+                    onChange={handleDateChange}
+                    disabledDates={disabledDates}
+                    components={components}
+                />
             </View>
         </GestureDetector>
     );
