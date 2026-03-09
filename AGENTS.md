@@ -40,26 +40,31 @@ Use Conventional Commits for PR titles:
 type(scope): short description
 ```
 
+For repo-wide or root-level changes, omit the scope:
+
+```text
+type: short description
+```
+
 Examples:
-- `feat(@budgie-at/app): add recurring transaction editor`
-- `fix(@budgie/contracts): correct transaction tag schema`
-- `refactor(@budgie/ai): simplify embedding service flow`
-- `chore(@budgie-at/root): migrate Claude docs to AGENTS`
+- `feat(app): add recurring transaction editor`
+- `fix(contracts): correct transaction tag schema`
+- `refactor(ai): simplify embedding service flow`
+- `chore: migrate Claude docs to AGENTS`
 
 ### Allowed Scopes
 
-Use exact workspace package names as scopes. This repo uses `@commitlint/config-lerna-scopes`, so the valid scopes come from `package.json` names:
-- `@budgie-at/root`
-- `@budgie-at/app`
-- `@budgie/contracts`
-- `@budgie/ai`
-- `@budgie-at/landing`
-- `@budgie/bank-sync`
+Use the repo package scopes without the npm namespace prefix:
+- `app`
+- `contracts`
+- `ai`
+- `landing`
+- `bank-sync`
 
 ### Scope Selection Rules
 
-1. Use the exact package name when the change is isolated to one package.
-2. Use `@budgie-at/root` when the change touches multiple packages, root documentation, workspace tooling, shared agent configuration, or other repo-wide files.
+1. Use the package scope when the change is isolated to one package.
+2. Omit the scope when the change touches multiple packages, root documentation, workspace tooling, shared agent configuration, or other repo-wide files.
 3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
 4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
 
