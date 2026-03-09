@@ -9,11 +9,53 @@ fi
 
 FIXTURE_PATH="$1"
 TARGET_NAME="${2:-$(basename "$FIXTURE_PATH")}"
+WORKING_FIXTURE_PATH="$FIXTURE_PATH"
 
 if [ ! -f "$FIXTURE_PATH" ]; then
     echo "Fixture not found: $FIXTURE_PATH" >&2
     exit 1
 fi
+
+cleanup() {
+    if [ "$WORKING_FIXTURE_PATH" != "$FIXTURE_PATH" ] && [ -f "$WORKING_FIXTURE_PATH" ]; then
+        rm -f "$WORKING_FIXTURE_PATH"
+    fi
+}
+
+trap cleanup EXIT
+
+prepare_fixture_copy() {
+    if [ "$TARGET_NAME" != "e2e-20-transactions-account-date.db" ]; then
+        return 0
+    fi
+
+    if ! command -v sqlite3 >/dev/null 2>&1; then
+        echo "sqlite3 is required to normalize $TARGET_NAME" >&2
+        exit 1
+    fi
+
+    WORKING_FIXTURE_PATH="$(mktemp "${TMPDIR:-/tmp}/e2e-20-transactions-account-date.XXXXXX.db")"
+    cp "$FIXTURE_PATH" "$WORKING_FIXTURE_PATH"
+
+    NOW_TS="$(date +%s)"
+    TODAY_EXPENSE_TS="$((NOW_TS - 120))"
+    TODAY_TRANSFER_TS="$((NOW_TS - 60))"
+    YESTERDAY_INCOME_TS="$((NOW_TS - 86400))"
+
+    sqlite3 "$WORKING_FIXTURE_PATH" <<EOF
+BEGIN;
+UPDATE transactions
+SET operated_at = CASE comment
+    WHEN 'E2E Filter Expense' THEN $TODAY_EXPENSE_TS
+    WHEN 'E2E Filter Transfer' THEN $TODAY_TRANSFER_TS
+    WHEN 'E2E Filter Income' THEN $YESTERDAY_INCOME_TS
+    ELSE operated_at
+END;
+COMMIT;
+EOF
+}
+
+prepare_fixture_copy
 
 BOOTED_UDID="$(
     xcrun simctl list devices booted |
@@ -76,7 +118,7 @@ FOUND=0
 
 while IFS= read -r provider_dir; do
     [ -n "$provider_dir" ] || continue
-    cp "$FIXTURE_PATH" "$provider_dir/$TARGET_NAME"
+    cp "$WORKING_FIXTURE_PATH" "$provider_dir/$TARGET_NAME"
     echo "Installed $TARGET_NAME into $provider_dir"
     FOUND=1
 done <<EOF

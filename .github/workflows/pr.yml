@@ -383,7 +383,7 @@ jobs:
         working-directory: tests/app-tests
         run: |
           sh ./scripts/setup-ios-simulator.sh
-          maestro test flows -e APP_ID=com.vitalyiegorov.budgie.e2e --format junit --config config.yaml --debug-output ./
+          sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e --format junit --debug-output ./
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
@@ -527,7 +527,7 @@ jobs:
           working-directory: tests/app-tests
           script: |
             cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+            sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()

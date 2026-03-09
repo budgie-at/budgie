@@ -3,10 +3,14 @@ appId: ${APP_ID}
 
 - runFlow: ../navigate-to-settings.flow.yaml
 
-- swipe:
-    from:
-      id: 'SettingsPage.Container'
-    direction: UP
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.InactiveCard'
+    direction: DOWN
+    speed: 20
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.InactiveCard'
 - tapOn:
     id: 'SettingsPage.InactiveCard'
 - extendedWaitUntil:

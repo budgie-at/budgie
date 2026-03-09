@@ -7,24 +7,31 @@ appId: ${APP_ID}
       id: 'SettingsPage.ImportDatabaseCard'
     direction: DOWN
     speed: 20
+    centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ImportDatabaseCard'
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
 
 - tapOn: 'Search'
 - inputText: ${FIXTURE_QUERY}
-- tapOn: 'Name Contains “${FIXTURE_QUERY}”'
 - hideKeyboard
+- extendedWaitUntil:
+    visible: '${FIXTURE_FILE_NAME}'
+    timeout: 15000
 - tapOn:
-    point: '18%,29%'
+    point: '18%,39%'
 
 - extendedWaitUntil:
-    visible: 'Import Database'
+    visible: 'Cancel'
     timeout: 10000
+- waitForAnimationToEnd
 - tapOn:
-    point: '50%,56%'
+    point: '50%,58%'
 
 - extendedWaitUntil:
-    notVisible: 'This action cannot be undone.'
+    notVisible: 'Cancel'
     timeout: 15000
 
 - runFlow: relaunch-app.flow.yaml
