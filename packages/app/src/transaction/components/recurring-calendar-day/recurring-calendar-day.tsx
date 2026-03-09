@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
+import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 
@@ -79,47 +79,44 @@ const dotVariants = cva('h-1 w-1 rounded-full', {
 });
 
 interface Props {
-    readonly day: number;
-    readonly isCurrentMonth: boolean;
-    readonly isToday: boolean;
+    readonly day: DatePickerCalendarDay;
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
     readonly forecastedEntriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;
-    readonly selectedDay: number | undefined;
-    readonly onSelectDay: (day: number) => void;
 }
 
 // eslint-disable-next-line max-statements -- Calendar day with actual + forecasted dot rendering and conditional styles
 export const RecurringCalendarDay = (props: Props) => {
-    const { day, isCurrentMonth, isToday, entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay } = props;
+    const { day, entriesByDay, forecastedEntriesByDay } = props;
+    const dayOfMonth = day.dayOfMonth ?? day.number;
 
-    const entries = isCurrentMonth ? entriesByDay.get(day) : null;
-    const forecastedEntries = isCurrentMonth ? forecastedEntriesByDay.get(day) : null;
+    const entries = day.isCurrentMonth ? entriesByDay.get(dayOfMonth) : null;
+    const forecastedEntries = day.isCurrentMonth ? forecastedEntriesByDay.get(dayOfMonth) : null;
     const entryCount = entries?.length ?? 0;
     const forecastedCount = forecastedEntries?.length ?? 0;
     const totalCount = entryCount + forecastedCount;
     const hasEntries = totalCount > 0;
     const hasOnlyForecasted = entryCount === 0 && forecastedCount > 0;
-    const isSelected = selectedDay === day && isCurrentMonth;
+    const {isSelected} = day;
 
     const actualDots = Math.min(entryCount, MAX_DOTS);
     const remainingSlots = MAX_DOTS - actualDots;
     const forecastedDots = Math.min(forecastedCount, remainingSlots);
 
-    const handlePress = () => {
-        if (isCurrentMonth && hasEntries) {
-            onSelectDay(day);
-        }
-    };
-
-    const circleClassName = circleVariants({ isCurrentMonth, isSelected, hasEntries, hasOnlyForecasted, isToday });
-    const textClassName = textVariants({ hasEntries, isSelected, isToday });
-    const hasDots = hasEntries && isCurrentMonth;
+    const circleClassName = circleVariants({
+        isCurrentMonth: day.isCurrentMonth,
+        isSelected,
+        hasEntries,
+        hasOnlyForecasted,
+        isToday: day.isToday
+    });
+    const textClassName = textVariants({ hasEntries, isSelected, isToday: day.isToday });
+    const hasDots = hasEntries && day.isCurrentMonth;
     const dayTextClassName = cn(textClassName, hasDots && '-mt-1');
 
     return (
-        <HapticPressable className="flex-1 items-center py-px" onPress={handlePress}>
+        <View className="items-center py-px">
             <View className={circleClassName}>
-                <Text className={dayTextClassName}>{day}</Text>
+                <Text className={dayTextClassName}>{day.text}</Text>
                 {hasDots ? (
                     <View className="flex-row gap-x-0.5 -mt-0.5">
                         {Array.from({ length: actualDots }, (_, index) => (
@@ -131,6 +128,6 @@ export const RecurringCalendarDay = (props: Props) => {
                     </View>
                 ) : null}
             </View>
-        </HapticPressable>
+        </View>
     );
 };

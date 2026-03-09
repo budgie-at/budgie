@@ -30,10 +30,9 @@ const titleVariants = cva('text-3xl font-medium', {
     }
 });
 
-export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
-    const isTransactionsActive = activeTab === 'transactions';
-    const isRecurringActive = activeTab === 'recurring';
+const tabs: readonly TransactionsTabType[] = ['transactions', 'recurring'];
 
+export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const tabLayouts = useRef<Record<TransactionsTabType, TabLayoutInterface>>({
         transactions: { x: 0, width: 0 },
         recurring: { x: 0, width: 0 }
@@ -43,30 +42,15 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     const indicatorX = useSharedValue(0);
     const indicatorWidth = useSharedValue(0);
 
-    const handleTransactionsPress = () => {
-        onChangeTab('transactions');
+    const handleTabPress = (tab: TransactionsTabType) => () => {
+        onChangeTab(tab);
     };
 
-    const handleRecurringPress = () => {
-        onChangeTab('recurring');
-    };
-
-    const handleTransactionsLayout = (event: LayoutChangeEvent) => {
+    const handleTabLayout = (tab: TransactionsTabType) => (event: LayoutChangeEvent) => {
         const { x, width } = event.nativeEvent.layout;
-        tabLayouts.current.transactions = { x, width };
+        tabLayouts.current[tab] = { x, width };
 
-        if (isTransactionsActive && !isIndicatorReady.current) {
-            indicatorX.set(x);
-            indicatorWidth.set(width);
-            isIndicatorReady.current = true;
-        }
-    };
-
-    const handleRecurringLayout = (event: LayoutChangeEvent) => {
-        const { x, width } = event.nativeEvent.layout;
-        tabLayouts.current.recurring = { x, width };
-
-        if (isRecurringActive && !isIndicatorReady.current) {
+        if (activeTab === tab && !isIndicatorReady.current) {
             indicatorX.set(x);
             indicatorWidth.set(width);
             isIndicatorReady.current = true;
@@ -91,17 +75,13 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
     return (
         <View className="px-5xl pb-md gap-y-sm">
             <View className="flex-row items-center gap-x-xl">
-                <HapticPressable onPress={handleTransactionsPress} onLayout={handleTransactionsLayout}>
-                    <Text className={titleVariants({ isActive: isTransactionsActive })}>
-                        <Trans>Transactions</Trans>
-                    </Text>
-                </HapticPressable>
-
-                <HapticPressable onPress={handleRecurringPress} onLayout={handleRecurringLayout}>
-                    <Text className={titleVariants({ isActive: isRecurringActive })}>
-                        <Trans>Recurring</Trans>
-                    </Text>
-                </HapticPressable>
+                {tabs.map(tab => (
+                    <HapticPressable key={tab} onPress={handleTabPress(tab)} onLayout={handleTabLayout(tab)}>
+                        <Text className={titleVariants({ isActive: activeTab === tab })}>
+                            {tab === 'transactions' ? <Trans>Transactions</Trans> : <Trans>Recurring</Trans>}
+                        </Text>
+                    </HapticPressable>
+                ))}
             </View>
 
             <Animated.View className="h-0.5 bg-primary rounded-full" style={indicatorStyle} />
