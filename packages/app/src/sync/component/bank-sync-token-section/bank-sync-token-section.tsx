@@ -8,6 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 
 interface Props {
     readonly accountId: number;
@@ -63,14 +64,18 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
 
             {isEditing ? (
                 <View className="gap-y-sm">
-                    <Input
-                        value={newToken}
-                        onChangeText={setNewToken}
-                        placeholder={t`Enter new token`}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        secureTextEntry
-                    />
+                    <View className="flex-row items-center gap-x-sm">
+                        <Input
+                            className="flex-1"
+                            value={newToken}
+                            onChangeText={setNewToken}
+                            placeholder={t`Enter new token`}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                        />
+                        <PasteTokenButton onPaste={setNewToken} />
+                    </View>
                     <View className="flex-row gap-x-sm">
                         <Button variant="secondary" size="sm" onPress={handleCancel} className="flex-1" content={t`Cancel`} />
                         <Button variant="default" size="sm" onPress={handleSave} disabled={isSaving} className="flex-1" content={t`Save`} />
