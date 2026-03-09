@@ -1,13 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
@@ -67,8 +67,16 @@ export const CreateMonobankAccount = () => {
         }
     };
 
+    const isStartSyncDisabled = isLoading || selectedAccounts.size === 0;
+    const footer =
+        step === 'token' ? (
+            <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
+        ) : (
+            <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
+        );
+
     return (
-        <FullPage
+        <FormPage
             header={
                 <PageHeader
                     onGoBack={handleGoBack}
@@ -76,29 +84,20 @@ export const CreateMonobankAccount = () => {
                     description={t`Sync your Monobank accounts and transactions`}
                 />
             }
+            footer={footer}
+            safeEdges={['bottom', 'top']}
         >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                <FormLayoutGroup>
-                    {step === 'token' && (
-                        <TokenInputStep
-                            token={token}
-                            isLoading={isLoading}
-                            onTokenChange={setToken}
-                            onFetchAccounts={handleFetchAccounts}
-                        />
-                    )}
+            <FormLayoutGroup>
+                {step === 'token' && <TokenInputStep token={token} onTokenChange={setToken} />}
 
-                    {step === 'accounts' && (
-                        <AccountSelectionStep
-                            accountPreviews={accountPreviews}
-                            selectedAccounts={selectedAccounts}
-                            isLoading={isLoading}
-                            onToggle={handleToggleAccountSelection}
-                            onSetupSync={handleSetupSync}
-                        />
-                    )}
-                </FormLayoutGroup>
-            </KeyboardAwareScrollView>
-        </FullPage>
+                {step === 'accounts' && (
+                    <AccountSelectionStep
+                        accountPreviews={accountPreviews}
+                        selectedAccounts={selectedAccounts}
+                        onToggle={handleToggleAccountSelection}
+                    />
+                )}
+            </FormLayoutGroup>
+        </FormPage>
     );
 };

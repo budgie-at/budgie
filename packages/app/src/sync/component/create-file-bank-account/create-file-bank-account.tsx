@@ -1,14 +1,15 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
@@ -79,30 +80,31 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         }
     };
 
-    return (
-        <FullPage header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                <FormLayoutGroup>
-                    {step === 'file' && (
-                        <FileUploadStep
-                            isLoading={isLoading}
-                            onSelectFile={handleSelectFile}
-                            instructionText={config.instructionText}
-                            selectFileText={config.selectFileText}
-                        />
-                    )}
+    const isStartSyncDisabled = isLoading || selectedAccounts.size === 0;
+    const footer =
+        step === 'file' ? (
+            <Button onPress={handleSelectFile} disabled={isLoading} content={t`Select File`} leftIcon={UserIconNameEnum.Upload} />
+        ) : (
+            <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />
+        );
 
-                    {step === 'accounts' && (
-                        <AccountSelectionStep
-                            accountPreviews={accountPreviews}
-                            selectedAccounts={selectedAccounts}
-                            isLoading={isLoading}
-                            onToggle={handleToggleAccountSelection}
-                            onSetupSync={handleSetupSync}
-                        />
-                    )}
-                </FormLayoutGroup>
-            </KeyboardAwareScrollView>
-        </FullPage>
+    return (
+        <FormPage
+            header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
+            footer={footer}
+            safeEdges={['bottom', 'top']}
+        >
+            <FormLayoutGroup>
+                {step === 'file' && <FileUploadStep instructionText={config.instructionText} selectFileText={config.selectFileText} />}
+
+                {step === 'accounts' && (
+                    <AccountSelectionStep
+                        accountPreviews={accountPreviews}
+                        selectedAccounts={selectedAccounts}
+                        onToggle={handleToggleAccountSelection}
+                    />
+                )}
+            </FormLayoutGroup>
+        </FormPage>
     );
 };
