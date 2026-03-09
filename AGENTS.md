@@ -41,25 +41,25 @@ type(scope): short description
 ```
 
 Examples:
-- `feat(app): add recurring transaction editor`
-- `fix(contracts): correct transaction tag schema`
-- `refactor(ai): simplify embedding service flow`
-- `chore(repo): migrate Claude docs to AGENTS`
+- `feat(@budgie-at/app): add recurring transaction editor`
+- `fix(@budgie/contracts): correct transaction tag schema`
+- `refactor(@budgie/ai): simplify embedding service flow`
+- `chore(@budgie-at/root): migrate Claude docs to AGENTS`
 
 ### Allowed Scopes
 
-Use these scopes for this monorepo:
-- `app` - `packages/app`
-- `contracts` - `packages/contracts`
-- `ai` - `packages/ai`
-- `landing` - `packages/landing`
-- `bank-sync` - `packages/bank-sync`
-- `repo` - root-level, multi-package, tooling, workspace config, shared docs, CI, or changes spanning more than one package
+Use exact workspace package names as scopes. This repo uses `@commitlint/config-lerna-scopes`, so the valid scopes come from `package.json` names:
+- `@budgie-at/root`
+- `@budgie-at/app`
+- `@budgie/contracts`
+- `@budgie/ai`
+- `@budgie-at/landing`
+- `@budgie/bank-sync`
 
 ### Scope Selection Rules
 
-1. Use the package scope when the change is isolated to one package.
-2. Use `repo` when the change touches multiple packages, root documentation, workspace tooling, or shared agent configuration.
+1. Use the exact package name when the change is isolated to one package.
+2. Use `@budgie-at/root` when the change touches multiple packages, root documentation, workspace tooling, shared agent configuration, or other repo-wide files.
 3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
 4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
 
