@@ -6,8 +6,8 @@ import Toast from 'react-native-toast-message';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
@@ -17,6 +17,7 @@ import { AccountSelectionStep } from '../account-selection-step/account-selectio
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 type SetupStep = 'token' | 'accounts';
+const FORM_PAGE_SAFE_EDGES = ['bottom', 'top'] as const;
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
@@ -85,7 +86,7 @@ export const CreateMonobankAccount = () => {
                 />
             }
             footer={footer}
-            safeEdges={['bottom', 'top']}
+            safeEdges={FORM_PAGE_SAFE_EDGES}
         >
             <FormLayoutGroup>
                 {step === 'token' && <TokenInputStep token={token} onTokenChange={setToken} />}

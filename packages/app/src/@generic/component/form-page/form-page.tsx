@@ -27,12 +27,13 @@ export const FormPage = ({ header, children, footer, testID, onScroll, safeEdges
         paddingTop: FORM_PAGE_TOP_PADDING,
         paddingBottom: bottom + FORM_PAGE_FOOTER_PADDING
     } satisfies ViewStyle;
+    const scrollContentContainerStyle = [defaultContentContainerStyle, contentContainerStyle];
 
     const footerContent = isDefined(footer) ? (
         <KeyboardStickyView>
             <Footer withBlur>{footer}</Footer>
         </KeyboardStickyView>
-    ) : undefined;
+    ) : null;
 
     return (
         <Page testID={testID} header={header} footer={footerContent} safeEdges={safeEdges} withBlur>
@@ -40,7 +41,7 @@ export const FormPage = ({ header, children, footer, testID, onScroll, safeEdges
                 onScroll={onScroll}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={[defaultContentContainerStyle, contentContainerStyle]}
+                contentContainerStyle={scrollContentContainerStyle}
             >
                 {children}
             </KeyboardAwareScrollView>
