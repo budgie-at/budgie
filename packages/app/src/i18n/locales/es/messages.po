@@ -35,6 +35,10 @@ msgstr "{availableCount} columnas disponibles"
 msgid "{completionRatio}% learned"
 msgstr "{completionRatio}% aprendido"
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:36
+msgid "{formattedAmount} · {category}"
+msgstr "{formattedAmount} · {category}"
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} por asignar"
@@ -169,6 +173,10 @@ msgstr ""
 msgid "All columns have been assigned"
 msgstr "Todas las columnas han sido asignadas"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:139
+msgid "All Recurring"
+msgstr ""
+
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "Todo el tiempo"
@@ -215,11 +223,11 @@ msgstr "Aplicar filtro"
 
 #: src/app/transaction-type-filter.tsx:25
 msgid "Apply Filter ({localSelectedCount})"
-msgstr ""
+msgstr "Aplicar filtro ({localSelectedCount})"
 
 #: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:16
 msgid "Apply Filter ({selectedCount})"
-msgstr ""
+msgstr "Aplicar filtro ({selectedCount})"
 
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
@@ -251,7 +259,7 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 msgid "Available Columns"
 msgstr "Columnas disponibles"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Balance"
 msgstr "Saldo"
 
@@ -276,6 +284,10 @@ msgstr "Sincronización bancaria"
 #: src/@generic/component/currency-selector/currency-selector.tsx:62
 msgid "Base currency"
 msgstr "Moneda base"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:29
+msgid "Billing Dates"
+msgstr "Fechas de cobro"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:40
 msgid "Biometric Authentication"
@@ -379,11 +391,11 @@ msgstr "Eliminando datos antiguos…"
 
 #: src/sync/component/paste-token-button/paste-token-button.tsx:30
 msgid "Clipboard doesn't contain a valid Monobank token"
-msgstr "El portapapeles no contiene un token válido de Monobank"
+msgstr ""
 
 #: src/sync/component/paste-token-button/paste-token-button.tsx:22
 msgid "Clipboard is empty"
-msgstr "El portapapeles está vacío"
+msgstr ""
 
 #: src/sync/component/get-token-card/get-token-card.tsx:43
 msgid "Close"
@@ -504,7 +516,7 @@ msgstr "Crear un PIN"
 
 #: src/app/transaction-account-filter.tsx:110
 msgid "Create Accounts"
-msgstr ""
+msgstr "Crear cuentas"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:41
 msgid "Create and copy the personal token"
@@ -590,6 +602,10 @@ msgstr "Fecha"
 #: src/app/date-filter.tsx:39
 msgid "Date Range"
 msgstr "Rango de fechas"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:115
+msgid "Day {selectedDay}"
+msgstr "Día {selectedDay}"
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -797,7 +813,7 @@ msgstr "Fecha de devolución esperada (Opcional)"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
 msgid "Expenses"
 msgstr "Gastos"
 
@@ -908,11 +924,11 @@ msgstr "General"
 
 #: src/ai/hook/use-ai-data-preparation.hook.ts:130
 msgid "Generating comment embeddings..."
-msgstr ""
+msgstr "Generando embeddings de comentarios..."
 
 #: src/ai/hook/use-ai-data-preparation.hook.ts:121
 msgid "Generating merchant embeddings..."
-msgstr ""
+msgstr "Generando embeddings de comercios..."
 
 #: src/i18n/constant/languages.constant.ts:26
 msgid "German"
@@ -987,18 +1003,18 @@ msgstr "Cuentas inactivas"
 msgid "Include in Net Worth"
 msgstr "Incluir en patrimonio neto"
 
-#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
+#: src/transaction/components/statistics-content/statistics-content.tsx:62
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Income by category"
 msgstr "Ingresos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:94
+#: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
@@ -1092,6 +1108,14 @@ msgstr "Dinero que debes o te deben"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:30
+msgid "Monthly Costs"
+msgstr "Costes mensuales"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:96
+msgid "Monthly Total"
+msgstr "Total mensual"
+
 #: src/app/(main)/create-account/index.tsx:20
 msgid "New Account"
 msgstr "Nueva cuenta"
@@ -1120,7 +1144,7 @@ msgstr "Aún no hay cuentas"
 
 #: src/app/transaction-account-filter.tsx:109
 msgid "No Accounts Yet"
-msgstr ""
+msgstr "Aún no hay cuentas"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
@@ -1176,6 +1200,10 @@ msgstr "No se encontraron idiomas"
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
+msgid "No recurring payments detected"
+msgstr "No se detectaron pagos recurrentes"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
@@ -1224,7 +1252,7 @@ msgstr "Abra Monobank para obtener su token"
 msgid "Organization"
 msgstr "Organización"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/transaction/components/statistics-content/statistics-content.tsx:52
 msgid "Overview"
 msgstr "Resumen"
 
@@ -1326,6 +1354,14 @@ msgstr "Recalcular saldos"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Recibiendo {toCode}"
+
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+msgid "Recurring"
+msgstr "Recurrente"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
+msgid "Recurring payments will appear here once patterns are detected from your transactions"
+msgstr "Los pagos recurrentes aparecerán aquí una vez que se detecten patrones en sus transacciones"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
@@ -1530,15 +1566,15 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/transaction/components/statistics-content/statistics-content.tsx:81
 msgid "Spending by Category"
 msgstr "Gastos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:105
+#: src/transaction/components/statistics-content/statistics-content.tsx:103
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/transaction/components/statistics-content/statistics-content.tsx:58
 msgid "Spent"
 msgstr "Gastado"
 
@@ -1558,7 +1594,7 @@ msgstr "Iniciar sincronización"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/app/(tabs)/analytics.tsx:11
 msgid "Statistics"
 msgstr "Estadísticas"
 
@@ -1573,6 +1609,10 @@ msgstr "Acciones"
 #: src/account/component/create-account-screen/create-account-screen.tsx:42
 msgid "Submit"
 msgstr "Enviar"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:28
+msgid "Subscriptions"
+msgstr "Suscripciones"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:76
 msgid "Swap accounts"
@@ -1717,8 +1757,8 @@ msgstr "Cuentas bancarias tradicionales"
 msgid "Transaction Type"
 msgstr "Tipo de transacción"
 
-#: src/app/(tabs)/transactions.tsx:13
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
 msgid "Transactions"
 msgstr "Transacciones"
 
@@ -1779,7 +1819,7 @@ msgid "Ukrainian"
 msgstr "Ucraniano"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Sin categoría"
 
@@ -1790,6 +1830,10 @@ msgstr "Desconocido"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Actualizado"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:129
+msgid "Upcoming"
+msgstr "Próximos"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx:72
 msgid "Update Account"

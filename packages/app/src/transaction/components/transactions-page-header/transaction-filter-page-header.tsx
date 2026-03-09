@@ -17,7 +17,7 @@ interface Props {
     readonly onGoBack: () => void;
 }
 
-export const TransactionsPageHeader = ({ isUncategorized, category, tag, type, startDate, endDate, onGoBack }: Props) => {
+export const TransactionFilterPageHeader = ({ isUncategorized, category, tag, type, startDate, endDate, onGoBack }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
 

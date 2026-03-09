@@ -5,7 +5,7 @@ import DateTimePicker, { CalendarComponents, useDefaultClassNames } from 'react-
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { Icon } from '../icon/icon';
 
-const components: CalendarComponents = {
+const defaultComponents: CalendarComponents = {
     IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={24} />,
     IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />
 };
@@ -13,6 +13,7 @@ const components: CalendarComponents = {
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { languageTag } = useLocaleInfo();
     const defaultClassNames = useDefaultClassNames();
+    const mergedComponents = { ...defaultComponents, ...props.components };
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const classNames = {
@@ -46,5 +47,5 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={classNames} locale={languageTag} components={components} />;
+    return <DateTimePicker {...props} classNames={classNames} locale={languageTag} components={mergedComponents} />;
 };
