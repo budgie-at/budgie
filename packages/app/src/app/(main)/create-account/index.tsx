@@ -2,6 +2,7 @@ import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -16,11 +17,12 @@ export default function Index() {
 
     return (
         <Page
+            withBlur
             header={
                 <PageHeader title={t`New Account`} description={t`Choose the type of account you want to add`} onGoBack={handleGoBack} />
             }
         >
-            <ScrollView contentContainerClassName="gap-y-xl py-7xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="gap-y-xl pt-16" showsVerticalScrollIndicator={false}>
                 <CreateAccountCard
                     description={t`Everyday transactions and spending`}
                     icon={ACCOUNT_ICON.BANK}
@@ -62,6 +64,8 @@ export default function Index() {
                     route={`/create-account/${ExternalSourceEnum.ERSTE}`}
                     bankProvider={ExternalSourceEnum.ERSTE}
                 />
+
+                <MenuSpacer />
             </ScrollView>
         </Page>
     );
