@@ -10,7 +10,6 @@ import { HeroSection } from '../../generic/component/hero-section/hero-section';
 import { HowItWorksSection } from '../../generic/component/how-it-works-section/how-it-works-section';
 import { IntegrationsSection } from '../../generic/component/integrations-section/integrations-section';
 import { OpenSourceSection } from '../../generic/component/open-source-section/open-source-section';
-import { PricingSection } from '../../generic/component/pricing-section/pricing-section';
 import { ProblemSolutionSection } from '../../generic/component/problem-solution-section/problem-solution-section';
 import { SecuritySection } from '../../generic/component/security-section/security-section';
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
@@ -50,8 +49,7 @@ export default async function LandingPage(props: PageLangParam) {
             {/* Social Proof */}
             <TestimonialsSection />
 
-            {/* Pricing & Trust */}
-            <PricingSection />
+            {/* Trust */}
             <OpenSourceSection />
 
             {/* FAQ & Resources */}
