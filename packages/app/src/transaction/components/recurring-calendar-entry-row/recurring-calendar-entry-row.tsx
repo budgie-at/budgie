@@ -1,9 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -22,7 +23,9 @@ interface Props {
     readonly dayLabel?: string;
 }
 
+// eslint-disable-next-line max-statements -- Row derives optional navigation and day-label affordances from entry data
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
+    const router = useRouter();
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -34,6 +37,13 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
     const animationDelay = index * ANIMATION_STAGGER;
     const key = getRecurringEntryKey(entry);
+    let handlePress = onPress;
+
+    if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
+        handlePress = () => {
+            router.push(`/transactions/${entry.latestTransactionId}/expense`);
+        };
+    }
 
     const right = isNotEmptyString(dayLabel) ? (
         <View className="ml-auto">
@@ -47,8 +57,8 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
                 left={<CircleIcon icon={icon} variant="destructive" />}
                 title={entry.title}
                 description={description}
-                {...(onPress && { onPress })}
-                {...(right && { right })}
+                {...(isDefined(handlePress) && { onPress: handlePress })}
+                {...(right !== null && { right })}
             />
         </Animated.View>
     );
