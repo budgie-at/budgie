@@ -39,7 +39,8 @@ appId: ${APP_ID}
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 
 - scrollUntilVisible:
     element:

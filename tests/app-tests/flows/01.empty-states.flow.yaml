@@ -5,7 +5,9 @@ appId: ${APP_ID}
 
 # --- Fresh App: Home Empty State ---
 
-- assertVisible: 'TOTAL BALANCE'
+- assertVisible:
+
+    id: 'HomePage.TotalBalance'
 
 # --- Transactions Tab Empty State ---
 
