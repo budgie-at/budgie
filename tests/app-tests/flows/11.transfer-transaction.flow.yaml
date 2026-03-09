@@ -90,7 +90,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.NetWorthValue.200'
 - assertVisible:
@@ -135,7 +136,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.NetWorthValue.200'
 - assertVisible:
