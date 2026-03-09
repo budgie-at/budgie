@@ -35,5 +35,13 @@ export const PasteTokenButton = ({ onPaste }: Props) => {
         onPaste(trimmedToken);
     };
 
-    return <Button leftIcon={UserIconNameEnum.ClipboardPaste} size="sm" variant="secondary" onPress={handlePress} />;
+    return (
+        <Button
+            className="h-[36px] w-[36px] p-0"
+            leftIcon={UserIconNameEnum.ClipboardPaste}
+            size="sm"
+            variant="secondary"
+            onPress={handlePress}
+        />
+    );
 };
