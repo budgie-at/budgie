@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.40.0](https://github.com/budgie-at/budgie/compare/v2.39.0...v2.40.0) (2026-03-09)
+
+### Bug Fixes
+
+- **app:** address PR review feedback for recurring calendar ([9fcbc98](https://github.com/budgie-at/budgie/commit/9fcbc98d3cd70148023e662d40ae26a029b8f286))
+- **app:** address PR review feedback for recurring calendar ([f724c92](https://github.com/budgie-at/budgie/commit/f724c92a96351b406a47d83808fbfd8da5b29805))
+- **app:** always show all recurring patterns with mode day fallback ([d7fd55b](https://github.com/budgie-at/budgie/commit/d7fd55ba8e964349205a4b4ff8b88b56cad1b150))
+- **app:** drop past-day fallback entries without display-month transaction ([4d485bb](https://github.com/budgie-at/budgie/commit/4d485bbff67436f152bfa4ca7cf395d0f96ea062))
+- **app:** fix duplicated app description translation strings ([d7c8e30](https://github.com/budgie-at/budgie/commit/d7c8e305d5dede87f9dad183b344a1a92d8504fe))
+- **app:** fix recurring calendar bugs and move to tab navigation ([30ac134](https://github.com/budgie-at/budgie/commit/30ac1345a41183e1fb32d5f0103a8d29321ebfab))
+- **app:** fix recurring calendar SQL and use date-fns for month boundaries ([d27e92e](https://github.com/budgie-at/budgie/commit/d27e92ed4bdcd886b7713fa630da0481bee9d0d7))
+- **app:** fix swipe crash with runOnJS and add day deselect toggle ([f4c4e0a](https://github.com/budgie-at/budgie/commit/f4c4e0ae9e2be1bcbbaac757139e8f28335c5b6b))
+- **app:** fix total=0 bug and improve recurring payment detection ([52fb734](https://github.com/budgie-at/budgie/commit/52fb734245c7e560c4a612fa46a8ffcbf2967651))
+- **app:** fix upcoming header scroll and add missing translations ([2108071](https://github.com/budgie-at/budgie/commit/21080713fe0e689bf93c0c151846d6e7d13f428b))
+- **app:** improve calendar day colors for dark theme readability ([0f1549a](https://github.com/budgie-at/budgie/commit/0f1549a0f7b2956fd52f34969c03e76f02645fd6))
+- **app:** increase calendar day circle radius to fully round ([0841781](https://github.com/budgie-at/budgie/commit/0841781a485d56383269835c510d480e9a6c91fb))
+- **app:** move monthly total label below amount and increase spacing ([1381c69](https://github.com/budgie-at/budgie/commit/1381c69635858070ed446f41c1dd2eef01e8ab0c))
+- **app:** preserve transaction navigation in mode-day fallback entries ([a5d62f6](https://github.com/budgie-at/budgie/commit/a5d62f6fc52eca3278cc1f61b4bbc86e863b1a01))
+- **app:** prevent stale transaction navigation in mode-day fallback entries ([0fad230](https://github.com/budgie-at/budgie/commit/0fad2306e759c3413bff7f64d80ffa94678de390))
+- **app:** remove dead recurring calendar helpers ([12024ac](https://github.com/budgie-at/budgie/commit/12024acaf040cbf43861df75a0ba1d439f50fd18))
+- **app:** remove debug console.log statements from recurring calendar service ([eee7d38](https://github.com/budgie-at/budgie/commit/eee7d3839266431232164c58d52eeb6ec14288ef))
+- **app:** remove trailing space in statistics content className ([70334ad](https://github.com/budgie-at/budgie/commit/70334ad124e82132eaf7e90c801d06adfad0174c))
+- **app:** replace count badge with dot indicators on calendar days ([030a3f3](https://github.com/budgie-at/budgie/commit/030a3f3f3309f1c502f95bf07cbc5f2e6f1e973d))
+- **app:** replace useFocusEffect with useFocusKey to fix infinite loop ([e9e03ca](https://github.com/budgie-at/budgie/commit/e9e03ca0518912c9586df9facdf01476dc3e1ed2))
+- **app:** resolve lint errors in recurring calendar components ([5fd1bb9](https://github.com/budgie-at/budgie/commit/5fd1bb9c985d55c0dd5b2eb64334b29dbd641f5a))
+- **app:** restore 3-path calendar logic and use solid opacity for forecasted dots ([96a9b09](https://github.com/budgie-at/budgie/commit/96a9b091401279d46d919bf576aa97a2b39a8812))
+- **app:** speed up analytics tab indicator animation ([b60838f](https://github.com/budgie-at/budgie/commit/b60838f1aa9b3a749e26cca4f43b97ad8a7d67b9))
+- **app:** style day detail header to match account section header ([2c30c3f](https://github.com/budgie-at/budgie/commit/2c30c3fa24c04cec6566b3a6961a0b42863f0967))
+- **app:** use strftime month matching for display-month transaction filter ([2b6b2b6](https://github.com/budgie-at/budgie/commit/2b6b2b65a4d27702df41202b5bedbb95cba222c0))
+- **contracts:** add exchange rate conversion to monthly pattern query ([8741912](https://github.com/budgie-at/budgie/commit/8741912b56aafd44a6bb313f70e1199cbed21aee))
+- **contracts:** fix recurring detection false positives and restore exchange rate ([9f1aa30](https://github.com/budgie-at/budgie/commit/9f1aa30902e701d313639274215b4470e38aee02))
+- **contracts:** fix recurring detection to work without categoryId ([206d1e4](https://github.com/budgie-at/budgie/commit/206d1e4472bdfbee6112a8cb8bf2c8d08376d9c4))
+- **contracts:** rewrite recurring detection to GROUP BY (amount, account) and move dots inside circles ([f712b4f](https://github.com/budgie-at/budgie/commit/f712b4fe6d1acecea91a1a6bf50a95e7abbe0a88))
+- **contracts:** two-path recurring detection for bank-synced and manual transactions ([0275830](https://github.com/budgie-at/budgie/commit/0275830a3d8b38c05c2267ce4ca9fd5ba2ad9c82))
+
+### Features
+
+- **app:** add animated sliding indicator to analytics tab header ([6394438](https://github.com/budgie-at/budgie/commit/6394438c3207f0ef54034a8e11d002628b5403c8))
+- **app:** add forecasted recurring entries with upcoming list ([df835c1](https://github.com/budgie-at/budgie/commit/df835c11923500771263a9dd57fe5fc7365a3342))
+- **app:** add haptic, swipe gestures, fix detection queries, and redesign empty state ([ffcb750](https://github.com/budgie-at/budgie/commit/ffcb75018b7365ddbe6ed1366d89055ba14e7b7a))
+- **app:** add recurring payments calendar screen ([0c3479e](https://github.com/budgie-at/budgie/commit/0c3479e03f2bda941e12e5d857e1a04e2a222479))
+- **app:** add transaction navigation from recurring calendar and fix duplicate keys ([9710dfc](https://github.com/budgie-at/budgie/commit/9710dfcc29b266050e27be82210307b217e36931))
+- **app:** extract analytics sub-components for dual-view migration ([5899b11](https://github.com/budgie-at/budgie/commit/5899b11378484cfc590bcec1da3fa09129f4107d))
+- **app:** make recurring calendar month-aware with display-month filtering ([0a92999](https://github.com/budgie-at/budgie/commit/0a92999186c289c63e587a0e4873352f04cdd503))
+- **app:** merge recurring calendar into analytics as dual-view tab ([05545af](https://github.com/budgie-at/budgie/commit/05545af38529028e31cd15c7534aa059308c3e76))
+- **app:** move recurring calendar to transactions tab and add cross-currency amounts ([40ac57d](https://github.com/budgie-at/budgie/commit/40ac57dbcd7ad0e4b419a447a36878ce06078259))
+- **app:** rebuild recurring calendar with custom grid component ([3ff54c1](https://github.com/budgie-at/budgie/commit/3ff54c104d55c896504b22192c0f87fac606f567))
+- **app:** redesign recurring calendar UI ([593d2a3](https://github.com/budgie-at/budgie/commit/593d2a3e8082b18978fa976843ceebe6396118f8))
+- **app:** redesign recurring calendar with SOTA header and dark theme fix ([df0c8d6](https://github.com/budgie-at/budgie/commit/df0c8d654a8017a8008ddde5e1ec852a6157ae53))
+- **app:** show all recurring entries list for past months ([282d74a](https://github.com/budgie-at/budgie/commit/282d74aa8a72dd232e886f3002576301393b27e6))
+
 # [2.39.0](https://github.com/budgie-at/budgie/compare/v2.38.1...v2.39.0) (2026-03-09)
 
 ### Bug Fixes
