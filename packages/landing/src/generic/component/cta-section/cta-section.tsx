@@ -53,7 +53,7 @@ export const CtaSection = () => (
                         <Check className="size-4" />
 
                         <span>
-                            <Trans>Early access pricing</Trans>
+                            <Trans>Privacy-first design</Trans>
                         </span>
                     </div>
 
@@ -61,7 +61,7 @@ export const CtaSection = () => (
                         <Check className="size-4" />
 
                         <span>
-                            <Trans>Lifetime 50% discount</Trans>
+                            <Trans>Offline-first architecture</Trans>
                         </span>
                     </div>
 
