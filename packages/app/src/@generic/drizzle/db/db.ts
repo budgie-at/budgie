@@ -56,6 +56,7 @@ const dbInit = () => {
                 console.log('[DB] sqlite-vec libPath is null, skipping loadExtensionSync'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             }
             console.log('[DB] Creating vec tables...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             console.log('[DB] Vec tables ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
