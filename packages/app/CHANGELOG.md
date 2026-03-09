@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.39.0](https://github.com/budgie-at/budgie/compare/v2.38.1...v2.39.0) (2026-03-09)
+
+### Bug Fixes
+
+- **app:** fix splash screen hang on fresh DB and resize paste button ([19710aa](https://github.com/budgie-at/budgie/commit/19710aa8fb931eb97e2c4c4132e31844cc384bc6))
+
+### Features
+
+- **app:** add paste button for Monobank API token input ([9d44f4b](https://github.com/budgie-at/budgie/commit/9d44f4b94ec409ccb230a3f5b459f28c7e683589))
+
 # [2.38.0](https://github.com/budgie-at/budgie/compare/v2.37.1...v2.38.0) (2026-03-01)
 
 **Note:** Version bump only for package @budgie-at/app

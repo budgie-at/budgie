@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "2.38.0",
+    "version": "2.39.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -44,6 +44,7 @@
         "expo-background-task": "~55.0.9",
         "expo-blur": "~55.0.8",
         "expo-build-properties": "~55.0.9",
+        "expo-clipboard": "~8.0.8",
         "expo-constants": "~55.0.7",
         "expo-contacts": "~55.0.8",
         "expo-dev-client": "~55.0.10",
