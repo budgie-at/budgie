@@ -8,8 +8,8 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
@@ -20,6 +20,7 @@ import { FileUploadStep } from '../file-upload-step/file-upload-step';
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 
 type SetupStep = 'file' | 'accounts';
+const FORM_PAGE_SAFE_EDGES = ['bottom', 'top'] as const;
 
 interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
@@ -92,7 +93,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
         <FormPage
             header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
             footer={footer}
-            safeEdges={['bottom', 'top']}
+            safeEdges={FORM_PAGE_SAFE_EDGES}
         >
             <FormLayoutGroup>
                 {step === 'file' && <FileUploadStep instructionText={config.instructionText} selectFileText={config.selectFileText} />}

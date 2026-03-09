@@ -3,6 +3,8 @@ import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import {
     LEGEND_LIST_CONTENT_GAP,
     LEGEND_LIST_ESTIMATED_ITEM_SIZE,
@@ -13,9 +15,11 @@ import {
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { DeletableRow } from '../deletable-row/deletable-row';
-import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
+
+import type { DeleteConfirmation } from '../deletable-row/deletable-row';
+
 
 interface Props<T extends IdInterface> {
     data: T[];
@@ -37,26 +41,29 @@ export const SearchablePageList = <T extends IdInterface>({ data, onDelete, rend
     const [notify] = useVibration();
 
     const handleDeleteItem = async (id: number) => {
-        if (onDelete === undefined) {
+        if (!isDefined(onDelete)) {
             return;
         }
 
-        try {
-            await onDelete(id);
+        const isDeleted = await onDelete(id)
+            .then(() => true)
+            .catch(() => false);
+
+        if (isDeleted) {
             notify(NotificationFeedbackType.Success);
-        } catch {
-            return;
         }
     };
 
     const renderItem = ({ item }: { item: T }) => {
         const card = renderCard(item);
-        if (onDelete === undefined) {
+        if (!isDefined(onDelete)) {
             return card;
         }
 
+        const confirmation = getDeleteConfirmation?.(item);
+
         return (
-            <DeletableRow id={item.id} onDelete={handleDeleteItem} confirmation={getDeleteConfirmation?.(item)}>
+            <DeletableRow id={item.id} onDelete={handleDeleteItem} {...(isDefined(confirmation) && { confirmation })}>
                 {card}
             </DeletableRow>
         );
