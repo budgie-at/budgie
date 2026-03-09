@@ -202,7 +202,7 @@ jobs:
   e2e-ios:
     needs: [code-quality]
     name: E2E Tests on iOS
-    runs-on: [self-hosted, macOS, ARM64, macstudio]
+    runs-on: self-hosted
     env:
       APP_VARIANT: e2e
       IOS_DERIVED_DATA: ${{ github.workspace }}/.ci-cache/DerivedData/budgie-e2e
