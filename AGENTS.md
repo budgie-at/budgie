@@ -30,6 +30,39 @@ yarn deps:check                           # Check dependency versions
 yarn deps:dedupe                          # Deduplicate dependencies
 ```
 
+## Pull Requests
+
+### PR Title Format
+
+Use Conventional Commits for PR titles:
+
+```text
+type(scope): short description
+```
+
+Examples:
+- `feat(app): add recurring transaction editor`
+- `fix(contracts): correct transaction tag schema`
+- `refactor(ai): simplify embedding service flow`
+- `chore(repo): migrate Claude docs to AGENTS`
+
+### Allowed Scopes
+
+Use these scopes for this monorepo:
+- `app` - `packages/app`
+- `contracts` - `packages/contracts`
+- `ai` - `packages/ai`
+- `landing` - `packages/landing`
+- `bank-sync` - `packages/bank-sync`
+- `repo` - root-level, multi-package, tooling, workspace config, shared docs, CI, or changes spanning more than one package
+
+### Scope Selection Rules
+
+1. Use the package scope when the change is isolated to one package.
+2. Use `repo` when the change touches multiple packages, root documentation, workspace tooling, or shared agent configuration.
+3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
+4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
+
 ## Structure
 
 ```
