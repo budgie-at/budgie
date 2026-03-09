@@ -2,7 +2,6 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Input } from '../../../@generic/component/input/input';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -10,12 +9,10 @@ import { GetTokenCard } from '../get-token-card/get-token-card';
 
 interface Props {
     readonly token: string;
-    readonly isLoading: boolean;
     readonly onTokenChange: (token: string) => void;
-    readonly onFetchAccounts: () => void;
 }
 
-export const TokenInputStep = ({ token, isLoading, onTokenChange, onFetchAccounts }: Props) => {
+export const TokenInputStep = ({ token, onTokenChange }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -43,8 +40,6 @@ export const TokenInputStep = ({ token, isLoading, onTokenChange, onFetchAccount
                     secureTextEntry
                 />
             </View>
-
-            <Button onPress={onFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />
         </>
     );
 };
