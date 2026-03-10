@@ -384,6 +384,7 @@ jobs:
         run: |
           mkdir -p tests/app-tests/artifacts/maestro
           mkdir -p tests/app-tests/artifacts/simulator
+          mkdir -p tests/app-tests/artifacts/diagnostics
 
       - name: Start iOS Simulator log capture
         run: |
@@ -414,6 +415,7 @@ jobs:
         if: always()
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+          DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
           xcrun simctl io booted screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
           if [ -f "$ARTIFACT_DIR/record-video.pid" ]; then
@@ -424,6 +426,10 @@ jobs:
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
           fi
+
+          find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \
+            \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
+            -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
