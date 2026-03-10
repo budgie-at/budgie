@@ -20,6 +20,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'New Expense'
 
+- assertVisible:
+    id: 'TransactionForm.SubmitButton'
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Expense'
+
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Expense'

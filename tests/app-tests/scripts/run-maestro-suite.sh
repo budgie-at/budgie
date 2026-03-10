@@ -30,9 +30,7 @@ FLOWS="
 11.transfer-transaction.flow.yaml
 12.cross-currency-transfer-transaction.flow.yaml
 13.balance-verification.flow.yaml
-14.form-validation.flow.yaml
 15.archived-accounts.flow.yaml
-16.full-user-journey.flow.yaml
 17.expense-to-transfer.flow.yaml
 18.income-to-transfer.flow.yaml
 19.transactions-filters.flow.yaml

@@ -28,7 +28,14 @@ appId: ${APP_ID}
     timeout: 10000
 - waitForAnimationToEnd
 - tapOn:
-    point: '50%,58%'
+    point: '50%,56%'
+
+- runFlow:
+    when:
+      visible: 'Cancel'
+    commands:
+      - tapOn:
+          point: '50%,56%'
 
 - extendedWaitUntil:
     notVisible: 'Cancel'
