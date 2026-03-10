@@ -80,20 +80,13 @@ appId: ${APP_ID}
       id: 'SettingsPage.DefaultAccountValue.E2E_Settings_Cash'
     timeout: 10000
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
-    timeout: 10000
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.Expense'
-    timeout: 10000
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- runFlow: subflows/open-action-menu.flow.yaml
+
 - tapOn:
     id: 'ActionItem.Expense'
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.SelectedAccount.E2E_Settings_Cash'
