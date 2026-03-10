@@ -379,11 +379,48 @@ jobs:
           export MAESTRO_VERSION=2.2.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+      - name: Prepare iOS E2E artifact directories
+        run: |
+          mkdir -p tests/app-tests/artifacts/maestro
+          mkdir -p tests/app-tests/artifacts/simulator
+
+      - name: Start iOS Simulator log capture
+        run: |
+          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+          xcrun simctl spawn booted log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+          echo $! > "$ARTIFACT_DIR/simulator-log.pid"
+
+      - name: Start iOS Simulator video recording
+        run: |
+          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+          xcrun simctl io booted recordVideo "$ARTIFACT_DIR/simulator.mov" > "$ARTIFACT_DIR/record-video.log" 2>&1 &
+          echo $! > "$ARTIFACT_DIR/record-video.pid"
+
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         run: |
           sh ./scripts/setup-ios-simulator.sh
-          sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e --format junit --debug-output ./
+          sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
+            --format junit \
+            --output ./artifacts/maestro/report.xml \
+            --debug-output ./artifacts/maestro \
+            --test-output-dir ./artifacts/maestro \
+            2>&1 | tee ./artifacts/maestro/maestro-console.log
+
+      - name: Stop iOS Simulator captures
+        if: always()
+        run: |
+          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
+          xcrun simctl io booted screenshot "$ARTIFACT_DIR/final-screen.png" || true
+
+          if [ -f "$ARTIFACT_DIR/record-video.pid" ]; then
+            kill -INT "$(cat "$ARTIFACT_DIR/record-video.pid")" || true
+            sleep 5
+          fi
+
+          if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
+            kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
+          fi
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
@@ -392,8 +429,9 @@ jobs:
           name: maestro-ios-artifacts
           include-hidden-files: true
           path: |
+            tests/app-tests/artifacts/**
             tests/app-tests/.maestro/**
-            tests/app-tests/*.mp4
+          if-no-files-found: warn
 
       - name: Save CocoaPods cache
         if: always()
