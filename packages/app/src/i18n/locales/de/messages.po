@@ -45,6 +45,10 @@ msgstr "{completionRatio}% gelernt"
 msgid "{count} existing transactions match this rule."
 msgstr "{count} bestehende Transaktionen entsprechen dieser Regel."
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:36
+msgid "{formattedAmount} · {category}"
+msgstr "{formattedAmount} · {category}"
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} noch zuzuweisen"
@@ -213,6 +217,10 @@ msgstr ""
 msgid "All columns have been assigned"
 msgstr "Alle Spalten wurden zugewiesen"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:139
+msgid "All Recurring"
+msgstr "Alle Wiederkehrenden"
+
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "Gesamte Zeit"
@@ -241,7 +249,7 @@ msgstr "Betrag übersteigt den Schuldenkontostand"
 msgid "and"
 msgstr "und"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:62
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:63
 msgid "API Token"
 msgstr "API-Token"
 
@@ -321,7 +329,7 @@ msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 msgid "Available Columns"
 msgstr "Verfügbare Spalten"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Balance"
 msgstr "Saldo"
 
@@ -355,6 +363,10 @@ msgstr "zwischen"
 msgid "Between"
 msgstr "Zwischen"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:29
+msgid "Billing Dates"
+msgstr "Abrechnungstermine"
+
 #: src/rule/constant/external-source.constant.ts:11
 msgid "Binance"
 msgstr "Binance"
@@ -385,7 +397,7 @@ msgstr "Budgie"
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:50
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:70
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -425,7 +437,7 @@ msgstr "Kategoriename"
 msgid "category to <0>{categoryTitle}</0>"
 msgstr "Kategorie auf <0>{categoryTitle}</0>"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:82
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Ändern"
 
@@ -470,6 +482,14 @@ msgstr "Zwischengespeicherte Salden löschen und aus Transaktionen neu berechnen
 #: src/ai/hook/use-ai-data-preparation.hook.ts:71
 msgid "Clearing old data..."
 msgstr "Alte Daten werden gelöscht…"
+
+#: src/sync/component/paste-token-button/paste-token-button.tsx:30
+msgid "Clipboard doesn't contain a valid Monobank token"
+msgstr "Zwischenablage enthält kein gültiges Monobank-Token"
+
+#: src/sync/component/paste-token-button/paste-token-button.tsx:22
+msgid "Clipboard is empty"
+msgstr "Zwischenablage ist leer"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:43
 msgid "Close"
@@ -741,6 +761,10 @@ msgstr "Datum"
 msgid "Date Range"
 msgstr "Datumsbereich"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:115
+msgid "Day {selectedDay}"
+msgstr "Tag {selectedDay}"
+
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
 msgid "Debt"
@@ -921,7 +945,7 @@ msgstr "Aktuelle PIN eingeben, um Schutz zu deaktivieren"
 msgid "Enter new PIN"
 msgstr "Neue PIN eingeben"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:69
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:72
 msgid "Enter new token"
 msgstr "Neues Token eingeben"
 
@@ -937,7 +961,7 @@ msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:40
+#: src/sync/component/token-input-step/token-input-step.tsx:43
 msgid "Enter your Monobank API token"
 msgstr "Geben Sie Ihren Monobank API-Token ein"
 
@@ -993,7 +1017,7 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 msgid "Expense"
 msgstr "Ausgabe"
 
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
 msgid "Expenses"
 msgstr "Ausgaben"
 
@@ -1050,11 +1074,11 @@ msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 msgid "Failed to setup sync"
 msgstr "Synchronisation konnte nicht eingerichtet werden"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:54
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:55
 msgid "Failed to update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:47
+#: src/sync/component/token-input-step/token-input-step.tsx:52
 msgid "Fetch Accounts"
 msgstr "Konten abrufen"
 
@@ -1199,18 +1223,18 @@ msgstr "Inaktive Konten"
 msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
-#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
+#: src/transaction/components/statistics-content/statistics-content.tsx:62
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Einnahmen"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Income by category"
 msgstr "Einnahmen nach Kategorie"
 
-#: src/app/(tabs)/analytics.tsx:94
+#: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Einnahmen nach Tag"
 
@@ -1357,6 +1381,14 @@ msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:30
+msgid "Monthly Costs"
+msgstr "Monatliche Kosten"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:96
+msgid "Monthly Total"
+msgstr "Monatliche Gesamtsumme"
+
 #: src/app/(main)/create-account/index.tsx:20
 msgid "New Account"
 msgstr "Neues Konto"
@@ -1449,6 +1481,10 @@ msgstr "Keine MCC-Codes verfügbar"
 msgid "No MCC codes found"
 msgstr "Keine MCC-Codes gefunden"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
+msgid "No recurring payments detected"
+msgstr "Keine wiederkehrenden Zahlungen erkannt"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
@@ -1525,7 +1561,7 @@ msgstr "oder"
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/transaction/components/statistics-content/statistics-content.tsx:52
 msgid "Overview"
 msgstr "Übersicht"
 
@@ -1541,7 +1577,7 @@ msgstr "Schuldet Ihnen"
 msgid "Paid: {formattedBalance}"
 msgstr "Bezahlt: {formattedBalance}"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:34
+#: src/sync/component/token-input-step/token-input-step.tsx:35
 msgid "Paste your API token below:"
 msgstr "Fügen Sie Ihren API-Token unten ein:"
 
@@ -1634,6 +1670,14 @@ msgstr "Salden neu berechnen"
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+msgid "Recurring"
+msgstr "Wiederkehrend"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
+msgid "Recurring payments will appear here once patterns are detected from your transactions"
+msgstr "Wiederkehrende Zahlungen werden hier angezeigt, sobald Muster in Ihren Transaktionen erkannt werden"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
 msgstr "Wiederherstellen"
@@ -1672,7 +1716,7 @@ msgid "Rules"
 msgstr "Regeln"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:23
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
 msgstr "Speichern"
 
@@ -1939,15 +1983,15 @@ msgstr "Spanisch"
 msgid "Spanish (Spain)"
 msgstr "Spanisch (Spanien)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/transaction/components/statistics-content/statistics-content.tsx:81
 msgid "Spending by Category"
 msgstr "Ausgaben nach Kategorie"
 
-#: src/app/(tabs)/analytics.tsx:105
+#: src/transaction/components/statistics-content/statistics-content.tsx:103
 msgid "Spending by Tag"
 msgstr "Ausgaben nach Tag"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/transaction/components/statistics-content/statistics-content.tsx:58
 msgid "Spent"
 msgstr "Ausgegeben"
 
@@ -1967,7 +2011,7 @@ msgstr "Synchronisation starten"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/app/(tabs)/analytics.tsx:11
 msgid "Statistics"
 msgstr "Statistiken"
 
@@ -1982,6 +2026,10 @@ msgstr "Aktien"
 #: src/account/component/create-account-screen/create-account-screen.tsx:42
 msgid "Submit"
 msgstr "Absenden"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:28
+msgid "Subscriptions"
+msgstr "Abonnements"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:76
 msgid "Swap accounts"
@@ -2145,8 +2193,8 @@ msgstr "Traditionelle Bankkonten"
 msgid "Transaction Type"
 msgstr "Transaktionstyp"
 
-#: src/app/(tabs)/transactions.tsx:13
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
 msgid "Transactions"
 msgstr "Transaktionen"
 
@@ -2219,7 +2267,7 @@ msgid "Ukrainian"
 msgstr "Ukrainisch"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
@@ -2230,6 +2278,10 @@ msgstr "Unbekannt"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:129
+msgid "Upcoming"
+msgstr "Bevorstehend"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx:72
 msgid "Update Account"
@@ -2300,6 +2352,6 @@ msgstr "Sie schulden"
 msgid "You received money"
 msgstr "Sie haben Geld erhalten"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:29
+#: src/sync/component/token-input-step/token-input-step.tsx:30
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ihr Token wird sicher in der Datenbank gespeichert. Die Synchronisation läuft im Hintergrund weiter."
