@@ -25,24 +25,25 @@ cleanup() {
 trap cleanup EXIT
 
 prepare_fixture_copy() {
-    if [ "$TARGET_NAME" != "e2e-20-transactions-account-date.db" ]; then
+    if ! command -v sqlite3 >/dev/null 2>&1; then
+        if [ "$TARGET_NAME" = "e2e-20-transactions-account-date.db" ]; then
+            echo "sqlite3 is required to normalize $TARGET_NAME" >&2
+            exit 1
+        fi
+
         return 0
     fi
 
-    if ! command -v sqlite3 >/dev/null 2>&1; then
-        echo "sqlite3 is required to normalize $TARGET_NAME" >&2
-        exit 1
-    fi
+    if [ "$TARGET_NAME" = "e2e-20-transactions-account-date.db" ]; then
+        WORKING_FIXTURE_PATH="$(mktemp "${TMPDIR:-/tmp}/e2e-20-transactions-account-date.XXXXXX.db")"
+        cp "$FIXTURE_PATH" "$WORKING_FIXTURE_PATH"
 
-    WORKING_FIXTURE_PATH="$(mktemp "${TMPDIR:-/tmp}/e2e-20-transactions-account-date.XXXXXX.db")"
-    cp "$FIXTURE_PATH" "$WORKING_FIXTURE_PATH"
+        NOW_TS="$(date +%s)"
+        TODAY_EXPENSE_TS="$((NOW_TS - 120))"
+        TODAY_TRANSFER_TS="$((NOW_TS - 60))"
+        YESTERDAY_INCOME_TS="$((NOW_TS - 86400))"
 
-    NOW_TS="$(date +%s)"
-    TODAY_EXPENSE_TS="$((NOW_TS - 120))"
-    TODAY_TRANSFER_TS="$((NOW_TS - 60))"
-    YESTERDAY_INCOME_TS="$((NOW_TS - 86400))"
-
-    sqlite3 "$WORKING_FIXTURE_PATH" <<EOF
+        sqlite3 "$WORKING_FIXTURE_PATH" <<EOF
 BEGIN;
 UPDATE transactions
 SET operated_at = CASE comment
@@ -53,6 +54,9 @@ SET operated_at = CASE comment
 END;
 COMMIT;
 EOF
+    fi
+
+    sqlite3 "$WORKING_FIXTURE_PATH" 'PRAGMA wal_checkpoint(FULL);'
 }
 
 prepare_fixture_copy
