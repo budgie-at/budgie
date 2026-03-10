@@ -2,7 +2,10 @@ appId: ${APP_ID}
 ---
 
 - clearState
-- launchApp
+- launchApp:
+    permissions:
+      all: deny
+      contacts: allow
 
 - runFlow:
     when:
