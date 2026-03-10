@@ -45,6 +45,10 @@ msgstr "{completionRatio}% вивчено"
 msgid "{count} existing transactions match this rule."
 msgstr "{count} існуючих транзакцій відповідають цьому правилу."
 
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:36
+msgid "{formattedAmount} · {category}"
+msgstr "{formattedAmount} · {category}"
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
@@ -213,6 +217,10 @@ msgstr ""
 msgid "All columns have been assigned"
 msgstr "Усі стовпці було призначено"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:139
+msgid "All Recurring"
+msgstr "Всі Регулярні"
+
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "Весь час"
@@ -241,7 +249,7 @@ msgstr "Сума перевищує баланс боргового рахунк
 msgid "and"
 msgstr "та"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:62
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:63
 msgid "API Token"
 msgstr "API токен"
 
@@ -321,7 +329,7 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Balance"
 msgstr "Баланс"
 
@@ -355,6 +363,10 @@ msgstr "між"
 msgid "Between"
 msgstr "Між"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:29
+msgid "Billing Dates"
+msgstr "Дати Оплат"
+
 #: src/rule/constant/external-source.constant.ts:11
 msgid "Binance"
 msgstr "Binance"
@@ -385,7 +397,7 @@ msgstr "Budgie"
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:50
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:70
 msgid "Cancel"
 msgstr "Скасувати"
@@ -425,7 +437,7 @@ msgstr "Назва категорії"
 msgid "category to <0>{categoryTitle}</0>"
 msgstr "категорію на <0>{categoryTitle}</0>"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:82
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Змінити"
 
@@ -470,6 +482,14 @@ msgstr "Очистити кешовані баланси та перерахув
 #: src/ai/hook/use-ai-data-preparation.hook.ts:71
 msgid "Clearing old data..."
 msgstr "Видалення старих даних…"
+
+#: src/sync/component/paste-token-button/paste-token-button.tsx:30
+msgid "Clipboard doesn't contain a valid Monobank token"
+msgstr "Буфер обміну не містить дійсного токена Monobank"
+
+#: src/sync/component/paste-token-button/paste-token-button.tsx:22
+msgid "Clipboard is empty"
+msgstr "Буфер обміну порожній"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:43
 msgid "Close"
@@ -741,6 +761,10 @@ msgstr "Дата"
 msgid "Date Range"
 msgstr "Діапазон дат"
 
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:115
+msgid "Day {selectedDay}"
+msgstr "День {selectedDay}"
+
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
 msgid "Debt"
@@ -921,7 +945,7 @@ msgstr "Введіть поточний PIN-код для вимкнення з�
 msgid "Enter new PIN"
 msgstr "Введіть новий PIN-код"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:69
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:72
 msgid "Enter new token"
 msgstr "Введіть новий токен"
 
@@ -937,7 +961,7 @@ msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:40
+#: src/sync/component/token-input-step/token-input-step.tsx:43
 msgid "Enter your Monobank API token"
 msgstr "Введіть ваш API-токен Монобанку"
 
@@ -993,7 +1017,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
 msgid "Expenses"
 msgstr "Витрати"
 
@@ -1050,11 +1074,11 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 msgid "Failed to setup sync"
 msgstr "Не вдалося налаштувати синхронізацію"
 
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:54
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:55
 msgid "Failed to update token"
 msgstr "Не вдалося оновити токен"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:47
+#: src/sync/component/token-input-step/token-input-step.tsx:52
 msgid "Fetch Accounts"
 msgstr "Отримати рахунки"
 
@@ -1199,18 +1223,18 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
+#: src/transaction/components/statistics-content/statistics-content.tsx:62
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:94
+#: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
@@ -1357,6 +1381,14 @@ msgstr "Гроші, які ви винні або вам винні"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:30
+msgid "Monthly Costs"
+msgstr "Місячні Витрати"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:96
+msgid "Monthly Total"
+msgstr "Місячна Сума"
+
 #: src/app/(main)/create-account/index.tsx:20
 msgid "New Account"
 msgstr "Новий рахунок"
@@ -1449,6 +1481,10 @@ msgstr "Немає доступних MCC-кодів"
 msgid "No MCC codes found"
 msgstr "MCC-коди не знайдені"
 
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
+msgid "No recurring payments detected"
+msgstr "Регулярних платежів не виявлено"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
@@ -1525,7 +1561,7 @@ msgstr "або"
 msgid "Organization"
 msgstr "Організація"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/transaction/components/statistics-content/statistics-content.tsx:52
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1541,7 +1577,7 @@ msgstr "Винен вам"
 msgid "Paid: {formattedBalance}"
 msgstr "Сплачено: {formattedBalance}"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:34
+#: src/sync/component/token-input-step/token-input-step.tsx:35
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
 
@@ -1634,6 +1670,14 @@ msgstr "Перерахувати баланси"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+msgid "Recurring"
+msgstr "Регулярні"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
+msgid "Recurring payments will appear here once patterns are detected from your transactions"
+msgstr "Регулярні платежі з'являться тут, щойно будуть виявлені закономірності у ваших транзакціях"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
 msgstr "Відновити"
@@ -1672,7 +1716,7 @@ msgid "Rules"
 msgstr "Правила"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:23
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
 msgstr "Зберегти"
 
@@ -1939,15 +1983,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/transaction/components/statistics-content/statistics-content.tsx:81
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:105
+#: src/transaction/components/statistics-content/statistics-content.tsx:103
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/transaction/components/statistics-content/statistics-content.tsx:58
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1967,7 +2011,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/app/(tabs)/analytics.tsx:11
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1982,6 +2026,10 @@ msgstr "Акції"
 #: src/account/component/create-account-screen/create-account-screen.tsx:42
 msgid "Submit"
 msgstr "Відправити"
+
+#: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:28
+msgid "Subscriptions"
+msgstr "Підписки"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:76
 msgid "Swap accounts"
@@ -2145,8 +2193,8 @@ msgstr "Традиційні банківські рахунки"
 msgid "Transaction Type"
 msgstr "Тип транзакції"
 
-#: src/app/(tabs)/transactions.tsx:13
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
+#: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -2219,7 +2267,7 @@ msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -2230,6 +2278,10 @@ msgstr "Невідомо"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Актуальний"
+
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:129
+msgid "Upcoming"
+msgstr "Майбутні"
 
 #: src/account/component/create-account-screen/update-account-screen.tsx:72
 msgid "Update Account"
@@ -2300,6 +2352,6 @@ msgstr "Ви винні"
 msgid "You received money"
 msgstr "Ви отримали гроші"
 
-#: src/sync/component/token-input-step/token-input-step.tsx:29
+#: src/sync/component/token-input-step/token-input-step.tsx:30
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Ваш токен зберігається в безпечній базі даних. Синхронізація продовжується у фоновому режимі."
