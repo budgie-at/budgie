@@ -30,6 +30,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'New Income'
 
+- assertVisible:
+    id: 'TransactionForm.SubmitButton'
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Income'
@@ -111,6 +117,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
+
 - assertVisible:
     id: 'HomePage.NetWorthValue.100'
 - assertVisible:

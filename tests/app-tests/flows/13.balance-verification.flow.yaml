@@ -3,8 +3,6 @@ appId: ${APP_ID}
 
 - runFlow: subflows/enter-app.flow.yaml
 
-# --- Setup: Create Account with $500 ---
-
 - runFlow:
     file: subflows/create-account.flow.yaml
     env:
@@ -22,6 +20,10 @@ appId: ${APP_ID}
       id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Balance_Account.100'
 
 # --- Create Expense of $42 ---
 
@@ -72,6 +74,10 @@ appId: ${APP_ID}
 
 - assertVisible:
     id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.58'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Balance_Account.58'
 
 # --- Create Income of $100 ---
 
@@ -128,3 +134,7 @@ appId: ${APP_ID}
 
 - assertVisible:
     id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.158'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Balance_Account.158'

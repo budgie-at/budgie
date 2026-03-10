@@ -4,18 +4,10 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: subflows/account/create-cash-account.flow.yaml
+    file: subflows/import-database-fixture.flow.yaml
     env:
-      CURRENCY_CODE: 'USD'
-      ACCOUNT_AMOUNT: '100'
-      ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-    file: subflows/account/create-cash-account.flow.yaml
-    env:
-      CURRENCY_CODE: 'EUR'
-      ACCOUNT_AMOUNT: '100'
-      ACCOUNT_NAME: 'E2E Foreign Account'
+      FIXTURE_QUERY: 'e2e-12-cross-currency-transfer-transaction'
+      FIXTURE_FILE_NAME: 'e2e-12-cross-currency-transfer-transaction.db'
 
 # --- Create Cross-Currency Transfer ---
 
