@@ -81,7 +81,7 @@ export const TransactionAmountDisplay = ({
     const fullDisplay = `${currencySymbol} ${amount}`;
 
     return (
-        <Animated.View testID={testID} entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
+        <Animated.View testID={testID} entering={FadeIn.duration(200)} className="items-center">
             <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                 <Animated.View style={shakeStyle} className="w-full">
                     <Animated.View style={scaleStyle}>
