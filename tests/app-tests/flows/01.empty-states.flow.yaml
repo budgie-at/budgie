@@ -11,24 +11,12 @@ appId: ${APP_ID}
 
 # --- Transactions Tab Empty State ---
 
-- tapOn:
-    id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
 # --- Analytics Tab Renders ---
 
-- tapOn:
-    id: 'TabBar.Analytics'
-- extendedWaitUntil:
-    visible:
-      id: 'AnalyticsPage.Container'
+- runFlow: subflows/navigate-to-analytics.flow.yaml
 
 # --- Settings Tab Renders ---
 
-- tapOn:
-    id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
+- runFlow: subflows/navigate-to-settings.flow.yaml

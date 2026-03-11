@@ -2,6 +2,10 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: 'TabBar.Analytics'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TabBar.Analytics'
 - extendedWaitUntil:
     visible:
       id: 'AnalyticsPage.Container'
+    timeout: 15000
