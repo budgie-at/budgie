@@ -5,12 +5,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.AddAccount'
-- waitForAnimationToEnd
+
+- runFlow:
+    file: open-action-menu.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.AddAccount'
+
 - tapOn:
     id: 'ActionItem.AddAccount'
 - extendedWaitUntil:
