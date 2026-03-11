@@ -10,6 +10,7 @@ appId: ${APP_ID}
       id: 'SettingsPage.ManageCategoriesCard'
     direction: DOWN
     speed: 20
+    centerElement: true
 - waitForAnimationToEnd
 - assertVisible:
     id: 'SettingsPage.ManageCategoriesCard'
