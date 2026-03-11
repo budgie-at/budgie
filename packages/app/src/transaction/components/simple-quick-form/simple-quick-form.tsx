@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import {
     RepeatedTransactionPatternInterface,
-    RuleWithRelationsEntityInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -49,7 +48,7 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly ruleDetectionMode?: RuleDetectionModeType;
     readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly matchingRule?: RuleWithRelationsEntityInterface;
+    readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
@@ -74,7 +73,7 @@ export const SimpleQuickForm = (props: Props) => {
         mccCategoryId,
         ruleDetectionMode = 'none',
         suggestRuleData,
-        matchingRule,
+        matchingRulesCount,
         onRuleCreated,
         aiContext = '',
         isNewTransaction = false,
@@ -249,22 +248,24 @@ export const SimpleQuickForm = (props: Props) => {
 
     return (
         <View className="flex-1">
-            <View className="flex-1 justify-start pt-3xl">
+            <View className="flex-1 pt-3xl">
                 <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                <TransactionAmountDisplay
-                    testID={TransactionFormSelectors.AmountInput}
-                    ref={amountDisplayRef}
-                    amount={displayValue}
-                    currencySymbol={currencySymbol}
-                    variant={variant}
-                />
-                <View className="items-center mt-md">
-                    <RulePillSlot
-                        ruleDetectionMode={ruleDetectionMode}
-                        suggestRuleData={suggestRuleData}
-                        matchingRule={matchingRule}
-                        onRuleCreated={onRuleCreated}
+                <View className="flex-1 items-center justify-center">
+                    <TransactionAmountDisplay
+                        testID={TransactionFormSelectors.AmountInput}
+                        ref={amountDisplayRef}
+                        amount={displayValue}
+                        currencySymbol={currencySymbol}
+                        variant={variant}
                     />
+                    <View className="items-center mt-5">
+                        <RulePillSlot
+                            ruleDetectionMode={ruleDetectionMode}
+                            suggestRuleData={suggestRuleData}
+                            matchingRulesCount={matchingRulesCount}
+                            onRuleCreated={onRuleCreated}
+                        />
+                    </View>
                 </View>
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <SuggestionsContainer
