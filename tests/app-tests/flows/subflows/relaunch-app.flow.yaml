@@ -1,36 +1,39 @@
 appId: ${APP_ID}
+env:
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+  USE_E2E_RESET_ROUTE: ${USE_E2E_RESET_ROUTE || 'false'}
 ---
 # Relaunch app to recover from Maestro black screen after modal dismiss
-- stopApp
-- launchApp
+- runFlow:
+    when:
+      true: ${USE_E2E_RESET_ROUTE === 'true'}
+    commands:
+      - stopApp
+      - openLink: 'budgie://'
+      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 30000
 
 - runFlow:
     when:
-      visible: 'http://localhost:8081'
+      true: ${USE_E2E_RESET_ROUTE !== 'true'}
     commands:
-      - tapOn: 'http://localhost:8081'
+      - retry:
+          maxRetries: 2
+          commands:
+            - stopApp
+            - launchApp
 
-- waitForAnimationToEnd
+            - runFlow:
+                when:
+                  true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
+                file: handle-dev-client-startup.flow.yaml
 
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn: 'Open'
+            - waitForAnimationToEnd
 
-- runFlow:
-    when:
-      visible: 'Continue'
-    commands:
-      - tapOn: 'Continue'
-
-- runFlow:
-    when:
-      visible: 'Close'
-    commands:
-      - tapOn: 'Close'
-
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 30000
+            - extendedWaitUntil:
+                visible:
+                  id: 'HomePage.TotalBalance'
+                timeout: 30000
