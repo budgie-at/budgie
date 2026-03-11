@@ -438,8 +438,19 @@ jobs:
           name: maestro-ios-artifacts
           include-hidden-files: true
           path: |
-            tests/app-tests/artifacts/**
+            tests/app-tests/artifacts/maestro/**
             tests/app-tests/.maestro/**
+          if-no-files-found: warn
+
+      - name: Upload iOS simulator crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-ios-simulator-failure-artifacts
+          include-hidden-files: true
+          path: |
+            tests/app-tests/artifacts/simulator/**
+            tests/app-tests/artifacts/diagnostics/**
           if-no-files-found: warn
 
       - name: Save CocoaPods cache
