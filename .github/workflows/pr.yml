@@ -377,7 +377,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.2.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -545,7 +545,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.0.3; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching

@@ -1,6 +1,10 @@
 appId: ${APP_ID}
 ---
 
+- setPermissions:
+    permissions:
+      contacts: allow
+
 - scrollUntilVisible:
     element:
       id: 'AccountForm.ContactSelector'
