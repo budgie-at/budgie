@@ -1,6 +1,7 @@
 appId: ${APP_ID}
 ---
 
+- clearState
 - launchApp:
     permissions:
       all: deny

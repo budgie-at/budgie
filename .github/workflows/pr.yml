@@ -373,7 +373,6 @@ jobs:
         run: |
           APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
-          echo "APP_BINARY_PATH=$APP_PATH" >> "$GITHUB_ENV"
           xcrun simctl install booted "$APP_PATH"
 
       - name: Install Maestro
@@ -402,9 +401,6 @@ jobs:
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         shell: bash
-        env:
-          APP_PLATFORM: ios
-          APP_BINARY_PATH: ${{ env.APP_BINARY_PATH }}
         run: |
           set -euo pipefail
           sh ./scripts/setup-ios-simulator.sh
