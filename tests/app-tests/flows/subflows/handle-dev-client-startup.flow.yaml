@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      visible:
+        text: 'Open'
+        enabled: true
+    commands:
+      - tapOn:
+          point: '66%,53%'
+
+- runFlow:
+    when:
+      visible: 'http://localhost:8081'
+    commands:
+      - tapOn: 'http://localhost:8081'
+
+- runFlow:
+    when:
+      visible: '.*:8081.*'
+    commands:
+      - tapOn:
+          text: '.*:8081.*'
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Continue'
+    commands:
+      - tapOn: 'Continue'
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Close'
+    commands:
+      - tapOn: 'Close'
