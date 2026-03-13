@@ -31,6 +31,7 @@ import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
+import { useBootstrapReset } from '../@generic/hook/use-bootstrap-reset.hook';
 import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
@@ -64,7 +65,7 @@ const AiProviderWrapper: typeof LlmDisabledProvider = isAiDisabled
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
-export default function RootLayout() {
+const RootLayoutContent = () => {
     const { success, error } = useMigrations(db, migrations);
 
     useResetDb(error);
@@ -187,4 +188,14 @@ export default function RootLayout() {
             </SQLiteProvider>
         </SafeAreaProvider>
     );
+};
+
+export default function RootLayout() {
+    const isBootstrapReady = useBootstrapReset();
+
+    if (!isBootstrapReady) {
+        return null;
+    }
+
+    return <RootLayoutContent />;
 }
