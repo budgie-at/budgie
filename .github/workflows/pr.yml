@@ -267,17 +267,18 @@ jobs:
       - name: Select Xcode 26.3
         run: |
           if [ -d /Applications/Xcode_26.3.app ]; then
-            sudo xcode-select -s /Applications/Xcode_26.3.app
+            XCODE_APP=/Applications/Xcode_26.3.app
           elif [ -d /Applications/Xcode.app ]; then
-            sudo xcode-select -s /Applications/Xcode.app
+            XCODE_APP=/Applications/Xcode.app
           else
             echo "::error::Xcode 26.3 is not installed on this runner."
             ls -1 /Applications | grep -i Xcode || true
             exit 1
           fi
 
-          sudo xcodebuild -runFirstLaunch || true
-          xcode-select -p
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Using Xcode at $XCODE_APP"
+          xcode-select -p || true
           xcodebuild -version
 
       - name: Restore CocoaPods cache
