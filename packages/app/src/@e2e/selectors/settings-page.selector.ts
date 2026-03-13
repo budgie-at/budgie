@@ -14,5 +14,6 @@ export const SettingsPageSelectors = {
     ArchivedCard: 'SettingsPage.ArchivedCard',
     InactiveCard: 'SettingsPage.InactiveCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
-    ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard'
+    ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
+    ClearDataCard: 'SettingsPage.ClearDataCard'
 } as const;
