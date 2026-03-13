@@ -222,6 +222,10 @@ jobs:
           uname -m
           hostname
           ls -1 /Applications | grep -i Xcode || true
+          which pod || true
+          pod --version || true
+          which ccache || true
+          ccache --version || true
           xcode-select -p || true
           xcodebuild -version || true
 
@@ -230,31 +234,6 @@ jobs:
         with:
           node-version: 22.x
           cache: yarn
-
-      - name: Setup CocoaPods
-        run: |
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
-          echo "/usr/local/bin" >> "$GITHUB_PATH"
-
-          if command -v pod >/dev/null; then
-            pod --version
-            exit 0
-          fi
-
-          if command -v brew >/dev/null; then
-            brew install cocoapods
-            hash -r
-            pod --version
-            exit 0
-          fi
-
-          GEM_BIN="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
-          echo "$GEM_BIN" >> "$GITHUB_PATH"
-          export PATH="$GEM_BIN:$PATH"
-          gem install --user-install ffi -v 1.17.3 -N
-          gem install --user-install cocoapods -v 1.15.2 -N
-          pod --version
 
       - name: Install dependencies
         run: yarn install
@@ -320,17 +299,14 @@ jobs:
       - name: Setup ccache
         run: |
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          if command -v ccache >/dev/null; then
-            echo "USE_CCACHE=1" >> "$GITHUB_ENV"
-            ccache --version
-            ccache --zero-stats || true
-          else
-            echo "::warning::ccache is not installed on this runner; continuing without it."
-            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
-          fi
+          command -v ccache >/dev/null || {
+            echo "::error::ccache is not installed on this runner."
+            exit 1
+          }
+          ccache --version
+          ccache --zero-stats || true
 
       - name: Restore ccache
-        if: env.USE_CCACHE == '1'
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -493,7 +469,7 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always() && env.USE_CCACHE == '1'
+        if: always()
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
