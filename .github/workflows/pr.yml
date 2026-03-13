@@ -295,13 +295,17 @@ jobs:
       - name: Setup ccache
         run: |
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          if ! command -v ccache >/dev/null; then
-            brew install ccache
+          if command -v ccache >/dev/null; then
+            echo "USE_CCACHE=1" >> "$GITHUB_ENV"
+            ccache --version
+            ccache --zero-stats || true
+          else
+            echo "::warning::ccache is not installed on this runner; continuing without it."
+            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
           fi
-          ccache --version
-          ccache --zero-stats || true
 
       - name: Restore ccache
+        if: env.USE_CCACHE == '1'
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -464,7 +468,7 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always()
+        if: always() && env.USE_CCACHE == '1'
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
