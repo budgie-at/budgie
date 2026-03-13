@@ -31,19 +31,6 @@ jobs:
           node-version: 22.x
           cache: yarn
 
-      - name: Setup CocoaPods
-        run: |
-          if command -v pod >/dev/null; then
-            pod --version
-            exit 0
-          fi
-
-          GEM_BIN="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
-          echo "$GEM_BIN" >> "$GITHUB_PATH"
-          export PATH="$GEM_BIN:$PATH"
-          gem install --user-install cocoapods -N
-          pod --version
-
       - name: Install dependencies
         run: yarn install
 
@@ -243,6 +230,19 @@ jobs:
         with:
           node-version: 22.x
           cache: yarn
+
+      - name: Setup CocoaPods
+        run: |
+          if command -v pod >/dev/null; then
+            pod --version
+            exit 0
+          fi
+
+          GEM_BIN="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
+          echo "$GEM_BIN" >> "$GITHUB_PATH"
+          export PATH="$GEM_BIN:$PATH"
+          gem install --user-install cocoapods -N
+          pod --version
 
       - name: Install dependencies
         run: yarn install
