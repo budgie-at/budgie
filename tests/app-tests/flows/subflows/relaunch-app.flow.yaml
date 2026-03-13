@@ -1,15 +1,15 @@
 appId: ${APP_ID}
 env:
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
-  USE_E2E_RESET_ROUTE: ${USE_E2E_RESET_ROUTE || 'false'}
+  USE_APP_OWNED_RESET: ${USE_APP_OWNED_RESET || 'false'}
 ---
 # Relaunch app to recover from Maestro black screen after modal dismiss
 - runFlow:
     when:
-      true: ${USE_E2E_RESET_ROUTE === 'true'}
+      true: ${USE_APP_OWNED_RESET === 'true'}
     commands:
       - stopApp
-      - openLink: 'budgie://'
+      - launchApp
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
@@ -18,7 +18,7 @@ env:
 
 - runFlow:
     when:
-      true: ${USE_E2E_RESET_ROUTE !== 'true'}
+      true: ${USE_APP_OWNED_RESET !== 'true'}
     commands:
       - retry:
           maxRetries: 2

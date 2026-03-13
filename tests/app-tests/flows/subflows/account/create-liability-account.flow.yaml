@@ -14,11 +14,14 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_NAME}
 - hideKeyboard
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
       id: 'AccountForm.CurrencySelector'
     direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencySelector'
 - extendedWaitUntil:
