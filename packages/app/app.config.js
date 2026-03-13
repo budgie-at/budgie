@@ -4,6 +4,8 @@ const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
 const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
+const IS_CCACHE_ENABLED =
+    process.env.USE_CCACHE !== '0' && (process.env.CI === 'true' || IS_E2E);
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
@@ -109,7 +111,7 @@ export default ({ config }) => ({
                 buildReactNativeFromSource: true,
                 useHermesV1: true,
                 ios: {
-                    ccacheEnabled: process.env.CI === 'true' || IS_E2E
+                    ccacheEnabled: IS_CCACHE_ENABLED
                 }
             }
         ],
