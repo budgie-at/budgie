@@ -10,6 +10,7 @@ fi
 FIXTURE_PATH="$1"
 TARGET_NAME="${2:-$(basename "$FIXTURE_PATH")}"
 WORKING_FIXTURE_PATH="$FIXTURE_PATH"
+FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2E Fixtures}"
 
 if [ ! -f "$FIXTURE_PATH" ]; then
     echo "Fixture not found: $FIXTURE_PATH" >&2
@@ -122,8 +123,9 @@ FOUND=0
 
 while IFS= read -r provider_dir; do
     [ -n "$provider_dir" ] || continue
-    cp "$WORKING_FIXTURE_PATH" "$provider_dir/$TARGET_NAME"
-    echo "Installed $TARGET_NAME into $provider_dir"
+    mkdir -p "$provider_dir/$FIXTURE_FOLDER_NAME"
+    cp "$WORKING_FIXTURE_PATH" "$provider_dir/$FIXTURE_FOLDER_NAME/$TARGET_NAME"
+    echo "Installed $TARGET_NAME into $provider_dir/$FIXTURE_FOLDER_NAME"
     FOUND=1
 done <<EOF
 $(find_provider_dirs)
