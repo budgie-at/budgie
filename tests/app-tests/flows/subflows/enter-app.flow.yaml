@@ -14,6 +14,11 @@ env:
           commands:
             - stopApp
             - openLink: 'budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}'
+            - runFlow:
+                when:
+                  visible: 'Open'
+                commands:
+                  - tapOn: 'Open'
 
       - runFlow:
           when:
