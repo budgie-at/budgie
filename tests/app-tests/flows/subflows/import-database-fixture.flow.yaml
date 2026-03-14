@@ -31,18 +31,58 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
 
-- tapOn: 'Search'
-- inputText: ${FIXTURE_QUERY}
-- hideKeyboard
+- extendedWaitUntil:
+    visible: 'Browse'
+    timeout: 10000
+    optional: true
+
+- runFlow:
+    when:
+      visible: 'Browse'
+    commands:
+      - tapOn: 'Browse'
+      - waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: 'E2E Fixtures'
+    timeout: 5000
+    optional: true
+
+- runFlow:
+    when:
+      visible: 'On My iPhone'
+    commands:
+      - tapOn: 'On My iPhone'
+      - waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'E2E Fixtures'
+    commands:
+      - tapOn: 'E2E Fixtures'
+      - waitForAnimationToEnd
+
 - extendedWaitUntil:
     visible: '${FIXTURE_FILE_NAME}'
-    timeout: 15000
-- tapOn:
-    point: '18%,39%'
+    timeout: 5000
+    optional: true
+
+- runFlow:
+    when:
+      notVisible: '${FIXTURE_FILE_NAME}'
+    commands:
+      - tapOn: 'Search'
+      - inputText: ${FIXTURE_FILE_NAME}
+      - hideKeyboard
+      - extendedWaitUntil:
+          visible: '${FIXTURE_FILE_NAME}'
+          timeout: 15000
+
+- tapOn: '${FIXTURE_FILE_NAME}'
 
 - extendedWaitUntil:
     visible: 'Cancel'
-    timeout: 10000
+    timeout: 15000
 - waitForAnimationToEnd
 - tapOn:
     point: '50%,56%'
