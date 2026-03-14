@@ -2,12 +2,29 @@ appId: ${APP_ID}
 ---
 - runFlow: navigate-to-settings.flow.yaml
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ImportDatabaseCard'
-    direction: DOWN
-    speed: 20
-    centerElement: true
+- swipe:
+    start: '50%,78%'
+    end: '50%,28%'
+    duration: 220
+- waitForAnimationToEnd
+
+- swipe:
+    start: '50%,78%'
+    end: '50%,28%'
+    duration: 220
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      notVisible:
+        id: 'SettingsPage.ImportDatabaseCard'
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: 'SettingsPage.ImportDatabaseCard'
+          direction: DOWN
+          speed: 60
+          centerElement: true
 - waitForAnimationToEnd
 - assertVisible:
     id: 'SettingsPage.ImportDatabaseCard'
