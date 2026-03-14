@@ -78,7 +78,14 @@ appId: ${APP_ID}
           visible: '${FIXTURE_FILE_NAME}'
           timeout: 15000
 
-- tapOn: '${FIXTURE_FILE_NAME}'
+- tapOn:
+    point: '18%,39%'
+
+- runFlow:
+    when:
+      notVisible: 'Cancel'
+    commands:
+      - tapOn: '${FIXTURE_FILE_NAME}'
 
 - extendedWaitUntil:
     visible: 'Cancel'
