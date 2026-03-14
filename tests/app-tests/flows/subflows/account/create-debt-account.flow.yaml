@@ -6,7 +6,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CreateAccount.DEBT'
 - extendedWaitUntil:
-    visible: 'ACCOUNT NAME & ICON'
+    visible:
+      id: 'AccountForm.NameInput'
 
 - scrollUntilVisible:
     element:
