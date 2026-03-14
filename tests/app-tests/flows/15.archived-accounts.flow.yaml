@@ -6,7 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: '15-archived-accounts'
+      FIXTURE_QUERY: 'e2e-15-archived-accounts'
       FIXTURE_FILE_NAME: 'e2e-15-archived-accounts.db'
 - assertVisible:
     id: 'AccountCard.E2E Archive Account'

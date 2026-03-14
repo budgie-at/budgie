@@ -6,7 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: '08-settings-navigation'
+      FIXTURE_QUERY: 'e2e-08-settings-navigation'
       FIXTURE_FILE_NAME: 'e2e-08-settings-navigation.db'
 
 - runFlow: subflows/navigate-to-settings.flow.yaml
