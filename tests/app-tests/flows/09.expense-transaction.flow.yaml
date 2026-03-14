@@ -4,9 +4,10 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/import-database-fixture.flow.yaml
     env:
-      ACCOUNT_NAME: 'E2E Txn Account'
+      FIXTURE_QUERY: 'e2e-09-expense-transaction'
+      FIXTURE_FILE_NAME: 'e2e-09-expense-transaction.db'
 
 # --- Create Expense ---
 

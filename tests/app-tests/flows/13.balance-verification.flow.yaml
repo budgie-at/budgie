@@ -4,14 +4,10 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/import-database-fixture.flow.yaml
     env:
-      ACCOUNT_NAME: 'E2E Balance Account'
-
-- runFlow:
-    file: subflows/create-category.flow.yaml
-    env:
-      CATEGORY_NAME: 'E2E Balance Category'
+      FIXTURE_QUERY: 'e2e-13-balance-verification'
+      FIXTURE_FILE_NAME: 'e2e-13-balance-verification.db'
 
 - tapOn:
     id: 'TabBar.Home'
