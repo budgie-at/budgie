@@ -3,15 +3,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/enter-app.flow.yaml
 
-# --- Create Account ---
-
 - runFlow:
-    file: subflows/account/create-basic-account.flow.yaml
+    file: subflows/import-database-fixture.flow.yaml
     env:
-      ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
-      ACCOUNT_SCREEN_TITLE: 'Savings Account'
-      ACCOUNT_NAME: 'E2E Archive Account'
-      ACCOUNT_AMOUNT: '200'
+      FIXTURE_QUERY: '15-archived-accounts'
+      FIXTURE_FILE_NAME: 'e2e-15-archived-accounts.db'
 - assertVisible:
     id: 'AccountCard.E2E Archive Account'
 

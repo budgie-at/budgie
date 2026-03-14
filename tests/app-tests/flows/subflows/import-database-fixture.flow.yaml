@@ -41,4 +41,21 @@ appId: ${APP_ID}
     notVisible: 'Cancel'
     timeout: 15000
 
-- runFlow: relaunch-app.flow.yaml
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 15000
+    optional: true
+
+- runFlow:
+    when:
+      notVisible:
+        id: 'HomePage.TotalBalance'
+    file: relaunch-app.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
