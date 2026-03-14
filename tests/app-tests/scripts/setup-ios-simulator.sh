@@ -13,6 +13,7 @@ xcrun simctl privacy booted grant contacts com.vitalyiegorov.budgie.dev >/dev/nu
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/19-transactions-filters.db" "e2e-19-transactions-filters.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/20-transactions-account-date.db" "e2e-20-transactions-account-date.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/08-settings-navigation.db" "e2e-08-settings-navigation.db"
+"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/15-archived-accounts.db" "e2e-15-archived-accounts.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/11-transfer-transaction.db" "e2e-11-transfer-transaction.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/12-cross-currency-transfer-transaction.db" "e2e-12-cross-currency-transfer-transaction.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/17-expense-to-transfer.db" "e2e-17-expense-to-transfer.db"

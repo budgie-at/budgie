@@ -35,7 +35,7 @@ prepare_fixture_copy() {
     fi
 
     if [ "$TARGET_NAME" = "e2e-20-transactions-account-date.db" ]; then
-        WORKING_FIXTURE_PATH="$(mktemp "${TMPDIR:-/tmp}/e2e-20-transactions-account-date.XXXXXX.db")"
+        WORKING_FIXTURE_PATH="$(mktemp -t e2e-20-transactions-account-date).db"
         cp "$FIXTURE_PATH" "$WORKING_FIXTURE_PATH"
 
         NOW_TS="$(date +%s)"
