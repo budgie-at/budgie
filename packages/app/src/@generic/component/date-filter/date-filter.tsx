@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionFilterChip } from '../../../transaction/components/transaction-filter-chip/transaction-filter-chip';
 import { DATE_PERIOD } from '../../constant/date-period.constant';
@@ -56,8 +57,18 @@ export const DateFilter = ({ value, onChange }: Props) => {
     };
 
     const hasDateFilterSelected = isDefined(value?.from) || isDefined(value?.to);
-
     const label = getLabel();
+    const chipTestID = hasDateFilterSelected
+        ? TransactionFiltersSelectors.DateChipActive
+        : TransactionFiltersSelectors.DateChip;
 
-    return <TransactionFilterChip isActive={hasDateFilterSelected} icon={UserIconNameEnum.Calendar} label={label} onPress={handleOpen} />;
+    return (
+        <TransactionFilterChip
+            isActive={hasDateFilterSelected}
+            icon={UserIconNameEnum.Calendar}
+            label={label}
+            onPress={handleOpen}
+            testID={chipTestID}
+        />
+    );
 };
