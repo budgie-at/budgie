@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-10-income-transaction'
-      FIXTURE_FILE_NAME: 'e2e-10-income-transaction.db'
+      FIXTURE_ID: '10-income-transaction'
 
 # --- Create Income ---
 
