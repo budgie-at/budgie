@@ -1,5 +1,4 @@
 import { File, Paths } from 'expo-file-system';
-import * as Updates from 'expo-updates';
 
 import { databaseImportService } from '../../import/service/database-import.service';
 
@@ -34,7 +33,6 @@ class AppE2EFixtureImportService {
         }
 
         await databaseImportService.replaceFromUri(fixtureFile.uri);
-        await Updates.reloadAsync();
     }
 
     private getFixtureUri(fixtureId: E2EFixtureId) {
