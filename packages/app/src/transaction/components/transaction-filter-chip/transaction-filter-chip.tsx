@@ -12,6 +12,7 @@ interface Props {
     readonly icon: UserIconNameEnum;
     readonly onPress: EmptyFn;
     readonly isActive: boolean;
+    readonly testID?: string;
 }
 
 const chipVariants = cva('rounded-2xl border px-xl flex-row items-center gap-x-sm py-sm', {
@@ -32,8 +33,8 @@ const textVariants = cva('text-sm', {
     }
 });
 
-export const TransactionFilterChip = ({ label, onPress, icon, isActive }: Props) => (
-    <HapticPressable className={chipVariants({ isActive })} onPress={onPress}>
+export const TransactionFilterChip = ({ label, onPress, icon, isActive, testID }: Props) => (
+    <HapticPressable className={chipVariants({ isActive })} onPress={onPress} testID={testID}>
         <Icon icon={icon} className={textVariants({ isActive })} size={14} />
         <Text className={textVariants({ isActive })}>{label}</Text>
     </HapticPressable>

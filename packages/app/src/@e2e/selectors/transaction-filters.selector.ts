@@ -1,0 +1,38 @@
+/* eslint-disable lingui/no-unlocalized-strings */
+import { AccountTypeEnum, DatePeriodEnum, TransactionTypeEnum } from '@budgie/contracts';
+
+export const TransactionFiltersSelectors = {
+    ClearAllButton: 'TransactionFilters.ClearAllButton',
+    DateChip: 'TransactionFilters.DateChip',
+    DateChipActive: 'TransactionFilters.DateChipActive',
+    TypeChip: 'TransactionFilters.TypeChip',
+    CategoryChip: 'TransactionFilters.CategoryChip',
+    TagChip: 'TransactionFilters.TagChip',
+    AccountChip: 'TransactionFilters.AccountChip',
+    AccountChipActive: 'TransactionFilters.AccountChipActive',
+    DatePeriod: (period: DatePeriodEnum) => `TransactionFilters.DatePeriod.${period}` as const,
+    DateApplyButton: 'TransactionFilters.DateApplyButton',
+    TypeOption: (type: TransactionTypeEnum) => `TransactionFilters.TypeOption.${type}` as const,
+    TypeApplyButton: 'TransactionFilters.TypeApplyButton',
+    CategorySearchInput: 'TransactionFilters.CategorySearchInput',
+    CategorySelectAllButton: 'TransactionFilters.CategorySelectAllButton',
+    CategoryDeselectAllButton: 'TransactionFilters.CategoryDeselectAllButton',
+    CategoryApplyButton: 'TransactionFilters.CategoryApplyButton',
+    CategoryOption: (title: string) => `TransactionFilters.CategoryOption.${title.trim()}` as const,
+    CategoryOptionSelected: (title: string) => `TransactionFilters.CategoryOptionSelected.${title.trim()}` as const,
+    TagSearchInput: 'TransactionFilters.TagSearchInput',
+    TagSelectAllButton: 'TransactionFilters.TagSelectAllButton',
+    TagDeselectAllButton: 'TransactionFilters.TagDeselectAllButton',
+    TagApplyButton: 'TransactionFilters.TagApplyButton',
+    TagOption: (title: string) => `TransactionFilters.TagOption.${title.trim()}` as const,
+    TagOptionSelected: (title: string) => `TransactionFilters.TagOptionSelected.${title.trim()}` as const,
+    AccountSearchInput: 'TransactionFilters.AccountSearchInput',
+    AccountSelectAllButton: 'TransactionFilters.AccountSelectAllButton',
+    AccountDeselectAllButton: 'TransactionFilters.AccountDeselectAllButton',
+    AccountApplyButton: 'TransactionFilters.AccountApplyButton',
+    AccountGroupToggle: (type: AccountTypeEnum) => `TransactionFilters.AccountGroupToggle.${type}` as const,
+    AccountGroupSelectAll: (type: AccountTypeEnum) => `TransactionFilters.AccountGroupSelectAll.${type}` as const,
+    AccountOption: (title: string) => `TransactionFilters.AccountOption.${title.trim()}` as const,
+    AccountOptionSelected: (title: string) => `TransactionFilters.AccountOptionSelected.${title.trim()}` as const,
+    TypeOptionSelected: (type: TransactionTypeEnum) => `TransactionFilters.TypeOptionSelected.${type}` as const
+} as const;

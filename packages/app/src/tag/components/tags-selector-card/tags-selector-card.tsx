@@ -12,6 +12,7 @@ interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly variant: TagVariantType;
     readonly isSelected: boolean;
     readonly className?: string;
+    readonly testID?: string;
 }
 
 const cardVariants = cva(`border-2 rounded-3xl px-xl items-center justify-center gap-x-md`, {
@@ -64,13 +65,13 @@ const textVariants = cva('font-medium text-sm', {
     ]
 });
 
-export const TagsSelectorCard = ({ className, isSelected, title, variant, onSelect, id }: Props) => {
+export const TagsSelectorCard = ({ className, isSelected, title, variant, onSelect, id, testID }: Props) => {
     const handleSelect = () => void onSelect(id);
 
     const numberOfLines = variant === 'static' ? 2 : 1;
 
     return (
-        <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
+        <HapticPressable testID={testID} className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
             <Text className={cn(textVariants({ isSelected, variant }), 'text-center')} numberOfLines={numberOfLines}>
                 {title}
             </Text>

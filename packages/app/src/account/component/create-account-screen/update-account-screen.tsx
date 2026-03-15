@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboa
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
@@ -69,7 +70,14 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                     <Footer>
                         <View className="flex-row gap-2">
                             <ArchiveAccount accountId={account.id} />
-                            <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} className="flex-1" />
+                            <Button
+                                onPress={onSubmit}
+                                size="sm"
+                                variant={variant}
+                                content={t`Update Account`}
+                                className="flex-1"
+                                testID={AccountFormSelectors.SubmitButton}
+                            />
                         </View>
                     </Footer>
                 </KeyboardStickyView>
@@ -88,7 +96,12 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 />
 
                 <FormLayoutGroup>
-                    <AccountDetailsField control={control} variant={variant} />
+                    <AccountDetailsField
+                        control={control}
+                        variant={variant}
+                        nameInputTestID={AccountFormSelectors.NameInput}
+                        selectNameOnFocus
+                    />
 
                     {children}
 
