@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
+import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -45,11 +46,16 @@ const runBootstrapAction = async ({
 
     if (isNotEmptyString(fixtureId)) {
         await appE2EFixtureImportService.importFixtureById(fixtureId);
-    } else if (shouldReset) {
-        await appResetService.clearAllData();
+        await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+        await Updates.reloadAsync();
+
+        return;
     }
 
-    await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+    if (shouldReset) {
+        await appResetService.clearAllData();
+        await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+    }
 };
 
 export const useBootstrapReset = () => {
