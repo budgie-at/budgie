@@ -2,6 +2,7 @@ import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@b
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { AccountPickerBottomSheetSelectors } from '../../../@e2e/selectors/account-picker-bottom-sheet.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
@@ -28,8 +29,10 @@ export const AccountSelectorCard = (props: Props) => {
         <SelectorCard
             identifier={id}
             isSelected={isSelected}
+            allowReselect
             onSelect={onSelect}
             className={className}
+            testID={AccountPickerBottomSheetSelectors.Option(title)}
             iconSlot={<CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />}
             title={title}
             subtitle={

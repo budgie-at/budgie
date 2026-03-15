@@ -23,10 +23,13 @@ interface Props {
     readonly errorText: string;
     readonly currencySymbol: string;
     readonly onAction: () => Promise<void>;
+    readonly testID?: string;
+    readonly actionButtonTestID?: string;
 }
 
 export const AccountActionCard = (props: Props) => {
-    const { account, actionIcon, actionButtonText, confirmTitle, confirmDescription, errorText, currencySymbol, onAction } = props;
+    const { account, actionIcon, actionButtonText, confirmTitle, confirmDescription, errorText, currencySymbol, onAction, testID, actionButtonTestID } =
+        props;
     const { icon, title, type } = account;
 
     const { balance } = useAccountBalanceQuery(account.id);
@@ -53,13 +56,14 @@ export const AccountActionCard = (props: Props) => {
 
     return (
         <SimpleHorizontalCell
+            testID={testID}
             right={
                 <View className="flex-row items-center gap-x-xl">
                     <ProtectedText className="text-destructive-foreground text-sm font-semibold">
                         {formatDigits(balance, currencySymbol)}
                     </ProtectedText>
 
-                    <HapticPressable onPress={handleAction}>
+                    <HapticPressable testID={actionButtonTestID} onPress={handleAction}>
                         <CircleIcon variant="positive" icon={actionIcon} />
                     </HapticPressable>
                 </View>

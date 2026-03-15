@@ -1,0 +1,77 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_QUERY: 'e2e-15-archived-accounts'
+      FIXTURE_FILE_NAME: 'e2e-15-archived-accounts.db'
+- assertVisible:
+    id: 'AccountCard.E2E Archive Account'
+
+# --- Archive Account ---
+
+- tapOn:
+    id: 'AccountCard.E2E Archive Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+
+- tapOn: 'Archive'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.0'
+    timeout: 10000
+- assertNotVisible:
+    id: 'AccountCard.E2E Archive Account'
+
+# --- Navigate to Archived Accounts ---
+
+- runFlow: subflows/account/open-archived-accounts.flow.yaml
+
+# --- Verify Archived Account Visible ---
+
+- assertVisible:
+    id: 'ArchivedAccountCard.E2E Archive Account'
+
+# --- Restore Account ---
+
+- tapOn:
+    id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
+
+- tapOn: 'Restore'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'ArchivedAccountCard.E2E Archive Account'
+    timeout: 10000
+
+# --- Verify Account Back on Home ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- assertVisible:
+    id: 'AccountCard.E2E Archive Account'
