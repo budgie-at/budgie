@@ -341,10 +341,32 @@ jobs:
             deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
             deriveddata-${{ runner.os }}-xcode26_3-e2e-
 
+      - name: Shutdown stale simulators
+        run: xcrun simctl shutdown all || true
+
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 17 Pro'
+
+      - name: Capture simulator UDID
+        run: |
+          BOOTED_UDIDS="$(
+            xcrun simctl list devices booted |
+              sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
+          )"
+
+          BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
+          if [ "$BOOTED_COUNT" -ne 1 ]; then
+            echo "::error::Expected exactly 1 booted simulator, found $BOOTED_COUNT."
+            xcrun simctl list devices booted
+            exit 1
+          fi
+
+          SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
+          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
+          echo "Using simulator UDID: $SIMULATOR_UDID"
+          xcrun simctl list devices booted
 
       - name: Pre-copy vec.xcframework for ExpoSQLite
         run: |
@@ -365,7 +387,7 @@ jobs:
             -sdk iphonesimulator \
             -configuration Release \
             -derivedDataPath "$IOS_DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,arch=arm64' \
+            -destination "id=$SIMULATOR_UDID" \
             -jobs $(sysctl -n hw.ncpu) \
             CODE_SIGN_IDENTITY="-" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
@@ -379,7 +401,7 @@ jobs:
         run: |
           APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
-          xcrun simctl install booted "$APP_PATH"
+          xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
       - name: Install Maestro
         run: |
@@ -395,13 +417,13 @@ jobs:
       - name: Start iOS Simulator log capture
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl spawn booted log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
+          xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
       - name: Start iOS Simulator video recording
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl io booted recordVideo "$ARTIFACT_DIR/simulator.mov" > "$ARTIFACT_DIR/record-video.log" 2>&1 &
+          xcrun simctl io "$SIMULATOR_UDID" recordVideo "$ARTIFACT_DIR/simulator.mov" > "$ARTIFACT_DIR/record-video.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/record-video.pid"
 
       - name: Run Maestro UI tests
@@ -409,7 +431,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sh ./scripts/setup-ios-simulator.sh
+          sh ./scripts/setup-ios-simulator.sh "$SIMULATOR_UDID"
           sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
             --format junit \
             --output ./artifacts/maestro/report.xml \
@@ -422,7 +444,7 @@ jobs:
         run: |
           ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
           DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
-          xcrun simctl io booted screenshot "$ARTIFACT_DIR/final-screen.png" || true
+          xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
           if [ -f "$ARTIFACT_DIR/record-video.pid" ]; then
             kill -INT "$(cat "$ARTIFACT_DIR/record-video.pid")" || true

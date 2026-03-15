@@ -2,13 +2,14 @@
 
 set -euo pipefail
 
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-    echo "Usage: $0 <fixture-path> [target-filename]" >&2
+if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
+    echo "Usage: $0 <fixture-path> [target-filename] [simulator-udid]" >&2
     exit 1
 fi
 
 FIXTURE_PATH="$1"
 TARGET_NAME="${2:-$(basename "$FIXTURE_PATH")}"
+SIMULATOR_UDID="${3:-${SIMULATOR_UDID:-}}"
 WORKING_FIXTURE_PATH="$FIXTURE_PATH"
 FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2E Fixtures}"
 
@@ -62,18 +63,23 @@ EOF
 
 prepare_fixture_copy
 
-BOOTED_UDID="$(
-    xcrun simctl list devices booted |
-        sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p' |
-        head -n 1
-)"
+if [ -z "$SIMULATOR_UDID" ]; then
+    BOOTED_UDIDS="$(
+        xcrun simctl list devices booted |
+            sed -n 's/.*(\([A-F0-9-]\{36\}\)) (Booted).*/\1/p'
+    )"
 
-if [ -z "$BOOTED_UDID" ]; then
-    echo "No booted iOS simulator found." >&2
-    exit 1
+    BOOTED_COUNT="$(printf '%s\n' "$BOOTED_UDIDS" | sed '/^$/d' | wc -l | tr -d ' ')"
+    if [ "$BOOTED_COUNT" -ne 1 ]; then
+        echo "Expected exactly 1 booted iOS simulator, found $BOOTED_COUNT." >&2
+        xcrun simctl list devices booted >&2 || true
+        exit 1
+    fi
+
+    SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
 fi
 
-APP_GROUP_ROOT="$HOME/Library/Developer/CoreSimulator/Devices/$BOOTED_UDID/data/Containers/Shared/AppGroup"
+APP_GROUP_ROOT="$HOME/Library/Developer/CoreSimulator/Devices/$SIMULATOR_UDID/data/Containers/Shared/AppGroup"
 
 if [ ! -d "$APP_GROUP_ROOT" ]; then
     echo "Simulator AppGroup root not found: $APP_GROUP_ROOT" >&2
@@ -85,34 +91,16 @@ find_provider_dirs() {
 }
 
 initialize_file_provider_dirs() {
-    xcrun simctl launch "$BOOTED_UDID" com.apple.DocumentsApp >/dev/null 2>&1 || true
+    xcrun simctl launch "$SIMULATOR_UDID" com.apple.DocumentsApp >/dev/null 2>&1 || true
     sleep 3
 
     if find_provider_dirs | grep -q .; then
         return 0
     fi
 
-    CANDIDATE_ROOTS="$(
-        find "$APP_GROUP_ROOT" -mindepth 1 -maxdepth 1 -type d \
-            \( -exec test -d '{}/com.apple.DocumentsApp' ';' -o -exec test -d '{}/Documents' ';' \) \
-            | sort -u
-    )"
-
-    if [ -z "$CANDIDATE_ROOTS" ]; then
-        CANDIDATE_ROOTS="$(find "$APP_GROUP_ROOT" -mindepth 1 -maxdepth 1 -type d | sort -u)"
-    fi
-
-    if [ -z "$CANDIDATE_ROOTS" ]; then
-        echo "No AppGroup containers found under $APP_GROUP_ROOT" >&2
-        return 1
-    fi
-
-    while IFS= read -r candidate_root; do
-        [ -n "$candidate_root" ] || continue
-        mkdir -p "$candidate_root/File Provider Storage"
-    done <<EOF
-$CANDIDATE_ROOTS
-EOF
+    echo "No real File Provider Storage directories found for simulator $SIMULATOR_UDID." >&2
+    find "$APP_GROUP_ROOT" -mindepth 1 -maxdepth 2 -type d | sort >&2 || true
+    return 1
 }
 
 if ! find_provider_dirs | grep -q .; then
