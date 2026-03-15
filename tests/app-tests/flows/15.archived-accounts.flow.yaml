@@ -50,7 +50,7 @@ appId: ${APP_ID}
 # --- Verify Archived Account Visible ---
 
 - assertVisible:
-    id: 'ArchivedAccountCard.E2E Archive Account'
+    id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
 
 # --- Restore Account ---
 
@@ -61,7 +61,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     notVisible:
-      id: 'ArchivedAccountCard.E2E Archive Account'
+      id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
     timeout: 10000
 
 # --- Verify Account Back on Home ---
