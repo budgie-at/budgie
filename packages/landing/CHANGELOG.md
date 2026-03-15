@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.41.0](https://github.com/budgie-at/budgie/compare/v2.40.0...v2.41.0) (2026-03-15)
+
+### Bug Fixes
+
+- **landing:** declare svg module types for CI ([3f7b816](https://github.com/budgie-at/budgie/commit/3f7b816663ca6827bdee18a8b6f80622a110ab24))
+
+### Features
+
+- **app:** upgrade to Expo SDK 55 and React Native 0.83 ([c2fca2e](https://github.com/budgie-at/budgie/commit/c2fca2e9ff5aa5d336ca939841ad02e0422937e2))
+
 ## [2.38.1](https://github.com/budgie-at/budgie/compare/v2.38.0...v2.38.1) (2026-03-08)
 
 **Note:** Version bump only for package @budgie-at/landing
