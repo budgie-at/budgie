@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-12-cross-currency-transfer-transaction'
-      FIXTURE_FILE_NAME: 'e2e-12-cross-currency-transfer-transaction.db'
+      FIXTURE_ID: '12-cross-currency-transfer-transaction'
 
 # --- Create Cross-Currency Transfer ---
 

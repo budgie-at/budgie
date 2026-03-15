@@ -1,8 +1,8 @@
 import { LanguageEnum, ThemeEnum, transactionAsync } from '@budgie/contracts';
 
 import {
-    accountRepository,
     accountBalanceRepository,
+    accountRepository,
     categoryRepository,
     db,
     settingsRepository,

@@ -1,6 +1,7 @@
 import * as Updates from 'expo-updates';
 
 import { bankSyncRepository } from '../drizzle/db/db';
+
 import { appService } from './app.service';
 
 class AppResetService {
