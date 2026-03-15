@@ -4,6 +4,7 @@ import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboa
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { Page } from '../../../@generic/component/page/page';
@@ -39,7 +40,7 @@ export const CreateAccountScreen = (props: Props) => {
             footer={
                 <KeyboardStickyView>
                     <Footer>
-                        <Button variant={variant} onPress={onSubmit} content={t`Submit`} />
+                        <Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={AccountFormSelectors.SubmitButton} />
                     </Footer>
                 </KeyboardStickyView>
             }

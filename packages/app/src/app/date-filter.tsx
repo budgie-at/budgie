@@ -5,6 +5,7 @@ import { ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { Button } from '../@generic/component/button/button';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
@@ -38,18 +39,31 @@ export default function DateFilterModal() {
         <View style={containerStyle}>
             <TransactionFilterHeader title={t`Date Range`} icon={UserIconNameEnum.Calendar} onClear={handleClear} showClear={hasSelected} />
 
-            <View className="pt-[40px] gap-y-7xl">
+            <View className="flex-1 pt-[40px] gap-y-7xl">
                 <ScrollView contentContainerClassName="gap-x-md px-7xl" showsHorizontalScrollIndicator={false} horizontal>
                     {Object.values(DatePeriodEnum).map(period => (
-                        <DateFilterItem key={period} period={period} onSelect={handlePeriodSelect} isSelected={period === selectedPeriod} />
+                        <DateFilterItem
+                            key={period}
+                            period={period}
+                            onSelect={handlePeriodSelect}
+                            isSelected={period === selectedPeriod}
+                            testID={TransactionFiltersSelectors.DatePeriod(period)}
+                        />
                     ))}
                 </ScrollView>
 
-                <RangeDatePicker range={localValue} onChange={setLocalValue} />
+                <View className="flex-1">
+                    <RangeDatePicker range={localValue} onChange={setLocalValue} />
+                </View>
             </View>
 
             <Footer>
-                <Button variant="ghost" onPress={handleApply} content={t`Apply Filter`} />
+                <Button
+                    variant="ghost"
+                    onPress={handleApply}
+                    content={t`Apply Filter`}
+                    testID={TransactionFiltersSelectors.DateApplyButton}
+                />
             </Footer>
         </View>
     );

@@ -1,0 +1,120 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_QUERY: 'e2e-10-income-transaction'
+      FIXTURE_FILE_NAME: 'e2e-10-income-transaction.db'
+
+# --- Create Income ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.Income'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'ActionItem.Income'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Income'
+
+- assertVisible:
+    id: 'TransactionForm.SubmitButton'
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
+- tapOn: '1'
+- tapOn: '0'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Test_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.200'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+# --- Edit Income ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Income'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
+
+# --- Delete Income ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- assertVisible:
+    id: 'HomePage.NetWorthValue.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'

@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+env:
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+  USE_APP_OWNED_RESET: ${USE_APP_OWNED_RESET || 'false'}
+---
+# Relaunch app to recover from Maestro black screen after modal dismiss
+- runFlow:
+    when:
+      true: ${USE_APP_OWNED_RESET === 'true'}
+    commands:
+      - stopApp
+      - launchApp
+      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 30000
+
+- runFlow:
+    when:
+      true: ${USE_APP_OWNED_RESET !== 'true'}
+    commands:
+      - retry:
+          maxRetries: 2
+          commands:
+            - stopApp
+            - launchApp
+
+            - runFlow:
+                when:
+                  true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
+                file: handle-dev-client-startup.flow.yaml
+
+            - waitForAnimationToEnd
+
+            - extendedWaitUntil:
+                visible:
+                  id: 'HomePage.TotalBalance'
+                timeout: 30000

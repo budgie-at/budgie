@@ -7,7 +7,9 @@ import { ScrollView, View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { SearchableFilterControls } from '../transaction/components/searchable-filter-controls/searchable-filter-controls';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
@@ -17,14 +19,14 @@ import { TransactionFilterHeader } from '../transaction/components/transaction-f
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const [localValue, setLocalValue] = useState<number[] | null>(() => currentParams?.value ?? null);
+    const [localValue, setLocalValue, localValueRef] = useStateRef<number[] | null>(() => currentParams?.value ?? null);
     const [search, setSearch] = useState('');
 
     const { tags, total } = useSearchTagsQuery(search);
@@ -46,7 +48,7 @@ export default function TransactionTagFilterModal() {
     const handleClear = () => void setLocalValue(null);
 
     const handleApply = () => {
-        resolveTransactionTagFilter({ value: localValue });
+        resolveTransactionTagFilter({ value: localValueRef.current });
     };
     /* jscpd:ignore-end */
 
@@ -74,6 +76,9 @@ export default function TransactionTagFilterModal() {
                     onSelectAll={handleSelectAll}
                     onDeselectAll={handleDeselectAll}
                     isVisible={showControls}
+                    searchInputTestID={TransactionFiltersSelectors.TagSearchInput}
+                    selectAllButtonTestID={TransactionFiltersSelectors.TagSelectAllButton}
+                    deselectAllButtonTestID={TransactionFiltersSelectors.TagDeselectAllButton}
                 />
                 {/* jscpd:ignore-end */}
 
@@ -110,7 +115,11 @@ export default function TransactionTagFilterModal() {
                 ) : null}
             </ScrollView>
 
-            <SearchableFilterFooter selectedCount={localSelectedCount} onApply={handleApply} />
+            <SearchableFilterFooter
+                selectedCount={localSelectedCount}
+                onApply={handleApply}
+                applyButtonTestID={TransactionFiltersSelectors.TagApplyButton}
+            />
         </View>
     );
     /* jscpd:ignore-end */

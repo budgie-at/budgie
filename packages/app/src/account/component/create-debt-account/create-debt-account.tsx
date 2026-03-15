@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -19,6 +20,7 @@ import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/a
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
+import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 const DEFAULT_ICON = UserIconNameEnum.HandCoins;
 
@@ -35,6 +37,7 @@ export const CreateDebtAccount = () => {
             targetBalance: 0,
             currentBalance: 0,
             icon: DEFAULT_ICON,
+            includeInNetWorth: false,
             type: AccountTypeEnum.DEBT,
             debtType: AccountDebtTypeEnum.LENT,
             instrumentId: defaultInstrument.id
@@ -51,7 +54,7 @@ export const CreateDebtAccount = () => {
             <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />
+                <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} nameInputTestID={AccountFormSelectors.NameInput} />
 
                 <CreateAccountCurrencyField control={control} />
 
@@ -62,6 +65,8 @@ export const CreateDebtAccount = () => {
                 <DebtAccountContactField control={control} />
 
                 <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
+
+                <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
         </CreateAccountScreen>
     );

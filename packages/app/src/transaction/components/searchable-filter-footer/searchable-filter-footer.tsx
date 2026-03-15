@@ -8,16 +8,17 @@ import { Footer } from '../../../@generic/component/footer/footer';
 interface Props {
     readonly selectedCount: number;
     readonly onApply: () => void;
+    readonly applyButtonTestID?: string;
 }
 
-export const SearchableFilterFooter = ({ selectedCount, onApply }: Props) => {
+export const SearchableFilterFooter = ({ selectedCount, onApply, applyButtonTestID }: Props) => {
     const { t } = useLingui();
 
     const buttonText = isPositiveNumber(selectedCount) ? t`Apply Filter (${selectedCount})` : t`Apply Filter`;
 
     return (
         <Footer>
-            <Button variant="ghost" onPress={onApply} content={buttonText} />
+            <Button variant="ghost" onPress={onApply} content={buttonText} testID={applyButtonTestID} />
         </Footer>
     );
 };

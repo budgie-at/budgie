@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, Path, UseControllerReturn } from 'react-hook-form';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -17,7 +18,13 @@ export const AccountTargetBalanceField = <T extends { targetBalance: number }>({
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormItem label={t`Target balance`}>
-            <AmountInput placeholder={formatDigits(0, defaultInstrument.symbol)} size="lg" value={value} onChangeValue={onChange} />
+            <AmountInput
+                testID={AccountFormSelectors.TargetBalanceInput}
+                placeholder={formatDigits(0, defaultInstrument.symbol)}
+                size="lg"
+                value={value}
+                onChangeValue={onChange}
+            />
         </FormItem>
     );
 

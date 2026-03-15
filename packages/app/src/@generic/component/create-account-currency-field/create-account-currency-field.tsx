@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { CurrencySelector } from '../currency-selector/currency-selector';
 import { FormItem } from '../form-item/form-item';
 
@@ -13,7 +14,7 @@ export const CreateAccountCurrencyField = <T extends { instrumentId: number }>({
 
     const renderCurrencySelector = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
         <FormItem label={t`Currency`}>
-            <CurrencySelector instrumentId={value} onChange={onChange} />
+            <CurrencySelector testID={AccountFormSelectors.CurrencySelector} instrumentId={value} onChange={onChange} />
         </FormItem>
     );
 

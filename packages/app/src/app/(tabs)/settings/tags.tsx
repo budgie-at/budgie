@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { TagPageSelectors } from '../../../@e2e/selectors/tag-page.selector';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -77,6 +78,7 @@ export default function Tags() {
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
+            searchInputTestID={TagPageSelectors.SearchInput}
         />
     );
 }

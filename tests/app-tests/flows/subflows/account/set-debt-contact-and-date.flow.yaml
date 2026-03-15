@@ -1,0 +1,36 @@
+appId: ${APP_ID}
+---
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.ContactSelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountForm.ContactSelector'
+- tapOn: 'Search contacts...'
+- inputText: ${CONTACT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.ContactOption.${CONTACT_NAME_ID}'
+    timeout: 10000
+- tapOn:
+    id: 'AccountForm.ContactOption.${CONTACT_NAME_ID}'
+- assertVisible:
+    id: 'AccountForm.SelectedContact.${CONTACT_NAME_ID}'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.ReturnDate'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountForm.ReturnDate'
+- extendedWaitUntil:
+    visible:
+      id: 'DatePicker.Day.${RETURN_DAY}'
+    timeout: 10000
+- tapOn:
+    id: 'DatePicker.Day.${RETURN_DAY}'
+
+- assertVisible: '${RETURN_DATE_LABEL}'

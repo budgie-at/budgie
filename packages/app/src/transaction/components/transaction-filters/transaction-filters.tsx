@@ -5,6 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -37,6 +38,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     <HapticPressable
                         onPress={handleClear}
                         className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
+                        testID={TransactionFiltersSelectors.ClearAllButton}
                     >
                         <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={14} />
                         <Text className="text-destructive-foreground text-sm">

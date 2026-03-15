@@ -53,7 +53,13 @@ class TransactionService {
             ? (batch: TransactionCreateInputInterface[]) => this.processBatchInner(batch, tx)
             : this.processBatch.bind(this);
 
-        return await processInputWithBatches(inputs, batchSize, batchProcessor);
+        const transactions = await processInputWithBatches(inputs, batchSize, batchProcessor);
+
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        }
+
+        return transactions;
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
@@ -122,6 +128,8 @@ class TransactionService {
                     tx
                 );
             }
+
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
             return transaction;
         });

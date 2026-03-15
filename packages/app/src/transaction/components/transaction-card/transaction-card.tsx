@@ -12,6 +12,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -31,9 +32,17 @@ export interface TransactionCardProps {
 export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
+    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
+    let cardTestID: string = TransactionCardSelectors.Card(transaction.id);
+
+    if (isAdjustment) {
+        cardTestID = TransactionCardSelectors.AdjustmentCard(transaction.id);
+    } else if (isNotEmptyString(title)) {
+        cardTestID = TransactionCardSelectors.LabelCard(title);
+    }
 
     const getHref = (): Href => {
         const { id } = transaction;
@@ -55,7 +64,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     return (
         <Link href={getHref()} asChild>
-            <Card className="p-xl gap-y-8">
+            <Card className="p-xl gap-y-8" testID={cardTestID}>
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 

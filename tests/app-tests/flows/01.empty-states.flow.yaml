@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+# --- Fresh App: Home Empty State ---
+
+- assertVisible:
+
+    id: 'HomePage.TotalBalance'
+
+# --- Transactions Tab Empty State ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+# --- Analytics Tab Renders ---
+
+- runFlow: subflows/navigate-to-analytics.flow.yaml
+
+# --- Settings Tab Renders ---
+
+- runFlow: subflows/navigate-to-settings.flow.yaml

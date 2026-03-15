@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { AccountDetailsSelectors } from '../../../@e2e/selectors/account-details.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
@@ -46,5 +47,14 @@ export const ArchiveAccount = ({ accountId }: Props) => {
         }
     };
 
-    return <Button onPress={handleArchive} size="sm" variant="dark-warning" leftIcon={UserIconNameEnum.Archive} isLoading={isLoading} />;
+    return (
+        <Button
+            onPress={handleArchive}
+            size="sm"
+            variant="dark-warning"
+            leftIcon={UserIconNameEnum.Archive}
+            isLoading={isLoading}
+            testID={AccountDetailsSelectors.ArchiveButton}
+        />
+    );
 };

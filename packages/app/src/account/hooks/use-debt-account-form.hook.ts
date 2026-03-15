@@ -8,18 +8,24 @@ import {
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
-import { useForm, useWatch } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
+interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'contactId' | 'deadline'> {
+    readonly contactId: string | null;
+    readonly deadline: Date | null;
+    readonly includeInNetWorth?: boolean;
+}
+
 export const useDebtAccountForm = (
-    defaultValues: DebtAccountCreateInputInterface,
-    onSubmit: (values: DebtAccountCreateInputInterface) => Promise<AccountEntityInterface>
+    defaultValues: DebtAccountFormValues,
+    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
 ) => {
     const showError = useShowError();
-    const form = useForm({
-        resolver: zodResolver(DebtAccountCreateInputSchema),
+    const form = useForm<DebtAccountFormValues>({
+        resolver: zodResolver(DebtAccountCreateInputSchema) as Resolver<DebtAccountFormValues>,
         mode: 'onSubmit',
         defaultValues: {
             debtType: AccountDebtTypeEnum.LENT,
@@ -27,6 +33,7 @@ export const useDebtAccountForm = (
             type: AccountTypeEnum.DEBT,
             targetBalance: 0,
             instrumentId: 0,
+            includeInNetWorth: false,
             contactId: null,
             deadline: null,
             title: ''
@@ -41,7 +48,7 @@ export const useDebtAccountForm = (
 
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
 
-    const handleSubmit = async (values: DebtAccountCreateInputInterface) => {
+    const handleSubmit = async (values: DebtAccountFormValues) => {
         try {
             await onSubmit(values);
 

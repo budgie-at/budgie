@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -14,6 +14,8 @@ interface Props {
     readonly onPress: EmptyFn;
     readonly icon: UserIconNameEnum;
     readonly label: string;
+    readonly testID?: string;
+    readonly selectedTestID?: string;
 }
 
 const cardVariants = cva('flex-row items-center gap-x-md border-2 rounded-5xl p-4xl', {
@@ -34,13 +36,14 @@ const textVariants = cva('text-sm font-medium', {
     }
 });
 
-export const TransactionFilterCard = ({ isSelected, onPress, icon, label, variant }: Props) => {
+export const TransactionFilterCard = ({ isSelected, onPress, icon, label, variant, testID, selectedTestID }: Props) => {
     const iconVariant = isSelected ? variant : 'secondary';
 
     return (
-        <HapticPressable onPress={onPress} className={cardVariants({ isSelected })}>
+        <HapticPressable onPress={onPress} className={cardVariants({ isSelected })} testID={testID}>
             <CircleIcon icon={icon} variant={iconVariant} />
             <Text className={textVariants({ isSelected })}>{label}</Text>
+            {isSelected ? <View testID={selectedTestID} /> : null}
         </HapticPressable>
     );
 };

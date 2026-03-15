@@ -1,0 +1,7 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Contact;Maestro E2E;;;
+FN:Maestro E2E Contact
+TEL;TYPE=CELL:+15555550123
+EMAIL;TYPE=INTERNET:maestro-e2e@example.com
+END:VCARD

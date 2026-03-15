@@ -10,6 +10,7 @@ interface Props {
     readonly isSelected: boolean;
     readonly period: DatePeriodEnum;
     readonly onSelect: (period: DatePeriodEnum) => void;
+    readonly testID?: string;
 }
 
 const chipVariants = cva('rounded-2xl border border-secondary-corner px-4xl py-md', {
@@ -30,13 +31,13 @@ const chipTextVariants = cva('font-semibold', {
     }
 });
 
-export const DateFilterItem = ({ period, isSelected, onSelect }: Props) => {
+export const DateFilterItem = ({ period, isSelected, onSelect, testID }: Props) => {
     const { t } = useLingui();
 
     const handleSelect = () => void onSelect(period);
 
     return (
-        <HapticPressable className={chipVariants({ isSelected })} onPress={handleSelect}>
+        <HapticPressable className={chipVariants({ isSelected })} onPress={handleSelect} testID={testID}>
             <Text className={chipTextVariants({ isSelected })}>{t(DATE_PERIOD[period])}</Text>
         </HapticPressable>
     );

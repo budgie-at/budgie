@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    when:
+      notVisible:
+        id: 'AccountDetails.EditButton'
+    file: open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible: 'Account Settings'
+    timeout: 10000

@@ -5,6 +5,7 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionsPageSelectors } from '../../../@e2e/selectors/transactions-page.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
@@ -31,7 +32,7 @@ export const TransactionList = ({
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
 
     const baseAccountIds = isDefined(accountId) ? [accountId] : null;
-    const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds };
+    const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds ?? internalFilters.accountIds };
     const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
     const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
 
@@ -51,6 +52,7 @@ export const TransactionList = ({
             titleClassName="text-md text-primary font-semibold"
             description={emptyDescription}
             descriptionClassName="text-center max-w-[250px]"
+            testID={TransactionsPageSelectors.EmptyState}
         />
     );
 

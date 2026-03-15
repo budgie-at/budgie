@@ -25,6 +25,7 @@ interface Props {
     readonly onLongPress?: () => void;
     readonly disabled?: boolean;
     readonly spanning?: 1 | 2;
+    readonly testID?: string;
 }
 
 const ICON_SIZE = 24;
@@ -71,7 +72,17 @@ const confirmTextVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValu
 });
 
 export const TransactionKeypadButton = (props: Props) => {
-    const { value, icon, variant = 'digit', colorVariant = 'positive', onPress, onLongPress, disabled = false, spanning = 1 } = props;
+    const {
+        value,
+        icon,
+        variant = 'digit',
+        colorVariant = 'positive',
+        onPress,
+        onLongPress,
+        disabled = false,
+        spanning = 1,
+        testID
+    } = props;
 
     const pressed = useSharedValue(false);
 
@@ -118,6 +129,7 @@ export const TransactionKeypadButton = (props: Props) => {
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            testID={testID}
         >
             <Animated.View className="items-center justify-center" style={animatedStyle}>
                 {isDefined(icon) ? (

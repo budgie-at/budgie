@@ -15,10 +15,11 @@ interface Props {
     readonly onConfirm: () => void;
     readonly onCancel: () => void;
     readonly isConfirmDisabled?: boolean;
+    readonly confirmTestID?: string;
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled } = props;
+    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled, confirmTestID } = props;
 
     const handleDigit1 = () => void onDigit('1');
     const handleDigit2 = () => void onDigit('2');
@@ -70,6 +71,7 @@ export const TransactionKeypad = (props: Props) => {
                         colorVariant={variant}
                         onPress={onConfirm}
                         disabled={isConfirmDisabled}
+                        testID={confirmTestID}
                     />
                 </View>
             </View>

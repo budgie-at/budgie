@@ -13,12 +13,13 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 
 iOS:
 ```bash
-maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --config config.yaml
+sh ./scripts/setup-ios-simulator.sh
+sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
 Android:
 ```bash
-maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml
+sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
 ```
 
 ## CI/CD

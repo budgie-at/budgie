@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
+- inputText: ${CATEGORY_NAME}
+- tapOn:
+    id: 'CategoryPickerBottomSheet.CreateButton'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryForm.Input'
+- tapOn:
+    id: 'CategoryForm.Submit'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryForm.Input'

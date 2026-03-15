@@ -2,7 +2,10 @@ import rootPkg from './package.json';
 
 const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
+const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
+const IS_CCACHE_ENABLED =
+    process.env.USE_CCACHE !== '0' && (process.env.CI === 'true' || IS_E2E);
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
@@ -15,6 +18,10 @@ const getUniqueIdentifier = isAndroid => {
         return `${prefix}.preview`;
     }
 
+    if (IS_E2E) {
+        return `${prefix}.e2e`;
+    }
+
     return prefix;
 };
 
@@ -25,6 +32,10 @@ const getAppName = () => {
 
     if (IS_PREVIEW) {
         return 'budgie (Preview)';
+    }
+
+    if (IS_E2E) {
+        return 'budgie (E2E)';
     }
 
     return 'budgie';
@@ -89,9 +100,25 @@ export default ({ config }) => ({
     },
     owner: 'vitalyiegorov',
     updates: {
-        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
+        enabled: !IS_E2E,
+        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36',
+        enableBsdiffPatchSupport: true
     },
     plugins: [
+        [
+            'expo-build-properties',
+            {
+                buildReactNativeFromSource: true,
+                useHermesV1: true,
+                ios: {
+                    ccacheEnabled: IS_CCACHE_ENABLED
+                }
+            }
+        ],
+        './plugins/with-vec-xcframework-fix',
+        'expo-asset',
+        'expo-image',
+        'expo-sharing',
         'expo-localization',
         'expo-secure-store',
         'expo-background-task',
