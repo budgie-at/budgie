@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -24,6 +25,8 @@ export const DefaultCurrencySelector = () => {
         <SettingsCard
             title={t`Main Currency`}
             description={defaultInstrument.name}
+            testID={SettingsPageSelectors.MainCurrencyCard}
+            descriptionTestID={SettingsPageSelectors.MainCurrencyValue(defaultInstrument.code)}
             left={
                 <View className="w-10 h-10 rounded-full bg-secondary-foreground/10 justify-center items-center">
                     <Text className="text-primary text-3xl" adjustsFontSizeToFit numberOfLines={1}>

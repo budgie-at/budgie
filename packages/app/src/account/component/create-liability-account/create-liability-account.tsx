@@ -3,6 +3,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -49,7 +50,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={variant} control={control} />
+                <AccountDetailsField variant={variant} control={control} nameInputTestID={AccountFormSelectors.NameInput} />
                 <CreateAccountCurrencyField control={control} />
                 <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>

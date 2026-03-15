@@ -1,0 +1,12 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TransactionForm.CommentInput'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'NoteInput.Input'
+- eraseText: 50
+- inputText: ${COMMENT}
+- tapOn:
+    id: 'NoteInput.SubmitButton'
+- waitForAnimationToEnd

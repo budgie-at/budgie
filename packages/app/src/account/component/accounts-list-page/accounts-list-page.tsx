@@ -21,6 +21,7 @@ type AccountType = AccountEntityInterface | AccountWithInstrumentEntityInterface
 interface Props<T extends AccountType> {
     readonly accounts: T[] | null;
     readonly title: string;
+    readonly testID?: string;
     readonly renderCard: (account: T) => ReactElement;
     readonly children: ReactNode;
 }
@@ -34,14 +35,14 @@ const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <MenuSpacer />;
 
 export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
-    const { accounts, title, renderCard, children } = props;
+    const { accounts, title, renderCard, children, testID } = props;
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
     const renderAccount = ({ item }: { item: T }) => renderCard(item);
 
     return (
-        <Page withBlur header={<PageHeader onGoBack={handleGoBack} title={title} />}>
+        <Page testID={testID} withBlur header={<PageHeader onGoBack={handleGoBack} title={title} />}>
             {isNotEmptyArray(accounts) ? (
                 <LegendList
                     style={LEGEND_LIST_STYLE}

@@ -13,10 +13,11 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly instrumentId?: number;
+    readonly testID?: string;
     readonly onChange: (instrumentId: number) => void;
 }
 
-export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
+export const CurrencySelector = ({ instrumentId, onChange, testID }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
@@ -51,6 +52,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
             right={<Icon icon={UserIconNameEnum.Sparkles} className="text-secondary-foreground/50" size={16} />}
             onPress={handleOpen}
             size="lg"
+            testID={testID}
         >
             <View className="gap-y-xs flex-1">
                 <Text className="text-primary font-medium text-sm">
