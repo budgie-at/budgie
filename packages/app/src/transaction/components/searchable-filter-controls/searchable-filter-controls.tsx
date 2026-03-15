@@ -13,24 +13,45 @@ interface Props {
     readonly onSelectAll: EmptyFn;
     readonly onDeselectAll: EmptyFn;
     readonly isVisible: boolean;
+    readonly searchInputTestID?: string;
+    readonly selectAllButtonTestID?: string;
+    readonly deselectAllButtonTestID?: string;
 }
 
-export const SearchableFilterControls = ({ search, onSearchChange, placeholder, onSelectAll, onDeselectAll, isVisible }: Props) => {
+export const SearchableFilterControls = ({
+    search,
+    onSearchChange,
+    placeholder,
+    onSelectAll,
+    onDeselectAll,
+    isVisible,
+    searchInputTestID,
+    selectAllButtonTestID,
+    deselectAllButtonTestID
+}: Props) => {
     if (!isVisible) {
         return null;
     }
 
     return (
         <View className="gap-y-3xl">
-            <Input placeholder={placeholder} value={search} onChangeText={onSearchChange} />
+            <Input placeholder={placeholder} value={search} onChangeText={onSearchChange} testID={searchInputTestID} />
 
             <View className="flex-row gap-x-md">
-                <HapticPressable className="py-md px-xl rounded-3xl bg-secondary-background" onPress={onSelectAll}>
+                <HapticPressable
+                    className="py-md px-xl rounded-3xl bg-secondary-background"
+                    onPress={onSelectAll}
+                    testID={selectAllButtonTestID}
+                >
                     <Text className="text-secondary-foreground text-xs font-medium">
                         <Trans>Select All</Trans>
                     </Text>
                 </HapticPressable>
-                <HapticPressable className="py-md px-xl rounded-3xl bg-secondary-background" onPress={onDeselectAll}>
+                <HapticPressable
+                    className="py-md px-xl rounded-3xl bg-secondary-background"
+                    onPress={onDeselectAll}
+                    testID={deselectAllButtonTestID}
+                >
                     <Text className="text-secondary-foreground text-xs font-medium">
                         <Trans>Deselect All</Trans>
                     </Text>
