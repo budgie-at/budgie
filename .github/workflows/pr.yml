@@ -431,7 +431,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sh ./scripts/setup-ios-simulator.sh "$SIMULATOR_UDID"
+          sh ./scripts/setup-ios-simulator.sh "$SIMULATOR_UDID" com.vitalyiegorov.budgie.e2e
           sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
             --format junit \
             --output ./artifacts/maestro/report.xml \
