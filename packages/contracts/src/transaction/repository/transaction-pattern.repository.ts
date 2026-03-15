@@ -341,7 +341,7 @@ export class TransactionPatternRepository {
                     timezoneOffset,
                     latestOverallTransaction
                 }),
-                mccCategoryTitle: MccCategoryEntityTable.shortDescription,
+                mccCategoryTitle: sql<string | null>`MAX(${MccCategoryEntityTable.shortDescription})`.as('mccCategoryTitle'),
                 title: sql<string>`(SELECT t2.title FROM transactions t2 WHERE t2.id = ${displayMonthTransaction})`.as('title'),
                 latestAmount,
                 modeDayOfMonth,

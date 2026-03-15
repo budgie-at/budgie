@@ -1,3 +1,4 @@
+ 
 export const TabBarSelectors = {
     Home: 'TabBar.Home',
     Transactions: 'TabBar.Transactions',
