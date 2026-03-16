@@ -4,14 +4,9 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: subflows/create-account.flow.yaml
+    file: subflows/import-database-fixture.flow.yaml
     env:
-      ACCOUNT_NAME: 'E2E Income Target'
-
-- runFlow:
-    file: subflows/create-account.flow.yaml
-    env:
-      ACCOUNT_NAME: 'E2E Income Source'
+      FIXTURE_ID: '18-income-to-transfer'
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
@@ -58,7 +53,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.NetWorthValue.230'
 - assertVisible:
@@ -126,7 +122,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.NetWorthValue.200'
 - assertVisible:
@@ -149,7 +146,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 - assertVisible:
     id: 'HomePage.NetWorthValue.200'
 - assertVisible:

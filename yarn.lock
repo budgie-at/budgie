@@ -1201,6 +1201,7 @@ __metadata:
     expo-background-task: "npm:~55.0.9"
     expo-blur: "npm:~55.0.8"
     expo-build-properties: "npm:~55.0.9"
+    expo-clipboard: "npm:~8.0.8"
     expo-constants: "npm:~55.0.7"
     expo-contacts: "npm:~55.0.8"
     expo-dev-client: "npm:~55.0.10"
@@ -10488,6 +10489,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/6485cf995006d8b8d32faf66f023cc3adf3c65cfc9c0f0f1b25db16a16b87f966ef71d46638eebeca7ff1701bfce2efc8df83aa0c82f8991b61d21ad05d9ebd7
+  languageName: node
+  linkType: hard
+
+"expo-clipboard@npm:~8.0.8":
+  version: 8.0.8
+  resolution: "expo-clipboard@npm:8.0.8"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/f51f5043c2bc7c6f4a7805607fa984952e674c401bd4f7c98a7569a49ceaa244f6e68fe3d18012fed0a0f5a35ac9395dcfc99ff3b2e3366ee083632d38b44d86
   languageName: node
   linkType: hard
 

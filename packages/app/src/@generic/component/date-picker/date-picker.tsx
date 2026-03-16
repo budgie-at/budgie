@@ -1,18 +1,32 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
-import DateTimePicker, { CalendarComponents, useDefaultClassNames } from 'react-native-ui-datepicker';
+import { Text } from 'react-native';
+import DateTimePicker, { CalendarComponents, CalendarDay, useDefaultClassNames } from 'react-native-ui-datepicker';
 
+import { DatePickerSelectors } from '../../../@e2e/selectors/date-picker.selector';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
-const components: CalendarComponents = {
+const renderDay = (day: CalendarDay) => (
+    <Text
+        testID={DatePickerSelectors.Day(day.number)}
+        className={cn('text-primary', !day.isCurrentMonth && 'text-secondary-foreground', day.isSelected && 'text-primary-reverse')}
+    >
+        {day.text}
+    </Text>
+);
+
+const defaultComponents: CalendarComponents = {
     IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={24} />,
-    IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />
+    IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />,
+    Day: renderDay
 };
 
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { languageTag } = useLocaleInfo();
     const defaultClassNames = useDefaultClassNames();
+    const mergedComponents = { ...defaultComponents, ...props.components };
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const classNames = {
@@ -46,5 +60,5 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={classNames} locale={languageTag} components={components} />;
+    return <DateTimePicker {...props} classNames={classNames} locale={languageTag} components={mergedComponents} />;
 };
