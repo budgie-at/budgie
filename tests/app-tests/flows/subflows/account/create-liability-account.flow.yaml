@@ -14,11 +14,14 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_NAME}
 - hideKeyboard
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
       id: 'AccountForm.CurrencySelector'
     direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencySelector'
 - extendedWaitUntil:
@@ -39,7 +42,8 @@ appId: ${APP_ID}
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 
 - scrollUntilVisible:
     element:
