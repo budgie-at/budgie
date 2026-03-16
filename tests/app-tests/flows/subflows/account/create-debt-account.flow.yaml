@@ -1,16 +1,13 @@
 appId: ${APP_ID}
 ---
 
-- setPermissions:
-    permissions:
-      contacts: allow
-
 - runFlow: open-new-account.flow.yaml
 
 - tapOn:
     id: 'CreateAccount.DEBT'
 - extendedWaitUntil:
-    visible: 'ACCOUNT NAME & ICON'
+    visible:
+      id: 'AccountForm.NameInput'
 
 - scrollUntilVisible:
     element:
@@ -53,7 +50,8 @@ appId: ${APP_ID}
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 
 - scrollUntilVisible:
     element:

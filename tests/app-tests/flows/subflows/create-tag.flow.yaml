@@ -3,7 +3,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
+    visible:
+      id: 'HomePage.TotalBalance'
 
 - tapOn:
     id: 'TabBar.Settings'
@@ -15,6 +16,10 @@ appId: ${APP_ID}
       id: 'SettingsPage.ManageTagsCard'
     direction: DOWN
     speed: 20
+    centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageTagsCard'
 - tapOn:
     id: 'SettingsPage.ManageTagsCard'
 - extendedWaitUntil:
