@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import type { Edge } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -17,7 +18,7 @@ import { AccountSelectionStep } from '../account-selection-step/account-selectio
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
 type SetupStep = 'token' | 'accounts';
-const FORM_PAGE_SAFE_EDGES = ['bottom', 'top'] as const;
+const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
