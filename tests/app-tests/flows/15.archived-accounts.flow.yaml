@@ -77,11 +77,6 @@ appId: ${APP_ID}
     notVisible: 'Restore Account?'
     timeout: 10000
 
-- extendedWaitUntil:
-    notVisible:
-      id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
-    timeout: 10000
-
 # --- Verify Account Back on Home ---
 
 - tapOn:
