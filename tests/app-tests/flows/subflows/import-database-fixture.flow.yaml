@@ -1,125 +1,30 @@
 appId: ${APP_ID}
+env:
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+  FIXTURE_ID: ${FIXTURE_ID}
+  E2E_RUN_TOKEN: ${E2E_RUN_TOKEN || 'local'}
 ---
-- runFlow: navigate-to-settings.flow.yaml
-
-- swipe:
-    start: '50%,78%'
-    end: '50%,28%'
-    duration: 220
-- waitForAnimationToEnd
-
-- swipe:
-    start: '50%,78%'
-    end: '50%,28%'
-    duration: 220
-- waitForAnimationToEnd
-
-- runFlow:
-    when:
-      notVisible:
-        id: 'SettingsPage.ImportDatabaseCard'
+- retry:
+    maxRetries: 2
     commands:
-      - scrollUntilVisible:
-          element:
-            id: 'SettingsPage.ImportDatabaseCard'
-          direction: DOWN
-          speed: 60
-          centerElement: true
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'SettingsPage.ImportDatabaseCard'
-- tapOn:
-    id: 'SettingsPage.ImportDatabaseCard'
+      - stopApp
 
-- extendedWaitUntil:
-    visible: 'Browse'
-    timeout: 10000
-    optional: true
+      - openLink: 'budgie://?e2eResetToken=${MAESTRO_FILENAME}-${FIXTURE_ID}-${E2E_RUN_TOKEN}&e2eImportFixture=${FIXTURE_ID}'
 
-- runFlow:
-    when:
-      visible: 'Browse'
-    commands:
-      - tapOn: 'Browse'
-      - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: 'Open'
+          commands:
+            - tapOn: 'Open'
 
-- extendedWaitUntil:
-    visible: 'E2E Fixtures'
-    timeout: 5000
-    optional: true
+      - runFlow:
+          when:
+            true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
+          file: handle-dev-client-startup.flow.yaml
 
-- runFlow:
-    when:
-      visible: 'On My iPhone'
-    commands:
-      - tapOn: 'On My iPhone'
-      - waitForAnimationToEnd
-
-- runFlow:
-    when:
-      visible: 'E2E Fixtures'
-    commands:
-      - tapOn: 'E2E Fixtures'
-      - waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible: '${FIXTURE_FILE_NAME}'
-    timeout: 5000
-    optional: true
-
-- runFlow:
-    when:
-      notVisible: '${FIXTURE_FILE_NAME}'
-    commands:
-      - tapOn: 'Search'
-      - inputText: ${FIXTURE_FILE_NAME}
-      - hideKeyboard
       - extendedWaitUntil:
-          visible: '${FIXTURE_FILE_NAME}'
-          timeout: 15000
-
-- tapOn:
-    point: '18%,39%'
-
-- runFlow:
-    when:
-      notVisible: 'Cancel'
-    commands:
-      - tapOn: '${FIXTURE_FILE_NAME}'
-
-- extendedWaitUntil:
-    visible: 'Cancel'
-    timeout: 15000
-- waitForAnimationToEnd
-- tapOn:
-    point: '50%,56%'
-
-- runFlow:
-    when:
-      visible: 'Cancel'
-    commands:
-      - tapOn:
-          point: '50%,56%'
-
-- extendedWaitUntil:
-    notVisible: 'Cancel'
-    timeout: 15000
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 30000
 
 - waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 15000
-    optional: true
-
-- runFlow:
-    when:
-      notVisible:
-        id: 'HomePage.TotalBalance'
-    file: relaunch-app.flow.yaml
-
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 30000

@@ -5,6 +5,8 @@ appId: ${APP_ID}
     id: 'CreateAccount.Amount'
 - eraseText: 100
 - inputText: ${NEW_BALANCE}
+- assertVisible: ${NEW_BALANCE}
+- waitForAnimationToEnd
 
 - tapOn: 'Account Settings'
 - tapOn:

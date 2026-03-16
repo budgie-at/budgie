@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-15-archived-accounts'
-      FIXTURE_FILE_NAME: 'e2e-15-archived-accounts.db'
+      FIXTURE_ID: '15-archived-accounts'
 - assertVisible:
     id: 'AccountCard.E2E Archive Account'
 
@@ -35,11 +34,20 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
 
-- tapOn: 'Archive'
+- extendedWaitUntil:
+    visible: 'Archive Account?'
+    timeout: 10000
+
+- tapOn:
+    point: '68%,58%'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.NetWorthValue.0'
+    notVisible: 'Archive Account?'
+    timeout: 10000
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountCard.E2E Archive Account'
     timeout: 10000
 - assertNotVisible:
     id: 'AccountCard.E2E Archive Account'
@@ -51,18 +59,22 @@ appId: ${APP_ID}
 # --- Verify Archived Account Visible ---
 
 - assertVisible:
-    id: 'ArchivedAccountCard.E2E Archive Account'
+    id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
 
 # --- Restore Account ---
 
 - tapOn:
     id: 'ArchivedAccountCard.RestoreButton.E2E Archive Account'
 
-- tapOn: 'Restore'
+- extendedWaitUntil:
+    visible: 'Restore Account?'
+    timeout: 10000
+
+- tapOn:
+    point: '68%,58%'
 
 - extendedWaitUntil:
-    notVisible:
-      id: 'ArchivedAccountCard.E2E Archive Account'
+    notVisible: 'Restore Account?'
     timeout: 10000
 
 # --- Verify Account Back on Home ---

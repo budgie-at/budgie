@@ -6,47 +6,47 @@ import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
 
 class DatabaseImportService {
-    async importFromUri(sourceUri: string): Promise<void> {
-        await expoDb.closeAsync();
+    async replaceFromUri(sourceUri: string): Promise<void> {
+        const destinationPath = this.getDestinationPath();
+        const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
+        await expoDb.closeAsync();
+        this.clearDatabaseGlobals();
+
+        [
+            destinationPath,
+            `${destinationPath}-wal`,
+            `${destinationPath}-shm`,
+            tempPath
+        ].forEach(path => void this.deleteFileIfExists(path));
+
+        const tempFile = new File(tempPath);
+        new File(sourceUri).copy(tempFile);
+        tempFile.move(new File(destinationPath));
+    }
+
+    async importFromUri(sourceUri: string): Promise<void> {
+        await this.replaceFromUri(sourceUri);
+        await Updates.reloadAsync();
+    }
+
+    private clearDatabaseGlobals() {
         // eslint-disable-next-line no-underscore-dangle, no-undefined
         global.__expoSqliteDb__ = undefined;
         // eslint-disable-next-line no-underscore-dangle, no-undefined
         global.__drizzleDb__ = undefined;
+    }
 
-        const destinationPath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
-        const destinationFile = new File(destinationPath);
+    private deleteFileIfExists(path: string) {
+        const file = new File(path);
 
-        if (destinationFile.exists) {
-            destinationFile.delete();
+        if (file.exists) {
+            file.delete();
         }
+    }
 
-        const walPath = `${destinationPath}-wal`;
-        const shmPath = `${destinationPath}-shm`;
-        const walFile = new File(walPath);
-        const shmFile = new File(shmPath);
-
-        if (walFile.exists) {
-            walFile.delete();
-        }
-
-        if (shmFile.exists) {
-            shmFile.delete();
-        }
-
-        const tempPath = `${Paths.cache.uri}/import-temp.db`;
-        const tempFile = new File(tempPath);
-
-        if (tempFile.exists) {
-            tempFile.delete();
-        }
-
-        const sourceFile = new File(sourceUri);
-        sourceFile.copy(tempFile);
-
-        tempFile.move(destinationFile);
-
-        await Updates.reloadAsync();
+    private getDestinationPath() {
+        return `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
     }
 }
 
