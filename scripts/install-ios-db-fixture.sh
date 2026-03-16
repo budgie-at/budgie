@@ -2,16 +2,17 @@
 
 set -euo pipefail
 
-if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
-    echo "Usage: $0 <fixture-path> [target-filename] [simulator-udid]" >&2
+if [ "$#" -lt 1 ] || [ "$#" -gt 4 ]; then
+    echo "Usage: $0 <fixture-path> [target-filename] [simulator-udid] [app-id]" >&2
     exit 1
 fi
 
 FIXTURE_PATH="$1"
 TARGET_NAME="${2:-$(basename "$FIXTURE_PATH")}"
 SIMULATOR_UDID="${3:-${SIMULATOR_UDID:-}}"
+APP_ID="${4:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 WORKING_FIXTURE_PATH="$FIXTURE_PATH"
-FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2E Fixtures}"
+FIXTURE_FOLDER_NAME="${FIXTURE_FOLDER_NAME:-E2EFixtures}"
 
 if [ ! -f "$FIXTURE_PATH" ]; then
     echo "Fixture not found: $FIXTURE_PATH" >&2
@@ -79,47 +80,16 @@ if [ -z "$SIMULATOR_UDID" ]; then
     SIMULATOR_UDID="$(printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p')"
 fi
 
-APP_GROUP_ROOT="$HOME/Library/Developer/CoreSimulator/Devices/$SIMULATOR_UDID/data/Containers/Shared/AppGroup"
+APP_DATA_CONTAINER="$(
+    xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true
+)"
 
-if [ ! -d "$APP_GROUP_ROOT" ]; then
-    echo "Simulator AppGroup root not found: $APP_GROUP_ROOT" >&2
+if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
+    echo "App data container not found for $APP_ID on simulator $SIMULATOR_UDID." >&2
     exit 1
 fi
 
-find_provider_dirs() {
-    find "$APP_GROUP_ROOT" -type d -name 'File Provider Storage' | sort -u
-}
-
-initialize_file_provider_dirs() {
-    xcrun simctl launch "$SIMULATOR_UDID" com.apple.DocumentsApp >/dev/null 2>&1 || true
-    sleep 3
-
-    if find_provider_dirs | grep -q .; then
-        return 0
-    fi
-
-    echo "No real File Provider Storage directories found for simulator $SIMULATOR_UDID." >&2
-    find "$APP_GROUP_ROOT" -mindepth 1 -maxdepth 2 -type d | sort >&2 || true
-    return 1
-}
-
-if ! find_provider_dirs | grep -q .; then
-    initialize_file_provider_dirs
-fi
-
-FOUND=0
-
-while IFS= read -r provider_dir; do
-    [ -n "$provider_dir" ] || continue
-    mkdir -p "$provider_dir/$FIXTURE_FOLDER_NAME"
-    cp "$WORKING_FIXTURE_PATH" "$provider_dir/$FIXTURE_FOLDER_NAME/$TARGET_NAME"
-    echo "Installed $TARGET_NAME into $provider_dir/$FIXTURE_FOLDER_NAME"
-    FOUND=1
-done <<EOF
-$(find_provider_dirs)
-EOF
-
-if [ "$FOUND" -eq 0 ]; then
-    echo "No File Provider Storage directories found under $APP_GROUP_ROOT" >&2
-    exit 1
-fi
+TARGET_DIR="$APP_DATA_CONTAINER/Documents/$FIXTURE_FOLDER_NAME"
+mkdir -p "$TARGET_DIR"
+cp "$WORKING_FIXTURE_PATH" "$TARGET_DIR/$TARGET_NAME"
+echo "Installed $TARGET_NAME into $TARGET_DIR for $APP_ID on $SIMULATOR_UDID"
