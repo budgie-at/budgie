@@ -7,6 +7,8 @@ appId: ${APP_ID}
     id: 'NoteInput.Input'
 - eraseText: 50
 - inputText: ${COMMENT}
+- assertVisible: ${COMMENT}
+- waitForAnimationToEnd
 - tapOn:
     id: 'NoteInput.SubmitButton'
 - waitForAnimationToEnd
