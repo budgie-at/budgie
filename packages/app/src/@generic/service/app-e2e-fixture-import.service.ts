@@ -25,7 +25,7 @@ class AppE2EFixtureImportService {
             throw new Error(`Unsupported E2E fixture id: ${fixtureId}`);
         }
 
-        const fixtureFile = new File(this.getFixtureUri(fixtureId));
+        const fixtureFile = this.getFixtureFile(fixtureId);
 
         if (!fixtureFile.exists) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
@@ -35,9 +35,9 @@ class AppE2EFixtureImportService {
         await databaseImportService.replaceFromUri(fixtureFile.uri);
     }
 
-    private getFixtureUri(fixtureId: E2EFixtureId) {
+    private getFixtureFile(fixtureId: E2EFixtureId) {
         // eslint-disable-next-line lingui/no-unlocalized-strings
-        return `${Paths.document.uri}E2EFixtures/${E2E_FIXTURE_FILE_MAP[fixtureId]}`;
+        return new File(Paths.document, 'E2EFixtures', E2E_FIXTURE_FILE_MAP[fixtureId]);
     }
 
     private isFixtureId(value: string): value is E2EFixtureId {
