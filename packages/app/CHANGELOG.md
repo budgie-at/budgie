@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.1](https://github.com/budgie-at/budgie/compare/v2.41.0...v2.41.1) (2026-03-16)
+
+### Bug Fixes
+
+- **app-tests:** harden archived account fixture flow ([fde79bf](https://github.com/budgie-at/budgie/commit/fde79bf0c7ec15453b6409a9d814394face2ddf6))
+- **app-tests:** move e2e import reload after token persist ([6ac9f25](https://github.com/budgie-at/budgie/commit/6ac9f255540265e3ee7130fc25296043f71fb578))
+- **app-tests:** reload after app-owned fixture import ([aa3e88e](https://github.com/budgie-at/budgie/commit/aa3e88e4bfef80e6200a60376be2fb198f5a008e))
+
 # [2.41.0](https://github.com/budgie-at/budgie/compare/v2.40.0...v2.41.0) (2026-03-15)
 
 ### Bug Fixes
