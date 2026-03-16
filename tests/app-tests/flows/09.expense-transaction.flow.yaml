@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-09-expense-transaction'
-      FIXTURE_FILE_NAME: 'e2e-09-expense-transaction.db'
+      FIXTURE_ID: '09-expense-transaction'
 
 # --- Create Expense ---
 

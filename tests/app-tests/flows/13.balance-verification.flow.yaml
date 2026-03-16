@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-13-balance-verification'
-      FIXTURE_FILE_NAME: 'e2e-13-balance-verification.db'
+      FIXTURE_ID: '13-balance-verification'
 
 - tapOn:
     id: 'TabBar.Home'
