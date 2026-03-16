@@ -418,7 +418,7 @@ msgstr "Confirm PIN"
 msgid "Confirm Split"
 msgstr "Confirm Split"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:84
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:85
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
@@ -863,7 +863,7 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to clear data"
 msgstr "Failed to clear data"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:49
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:50
 msgid "Failed to fetch accounts"
 msgstr "Failed to fetch accounts"
 
@@ -875,7 +875,7 @@ msgstr "Failed to load contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:65
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:66
 msgid "Failed to setup sync"
 msgstr "Failed to setup sync"
 
@@ -883,7 +883,7 @@ msgstr "Failed to setup sync"
 msgid "Failed to update token"
 msgstr "Failed to update token"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:74
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:75
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
@@ -983,7 +983,7 @@ msgstr "Import Database"
 msgid "Import Erste Bank"
 msgstr "Import Erste Bank"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:78
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:79
 msgid "Import failed"
 msgstr "Import failed"
 
@@ -1036,7 +1036,7 @@ msgstr "Incorrect PIN"
 msgid "Initializing AI model..."
 msgstr "Initializing AI model..."
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:58
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:59
 msgid "Invalid file"
 msgstr "Invalid file"
 
@@ -1312,7 +1312,7 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:37
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
@@ -1523,7 +1523,7 @@ msgstr "Select category"
 msgid "Select column..."
 msgstr "Select column..."
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:87
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:88
 msgid "Select File"
 msgstr "Select File"
 
@@ -1615,8 +1615,8 @@ msgstr "Split"
 msgid "Start Import"
 msgstr "Start Import"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:89
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:76
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:90
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:77
 msgid "Start Sync"
 msgstr "Start Sync"
 
@@ -1661,7 +1661,7 @@ msgstr "Switch between light and dark themes"
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:85
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:86
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
@@ -1762,7 +1762,7 @@ msgstr "To Currency"
 msgid "Today"
 msgstr "Today"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:37
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Token required"
 msgstr "Token required"
 
