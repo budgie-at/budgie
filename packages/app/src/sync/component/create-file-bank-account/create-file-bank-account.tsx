@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import type { Edge } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -20,7 +21,7 @@ import { FileUploadStep } from '../file-upload-step/file-upload-step';
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 
 type SetupStep = 'file' | 'accounts';
-const FORM_PAGE_SAFE_EDGES = ['bottom', 'top'] as const;
+const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 interface CreateFileBankAccountProps {
     readonly config: CreateFileBankAccountConfigInterface;
