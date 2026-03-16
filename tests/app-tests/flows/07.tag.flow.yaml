@@ -10,10 +10,16 @@ appId: ${APP_ID}
       id: 'SettingsPage.ManageTagsCard'
     direction: DOWN
     speed: 20
+    centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageTagsCard'
 - tapOn:
     id: 'SettingsPage.ManageTagsCard'
 - extendedWaitUntil:
-    visible: 'Tags'
+    visible:
+      id: 'TagPage.SearchInput'
+    timeout: 10000
 
 # --- Create Primary Tag ---
 

@@ -6,6 +6,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'NoteInput.Input'
 - inputText: ${COMMENT}
+- assertVisible: ${COMMENT}
+- waitForAnimationToEnd
 - tapOn:
     id: 'NoteInput.SubmitButton'
 - waitForAnimationToEnd

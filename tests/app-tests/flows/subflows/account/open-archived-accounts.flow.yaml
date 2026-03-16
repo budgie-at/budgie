@@ -8,6 +8,9 @@ appId: ${APP_ID}
       id: 'SettingsPage.ArchivedCard'
     direction: DOWN
     speed: 20
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ArchivedCard'
 - tapOn:
     id: 'SettingsPage.ArchivedCard'
 - extendedWaitUntil:

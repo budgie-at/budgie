@@ -10,10 +10,16 @@ appId: ${APP_ID}
       id: 'SettingsPage.ManageCategoriesCard'
     direction: DOWN
     speed: 20
+    centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageCategoriesCard'
 - tapOn:
     id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
-    visible: 'Categories'
+    visible:
+      id: 'CategoryPage.SearchInput'
+    timeout: 10000
 
 # --- Create Primary Category With Icon ---
 

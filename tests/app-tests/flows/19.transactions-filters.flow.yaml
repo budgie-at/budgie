@@ -6,8 +6,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
     env:
-      FIXTURE_QUERY: 'e2e-19-transactions-filters'
-      FIXTURE_FILE_NAME: 'e2e-19-transactions-filters.db'
+      FIXTURE_ID: '19-transactions-filters'
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 

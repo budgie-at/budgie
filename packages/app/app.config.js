@@ -4,6 +4,8 @@ const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
 const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
+const IS_CCACHE_ENABLED =
+    process.env.USE_CCACHE !== '0' && (process.env.CI === 'true' || IS_E2E);
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
@@ -92,6 +94,8 @@ export default ({ config }) => ({
         bundler: 'metro'
     },
     extra: {
+        appVariant: APP_VARIANT ?? 'production',
+        e2eHooksEnabled: IS_DEV || IS_E2E,
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
@@ -107,7 +111,10 @@ export default ({ config }) => ({
             'expo-build-properties',
             {
                 buildReactNativeFromSource: true,
-                useHermesV1: true
+                useHermesV1: true,
+                ios: {
+                    ccacheEnabled: IS_CCACHE_ENABLED
+                }
             }
         ],
         './plugins/with-vec-xcframework-fix',

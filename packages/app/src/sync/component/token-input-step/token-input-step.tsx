@@ -6,6 +6,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { Input } from '../../../@generic/component/input/input';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { GetTokenCard } from '../get-token-card/get-token-card';
+import { PasteTokenButton } from '../paste-token-button/paste-token-button';
 
 interface Props {
     readonly token: string;
@@ -31,14 +32,18 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
                     <Trans>Paste your API token below:</Trans>
                 </Text>
 
-                <Input
-                    value={token}
-                    onChangeText={onTokenChange}
-                    placeholder={t`Enter your Monobank API token`}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry
-                />
+                <View className="flex-row items-center gap-x-sm">
+                    <Input
+                        className="flex-1"
+                        value={token}
+                        onChangeText={onTokenChange}
+                        placeholder={t`Enter your Monobank API token`}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry
+                    />
+                    <PasteTokenButton onPaste={onTokenChange} />
+                </View>
             </View>
         </>
     );

@@ -4,9 +4,3 @@ platform:
         disableAnimations: true
     android:
         disableAnimations: true
-
-flows:
-    - '*'
-
-executionOrder:
-    continueOnFailure: true

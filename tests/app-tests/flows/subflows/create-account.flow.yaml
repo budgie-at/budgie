@@ -3,13 +3,14 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
     visible:
-      id: 'ActionItem.AddAccount'
-- waitForAnimationToEnd
+      id: 'HomePage.TotalBalance'
+
+- runFlow:
+    file: open-action-menu.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.AddAccount'
+
 - tapOn:
     id: 'ActionItem.AddAccount'
 - extendedWaitUntil:

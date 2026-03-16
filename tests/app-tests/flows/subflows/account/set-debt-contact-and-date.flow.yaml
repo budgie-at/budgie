@@ -27,8 +27,10 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountForm.ReturnDate'
 - extendedWaitUntil:
-    visible: '${RETURN_DAY}'
+    visible:
+      id: 'DatePicker.Day.${RETURN_DAY}'
     timeout: 10000
-- tapOn: '${RETURN_DAY}'
+- tapOn:
+    id: 'DatePicker.Day.${RETURN_DAY}'
 
 - assertVisible: '${RETURN_DATE_LABEL}'

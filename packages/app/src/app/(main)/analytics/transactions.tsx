@@ -10,7 +10,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { TransactionSectionsList } from '../../../transaction/components/transaction-sections-list/transaction-sections-list';
-import { TransactionsPageHeader } from '../../../transaction/components/transactions-page-header/transactions-page-header';
+import { TransactionFilterPageHeader } from '../../../transaction/components/transactions-page-header/transaction-filter-page-header';
 import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
 interface RouteParams {
@@ -74,7 +74,7 @@ export default function AnalyticsTransactionsPage() {
     return (
         <Page
             header={
-                <TransactionsPageHeader
+                <TransactionFilterPageHeader
                     category={category}
                     tag={tags?.[0]}
                     type={params.type}
