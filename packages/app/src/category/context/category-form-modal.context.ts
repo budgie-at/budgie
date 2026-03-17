@@ -1,8 +1,6 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
-import { createContext, use } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 import { CategoryFormResult } from '../components/category-form/category-form';
 
 export interface CategoryFormModalParams {
@@ -10,16 +8,6 @@ export interface CategoryFormModalParams {
     readonly defaultTitle?: string;
 }
 
-interface CategoryFormModalContextInterface {
-    openCategoryForm: (params?: CategoryFormModalParams) => Promise<CategoryFormResult | null>;
-    resolveCategoryForm: (result: CategoryFormResult | null) => void;
-    currentParams: CategoryFormModalParams | null;
-}
+export type CategoryFormModalResult = CategoryFormResult | null;
 
-export const CategoryFormModalContext = createContext<CategoryFormModalContextInterface>({
-    openCategoryForm: () => Promise.resolve(null),
-    resolveCategoryForm: emptyFn,
-    currentParams: null
-});
-
-export const useCategoryFormModal = () => use(CategoryFormModalContext);
+export const [CategoryFormModalContext, useCategoryFormModal] = createModalContext<CategoryFormModalParams, CategoryFormModalResult>(null);

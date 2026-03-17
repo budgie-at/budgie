@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
+import { NoteInputSelectors } from '../@e2e/selectors/note-input.selector';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { Input } from '../@generic/component/input/input';
@@ -12,7 +12,7 @@ import { useNoteInputModal } from '../transaction/context/note-input-modal.conte
 
 export default function NoteInputModal() {
     const { t } = useLingui();
-    const { currentParams, resolveNoteInput } = useNoteInputModal();
+    const [, resolveNoteInput, currentParams] = useNoteInputModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [value, setValue] = useState(currentParams?.initialValue ?? '');
 
@@ -23,8 +23,8 @@ export default function NoteInputModal() {
     };
 
     return (
-        <View style={containerStyle}>
-            <View className="flex-row items-center gap-md px-xl py-lg">
+        <View style={containerStyle} collapsable={false}>
+            <View collapsable={false} className="flex-row items-center gap-md px-xl py-lg">
                 <View className="flex-1">
                     <Input
                         value={value}
@@ -37,6 +37,7 @@ export default function NoteInputModal() {
                         autoCorrect={false}
                         spellCheck={false}
                         autoComplete="off"
+                        testID={NoteInputSelectors.Input}
                     />
                 </View>
 
@@ -45,12 +46,11 @@ export default function NoteInputModal() {
                     accessibilityLabel={t`Apply`}
                     accessibilityRole="button"
                     className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                    testID={NoteInputSelectors.SubmitButton}
                 >
                     <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
                 </HapticPressable>
             </View>
-
-            <FormSheetSpacer />
         </View>
     );
 }

@@ -5,13 +5,14 @@ import * as TaskManager from 'expo-task-manager';
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
 import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
+import type { DB } from '@budgie/contracts';
+
 class AccountBalanceIncrementalService {
-    async updateAllBalances(truncate: boolean, tx?: Transaction): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccounts();
+    async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
+        const accounts = await accountRepository.getAllActiveAccounts(tx);
         if (isEmptyArray(accounts)) {
             return;
         }
@@ -23,8 +24,8 @@ class AccountBalanceIncrementalService {
         const accountIds = accounts.map(({ id }) => id);
 
         const [currentBalances, deltaMap] = await Promise.all([
-            accountBalanceRepository.getByAccountIds(accountIds),
-            accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds)
+            accountBalanceRepository.getByAccountIds(accountIds, tx),
+            accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx)
         ]);
 
         const balancesMap = this.buildBalancesMap(currentBalances);

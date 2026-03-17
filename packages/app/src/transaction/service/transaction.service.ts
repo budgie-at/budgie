@@ -6,13 +6,13 @@ import {
     TransactionEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    transactionAsync
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -21,13 +21,15 @@ import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enu
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 
+import type { DB } from '@budgie/contracts';
+
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
         return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
 
     async deleteById(id: number) {
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
             await transactionRepository.deleteById(id, tx);
             await transactionTagsRepository.deleteByTransactionId(id, tx);
             await transactionEntryRepository.deleteByTransactionId(id, tx);
@@ -45,17 +47,23 @@ class TransactionService {
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: Transaction, batchSize = 500): Promise<TransactionEntityInterface[]> {
+    async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: DB, batchSize = 500): Promise<TransactionEntityInterface[]> {
         const batchProcessor = isDefined(tx)
             ? (batch: TransactionCreateInputInterface[]) => this.processBatchInner(batch, tx)
             : this.processBatch.bind(this);
 
-        return await processInputWithBatches(inputs, batchSize, batchProcessor);
+        const transactions = await processInputWithBatches(inputs, batchSize, batchProcessor);
+
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        }
+
+        return transactions;
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements -- Transfer creation with optional custom exchange rate
-        return await db.transaction(async tx => {
+        return await transactionAsync(db, async tx => {
             const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
 
             const [fromAccount, toAccount] = await Promise.all([
@@ -119,12 +127,14 @@ class TransactionService {
                 );
             }
 
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+
             return transaction;
         });
     }
 
     async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        return await db.transaction(async tx => {
+        return await transactionAsync(db, async tx => {
             const transaction = await transactionRepository.updateById(id, input, tx);
 
             await this.upsertEntriesAndTags(id, input, tx);
@@ -136,7 +146,7 @@ class TransactionService {
     }
 
     async update(input: TransactionCreateInputInterface): Promise<void> {
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
             for (const entry of input.entries) {
                 if (isDefined(entry) && isDefined(entry.externalId)) {
                     const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
@@ -171,7 +181,7 @@ class TransactionService {
         const { id, accountId: toAccountId, customExchangeRate } = params;
 
         // eslint-disable-next-line max-statements
-        return await db.transaction(async tx => {
+        return await transactionAsync(db, async tx => {
             const transaction = await transactionRepository.getById(id);
 
             if (!isDefined(transaction)) {
@@ -263,7 +273,7 @@ class TransactionService {
         const { id, accountId: fromAccountId, customExchangeRate } = params;
 
         // eslint-disable-next-line max-statements
-        return await db.transaction(async tx => {
+        return await transactionAsync(db, async tx => {
             const transaction = await transactionRepository.getById(id);
 
             if (!isDefined(transaction)) {
@@ -363,10 +373,10 @@ class TransactionService {
     }
 
     private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return db.transaction(async tx => this.processBatchInner(batch, tx));
+        return transactionAsync(db, async tx => this.processBatchInner(batch, tx));
     }
 
-    private async processBatchInner(batch: TransactionCreateInputInterface[], tx: Transaction): Promise<TransactionEntityInterface[]> {
+    private async processBatchInner(batch: TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
         const transactions = await transactionRepository.bulkCreate(batch, tx);
 
         // HINT: This will work if bulkCreate will preserve the order of the inputs.
@@ -391,7 +401,7 @@ class TransactionService {
         return transactions;
     }
 
-    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: Transaction): Promise<void> {
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(

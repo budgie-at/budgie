@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, createContext, use, useRef, useState } from 'react';
-import { Alert, View } from 'react-native';
+import { ReactNode, createContext, use, useState } from 'react';
+import { Alert, GestureResponderEvent, View } from 'react-native';
 
 import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
+import { TransactionActionsMenuSelectors } from '../../../@e2e/selectors/transaction-actions-menu.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
@@ -17,6 +18,7 @@ interface DeferredAction {
 }
 
 const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
+const TRIGGER_SIZE = 40;
 
 export const useTransactionActionsMenu = () => use(TransactionActionsMenuContext);
 
@@ -28,21 +30,29 @@ interface Props {
 export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
+    const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
     const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
-    const triggerRef = useRef<View>(null);
 
-    const handleToggleMenu = () => {
+    const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
             setIsMenuOpen(false);
 
             return;
         }
 
-        triggerRef.current?.measureInWindow((x, y, width, height) => {
-            setAnchor({ x, y, width, height });
-            setIsMenuOpen(true);
-        });
+        const { pageX, pageY } = event.nativeEvent;
+        const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && pageX > 0 && pageY > 0;
+
+        if (hasValidAnchor) {
+            const x = pageX - TRIGGER_SIZE / 2;
+            const y = pageY - TRIGGER_SIZE / 2;
+
+            setAnchor({ x, y, width: TRIGGER_SIZE, height: TRIGGER_SIZE });
+        } else {
+            setAnchor(void 0);
+        }
+
+        setIsMenuOpen(true);
     };
 
     const handleCloseMenu: CloseMenuFn = (afterClose?: EmptyFn) => {
@@ -75,8 +85,14 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
 
     return (
         <View>
-            <View ref={triggerRef} collapsable={false}>
-                <HapticPressable onPress={handleToggleMenu}>
+            <View collapsable={false}>
+                <HapticPressable
+                    className="mr-lg"
+                    onPress={emptyFn}
+                    onPressIn={handleToggleMenu}
+                    testID={TransactionActionsMenuSelectors.TriggerButton}
+                    hitSlop={16}
+                >
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
@@ -91,6 +107,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                             label={t`Delete Transaction`}
                             onPress={handleDeletePress}
                             variant="destructive"
+                            testID={TransactionActionsMenuSelectors.DeleteButton}
                         />
                     </View>
                 </TransactionActionsMenuContext.Provider>

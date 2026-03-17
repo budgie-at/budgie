@@ -11,6 +11,7 @@ import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keybo
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
+import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
 
@@ -22,8 +23,11 @@ interface Props<T extends IdInterface> {
     searchPlaceholder: string;
     emptyState: ReactNode;
     onSearchChange: (search: string) => void;
-    onDelete: (id: number) => Promise<void>;
+    onDelete?: (id: number) => Promise<void>;
     renderCard: (item: T) => ReactNode;
+    getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
+    searchInputTestID?: string;
+    testID?: string;
     children?: ReactNode;
 }
 
@@ -37,6 +41,9 @@ export const SearchablePage = <T extends IdInterface>({
     onSearchChange,
     emptyState,
     onGoBack,
+    getDeleteConfirmation,
+    searchInputTestID,
+    testID,
     children
 }: Props<T>) => {
     const { bottom } = useSafeAreaInsets();
@@ -45,9 +52,9 @@ export const SearchablePage = <T extends IdInterface>({
 
     return (
         <View className="flex-1">
-            <Page withBlur header={<PageHeader onGoBack={onGoBack} title={title} />}>
+            <Page testID={testID} withBlur header={<PageHeader onGoBack={onGoBack} title={title} />}>
                 {isNotEmptyArray(data) ? (
-                    <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard}>
+                    <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard} getDeleteConfirmation={getDeleteConfirmation}>
                         {children}
                     </SearchablePageList>
                 ) : (
@@ -64,6 +71,7 @@ export const SearchablePage = <T extends IdInterface>({
                 onSearchChange={onSearchChange}
                 inputBottom={searchInputBottom}
                 keyboardGap={SEARCH_KEYBOARD_GAP}
+                testID={searchInputTestID}
             />
         </View>
     );
