@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
+
+### Bug Fixes
+
+- **app:** handle settings delete errors and sync i18n ([8b6c042](https://github.com/budgie-at/budgie/commit/8b6c042b65d2b424b5c58148acf4622927b0ca6f))
+- **app:** resolve form shell lint issues ([d9d80d8](https://github.com/budgie-at/budgie/commit/d9d80d84cb02b50e4c5a2ebe2e294de963638521))
+- **app:** type safe sync form edges ([dc2c1e2](https://github.com/budgie-at/budgie/commit/dc2c1e2603a7546559ad71677e89b360c859dde1))
+
 ## [2.41.1](https://github.com/budgie-at/budgie/compare/v2.41.0...v2.41.1) (2026-03-16)
 
 ### Bug Fixes
