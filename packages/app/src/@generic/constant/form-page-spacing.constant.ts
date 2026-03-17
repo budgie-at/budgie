@@ -1,0 +1,2 @@
+export const FORM_PAGE_TOP_PADDING = 64;
+export const FORM_PAGE_FOOTER_PADDING = 96;

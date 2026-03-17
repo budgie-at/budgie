@@ -57,7 +57,18 @@ export default function Categories() {
 
             return;
         }
-        await categoryService.deleteById(id);
+
+        try {
+            await categoryService.deleteById(id);
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not delete category`,
+                text2: t`Please try again later`
+            });
+
+            throw error;
+        }
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
