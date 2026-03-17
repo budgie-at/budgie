@@ -58,7 +58,18 @@ export default function Tags() {
 
             return;
         }
-        await tagService.deleteById(id);
+
+        try {
+            await tagService.deleteById(id);
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not delete tag`,
+                text2: t`Please try again later`
+            });
+
+            throw error;
+        }
     };
 
     const handleOpenTag = (tag: TagEntityInterface) => {
