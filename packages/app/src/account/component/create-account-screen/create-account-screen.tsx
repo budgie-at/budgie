@@ -1,13 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { Button } from '../../../@generic/component/button/button';
-import { Footer } from '../../../@generic/component/footer/footer';
-import { Page } from '../../../@generic/component/page/page';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -28,7 +26,7 @@ export const CreateAccountScreen = (props: Props) => {
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <Page
+        <FormPage
             header={
                 <PageHeader
                     title={title}
@@ -37,21 +35,9 @@ export const CreateAccountScreen = (props: Props) => {
                     description={description ?? t`Fill in the account details`}
                 />
             }
-            footer={
-                <KeyboardStickyView>
-                    <Footer>
-                        <Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={AccountFormSelectors.SubmitButton} />
-                    </Footer>
-                </KeyboardStickyView>
-            }
+            footer={<Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={AccountFormSelectors.SubmitButton} />}
         >
-            <KeyboardAwareScrollView
-                contentContainerClassName="pb-5xl"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                {children}
-            </KeyboardAwareScrollView>
-        </Page>
+            {children}
+        </FormPage>
     );
 };
