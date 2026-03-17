@@ -13,7 +13,9 @@ const E2E_FIXTURE_FILE_MAP = {
     '17-expense-to-transfer': 'e2e-17-expense-to-transfer.db',
     '18-income-to-transfer': 'e2e-18-income-to-transfer.db',
     '19-transactions-filters': 'e2e-19-transactions-filters.db',
-    '20-transactions-account-date': 'e2e-20-transactions-account-date.db'
+    '20-transactions-account-date': 'e2e-20-transactions-account-date.db',
+    '21-transfer-auto-consolidation': 'e2e-21-transfer-auto-consolidation.db',
+    '22-transfer-auto-consolidation-no-match': 'e2e-22-transfer-auto-consolidation-no-match.db'
 } as const;
 
 type E2EFixtureId = keyof typeof E2E_FIXTURE_FILE_MAP;
@@ -26,7 +28,6 @@ class AppE2EFixtureImportService {
         }
 
         const fixtureFile = this.getFixtureFile(fixtureId);
-
         if (!fixtureFile.exists) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
             throw new Error(`E2E fixture file not found: ${fixtureFile.name}`);

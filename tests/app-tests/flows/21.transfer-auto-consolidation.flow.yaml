@@ -1,0 +1,118 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '21-transfer-auto-consolidation'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Source_Sync_Account.60'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Destination_Sync_Account.140'
+
+- retry:
+    maxRetries: 2
+    commands:
+      - runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.FromAccount.E2E_Source_Sync_Account'
+    timeout: 30000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Auto_Transfer_Out'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Source_Sync_Account'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Destination_Sync_Account'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Incoming_Match'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+# --- Archive Source Account And Verify Safe Unconsolidation ---
+
+- tapOn:
+    id: 'AccountCard.E2E Source Sync Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+
+- runFlow:
+    when:
+      notVisible: 'Archive Account?'
+    commands:
+      - tapOn:
+          point: '9%,95%'
+
+- extendedWaitUntil:
+    visible: 'Archive Account?'
+    timeout: 10000
+
+- tapOn:
+    point: '68%,58%'
+
+- extendedWaitUntil:
+    notVisible: 'Archive Account?'
+    timeout: 10000
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- assertVisible:
+    id: 'HomePage.NetWorthValue.140'
+- assertNotVisible:
+    id: 'AccountCard.E2E_Source_Sync_Account'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Destination_Sync_Account.140'
+
+- retry:
+    maxRetries: 2
+    commands:
+      - runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Auto_Transfer_Out'
+    timeout: 30000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Auto_Transfer_Out'
+- assertNotVisible:
+    id: 'TransactionCard.FromAccount.E2E_Source_Sync_Account'
+- assertNotVisible:
+    id: 'TransactionCard.ToAccount.E2E_Destination_Sync_Account'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Incoming_Match'

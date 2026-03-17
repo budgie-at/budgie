@@ -10,7 +10,7 @@ class DatabaseImportService {
         const destinationPath = this.getDestinationPath();
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
-        await expoDb.closeAsync();
+        await this.closeDatabaseIfOpen();
         this.clearDatabaseGlobals();
 
         [
@@ -35,6 +35,18 @@ class DatabaseImportService {
         global.__expoSqliteDb__ = undefined;
         // eslint-disable-next-line no-underscore-dangle, no-undefined
         global.__drizzleDb__ = undefined;
+    }
+
+    private async closeDatabaseIfOpen() {
+        try {
+            await expoDb.closeAsync();
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+
+            if (!message.includes('Access to closed resource')) {
+                throw error;
+            }
+        }
     }
 
     private deleteFileIfExists(path: string) {

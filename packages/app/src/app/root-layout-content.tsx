@@ -188,3 +188,5 @@ export const RootLayoutContent = () => {
         </SafeAreaProvider>
     );
 };
+
+export default RootLayoutContent;
