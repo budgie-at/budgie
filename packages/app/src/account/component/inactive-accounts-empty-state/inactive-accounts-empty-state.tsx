@@ -1,12 +1,23 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 
-import { AccountsEmptyStateBase } from '../accounts-empty-state-base/accounts-empty-state-base';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-export const InactiveAccountsEmptyState = () => (
-    <AccountsEmptyStateBase
-        icon={UserIconNameEnum.EyeOff}
-        title={<Trans>No inactive accounts</Trans>}
-        description={<Trans>Accounts you mark as inactive will appear here. They won&apos;t be shown on the main page.</Trans>}
-    />
-);
+import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
+
+interface Props {
+    readonly search: string;
+}
+
+export const InactiveAccountsEmptyState = ({ search }: Props) => {
+    const { t } = useLingui();
+
+    const isSearching = isNotEmptyString(search);
+    const icon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.EyeOff;
+    const title = isSearching ? t`No Results` : t`No Inactive Accounts`;
+    const description = isSearching
+        ? t`No inactive accounts match your search`
+        : t`Accounts you mark as inactive will appear here. They won't be shown on the main page.`;
+
+    return <SearchablePageEmptyState icon={icon} title={title} description={description} />;
+};
