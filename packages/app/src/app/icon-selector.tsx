@@ -5,6 +5,7 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { IconSelectorSelectors } from '../@e2e/selectors/icon-selector.selector';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -58,7 +59,7 @@ const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserI
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveIconSelector } = useIconSelectorModal();
+    const [, resolveIconSelector, currentParams] = useIconSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 
@@ -97,11 +98,12 @@ export default function IconSelectorModal() {
     );
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search icons (e.g., money, travel, food)...`}
+                testID={IconSelectorSelectors.SearchInput}
             />
 
             <FlatList
@@ -113,7 +115,6 @@ export default function IconSelectorModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 columnWrapperClassName="gap-x-lg mb-lg"
-                contentContainerClassName="px-xl"
                 contentContainerStyle={contentContainerStyle}
                 ListEmptyComponent={listEmptyComponent}
             />

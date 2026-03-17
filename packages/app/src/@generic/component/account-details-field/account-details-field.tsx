@@ -13,14 +13,18 @@ import { Input } from '../input/input';
 type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconNameEnum }> = {
     readonly control: Control<T>;
     readonly variant: ColorPaletteVariant;
+    readonly nameInputTestID?: string;
+    readonly selectNameOnFocus?: boolean;
 };
 
 export const AccountDetailsField = <T extends { title: string; icon: UserIconNameEnum }>({
     control,
-    variant
+    variant,
+    nameInputTestID,
+    selectNameOnFocus = false
 }: AccountDetailsFieldsProps<T>) => {
     const { t } = useLingui();
-    const { openIconSelector } = useIconSelectorModal();
+    const [openIconSelector] = useIconSelectorModal();
 
     const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
         const handlePress = async () => {
@@ -51,9 +55,11 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
                         status={status}
                         value={field.value}
                         onChangeText={field.onChange}
+                        selectTextOnFocus={selectNameOnFocus}
                         className="text-ellipsis flex-1"
                         maxLength={ACCOUNT_TITLE_MAX_LENGTH}
                         placeholder={t`e.g. Savings Account`}
+                        testID={nameInputTestID}
                     />
                 </View>
             </FormItem>

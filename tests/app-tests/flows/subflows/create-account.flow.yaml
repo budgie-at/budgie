@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- runFlow:
+    file: open-action-menu.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.AddAccount'
+
+- tapOn:
+    id: 'ActionItem.AddAccount'
+- extendedWaitUntil:
+    visible: 'New Account'
+- tapOn:
+    id: 'CreateAccount.CASH'
+- extendedWaitUntil:
+    visible: 'ACCOUNT NAME & ICON'
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+- tapOn:
+    id: 'CreateAccount.Amount'
+- inputText: 100
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+- runFlow: relaunch-app.flow.yaml

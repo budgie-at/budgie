@@ -7,6 +7,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -26,12 +27,13 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly fieldName: 'fromAccountId' | 'toAccountId';
     readonly label?: string;
+    readonly testID?: string;
 }
 
-export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props) => {
+export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
     useImperativeHandle(ref, () => ({ shake }));
@@ -58,12 +60,17 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props)
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
+                    testID={testID}
                 >
                     <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
 
                     <View className="flex-1">
                         <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text className="text-md font-medium text-primary" numberOfLines={1}>
+                        <Text
+                            className="text-md font-medium text-primary"
+                            numberOfLines={1}
+                            {...(isDefined(account?.title) && { testID: TransactionFormSelectors.SelectedAccount(account.title) })}
+                        >
                             {account?.title ?? t`Select account`}
                         </Text>
                     </View>

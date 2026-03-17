@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
+import { ConvertToTransferSelectors } from '../@e2e/selectors/convert-to-transfer.selector';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
@@ -23,7 +24,7 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
-    const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
+    const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
 
     const convertExpenseMutation = useConvertExpenseToTransferMutation();
     const convertIncomeMutation = useConvertIncomeToTransferMutation();
@@ -106,7 +107,10 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <ModalPage header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}>
+            <ModalPage
+                testID={ConvertToTransferSelectors.Page}
+                header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
+            >
                 <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>

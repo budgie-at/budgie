@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, TransferPairCandidateInterface } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferPairCandidateInterface, transactionAsync } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -87,7 +87,7 @@ class TransferConsolidationService {
 
     private async consolidatePair(candidate: TransferPairCandidateInterface): Promise<void> {
         // eslint-disable-next-line max-statements -- Consolidation requires multiple sequential DB operations
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
             const [incomeTags, expenseTags] = await Promise.all([
                 transactionTagsRepository.findByTransactionId(candidate.income_transaction_id, tx),
                 transactionTagsRepository.findByTransactionId(candidate.expense_transaction_id, tx)

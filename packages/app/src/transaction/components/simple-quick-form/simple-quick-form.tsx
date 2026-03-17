@@ -10,6 +10,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
@@ -70,7 +71,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
-    const { openSplitEntries } = useSplitEntriesModal();
+    const [openSplitEntries] = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
 
@@ -211,7 +212,13 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <View className="flex-1">
-                <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+                <TransactionAmountDisplay
+                    ref={amountDisplayRef}
+                    amount={displayValue}
+                    currencySymbol={currencySymbol}
+                    variant={variant}
+                    testID={TransactionFormSelectors.AmountInput}
+                />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                     <SuggestionsContainer
@@ -243,10 +250,18 @@ export const SimpleQuickForm = (props: Props) => {
                 onSplitPress={handleSplitIconPress}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
+                categoryTestID={TransactionFormSelectors.CategorySelector}
+                tagsTestID={TransactionFormSelectors.TagsSelector}
+                commentTestID={TransactionFormSelectors.CommentInput}
             />
 
             <View className="mb-xl">
-                <TransactionAccountRow ref={accountRowRef} variant={variant} fieldName={accountFieldName} />
+                <TransactionAccountRow
+                    ref={accountRowRef}
+                    variant={variant}
+                    fieldName={accountFieldName}
+                    testID={TransactionFormSelectors.AccountSelector}
+                />
             </View>
 
             <TransactionKeypad
@@ -257,6 +272,7 @@ export const SimpleQuickForm = (props: Props) => {
                 onLongBackspace={keypadHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
+                confirmTestID={TransactionFormSelectors.SubmitButton}
             />
         </View>
     );

@@ -5,6 +5,8 @@
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
+        "packages/app/plugins/with-vec-xcframework-fix.js",
+        "scripts/after-install.cjs",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
@@ -38,5 +40,5 @@
         "rimraf",
         "expo-mcp"
     ],
-    "ignoreBinaries": ["run"]
+    "ignoreBinaries": ["run", "maestro"]
 }

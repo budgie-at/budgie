@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
@@ -11,7 +12,7 @@ import { SettingsCard } from '../settings-card/settings-card';
 export const DefaultAccountSelector = () => {
     const { defaultAccount } = useSettingsContext();
     const { t } = useLingui();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
 
     const { selectedAccount, icon } = useAccountSelector({ accountId: defaultAccount?.id ?? null });
 
@@ -32,6 +33,10 @@ export const DefaultAccountSelector = () => {
             onPress={handleOpen}
             title={t`Default Account`}
             description={description ?? t`None selected`}
+            testID={SettingsPageSelectors.DefaultAccountCard}
+            {...(isDefined(selectedAccount) && {
+                descriptionTestID: SettingsPageSelectors.DefaultAccountValue(selectedAccount.title)
+            })}
         />
     );
 };

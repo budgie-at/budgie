@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
+
+**Note:** Version bump only for package @budgie/bank-sync
+
+# [2.38.0](https://github.com/budgie-at/budgie/compare/v2.37.1...v2.38.0) (2026-03-01)
+
+### Bug Fixes
+
+- **bank-sync:** address code review feedback for Erste parsers ([a15a50d](https://github.com/budgie-at/budgie/commit/a15a50d497d5ad032e282004c8b8adee93e61938))
+- **bank-sync:** address CodeQL polynomial regex warnings ([736a128](https://github.com/budgie-at/budgie/commit/736a128d85c5c50a13e1553274fd27d1b10ad091))
+- **bank-sync:** address deep review feedback for Erste parsers ([626d13c](https://github.com/budgie-at/budgie/commit/626d13c2204a75db0769595bf81e6095a63c06a1))
+- **bank-sync:** eliminate last CodeQL alert in modern balance parser ([7132917](https://github.com/budgie-at/budgie/commit/7132917423666cc5324198fb7683f2eba9e78f93))
+- **bank-sync:** eliminate polynomial regex backtracking for CodeQL ([41e5b8a](https://github.com/budgie-at/budgie/commit/41e5b8a70a4c8e39256043eeeae2144739da0cad))
+
+### Features
+
+- **bank-sync:** add Erste modern PDF format support with strategy pattern ([58357b6](https://github.com/budgie-at/budgie/commit/58357b6d687b3f56d1b73faceb7d390e225a0d6f))
+
 # [2.33.0](https://github.com/budgie-at/budgie/compare/v2.32.2...v2.33.0) (2026-02-05)
 
 ### Bug Fixes

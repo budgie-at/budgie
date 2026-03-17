@@ -1,10 +1,11 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
@@ -42,9 +43,9 @@ interface Props {
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openNoteInput } = useNoteInputModal();
-    const { openIconSelector } = useIconSelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openNoteInput] = useNoteInputModal();
+    const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const { llm } = useLlmContext();
 
@@ -145,10 +146,20 @@ export const CategoryForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
-                <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
+                <CategoryIconDisplay
+                    icon={icon}
+                    onPress={handleIconPress}
+                    triggerTestID={CategoryFormSelectors.IconTrigger}
+                    iconTestID={CategoryFormSelectors.CurrentIcon(icon)}
+                />
 
-                <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
+                <CategoryTitleInput
+                    value={title}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    testID={CategoryFormSelectors.Input}
+                />
 
                 {/* jscpd:ignore-start */}
                 <AiTranslationFields
@@ -165,14 +176,22 @@ export const CategoryForm = (props: Props) => {
             </KeyboardAwareScrollView>
 
             {/* jscpd:ignore-start */}
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={t`Merge into another category`} /> : null}
+            <KeyboardStickyView>
+                <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                    {isEditing ? (
+                        <ModalFormMergeButton
+                            testID={CategoryFormSelectors.Merge}
+                            onPress={handleMerge}
+                            content={t`Merge into another category`}
+                        />
+                    ) : null}
 
-                <View className="flex-row gap-x-md">
-                    <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
+                    <View className="flex-row gap-x-md">
+                        <ModalFormCancelButton onPress={onCancel} />
+                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
+                    </View>
                 </View>
-            </View>
+            </KeyboardStickyView>
             {/* jscpd:ignore-end */}
         </ModalPage>
     );

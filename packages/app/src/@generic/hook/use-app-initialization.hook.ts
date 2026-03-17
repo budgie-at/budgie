@@ -7,15 +7,11 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
-import { expoDb, initPostMigration } from '../drizzle/db/db';
-
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
         const init = async () => {
             if (success) {
                 try {
-                    initPostMigration(expoDb);
-
                     void exchangeRatesSyncService.sync();
                     void exchangeRatesSyncService.registerBackgroundTask();
 

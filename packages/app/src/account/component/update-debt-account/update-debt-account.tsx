@@ -12,6 +12,7 @@ import { AccountFormDateField } from '../account-form-date-field/account-form-da
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
+import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -32,6 +33,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             contactId: account.contactId,
             instrumentId: account.instrumentId,
             targetBalance: convertFromMicroUnits(account.targetBalance),
+            includeInNetWorth: account.includeInNetWorth,
             isActive: account.isActive
         },
         values => accountService.updateDebtById(account.id, values)
@@ -46,6 +48,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             <AccountTargetBalanceField control={control} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
+            <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
     );
 };

@@ -1,12 +1,11 @@
 import * as SQLite from 'expo-sqlite';
-import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
     BankSyncRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
-    EMBEDDING_DIMENSIONS,
     ExchangeRateRepository,
     InstrumentRepository,
     MccCategoryRepository,
@@ -26,31 +25,12 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 
+import type { DB } from '@budgie/contracts';
+
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
-    var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
+    var __drizzleDb__: DB | undefined;
 }
-
-const migrateVecDimensions = (sqliteDb: SQLite.SQLiteDatabase): void => {
-    const [tableCheck] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
-        "SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name='title_embeddings'" // eslint-disable-line lingui/no-unlocalized-strings
-    );
-
-    if (tableCheck.count === 0) {
-        return;
-    }
-
-    const [wrongDimensions] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
-        `SELECT COUNT(*) as count FROM title_embeddings WHERE dimensions != ${EMBEDDING_DIMENSIONS}` // eslint-disable-line lingui/no-unlocalized-strings
-    );
-
-    if (wrongDimensions.count === 0) {
-        return;
-    }
-
-    sqliteDb.execSync('DROP TABLE IF EXISTS title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
-    sqliteDb.execSync('DELETE FROM title_embeddings'); // eslint-disable-line lingui/no-unlocalized-strings
-};
 
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
@@ -62,53 +42,33 @@ const dbInit = () => {
 
     global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // eslint-disable-line lingui/no-unlocalized-strings
 
     try {
+        console.log('[DB] bundledExtensions:', JSON.stringify(Object.keys(SQLite.bundledExtensions))); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+        console.log('[DB] sqlite-vec extension:', JSON.stringify(extension)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
-            global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
-            migrateVecDimensions(global.__expoSqliteDb__);
+            if (isNotEmptyString(extension.libPath)) {
+                console.log('[DB] Loading sqlite-vec from:', extension.libPath); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+                global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+            } else {
+                console.log('[DB] sqlite-vec libPath is null, skipping loadExtensionSync'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            }
+            console.log('[DB] Creating vec tables...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
+            console.log('[DB] Vec tables ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        } else {
+            console.log('[DB] sqlite-vec extension NOT found in bundledExtensions'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         }
-    } catch {}
+    } catch (dbError) {
+        console.log('[DB] sqlite-vec init error:', dbError); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+    }
 
     return global.__expoSqliteDb__;
-};
-
-const hasTable = (sqliteDb: SQLite.SQLiteDatabase, tableName: string): boolean => {
-    const [result] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
-        "SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name=?", // eslint-disable-line lingui/no-unlocalized-strings
-        [tableName]
-    );
-
-    return result.count > 0;
-};
-
-const getRowCount = (sqliteDb: SQLite.SQLiteDatabase, query: string): number => {
-    const [result] = sqliteDb.getAllSync<{ count: number }>(query); // eslint-disable-line lingui/no-unlocalized-strings
-
-    return result.count;
-};
-
-export const initPostMigration = (sqliteDb: SQLite.SQLiteDatabase): void => {
-    if (!hasTable(sqliteDb, 'title_embeddings') || !hasTable(sqliteDb, 'title_embedding_vec')) {
-        return;
-    }
-
-    const embeddingCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embeddings WHERE deleted_at IS NULL'); // eslint-disable-line lingui/no-unlocalized-strings
-    const vecCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
-
-    if (embeddingCount === vecCount) {
-        return;
-    }
-
-    sqliteDb.execSync('DELETE FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
-    sqliteDb.execSync(
-        'INSERT INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
-    );
 };
 
 export let expoDb = dbInit();
@@ -117,10 +77,12 @@ export let expoDb = dbInit();
 export const __REMOVE_ME_RESET_DB = async () => {
     await expoDb.closeAsync();
     await SQLite.deleteDatabaseAsync(DB_NAME);
+    global.__expoSqliteDb__ = undefined;
+    global.__drizzleDb__ = undefined;
     expoDb = dbInit();
 };
 
-export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
+export const db: DB = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
 export const tagRepository = new TagRepository(db);
 export const accountRepository = new AccountRepository(db);
@@ -136,6 +98,6 @@ export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
-export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db, expoDb);
-export const commentEmbeddingRepository = new CommentEmbeddingRepository(db, expoDb);
+export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
+export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);

@@ -6,6 +6,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransferFormSelectors } from '../../../@e2e/selectors/transfer-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
@@ -29,7 +30,7 @@ interface Props {
 export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openAccountSelector } = useAccountSelectorModal();
+    const [openAccountSelector] = useAccountSelectorModal();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
@@ -70,10 +71,16 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 account={fromAccount}
                 variant={variant}
                 animatedStyle={fromAnimatedStyle}
+                testID={TransferFormSelectors.FromAccount}
                 onPress={handleFromPress}
             />
 
-            <HapticPressable onPress={handleSwap} accessibilityLabel={t`Swap accounts`} accessibilityRole="button">
+            <HapticPressable
+                onPress={handleSwap}
+                testID={TransferFormSelectors.SwapAccounts}
+                accessibilityLabel={t`Swap accounts`}
+                accessibilityRole="button"
+            >
                 <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={28} iconSize={12} />
             </HapticPressable>
 
@@ -82,6 +89,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 account={toAccount}
                 variant={variant}
                 animatedStyle={toAnimatedStyle}
+                testID={TransferFormSelectors.ToAccount}
                 onPress={handleToPress}
             />
         </Animated.View>

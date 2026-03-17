@@ -1,45 +1,44 @@
-/* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { DatePickerBottomSheet } from '../../../@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-/* jscpd:ignore-end */
+import { useDatePickerModal } from '../../../transaction/context/date-picker-modal.context';
 
 interface Props {
     readonly date: Date | null;
+    readonly testID?: string;
     readonly variant: ColorPaletteVariant;
     readonly onChange: (date: Date) => void;
 }
 
-export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
+export const AccountFormDatePicker = ({ date, onChange, testID, variant }: Props) => {
     const { formatDayAndFullMonthAndYear } = useFormatDate();
+    const [openDatePicker] = useDatePickerModal();
     const { t } = useLingui();
 
-    const handleOpen = () => void ref.current?.open();
+    const handleOpen = async () => {
+        const result = await openDatePicker({ initialDate: date ?? new Date() });
+        if (isDefined(result)) {
+            onChange(result);
+        }
+    };
 
     const description = isDefined(date) ? t`Expected return date` : t`When should it be returned?`;
     const title = isDefined(date) ? formatDayAndFullMonthAndYear(date) : t`Set Return Date`;
 
     return (
-        <>
-            <SimpleHorizontalCell
-                left={<CircleIcon icon={UserIconNameEnum.Calendar} variant={variant} />}
-                onPress={handleOpen}
-                title={title}
-                description={description}
-                singleLine
-            />
-
-            <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />
-        </>
+        <SimpleHorizontalCell
+            left={<CircleIcon icon={UserIconNameEnum.Calendar} variant={variant} />}
+            onPress={handleOpen}
+            title={title}
+            description={description}
+            singleLine
+            testID={testID}
+        />
     );
 };
