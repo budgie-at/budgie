@@ -10,16 +10,17 @@ import { appE2EFixtureImportService } from '../service/app-e2e-fixture-import.se
 import { appResetService } from '../service/app-reset.service';
 
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
+let activeBootstrapToken: string | null = null;
+let activeBootstrapPromise: Promise<void> | null = null;
 
 const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
-const getBootstrapParams = async () => {
-    const initialUrl = await Linking.parseInitialURLAsync();
-    const resetToken = normalizeQueryString(initialUrl.queryParams?.['e2eResetToken']);
-    const fixtureId = normalizeQueryString(initialUrl.queryParams?.['e2eImportFixture']);
-    const shouldReset = initialUrl.queryParams?.['e2eReset'] === 'true';
+const parseBootstrapParams = (queryParams: Record<string, unknown> | null | undefined) => {
+    const resetToken = normalizeQueryString(queryParams?.['e2eResetToken']);
+    const fixtureId = normalizeQueryString(queryParams?.['e2eImportFixture']);
+    const shouldReset = queryParams?.['e2eReset'] === 'true';
 
     return {
         resetToken,
@@ -27,6 +28,11 @@ const getBootstrapParams = async () => {
         shouldReset,
         hasBootstrapAction: shouldReset || isNotEmptyString(fixtureId)
     };
+};
+
+const getBootstrapParams = async () => {
+    const initialUrl = await Linking.parseInitialURLAsync();
+    return parseBootstrapParams(initialUrl.queryParams);
 };
 
 const runBootstrapAction = async ({
@@ -44,17 +50,35 @@ const runBootstrapAction = async ({
         return;
     }
 
-    if (isNotEmptyString(fixtureId)) {
-        await appE2EFixtureImportService.importFixtureById(fixtureId);
-        await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
-        await Updates.reloadAsync();
+    if (activeBootstrapToken === resetToken && activeBootstrapPromise) {
+        await activeBootstrapPromise;
 
         return;
     }
 
-    if (shouldReset) {
-        await appResetService.clearAllData();
-        await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+    activeBootstrapToken = resetToken;
+    activeBootstrapPromise = (async () => {
+        if (isNotEmptyString(fixtureId)) {
+            await appE2EFixtureImportService.importFixtureById(fixtureId);
+            await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+            await Updates.reloadAsync();
+
+            return;
+        }
+
+        if (shouldReset) {
+            await appResetService.clearAllData();
+            await SecureStore.setItemAsync(E2E_BOOTSTRAP_TOKEN_KEY, resetToken);
+        }
+    })();
+
+    try {
+        await activeBootstrapPromise;
+    } finally {
+        if (activeBootstrapToken === resetToken) {
+            activeBootstrapToken = null;
+            activeBootstrapPromise = null;
+        }
     }
 };
 
@@ -87,10 +111,23 @@ export const useBootstrapReset = () => {
             }
         };
 
+        const subscription = Linking.addEventListener('url', event => {
+            if (!isTestHooksEnabled()) {
+                return;
+            }
+
+            const bootstrapParams = parseBootstrapParams(Linking.parse(event.url).queryParams);
+
+            if (isNotEmptyString(bootstrapParams.resetToken) && bootstrapParams.hasBootstrapAction) {
+                void runBootstrapAction(bootstrapParams);
+            }
+        });
+
         void bootstrap();
 
         return () => {
             isMounted = false;
+            subscription.remove();
         };
     }, []);
 

@@ -24,3 +24,5 @@ xcrun simctl privacy "$SIMULATOR_UDID" grant contacts com.vitalyiegorov.budgie.d
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/12-cross-currency-transfer-transaction.db" "e2e-12-cross-currency-transfer-transaction.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/17-expense-to-transfer.db" "e2e-17-expense-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/18-income-to-transfer.db" "e2e-18-income-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
+"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/21-transfer-auto-consolidation.db" "e2e-21-transfer-auto-consolidation.db" "$SIMULATOR_UDID" "$APP_ID"
+"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/22-transfer-auto-consolidation-no-match.db" "e2e-22-transfer-auto-consolidation-no-match.db" "$SIMULATOR_UDID" "$APP_ID"

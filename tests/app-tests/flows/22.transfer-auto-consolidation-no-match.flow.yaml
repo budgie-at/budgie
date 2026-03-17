@@ -1,0 +1,40 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '22-transfer-auto-consolidation-no-match'
+
+- retry:
+    maxRetries: 2
+    commands:
+      - runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_No_Match_Transfer_Out'
+    timeout: 30000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_No_Match_Transfer_Out'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_No_Match_Incoming'
+- assertNotVisible:
+    id: 'TransactionCard.FromAccount.E2E_Source_Sync_Account'
+- assertNotVisible:
+    id: 'TransactionCard.ToAccount.E2E_Destination_Sync_Account'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Source_Sync_Account.60'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Destination_Sync_Account.140'
