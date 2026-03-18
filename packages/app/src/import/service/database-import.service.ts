@@ -5,6 +5,9 @@ import * as Updates from 'expo-updates';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
 
+// eslint-disable-next-line lingui/no-unlocalized-strings
+const CLOSED_RESOURCE_ERROR = 'Access to closed resource';
+
 class DatabaseImportService {
     async replaceFromUri(sourceUri: string): Promise<void> {
         const destinationPath = this.getDestinationPath();
@@ -43,7 +46,7 @@ class DatabaseImportService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
 
-            if (!message.includes('Access to closed resource')) {
+            if (!message.includes(CLOSED_RESOURCE_ERROR)) {
                 throw error;
             }
         }
