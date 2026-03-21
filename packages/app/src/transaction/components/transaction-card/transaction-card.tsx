@@ -23,13 +23,16 @@ import { TransactionCardAccountInfo } from '../transaction-card-account-info/tra
 import { TransactionCardTag } from '../transaction-card-tag/transaction-card-tag';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
+import type { OnEventFn } from '@rnw-community/shared';
+
 export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string;
+    readonly onLongPress?: OnEventFn;
 }
 
-export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
+export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onLongPress }: TransactionCardProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
@@ -64,7 +67,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     return (
         <Link href={getHref()} asChild>
-            <Card className="p-xl gap-y-8" testID={cardTestID}>
+            <Card className="p-xl gap-y-8" testID={cardTestID} onLongPress={onLongPress}>
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 
