@@ -10,6 +10,7 @@ import {
     merchantEmbeddingRepository,
     tagRepository
 } from '../../@generic/drizzle/db/db';
+import { isAppActive } from '../../@generic/utils/is-app-active.util';
 import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
 import { useLlmContext } from '../context/llm.context';
 
@@ -62,7 +63,7 @@ const generateAndStoreForContext = async (
     upsertEmbedding: (serialized: Uint8Array, dimensions: number) => Promise<number | null>,
     replaceTagsIfNeeded: (embeddingId: number) => Promise<void>
 ): Promise<void> => {
-    if (!isNotEmptyString(context)) {
+    if (!isNotEmptyString(context) || !isAppActive()) {
         return;
     }
 
@@ -132,6 +133,10 @@ const generateAndStoreEmbeddings = async (
 
     /* eslint-disable no-await-in-loop -- Sequential to avoid overwhelming LLM */
     for (const transaction of transactions) {
+        if (!isAppActive()) {
+            return;
+        }
+
         const key = `${transaction.title}|${transaction.comment}|${transaction.entries[0]?.categoryId ?? ''}`;
 
         if (!processed.has(key)) {
@@ -154,7 +159,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
     const { refreshProgress } = useAiEmbeddingProgressContext();
 
     const generateForTransaction = (params: EmbeddingTransactionParamsInterface): void => {
-        if (!llm.isEmbeddingReady) {
+        if (!llm.isEmbeddingReady || !isAppActive()) {
             return;
         }
 
@@ -163,7 +168,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturn => {
     };
 
     const generateForTransactions = (transactions: readonly TransactionCreateInputInterface[]): void => {
-        if (!llm.isEmbeddingReady) {
+        if (!llm.isEmbeddingReady || !isAppActive()) {
             return;
         }
 

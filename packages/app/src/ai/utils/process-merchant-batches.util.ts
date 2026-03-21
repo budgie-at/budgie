@@ -37,7 +37,7 @@ const buildMerchantContextItem = (row: UnembeddedMerchantDataInterface): Merchan
 };
 
 const merchantBatchConfig: BatchConfigInterface<UnembeddedMerchantDataInterface, MerchantContextDataInterface> = {
-    fetchBatch: (limit, cursor) => merchantEmbeddingRepository.findTransactionData(limit, cursor),
+    fetchBatch: (limit, cursor) => merchantEmbeddingRepository.findMissingTransactionData(limit, cursor),
     buildContextData: rows => rows.map(buildMerchantContextItem).filter(isDefined),
     getContextKey: item => `${item.title}|${item.mccDescription}|${item.categoryId}`,
     upsertEmbedding: async (item, serialized, dimensions) =>

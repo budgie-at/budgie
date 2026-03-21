@@ -117,56 +117,11 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedMerchantDataInterface[]> {
-        const cursorCondition = isDefined(cursor) ? lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor) : null;
+        return this.findTransactionDataInternal(limit, cursor, false);
+    }
 
-        let query = this.db
-            .select({
-                title: TransactionEntityTable.title,
-                mccDescription: sql<string>`COALESCE(${MccCategoryEntityTable.fullDescription}, '')`,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
-                comment: sql<string>`MAX(${TransactionEntityTable.comment})`,
-                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(
-                TransactionEntryEntityTable,
-                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
-            )
-            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
-            .where(
-                and(
-                    isNull(TransactionEntityTable.deletedAt),
-                    ne(TransactionEntityTable.title, ''),
-                    isNotNull(TransactionEntryEntityTable.categoryId)
-                )
-            )
-            .groupBy(TransactionEntityTable.title, MccCategoryEntityTable.fullDescription, TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit)
-            .$dynamic();
-
-        if (isDefined(cursorCondition)) {
-            query = query.having(cursorCondition);
-        }
-
-        const results = await query;
-
-        return results
-            .filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId))
-            .map(row => ({
-                title: row.title,
-                mccDescription: row.mccDescription,
-                categoryId: row.categoryId,
-                categoryTitleEn: row.categoryTitleEn ?? null,
-                tagIds: row.tagIds ?? null,
-                comment: row.comment,
-                maxOperatedAt: row.maxOperatedAt
-            }));
+    async findMissingTransactionData(limit: number, cursor?: number): Promise<UnembeddedMerchantDataInterface[]> {
+        return this.findTransactionDataInternal(limit, cursor, true);
     }
 
     async countAll(): Promise<number> {
@@ -192,5 +147,83 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
 
     async truncate(): Promise<void> {
         return this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable);
+    }
+
+    private async findTransactionDataInternal(
+        limit: number,
+        cursor: number | undefined,
+        onlyMissing: boolean
+    ): Promise<UnembeddedMerchantDataInterface[]> {
+        const cursorCondition = isDefined(cursor) ? lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor) : null;
+        const conditions = [
+            isNull(TransactionEntityTable.deletedAt),
+            ne(TransactionEntityTable.title, ''),
+            isNotNull(TransactionEntryEntityTable.categoryId),
+            ...(onlyMissing ? [isNull(MerchantEmbeddingEntityTable.id)] : [])
+        ];
+
+        let query = this.db
+            .select({
+                title: TransactionEntityTable.title,
+                mccDescription: sql<string>`COALESCE(${MccCategoryEntityTable.fullDescription}, '')`,
+                categoryId: TransactionEntryEntityTable.categoryId,
+                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
+                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
+                comment: sql<string>`MAX(${TransactionEntityTable.comment})`,
+                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(
+                TransactionEntryEntityTable,
+                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
+            )
+            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
+            .leftJoin(
+                MerchantEmbeddingEntityTable,
+                and(
+                    eq(MerchantEmbeddingEntityTable.title, TransactionEntityTable.title),
+                    eq(MerchantEmbeddingEntityTable.mccDescription, sql`COALESCE(${MccCategoryEntityTable.fullDescription}, '')`),
+                    eq(MerchantEmbeddingEntityTable.categoryId, TransactionEntryEntityTable.categoryId),
+                    isNull(MerchantEmbeddingEntityTable.deletedAt)
+                )
+            )
+            .where(and(...conditions))
+            .groupBy(TransactionEntityTable.title, MccCategoryEntityTable.fullDescription, TransactionEntryEntityTable.categoryId)
+            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
+            .limit(limit)
+            .$dynamic();
+
+        if (isDefined(cursorCondition)) {
+            query = query.having(cursorCondition);
+        }
+
+        return this.mapTransactionRows(await query);
+    }
+
+    private mapTransactionRows(
+        rows: {
+            title: string;
+            mccDescription: string;
+            categoryId: number | null;
+            categoryTitleEn: string | null;
+            tagIds: string | null;
+            comment: string;
+            maxOperatedAt: number;
+        }[]
+    ): UnembeddedMerchantDataInterface[] {
+        return rows
+            .filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId))
+            .map(row => ({
+                title: row.title,
+                mccDescription: row.mccDescription,
+                categoryId: row.categoryId,
+                categoryTitleEn: row.categoryTitleEn ?? null,
+                tagIds: row.tagIds ?? null,
+                comment: row.comment,
+                maxOperatedAt: row.maxOperatedAt
+            }));
     }
 }
