@@ -13,14 +13,14 @@ const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 let activeBootstrapToken: string | null = null;
 let activeBootstrapPromise: Promise<void> | null = null;
 
-const isTestHooksEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
 const parseBootstrapParams = (queryParams: Record<string, unknown> | null | undefined) => {
-    const resetToken = normalizeQueryString(queryParams?.e2eResetToken);
-    const fixtureId = normalizeQueryString(queryParams?.e2eImportFixture);
-    const shouldReset = queryParams?.e2eReset === 'true';
+    const resetToken = normalizeQueryString(queryParams?.['e2eResetToken']);
+    const fixtureId = normalizeQueryString(queryParams?.['e2eImportFixture']);
+    const shouldReset = queryParams?.['e2eReset'] === 'true';
 
     return {
         resetToken,
