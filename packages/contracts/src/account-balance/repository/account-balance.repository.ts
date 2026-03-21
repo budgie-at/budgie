@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
@@ -32,7 +31,10 @@ export class AccountBalanceRepository {
     }
 
     async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db).select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountBalanceEntityTable)
+            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getAllBalances() {
@@ -71,45 +73,12 @@ export class AccountBalanceRepository {
     }
 
     getByAccountId(accountId: number) {
-        const latestBalanceSql = sql<number>`
-            COALESCE((
-                SELECT ${AccountBalanceEntityTable.amount}
-                FROM ${AccountBalanceEntityTable}
-                WHERE ${AccountBalanceEntityTable.accountId} = ${accountId}
-                LIMIT 1
-            ), 0)`;
-
-        const lastBalanceUpdatedAtSql = sql`
-            SELECT MAX(${AccountBalanceEntityTable.updatedAt})
-            FROM ${AccountBalanceEntityTable}
-            WHERE ${AccountBalanceEntityTable.accountId} = ${accountId}`;
-
-        const transactionsDeltaSql = sql<number>`
-            COALESCE((
-                SELECT SUM(
-                    CASE
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                        THEN -${TransactionEntryEntityTable.amount}
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                        THEN ${TransactionEntryEntityTable.amount}
-                        ELSE 0
-                    END
-                )
-                FROM ${TransactionEntryEntityTable}
-                WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
-                  AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-                  AND (
-                      (${lastBalanceUpdatedAtSql}) IS NULL
-                      OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql})
-                  )
-            ), 0)`;
-
         return this.db
             .select({
-                balance: sql<number>`${latestBalanceSql} + ${transactionsDeltaSql}`
+                balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`)
             })
-            .from(TransactionEntryEntityTable)
-            .where(eq(TransactionEntryEntityTable.accountId, accountId))
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
             .limit(1);
     }
 
@@ -119,14 +88,15 @@ export class AccountBalanceRepository {
                 SELECT ${this.getTransactionsSumSql()}
                 FROM ${TransactionEntryEntityTable}
                 WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
+                  AND ${TransactionEntryEntityTable.deletedAt} IS NULL
             ), 0)`;
 
         return this.db
             .select({
                 balance: totalBalanceSql
             })
-            .from(TransactionEntryEntityTable)
-            .where(eq(TransactionEntryEntityTable.accountId, accountId))
+            .from(AccountEntityTable)
+            .where(eq(AccountEntityTable.id, accountId))
             .limit(1);
     }
 
@@ -138,30 +108,16 @@ export class AccountBalanceRepository {
             1.0
         )`;
 
-        const netWorthSubquerySql = sql<number>`
-            COALESCE(
-                (
-                    SELECT SUM(
-                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
-                    )
-                    FROM ${AccountEntityTable}
-                    WHERE ${AccountEntityTable.includeInNetWorth} = 1
-                      AND ${AccountEntityTable.deletedAt} IS NULL
-                ),
-                0
-            )
-        `;
-
         return this.db
             .select({
-                netWorth: netWorthSubquerySql
+                netWorth: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
             })
-            .from(TransactionEntryEntityTable)
-            .limit(1);
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
     // jscpd:ignore-start
-    getTotalByAccountType(defaultInstrumentId: number, accountType: string) {
+    getTotalByAccountType(defaultInstrumentId: number, accountType: AccountTypeEnum) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
@@ -169,27 +125,14 @@ export class AccountBalanceRepository {
             1.0
         )`;
 
-        const totalSubquerySql = sql<number>`
-            COALESCE(
-                (
-                    SELECT SUM(
-                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
-                    )
-                    FROM ${AccountEntityTable}
-                    WHERE ${AccountEntityTable.type} = ${accountType}
-                      AND ${AccountEntityTable.isActive} = 1
-                      AND ${AccountEntityTable.deletedAt} IS NULL
-                ),
-                0
-            )
-        `;
-
         return this.db
             .select({
-                total: totalSubquerySql
+                total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
             })
-            .from(TransactionEntryEntityTable)
-            .limit(1);
+            .from(AccountEntityTable)
+            .where(
+                and(eq(AccountEntityTable.type, accountType), eq(AccountEntityTable.isActive, true), isNull(AccountEntityTable.deletedAt))
+            );
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
@@ -204,124 +147,65 @@ export class AccountBalanceRepository {
             MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
         `;
 
-        const totalSubquerySql = sql<number>`
-            COALESCE(
-                (
-                    SELECT SUM(
-                        (${remainingDebtSql}) * ${exchangeRateSql}
-                    )
-                    FROM ${AccountEntityTable}
-                    WHERE ${AccountEntityTable.type} = ${AccountTypeEnum.DEBT}
-                      AND ${AccountEntityTable.debtType} = ${debtType}
-                      AND ${AccountEntityTable.isActive} = 1
-                      AND ${AccountEntityTable.deletedAt} IS NULL
-                ),
-                0
-            )
-        `;
-
         return this.db
             .select({
-                total: totalSubquerySql
+                total: sql<number>`COALESCE(SUM((${remainingDebtSql}) * ${exchangeRateSql}), 0)`
             })
-            .from(TransactionEntryEntityTable)
-            .limit(1);
+            .from(AccountEntityTable)
+            .where(
+                and(
+                    eq(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    eq(AccountEntityTable.debtType, debtType),
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt)
+                )
+            );
     }
 
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
-        const totalSubquerySql = sql<number>`
-            COALESCE(
-                (
-                    SELECT SUM(
-                        (
-                            COALESCE((
-                                SELECT amount
-                                FROM account_balances
-                                WHERE account_id = a.id
-                                LIMIT 1
-                            ), 0)
-                            +
-                            COALESCE((
-                                SELECT SUM(
-                                    CASE
-                                        WHEN type = ${TransactionEntryTypeEnum.CREDIT} THEN -amount
-                                        WHEN type = ${TransactionEntryTypeEnum.DEBIT} THEN amount
-                                        ELSE 0
-                                    END
-                                )
-                                FROM transaction_entries te
-                                WHERE te.account_id = a.id
-                                  AND te.deleted_at IS NULL
-                                  AND te.created_at > COALESCE(
-                                      (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id),
-                                      '1970-01-01'
-                                  )
-                            ), 0)
-                        )
-                        *
-                        COALESCE(
-                            (
-                                SELECT rate * 1.0
-                                FROM exchange_rates
-                                WHERE base_instrument_id = a.instrument_id
-                                  AND quote_instrument_id = ${defaultInstrumentId}
-                                  AND deleted_at IS NULL
-                                ORDER BY created_at DESC
-                                LIMIT 1
-                            ),
-                            (
-                                SELECT 1.0 / rate
-                                FROM exchange_rates
-                                WHERE base_instrument_id = ${defaultInstrumentId}
-                                  AND quote_instrument_id = a.instrument_id
-                                  AND deleted_at IS NULL
-                                ORDER BY created_at DESC
-                                LIMIT 1
-                            ),
-                            1.0
-                        )
-                    )
-                    FROM accounts a
-                    INNER JOIN bank_syncs bs ON bs.account_id = a.id
-                    WHERE bs.provider = ${provider}
-                      AND bs.deleted_at IS NULL
-                      AND a.is_active = 1
-                      AND a.deleted_at IS NULL
-                ),
-                0
-            )
-        `;
-        // jscpd:ignore-end
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+        const exchangeRateSql = sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
 
         return this.db
             .select({
-                total: totalSubquerySql
+                total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)`
             })
-            .from(TransactionEntryEntityTable)
-            .limit(1);
+            .from(AccountEntityTable)
+            .where(
+                and(
+                    eq(AccountEntityTable.externalSource, provider),
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt)
+                )
+            );
     }
+    // jscpd:ignore-end
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 
-    private getAccountBalanceWithTransactionsSql() {
+    private getAccountBalanceWithTransactionsSql(accountIdReference = sql.raw('accounts.id')) {
         const latestAccountBalanceSql = sql<number>`
             SELECT ${AccountBalanceEntityTable.amount}
             FROM ${AccountBalanceEntityTable}
-            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+            WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}
             LIMIT 1`;
 
         const lastBalanceUpdatedAtSql = sql`
             SELECT MAX(${AccountBalanceEntityTable.updatedAt})
             FROM ${AccountBalanceEntityTable}
-            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+            WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}
         `;
 
         const transactionsSumSinceLastBalanceSql = sql<number>`
             SELECT ${this.getTransactionsSumSql()}
             FROM ${TransactionEntryEntityTable}
-            WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
+            WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference}
               AND ${TransactionEntryEntityTable.deletedAt} IS NULL
               AND (
                   (${lastBalanceUpdatedAtSql}) IS NULL
