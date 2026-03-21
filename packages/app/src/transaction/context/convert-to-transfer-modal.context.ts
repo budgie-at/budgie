@@ -9,6 +9,7 @@ export interface ConvertToTransferModalParams {
     readonly sourceAmount: number;
     readonly sourceInstrumentId: number;
     readonly sourceCode: string;
+    readonly returnToList?: boolean;
 }
 
 export const [ConvertToTransferModalContext, useConvertToTransferModal] = createModalContext<ConvertToTransferModalParams, boolean>(false);
