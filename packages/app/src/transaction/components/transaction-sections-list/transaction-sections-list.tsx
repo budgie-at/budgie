@@ -7,7 +7,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
-import { TransactionCard } from '../transaction-card/transaction-card';
+import { TransactionContextMenuCard } from '../transaction-context-menu-card/transaction-context-menu-card';
 
 interface Props {
     readonly sections: TransactionsByMonthSection[];
@@ -28,7 +28,7 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
         </View>
     ) : (
-        <TransactionCard
+        <TransactionContextMenuCard
             transaction={item.data.transaction}
             formattedDate={item.data.formattedDate}
             categoryLabel={item.data.categoryLabel}
