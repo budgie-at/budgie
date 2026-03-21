@@ -28,7 +28,7 @@ const buildCommentContextItem = (row: UnembeddedCommentDataInterface): CommentCo
 };
 
 const commentBatchConfig: BatchConfigInterface<UnembeddedCommentDataInterface, CommentContextDataInterface> = {
-    fetchBatch: (limit, cursor) => commentEmbeddingRepository.findTransactionData(limit, cursor),
+    fetchBatch: (limit, cursor) => commentEmbeddingRepository.findMissingTransactionData(limit, cursor),
     buildContextData: rows => rows.map(buildCommentContextItem).filter(isDefined),
     getContextKey: item => `${item.comment}|${item.categoryId}`,
     upsertEmbedding: (item, serialized, dimensions) =>

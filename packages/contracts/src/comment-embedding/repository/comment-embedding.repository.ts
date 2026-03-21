@@ -82,50 +82,11 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedCommentDataInterface[]> {
-        const entryJoinCondition = and(
-            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-            isNull(TransactionEntryEntityTable.deletedAt)
-        );
-        const commentWhereCondition = and(
-            isNull(TransactionEntityTable.deletedAt),
-            eq(TransactionEntityTable.title, ''),
-            ne(TransactionEntityTable.comment, ''),
-            isNotNull(TransactionEntryEntityTable.categoryId)
-        );
+        return this.findTransactionDataInternal(limit, cursor, false);
+    }
 
-        let query = this.db
-            .select({
-                comment: TransactionEntityTable.comment,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
-                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, entryJoinCondition)
-            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
-            .where(commentWhereCondition)
-            .groupBy(TransactionEntityTable.comment, TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit)
-            .$dynamic();
-
-        if (isDefined(cursor)) {
-            query = query.having(lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor));
-        }
-
-        const rows = await query;
-        const validRows = rows.filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId));
-
-        return validRows.map(row => ({
-            comment: row.comment,
-            categoryId: row.categoryId,
-            categoryTitleEn: row.categoryTitleEn ?? null,
-            tagIds: row.tagIds ?? null,
-            maxOperatedAt: row.maxOperatedAt
-        }));
+    async findMissingTransactionData(limit: number, cursor?: number): Promise<UnembeddedCommentDataInterface[]> {
+        return this.findTransactionDataInternal(limit, cursor, true);
     }
 
     async countAll(): Promise<number> {
@@ -150,5 +111,79 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
 
     async truncate(): Promise<void> {
         return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
+    }
+
+    private async findTransactionDataInternal(
+        limit: number,
+        cursor: number | undefined,
+        onlyMissing: boolean
+    ): Promise<UnembeddedCommentDataInterface[]> {
+        const entryJoinCondition = and(
+            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+            isNull(TransactionEntryEntityTable.deletedAt)
+        );
+        const conditions = [
+            isNull(TransactionEntityTable.deletedAt),
+            eq(TransactionEntityTable.title, ''),
+            ne(TransactionEntityTable.comment, ''),
+            isNotNull(TransactionEntryEntityTable.categoryId),
+            ...(onlyMissing ? [isNull(CommentEmbeddingEntityTable.id)] : [])
+        ];
+
+        let query = this.db
+            .select({
+                comment: TransactionEntityTable.comment,
+                categoryId: TransactionEntryEntityTable.categoryId,
+                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
+                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
+                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, entryJoinCondition)
+            .$dynamic();
+
+        query = query.leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId));
+        query = query.leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id));
+        query = query.leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId));
+        query = query
+            .leftJoin(
+                CommentEmbeddingEntityTable,
+                and(
+                    eq(CommentEmbeddingEntityTable.comment, TransactionEntityTable.comment),
+                    eq(CommentEmbeddingEntityTable.categoryId, TransactionEntryEntityTable.categoryId),
+                    isNull(CommentEmbeddingEntityTable.deletedAt)
+                )
+            )
+            .where(and(...conditions))
+            .groupBy(TransactionEntityTable.comment, TransactionEntryEntityTable.categoryId)
+            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
+            .limit(limit)
+            .$dynamic();
+
+        if (isDefined(cursor)) {
+            query = query.having(lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor));
+        }
+
+        return this.mapTransactionRows(await query);
+    }
+
+    private mapTransactionRows(
+        rows: {
+            comment: string;
+            categoryId: number | null;
+            categoryTitleEn: string | null;
+            tagIds: string | null;
+            maxOperatedAt: number;
+        }[]
+    ): UnembeddedCommentDataInterface[] {
+        return rows
+            .filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId))
+            .map(row => ({
+                comment: row.comment,
+                categoryId: row.categoryId,
+                categoryTitleEn: row.categoryTitleEn ?? null,
+                tagIds: row.tagIds ?? null,
+                maxOperatedAt: row.maxOperatedAt
+            }));
     }
 }

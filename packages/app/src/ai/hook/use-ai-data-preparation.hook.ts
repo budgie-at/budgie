@@ -6,9 +6,11 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
+import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
 import { useLlmContext } from '../context/llm.context';
+import { embeddingBackfillService } from '../service/embedding-backfill.service';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
 
@@ -47,6 +49,22 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
         void loadCounts();
     }, []);
+
+    useEffect(() => {
+        if (!llm.isEmbeddingReady || isRunningRef.current) {
+            return;
+        }
+
+        void embeddingBackfillService.runIfDue(llm, refreshProgress);
+    }, [llm, refreshProgress]);
+
+    useAppState(async (isActive: boolean) => {
+        if (!isActive || isRunningRef.current) {
+            return;
+        }
+
+        await embeddingBackfillService.runIfDue(llm, refreshProgress);
+    });
 
     // eslint-disable-next-line max-statements, max-lines-per-function -- Multi-phase sequential orchestration
     const run = async (fresh: boolean): Promise<void> => {
@@ -105,7 +123,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             const translationService = new TranslationLlmService(llm);
 
-            /* eslint-disable no-await-in-loop -- Sequential LLM processing */
+             
             console.log('[AI-PREP] Phase: Translating categories...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setPhaseLabel(t`Translating categories...`);
             await microPause();
@@ -129,7 +147,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 updateProgress();
                 await microPause();
             }
-            /* eslint-enable no-await-in-loop */
+             
 
             console.log('[AI-PREP] Phase: Generating merchant embeddings...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setPhaseLabel(t`Generating merchant embeddings...`);
