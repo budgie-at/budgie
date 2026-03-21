@@ -248,6 +248,7 @@ msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktio
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:29
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:73
+#: src/transaction/hook/use-delete-transaction.hook.ts:14
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -307,12 +308,13 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:27
 #: src/account/component/archived-account-card/archived-account-card.tsx:33
 #: src/app/(tabs)/settings/import.tsx:254
-#: src/app/convert-to-transfer.tsx:75
+#: src/app/convert-to-transfer.tsx:76
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:80
+#: src/transaction/hook/use-delete-transaction.hook.ts:17
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -428,20 +430,21 @@ msgstr "Kontakt (optional)"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/app/convert-to-transfer.tsx:104
+#: src/app/convert-to-transfer.tsx:109
 msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
-#: src/app/convert-to-transfer.tsx:74
+#: src/app/convert-to-transfer.tsx:75
 msgid "Convert"
 msgstr "Umwandeln"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:117
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:25
+#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:107
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
 
-#: src/app/convert-to-transfer.tsx:72
+#: src/app/convert-to-transfer.tsx:73
 msgid "Convert to Transfer?"
 msgstr "In Überweisung umwandeln?"
 
@@ -473,6 +476,7 @@ msgstr "Kategorie konnte nicht gelöscht werden"
 msgid "Could not delete tag"
 msgstr "Tag konnte nicht gelöscht werden"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts:30
 #: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "Transaktion konnte nicht gelöscht werden."
@@ -630,6 +634,7 @@ msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:75
+#: src/transaction/hook/use-delete-transaction.hook.ts:16
 msgid "Delete"
 msgstr "Löschen"
 
@@ -650,6 +655,7 @@ msgid "Delete Permanently"
 msgstr "Dauerhaft löschen"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:107
+#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:113
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -1314,7 +1320,7 @@ msgstr "PINs stimmen nicht überein"
 msgid "Please enter your Monobank API token"
 msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
-#: src/app/convert-to-transfer.tsx:104
+#: src/app/convert-to-transfer.tsx:109
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
@@ -1704,6 +1710,7 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:73
+#: src/transaction/hook/use-delete-transaction.hook.ts:15
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -1727,11 +1734,11 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/app/convert-to-transfer.tsx:62
+#: src/app/convert-to-transfer.tsx:63
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 
-#: src/app/convert-to-transfer.tsx:63
+#: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
 

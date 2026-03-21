@@ -32,7 +32,10 @@ export class AccountBalanceRepository {
     }
 
     async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db).select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountBalanceEntityTable)
+            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getAllBalances() {
