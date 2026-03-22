@@ -123,7 +123,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             const translationService = new TranslationLlmService(llm);
 
-             
+            /* eslint-disable no-await-in-loop -- Sequential LLM processing */
             console.log('[AI-PREP] Phase: Translating categories...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setPhaseLabel(t`Translating categories...`);
             await microPause();
@@ -147,7 +147,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 updateProgress();
                 await microPause();
             }
-             
+            /* eslint-enable no-await-in-loop */
 
             console.log('[AI-PREP] Phase: Generating merchant embeddings...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setPhaseLabel(t`Generating merchant embeddings...`);
