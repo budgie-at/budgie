@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { CategoryPageSelectors } from '../../../@e2e/selectors/category-page.selector';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -20,8 +21,8 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openCategoryForm } = useCategoryFormModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openCategoryForm] = useCategoryFormModal();
 
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, false);
@@ -56,7 +57,18 @@ export default function Categories() {
 
             return;
         }
-        await categoryService.deleteById(id);
+
+        try {
+            await categoryService.deleteById(id);
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not delete category`,
+                text2: t`Please try again later`
+            });
+
+            throw error;
+        }
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
@@ -75,6 +87,7 @@ export default function Categories() {
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
+            searchInputTestID={CategoryPageSelectors.SearchInput}
             emptyState={<CategoryEmptyState search={search} />}
         />
     );

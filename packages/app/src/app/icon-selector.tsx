@@ -5,6 +5,7 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { IconSelectorSelectors } from '../@e2e/selectors/icon-selector.selector';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -18,7 +19,36 @@ const MAX_ICONS = 100;
 
 const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
 
-const filterIcons = (search: string): FlatListDataItem<UserIcon>[] => {
+const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] => {
+    if (keywords.length === 0) {
+        return icons;
+    }
+
+    const keywordsLower = keywords.map(keyword => keyword.toLowerCase());
+
+    const matchesKeyword = (icon: UserIcon): boolean => icon.tags.some(tag => keywordsLower.some(keyword => tag.includes(keyword)));
+
+    const matched: UserIcon[] = [];
+    const unmatched: UserIcon[] = [];
+
+    for (const icon of icons) {
+        if (matchesKeyword(icon)) {
+            matched.push(icon);
+        } else {
+            unmatched.push(icon);
+        }
+    }
+
+    return [...matched, ...unmatched];
+};
+
+const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserIcon>[] => {
+    if (search.length === 0) {
+        const sorted = sortIconsByKeywords(USER_ICONS_LIST, keywords);
+
+        return padFlatListData(sorted.slice(0, MAX_ICONS), NUM_COLUMNS);
+    }
+
     const searchLower = search.toLowerCase();
     const filtered = USER_ICONS_LIST.filter(
         ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
@@ -29,12 +59,12 @@ const filterIcons = (search: string): FlatListDataItem<UserIcon>[] => {
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const { currentParams, resolveIconSelector } = useIconSelectorModal();
+    const [, resolveIconSelector, currentParams] = useIconSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 
-    const { selectedIcon, variant = 'default' } = currentParams ?? {};
-    const data = filterIcons(search);
+    const { selectedIcon, variant = 'default', keywords = [] } = currentParams ?? {};
+    const data = filterIcons(search, keywords);
     const containerStyle = { flex: 1, backgroundColor };
 
     const handleSelect = (icon: UserIconNameEnum) => {
@@ -68,11 +98,12 @@ export default function IconSelectorModal() {
     );
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search icons (e.g., money, travel, food)...`}
+                testID={IconSelectorSelectors.SearchInput}
             />
 
             <FlatList
@@ -84,7 +115,6 @@ export default function IconSelectorModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
                 columnWrapperClassName="gap-x-lg mb-lg"
-                contentContainerClassName="px-xl"
                 contentContainerStyle={contentContainerStyle}
                 ListEmptyComponent={listEmptyComponent}
             />

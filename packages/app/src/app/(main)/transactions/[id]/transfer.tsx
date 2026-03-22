@@ -13,7 +13,6 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -21,6 +20,7 @@ import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-m
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransferQuickForm } from '../../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
@@ -36,6 +36,7 @@ interface UpdateTransferFormProps {
 /* jscpd:ignore-start */
 const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
     const { t } = useLingui();
+    const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -45,7 +46,15 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onAfterSubmit: data =>
+            void generateForTransaction({
+                title: data.title,
+                comment: data.comment,
+                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
+                categoryId: data.entries[0]?.categoryId ?? null,
+                tagIds: data.tagIds
+            })
     });
 
     const [fromAccountId, amount] = useWatch({
@@ -97,7 +106,7 @@ export default function UpdateTransferTransactionPage() {
     const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
 
     if (isLoading) {
-        return <LoadingScreen />;
+        return null;
     }
 
     if (!isDefined(transaction)) {

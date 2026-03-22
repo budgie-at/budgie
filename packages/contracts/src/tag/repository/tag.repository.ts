@@ -1,8 +1,8 @@
-import { count, eq, inArray, like } from 'drizzle-orm';
+import { count, eq, inArray, isNull, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
@@ -60,8 +60,14 @@ export class TagRepository {
         return this.db.query.TagEntityTable.findMany();
     }
 
+    findWithoutTags() {
+        return this.db.query.TagEntityTable.findMany({
+            where: isNull(TagEntityTable.tagsGeneratedAt)
+        });
+    }
+
     async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
-        await this.db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: Date.now() }).where(eq(TagEntityTable.id, id));
+        await this.db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(TagEntityTable.id, id));
     }
 
     async clearTranslation(id: number): Promise<void> {
@@ -106,7 +112,7 @@ export class TagRepository {
         });
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TagEntityTable);
     }
 }

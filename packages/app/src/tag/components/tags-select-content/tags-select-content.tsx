@@ -4,6 +4,7 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { TagPickerBottomSheetSelectors } from '../../../@e2e/selectors/tag-picker-bottom-sheet.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -34,6 +35,7 @@ export const TagsSelectContent = (props: Props) => {
                 variant="static"
                 title={item.title}
                 id={item.id}
+                testID={TagPickerBottomSheetSelectors.Card(item.title)}
             />
         );
 
@@ -57,7 +59,6 @@ export const TagsSelectContent = (props: Props) => {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             columnWrapperClassName="gap-x-lg mb-lg"
-            contentContainerClassName="px-3"
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
         />

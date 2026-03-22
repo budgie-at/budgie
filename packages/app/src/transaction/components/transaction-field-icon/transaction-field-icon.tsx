@@ -22,12 +22,16 @@ interface Props {
     readonly label: string;
     readonly value?: string;
     readonly variant: ColorPaletteVariant;
+    readonly disabled?: boolean;
     readonly onPress: () => void;
     readonly animationDelay?: number;
+    readonly testID?: string;
 }
 
+const disabledOpacity = { opacity: 0.3 };
+
 export const TransactionFieldIcon = (props: Props) => {
-    const { ref, icon, label, value, variant, onPress, animationDelay = 0 } = props;
+    const { ref, icon, label, value, variant, disabled = false, onPress, animationDelay = 0, testID } = props;
 
     const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -50,8 +54,16 @@ export const TransactionFieldIcon = (props: Props) => {
     const circleIconVariant = hasValue ? variant : 'ghost';
     const accessibilityLabel = `${label}: ${value ?? t`not set`}`;
 
+    const pointerEvents = disabled ? 'none' : 'auto';
+    const rootStyle = disabled ? disabledOpacity : void 0;
+
     return (
-        <Animated.View entering={FadeInUp.delay(animationDelay).duration(200)} className="flex-1 items-center">
+        <Animated.View
+            entering={FadeInUp.delay(animationDelay).duration(200)}
+            className="flex-1 items-center"
+            style={rootStyle}
+            pointerEvents={pointerEvents}
+        >
             <Animated.View style={shakeStyle}>
                 <Animated.View style={pressedStyle}>
                     <HapticPressable
@@ -61,6 +73,7 @@ export const TransactionFieldIcon = (props: Props) => {
                         onPressOut={handlePressOut}
                         accessibilityLabel={accessibilityLabel}
                         accessibilityRole="button"
+                        testID={testID}
                     >
                         <CircleIcon icon={icon} variant={circleIconVariant} size={44} iconSize={20} radius={14} />
                         <View className="items-center gap-y-0.5 h-[28px]">

@@ -1,25 +1,28 @@
+import { filterTranscriptionTokens } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
+import { emptyFn, isDefined } from '@rnw-community/shared';
+
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
-import { filterTranscriptionTokens } from '../util/filter-transcription-tokens.util';
+import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
 interface UseSttReturn {
-    status: SttStatus;
-    transcription: string;
-    partialTranscription: string;
-    isReady: boolean;
-    downloadProgress: number;
-    startStream: () => void;
-    insertAudio: (samples: Float32Array) => void;
-    stopStream: () => Promise<string>;
-    cancelStream: () => void;
+    readonly status: SttStatus;
+    readonly transcription: string;
+    readonly partialTranscription: string;
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
+    readonly startStream: () => void;
+    readonly insertAudio: (samples: Float32Array) => void;
+    readonly stopStream: () => Promise<string>;
+    readonly cancelStream: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-statements
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
@@ -48,12 +51,12 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cleanupStream = async () => {
-        if (streamPromiseRef.current) {
+        if (isDefined(streamPromiseRef.current)) {
             try {
-                stt.streamStop();
+                await stt.streamStop();
                 await streamPromiseRef.current;
             } catch {
-                /* empty */
+                emptyFn();
             } finally {
                 // eslint-disable-next-line require-atomic-updates
                 streamPromiseRef.current = null;
@@ -61,16 +64,16 @@ export const useStt = (): UseSttReturn => {
         }
     };
 
+    const initStream = () => {
+        resetState();
+        baseTranscriptionRef.current = stt.committedTranscription;
+        const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
+        streamPromiseRef.current = stt.stream(streamOptions).catch(() => '');
+        setStatus('streaming');
+    };
+
     const startStream = () => {
-        void (async () => {
-            await cleanupStream();
-            resetState();
-
-            baseTranscriptionRef.current = stt.committedTranscription;
-
-            streamPromiseRef.current = stt.stream({ language: locale.languageCode }).catch(() => '');
-            setStatus('streaming');
-        })();
+        cleanupStream().then(initStream).catch(emptyFn);
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -83,14 +86,14 @@ export const useStt = (): UseSttReturn => {
     };
 
     const stopStream = async (): Promise<string> => {
-        if (!streamPromiseRef.current) {
+        if (!isDefined(streamPromiseRef.current)) {
             return transcription;
         }
 
         setStatus('processing');
 
         try {
-            stt.streamStop();
+            await stt.streamStop();
             const streamResult = await streamPromiseRef.current;
             const finalText = filterTranscriptionTokens(streamResult).trim();
             setTranscription(finalText);
@@ -108,10 +111,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cancelStream = () => {
-        void (async () => {
-            await cleanupStream();
-            resetState();
-        })();
+        cleanupStream().then(resetState).catch(emptyFn);
     };
 
     return {

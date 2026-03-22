@@ -1,0 +1,134 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '09-expense-transaction'
+
+# --- Create Expense ---
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- runFlow: subflows/open-action-menu.flow.yaml
+
+- tapOn:
+    id: 'ActionItem.Expense'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Expense'
+
+- assertVisible:
+    id: 'TransactionForm.SubmitButton'
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Expense'
+
+- tapOn: '4'
+- tapOn: '2'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+- runFlow:
+    file: subflows/create-tag-from-transaction.flow.yaml
+    env:
+      TAG_NAME: 'E2E Txn Tag'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 15000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
+- assertVisible:
+    id: 'TransactionCard.Category.E2E_Txn_Category'
+- assertVisible:
+    id: 'TransactionCard.Tag.E2E_Txn_Tag'
+- assertVisible:
+    id: 'TransactionCard.Account.E2E_Txn_Account'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.58'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+# --- Edit Expense ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Edited Category'
+
+- runFlow:
+    file: subflows/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 15000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
+- assertVisible:
+    id: 'TransactionCard.Category.E2E_Edited_Category'
+- assertVisible:
+    id: 'TransactionCard.Tag.E2E_Txn_Tag'
+- assertVisible:
+    id: 'TransactionCard.Account.E2E_Txn_Account'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
+
+# --- Delete Expense ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.100'

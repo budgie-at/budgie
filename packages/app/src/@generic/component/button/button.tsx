@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
-import { Text } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -20,6 +20,7 @@ interface Props extends ComponentProps<typeof HapticPressable> {
     readonly rightIcon?: UserIconNameEnum;
     readonly size?: ButtonSizeType;
     readonly variant?: ColorPaletteVariant;
+    readonly isLoading?: boolean;
 }
 
 const buttonVariants = cva<{
@@ -51,15 +52,28 @@ const textVariants = cva<{
 });
 
 export const Button = (props: Props) => {
-    const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
+    const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', isLoading, ...rest } = props;
+
+    const isDisabled = disabled || isLoading;
 
     return (
-        <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
-            {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
+        <HapticPressable
+            onPress={onPress}
+            disabled={isDisabled}
+            className={cn(buttonVariants({ disabled: isDisabled, size, variant }), className)}
+            {...rest}
+        >
+            {isLoading ? (
+                <ActivityIndicator size="small" />
+            ) : (
+                <>
+                    {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
-            {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
+                    {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
 
-            {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
+                    {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
+                </>
+            )}
         </HapticPressable>
     );
 };

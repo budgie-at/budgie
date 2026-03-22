@@ -1,47 +1,7 @@
-import { t } from '@lingui/core/macro';
-import { useState } from 'react';
+import { tagRepository } from '../../@generic/drizzle/db/db';
+import { UseRegenerateTranslationReturn, useRegenerateTranslation } from '../../@generic/hook/use-regenerate-translation.hook';
 
-import { getErrorMessage } from '@rnw-community/shared';
+const updateTranslation = (id: number, titleEn: string, titleTags: string): Promise<void> =>
+    tagRepository.updateTranslation(id, titleEn, titleTags);
 
-import { useLlmContext } from '../../ai/context/llm.context';
-import { CategoryTranslationResult } from '../../ai/service/category-llm.service';
-import { TagLlmService } from '../../ai/service/tag-llm.service';
-
-interface UseRegenerateTagTranslationReturn {
-    regenerate: (tagId: number, title: string) => Promise<CategoryTranslationResult | null>;
-    isRegenerating: boolean;
-    error: string | null;
-}
-
-export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn => {
-    const { llm } = useLlmContext();
-    const [isRegenerating, setIsRegenerating] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    /* jscpd:ignore-start - Mirrors category regeneration hook pattern */
-    const regenerate = async (tagId: number, title: string): Promise<CategoryTranslationResult | null> => {
-        if (!llm.isReady) {
-            setError(t`LLM not ready`);
-
-            return null;
-        }
-
-        setIsRegenerating(true);
-        setError(null);
-
-        try {
-            const service = new TagLlmService(llm);
-
-            return await service.regenerateOne(tagId, title);
-        } catch (regenerateError: unknown) {
-            setError(getErrorMessage(regenerateError));
-
-            return null;
-        } finally {
-            setIsRegenerating(false);
-        }
-    };
-
-    /* jscpd:ignore-end */
-    return { regenerate, isRegenerating, error };
-};
+export const useRegenerateTagTranslation = (): UseRegenerateTranslationReturn => useRegenerateTranslation(updateTranslation);

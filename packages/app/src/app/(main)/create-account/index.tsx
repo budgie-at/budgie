@@ -1,8 +1,8 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -17,11 +17,12 @@ export default function Index() {
 
     return (
         <Page
+            withBlur
             header={
                 <PageHeader title={t`New Account`} description={t`Choose the type of account you want to add`} onGoBack={handleGoBack} />
             }
         >
-            <ScrollView contentContainerClassName="gap-y-xl py-7xl">
+            <ScrollView contentContainerClassName="gap-y-xl pt-16" showsVerticalScrollIndicator={false}>
                 <CreateAccountCard
                     description={t`Everyday transactions and spending`}
                     icon={ACCOUNT_ICON.BANK}
@@ -48,9 +49,23 @@ export default function Index() {
                 <CreateBankSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
                     title={t`Monobank`}
-                    route={`/create-account/${BankProviderEnum.MONOBANK}`}
-                    bankProvider={BankProviderEnum.MONOBANK}
+                    route={`/create-account/${ExternalSourceEnum.MONOBANK}`}
+                    bankProvider={ExternalSourceEnum.MONOBANK}
                 />
+                <CreateBankSyncCard
+                    description={t`Import accounts and transactions from Privatbank XLSX export`}
+                    title={t`Privatbank`}
+                    route={`/create-account/${ExternalSourceEnum.PRIVATBANK}`}
+                    bankProvider={ExternalSourceEnum.PRIVATBANK}
+                />
+                <CreateBankSyncCard
+                    description={t`Import accounts and transactions from Erste Bank PDF statement`}
+                    title={t`Erste Bank`}
+                    route={`/create-account/${ExternalSourceEnum.ERSTE}`}
+                    bankProvider={ExternalSourceEnum.ERSTE}
+                />
+
+                <MenuSpacer />
             </ScrollView>
         </Page>
     );

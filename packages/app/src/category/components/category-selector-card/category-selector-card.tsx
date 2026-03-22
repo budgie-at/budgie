@@ -1,6 +1,6 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -15,6 +15,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly variant: ColorPaletteVariant;
     readonly isSelected: boolean;
     readonly className?: string;
+    readonly testID?: string;
 }
 
 const cardVariants = cva(`flex-1 rounded-2xl p-sm gap-y-0.5 border-2 items-center h-[72px]`, {
@@ -48,19 +49,21 @@ const textVariants = cva('font-medium text-xs text-center leading-tight', {
 });
 
 export const CategorySelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, variant } = props;
+    const { className, isSelected, title, onSelect, id, icon, variant, testID } = props;
 
     const handleSelect = () => void onSelect(id);
 
     const iconVariant = isSelected ? variant : 'ghost';
 
     return (
-        <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
+        <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect} testID={testID}>
             <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
-            <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
-                {title}
-            </Text>
+            <View className="flex-1 justify-center">
+                <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
+                    {title}
+                </Text>
+            </View>
         </HapticPressable>
     );
 };

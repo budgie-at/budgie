@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -28,13 +29,14 @@ import {
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly initialDestinationAmount?: number;
+    readonly isSubmitting?: boolean;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const { variant, initialDestinationAmount, onSubmit, onCancel } = props;
+    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel } = props;
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -157,14 +159,14 @@ export const TransferQuickForm = (props: Props) => {
             setValue('exchangeRate', conversion.exchangeRate);
         }
 
-        const entries = buildTransferEntries({
+        const transferEntries = buildTransferEntries({
             fromAccountId: from,
             toAccountId: to,
             amount,
             categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
         });
 
-        setValue('entries', entries, { shouldValidate: false });
+        setValue('entries', transferEntries, { shouldValidate: false });
 
         onSubmit();
     };
@@ -190,6 +192,7 @@ export const TransferQuickForm = (props: Props) => {
                 transactionType={TransactionTypeEnum.TRANSFER}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
+                commentTestID={TransactionFormSelectors.CommentInput}
             />
 
             <View className="mb-xl">
@@ -218,6 +221,8 @@ export const TransferQuickForm = (props: Props) => {
                 onLongBackspace={activeHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
+                confirmTestID={TransactionFormSelectors.SubmitButton}
+                isConfirmDisabled={isSubmitting}
             />
         </View>
     );

@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -16,6 +17,7 @@ import {
     CATEGORY_ANIMATION_DELAY,
     DATE_ANIMATION_DELAY,
     NOTE_ANIMATION_DELAY,
+    SPLIT_ANIMATION_DELAY,
     TAGS_ANIMATION_DELAY
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
@@ -30,18 +32,36 @@ interface Props {
     readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
+    readonly splitEntryCount?: number;
+    readonly isAmountPositive?: boolean;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
+    readonly onSplitPress?: () => void;
+    readonly categoryTestID?: string;
+    readonly tagsTestID?: string;
+    readonly commentTestID?: string;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
+    const {
+        ref,
+        variant,
+        transactionType,
+        splitEntryCount = 0,
+        isAmountPositive = false,
+        onCommentPress,
+        onDatePress,
+        onSplitPress,
+        categoryTestID,
+        tagsTestID,
+        commentTestID
+    } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openTagsSelector } = useTagsSelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openTagsSelector] = useTagsSelectorModal();
 
     const categoryIconRef = useRef<TransactionFieldIconRef>(null);
 
@@ -74,6 +94,7 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
+    const isSplitActive = splitEntryCount > 1;
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -83,8 +104,31 @@ export const TransactionFieldIcons = (props: Props) => {
     const tagsValue = getTagsDisplayValue(tags);
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
 
+    const showSplitIcon = isDefined(onSplitPress);
+    const splitValue = isSplitActive ? t`${splitEntryCount} items` : void 0;
+    const splitEnabled = isAmountPositive || isSplitActive;
+
+    const splitOpacityStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(splitEnabled ? 1 : 0.3, { duration: 200 })
+    }));
+
+    const splitPointerEvents = splitEnabled ? 'auto' : 'none';
+
     return (
         <View className="flex-row py-lg">
+            {showSplitIcon ? (
+                <Animated.View style={splitOpacityStyle} pointerEvents={splitPointerEvents} className="flex-1">
+                    <TransactionFieldIcon
+                        icon={UserIconNameEnum.Split}
+                        label={t`Split`}
+                        value={splitValue}
+                        variant={variant}
+                        onPress={onSplitPress}
+                        animationDelay={SPLIT_ANIMATION_DELAY}
+                    />
+                </Animated.View>
+            ) : null}
+
             <TransactionFieldIcon
                 icon={UserIconNameEnum.Calendar}
                 label={t`Date`}
@@ -101,6 +145,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 variant={variant}
                 onPress={onCommentPress}
                 animationDelay={NOTE_ANIMATION_DELAY}
+                testID={commentTestID}
             />
 
             {isTransfer ? null : (
@@ -111,6 +156,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     variant={variant}
                     onPress={handleTagsPress}
                     animationDelay={TAGS_ANIMATION_DELAY}
+                    testID={tagsTestID}
                 />
             )}
 
@@ -121,8 +167,10 @@ export const TransactionFieldIcons = (props: Props) => {
                     label={t`Category`}
                     value={category?.title}
                     variant={variant}
+                    disabled={isSplitActive}
                     onPress={handleCategoryPress}
                     animationDelay={CATEGORY_ANIMATION_DELAY}
+                    testID={categoryTestID}
                 />
             )}
         </View>

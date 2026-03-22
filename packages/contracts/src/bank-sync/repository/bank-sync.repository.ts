@@ -1,6 +1,8 @@
 import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
-import { DB, TX } from '../../@generic/type/db.type';
+import { isDefined } from '@rnw-community/shared';
+
+import { DB } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
@@ -14,13 +16,13 @@ import type { BankSyncEntityInterface } from '../entity/bank-sync-entity.interfa
 export class BankSyncRepository {
     constructor(private db: DB) {}
 
-    async create(input: BankSyncCreateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
+    async create(input: BankSyncCreateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db).insert(BankSyncEntityTable).values([input]).returning();
 
         return bankSync;
     }
 
-    async update(id: number, input: BankSyncUpdateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
+    async update(id: number, input: BankSyncUpdateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({ ...input })
@@ -36,8 +38,8 @@ export class BankSyncRepository {
         });
     }
 
-    async getByAccountId(accountId: number): Promise<BankSyncEntityInterface | undefined> {
-        return await this.db.query.BankSyncEntityTable.findFirst({
+    async getByAccountId(accountId: number, tx?: DB): Promise<BankSyncEntityInterface | undefined> {
+        return await (tx ?? this.db).query.BankSyncEntityTable.findFirst({
             where: and(eq(BankSyncEntityTable.accountId, accountId), isNull(BankSyncEntityTable.deletedAt))
         });
     }
@@ -94,17 +96,17 @@ export class BankSyncRepository {
             .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
     }
 
-    async setStatus(id: number, status: BankSyncStatusEnum, tx?: TX): Promise<void> {
+    async setStatus(id: number, status: BankSyncStatusEnum, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(BankSyncEntityTable).set({ status }).where(eq(BankSyncEntityTable.id, id));
     }
 
-    async setEnabled(accountId: number, enabled: boolean, tx?: TX): Promise<void> {
+    async setEnabled(accountId: number, enabled: boolean, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(BankSyncEntityTable).set({ enabled }).where(eq(BankSyncEntityTable.accountId, accountId));
     }
 
-    async recordError(id: number, error: string, tx?: TX): Promise<void> {
+    async recordError(id: number, error: string, tx?: DB): Promise<void> {
         const bankSync = await this.getById(id);
-        if (bankSync) {
+        if (isDefined(bankSync)) {
             await (tx ?? this.db)
                 .update(BankSyncEntityTable)
                 .set({
@@ -115,7 +117,7 @@ export class BankSyncRepository {
         }
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(BankSyncEntityTable);
     }
 

@@ -10,7 +10,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { TransactionSectionsList } from '../../../transaction/components/transaction-sections-list/transaction-sections-list';
-import { TransactionsPageHeader } from '../../../transaction/components/transactions-page-header/transactions-page-header';
+import { TransactionFilterPageHeader } from '../../../transaction/components/transactions-page-header/transaction-filter-page-header';
 import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
 interface RouteParams {
@@ -26,7 +26,7 @@ const buildCategoryIds = (params: RouteParams): number[] | null => {
         return [Number(params.categoryId)];
     }
 
-    if (isDefined(params.type)) {
+    if (isDefined(params.type) && !isDefined(params.tagId)) {
         return [];
     }
 
@@ -55,7 +55,7 @@ export default function AnalyticsTransactionsPage() {
 
     const handleGoBack = () => void router.back();
 
-    const isUncategorized = !isDefined(params.categoryId) && isDefined(params.type);
+    const isUncategorized = !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
 
@@ -74,7 +74,7 @@ export default function AnalyticsTransactionsPage() {
     return (
         <Page
             header={
-                <TransactionsPageHeader
+                <TransactionFilterPageHeader
                     category={category}
                     tag={tags?.[0]}
                     type={params.type}
@@ -91,6 +91,7 @@ export default function AnalyticsTransactionsPage() {
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
+                footerSpacerMultiplier={3}
             />
         </Page>
     );

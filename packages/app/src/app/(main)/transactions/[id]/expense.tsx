@@ -1,22 +1,18 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    ExpenseTransactionCreateInputSchema,
-    PRECISION,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -35,14 +31,23 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
-    const { openConvertToTransfer } = useConvertToTransferModal();
+    const [openConvertToTransfer] = useConvertToTransferModal();
+    const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onAfterSubmit: data =>
+            void generateForTransaction({
+                title: data.title,
+                comment: data.comment,
+                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
+                categoryId: data.entries[0]?.categoryId ?? null,
+                tagIds: data.tagIds
+            })
     });
 
     const fromAccountId = form.watch('fromAccountId');
@@ -59,7 +64,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
             transactionId,
             transactionType: TransactionTypeEnum.EXPENSE,
             excludeAccountId: fromAccountId ?? 0,
-            sourceAmount: sourceAmount / PRECISION,
+            sourceAmount: convertFromMicroUnits(sourceAmount),
             sourceInstrumentId,
             sourceCode: sourceAccount.instrument.code
         });
@@ -85,7 +90,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    aiContext=""
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
@@ -102,7 +106,7 @@ export default function UpdateExpenseTransactionPage() {
     const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
 
     if (isLoading) {
-        return <LoadingScreen />;
+        return null;
     }
 
     if (!isDefined(transaction)) {

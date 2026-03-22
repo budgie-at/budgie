@@ -4,6 +4,9 @@ import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
+import { OnEventFn } from '@rnw-community/shared';
+
+import { AccountCardSelectors } from '../../../@e2e/selectors/account-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -24,6 +27,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly topRight?: ReactNode;
     readonly balanceContent?: ReactNode;
     readonly children?: ReactNode;
+    readonly onLongPress?: OnEventFn;
 }
 
 const cardVariants = cva('relative gap-3 active:scale-xs overflow-hidden', {
@@ -49,7 +53,8 @@ export const AccountCardBase = (props: Props) => {
         deadlinePriority = 'normal',
         topRight,
         balanceContent,
-        children
+        children,
+        onLongPress
     } = props;
 
     const showCents = useSetting('showCents');
@@ -63,7 +68,12 @@ export const AccountCardBase = (props: Props) => {
     const accountBalance = formatDigits(balance, instrumentSymbol);
 
     return (
-        <Card onPress={navigateToAccount} className={cn(cardVariants({ deadlinePriority }), className)}>
+        <Card
+            testID={AccountCardSelectors.Card(title)}
+            onPress={navigateToAccount}
+            onLongPress={onLongPress}
+            className={cn(cardVariants({ deadlinePriority }), className)}
+        >
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
                     <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
@@ -80,7 +90,11 @@ export const AccountCardBase = (props: Props) => {
                     {title}
                 </Text>
 
-                {balanceContent ?? <ProtectedText className="text-primary font-medium">{accountBalance}</ProtectedText>}
+                {balanceContent ?? (
+                    <ProtectedText className="text-primary font-medium" testID={AccountCardSelectors.Balance(title, balance)}>
+                        {accountBalance}
+                    </ProtectedText>
+                )}
             </View>
 
             {children}

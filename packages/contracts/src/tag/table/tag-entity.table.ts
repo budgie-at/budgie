@@ -9,6 +9,6 @@ export const TagEntityTable = sqliteTable(
         titleSearch: text('title_search').default('').notNull(),
         titleEn: text('title_en'),
         titleTags: text('title_tags'),
-        tagsGeneratedAt: int('tags_generated_at', { mode: 'number' })
+        tagsGeneratedAt: int('tags_generated_at', { mode: 'timestamp' })
     })
 );

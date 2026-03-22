@@ -1,17 +1,24 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, createContext, use, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { ReactNode, createContext, use, useState } from 'react';
+import { Alert, GestureResponderEvent, View } from 'react-native';
 
-import { EmptyFn, emptyFn } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
+import { TransactionActionsMenuSelectors } from '../../../@e2e/selectors/transaction-actions-menu.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 
-const TransactionActionsMenuContext = createContext<EmptyFn>(emptyFn);
+type CloseMenuFn = (afterClose?: EmptyFn) => void;
+
+interface DeferredAction {
+    readonly execute: EmptyFn;
+}
+
+const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
+const TRIGGER_SIZE = 40;
 
 export const useTransactionActionsMenu = () => use(TransactionActionsMenuContext);
 
@@ -23,52 +30,74 @@ interface Props {
 export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
-    const triggerRef = useRef<View>(null);
-    const { openConfirmAction } = useConfirmActionModal();
+    const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
+    const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
 
-    const handleToggleMenu = () => {
+    const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
             setIsMenuOpen(false);
 
             return;
         }
 
-        triggerRef.current?.measureInWindow((x, y, width, height) => {
-            setAnchor({ x, y, width, height });
-            setIsMenuOpen(true);
-        });
+        const { pageX, pageY } = event.nativeEvent;
+        const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && pageX > 0 && pageY > 0;
+
+        if (hasValidAnchor) {
+            const x = pageX - TRIGGER_SIZE / 2;
+            const y = pageY - TRIGGER_SIZE / 2;
+
+            setAnchor({ x, y, width: TRIGGER_SIZE, height: TRIGGER_SIZE });
+        } else {
+            setAnchor(void 0);
+        }
+
+        setIsMenuOpen(true);
     };
 
-    const handleCloseMenu = () => {
+    const handleCloseMenu: CloseMenuFn = (afterClose?: EmptyFn) => {
+        setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
         setIsMenuOpen(false);
     };
 
-    const handleDeletePress = async () => {
+    const handleCloseComplete = () => {
+        if (isDefined(deferredAction)) {
+            deferredAction.execute();
+            setDeferredAction(null);
+        }
+    };
+
+    const handleDeletePress = () => {
         handleCloseMenu();
 
-        const confirmed = await openConfirmAction({
-            variant: 'destructive',
-            icon: UserIconNameEnum.Info,
-            title: t`Are you sure you want to delete this transaction?`,
-            description: t`This action cannot be undone.`,
-            buttonText: t`Delete transaction`
-        });
-
-        if (confirmed) {
-            await onDelete();
-        }
+        void Alert.alert(t`Are you sure?`, t`This action cannot be undone.`, [
+            {
+                text: t`Delete`,
+                onPress: () => void onDelete(),
+                style: 'destructive'
+            },
+            {
+                text: t`Cancel`,
+                style: 'cancel'
+            }
+        ]);
     };
 
     return (
         <View>
-            <View ref={triggerRef} collapsable={false}>
-                <HapticPressable onPress={handleToggleMenu}>
+            <View collapsable={false}>
+                <HapticPressable
+                    className="mr-lg"
+                    onPress={emptyFn}
+                    onPressIn={handleToggleMenu}
+                    testID={TransactionActionsMenuSelectors.TriggerButton}
+                    hitSlop={16}
+                >
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
 
-            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchor={anchor}>
+            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
                 <TransactionActionsMenuContext.Provider value={handleCloseMenu}>
                     <View className="py-sm">
                         {children}
@@ -78,6 +107,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                             label={t`Delete Transaction`}
                             onPress={handleDeletePress}
                             variant="destructive"
+                            testID={TransactionActionsMenuSelectors.DeleteButton}
                         />
                     </View>
                 </TransactionActionsMenuContext.Provider>

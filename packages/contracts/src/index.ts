@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Barrel export file grows with each module */
 export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
@@ -6,7 +7,18 @@ export { LanguageEnum } from './@generic/enum/language.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
+export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
+export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
+export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
+export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
+
+export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
+
+export type { DB } from './@generic/type/db.type';
+
+export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
+export { transactionAsync } from './@generic/util/transaction-async.util';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
@@ -28,6 +40,7 @@ export type { DebtAccountCreateInputInterface } from './account/input/debt-accou
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
+export type { AccountWithBankSyncEntityInterface } from './account/entity/account-with-bank-sync-entity.interface';
 
 export type { AccountFilterInterface } from './account/interface/account-filter.interface';
 
@@ -186,6 +199,7 @@ export { TransactionTagsEntitySchema } from './transaction-tags/schema/transacti
 export { TransactionTagsCreateEntitySchema } from './transaction-tags/schema/transaction-tags-create-entity.schema';
 
 export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
+export type { TransactionTagsWithTagEntityInterface } from './transaction-tags/entity/transaction-tags-with-tag-entity.interface';
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
@@ -202,6 +216,14 @@ export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sel
 export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/transfer-asset-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
+export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
+export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
+export type { MonthlyPatternQueryInterface } from './transaction/interface/monthly-pattern-query.interface';
+export type { MonthlyPatternRawRowInterface } from './transaction/interface/monthly-pattern-raw-row.interface';
+export type { MonthlyPatternRowInterface } from './transaction/interface/monthly-pattern-row.interface';
+export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
+
+export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
@@ -259,3 +281,41 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
+
+export { EMBEDDING_DIMENSIONS } from './@generic/constant/embedding-dimensions.constant';
+
+export { MerchantEmbeddingEntityTable } from './merchant-embedding/table/merchant-embedding-entity.table';
+export { MerchantEmbeddingTagEntityTable } from './merchant-embedding/table/merchant-embedding-tag-entity.table';
+export { MerchantEmbeddingEntityRelations } from './merchant-embedding/relations/merchant-embedding-entity.relations';
+export { MerchantEmbeddingTagEntityRelations } from './merchant-embedding/relations/merchant-embedding-tag-entity.relations';
+
+export { MerchantEmbeddingEntitySchema } from './merchant-embedding/schema/merchant-embedding-entity.schema';
+
+export { MerchantEmbeddingAssociationEnum } from './merchant-embedding/enum/merchant-embedding-association.enum';
+export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/merchant-embedding-tag-association.enum';
+
+export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
+
+export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
+export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
+export type { UnembeddedMerchantDataInterface } from './merchant-embedding/interface/unembedded-merchant-data.interface';
+export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
+
+export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
+
+export { CommentEmbeddingEntityTable } from './comment-embedding/table/comment-embedding-entity.table';
+export { CommentEmbeddingTagEntityTable } from './comment-embedding/table/comment-embedding-tag-entity.table';
+export { CommentEmbeddingEntityRelations } from './comment-embedding/relations/comment-embedding-entity.relations';
+export { CommentEmbeddingTagEntityRelations } from './comment-embedding/relations/comment-embedding-tag-entity.relations';
+
+export { CommentEmbeddingEntitySchema } from './comment-embedding/schema/comment-embedding-entity.schema';
+
+export { CommentEmbeddingAssociationEnum } from './comment-embedding/enum/comment-embedding-association.enum';
+export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/comment-embedding-tag-association.enum';
+
+export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
+
+export type { UnembeddedCommentDataInterface } from './comment-embedding/interface/unembedded-comment-data.interface';
+export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
+
+export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';

@@ -37,7 +37,7 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
 
     return (
         <Animated.View className="absolute inset-0" style={contentAnimatedStyle} pointerEvents="box-none">
-            {hasError && voiceInput.data.error !== null && <VoiceInputError message={voiceInput.data.error} onDismiss={voiceInput.retry} />}
+            {hasError && <VoiceInputError message={voiceInput.data.error} onDismiss={voiceInput.retry} />}
 
             <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={micContainerStyle} pointerEvents="box-none">
                 <VoiceInputBubble

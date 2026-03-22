@@ -2,7 +2,11 @@ import rootPkg from './package.json';
 
 const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
+const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
+// Fingerprint inputs must be identical locally and on EAS workers.
+// Drive ccache from an explicit env var that can be set in eas.json instead of CI.
+const IS_CCACHE_ENABLED = process.env.USE_CCACHE === '1';
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
@@ -15,6 +19,10 @@ const getUniqueIdentifier = isAndroid => {
         return `${prefix}.preview`;
     }
 
+    if (IS_E2E) {
+        return `${prefix}.e2e`;
+    }
+
     return prefix;
 };
 
@@ -25,6 +33,10 @@ const getAppName = () => {
 
     if (IS_PREVIEW) {
         return 'budgie (Preview)';
+    }
+
+    if (IS_E2E) {
+        return 'budgie (E2E)';
     }
 
     return 'budgie';
@@ -83,15 +95,33 @@ export default ({ config }) => ({
         bundler: 'metro'
     },
     extra: {
+        appVariant: APP_VARIANT ?? 'production',
+        e2eHooksEnabled: IS_DEV || IS_E2E,
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
     },
     owner: 'vitalyiegorov',
     updates: {
-        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
+        enabled: !IS_E2E,
+        url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36',
+        enableBsdiffPatchSupport: true
     },
     plugins: [
+        [
+            'expo-build-properties',
+            {
+                buildReactNativeFromSource: true,
+                useHermesV1: true,
+                ios: {
+                    ccacheEnabled: IS_CCACHE_ENABLED
+                }
+            }
+        ],
+        './plugins/with-vec-xcframework-fix',
+        'expo-asset',
+        'expo-image',
+        'expo-sharing',
         'expo-localization',
         'expo-secure-store',
         'expo-background-task',
@@ -105,7 +135,8 @@ export default ({ config }) => ({
             'expo-sqlite',
             {
                 enableFTS: true,
-                useSQLCipher: true
+                useSQLCipher: true,
+                withSQLiteVecExtension: true
             }
         ],
         [

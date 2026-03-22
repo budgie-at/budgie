@@ -1,10 +1,11 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
@@ -16,6 +17,7 @@ import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useLlmContext } from '../../../ai/context/llm.context';
+import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
@@ -41,8 +43,9 @@ interface Props {
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { openCategorySelector } = useCategorySelectorModal();
-    const { openIconSelector } = useIconSelectorModal();
+    const [openCategorySelector] = useCategorySelectorModal();
+    const [openNoteInput] = useNoteInputModal();
+    const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const { llm } = useLlmContext();
 
@@ -50,7 +53,7 @@ export const CategoryForm = (props: Props) => {
 
     const isEditing = isDefined(category?.id);
 
-    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+    const { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
         entity: category ?? null,
         entityId: category?.id ?? 0,
         currentTitle: title,
@@ -62,8 +65,27 @@ export const CategoryForm = (props: Props) => {
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
 
+    /* jscpd:ignore-start -- Same note-input handlers used in tag-form */
+    const handleTitleEnPress = async () => {
+        const result = await openNoteInput({ initialValue: titleEn ?? '' });
+        if (isDefined(result)) {
+            setTitleEn(result);
+        }
+    };
+
+    const handleTitleTagsPress = async () => {
+        const result = await openNoteInput({ initialValue: titleTags ?? '' });
+        if (isDefined(result)) {
+            setTitleTags(result);
+        }
+    };
+    /* jscpd:ignore-end */
+
     const handleIconPress = async () => {
-        const selectedIcon = await openIconSelector({ selectedIcon: icon });
+        const keywordSource = [titleEn, titleTags].filter(isNotEmptyString).join(' ');
+        const keywords = keywordSource.split(/[,\s]+/u).filter(isNotEmptyString);
+
+        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords });
 
         if (isDefined(selectedIcon)) {
             setValue('icon', selectedIcon);
@@ -124,10 +146,20 @@ export const CategoryForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
-                <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
+                <CategoryIconDisplay
+                    icon={icon}
+                    onPress={handleIconPress}
+                    triggerTestID={CategoryFormSelectors.IconTrigger}
+                    iconTestID={CategoryFormSelectors.CurrentIcon(icon)}
+                />
 
-                <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
+                <CategoryTitleInput
+                    value={title}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    testID={CategoryFormSelectors.Input}
+                />
 
                 {/* jscpd:ignore-start */}
                 <AiTranslationFields
@@ -136,18 +168,30 @@ export const CategoryForm = (props: Props) => {
                     isRegenerating={isRegenerating}
                     disabled={isGenerateDisabled}
                     onRegenerate={handleRegenerate}
+                    onTitleEnPress={handleTitleEnPress}
+                    onTitleTagsPress={handleTitleTagsPress}
                     modelStatus={llm}
                 />
+                {/* jscpd:ignore-end */}
             </KeyboardAwareScrollView>
 
-            <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another category</Trans>} /> : null}
+            {/* jscpd:ignore-start */}
+            <KeyboardStickyView>
+                <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                    {isEditing ? (
+                        <ModalFormMergeButton
+                            testID={CategoryFormSelectors.Merge}
+                            onPress={handleMerge}
+                            content={t`Merge into another category`}
+                        />
+                    ) : null}
 
-                <View className="flex-row gap-x-md">
-                    <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
+                    <View className="flex-row gap-x-md">
+                        <ModalFormCancelButton onPress={onCancel} />
+                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
+                    </View>
                 </View>
-            </View>
+            </KeyboardStickyView>
             {/* jscpd:ignore-end */}
         </ModalPage>
     );

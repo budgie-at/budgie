@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryPickerBottomSheetSelectors } from '../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -30,8 +31,8 @@ const prepareCategoryData = (
 
 export default function CategorySelectorModal() {
     const { t } = useLingui();
-    const { openCategoryForm } = useCategoryFormModal();
-    const { currentParams, resolveCategorySelector } = useCategorySelectorModal();
+    const [openCategoryForm] = useCategoryFormModal();
+    const [, resolveCategorySelector, currentParams] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);
@@ -49,13 +50,15 @@ export default function CategorySelectorModal() {
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search categories...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                rightActionTestID={CategoryPickerBottomSheetSelectors.CreateButton}
+                testID={CategoryPickerBottomSheetSelectors.Input}
             />
 
             {isNotEmptyString(description) ? (
@@ -64,7 +67,13 @@ export default function CategorySelectorModal() {
                 </View>
             ) : null}
 
-            <CategorySelectContent data={data} variant={variant} initialCategoryId={initialCategoryId} onSelect={resolveCategorySelector} />
+            <CategorySelectContent
+                data={data}
+                variant={variant}
+                initialCategoryId={initialCategoryId}
+                onSelect={resolveCategorySelector}
+                cardTestID={CategoryPickerBottomSheetSelectors.Card}
+            />
         </View>
     );
     /* jscpd:ignore-end */

@@ -3,6 +3,497 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.3](https://github.com/budgie-at/budgie/compare/v2.41.2...v2.41.3) (2026-03-22)
+
+### Bug Fixes
+
+- **app:** stabilize EAS fingerprint for ccache ([eb6f016](https://github.com/budgie-at/budgie/commit/eb6f016408dca4f045f178f13da6353846846ca1))
+
+## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
+
+### Bug Fixes
+
+- **app:** handle settings delete errors and sync i18n ([8b6c042](https://github.com/budgie-at/budgie/commit/8b6c042b65d2b424b5c58148acf4622927b0ca6f))
+- **app:** resolve form shell lint issues ([d9d80d8](https://github.com/budgie-at/budgie/commit/d9d80d84cb02b50e4c5a2ebe2e294de963638521))
+- **app:** type safe sync form edges ([dc2c1e2](https://github.com/budgie-at/budgie/commit/dc2c1e2603a7546559ad71677e89b360c859dde1))
+
+## [2.41.1](https://github.com/budgie-at/budgie/compare/v2.41.0...v2.41.1) (2026-03-16)
+
+### Bug Fixes
+
+- **app-tests:** harden archived account fixture flow ([fde79bf](https://github.com/budgie-at/budgie/commit/fde79bf0c7ec15453b6409a9d814394face2ddf6))
+- **app-tests:** move e2e import reload after token persist ([6ac9f25](https://github.com/budgie-at/budgie/commit/6ac9f255540265e3ee7130fc25296043f71fb578))
+- **app-tests:** reload after app-owned fixture import ([aa3e88e](https://github.com/budgie-at/budgie/commit/aa3e88e4bfef80e6200a60376be2fb198f5a008e))
+
+# [2.41.0](https://github.com/budgie-at/budgie/compare/v2.40.0...v2.41.0) (2026-03-15)
+
+### Bug Fixes
+
+- **app:** add sqlite-vec iOS xcframework workaround for SDK 55 ([8f26230](https://github.com/budgie-at/budgie/commit/8f26230bd9ca26b2f26578fd674daa0a016850a0))
+- **app:** centralize inline testIDs and fix e2e flow issues ([425b34b](https://github.com/budgie-at/budgie/commit/425b34bbed929b873268fd0bf9df02bc155f010e))
+- **app:** clear expo 55 e2e lint regressions ([f419d85](https://github.com/budgie-at/budgie/commit/f419d85a398fd9a12b2c30ac0a0461adae264ef9))
+- **app:** move hermes-compiler resolution to root and deduplicate expo-sqlite ([42d008e](https://github.com/budgie-at/budgie/commit/42d008e07d2d258a9c75850a551ca2c300701e2e))
+- **app:** pre-copy vec.xcframework for EAS local iOS builds ([dc2d593](https://github.com/budgie-at/budgie/commit/dc2d59346cdb37ff624b0b5e581c8585a5b57e11))
+- **app:** remove FormSheetSpacer references from new selector modals ([5237010](https://github.com/budgie-at/budgie/commit/5237010744ba7ed38874b28c34f8da4d259d8a18))
+- **app:** restore transaction card selector typing ([ca7257f](https://github.com/budgie-at/budgie/commit/ca7257f6ebe5fdd788915dbeb93c0b662c75fabc))
+- **app:** stabilize Maestro iOS navigation and screen capture ([5837dc5](https://github.com/budgie-at/budgie/commit/5837dc5bb2d8098c095bbcc2f79fb60a4818dc9c))
+- **app:** update modal presentations and remove FormSheetSpacer ([f5a584b](https://github.com/budgie-at/budgie/commit/f5a584b729709662d4c8867b4203b76bf4342f83))
+- **app:** use Expo config plugin to pre-copy vec.xcframework before linking ([e119f98](https://github.com/budgie-at/budgie/commit/e119f986650099cc0ffb007b8dd237d5a6a0f4f5))
+- **ci:** disable AI in e2e builds ([84c77f4](https://github.com/budgie-at/budgie/commit/84c77f4b6b1aed4cecbfc9e1b0ba8a7842673199))
+- **ci:** stabilize expo 55 ios preview pipeline ([06599c8](https://github.com/budgie-at/budgie/commit/06599c82beadd19f9a473fee860bc642fd35524e))
+- **ci:** use dedicated e2e app variant for Maestro ([c35f365](https://github.com/budgie-at/budgie/commit/c35f36592b424305bfd040593f9fa19de6ae8ab5))
+- **e2e:** stabilize app-owned reset after database import ([95356c9](https://github.com/budgie-at/budgie/commit/95356c9f783601998d5026e6b12639acab24cdb7))
+- **e2e:** stabilize debt return date selection ([2076b5b](https://github.com/budgie-at/budgie/commit/2076b5bec6fbde628d972ca856da7d9f93e0a214))
+
+### Features
+
+- **app:** add e2e selectors, testIDs, and Maestro CRUD test flows ([b06e29f](https://github.com/budgie-at/budgie/commit/b06e29f84b9a0b4c15b655a41c32e5a12e9e5e47))
+- **app:** add E2E testIDs and rewrite Maestro test flows ([24f1659](https://github.com/budgie-at/budgie/commit/24f1659697051c8b5377ca4d0613217baf9d95bc))
+- **app:** add testIDs for Maestro e2e testing ([43dcc64](https://github.com/budgie-at/budgie/commit/43dcc64d22a44fe0178e29078d91af99bd01fbdf))
+- **app:** add transfer testIDs, income/transfer e2e flows, and fix numpad input ([87b81b6](https://github.com/budgie-at/budgie/commit/87b81b6029185bd71fc65a278ec1bae439ac4c43))
+- **app:** upgrade to Expo SDK 55 and React Native 0.83 ([c2fca2e](https://github.com/budgie-at/budgie/commit/c2fca2e9ff5aa5d336ca939841ad02e0422937e2))
+- **app:** upgrade to Expo SDK 55 stable with Hermes v1 and OTA bytecode diffing ([c859c1e](https://github.com/budgie-at/budgie/commit/c859c1e975029915b5f136f08b769bd7179d8958))
+
+# [2.40.0](https://github.com/budgie-at/budgie/compare/v2.39.0...v2.40.0) (2026-03-09)
+
+### Bug Fixes
+
+- **app:** address PR review feedback for recurring calendar ([9fcbc98](https://github.com/budgie-at/budgie/commit/9fcbc98d3cd70148023e662d40ae26a029b8f286))
+- **app:** address PR review feedback for recurring calendar ([f724c92](https://github.com/budgie-at/budgie/commit/f724c92a96351b406a47d83808fbfd8da5b29805))
+- **app:** always show all recurring patterns with mode day fallback ([d7fd55b](https://github.com/budgie-at/budgie/commit/d7fd55ba8e964349205a4b4ff8b88b56cad1b150))
+- **app:** drop past-day fallback entries without display-month transaction ([4d485bb](https://github.com/budgie-at/budgie/commit/4d485bbff67436f152bfa4ca7cf395d0f96ea062))
+- **app:** fix duplicated app description translation strings ([d7c8e30](https://github.com/budgie-at/budgie/commit/d7c8e305d5dede87f9dad183b344a1a92d8504fe))
+- **app:** fix recurring calendar bugs and move to tab navigation ([30ac134](https://github.com/budgie-at/budgie/commit/30ac1345a41183e1fb32d5f0103a8d29321ebfab))
+- **app:** fix recurring calendar SQL and use date-fns for month boundaries ([d27e92e](https://github.com/budgie-at/budgie/commit/d27e92ed4bdcd886b7713fa630da0481bee9d0d7))
+- **app:** fix swipe crash with runOnJS and add day deselect toggle ([f4c4e0a](https://github.com/budgie-at/budgie/commit/f4c4e0ae9e2be1bcbbaac757139e8f28335c5b6b))
+- **app:** fix total=0 bug and improve recurring payment detection ([52fb734](https://github.com/budgie-at/budgie/commit/52fb734245c7e560c4a612fa46a8ffcbf2967651))
+- **app:** fix upcoming header scroll and add missing translations ([2108071](https://github.com/budgie-at/budgie/commit/21080713fe0e689bf93c0c151846d6e7d13f428b))
+- **app:** improve calendar day colors for dark theme readability ([0f1549a](https://github.com/budgie-at/budgie/commit/0f1549a0f7b2956fd52f34969c03e76f02645fd6))
+- **app:** increase calendar day circle radius to fully round ([0841781](https://github.com/budgie-at/budgie/commit/0841781a485d56383269835c510d480e9a6c91fb))
+- **app:** move monthly total label below amount and increase spacing ([1381c69](https://github.com/budgie-at/budgie/commit/1381c69635858070ed446f41c1dd2eef01e8ab0c))
+- **app:** preserve transaction navigation in mode-day fallback entries ([a5d62f6](https://github.com/budgie-at/budgie/commit/a5d62f6fc52eca3278cc1f61b4bbc86e863b1a01))
+- **app:** prevent stale transaction navigation in mode-day fallback entries ([0fad230](https://github.com/budgie-at/budgie/commit/0fad2306e759c3413bff7f64d80ffa94678de390))
+- **app:** remove dead recurring calendar helpers ([12024ac](https://github.com/budgie-at/budgie/commit/12024acaf040cbf43861df75a0ba1d439f50fd18))
+- **app:** remove debug console.log statements from recurring calendar service ([eee7d38](https://github.com/budgie-at/budgie/commit/eee7d3839266431232164c58d52eeb6ec14288ef))
+- **app:** remove trailing space in statistics content className ([70334ad](https://github.com/budgie-at/budgie/commit/70334ad124e82132eaf7e90c801d06adfad0174c))
+- **app:** replace count badge with dot indicators on calendar days ([030a3f3](https://github.com/budgie-at/budgie/commit/030a3f3f3309f1c502f95bf07cbc5f2e6f1e973d))
+- **app:** replace useFocusEffect with useFocusKey to fix infinite loop ([e9e03ca](https://github.com/budgie-at/budgie/commit/e9e03ca0518912c9586df9facdf01476dc3e1ed2))
+- **app:** resolve lint errors in recurring calendar components ([5fd1bb9](https://github.com/budgie-at/budgie/commit/5fd1bb9c985d55c0dd5b2eb64334b29dbd641f5a))
+- **app:** restore 3-path calendar logic and use solid opacity for forecasted dots ([96a9b09](https://github.com/budgie-at/budgie/commit/96a9b091401279d46d919bf576aa97a2b39a8812))
+- **app:** speed up analytics tab indicator animation ([b60838f](https://github.com/budgie-at/budgie/commit/b60838f1aa9b3a749e26cca4f43b97ad8a7d67b9))
+- **app:** style day detail header to match account section header ([2c30c3f](https://github.com/budgie-at/budgie/commit/2c30c3fa24c04cec6566b3a6961a0b42863f0967))
+- **app:** use strftime month matching for display-month transaction filter ([2b6b2b6](https://github.com/budgie-at/budgie/commit/2b6b2b65a4d27702df41202b5bedbb95cba222c0))
+- **contracts:** add exchange rate conversion to monthly pattern query ([8741912](https://github.com/budgie-at/budgie/commit/8741912b56aafd44a6bb313f70e1199cbed21aee))
+- **contracts:** fix recurring detection false positives and restore exchange rate ([9f1aa30](https://github.com/budgie-at/budgie/commit/9f1aa30902e701d313639274215b4470e38aee02))
+- **contracts:** fix recurring detection to work without categoryId ([206d1e4](https://github.com/budgie-at/budgie/commit/206d1e4472bdfbee6112a8cb8bf2c8d08376d9c4))
+- **contracts:** rewrite recurring detection to GROUP BY (amount, account) and move dots inside circles ([f712b4f](https://github.com/budgie-at/budgie/commit/f712b4fe6d1acecea91a1a6bf50a95e7abbe0a88))
+- **contracts:** two-path recurring detection for bank-synced and manual transactions ([0275830](https://github.com/budgie-at/budgie/commit/0275830a3d8b38c05c2267ce4ca9fd5ba2ad9c82))
+
+### Features
+
+- **app:** add animated sliding indicator to analytics tab header ([6394438](https://github.com/budgie-at/budgie/commit/6394438c3207f0ef54034a8e11d002628b5403c8))
+- **app:** add forecasted recurring entries with upcoming list ([df835c1](https://github.com/budgie-at/budgie/commit/df835c11923500771263a9dd57fe5fc7365a3342))
+- **app:** add haptic, swipe gestures, fix detection queries, and redesign empty state ([ffcb750](https://github.com/budgie-at/budgie/commit/ffcb75018b7365ddbe6ed1366d89055ba14e7b7a))
+- **app:** add recurring payments calendar screen ([0c3479e](https://github.com/budgie-at/budgie/commit/0c3479e03f2bda941e12e5d857e1a04e2a222479))
+- **app:** add transaction navigation from recurring calendar and fix duplicate keys ([9710dfc](https://github.com/budgie-at/budgie/commit/9710dfcc29b266050e27be82210307b217e36931))
+- **app:** extract analytics sub-components for dual-view migration ([5899b11](https://github.com/budgie-at/budgie/commit/5899b11378484cfc590bcec1da3fa09129f4107d))
+- **app:** make recurring calendar month-aware with display-month filtering ([0a92999](https://github.com/budgie-at/budgie/commit/0a92999186c289c63e587a0e4873352f04cdd503))
+- **app:** merge recurring calendar into analytics as dual-view tab ([05545af](https://github.com/budgie-at/budgie/commit/05545af38529028e31cd15c7534aa059308c3e76))
+- **app:** move recurring calendar to transactions tab and add cross-currency amounts ([40ac57d](https://github.com/budgie-at/budgie/commit/40ac57dbcd7ad0e4b419a447a36878ce06078259))
+- **app:** rebuild recurring calendar with custom grid component ([3ff54c1](https://github.com/budgie-at/budgie/commit/3ff54c104d55c896504b22192c0f87fac606f567))
+- **app:** redesign recurring calendar UI ([593d2a3](https://github.com/budgie-at/budgie/commit/593d2a3e8082b18978fa976843ceebe6396118f8))
+- **app:** redesign recurring calendar with SOTA header and dark theme fix ([df0c8d6](https://github.com/budgie-at/budgie/commit/df0c8d654a8017a8008ddde5e1ec852a6157ae53))
+- **app:** show all recurring entries list for past months ([282d74a](https://github.com/budgie-at/budgie/commit/282d74aa8a72dd232e886f3002576301393b27e6))
+
+# [2.39.0](https://github.com/budgie-at/budgie/compare/v2.38.1...v2.39.0) (2026-03-09)
+
+### Bug Fixes
+
+- **app:** fix splash screen hang on fresh DB and resize paste button ([19710aa](https://github.com/budgie-at/budgie/commit/19710aa8fb931eb97e2c4c4132e31844cc384bc6))
+
+### Features
+
+- **app:** add paste button for Monobank API token input ([9d44f4b](https://github.com/budgie-at/budgie/commit/9d44f4b94ec409ccb230a3f5b459f28c7e683589))
+
+# [2.38.0](https://github.com/budgie-at/budgie/compare/v2.37.1...v2.38.0) (2026-03-01)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [2.37.1](https://github.com/budgie-at/budgie/compare/v2.37.0...v2.37.1) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** align formsheet padding to 12px and center category card title ([d30be38](https://github.com/budgie-at/budgie/commit/d30be38c63964c38e7d2fa26b3e83669d049a862))
+- **app:** fix formsheet list padding and item spacing ([4de9d8e](https://github.com/budgie-at/budgie/commit/4de9d8eeb563b6498d57abf0eeee6882265caae0))
+
+# [2.37.0](https://github.com/budgie-at/budgie/compare/v2.36.0...v2.37.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app:** increase horizontal padding on formsheet list containers ([47b4c25](https://github.com/budgie-at/budgie/commit/47b4c25005ca2eb2cd8fc88cef2595be03fe165b))
+- **app:** standardize Result type declarations in modal contexts ([4098729](https://github.com/budgie-at/budgie/commit/40987297546315ec8f5ddb26d31ed807ee7d43b6))
+- **app:** unexport unused InputProps and inputVariant ([3e04d44](https://github.com/budgie-at/budgie/commit/3e04d4490664462fccf35688d7b6076e3308ff66))
+
+### Features
+
+- **app:** convert account type selector from bottom sheet to formsheet modal ([89721d1](https://github.com/budgie-at/budgie/commit/89721d1885d6f910e52286b9c812f809d6bec5b4))
+- **app:** convert contact selector from bottom sheet to formsheet modal ([0d5cfc9](https://github.com/budgie-at/budgie/commit/0d5cfc9a2fa3b67671fe94ed5eadd65fa7292358))
+- **app:** convert currency selector from bottom sheet to formsheet modal ([103f398](https://github.com/budgie-at/budgie/commit/103f398a35562032df391d7d6692dd77b3cfe235))
+- **app:** convert date filter from bottom sheet to formsheet modal ([6db5448](https://github.com/budgie-at/budgie/commit/6db54488f7154948df0ba82e57152c695fab2c7c))
+- **app:** convert import column mapper from bottom sheet to formsheet modal ([19de276](https://github.com/budgie-at/budgie/commit/19de2767c40087eb8cd07cdd855313dfa49a1836))
+- **app:** convert language selector from bottom sheet to formsheet modal ([9113897](https://github.com/budgie-at/budgie/commit/9113897bec7cf88c09d99defe5821c2f8f05483c))
+- **app:** convert transaction account filter from bottom sheet to formsheet modal ([1f6cac3](https://github.com/budgie-at/budgie/commit/1f6cac3e2f417daa270b7e4f6821d469c9a49e60))
+- **app:** convert transaction category filter from bottom sheet to formsheet modal ([7c0e83b](https://github.com/budgie-at/budgie/commit/7c0e83be0397f3dda374518abdbf3fb408bfc87f))
+- **app:** convert transaction tag filter from bottom sheet to formsheet modal ([ac2148f](https://github.com/budgie-at/budgie/commit/ac2148f7e9af77d5e329196a5b5de400ec89f0e1))
+- **app:** convert transaction type filter from bottom sheet to formsheet modal ([95e0fac](https://github.com/budgie-at/budgie/commit/95e0facc10ff6e11104d84b8f1d0dbf84f9d80df))
+- **app:** reuse existing date picker formsheet for account form date picker ([e782afb](https://github.com/budgie-at/budgie/commit/e782afbe4cd5d16b9936bdec7b3a3811c20867a7))
+
+# [2.36.0](https://github.com/budgie-at/budgie/compare/v2.35.3...v2.36.0) (2026-02-22)
+
+### Bug Fixes
+
+- **app,contracts:** remove unused title_embeddings table and vec index ([6fee1e7](https://github.com/budgie-at/budgie/commit/6fee1e71626e737b6be2e642988f92cbfc480e91))
+- **app:** fix infinite re-render loop in suggestion hooks ([2f77187](https://github.com/budgie-at/budgie/commit/2f77187123e6ea8712a386cb286a9ed5b6ecb98e))
+- **app:** remove vec table reference from migration and fix DB reset ([b2bee3f](https://github.com/budgie-at/budgie/commit/b2bee3f2452c98e9842640a3bc5ed28492f13561))
+- **app:** reorder amount-based suggestions closer to right thumb ([cd1c076](https://github.com/budgie-at/budgie/commit/cd1c0768dd4695ee07380cc704f64765a72ecd68))
+
+### Features
+
+- **app,contracts:** add dual-source category suggestions with amount-based pattern matching ([1cd6397](https://github.com/budgie-at/budgie/commit/1cd63979b3332123d48d729fa9c0661c53efc271))
+- **app:** scroll suggestion list to right on content change ([18d147b](https://github.com/budgie-at/budgie/commit/18d147b510a14d720576f195facc2fb4790ffaf6))
+
+### Reverts
+
+- restore migration 0011 vec table reference ([0a45a21](https://github.com/budgie-at/budgie/commit/0a45a219627285f836ab7c47b2888b0e852e4a5c))
+
+## [2.35.3](https://github.com/budgie-at/budgie/compare/v2.35.2...v2.35.3) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix convert-to-transfer modal not appearing due to popover Modal conflict ([c7237da](https://github.com/budgie-at/budgie/commit/c7237da12763ce1a909789555781c1e6b54a4bbb))
+
+## [2.35.2](https://github.com/budgie-at/budgie/compare/v2.35.1...v2.35.2) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** increase settings page top padding to clear blur header ([1c72d88](https://github.com/budgie-at/budgie/commit/1c72d88fa3c96fd4ccf14b8ba43953ea6686abc6))
+
+## [2.35.1](https://github.com/budgie-at/budgie/compare/v2.35.0...v2.35.1) (2026-02-21)
+
+### Bug Fixes
+
+- **app:** fix settings page scroll spacing for top and bottom ([f49e1d8](https://github.com/budgie-at/budgie/commit/f49e1d8c63f099a15cc07184e10202fa9c490ebb))
+
+# [2.35.0](https://github.com/budgie-at/budgie/compare/v2.34.2...v2.35.0) (2026-02-21)
+
+### Bug Fixes
+
+- **ai:** prevent concurrent embedding inference and cache results ([d7b6b59](https://github.com/budgie-at/budgie/commit/d7b6b591fd361edf03dff87b9129a040232367e0))
+- **app,ai,contracts:** address PR review issues and add animated brain progress UI ([d7f3146](https://github.com/budgie-at/budgie/commit/d7f31469a516b5eb32701f84f469c4a4fcad44a4))
+- **app,contracts:** count unique contexts instead of unique titles for embedding status ([52dcd7f](https://github.com/budgie-at/budgie/commit/52dcd7f2cc0b8d8a3135ca376862a84b82da7139))
+- **app,contracts:** optimize findRecentContexts and relax embedding pattern filters ([5e7c39a](https://github.com/budgie-at/budgie/commit/5e7c39a33a73c0740c0cb62bd812f6e9a41211e5))
+- **app,contracts:** process all embedding batches instead of stopping at first ([6dc044f](https://github.com/budgie-at/budgie/commit/6dc044f2b2fbc21847ab8bcc6f316550a12c0d56))
+- **app,contracts:** revert to main pattern logic, widen time window, remove debug logs ([f00c752](https://github.com/budgie-at/budgie/commit/f00c7521f021110e1ed71029df00e917546e4a6f))
+- **app:** add per-batch error handling to embedding sync ([38682c7](https://github.com/budgie-at/budgie/commit/38682c73cf671ec1f900c8d0b11177c135f9b03e))
+- **app:** address PR review — remove debug logs, fix SQL injection, clean up ([f64ef39](https://github.com/budgie-at/budgie/commit/f64ef39ebcbc5c1a82a3ad8eb1849ea77ef3b1dc))
+- **app:** create empty vec0 table in dbInit for migration compatibility ([90f18c9](https://github.com/budgie-at/budgie/commit/90f18c9a6b70e4aaf1d061b67d4624f92953b361))
+- **app:** fix AI progress never reaching 100% ([2627136](https://github.com/budgie-at/budgie/commit/262713608cc52152748809926a30fe7682911f5d))
+- **app:** fix brain pulsation, instant fill, and single brain position ([3d1eab4](https://github.com/budgie-at/budgie/commit/3d1eab45492e2537e1b9735ec2df7315b5d89d39))
+- **app:** guard table-dependent execSync calls in dbInit for fresh installs ([097c755](https://github.com/budgie-at/budgie/commit/097c755a0cfe07ab6037e2b9d3711807846354d0))
+- **app:** hide brain when all suggestion fields filled, update hint text ([357ecfb](https://github.com/budgie-at/budgie/commit/357ecfb28fd3c820fecd7120a02915004e4cf803))
+- **app:** highlight only cards, restore gap, simplify animation ([b261a7f](https://github.com/budgie-at/budgie/commit/b261a7f78bfad531136bb97fa2c2da87bba18be0))
+- **app:** move embedding status to About section in settings ([9f53f70](https://github.com/budgie-at/budgie/commit/9f53f707fe8004ca8b736fbee8acc168c83b3bae))
+- **app:** preserve mccCategoryId when saving transactions ([5e28055](https://github.com/budgie-at/budgie/commit/5e28055f9c8192dec761376be17f95d2cdb9885b))
+- **app:** prevent pattern suggestions from overwriting manual amount ([0b04c4e](https://github.com/budgie-at/budgie/commit/0b04c4ef4a4df4d094cb68724524ba4d8c56d45a))
+- **app:** remove automatic background embedding task from LlmProvider ([d88df87](https://github.com/budgie-at/budgie/commit/d88df87f5f93e9c4add592a1fc7e467bbdd4e19e))
+- **app:** remove initPostMigration from dbInit to fix splash screen hang ([eb1593a](https://github.com/budgie-at/budgie/commit/eb1593a38fee6420ef64a0ce3a42022b81b49151))
+- **app:** reverse suggestion order and improve AI label UX ([3d7ea15](https://github.com/budgie-at/budgie/commit/3d7ea15a7fd3779817258d815580bd8b4f807cf4))
+- **app:** revert suggestion row to vertical layout, add standalone brain and auto-refresh ([16f3013](https://github.com/budgie-at/budgie/commit/16f3013d20738d18df779da039da7c7ae3d806c0))
+- **app:** separate entering and shake animations on account row to prevent flash ([30864af](https://github.com/budgie-at/budgie/commit/30864af55bfc81e48487115454f6383bd12868d8))
+- **app:** support DEBT transactions on transfer detail screen ([bc589d4](https://github.com/budgie-at/budgie/commit/bc589d498c26b4b8ba5a10e2ca9f22dc0f59aaa1))
+
+### Features
+
+- **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([4088cf3](https://github.com/budgie-at/budgie/commit/4088cf3a48ac706b18547b61eed1f2711867ce98))
+- **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([7799ac1](https://github.com/budgie-at/budgie/commit/7799ac119cd5dd0de97e546d19e02429fea21f11))
+- **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([3703a59](https://github.com/budgie-at/budgie/commit/3703a59b1a4adad03c92461e20dfd6a395a7361e))
+- **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([8a1f53e](https://github.com/budgie-at/budgie/commit/8a1f53e6e33f36423f61566f3a76c1cd83c436a3))
+- **app,ai:** add source debug labels to suggestion pills ([b1b9727](https://github.com/budgie-at/budgie/commit/b1b97276463db91a75bc91cda3698f8900fe684a))
+- **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([ab79e1b](https://github.com/budgie-at/budgie/commit/ab79e1bcb6ebdc7f06a77a6eb95a2620f2453fae))
+- **app,ai:** show AI category suggestion for voice input transactions ([b7c9e13](https://github.com/budgie-at/budgie/commit/b7c9e13e924140d689fdd0301ae1093e0cd4a0b3))
+- **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([3660a42](https://github.com/budgie-at/budgie/commit/3660a42236815fc4ab9cdc4634ea6f4152ef3930))
+- **app:** add background embedding task for bank sync transactions ([2f1a33f](https://github.com/budgie-at/budgie/commit/2f1a33f7d2b52739ceb4dbd0fa7604f076c18588))
+- **app:** add embedding progress provider with brain fill indicator ([02789ff](https://github.com/budgie-at/budgie/commit/02789ffdb7cd865b0e0bf81750672e42d554c01c))
+- **app:** add long-press radial ring to regenerate AI data ([9e5a6c6](https://github.com/budgie-at/budgie/commit/9e5a6c625e88e835e895ab181fe47beb093d2b71))
+- **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([6f88c57](https://github.com/budgie-at/budgie/commit/6f88c5783f8c1ccd6b8a6b0d216f7083fe1f9467))
+- **app:** add unified AI status context with hint labels and brain navigation ([64812ed](https://github.com/budgie-at/budgie/commit/64812ed6be06ed8c322abbbf362c6f355992aae7))
+- **app:** auto-generate embeddings on transaction create/update ([84bbd3b](https://github.com/budgie-at/budgie/commit/84bbd3bdba937abcc1748ac5dd1096948679a070))
+- **app:** decouple embedding suggestions from chat model loading ([f37302f](https://github.com/budgie-at/budgie/commit/f37302f71844643df66d1d9168bba4a17560a968))
+- **app:** scroll to AI section when brain tapped, add missing translations ([568506a](https://github.com/budgie-at/budgie/commit/568506a8e389758c1b3ceb63e5d2dc032bc03cdc))
+- **app:** swap chat model to Qwen3 1.7B Q4_K_M ([0f5081d](https://github.com/budgie-at/budgie/commit/0f5081d152cbdb887f5cde3cbe7aa2d246c49433))
+- **contracts,ai,app:** split title_embeddings into merchant + comment tables ([044d1c2](https://github.com/budgie-at/budgie/commit/044d1c2d3b70119a887580cb350b92cf83fa9ba2))
+- **contracts,app:** add monthly pattern matching for transaction suggestions ([f32ca81](https://github.com/budgie-at/budgie/commit/f32ca8172b900b5fb53497a070566a358b14cfaa))
+- **contracts,app:** add vector embedding pattern matching for transaction suggestions ([506c6ad](https://github.com/budgie-at/budgie/commit/506c6ad0c35bc89a76048dd4dd48bd010fdbe35c))
+- **contracts,app:** replace LLM text generation with embedding-based category & tag suggestions ([005e8d0](https://github.com/budgie-at/budgie/commit/005e8d0a920926104afe796b5eb2036731465c58)), closes [#318](https://github.com/budgie-at/budgie/issues/318)
+
+### Performance Improvements
+
+- **app,ai,contracts:** optimize vector embedding queries and data integrity ([cab9e0c](https://github.com/budgie-at/budgie/commit/cab9e0ce293686adebad202bc5298fed77d8bc77))
+- **app:** cache existing contexts across embedding sync batches ([f676b27](https://github.com/budgie-at/budgie/commit/f676b275df9c05f95711a78994f68dd9a5bb1fe1))
+
+## [2.34.2](https://github.com/budgie-at/budgie/compare/v2.34.1...v2.34.2) (2026-02-13)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [2.34.1](https://github.com/budgie-at/budgie/compare/v2.34.0...v2.34.1) (2026-02-12)
+
+### Bug Fixes
+
+- **app:** enable long press PDF import for Erste Bank accounts ([83f238e](https://github.com/budgie-at/budgie/commit/83f238e597557265e0071deb06eb3017f5513106))
+- **app:** parallelize entry and tag bulk creation in processBatchInner ([9e2dca5](https://github.com/budgie-at/budgie/commit/9e2dca58118ada271e0615b273a162d350e35161))
+- **app:** wrap file import in db.transaction and thread tx through services ([3145e8b](https://github.com/budgie-at/budgie/commit/3145e8bd044a922eaa0af5adbaf92d0fa058b259))
+
+# [2.34.0](https://github.com/budgie-at/budgie/compare/v2.33.0...v2.34.0) (2026-02-12)
+
+### Features
+
+- **app:** add 3D flip animation and layout fixes for sign toggle ([1614d6b](https://github.com/budgie-at/budgie/commit/1614d6b07df5d0116a177a224010f0aa7938700d))
+- **app:** add negative balance input support for liability accounts ([10583e1](https://github.com/budgie-at/budgie/commit/10583e171bb64fe0de7cb1d58778408455bfe893))
+
+# [2.33.0](https://github.com/budgie-at/budgie/compare/v2.32.2...v2.33.0) (2026-02-05)
+
+### Bug Fixes
+
+- **app,contracts:** fix statistics tags empty state and list bottom padding ([7033256](https://github.com/budgie-at/budgie/commit/703325679a84c1e267ac5272dc39d62c4ea1252c))
+- **app:** exclude tag filter from uncategorized category condition ([c5033ee](https://github.com/budgie-at/budgie/commit/c5033ee624b7e0953d94f1cf956ba9791f8618b2))
+- **app:** patch expo-pdf-text-extract to exclude test files from iOS build ([8515fe0](https://github.com/budgie-at/budgie/commit/8515fe0ad2d12ae532b7d8190c8f61092e55a424))
+- **app:** update Erste Bank icon to use correct branding ([75d09b4](https://github.com/budgie-at/budgie/commit/75d09b40ecf47a4b9bd08e6599347d62ceb7ed73))
+- **app:** update Erste Bank import instructions ([d0881f5](https://github.com/budgie-at/budgie/commit/d0881f5fa9c57b09708b82602766d10cfa126736))
+
+### Features
+
+- **app,bank-sync,contracts:** add Erste Bank PDF import support ([27c7d65](https://github.com/budgie-at/budgie/commit/27c7d656fff96273ce1bfae224ec2b2d5f0cda4f))
+
+## [2.32.2](https://github.com/budgie-at/budgie/compare/v2.32.1...v2.32.2) (2026-02-04)
+
+### Bug Fixes
+
+- **app,contracts:** improve transaction suggestion accuracy and ordering ([f3908d0](https://github.com/budgie-at/budgie/commit/f3908d0886713c28d193d239998ca6dd8066e362))
+
+## [2.32.1](https://github.com/budgie-at/budgie/compare/v2.32.0...v2.32.1) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** change category/tag forms to modal presentation ([50ae65c](https://github.com/budgie-at/budgie/commit/50ae65c68420b009ba32df4746678af57032f0f6))
+- **app:** migrate category form to ModalPage component ([b39e7f0](https://github.com/budgie-at/budgie/commit/b39e7f0f6375c95f7c9a0c7346a04d8e5941b1e6))
+- **app:** use fixed top padding for modal pages ([29706e1](https://github.com/budgie-at/budgie/commit/29706e19f600a907cddbf910257d28c50236534b))
+
+# [2.32.0](https://github.com/budgie-at/budgie/compare/v2.31.0...v2.32.0) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** address PR review - use Tailwind className for shadow ([e3ee891](https://github.com/budgie-at/budgie/commit/e3ee8914a68a3488aef2bcec62f992d9d9270d63))
+- **app:** reduce gap between icon and text in suggestion pill ([35e0276](https://github.com/budgie-at/budgie/commit/35e027646f5348bfbf040e4705a7de9c1010009f))
+- **app:** remove dot separator from suggestion pill badge ([e73f675](https://github.com/budgie-at/budgie/commit/e73f675325331c2fa827eb1f2d9e8a6e378f71ab))
+- **app:** return spacer for new transactions without pattern suggestions ([7ed6a34](https://github.com/budgie-at/budgie/commit/7ed6a34e70d75a07ff4c0514857148c918061a10))
+- **app:** separate AI suggestions for existing vs pattern suggestions for new transactions ([ca65572](https://github.com/budgie-at/budgie/commit/ca65572e886924a2fccf271c6aae9e2bc02173dc))
+- **app:** show pattern suggestions for new transactions and redesign pill UI ([32e2b65](https://github.com/budgie-at/budgie/commit/32e2b65e8cdc67dcbc1c3ecf1fe45e4a89bc073e))
+- **contracts,app:** address PR review issues ([28a85f8](https://github.com/budgie-at/budgie/commit/28a85f82242143d85ce0836afc81d57c3f2272e2))
+
+### Features
+
+- **app:** smart account selection for transaction suggestions ([c36caaf](https://github.com/budgie-at/budgie/commit/c36caafd01e131d474eec1f3b885c916b36e9495))
+
+# [2.31.0](https://github.com/budgie-at/budgie/compare/v2.30.1...v2.31.0) (2026-02-04)
+
+### Bug Fixes
+
+- **contracts:** calculate remaining debt instead of current balance in getTotalRemainingDebtByType ([60330ad](https://github.com/budgie-at/budgie/commit/60330ad1d7902f25634dd85edfa5103ff7c944f6))
+
+### Features
+
+- **app:** add debt section kind label constants ([4ee8ab2](https://github.com/budgie-at/budgie/commit/4ee8ab22500dc5da5127ab3aff6c2bef853d5667))
+- **app:** add debt section kinds to HomeSectionKindEnum ([119c9f6](https://github.com/budgie-at/budgie/commit/119c9f6951cd0364e649b51da7f8251fd483896e))
+- **app:** add DebtSectionHeader component ([478c0ee](https://github.com/budgie-at/budgie/commit/478c0ee230c3fc2c5b810a985f60ec6be03cca21))
+- **app:** add DebtSectionInterface and update home page for debt sections ([3324901](https://github.com/budgie-at/budgie/commit/33249016557dcf7ac6aecc06f1c7f551c7d94aae))
+- **app:** add useDebtTypeTotalQuery hook ([aa1c0c0](https://github.com/budgie-at/budgie/commit/aa1c0c068ac211bec35d4279820833e0376f80eb))
+- **app:** split debt accounts by debtType in buildHomePageSections ([3543b45](https://github.com/budgie-at/budgie/commit/3543b455a055430e579f3c9fdd3f116eb0449716))
+
+## [2.30.1](https://github.com/budgie-at/budgie/compare/v2.30.0...v2.30.1) (2026-02-04)
+
+**Note:** Version bump only for package @budgie-at/app
+
+# [2.30.0](https://github.com/budgie-at/budgie/compare/v2.29.0...v2.30.0) (2026-02-03)
+
+### Bug Fixes
+
+- **app,contracts:** add comment field to repeated pattern suggestions ([151a64e](https://github.com/budgie-at/budgie/commit/151a64ede8889cc70cf9ecbc9a71d8442074f3d8))
+- **app,contracts:** address human PR review comments ([1d173a7](https://github.com/budgie-at/budgie/commit/1d173a79000e65550f68c7564b6f3af9466f710b))
+- **app,contracts:** address PR review issues ([b31db5a](https://github.com/budgie-at/budgie/commit/b31db5a9e4dbffae23f7109c97b97f3dd8cd6263))
+- **app:** convert pattern amount from microunits to display format ([176ff83](https://github.com/budgie-at/budgie/commit/176ff833ae55e20fa99d67465d9775aab5bd95b6))
+- **app:** sync keypad display when selecting repeated pattern ([94f92b5](https://github.com/budgie-at/budgie/commit/94f92b522bb5587ba2c18a03071f852de7ffcd1a))
+
+### Features
+
+- **app:** add AI-assisted repeated expense suggestions ([0c93ecf](https://github.com/budgie-at/budgie/commit/0c93ecfa67d446f8b4586b7579ef7aafd0e5e84c)), closes [#306](https://github.com/budgie-at/budgie/issues/306)
+- **app:** expand time window to ±180 minutes when amount is entered ([082d92e](https://github.com/budgie-at/budgie/commit/082d92ef15433edbd9b5d43f43f1dbc71f811d41))
+- **app:** show category title instead of occurrence count in suggestion pill ([bfaa814](https://github.com/budgie-at/budgie/commit/bfaa814020798432ff85f2de231b62cf3ead952b))
+
+# [2.29.0](https://github.com/budgie-at/budgie/compare/v2.28.0...v2.29.0) (2026-02-03)
+
+### Bug Fixes
+
+- **app,contracts:** address PR review warnings ([f104013](https://github.com/budgie-at/budgie/commit/f104013761ea2b81b974d4de15e2defc9cf5a085))
+- **app:** address human PR review comments ([c3818de](https://github.com/budgie-at/budgie/commit/c3818de9200c2aeb41f28f2637696dd43a57beaa))
+- **app:** fix bank provider total and update bank logos ([9185eb0](https://github.com/budgie-at/budgie/commit/9185eb0d347a17c205765c91982e30f3cfc64604))
+- **app:** make bank account title generation provider-aware ([5b6a3b5](https://github.com/budgie-at/budgie/commit/5b6a3b59b157eba5ab6c5c83ba4a8b3ea54eabb7))
+- **app:** quick import only syncs enabled PrivatBank accounts ([0d58ba1](https://github.com/budgie-at/budgie/commit/0d58ba10fabf68d23f25056ebfa95477bd57d26e))
+- **bank-sync:** address code review findings for PrivatBank import ([c63f1fc](https://github.com/budgie-at/budgie/commit/c63f1fc779268cc7a6718e3df08068ae8bc6405a))
+- **bank-sync:** use Uint8Array instead of ArrayBuffer for Hermes compatibility ([ab61400](https://github.com/budgie-at/budgie/commit/ab61400659b12aa01901cc1c6870c481dc2907b1))
+
+### Features
+
+- **app:** add long-press quick XLSX import on PrivatBank account cards ([e76b95b](https://github.com/budgie-at/budgie/commit/e76b95b22ac6e65d17fef2d398585f1ea2faafb0))
+- **app:** add Privatbank sync service and LLM category matcher ([e43bf25](https://github.com/budgie-at/budgie/commit/e43bf25eabd0b7b3d1f587d5a08723db515ea527))
+- **app:** add Privatbank XLSX import UI and navigation ([c302ead](https://github.com/budgie-at/budgie/commit/c302ead5f211de3de5cbeb92ff02af9b734ae2e1))
+- **app:** group bank-synced accounts by provider on home page ([4af806f](https://github.com/budgie-at/budgie/commit/4af806f5ee14ed253a18d8d11e4a473be27d6942))
+
+### Performance Improvements
+
+- **app:** replace LLM category matcher with static map and optimize import ([d0b45ef](https://github.com/budgie-at/budgie/commit/d0b45ef5f72ffcd33279bcf1d4e449c41fcc4eb4))
+
+# [2.28.0](https://github.com/budgie-at/budgie/compare/v2.27.0...v2.28.0) (2026-02-02)
+
+### Bug Fixes
+
+- **app:** address code review issues for split entry feature ([8327a16](https://github.com/budgie-at/budgie/commit/8327a160fc9d0fa0ba4d269a7dcb8160fd13eef5))
+- **app:** allow adding split entries before selecting categories ([ca11eca](https://github.com/budgie-at/budgie/commit/ca11ecab5b49d5687751c814c67ea02931679704))
+- **app:** equal spacing for field icons with flex-1 on tag/category wrappers ([659937f](https://github.com/budgie-at/budgie/commit/659937f437e64607e9d78f56c46094cd48d905e8))
+- **app:** equalize spacing between MCC info row and suggestion row ([5515cee](https://github.com/budgie-at/budgie/commit/5515cee1e31f06e0691bb9345c1908263bbfaef6))
+- **app:** fix 5 QA bugs in split entries and improve split modal UX ([3197134](https://github.com/budgie-at/budgie/commit/31971344b91b832840574bc2f2ae7c3820522571))
+- **app:** fix confirm button not visible in split entries form sheet ([8b3cda7](https://github.com/budgie-at/budgie/commit/8b3cda7c8062a8c636e674293483bf97dc2bcb4a))
+- **app:** fix formSheet background gap and reduce split entries detent to 30% ([91b326c](https://github.com/budgie-at/budgie/commit/91b326c4ded3fa8e46d53e547941973ae6bb28a9))
+- **app:** improve split entries validation, amount display and keypad stability ([9a8a915](https://github.com/budgie-at/budgie/commit/9a8a915471cd0526ae6973f30b98998ebb2dfea2))
+- **app:** improve text visibility on dark theme in split entries modal ([8b5f377](https://github.com/budgie-at/budgie/commit/8b5f37703e1fefd4ae63fda8a41e0cc7f47c69c6))
+- **app:** move disabled state into TransactionFieldIcon to fix unequal spacing ([06f71df](https://github.com/budgie-at/budgie/commit/06f71dff0d78cdca4a8316c07c71ed11e3aaec24))
+- **app:** remove FormSheetSpacer from split entries modal ([d7b13c4](https://github.com/budgie-at/budgie/commit/d7b13c4b95aee08d346f6ed00144b5df2e0c8949))
+- **app:** replace Plural macro with conditional Trans for Hermes compat ([7eeb54d](https://github.com/budgie-at/budgie/commit/7eeb54d0cedfe5198fd84e82d363cfb29ff591fc))
+- **app:** replace w-20 class with inline style in split entry row ([fec7233](https://github.com/budgie-at/budgie/commit/fec723358b14626ef22c6a2d21bb794b2b0ec655))
+- **app:** start split entries with zero amount instead of full amount ([8b1a3c9](https://github.com/budgie-at/budgie/commit/8b1a3c9c4cc233c669626b717525b66cfa83deac))
+- **app:** use inline styles instead of NativeWind classes for AmountInput ([0ee0549](https://github.com/budgie-at/budgie/commit/0ee0549d557465f1bc7cde9d135bd7f7d35bdd6c))
+- **app:** use Plural macro for proper item count pluralization ([c30ee51](https://github.com/budgie-at/budgie/commit/c30ee514ae59c38d425c7e58f641b698122e51fe))
+- **app:** use unique string IDs for split entry list keys ([de4fffe](https://github.com/budgie-at/budgie/commit/de4fffea2e025f355d9b72b6264eb8ae8a567d7b))
+
+### Features
+
+- **app:** add expandable detent to split entries sheet (30% → 70%) ([e4948a3](https://github.com/budgie-at/budgie/commit/e4948a33ed3dd17e7f5fe6317990e9cb44434b30))
+- **app:** add split mode toggle to TransactionFieldIcons ([f62f356](https://github.com/budgie-at/budgie/commit/f62f3568d4ca506636f41c49b81ba3317799782f))
+- **app:** add SplitEntryCard component for split entry display ([c9121b8](https://github.com/budgie-at/budgie/commit/c9121b816544b8e2cb080186640bb3c37c34082c))
+- **app:** add SplitEntryList component for managing split entries ([cab905d](https://github.com/budgie-at/budgie/commit/cab905d053a6bf6df4fe20e9947c4e460af37902))
+- **app:** add useSplitEntries hook for multi-entry transaction management ([5da235e](https://github.com/budgie-at/budgie/commit/5da235ef69c73c2064437676e212f4c785f1708a))
+- **app:** improve split entries modal layout and visual design ([b97ed3b](https://github.com/budgie-at/budgie/commit/b97ed3b7f1cbe6915262aeb52d7fb4cd9bf2d844))
+- **app:** improve split entries UX with remaining budget and animated icons ([1969f92](https://github.com/budgie-at/budgie/commit/1969f92f1c21baf8df6283b8fb0826d788c3da3c))
+- **app:** integrate split mode into SimpleQuickForm for expense/income ([e0aa7b3](https://github.com/budgie-at/budgie/commit/e0aa7b30019dbac7e87bad5ab6856b71f12e86dd))
+- **app:** integrate split mode into TransferQuickForm for fees/commissions ([77eebd3](https://github.com/budgie-at/budgie/commit/77eebd3605e0527c352789896aea5f0029a0b55d))
+- **app:** load multi-entry data in edit transaction forms ([8b28490](https://github.com/budgie-at/budgie/commit/8b28490b06bd1ef1ec28d4401a6c80d68d71cf8e))
+- **app:** redesign split entries modal with native inputs and dismiss-to-confirm ([4cc2f47](https://github.com/budgie-at/budgie/commit/4cc2f47c656da4a62b157d9f63ad92c1d1e9e2d1))
+- **app:** support additional fee entries in transfer service ([8f6bb73](https://github.com/budgie-at/budgie/commit/8f6bb73d44d27de7908bc550f24233b22080ca3b))
+
+# [2.27.0](https://github.com/budgie-at/budgie/compare/v2.26.0...v2.27.0) (2026-02-01)
+
+### Features
+
+- **app:** display MCC short and full description in transaction edit form ([0fd7113](https://github.com/budgie-at/budgie/commit/0fd7113e66e29658ac329fedd6d907dde1b01097)), closes [#301](https://github.com/budgie-at/budgie/issues/301)
+- **app:** enhance MCC pill visibility with primary color accent ([f0882c2](https://github.com/budgie-at/budgie/commit/f0882c2d3edddd52bf3be51ea3b65a3368de8bc0))
+- **app:** move MCC info block higher with negative margin ([b468a13](https://github.com/budgie-at/budgie/commit/b468a13090e1f815c663a03916b2c871bafd5b1d))
+- **app:** show transaction title with expandable MCC info ([a50eb02](https://github.com/budgie-at/budgie/commit/a50eb025dc1542dd170d4099fa0fc1356ff95e1f))
+- **app:** simplify MccInfoRow with minimalistic pill design ([9c4ac1f](https://github.com/budgie-at/budgie/commit/9c4ac1fd022c63285fa9409e5f0aa383427821b8))
+
+# [2.26.0](https://github.com/budgie-at/budgie/compare/v2.25.0...v2.26.0) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** fix search bar positioning in searchable pages ([9aa19e3](https://github.com/budgie-at/budgie/commit/9aa19e31fb33da532b649a3b25a10961f7f3af58))
+- **app:** use theme-aware semi-transparent background with rounded corners for keyboard search ([7ace3d0](https://github.com/budgie-at/budgie/commit/7ace3d03e6b8e8a9cd6459d8452aaa1b619499cd))
+
+### Features
+
+- **app:** add keyboard-sticky search input with background ([d42980b](https://github.com/budgie-at/budgie/commit/d42980b01463fa08933755e705538b20b611ee42))
+- **app:** improve settings entity pages UI/UX ([35f5b79](https://github.com/budgie-at/budgie/commit/35f5b799ee8e49d1c9395837bf6233a040c953bb))
+- **app:** show solid background behind search input when keyboard opens ([f740fb0](https://github.com/budgie-at/budgie/commit/f740fb0b4461d95fa0b5334ae3c86afc9a930c0a))
+
+# [2.25.0](https://github.com/budgie-at/budgie/compare/v2.24.1...v2.25.0) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** use HapticPressable instead of Pressable in AI translation fields ([6d7ffb2](https://github.com/budgie-at/budgie/commit/6d7ffb25e73b71dceebf509283bd482a9d18d845))
+
+### Features
+
+- **app:** editable AI translation fields and icon selector keyword sorting ([737e559](https://github.com/budgie-at/budgie/commit/737e5592896eef1de908530577c9c85600044267))
+
+## [2.24.1](https://github.com/budgie-at/budgie/compare/v2.24.0...v2.24.1) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** use account currency in debt balance statistics ([6b2d190](https://github.com/budgie-at/budgie/commit/6b2d19097fbfd9ccae28f2c6f1be05d74507b944)), closes [#296](https://github.com/budgie-at/budgie/issues/296)
+
+# [2.24.0](https://github.com/budgie-at/budgie/compare/v2.23.0...v2.24.0) (2026-02-01)
+
+### Features
+
+- **app:** use native confirm dialog for transaction deletion ([7cc18ef](https://github.com/budgie-at/budgie/commit/7cc18ef6fcc3deea52545ea4441c3508f0f74fe4)), closes [#297](https://github.com/budgie-at/budgie/issues/297)
+
+# [2.23.0](https://github.com/budgie-at/budgie/compare/v2.22.0...v2.23.0) (2026-01-31)
+
+### Bug Fixes
+
+- **app:** address PR [#292](https://github.com/budgie-at/budgie/issues/292) review comments round 2 ([5d3876a](https://github.com/budgie-at/budgie/commit/5d3876a395d753473fe4519093172b207ec0fd87))
+- **app:** align suggestion pills to the right in suggestion rows ([d83d2bf](https://github.com/budgie-at/budgie/commit/d83d2bf62904b2e5287e1a701a797da9c748bcf6))
+- **app:** change category suggestion pill to inline positioning ([05a12d8](https://github.com/budgie-at/budgie/commit/05a12d816f6f675e3f9708b46acb1270023d31f0))
+- **app:** disable keyboard suggestions bar on category name input ([9654c18](https://github.com/budgie-at/budgie/commit/9654c18306fbf3d873f8f2836b06a0b158c30588))
+- **app:** disable max-lines-per-function lint for tag suggestions row ([96ee8de](https://github.com/budgie-at/budgie/commit/96ee8debee63c2ed26578a1d96ac16488f9dea07))
+- **app:** dismiss keyboard on tap outside input in category and tag forms ([a995cbf](https://github.com/budgie-at/budgie/commit/a995cbf2787a2e35f8733f1e466a39cff6113e4e))
+- **app:** improve AI category suggestions UI polish ([af630b3](https://github.com/budgie-at/budgie/commit/af630b32976d0cf941dbb3877a947c911befd91e))
+- **app:** improve tag suggestion prompt accuracy ([ad45ca4](https://github.com/budgie-at/budgie/commit/ad45ca4ba38fadc611a5fab88892b976d6cdd78e))
+- **app:** increase translation temperature to 0.7 for more variation ([4bdad4e](https://github.com/budgie-at/budgie/commit/4bdad4e648cc033b950b539da7a9a021bb33dd6d))
+- **app:** only show category suggestion pill when MCC is available ([c51d430](https://github.com/budgie-at/budgie/commit/c51d4305d7feeafbf5b9e4827fa0e985fb9be822))
+- **app:** open full modal when creating from selector ([02e9cfb](https://github.com/budgie-at/budgie/commit/02e9cfbcc8cfa64374a5c119da0bcdbb17e0d3aa))
+- **app:** prevent layout shift when AI category suggestions disappear ([b784cd3](https://github.com/budgie-at/budgie/commit/b784cd3a8168d4139505c2bee2ec16b60a94aa96))
+- **app:** show category suggestion pill when categoryId is 0 ([9f969af](https://github.com/budgie-at/budgie/commit/9f969aff181efdd0bb8b5f84a5f60e7f937e65cf))
+- **app:** show loading pill during LLM initialization ([2734c11](https://github.com/budgie-at/budgie/commit/2734c117cd82ed73a29d83772c2989b854c7f2fa))
+- **app:** simplify LLM prompts to prevent misinterpretation ([e00c9be](https://github.com/budgie-at/budgie/commit/e00c9be597118809afee1e0beb3cb290fddc7266))
+- **app:** update category LLM prompts to support income categories ([d4127ce](https://github.com/budgie-at/budgie/commit/d4127ce8a25153515ac7af7cf2e2733bc6eaacb0))
+- **app:** wait for categories to load before triggering AI suggestions ([1e42d31](https://github.com/budgie-at/budgie/commit/1e42d31ec4e0d3015733df9ee74ba74ef5d95bc1))
+- **contracts,app:** preserve AI fields when saving category ([0ff1a4b](https://github.com/budgie-at/budgie/commit/0ff1a4be7c5a372fb22264ebdb5ede6edf88d40d))
+
+### Features
+
+- ai categorization ([8fc5c69](https://github.com/budgie-at/budgie/commit/8fc5c69d870aa2d4f81333ed1494654ff265ee94))
+- **app:** add AI model readiness badge, temperature option, and fix selector padding ([8c56567](https://github.com/budgie-at/budgie/commit/8c56567de2666fa5e103e435f91b94625d4f9da0))
+- **app:** add AI tag suggestions on transaction form ([2e7c27d](https://github.com/budgie-at/budgie/commit/2e7c27d720c7b8e703282433cbc34077c294991f))
+- **app:** add buildCategorySuggestionPrompt utility ([d3bed0d](https://github.com/budgie-at/budgie/commit/d3bed0d61742e40b13e39517117dc1bc94278723))
+- **app:** add buildTransactionContext utility ([5bf26c2](https://github.com/budgie-at/budgie/commit/5bf26c23b62a1c75a9dd407de89b40167046af7d))
+- **app:** add category edit page with AI-generated metadata ([40f2484](https://github.com/budgie-at/budgie/commit/40f24849a5013726ce899ecfd1008e5a54beffac))
+- **app:** add CategorySuggestionPill component ([ecd1a02](https://github.com/budgie-at/budgie/commit/ecd1a02ce0ac9ef88d4bb9e2c847aeba663409b2))
+- **app:** add parseCategorySuggestionResponse utility ([ddfc9f5](https://github.com/budgie-at/budgie/commit/ddfc9f5ac6dbcd87a3eca9616c7e40ed1a56cf39))
+- **app:** add tag regeneration to LLM service and hook ([686f63f](https://github.com/budgie-at/budgie/commit/686f63f33a1ade62c1b053fa52e225f37b67b145))
+- **app:** add useCategorySuggestion hook ([909920c](https://github.com/budgie-at/budgie/commit/909920cf16b002662bf253c0e0adf2a9edf03021))
+- **app:** add useGetMccCategoryByIdQuery hook ([b0f5824](https://github.com/budgie-at/budgie/commit/b0f582458aee2eac240ceba4f4c4a403ed2c7834))
+- **app:** add voice input translation to English before extraction ([d61bafa](https://github.com/budgie-at/budgie/commit/d61bafa7066dc710ebfb0dae02c069bc69984e29))
+- **app:** auto-regenerate AI metadata on title blur ([e20af30](https://github.com/budgie-at/budgie/commit/e20af3063f0ab8f26a97a45ded2b1e7a6ad978c6))
+- **app:** enhance category suggestion loading animation ([f95885d](https://github.com/budgie-at/budgie/commit/f95885daadb0857b760916fb9478346bcd3c1ba4))
+- **app:** improve LLM category suggestion prompt and context ([1bfc9b2](https://github.com/budgie-at/budgie/commit/1bfc9b2bc32e9bccf6410e714a95e30bc803b84c))
+- **app:** integrate CategorySuggestionPill into TransactionFieldIcons ([fbc8bdd](https://github.com/budgie-at/budgie/commit/fbc8bdd28c9545f1dd79872625b78ddcce1dd105))
+- **app:** pass category suggestion props through form components ([8a0bb08](https://github.com/budgie-at/budgie/commit/8a0bb08377fb6da8424d3ceb9ccdc116a4fb5da4))
+- **app:** pass selected category name to tag suggestion LLM prompt ([c9b6ab0](https://github.com/budgie-at/budgie/commit/c9b6ab010e7bbe99a03c9957466808945696c178))
+- **app:** regenerate AI data for both categories and tags ([c6c03d9](https://github.com/budgie-at/budgie/commit/c6c03d9cca61be8d6fea1b2746cfc78498fb9b67))
+- **app:** separate original text and English AI context for voice suggestions ([0a5d885](https://github.com/budgie-at/budgie/commit/0a5d8856e1ca7930d5af6ac14d413fecdb41ac35))
+- **app:** switch to Qwen 2.5-1.5B for better multilingual support ([8db9423](https://github.com/budgie-at/budgie/commit/8db942316cdf9b654c411dbea808a1dda239f0c4))
+- **app:** upgrade whisper model from base to small for better transcription ([94acc09](https://github.com/budgie-at/budgie/commit/94acc0903c8a216d3db7741c1200c8c14af9b6a8))
+- **contracts:** add AI fields to tag entity table ([7f03be9](https://github.com/budgie-at/budgie/commit/7f03be987b2c83eb8288fe91457ed6e01de8505c))
+- working llm mcc category hints ([557b174](https://github.com/budgie-at/budgie/commit/557b1748a37956642e07b51da0a93742c8b90c33))
+
 # [2.22.0](https://github.com/budgie-at/budgie/compare/v2.21.0...v2.22.0) (2026-01-31)
 
 ### Features

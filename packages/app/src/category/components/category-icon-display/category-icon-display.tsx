@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import * as Haptics from 'expo-haptics';
 import { useEffect, useRef } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, {
     FadeIn,
     interpolate,
@@ -17,6 +17,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 interface Props {
     readonly icon: UserIconNameEnum;
     readonly onPress: () => void;
+    readonly triggerTestID?: string;
+    readonly iconTestID?: string;
 }
 
 const BOUNCE_SCALE = 1.08;
@@ -36,13 +38,7 @@ const INTERPOLATE_RANGE: [number, number] = [0, 1];
 const RING_COLOR_TRANSPARENT = 'transparent';
 const RING_COLOR_ACTIVE = 'rgba(99, 102, 241, 0.3)';
 
-const triggerHaptic = (style: Haptics.ImpactFeedbackStyle) => {
-    if (Platform.OS === 'ios') {
-        void Haptics.impactAsync(style);
-    }
-};
-
-export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
+export const CategoryIconDisplay = ({ icon, onPress, triggerTestID, iconTestID }: Props) => {
     const scale = useSharedValue(1);
     const pressed = useSharedValue(0);
     const previousIcon = useRef(icon);
@@ -78,7 +74,7 @@ export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
 
     const handlePressIn = () => {
         pressed.set(withTiming(1, { duration: PRESS_IN_DURATION }));
-        triggerHaptic(Haptics.ImpactFeedbackStyle.Light);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     const handlePressOut = () => {
@@ -86,17 +82,19 @@ export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
     };
 
     const handlePress = () => {
-        triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         onPress();
     };
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="items-center justify-center py-2xl">
-            <Pressable onPress={handlePress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+            <Pressable testID={triggerTestID} onPress={handlePress} onPressIn={handlePressIn} onPressOut={handlePressOut}>
                 <View className="items-center justify-center">
                     <Animated.View className="absolute border-2 bg-transparent" style={combinedRingStyle} />
                     <Animated.View style={animatedStyle}>
-                        <CircleIcon icon={icon} variant="default" size={ICON_SIZE} iconSize={INNER_ICON_SIZE} radius={ICON_RADIUS} />
+                        <View testID={iconTestID}>
+                            <CircleIcon icon={icon} variant="default" size={ICON_SIZE} iconSize={INNER_ICON_SIZE} radius={ICON_RADIUS} />
+                        </View>
                     </Animated.View>
                 </View>
             </Pressable>

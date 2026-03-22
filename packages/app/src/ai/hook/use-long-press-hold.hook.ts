@@ -1,0 +1,107 @@
+import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { useRef } from 'react';
+import { Easing, SharedValue, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import {
+    LONG_PRESS_DURATION,
+    LONG_PRESS_HAPTIC_INTERVAL,
+    LONG_PRESS_RING_SNAP_BACK_DURATION,
+    LONG_PRESS_SCALE_ON_PRESS,
+    LONG_PRESS_SCALE_RESTORE_DURATION
+} from '../constant/long-press-brain.constant';
+
+const COMPLETION_THRESHOLD = 0.99;
+
+interface UseLongPressHoldReturn {
+    readonly holdProgress: SharedValue<number>;
+    readonly pressScale: SharedValue<number>;
+    readonly handlePressIn: () => void;
+    readonly handlePressOut: () => void;
+}
+
+interface UseLongPressHoldParams {
+    readonly onPress?: () => void;
+    readonly onLongPressComplete: () => void;
+    readonly disabled?: boolean;
+}
+
+export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = false }: UseLongPressHoldParams): UseLongPressHoldReturn => {
+    const [hapticNotification, hapticImpact] = useVibration();
+    const hapticIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const completedRef = useRef(false);
+
+    const holdProgress = useSharedValue(0);
+    const pressScale = useSharedValue(1);
+
+    const stopHapticInterval = () => {
+        if (isDefined(hapticIntervalRef.current)) {
+            clearInterval(hapticIntervalRef.current);
+            hapticIntervalRef.current = null;
+        }
+    };
+
+    const startHapticInterval = () => {
+        hapticImpact(ImpactFeedbackStyle.Light);
+        hapticIntervalRef.current = setInterval(() => {
+            hapticImpact(ImpactFeedbackStyle.Light);
+        }, LONG_PRESS_HAPTIC_INTERVAL);
+    };
+
+    const handleComplete = () => {
+        console.log('[LONG-PRESS] handleComplete called, already completed:', completedRef.current); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        if (completedRef.current) {
+            return;
+        }
+
+        completedRef.current = true;
+        stopHapticInterval();
+        holdProgress.set(withTiming(0, { duration: LONG_PRESS_RING_SNAP_BACK_DURATION }));
+        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+        hapticNotification(NotificationFeedbackType.Success);
+        console.log('[LONG-PRESS] Calling onLongPressComplete'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        onLongPressComplete();
+    };
+
+    useAnimatedReaction(
+        () => holdProgress.get(),
+        currentValue => {
+            if (currentValue >= COMPLETION_THRESHOLD) {
+                runOnJS(handleComplete)();
+            }
+        }
+    );
+
+    const handlePressIn = () => {
+        console.log('[LONG-PRESS] handlePressIn, disabled:', disabled); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        if (disabled) {
+            return;
+        }
+
+        completedRef.current = false;
+        holdProgress.set(withTiming(1, { duration: LONG_PRESS_DURATION, easing: Easing.linear }));
+        pressScale.set(withTiming(LONG_PRESS_SCALE_ON_PRESS, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+        startHapticInterval();
+    };
+
+    const handlePressOut = () => {
+        console.log('[LONG-PRESS] handlePressOut, completed:', completedRef.current); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        if (disabled) {
+            return;
+        }
+
+        stopHapticInterval();
+
+        if (!completedRef.current) {
+            console.log('[LONG-PRESS] Short press detected, calling onPress'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            onPress?.();
+        }
+
+        holdProgress.set(withTiming(0, { duration: LONG_PRESS_RING_SNAP_BACK_DURATION }));
+        pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
+    };
+
+    return { holdProgress, pressScale, handlePressIn, handlePressOut };
+};

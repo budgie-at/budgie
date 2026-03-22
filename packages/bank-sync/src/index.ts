@@ -18,3 +18,26 @@ export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
+
+export { PRIVATBANK_CATEGORY_TO_MCC_CODE } from './privatbank/constant/privatbank-category-to-mcc-code.constant';
+export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
+export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
+export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
+export { privatbankCurrencyCodeMapper } from './privatbank/mapper/privatbank-currency-code.mapper';
+export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.util';
+export { extractCardEnding } from './privatbank/util/extract-card-ending.util';
+export { generatePrivatbankExternalId } from './privatbank/util/generate-privatbank-external-id.util';
+export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
+
+export { ErsteFileClient } from './erste/client/erste-file.client';
+export { ErsteFormatEnum } from './erste/enum/erste-format.enum';
+export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
+export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
+export { detectErsteFormat } from './erste/util/detect-erste-format.util';
+export { parseErsteText } from './erste/util/parse-erste-pdf.util';
+export { generateErsteExternalId } from './erste/util/generate-erste-external-id.util';
+
+export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
+export type { ErsteAccountInfoInterface } from './erste/interface/erste-account-info.interface';
+export type { ErsteParsedDataInterface } from './erste/interface/erste-parsed-data.interface';
+export type { ErsteTextParserInterface } from './erste/parser/erste-text-parser.interface';

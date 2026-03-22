@@ -1,7 +1,11 @@
+/* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
-import { DB, TX } from '../../@generic/type/db.type';
+import { DB } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
+import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -14,7 +18,7 @@ export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
     // TODO: change to bulkUpsert when drizzle is updated to the latest version
-    async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
             .values([input])
@@ -27,16 +31,18 @@ export class AccountBalanceRepository {
         return accountBalance;
     }
 
-    async getByAccountIds(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
-        return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+    async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
+        return await (tx ?? this.db).select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getAllBalances() {
         return this.db.select().from(AccountBalanceEntityTable);
     }
 
-    async getNewTransactionEntriesDeltas(accountIds: number[]): Promise<Map<number, number>> {
-        const results = await this.db
+    async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
+        const database = tx ?? this.db;
+
+        const results = await database
             .select({
                 accountId: TransactionEntryEntityTable.accountId,
                 delta: this.getTransactionsSumSql().mapWith(Number)
@@ -154,6 +160,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
+    // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: string) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
@@ -185,7 +192,116 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    async truncate(tx?: TX): Promise<void> {
+    getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+        const exchangeRateSql = sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
+
+        const remainingDebtSql = sql<number>`
+            MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
+        `;
+
+        const totalSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (${remainingDebtSql}) * ${exchangeRateSql}
+                    )
+                    FROM ${AccountEntityTable}
+                    WHERE ${AccountEntityTable.type} = ${AccountTypeEnum.DEBT}
+                      AND ${AccountEntityTable.debtType} = ${debtType}
+                      AND ${AccountEntityTable.isActive} = 1
+                      AND ${AccountEntityTable.deletedAt} IS NULL
+                ),
+                0
+            )
+        `;
+
+        return this.db
+            .select({
+                total: totalSubquerySql
+            })
+            .from(TransactionEntryEntityTable)
+            .limit(1);
+    }
+
+    getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
+        const totalSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (
+                            COALESCE((
+                                SELECT amount
+                                FROM account_balances
+                                WHERE account_id = a.id
+                                LIMIT 1
+                            ), 0)
+                            +
+                            COALESCE((
+                                SELECT SUM(
+                                    CASE
+                                        WHEN type = ${TransactionEntryTypeEnum.CREDIT} THEN -amount
+                                        WHEN type = ${TransactionEntryTypeEnum.DEBIT} THEN amount
+                                        ELSE 0
+                                    END
+                                )
+                                FROM transaction_entries te
+                                WHERE te.account_id = a.id
+                                  AND te.deleted_at IS NULL
+                                  AND te.created_at > COALESCE(
+                                      (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id),
+                                      '1970-01-01'
+                                  )
+                            ), 0)
+                        )
+                        *
+                        COALESCE(
+                            (
+                                SELECT rate * 1.0
+                                FROM exchange_rates
+                                WHERE base_instrument_id = a.instrument_id
+                                  AND quote_instrument_id = ${defaultInstrumentId}
+                                  AND deleted_at IS NULL
+                                ORDER BY created_at DESC
+                                LIMIT 1
+                            ),
+                            (
+                                SELECT 1.0 / rate
+                                FROM exchange_rates
+                                WHERE base_instrument_id = ${defaultInstrumentId}
+                                  AND quote_instrument_id = a.instrument_id
+                                  AND deleted_at IS NULL
+                                ORDER BY created_at DESC
+                                LIMIT 1
+                            ),
+                            1.0
+                        )
+                    )
+                    FROM accounts a
+                    INNER JOIN bank_syncs bs ON bs.account_id = a.id
+                    WHERE bs.provider = ${provider}
+                      AND bs.deleted_at IS NULL
+                      AND a.is_active = 1
+                      AND a.deleted_at IS NULL
+                ),
+                0
+            )
+        `;
+        // jscpd:ignore-end
+
+        return this.db
+            .select({
+                total: totalSubquerySql
+            })
+            .from(TransactionEntryEntityTable)
+            .limit(1);
+    }
+
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 

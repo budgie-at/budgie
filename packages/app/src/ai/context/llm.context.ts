@@ -1,37 +1,24 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
-export interface GenerateOptionsInterface {
-    maxNewTokens?: number;
-    temperature?: number;
-}
+import type { LlmInterface } from '@budgie/ai';
 
-export interface LlmInterface {
-    isReady: boolean;
-    isInitializing: boolean;
-    isGenerating: boolean;
-    downloadProgress: number;
-    error: string | null;
-    generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
-    interrupt: () => void;
-}
-
-export interface SttInterface {
-    isReady: boolean;
-    downloadProgress: number;
-    error: string | null;
-    isInitializing: boolean;
-    committedTranscription: string;
-    nonCommittedTranscription: string;
-    stream: (options: { language: string }) => Promise<string>;
-    streamInsert: (samples: Float32Array) => void;
-    streamStop: () => void;
+export interface SttContextInterface {
+    readonly isReady: boolean;
+    readonly isInitializing: boolean;
+    readonly downloadProgress: number;
+    readonly error: string | null;
+    readonly committedTranscription: string;
+    readonly nonCommittedTranscription: string;
+    readonly stream: (options?: { readonly language?: string }) => Promise<string>;
+    readonly streamStop: () => Promise<void> | void;
+    readonly streamInsert: (samples: Float32Array) => void;
 }
 
 export interface LlmContextInterface {
-    isAvailable: boolean;
-    llm: LlmInterface;
-    stt: SttInterface;
+    readonly isAvailable: boolean;
+    readonly llm: LlmInterface;
+    readonly stt: SttContextInterface;
 }
 
 export const LlmContext = createContext<LlmContextInterface | null>(null);

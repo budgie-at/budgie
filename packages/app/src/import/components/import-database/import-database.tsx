@@ -6,13 +6,13 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { databaseImportService } from '../../service/database-import.service';
 
 export const ImportDatabase = () => {
     const { t } = useLingui();
-    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSelectAndConfirm = async () => {
@@ -32,19 +32,19 @@ export const ImportDatabase = () => {
 
             setIsLoading(false);
 
-            const confirmed = await openConfirmAction({
-                variant: 'destructive',
-                icon: UserIconNameEnum.OctagonAlert,
+            const confirmed = await confirmAlert({
                 title: t`Import Database`,
-                description: t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`,
-                buttonText: t`Import Database`
+                message: t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`,
+                confirmText: t`Import Database`,
+                cancelText: t`Cancel`,
+                isDestructive: true
             });
 
             if (!confirmed) {
                 return;
             }
 
-            updateConfirmActionParams({ isLoading: true });
+            setIsLoading(true);
             await databaseImportService.importFromUri(uri);
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
@@ -61,6 +61,7 @@ export const ImportDatabase = () => {
             icon={UserIconNameEnum.Database}
             variant="ghost"
             isLoading={isLoading}
+            testID={SettingsPageSelectors.ImportDatabaseCard}
         />
     );
 };

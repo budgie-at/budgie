@@ -17,6 +17,7 @@ interface UseQuickFormAmountResult {
     readonly numericValue: number;
     readonly currencySymbol: string;
     readonly keypadHandlers: ReturnType<typeof useKeypadInput>['handlers'];
+    readonly setFromNumeric: (value: number) => void;
 }
 
 export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfig): UseQuickFormAmountResult => {
@@ -29,7 +30,7 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
         setValue('amount', value);
     };
 
-    const { displayValue, numericValue, handlers } = useKeypadInput({
+    const { displayValue, numericValue, handlers, setFromNumeric } = useKeypadInput({
         initialValue: initialAmount,
         onChange: handleAmountChange
     });
@@ -38,5 +39,5 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
-    return { displayValue, numericValue, currencySymbol, keypadHandlers: handlers };
+    return { displayValue, numericValue, currencySymbol, keypadHandlers: handlers, setFromNumeric };
 };

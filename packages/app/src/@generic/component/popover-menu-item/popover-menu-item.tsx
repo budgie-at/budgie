@@ -16,6 +16,7 @@ interface Props {
     readonly onPress: EmptyFn;
     readonly variant?: MenuItemVariant;
     readonly rightLabel?: string | null;
+    readonly testID?: string;
 }
 
 const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background');
@@ -40,8 +41,8 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
     defaultVariants: { variant: 'default' }
 });
 
-export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel }: Props) => (
-    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem">
+export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, testID }: Props) => (
+    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
         <Icon icon={icon} size={20} className={iconVariants({ variant })} />
         <Text className={textVariants({ variant })}>{label}</Text>
         {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}

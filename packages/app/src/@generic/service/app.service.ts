@@ -1,21 +1,40 @@
+import { LanguageEnum, ThemeEnum, transactionAsync } from '@budgie/contracts';
+
 import {
+    accountBalanceRepository,
     accountRepository,
     categoryRepository,
     db,
     settingsRepository,
     tagRepository,
     transactionEntryRepository,
-    transactionRepository
+    transactionRepository,
+    transactionTagsRepository
 } from '../drizzle/db/db';
 
 class AppService {
     async truncateData() {
-        await db.transaction(async tx => {
+        await transactionAsync(db, async tx => {
+            await transactionTagsRepository.truncate();
             await tagRepository.truncate(tx);
             await categoryRepository.truncate(false, tx);
             await transactionEntryRepository.truncate(tx);
             await transactionRepository.truncate(tx);
-            await settingsRepository.update({ defaultAccountId: null }, tx);
+            await accountBalanceRepository.truncate(tx);
+            await settingsRepository.update(
+                {
+                    language: LanguageEnum.EN,
+                    defaultAccountId: null,
+                    defaultInstrumentId: 1,
+                    theme: ThemeEnum.SYSTEM,
+                    isPinEnabled: false,
+                    isBiometricEnabled: false,
+                    showCents: true,
+                    isVibrationEnabled: true,
+                    isScreenshotProtectionEnabled: false
+                },
+                tx
+            );
             await accountRepository.truncate(tx);
         });
     }

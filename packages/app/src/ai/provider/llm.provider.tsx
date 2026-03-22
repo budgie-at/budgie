@@ -13,5 +13,5 @@ export const LlmProvider = ({ children }: Props) => {
     const stt = useWhisperStt();
     const value = { isAvailable: true, llm, stt };
 
-    return <LlmContext.Provider value={value}>{children}</LlmContext.Provider>;
+    return <LlmContext value={value}>{children}</LlmContext>;
 };

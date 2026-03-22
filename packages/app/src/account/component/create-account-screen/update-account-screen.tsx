@@ -9,15 +9,14 @@ import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { Control, FieldValues, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
-import { Footer } from '../../../@generic/component/footer/footer';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -31,6 +30,7 @@ import { ArchiveAccount } from '../archive-account/archive-account';
 interface Props<T extends FieldValues> {
     readonly account: AccountEntityInterface;
     readonly instrumentSymbol: string;
+    readonly allowNegativeBalance?: boolean;
     readonly children?: ReactNode;
     readonly control: Control<T>;
     readonly onSubmit: EmptyFn;
@@ -41,7 +41,7 @@ const descriptionVariants = cva('uppercase', {
 });
 
 export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { children, account, onSubmit, control, instrumentSymbol } = props;
+    const { children, account, onSubmit, control, instrumentSymbol, allowNegativeBalance } = props;
     const { t } = useLingui();
 
     const formValues = useWatch({ control });
@@ -53,7 +53,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const variant = currentType === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[currentType];
 
     return (
-        <Page
+        <FormPage
             header={
                 <PageHeader
                     iconVariant={variant}
@@ -64,31 +64,28 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 />
             }
             footer={
-                <KeyboardStickyView>
-                    <Footer>
-                        <View className="flex-row gap-2">
-                            <ArchiveAccount accountId={account.id} />
-                            <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} className="flex-1" />
-                        </View>
-                    </Footer>
-                </KeyboardStickyView>
+                <View className="flex-row gap-2">
+                    <ArchiveAccount accountId={account.id} />
+                    <Button
+                        onPress={onSubmit}
+                        size="sm"
+                        variant={variant}
+                        content={t`Update Account`}
+                        className="flex-1"
+                        testID={AccountFormSelectors.SubmitButton}
+                    />
+                </View>
             }
         >
-            <KeyboardAwareScrollView
-                contentContainerClassName="pb-5xl"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+            <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} allowNegative={allowNegativeBalance} />
 
-                <FormLayoutGroup>
-                    <AccountDetailsField control={control} variant={variant} />
+            <FormLayoutGroup>
+                <AccountDetailsField control={control} variant={variant} nameInputTestID={AccountFormSelectors.NameInput} selectNameOnFocus />
 
-                    {children}
+                {children}
 
-                    <AccountActiveToggleField control={control} />
-                </FormLayoutGroup>
-            </KeyboardAwareScrollView>
-        </Page>
+                <AccountActiveToggleField control={control} />
+            </FormLayoutGroup>
+        </FormPage>
     );
 };

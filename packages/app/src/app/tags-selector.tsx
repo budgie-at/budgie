@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TagPickerBottomSheetSelectors } from '../@e2e/selectors/tag-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -26,8 +27,8 @@ const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number
 
 export default function TagsSelectorModal() {
     const { t } = useLingui();
-    const { openTagForm } = useTagFormModal();
-    const { currentParams, resolveTagsSelector } = useTagsSelectorModal();
+    const [openTagForm] = useTagFormModal();
+    const [, resolveTagsSelector, currentParams] = useTagsSelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);
@@ -54,13 +55,15 @@ export default function TagsSelectorModal() {
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search tags...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                rightActionTestID={TagPickerBottomSheetSelectors.CreateButton}
+                testID={TagPickerBottomSheetSelectors.Input}
             />
 
             {isNotEmptyString(description) ? (
