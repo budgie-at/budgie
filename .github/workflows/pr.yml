@@ -101,6 +101,7 @@ jobs:
         working-directory: packages/app
         env:
           APP_VARIANT: development
+          USE_CCACHE: "1"
         run: |
           eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
