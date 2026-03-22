@@ -3,19 +3,16 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode, createContext, use, useState } from 'react';
 import { Alert, GestureResponderEvent, View } from 'react-native';
 
-import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
+import { EmptyFn, emptyFn } from '@rnw-community/shared';
 
 import { TransactionActionsMenuSelectors } from '../../../@e2e/selectors/transaction-actions-menu.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 
 type CloseMenuFn = (afterClose?: EmptyFn) => void;
-
-interface DeferredAction {
-    readonly execute: EmptyFn;
-}
 
 const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
 const TRIGGER_SIZE = 40;
@@ -29,13 +26,12 @@ interface Props {
 
 export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const { t } = useLingui();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
-            setIsMenuOpen(false);
+            closeMenu();
 
             return;
         }
@@ -52,23 +48,11 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
             setAnchor(void 0);
         }
 
-        setIsMenuOpen(true);
-    };
-
-    const handleCloseMenu: CloseMenuFn = (afterClose?: EmptyFn) => {
-        setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
-        setIsMenuOpen(false);
-    };
-
-    const handleCloseComplete = () => {
-        if (isDefined(deferredAction)) {
-            deferredAction.execute();
-            setDeferredAction(null);
-        }
+        openMenu();
     };
 
     const handleDeletePress = () => {
-        handleCloseMenu();
+        closeMenu();
 
         void Alert.alert(t`Are you sure?`, t`This action cannot be undone.`, [
             {
@@ -97,8 +81,8 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                 </HapticPressable>
             </View>
 
-            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
-                <TransactionActionsMenuContext.Provider value={handleCloseMenu}>
+            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
+                <TransactionActionsMenuContext.Provider value={closeMenu}>
                     <View className="py-sm">
                         {children}
 

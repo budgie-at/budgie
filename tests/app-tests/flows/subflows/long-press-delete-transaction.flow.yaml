@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+- longPressOn:
+    id: ${TRANSACTION_CARD_ID}
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionContextMenu.DeleteButton'
+
+- tapOn:
+    id: 'TransactionContextMenu.DeleteButton'
+
+- extendedWaitUntil:
+    visible: 'Are you sure?'
+    timeout: 10000
+- tapOn:
+    point: '67%,56%'
+- extendedWaitUntil:
+    notVisible: 'Are you sure?'
+    timeout: 15000
+- waitForAnimationToEnd

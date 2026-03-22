@@ -9,20 +9,16 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
+import { TransactionContextMenuSelectors } from '../../../@e2e/selectors/transaction-context-menu.selector';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
+import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { TransactionCard } from '../transaction-card/transaction-card';
 
 import type { TransactionCardProps } from '../transaction-card/transaction-card';
-
-interface DeferredAction {
-    readonly execute: () => void;
-}
 
 const isConvertibleTransaction = (transaction: TransactionWithRelationsEntityInterface): boolean =>
     isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
@@ -37,41 +33,28 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const cardRef = useRef<View>(null);
+    const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
 
     const canConvert = isConvertibleTransaction(transaction);
 
     const handleLongPress = () => {
         cardRef.current?.measureInWindow((x, y, width, height) => {
             setAnchor({ x: x + width, y, width: 0, height });
-            setIsMenuOpen(true);
+            openMenu();
         });
     };
 
-    const handleCloseMenu = (afterClose?: () => void) => {
-        setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
-        setIsMenuOpen(false);
-    };
-
-    const handleCloseComplete = () => {
-        if (isDefined(deferredAction)) {
-            deferredAction.execute();
-            setDeferredAction(null);
-        }
-    };
-
     const handleDeletePress = () => {
-        handleCloseMenu(() => void deleteTransaction(transaction.id));
+        closeMenu(() => void deleteTransaction(transaction.id));
     };
 
     const handleConvertPress = () => {
         const [sourceEntry] = transaction.entries;
         const sourceAccount = sourceEntry.account;
 
-        handleCloseMenu(
+        closeMenu(
             () =>
                 void openConvertToTransfer({
                     transactionId: transaction.id,
@@ -93,13 +76,14 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
                 categoryLabel={categoryLabel}
                 onLongPress={handleLongPress}
             />
-            <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
+            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
                 <View className="py-sm">
                     {canConvert ? (
                         <PopoverMenuItem
                             icon={UserIconNameEnum.ArrowRightLeft}
                             label={t`Convert to Transfer`}
                             onPress={handleConvertPress}
+                            testID={TransactionContextMenuSelectors.ConvertToTransferButton}
                         />
                     ) : null}
                     <PopoverMenuItem
@@ -107,6 +91,7 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
                         label={t`Delete Transaction`}
                         onPress={handleDeletePress}
                         variant="destructive"
+                        testID={TransactionContextMenuSelectors.DeleteButton}
                     />
                 </View>
             </PopoverMenu>
