@@ -99,6 +99,8 @@ jobs:
       - name: Create preview
         id: create-preview
         working-directory: packages/app
+        env:
+          APP_VARIANT: development
         run: |
           eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
