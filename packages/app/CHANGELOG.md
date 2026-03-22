@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.3](https://github.com/budgie-at/budgie/compare/v2.41.2...v2.41.3) (2026-03-22)
+
+### Bug Fixes
+
+- **app:** stabilize EAS fingerprint for ccache ([eb6f016](https://github.com/budgie-at/budgie/commit/eb6f016408dca4f045f178f13da6353846846ca1))
+
 ## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
 
 ### Bug Fixes
