@@ -4,8 +4,9 @@ const APP_VARIANT = process.env.APP_VARIANT;
 const IS_DEV = APP_VARIANT === 'development';
 const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
-const IS_CCACHE_ENABLED =
-    process.env.USE_CCACHE !== '0' && (process.env.CI === 'true' || IS_E2E);
+// Fingerprint inputs must be identical locally and on EAS workers.
+// Drive ccache from an explicit env var that can be set in eas.json instead of CI.
+const IS_CCACHE_ENABLED = process.env.USE_CCACHE === '1';
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
