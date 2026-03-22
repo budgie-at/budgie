@@ -50,17 +50,12 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Convert_Income'
 
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-- assertVisible:
-    id: 'HomePage.NetWorthValue.230'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Target.130'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Source.100'
+- runFlow:
+    file: subflows/assert-home-balance-state.flow.yaml
+    env:
+      EXPECTED_NET_WORTH_ID: 'HomePage.NetWorthValue.230'
+      EXPECTED_PRIMARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Target.130'
+      EXPECTED_SECONDARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Source.100'
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
@@ -110,6 +105,15 @@ appId: ${APP_ID}
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
+- runFlow:
+    file: subflows/assert-home-balance-state.flow.yaml
+    env:
+      EXPECTED_NET_WORTH_ID: 'HomePage.NetWorthValue.200'
+      EXPECTED_PRIMARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Target.130'
+      EXPECTED_SECONDARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Source.70'
+      STALE_PRIMARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Target.100'
+      STALE_SECONDARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Source.100'
+
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
 - assertVisible:
@@ -118,18 +122,6 @@ appId: ${APP_ID}
     id: 'TransactionCard.FromAccount.E2E_Income_Source'
 - assertVisible:
     id: 'TransactionCard.ToAccount.E2E_Income_Target'
-
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-- assertVisible:
-    id: 'HomePage.NetWorthValue.200'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Target.130'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Source.70'
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
@@ -143,14 +135,11 @@ appId: ${APP_ID}
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Convert_Income'
 
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-- assertVisible:
-    id: 'HomePage.NetWorthValue.200'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Target.100'
-- assertVisible:
-    id: 'AccountCard.Balance.E2E_Income_Source.100'
+- runFlow:
+    file: subflows/assert-home-balance-state.flow.yaml
+    env:
+      EXPECTED_NET_WORTH_ID: 'HomePage.NetWorthValue.200'
+      EXPECTED_PRIMARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Target.100'
+      EXPECTED_SECONDARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Source.100'
+      STALE_PRIMARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Target.130'
+      STALE_SECONDARY_BALANCE_ID: 'AccountCard.Balance.E2E_Income_Source.70'

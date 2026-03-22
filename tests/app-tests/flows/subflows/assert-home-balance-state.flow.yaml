@@ -1,0 +1,40 @@
+appId: ${APP_ID}
+env:
+  EXPECTED_NET_WORTH_ID: ${EXPECTED_NET_WORTH_ID}
+  EXPECTED_PRIMARY_BALANCE_ID: ${EXPECTED_PRIMARY_BALANCE_ID}
+  EXPECTED_SECONDARY_BALANCE_ID: ${EXPECTED_SECONDARY_BALANCE_ID}
+  STALE_PRIMARY_BALANCE_ID: ${STALE_PRIMARY_BALANCE_ID || ''}
+  STALE_SECONDARY_BALANCE_ID: ${STALE_SECONDARY_BALANCE_ID || ''}
+---
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- extendedWaitUntil:
+    visible:
+      id: ${EXPECTED_NET_WORTH_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${EXPECTED_PRIMARY_BALANCE_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${EXPECTED_SECONDARY_BALANCE_ID}
+- assertVisible:
+    id: ${EXPECTED_NET_WORTH_ID}
+- assertVisible:
+    id: ${EXPECTED_PRIMARY_BALANCE_ID}
+- assertVisible:
+    id: ${EXPECTED_SECONDARY_BALANCE_ID}
+- runFlow:
+    when:
+      true: ${STALE_PRIMARY_BALANCE_ID !== ''}
+    commands:
+      - assertNotVisible:
+          id: ${STALE_PRIMARY_BALANCE_ID}
+- runFlow:
+    when:
+      true: ${STALE_SECONDARY_BALANCE_ID !== ''}
+    commands:
+      - assertNotVisible:
+          id: ${STALE_SECONDARY_BALANCE_ID}
