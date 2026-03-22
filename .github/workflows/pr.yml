@@ -98,17 +98,11 @@ jobs:
 
       - name: Create preview
         id: create-preview
-        continue-on-error: true
         working-directory: packages/app
         env:
-          APP_VARIANT: preview
+          APP_VARIANT: development
         run: |
-          eas update --environment preview --channel preview --non-interactive \
-            --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
-
-      - name: Warn when preview update fails
-        if: steps.create-preview.outcome == 'failure'
-        run: echo "::warning::EAS preview update failed; continuing with the remaining preview deploy steps."
+          eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
       - name: Build web app
         working-directory: packages/app
