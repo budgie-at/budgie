@@ -292,16 +292,22 @@ jobs:
             pods-${{ runner.os }}-
 
       - name: Setup ccache
+        id: setup-ccache
         run: |
-          mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
-          command -v ccache >/dev/null || {
-            echo "::error::ccache is not installed on this runner."
-            exit 1
-          }
-          ccache --version
-          ccache --zero-stats || true
+          mkdir -p "$IOS_DERIVED_DATA"
+          if command -v ccache >/dev/null 2>&1; then
+            mkdir -p "$CCACHE_DIR"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            ccache --version
+            ccache --zero-stats || true
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::ccache not found — building without compiler cache"
+            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
+          fi
 
       - name: Restore ccache
+        if: steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -486,7 +492,7 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always()
+        if: always() && steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
