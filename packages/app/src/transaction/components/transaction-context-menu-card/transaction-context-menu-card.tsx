@@ -6,6 +6,7 @@ import {
     isIncomeTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
@@ -16,6 +17,7 @@ import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-c
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
+import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 
 import type { TransactionCardProps } from '../transaction-card/transaction-card';
@@ -30,6 +32,7 @@ const getConvertTransactionType = (
 
 export const TransactionContextMenuCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
     const { t } = useLingui();
+    const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const cardRef = useRef<View>(null);
@@ -38,6 +41,10 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
 
     const canConvert = isConvertibleTransaction(transaction);
+
+    const handlePress = () => {
+        router.push(getTransactionHref(transaction));
+    };
 
     const handleLongPress = () => {
         cardRef.current?.measureInWindow((x, y, width, height) => {
@@ -74,6 +81,7 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
                 transaction={transaction}
                 formattedDate={formattedDate}
                 categoryLabel={categoryLabel}
+                onPress={handlePress}
                 onLongPress={handleLongPress}
             />
             <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
