@@ -1,6 +1,6 @@
 {
     "name": "@budgie/ai",
-    "version": "2.40.0",
+    "version": "2.41.2",
     "private": true,
     "description": "AI services for transaction categorization, embedding suggestions, and voice extraction",
     "sideEffects": false,
@@ -8,24 +8,24 @@
         ".": {
             "types": "./dist/esm/index.d.ts",
             "import": "./dist/esm/index.js",
-            "default": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js"
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
     "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "run -T tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p .",
         "test": "run -T jest --passWithNoTests",
+        "test:cov": "run -T jest --coverage",
         "test:watch": "run -T jest --watch",
-        "test:cov": "run -T jest --coverage"
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",

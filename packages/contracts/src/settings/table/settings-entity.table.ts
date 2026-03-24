@@ -24,6 +24,6 @@ export const SettingsEntityTable = sqliteTable(
         isBiometricEnabled: int('is_biometric_enabled', { mode: 'boolean' }).notNull().default(false),
         showCents: int('show_cents', { mode: 'boolean' }).notNull().default(true),
         isVibrationEnabled: int('is_vibration_enabled', { mode: 'boolean' }).notNull().default(true),
-        isScreenshotProtectionEnabled: int('is_screenshot_protection_enabled', { mode: 'boolean' }).notNull().default(true)
+        isScreenshotProtectionEnabled: int('is_screenshot_protection_enabled', { mode: 'boolean' }).notNull().default(false)
     })
 );

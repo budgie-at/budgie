@@ -67,13 +67,13 @@ export const TransactionFieldIcon = (props: Props) => {
             <Animated.View style={shakeStyle}>
                 <Animated.View style={pressedStyle}>
                     <HapticPressable
-                        testID={testID}
                         className="items-center gap-sm"
                         onPress={onPress}
                         onPressIn={handlePressIn}
                         onPressOut={handlePressOut}
                         accessibilityLabel={accessibilityLabel}
                         accessibilityRole="button"
+                        testID={testID}
                     >
                         <CircleIcon icon={icon} variant={circleIconVariant} size={44} iconSize={20} radius={14} />
                         <View className="items-center gap-y-0.5 h-[28px]">

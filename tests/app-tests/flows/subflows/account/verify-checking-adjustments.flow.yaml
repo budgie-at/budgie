@@ -1,0 +1,90 @@
+appId: ${APP_ID}
+---
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${ACCOUNT_NAME}'
+    direction: UP
+
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.100'
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible: 'Account Settings'
+    timeout: 10000
+
+- tapOn:
+    id: 'CreateAccount.Amount'
+- eraseText: 10
+- inputText: ${INCREASE_TO}
+
+- tapOn: 'Account Settings'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${ACCOUNT_NAME}'
+    direction: UP
+
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- extendedWaitUntil:
+    visible: 'Account Settings'
+    timeout: 10000
+
+- tapOn:
+    id: 'CreateAccount.Amount'
+- eraseText: 10
+- inputText: ${DECREASE_TO}
+
+- tapOn: 'Account Settings'
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${ACCOUNT_NAME}'
+    direction: UP
+
+- tapOn:
+    id: 'AccountCard.${ACCOUNT_NAME}'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionCard.Badge.Adjustment'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+- assertVisible:
+    id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'

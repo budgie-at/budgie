@@ -32,7 +32,7 @@ const textVariants = cva('', {
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
-    const { value, testID, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus } = props;
+    const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus, testID } = props;
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -83,8 +83,8 @@ export const FormAmountInput = (props: Props) => {
                 </Text>
 
                 <AmountInput
-                    value={absoluteValue}
                     testID={testID}
+                    value={absoluteValue}
                     onChangeValue={handleAmountChange}
                     inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
                     placeholder={formatDigits(0)}
