@@ -198,6 +198,7 @@ jobs:
     needs: [code-quality]
     name: E2E Tests on iOS
     runs-on: ${{ vars.IOS_RUNNER || 'macos-15' }}
+    timeout-minutes: 60
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
