@@ -290,7 +290,7 @@ jobs:
             echo "Ruby version: $RUBY_VER"
             # Ruby < 3.0 needs pinned ffi version (ffi >= 1.17.4 requires Ruby 3.0+)
             if ruby -e 'exit(Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.0.0") ? 0 : 1)'; then
-              gem install ffi -v '~> 1.17.3' --user-install --no-document
+              gem install ffi -v 1.17.3 --user-install --no-document
             fi
             gem install cocoapods --user-install --no-document
             GEM_BIN="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
