@@ -1,0 +1,150 @@
+appId: ${APP_ID}
+---
+
+- runFlow: subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '17-expense-to-transfer'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- runFlow: subflows/open-action-menu.flow.yaml
+
+- tapOn:
+    id: 'ActionItem.Expense'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Expense'
+
+- tapOn: '3'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Expense Source'
+
+- runFlow:
+    file: subflows/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Convert Category'
+
+- runFlow:
+    file: subflows/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Convert Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Transactions'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Expense'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.170'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Source.70'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Target.100'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Convert_Expense'
+- waitForAnimationToEnd
+
+- tapOn:
+    point: '80%,8%'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+- tapOn:
+    id: 'TransactionActionsMenu.ConvertToTransferButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ConvertToTransfer.Page'
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Expense Target'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- runFlow: subflows/confirm-convert-to-transfer.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Edit Transfer'
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Expense'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Expense_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Expense_Target'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Source.70'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Target.130'
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Convert_Expense'
+- waitForAnimationToEnd
+
+- runFlow: subflows/delete-transaction.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Convert_Expense'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Source.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Target.100'

@@ -31,16 +31,21 @@ export class AccountBalanceRepository {
         return accountBalance;
     }
 
-    async getByAccountIds(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
-        return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+    async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountBalanceEntityTable)
+            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getAllBalances() {
         return this.db.select().from(AccountBalanceEntityTable);
     }
 
-    async getNewTransactionEntriesDeltas(accountIds: number[]): Promise<Map<number, number>> {
-        const results = await this.db
+    async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
+        const database = tx ?? this.db;
+
+        const results = await database
             .select({
                 accountId: TransactionEntryEntityTable.accountId,
                 delta: this.getTransactionsSumSql().mapWith(Number)

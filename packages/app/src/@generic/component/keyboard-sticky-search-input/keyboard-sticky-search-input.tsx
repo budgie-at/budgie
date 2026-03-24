@@ -16,11 +16,12 @@ interface Props {
     readonly onSearchChange: (search: string) => void;
     readonly inputBottom: number;
     readonly keyboardGap: number;
+    readonly testID?: string;
 }
 
 const BORDER_CURVE_CONTINUOUS = 'continuous';
 
-export const KeyboardStickySearchInput = ({ search, placeholder, onSearchChange, inputBottom, keyboardGap }: Props) => {
+export const KeyboardStickySearchInput = ({ search, placeholder, onSearchChange, inputBottom, keyboardGap, testID }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
     const pageBackgroundColor = isDarkColorSchema ? PAGE_BACKGROUND_DARK : PAGE_BACKGROUND_LIGHT;
 
@@ -47,6 +48,7 @@ export const KeyboardStickySearchInput = ({ search, placeholder, onSearchChange,
                     value={search}
                     onChangeText={onSearchChange}
                     placeholder={placeholder}
+                    testID={testID}
                     className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
                 />
             </View>

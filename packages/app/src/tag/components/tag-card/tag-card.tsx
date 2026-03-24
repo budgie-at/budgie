@@ -2,6 +2,7 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
+import { TagCardSelectors } from '../../../@e2e/selectors/tag-card.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
@@ -15,6 +16,7 @@ export const TagCard = ({ onOpen, tag }: Props) => {
 
     return (
         <SimpleHorizontalCell
+            testID={TagCardSelectors.Card(tag.title)}
             right={
                 <Text className="text-secondary-foreground font-medium text-xs ml-auto">
                     <Trans>Swipe left</Trans>

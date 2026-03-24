@@ -1,0 +1,25 @@
+{
+    "name": "@raphaelbarbosaqwerty/maestro-skills",
+    "version": "1.0.0",
+    "description": "Maestro E2E UI testing skill for iOS, Android, Flutter, React Native, and Web",
+    "keywords": [
+        "maestro",
+        "e2e",
+        "testing",
+        "flutter",
+        "react-native",
+        "ios",
+        "android",
+        "skills"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/raphaelbarbosaqwerty/maestro-dev-skills"
+    },
+    "license": "MIT",
+    "author": "Raphael Barbosa",
+    "files": [
+        "SKILL.md",
+        "rules"
+    ]
+}

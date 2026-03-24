@@ -67,12 +67,12 @@ export const TransactionKeypad = (props: Props) => {
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
                     <View className="flex-2">
                         <TransactionKeypadButton
-                            testID={confirmTestID}
                             icon={UserIconNameEnum.CircleCheck}
                             variant="confirm"
                             colorVariant={variant}
                             onPress={onConfirm}
                             disabled={isConfirmDisabled}
+                            testID={confirmTestID}
                         />
                     </View>
                 </View>

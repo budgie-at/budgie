@@ -51,8 +51,8 @@ export class AccountRepository {
         await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
     }
 
-    async getAllActiveAccounts(): Promise<AccountEntityInterface[]> {
-        return await this.db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
+    async getAllActiveAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {

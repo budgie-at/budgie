@@ -121,7 +121,6 @@ export const TransactionKeypadButton = (props: Props) => {
 
     return (
         <HapticPressable
-            testID={testID}
             accessibilityLabel={value ?? icon}
             accessibilityRole="button"
             className={containerClassName}
@@ -130,6 +129,7 @@ export const TransactionKeypadButton = (props: Props) => {
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            testID={testID}
         >
             <Animated.View className="items-center justify-center" style={animatedStyle}>
                 {isDefined(icon) ? (

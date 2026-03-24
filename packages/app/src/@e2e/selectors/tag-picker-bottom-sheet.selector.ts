@@ -1,5 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 export const TagPickerBottomSheetSelectors = {
     Input: 'TagPickerBottomSheet.Input',
-    Card: (index: number) => `TagPickerBottomSheet.Card.${index}`
+    CreateButton: 'TagPickerBottomSheet.CreateButton',
+    Card: (title: string) => `TagPickerBottomSheet.Card.${title.trim()}` as const
 } as const;

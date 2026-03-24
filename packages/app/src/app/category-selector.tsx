@@ -50,14 +50,15 @@ export default function CategorySelectorModal() {
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
-                testID={CategoryPickerBottomSheetSelectors.Input}
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search categories...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
+                rightActionTestID={CategoryPickerBottomSheetSelectors.CreateButton}
+                testID={CategoryPickerBottomSheetSelectors.Input}
             />
 
             {isNotEmptyString(description) ? (
@@ -66,7 +67,13 @@ export default function CategorySelectorModal() {
                 </View>
             ) : null}
 
-            <CategorySelectContent data={data} variant={variant} initialCategoryId={initialCategoryId} onSelect={resolveCategorySelector} />
+            <CategorySelectContent
+                data={data}
+                variant={variant}
+                initialCategoryId={initialCategoryId}
+                onSelect={resolveCategorySelector}
+                cardTestID={CategoryPickerBottomSheetSelectors.Card}
+            />
         </View>
     );
     /* jscpd:ignore-end */

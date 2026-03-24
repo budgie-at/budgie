@@ -2,6 +2,7 @@ import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@b
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { AccountPickerBottomSheetSelectors } from '../../../@e2e/selectors/account-picker-bottom-sheet.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
@@ -14,11 +15,10 @@ interface Props extends Pick<AccountWithInstrumentEntityInterface, 'id' | 'icon'
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly className?: string;
-    readonly testID?: string;
 }
 
 export const AccountSelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, type, instrument, testID } = props;
+    const { className, isSelected, title, onSelect, id, icon, type, instrument } = props;
 
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
@@ -27,11 +27,12 @@ export const AccountSelectorCard = (props: Props) => {
 
     return (
         <SelectorCard
-            testID={testID}
             identifier={id}
             isSelected={isSelected}
+            allowReselect
             onSelect={onSelect}
             className={className}
+            testID={AccountPickerBottomSheetSelectors.Option(title)}
             iconSlot={<CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />}
             title={title}
             subtitle={
