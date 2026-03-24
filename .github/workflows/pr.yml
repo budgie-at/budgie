@@ -280,18 +280,20 @@ jobs:
           xcode-select -p || true
           xcodebuild -version
 
-      - name: Ensure CocoaPods is installed
+      - name: Ensure CocoaPods and ccache are installed
+        id: ensure-tools
         run: |
-          if command -v pod >/dev/null 2>&1; then
-            echo "CocoaPods $(pod --version) found"
-          else
-            echo "::warning::CocoaPods not found — installing via gem"
-            gem install cocoapods --user-install --no-document
-            GEM_USER_DIR="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
-            echo "$GEM_USER_DIR" >> "$GITHUB_PATH"
-            export PATH="$GEM_USER_DIR:$PATH"
-            echo "Installed CocoaPods $(pod --version)"
+          MISSING=()
+          command -v pod >/dev/null 2>&1 || MISSING+=(cocoapods)
+          command -v ccache >/dev/null 2>&1 || MISSING+=(ccache)
+
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo "::warning::Missing tools: ${MISSING[*]} — installing via brew"
+            brew install "${MISSING[@]}"
           fi
+
+          echo "CocoaPods $(pod --version)"
+          echo "ccache $(ccache --version | head -1)"
 
       - name: Restore CocoaPods cache
         uses: actions/cache/restore@v4
@@ -305,27 +307,11 @@ jobs:
             pods-${{ runner.os }}-
 
       - name: Setup ccache
-        id: setup-ccache
         run: |
-          mkdir -p "$IOS_DERIVED_DATA"
-          if ! command -v ccache >/dev/null 2>&1; then
-            if command -v brew >/dev/null 2>&1; then
-              echo "::warning::ccache not found — installing via brew"
-              brew install ccache
-            else
-              echo "::warning::Neither ccache nor brew found — building without compiler cache"
-              echo "available=false" >> "$GITHUB_OUTPUT"
-              echo "USE_CCACHE=0" >> "$GITHUB_ENV"
-              exit 0
-            fi
-          fi
-          echo "available=true" >> "$GITHUB_OUTPUT"
-          echo "ccache $(ccache --version | head -1) found"
-          mkdir -p "$CCACHE_DIR"
+          mkdir -p "$IOS_DERIVED_DATA" "$CCACHE_DIR"
           ccache --zero-stats || true
 
       - name: Restore ccache
-        if: steps.setup-ccache.outputs.available == 'true'
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -510,7 +496,7 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always() && steps.setup-ccache.outputs.available == 'true'
+        if: always()
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
