@@ -3,6 +3,8 @@ import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import {
     LEGEND_LIST_CONTENT_GAP,
     LEGEND_LIST_ESTIMATED_ITEM_SIZE,
@@ -16,10 +18,13 @@ import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
 
+import type { DeleteConfirmation } from '../deletable-row/deletable-row';
+
 interface Props<T extends IdInterface> {
     data: T[];
-    onDelete: (id: number) => Promise<void>;
+    onDelete?: (id: number) => Promise<void>;
     renderCard: (item: T) => ReactNode;
+    getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     children?: ReactNode;
 }
 
@@ -31,19 +36,37 @@ const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
 const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
-export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, children }: Props<T>) => {
+export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, getDeleteConfirmation, children }: Props<T>) => {
     const [notify] = useVibration();
 
     const handleDeleteItem = async (id: number) => {
-        await onDelete(id);
-        notify(NotificationFeedbackType.Success);
+        if (!isDefined(onDelete)) {
+            return;
+        }
+
+        const isDeleted = await onDelete(id)
+            .then(() => true)
+            .catch(() => false);
+
+        if (isDeleted) {
+            notify(NotificationFeedbackType.Success);
+        }
     };
 
-    const renderItem = ({ item }: { item: T }) => (
-        <DeletableRow id={item.id} onDelete={handleDeleteItem}>
-            {renderCard(item)}
-        </DeletableRow>
-    );
+    const renderItem = ({ item }: { item: T }) => {
+        const card = renderCard(item);
+        if (!isDefined(onDelete)) {
+            return card;
+        }
+
+        const confirmation = getDeleteConfirmation?.(item);
+
+        return (
+            <DeletableRow id={item.id} onDelete={handleDeleteItem} {...(isDefined(confirmation) && { confirmation })}>
+                {card}
+            </DeletableRow>
+        );
+    };
 
     return (
         <>

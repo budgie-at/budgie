@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
 import { SelectorCard } from '../selector-card/selector-card';
@@ -62,6 +63,7 @@ export const ContactSelectorCard = (props: Props) => {
             isSelected={isSelected}
             onSelect={onSelect}
             verticalAlign="top"
+            testID={AccountFormSelectors.ContactOption(title)}
             iconSlot={icon}
             title={title}
             subtitle={subtitle}

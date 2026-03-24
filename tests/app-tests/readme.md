@@ -5,6 +5,7 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 ## Running Tests Locally
 
 ### Prerequisites
+
 - Install Maestro CLI: `curl -fsSL "https://get.maestro.mobile.dev" | bash`
 - iOS Simulator or Android Emulator running
 - App installed on the simulator/emulator
@@ -12,13 +13,16 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 ### Commands
 
 iOS:
+
 ```bash
-maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --config config.yaml
+sh ./scripts/setup-ios-simulator.sh
+sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
 Android:
+
 ```bash
-maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml
+sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
 ```
 
 ## CI/CD

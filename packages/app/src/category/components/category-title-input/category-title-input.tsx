@@ -22,7 +22,6 @@ export const CategoryTitleInput = ({ value, onChange, onBlur, animationDelay = D
         <Animated.View entering={FadeInUp.delay(animationDelay).duration(200)} className="px-3xl">
             <FormItem label={t`Category Name`}>
                 <Input
-                    testID={testID}
                     size="lg"
                     value={value}
                     onChangeText={onChange}
@@ -35,6 +34,7 @@ export const CategoryTitleInput = ({ value, onChange, onBlur, animationDelay = D
                     textContentType="none"
                     spellCheck={false}
                     inputMode="text"
+                    testID={testID}
                 />
             </FormItem>
         </Animated.View>

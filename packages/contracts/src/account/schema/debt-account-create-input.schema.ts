@@ -1,4 +1,4 @@
-import { number } from 'zod';
+import { boolean, number } from 'zod';
 
 import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 
@@ -12,7 +12,6 @@ export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountE
         externalId: true,
         targetBalance: true,
         externalSource: true,
-        includeInNetWorth: true,
         titleSearch: true
     })
     .required({
@@ -21,8 +20,7 @@ export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountE
     })
     .extend({
         targetBalance: number().positive(),
-        currentBalance: number().nonnegative()
-    })
-    .partial({
-        isActive: true
+        currentBalance: number().nonnegative(),
+        includeInNetWorth: boolean().optional(),
+        isActive: boolean().optional()
     });

@@ -7,6 +7,7 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountDetailsSelectors } from '../../../../@e2e/selectors/account-details.selector';
 import { AnimatedBackdrop } from '../../../../@generic/component/animated-backdrop/animated-backdrop';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -65,7 +66,7 @@ export default function AccountDetails() {
                         iconVariant={ACCOUNT_COLOR[type]}
                         right={
                             <Link href={`/account/${id}/update`} asChild>
-                                <HapticPressable className="ml-auto">
+                                <HapticPressable className="ml-auto" testID={AccountDetailsSelectors.EditButton}>
                                     <CircleIcon
                                         icon={UserIconNameEnum.EllipsisVertical}
                                         variant="ghost"

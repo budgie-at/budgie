@@ -16,6 +16,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly initialCategoryId: number | null;
     readonly onSelect: (categoryId: number) => void;
+    readonly cardTestID?: (title: string) => string;
 }
 
 const NUM_COLUMNS = 3;
@@ -24,7 +25,7 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
     item.isEmpty ? `empty-${index}` : item.id.toString();
 
 export const CategorySelectContent = (props: Props) => {
-    const { data, variant, initialCategoryId, onSelect } = props;
+    const { data, variant, initialCategoryId, onSelect, cardTestID } = props;
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
@@ -41,13 +42,13 @@ export const CategorySelectContent = (props: Props) => {
             />
         ) : (
             <CategorySelectorCard
-                testID={CategoryPickerBottomSheetSelectors.Card(index)}
                 isSelected={item.id === initialCategoryId}
                 onSelect={onSelect}
                 title={item.title}
                 variant={variant}
                 icon={item.icon}
                 id={item.id}
+                testID={cardTestID?.(item.title) ?? CategoryPickerBottomSheetSelectors.Card(index)}
             />
         );
 

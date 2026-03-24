@@ -12,6 +12,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -26,24 +27,22 @@ export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string;
-    readonly testID?: string;
-    readonly categoryBadgeTestID?: string;
-    readonly tagTestID?: string;
 }
 
-export const TransactionCard = ({
-    transaction,
-    formattedDate,
-    categoryLabel,
-    testID,
-    categoryBadgeTestID,
-    tagTestID
-}: TransactionCardProps) => {
+export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
+    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
+    let cardTestID: string = TransactionCardSelectors.Card(transaction.id);
+
+    if (isAdjustment) {
+        cardTestID = TransactionCardSelectors.AdjustmentCard(transaction.id);
+    } else if (isNotEmptyString(title)) {
+        cardTestID = TransactionCardSelectors.LabelCard(title);
+    }
 
     const getHref = (): Href => {
         const { id } = transaction;
@@ -65,7 +64,7 @@ export const TransactionCard = ({
 
     return (
         <Link href={getHref()} asChild>
-            <Card testID={testID} className="p-xl gap-y-8">
+            <Card className="p-xl gap-y-8" testID={cardTestID}>
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 
@@ -83,11 +82,7 @@ export const TransactionCard = ({
                         ) : null}
 
                         {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
-                            <TransactionCategoryBadge
-                                testID={categoryBadgeTestID}
-                                transaction={transaction}
-                                categoryLabel={categoryLabel}
-                            />
+                            <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
                         )}
                     </View>
 
@@ -98,7 +93,7 @@ export const TransactionCard = ({
                     <TransactionCardAccountInfo transaction={transaction} />
 
                     <View className="items-end gap-y-xs">
-                        <TransactionCardTag testID={tagTestID} transaction={transaction} />
+                        <TransactionCardTag transaction={transaction} />
                         <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
                     </View>
                 </View>

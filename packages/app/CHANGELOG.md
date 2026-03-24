@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.41.3](https://github.com/budgie-at/budgie/compare/v2.41.2...v2.41.3) (2026-03-22)
+
+### Bug Fixes
+
+- **app:** stabilize EAS fingerprint for ccache ([eb6f016](https://github.com/budgie-at/budgie/commit/eb6f016408dca4f045f178f13da6353846846ca1))
+
+## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
+
+### Bug Fixes
+
+- **app:** handle settings delete errors and sync i18n ([8b6c042](https://github.com/budgie-at/budgie/commit/8b6c042b65d2b424b5c58148acf4622927b0ca6f))
+- **app:** resolve form shell lint issues ([d9d80d8](https://github.com/budgie-at/budgie/commit/d9d80d84cb02b50e4c5a2ebe2e294de963638521))
+- **app:** type safe sync form edges ([dc2c1e2](https://github.com/budgie-at/budgie/commit/dc2c1e2603a7546559ad71677e89b360c859dde1))
+
+## [2.41.1](https://github.com/budgie-at/budgie/compare/v2.41.0...v2.41.1) (2026-03-16)
+
+### Bug Fixes
+
+- **app-tests:** harden archived account fixture flow ([fde79bf](https://github.com/budgie-at/budgie/commit/fde79bf0c7ec15453b6409a9d814394face2ddf6))
+- **app-tests:** move e2e import reload after token persist ([6ac9f25](https://github.com/budgie-at/budgie/commit/6ac9f255540265e3ee7130fc25296043f71fb578))
+- **app-tests:** reload after app-owned fixture import ([aa3e88e](https://github.com/budgie-at/budgie/commit/aa3e88e4bfef80e6200a60376be2fb198f5a008e))
+
+# [2.41.0](https://github.com/budgie-at/budgie/compare/v2.40.0...v2.41.0) (2026-03-15)
+
+### Bug Fixes
+
+- **app:** add sqlite-vec iOS xcframework workaround for SDK 55 ([8f26230](https://github.com/budgie-at/budgie/commit/8f26230bd9ca26b2f26578fd674daa0a016850a0))
+- **app:** centralize inline testIDs and fix e2e flow issues ([425b34b](https://github.com/budgie-at/budgie/commit/425b34bbed929b873268fd0bf9df02bc155f010e))
+- **app:** clear expo 55 e2e lint regressions ([f419d85](https://github.com/budgie-at/budgie/commit/f419d85a398fd9a12b2c30ac0a0461adae264ef9))
+- **app:** move hermes-compiler resolution to root and deduplicate expo-sqlite ([42d008e](https://github.com/budgie-at/budgie/commit/42d008e07d2d258a9c75850a551ca2c300701e2e))
+- **app:** pre-copy vec.xcframework for EAS local iOS builds ([dc2d593](https://github.com/budgie-at/budgie/commit/dc2d59346cdb37ff624b0b5e581c8585a5b57e11))
+- **app:** remove FormSheetSpacer references from new selector modals ([5237010](https://github.com/budgie-at/budgie/commit/5237010744ba7ed38874b28c34f8da4d259d8a18))
+- **app:** restore transaction card selector typing ([ca7257f](https://github.com/budgie-at/budgie/commit/ca7257f6ebe5fdd788915dbeb93c0b662c75fabc))
+- **app:** stabilize Maestro iOS navigation and screen capture ([5837dc5](https://github.com/budgie-at/budgie/commit/5837dc5bb2d8098c095bbcc2f79fb60a4818dc9c))
+- **app:** update modal presentations and remove FormSheetSpacer ([f5a584b](https://github.com/budgie-at/budgie/commit/f5a584b729709662d4c8867b4203b76bf4342f83))
+- **app:** use Expo config plugin to pre-copy vec.xcframework before linking ([e119f98](https://github.com/budgie-at/budgie/commit/e119f986650099cc0ffb007b8dd237d5a6a0f4f5))
+- **ci:** disable AI in e2e builds ([84c77f4](https://github.com/budgie-at/budgie/commit/84c77f4b6b1aed4cecbfc9e1b0ba8a7842673199))
+- **ci:** stabilize expo 55 ios preview pipeline ([06599c8](https://github.com/budgie-at/budgie/commit/06599c82beadd19f9a473fee860bc642fd35524e))
+- **ci:** use dedicated e2e app variant for Maestro ([c35f365](https://github.com/budgie-at/budgie/commit/c35f36592b424305bfd040593f9fa19de6ae8ab5))
+- **e2e:** stabilize app-owned reset after database import ([95356c9](https://github.com/budgie-at/budgie/commit/95356c9f783601998d5026e6b12639acab24cdb7))
+- **e2e:** stabilize debt return date selection ([2076b5b](https://github.com/budgie-at/budgie/commit/2076b5bec6fbde628d972ca856da7d9f93e0a214))
+
+### Features
+
+- **app:** add e2e selectors, testIDs, and Maestro CRUD test flows ([b06e29f](https://github.com/budgie-at/budgie/commit/b06e29f84b9a0b4c15b655a41c32e5a12e9e5e47))
+- **app:** add E2E testIDs and rewrite Maestro test flows ([24f1659](https://github.com/budgie-at/budgie/commit/24f1659697051c8b5377ca4d0613217baf9d95bc))
+- **app:** add testIDs for Maestro e2e testing ([43dcc64](https://github.com/budgie-at/budgie/commit/43dcc64d22a44fe0178e29078d91af99bd01fbdf))
+- **app:** add transfer testIDs, income/transfer e2e flows, and fix numpad input ([87b81b6](https://github.com/budgie-at/budgie/commit/87b81b6029185bd71fc65a278ec1bae439ac4c43))
+- **app:** upgrade to Expo SDK 55 and React Native 0.83 ([c2fca2e](https://github.com/budgie-at/budgie/commit/c2fca2e9ff5aa5d336ca939841ad02e0422937e2))
+- **app:** upgrade to Expo SDK 55 stable with Hermes v1 and OTA bytecode diffing ([c859c1e](https://github.com/budgie-at/budgie/commit/c859c1e975029915b5f136f08b769bd7179d8958))
+
 # [2.40.0](https://github.com/budgie-at/budgie/compare/v2.39.0...v2.40.0) (2026-03-09)
 
 ### Bug Fixes

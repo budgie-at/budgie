@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { TransactionFormSelectors } from '../@e2e/selectors/transaction-form.selector';
+import { AccountPickerBottomSheetSelectors } from '../@e2e/selectors/account-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
 import { useAccountSelectorModal } from '../account/context/account-selector-modal.context';
@@ -31,12 +31,12 @@ export default function AccountSelectorModal() {
     const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
-                testID={TransactionFormSelectors.AccountSearchInput}
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search accounts...`}
+                testID={AccountPickerBottomSheetSelectors.Input}
             />
 
             <AccountSelectContent

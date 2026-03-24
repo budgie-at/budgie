@@ -2,10 +2,11 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
@@ -51,7 +52,11 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
+        <Page
+            testID={SettingsPageSelectors.Container}
+            header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}
+            withBlur
+        >
             <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
@@ -104,20 +109,20 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Organization`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('organization')}>
                             <SettingsCard
-                                testID={SettingsPageSelectors.ManageCategoriesCard}
                                 onPress={handleNavigateToCategories}
                                 title={t`Manage Categories`}
                                 description={t`View and delete custom categories`}
                                 icon={UserIconNameEnum.Folder}
                                 variant="default"
+                                testID={SettingsPageSelectors.ManageCategoriesCard}
                             />
                             <SettingsCard
-                                testID={SettingsPageSelectors.ManageTagsCard}
                                 onPress={handleNavigateToTags}
                                 title={t`Manage Tags`}
                                 description={t`Create and organize transaction tags`}
                                 icon={UserIconNameEnum.Tag}
                                 variant="pink"
+                                testID={SettingsPageSelectors.ManageTagsCard}
                             />
                             <SettingsCard
                                 testID={SettingsPageSelectors.ManageRulesCard}
@@ -133,6 +138,7 @@ export default function SettingsPage() {
                                 description={t`View and restore archived accounts`}
                                 icon={UserIconNameEnum.Archive}
                                 variant="dark-warning"
+                                testID={SettingsPageSelectors.ArchivedCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToInactive}
@@ -140,6 +146,7 @@ export default function SettingsPage() {
                                 description={t`View and activate hidden accounts`}
                                 icon={UserIconNameEnum.EyeOff}
                                 variant="dark-warning"
+                                testID={SettingsPageSelectors.InactiveCard}
                             />
                         </Animated.View>
                     </SettingsGroup>
@@ -174,14 +181,17 @@ export default function SettingsPage() {
                 </View>
 
                 <SettingsGroup title={t`About`}>
-                    <SettingsCard
-                        align="top"
-                        title={t`Budgie`}
-                        className="items-baseline"
-                        description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
-                        icon={UserIconNameEnum.Database}
-                        variant="ghost"
-                    />
+                    <Card variant="ghost" className="items-center gap-y-3xl">
+                        <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
+                        <Text className="text-secondary-foreground text-sm text-center">
+                            {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
+                        </Text>
+                        <View className="self-stretch h-px bg-secondary-corner" />
+                        <View className="items-center gap-y-xs">
+                            <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
+                            <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
+                        </View>
+                    </Card>
                 </SettingsGroup>
                 <MenuSpacer />
             </ScrollView>

@@ -13,22 +13,22 @@ interface Props {
     readonly placeholder?: string;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
+    readonly rightActionTestID?: string;
     readonly testID?: string;
 }
 
 export const SelectorModalSearchHeader = (props: Props) => {
-    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress, testID } = props;
+    const { search, onSearchChange, placeholder, rightActionIcon, rightActionOnPress, rightActionTestID, testID } = props;
     const { t } = useLingui();
 
     const hasRightAction = isDefined(rightActionIcon) && isDefined(rightActionOnPress);
 
     return (
-        <View className="absolute top-0 left-0 right-0 z-10 pt-4xl pb-lg px-xl bg-primary-reverse">
+        <View collapsable={false} className="absolute top-0 left-0 right-0 z-10 pt-4xl pb-lg px-xl bg-primary-reverse">
             <View className="flex-row items-center gap-x-md">
                 <View className="flex-1 flex-row items-center rounded-5xl bg-secondary-background h-[50px] px-lg border border-secondary-corner">
                     <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
                     <TextInput
-                        testID={testID}
                         className="flex-1 text-primary text-md ml-sm"
                         value={search}
                         onChangeText={onSearchChange}
@@ -37,12 +37,14 @@ export const SelectorModalSearchHeader = (props: Props) => {
                         autoCapitalize="none"
                         autoCorrect={false}
                         clearButtonMode="while-editing"
+                        testID={testID}
                     />
                 </View>
                 {hasRightAction && (
                     <HapticPressable
                         onPress={rightActionOnPress}
                         className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                        testID={rightActionTestID}
                     >
                         <Icon icon={rightActionIcon} size={22} className="text-black" />
                     </HapticPressable>

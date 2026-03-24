@@ -37,7 +37,9 @@ interface Props {
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
     readonly onSplitPress?: () => void;
-    readonly categorySelectorTestID?: string;
+    readonly categoryTestID?: string;
+    readonly tagsTestID?: string;
+    readonly commentTestID?: string;
 }
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
@@ -51,7 +53,9 @@ export const TransactionFieldIcons = (props: Props) => {
         onCommentPress,
         onDatePress,
         onSplitPress,
-        categorySelectorTestID
+        categoryTestID,
+        tagsTestID,
+        commentTestID
     } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
@@ -141,6 +145,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 variant={variant}
                 onPress={onCommentPress}
                 animationDelay={NOTE_ANIMATION_DELAY}
+                testID={commentTestID}
             />
 
             {isTransfer ? null : (
@@ -151,13 +156,13 @@ export const TransactionFieldIcons = (props: Props) => {
                     variant={variant}
                     onPress={handleTagsPress}
                     animationDelay={TAGS_ANIMATION_DELAY}
+                    testID={tagsTestID}
                 />
             )}
 
             {isTransfer ? null : (
                 <TransactionFieldIcon
                     ref={categoryIconRef}
-                    testID={categorySelectorTestID}
                     icon={category?.icon ?? UserIconNameEnum.Folder}
                     label={t`Category`}
                     value={category?.title}
@@ -165,6 +170,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     disabled={isSplitActive}
                     onPress={handleCategoryPress}
                     animationDelay={CATEGORY_ANIMATION_DELAY}
+                    testID={categoryTestID}
                 />
             )}
         </View>

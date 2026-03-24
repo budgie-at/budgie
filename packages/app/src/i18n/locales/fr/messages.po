@@ -1,83 +1,10 @@
+#: src/app/(tabs)/settings/index.tsx:181
 msgid ""
+"AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
+"Version {appVersion}"
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language: fr\n"
-"Language-Team: \n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: src/account/component/accounts-group/accounts-group.tsx:68
-msgid "{accountsCount} accounts"
-msgstr "{accountsCount} comptes"
-
-#: src/account/component/archived-account-card/archived-account-card.tsx:50
-msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
-msgstr "{accountTitle} et toutes ses transactions seront définitivement supprimés. Les transferts seront convertis en revenus/dépenses sur les autres comptes. Cette action est irréversible."
-
-#: src/account/component/archived-account-card/archived-account-card.tsx:31
-msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans les totaux."
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx:26
-msgid "{accountTitle} will be restored to your main view."
-msgstr "{accountTitle} sera restauré dans votre vue principale."
-
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:64
-#: src/rule/hooks/use-rule-form.hook.ts:78
-msgid "{applied} updated, {failed} failed"
-msgstr "{applied} mis à jour, {failed} échoués"
-
-#: src/app/import-column-mapper.tsx:30
-msgid "{availableCount} columns available"
-msgstr "{availableCount} colonnes disponibles"
-
-#: src/ai/provider/ai-status.provider.tsx:39
-msgid "{completionRatio}% learned"
-msgstr "{completionRatio}% appris"
-
-#: src/rule/hooks/use-create-suggest-rule.hook.ts:42
-#: src/rule/hooks/use-rule-form.hook.ts:98
-msgid "{count} existing transactions match this rule."
-msgstr "{count} transactions existantes correspondent à cette règle."
-
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:36
-msgid "{formattedAmount} · {category}"
-msgstr "{formattedAmount} · {category}"
-
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
-msgid "{formattedRemaining} left to assign"
-msgstr "{formattedRemaining} à attribuer"
-
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
-msgid "{formattedRemaining} over budget"
-msgstr "{formattedRemaining} au-dessus du budget"
-
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
-msgid "{percentage}% of expenses"
-msgstr "{percentage}% des dépenses"
-
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
-msgid "{percentage}% of income"
-msgstr "{percentage}% des revenus"
-
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:104
-msgid "{splitEntryCount} items"
-msgstr "{splitEntryCount} éléments"
-
-#: src/rule/constant/rule-condition-operator.constant.ts:12
-msgid "<"
-msgstr "<"
-
-#: src/rule/constant/rule-condition-operator.constant.ts:11
-msgid ">"
-msgstr ">"
+"Application de budgétisation alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
+"Version {appVersion}"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:64
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -91,9 +18,41 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
 
+#: src/rule/constant/rule-condition-operator.constant.ts:12
+msgid "<"
+msgstr "<"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:11
+msgid ">"
+msgstr ">"
+
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:77
 msgid "A rule with the same conditions already exists."
 msgstr "Une règle avec les mêmes conditions existe déjà."
+
+#: src/app/(tabs)/settings/index.tsx:96
+msgid "AI"
+msgstr "IA"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:154
+msgid "AI data preparation failed"
+msgstr "La préparation des données IA a échoué"
+
+#: src/ai/hook/use-ai-data-preparation.hook.ts:58
+msgid "AI model is loading, please wait..."
+msgstr "Le modèle IA est en cours de chargement, veuillez patienter..."
+
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
+msgid "AI-Generated Metadata"
+msgstr "Métadonnées générées par IA"
+
+#: src/app/(tabs)/settings/index.tsx:178
+msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
+msgstr "Application de budget alimentée par l'IA avec confidentialité totale. Toutes les données sont traitées localement sur votre appareil."
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:63
+msgid "API Token"
+msgstr "Jeton API"
 
 #: src/app/(tabs)/settings/index.tsx:176
 msgid "About"
@@ -136,13 +95,13 @@ msgstr "Les comptes que vous archivez apparaîtront ici. Ils ne seront pas inclu
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 msgstr "Les comptes que vous marquez comme inactifs apparaîtront ici. Ils ne seront pas affichés sur la page principale."
 
-#: src/rule/components/rule-action-row/rule-action-row.tsx:34
-msgid "Action {actionNumber}"
-msgstr "Action {actionNumber}"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:42
 msgid "Action Type"
 msgstr "Type d'action"
+
+#: src/rule/components/rule-action-row/rule-action-row.tsx:34
+msgid "Action {actionNumber}"
+msgstr "Action {actionNumber}"
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx:35
 msgid "Actions"
@@ -165,21 +124,21 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/app/note-input.tsx:32
-msgid "Add a note..."
-msgstr "Ajouter une note..."
-
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx:27
-msgid "Add item"
-msgstr "Ajouter un élément"
-
 #: src/rule/constant/rule-action-type-options.constant.ts:12
 msgid "Add Tag"
 msgstr "Ajouter un tag"
+
+#: src/app/note-input.tsx:32
+msgid "Add a note..."
+msgstr "Ajouter une note..."
+
+#: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx:27
+msgid "Add item"
+msgstr "Ajouter un élément"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
@@ -189,34 +148,6 @@ msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 msgid "Adjustment"
 msgstr "Ajustement"
 
-#: src/app/(tabs)/settings/index.tsx:96
-msgid "AI"
-msgstr "IA"
-
-#: src/ai/hook/use-ai-data-preparation.hook.ts:154
-msgid "AI data preparation failed"
-msgstr "La préparation des données IA a échoué"
-
-#: src/ai/hook/use-ai-data-preparation.hook.ts:58
-msgid "AI model is loading, please wait..."
-msgstr "Le modèle IA est en cours de chargement, veuillez patienter..."
-
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
-msgid "AI-Generated Metadata"
-msgstr "Métadonnées générées par IA"
-
-#: src/app/(tabs)/settings/index.tsx:181
-msgid ""
-"AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
-"Version {appVersion}"
-msgstr ""
-"Application de budgétisation alimentée par l'IA avec une confidentialité totale. Tout le traitement des données se fait localement sur votre appareil.\n"
-"Version {appVersion}"
-
-#: src/app/import-column-mapper.tsx:85
-msgid "All columns have been assigned"
-msgstr "Toutes les colonnes ont été assignées"
-
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:139
 msgid "All Recurring"
 msgstr "Tous les Récurrents"
@@ -224,6 +155,10 @@ msgstr "Tous les Récurrents"
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "Tout le temps"
+
+#: src/app/import-column-mapper.tsx:85
+msgid "All columns have been assigned"
+msgstr "Toutes les colonnes ont été assignées"
 
 #: src/app/(tabs)/settings/index.tsx:60
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
@@ -244,19 +179,14 @@ msgstr "Montant"
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
-#: src/rule/util/join-with-separators.util.tsx:6
-msgid "and"
-msgstr "et"
-
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:63
-msgid "API Token"
-msgstr "Jeton API"
-
 #: src/settings/components/security-settings/pin-disabled-card.tsx:17
 #: src/settings/components/security-settings/pin-enabled-card.tsx:48
 msgid "App Lock"
 msgstr "Verrouillage de l'application"
+
+#: src/app/(tabs)/settings/index.tsx:182
+msgid "App Version"
+msgstr "Version de l'application"
 
 #: src/app/(tabs)/settings/index.tsx:149
 msgid "Appearance"
@@ -342,22 +272,18 @@ msgstr "Ajustement de solde"
 msgid "Bank"
 msgstr "Banque"
 
-#: src/account/constant/account-type.constant.ts:12
-msgid "Bank sync"
-msgstr "Synchronisation bancaire"
-
 #: src/app/(main)/create-account/index.tsx:44
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:65
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
+#: src/account/constant/account-type.constant.ts:12
+msgid "Bank sync"
+msgstr "Synchronisation bancaire"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx:62
 msgid "Base currency"
 msgstr "Devise de base"
-
-#: src/rule/constant/rule-condition-operator.constant.ts:13
-msgid "between"
-msgstr "entre"
 
 #: src/rule/constant/operator-options.constant.ts:13
 msgid "Between"
@@ -382,6 +308,10 @@ msgstr "Emprunté"
 #: src/app/(tabs)/settings/index.tsx:179
 msgid "Budgie"
 msgstr "Budgie"
+
+#: src/rule/constant/external-source.constant.ts:14
+msgid "CSV"
+msgstr "CSV"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
@@ -425,17 +355,13 @@ msgstr "Catégories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:20
-msgid "Category → {categoryTitle}"
-msgstr "Catégorie → {categoryTitle}"
-
 #: src/category/components/category-title-input/category-title-input.tsx:23
 msgid "Category Name"
 msgstr "Nom de la catégorie"
 
-#: src/rule/util/build-action-pill-parts.util.tsx:18
-msgid "category to <0>{categoryTitle}</0>"
-msgstr "catégorie à <0>{categoryTitle}</0>"
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:20
+msgid "Category → {categoryTitle}"
+msgstr "Catégorie → {categoryTitle}"
 
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
@@ -533,10 +459,6 @@ msgstr "Connecter Monobank"
 msgid "Contact (optional)"
 msgstr "Contact (optionnel)"
 
-#: src/rule/constant/rule-condition-operator.constant.ts:8
-msgid "contains"
-msgstr "contient"
-
 #: src/rule/constant/operator-options.constant.ts:8
 msgid "Contains"
 msgstr "Contient"
@@ -592,9 +514,17 @@ msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 msgid "Could not delete account."
 msgstr "Impossible de supprimer le compte."
 
+#: src/app/(tabs)/settings/categories.tsx:66
+msgid "Could not delete category"
+msgstr "Impossible de supprimer la catégorie"
+
 #: src/rule/hooks/use-rule-form.hook.ts:143
 msgid "Could not delete rule."
 msgstr "Impossible de supprimer la règle."
+
+#: src/app/(tabs)/settings/tags.tsx:67
+msgid "Could not delete tag"
+msgstr "Impossible de supprimer le tag"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:58
 msgid "Could not delete transaction."
@@ -644,17 +574,37 @@ msgstr "Impossible de mettre à jour la transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 
-#: src/export/components/export-database/export-database.tsx:15
-msgid "Create a backup of all your data"
-msgstr "Créer une sauvegarde de toutes vos données"
+#: src/app/transaction-account-filter.tsx:110
+msgid "Create Accounts"
+msgstr "Créer des comptes"
+
+#: src/app/transaction-category-filter.tsx:103
+msgid "Create Categories"
+msgstr "Créer des catégories"
+
+#: src/category/components/category-form/category-form.tsx:66
+msgid "Create Category"
+msgstr "Créer une catégorie"
+
+#: src/rule/components/rule-form-create/rule-form-create.tsx:23
+msgid "Create Rule"
+msgstr "Créer une règle"
+
+#: src/tag/components/tag-form/tag-form.tsx:67
+msgid "Create Tag"
+msgstr "Créer une étiquette"
+
+#: src/app/transaction-tag-filter.tsx:106
+msgid "Create Tags"
+msgstr "Créer des étiquettes"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Créer un code PIN"
 
-#: src/app/transaction-account-filter.tsx:110
-msgid "Create Accounts"
-msgstr "Créer des comptes"
+#: src/export/components/export-database/export-database.tsx:15
+msgid "Create a backup of all your data"
+msgstr "Créer une sauvegarde de toutes vos données"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:41
 msgid "Create and copy the personal token"
@@ -667,14 +617,6 @@ msgstr "Créer et organiser les étiquettes de transaction"
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:80
 msgid "Create anyway"
 msgstr "Créer quand même"
-
-#: src/app/transaction-category-filter.tsx:103
-msgid "Create Categories"
-msgstr "Créer des catégories"
-
-#: src/category/components/category-form/category-form.tsx:66
-msgid "Create Category"
-msgstr "Créer une catégorie"
 
 #: src/app/transaction-category-filter.tsx:105
 msgid "Create custom categories in Settings to label and filter your transactions"
@@ -693,21 +635,9 @@ msgstr "Créez-en un pour commencer."
 msgid "Create rule"
 msgstr "Créer une règle"
 
-#: src/rule/components/rule-form-create/rule-form-create.tsx:23
-msgid "Create Rule"
-msgstr "Créer une règle"
-
 #: src/app/(tabs)/settings/rules.tsx:110
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Créez des règles pour catégoriser et taguer automatiquement vos transactions bancaires"
-
-#: src/tag/components/tag-form/tag-form.tsx:67
-msgid "Create Tag"
-msgstr "Créer une étiquette"
-
-#: src/app/transaction-tag-filter.tsx:106
-msgid "Create Tags"
-msgstr "Créer des étiquettes"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "Create tags to organize your transactions"
@@ -724,10 +654,6 @@ msgstr "Crypto"
 #: src/account/constant/account-type-description.constant.ts:9
 msgid "Cryptocurrency holdings"
 msgstr "Avoirs en cryptomonnaies"
-
-#: src/rule/constant/external-source.constant.ts:14
-msgid "CSV"
-msgstr "CSV"
 
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
@@ -788,6 +714,14 @@ msgstr "Supprimer"
 msgid "Delete Account Permanently?"
 msgstr "Supprimer définitivement le compte ?"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:54
+msgid "Delete Permanently"
+msgstr "Supprimer définitivement"
+
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:91
+msgid "Delete Transaction"
+msgstr "Supprimer la transaction"
+
 #: src/settings/components/truncate-data/truncate-data.tsx:49
 msgid "Delete all transactions and settings"
 msgstr "Supprimer toutes les transactions et les paramètres"
@@ -796,18 +730,10 @@ msgstr "Supprimer toutes les transactions et les paramètres"
 msgid "Delete data"
 msgstr "Supprimer les données"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:54
-msgid "Delete Permanently"
-msgstr "Supprimer définitivement"
-
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:55
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:78
 msgid "Delete rule"
 msgstr "Supprimer la règle"
-
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:91
-msgid "Delete Transaction"
-msgstr "Supprimer la transaction"
 
 #: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:35
 msgid "Deselect All"
@@ -842,25 +768,9 @@ msgstr "Règle en double"
 msgid "Dutch (Netherlands)"
 msgstr "Néerlandais (Pays-Bas)"
 
-#: src/tag/components/tag-form/tag-form.tsx:148
-msgid "e.g. Business, Personal, Vacation"
-msgstr "p. ex. Affaires, Personnel, Vacances"
-
-#: src/category/components/category-title-input/category-title-input.tsx:31
-msgid "e.g. Groceries, Entertainment"
-msgstr "p. ex. Courses, Divertissement"
-
-#: src/@generic/component/account-details-field/account-details-field.tsx:56
-msgid "e.g. Savings Account"
-msgstr "ex. Compte d'épargne"
-
 #: src/category/components/category-form/category-form.tsx:66
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
-
-#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:79
-msgid "Edit existing"
-msgstr "Modifier l'existante"
 
 #: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Edit Expense"
@@ -869,10 +779,6 @@ msgstr "Modifier la dépense"
 #: src/app/(main)/transactions/[id]/income.tsx:89
 msgid "Edit Income"
 msgstr "Modifier le revenu"
-
-#: src/rule/components/rule-match-pill/rule-match-pill.tsx:105
-msgid "Edit rule"
-msgstr "Modifier la règle"
 
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:69
 msgid "Edit Rule"
@@ -886,6 +792,14 @@ msgstr "Modifier l'étiquette"
 msgid "Edit Transfer"
 msgstr "Modifier le transfert"
 
+#: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:79
+msgid "Edit existing"
+msgstr "Modifier l'existante"
+
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:105
+msgid "Edit rule"
+msgstr "Modifier la règle"
+
 #: src/app/(main)/create-account/index.tsx:31
 msgid "Emergency fund and savings goals"
 msgstr "Fonds d'urgence et objectifs d'épargne"
@@ -894,11 +808,6 @@ msgstr "Fonds d'urgence et objectifs d'épargne"
 msgid "Enable"
 msgstr "Activer"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
-#: src/auth/util/get-pin-setup-meta.util.ts:23
-msgid "Enable biometric unlock?"
-msgstr "Activer le déverrouillage biométrique ?"
-
 #: src/auth/util/get-pin-setup-meta.util.ts:10
 msgid "Enable Face ID unlock?"
 msgstr "Activer le déverrouillage Face ID ?"
@@ -906,6 +815,11 @@ msgstr "Activer le déverrouillage Face ID ?"
 #: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
 msgstr "Activer le déverrouillage Touch ID ?"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
+#: src/auth/util/get-pin-setup-meta.util.ts:23
+msgid "Enable biometric unlock?"
+msgstr "Activer le déverrouillage biométrique ?"
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -953,14 +867,6 @@ msgstr "Entrer un nouveau jeton"
 msgid "Enter value..."
 msgstr "Saisir la valeur..."
 
-#: src/auth/util/get-pin-setup-meta.util.ts:44
-msgid "Enter your {PIN_LENGTH}-digit PIN"
-msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
-
-#: src/app/(main)/pin.tsx:113
-msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
-msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres pour déverrouiller"
-
 #: src/sync/component/token-input-step/token-input-step.tsx:43
 msgid "Enter your Monobank API token"
 msgstr "Entrez votre jeton API Monobank"
@@ -969,9 +875,13 @@ msgstr "Entrez votre jeton API Monobank"
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/rule/constant/rule-condition-operator.constant.ts:6
-msgid "equals"
-msgstr "est égal à"
+#: src/auth/util/get-pin-setup-meta.util.ts:44
+msgid "Enter your {PIN_LENGTH}-digit PIN"
+msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
+
+#: src/app/(main)/pin.tsx:113
+msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
+msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres pour déverrouiller"
 
 #: src/rule/constant/operator-options.constant.ts:6
 msgid "Equals"
@@ -1004,13 +914,13 @@ msgstr "Transactions et dépenses quotidiennes"
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Taux de change : {rateLabel}. Appuyez pour modifier le montant reçu"
 
-#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
-msgid "Expected return date"
-msgstr "Date de retour prévue"
-
 #: src/account/component/account-form-date-field/account-form-date-field.tsx:22
 msgid "Expected Return Date (Optional)"
 msgstr "Date de retour prévue (optionnel)"
+
+#: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
+msgid "Expected return date"
+msgstr "Date de retour prévue"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:91
 #: src/transaction/constant/transaction-type.constant.ts:9
@@ -1020,10 +930,6 @@ msgstr "Dépense"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
 msgid "Expenses"
 msgstr "Dépenses"
-
-#: src/export/components/export-csv/export-csv.tsx:15
-msgid "Export all transactions to a CSV file"
-msgstr "Exporter toutes les transactions vers un fichier CSV"
 
 #: src/export/components/export-csv/export-csv.tsx:14
 msgid "Export CSV"
@@ -1036,6 +942,10 @@ msgstr "Exporter la base de données"
 #: src/export/hook/use-export-action.hook.ts:16
 msgid "Export Failed"
 msgstr "Échec de l'export"
+
+#: src/export/components/export-csv/export-csv.tsx:15
+msgid "Export all transactions to a CSV file"
+msgstr "Exporter toutes les transactions vers un fichier CSV"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:16
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
@@ -1106,10 +1016,6 @@ msgstr "Français"
 msgid "French (France)"
 msgstr "Français (France)"
 
-#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
-msgid "from"
-msgstr "de"
-
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:69
 msgid "From"
 msgstr "De"
@@ -1162,16 +1068,6 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "History synced"
 msgstr "Historique synchronisé"
 
-#: src/app/(main)/create-account/index.tsx:60
-#: src/sync/component/create-erste-account/create-erste-account.tsx:15
-msgid "Import accounts and transactions from Erste Bank PDF statement"
-msgstr "Importer les comptes et transactions depuis le relevé PDF Erste Bank"
-
-#: src/app/(main)/create-account/index.tsx:54
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:15
-msgid "Import accounts and transactions from Privatbank XLSX export"
-msgstr "Importer les comptes et transactions depuis l'export XLSX de Privatbank"
-
 #: src/import/components/import-csv/import-csv.tsx:38
 msgid "Import CSV"
 msgstr "Importer CSV"
@@ -1186,10 +1082,6 @@ msgstr "Importer la base de données"
 msgid "Import Erste Bank"
 msgstr "Importer Erste Bank"
 
-#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:76
-msgid "Import failed"
-msgstr "Échec de l'importation"
-
 #: src/app/(tabs)/settings/import.tsx:141
 msgid "Import Failed"
 msgstr "Importation échouée"
@@ -1198,6 +1090,20 @@ msgstr "Importation échouée"
 msgid "Import Privatbank"
 msgstr "Importer Privatbank"
 
+#: src/app/(main)/create-account/index.tsx:60
+#: src/sync/component/create-erste-account/create-erste-account.tsx:15
+msgid "Import accounts and transactions from Erste Bank PDF statement"
+msgstr "Importer les comptes et transactions depuis le relevé PDF Erste Bank"
+
+#: src/app/(main)/create-account/index.tsx:54
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:15
+msgid "Import accounts and transactions from Privatbank XLSX export"
+msgstr "Importer les comptes et transactions depuis l'export XLSX de Privatbank"
+
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:76
+msgid "Import failed"
+msgstr "Échec de l'importation"
+
 #: src/import/components/import-csv/import-csv.tsx:39
 msgid "Import transactions from a CSV file"
 msgstr "Importer des transactions depuis un fichier CSV"
@@ -1205,10 +1111,6 @@ msgstr "Importer des transactions depuis un fichier CSV"
 #: src/import/components/import-database/import-database.tsx:36
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "L'importation d'une base de données remplacera toutes les données actuelles. L'application redémarrera après l'importation. Cette action ne peut pas être annulée."
-
-#: src/rule/constant/rule-condition-operator.constant.ts:14
-msgid "in"
-msgstr "dans"
 
 #: src/rule/constant/operator-options.constant.ts:14
 msgid "In List"
@@ -1230,13 +1132,13 @@ msgstr "Inclure dans la valeur nette"
 msgid "Income"
 msgstr "Revenu"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:70
-msgid "Income by category"
-msgstr "Revenus par catégorie"
-
 #: src/transaction/components/statistics-content/statistics-content.tsx:92
 msgid "Income by Tag"
 msgstr "Revenus par étiquette"
+
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
+msgid "Income by category"
+msgstr "Revenus par catégorie"
 
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -1251,10 +1153,6 @@ msgstr "Initialisation du modèle IA..."
 msgid "Invalid file"
 msgstr "Fichier invalide"
 
-#: src/rule/util/build-condition-parts.util.tsx:13
-msgid "is"
-msgstr "est"
-
 #: src/app/(tabs)/settings/import.tsx:248
 msgid "Is Planned"
 msgstr "Est planifié"
@@ -1262,6 +1160,10 @@ msgstr "Est planifié"
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Italien (Italie)"
+
+#: src/@generic/hook/use-regenerate-translation.hook.ts:24
+msgid "LLM not ready"
+msgstr "Modèle IA non disponible"
 
 #: src/settings/components/language-selector/language-selector.tsx:35
 msgid "Language"
@@ -1287,10 +1189,6 @@ msgstr "Inférieur à"
 msgid "Listening..."
 msgstr "Écoute..."
 
-#: src/@generic/hook/use-regenerate-translation.hook.ts:24
-msgid "LLM not ready"
-msgstr "Modèle IA non disponible"
-
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:34
 msgid "Loading..."
 msgstr "Chargement..."
@@ -1298,6 +1196,14 @@ msgstr "Chargement..."
 #: src/ai/provider/ai-status.provider.tsx:43
 msgid "Long press to learn"
 msgstr "Appui long pour apprendre"
+
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
+msgid "MCC Code"
+msgstr "Code MCC"
+
+#: src/app/rule-mcc-selector.tsx:46
+msgid "MCC categories are not loaded"
+msgstr "Les catégories MCC ne sont pas chargées"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:25
 msgid "Main Currency"
@@ -1339,21 +1245,9 @@ msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 msgid "Match transactions where"
 msgstr "Faire correspondre les transactions où"
 
-#: src/rule/constant/rule-condition-operator.constant.ts:10
-msgid "matches"
-msgstr "correspond"
-
 #: src/rule/constant/operator-options.constant.ts:10
 msgid "Matches Regex"
 msgstr "Correspond à regex"
-
-#: src/app/rule-mcc-selector.tsx:46
-msgid "MCC categories are not loaded"
-msgstr "Les catégories MCC ne sont pas chargées"
-
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
-msgid "MCC Code"
-msgstr "Code MCC"
 
 #: src/rule/constant/rule-condition-field.constant.ts:10
 msgid "Merchant code"
@@ -1405,6 +1299,48 @@ msgstr "Nouveau revenu"
 msgid "New Transfer"
 msgstr "Nouveau transfert"
 
+#: src/app/transaction-account-filter.tsx:109
+msgid "No Accounts Yet"
+msgstr "Aucun compte pour le moment"
+
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:17
+msgid "No Archived Accounts"
+msgstr "Aucun compte archivé"
+
+#: src/app/transaction-category-filter.tsx:102
+msgid "No Categories Yet"
+msgstr "Aucune catégorie pour le moment"
+
+#: src/category/components/category-empty-state/category-empty-state.tsx:17
+msgid "No Custom Categories"
+msgstr "Aucune catégorie personnalisée"
+
+#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx:17
+msgid "No Inactive Accounts"
+msgstr "Aucun compte inactif"
+
+#: src/app/rule-mcc-selector.tsx:45
+msgid "No MCC codes available"
+msgstr "Aucun code MCC disponible"
+
+#: src/app/rule-mcc-selector.tsx:45
+msgid "No MCC codes found"
+msgstr "Aucun code MCC trouvé"
+
+#: src/category/components/category-empty-state/category-empty-state.tsx:17
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
+msgid "No Results"
+msgstr "Aucun résultat"
+
+#: src/app/(tabs)/settings/rules.tsx:108
+msgid "No Rules Yet"
+msgstr "Aucune règle pour le moment"
+
+#: src/app/transaction-tag-filter.tsx:105
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
+msgid "No Tags Yet"
+msgstr "Aucune étiquette pour le moment"
+
 #: src/account/component/account-select-content/account-select-content.tsx:46
 #: src/app/transaction-account-filter.tsx:102
 msgid "No accounts found"
@@ -1415,13 +1351,13 @@ msgstr "Aucun compte trouvé"
 msgid "No accounts yet"
 msgstr "Aucun compte pour le moment"
 
-#: src/app/transaction-account-filter.tsx:109
-msgid "No Accounts Yet"
-msgstr "Aucun compte pour le moment"
-
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
 msgstr "Aucun compte archivé"
+
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:19
+msgid "No archived accounts match your search"
+msgstr "Aucun compte archivé ne correspond à votre recherche"
 
 #: src/app/transaction-category-filter.tsx:95
 #: src/category/components/category-select-content/category-select-content.tsx:56
@@ -1431,10 +1367,6 @@ msgstr "Aucune catégorie trouvée"
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "No categories match your search"
 msgstr "Aucune catégorie ne correspond à votre recherche"
-
-#: src/app/transaction-category-filter.tsx:102
-msgid "No Categories Yet"
-msgstr "Aucune catégorie pour le moment"
 
 #: src/app/contact-selector.tsx:42
 msgid "No contacts found"
@@ -1452,10 +1384,6 @@ msgstr "Aucun contact pour le moment"
 msgid "No currencies found"
 msgstr "Aucune devise trouvée"
 
-#: src/category/components/category-empty-state/category-empty-state.tsx:17
-msgid "No Custom Categories"
-msgstr "Aucune catégorie personnalisée"
-
 #: src/app/icon-selector.tsx:95
 msgid "No icons found"
 msgstr "Aucune icône trouvée"
@@ -1463,6 +1391,10 @@ msgstr "Aucune icône trouvée"
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx:9
 msgid "No inactive accounts"
 msgstr "Aucun compte inactif"
+
+#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx:19
+msgid "No inactive accounts match your search"
+msgstr "Aucun compte inactif ne correspond à votre recherche"
 
 #: src/app/language-selector.tsx:60
 msgid "No languages found"
@@ -1473,26 +1405,9 @@ msgstr "Aucune langue trouvée"
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
-#: src/app/rule-mcc-selector.tsx:45
-msgid "No MCC codes available"
-msgstr "Aucun code MCC disponible"
-
-#: src/app/rule-mcc-selector.tsx:45
-msgid "No MCC codes found"
-msgstr "Aucun code MCC trouvé"
-
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
 msgid "No recurring payments detected"
 msgstr "Aucun paiement récurrent détecté"
-
-#: src/category/components/category-empty-state/category-empty-state.tsx:17
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
-msgid "No Results"
-msgstr "Aucun résultat"
-
-#: src/app/(tabs)/settings/rules.tsx:108
-msgid "No Rules Yet"
-msgstr "Aucune règle pour le moment"
 
 #: src/app/transaction-tag-filter.tsx:98
 #: src/tag/components/tags-select-content/tags-select-content.tsx:44
@@ -1503,11 +1418,6 @@ msgstr "Aucune étiquette trouvée"
 msgid "No tags match your search"
 msgstr "Aucune étiquette ne correspond à votre recherche"
 
-#: src/app/transaction-tag-filter.tsx:105
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
-msgid "No Tags Yet"
-msgstr "Aucune étiquette pour le moment"
-
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
@@ -1516,17 +1426,9 @@ msgstr "Aucune transaction pour le moment"
 msgid "None selected"
 msgstr "Aucune sélectionnée"
 
-#: src/rule/constant/rule-condition-operator.constant.ts:9
-msgid "not contains"
-msgstr "ne contient pas"
-
 #: src/rule/constant/operator-options.constant.ts:9
 msgid "Not Contains"
 msgstr "Ne contient pas"
-
-#: src/rule/constant/rule-condition-operator.constant.ts:7
-msgid "not equals"
-msgstr "n'est pas égal à"
 
 #: src/rule/constant/operator-options.constant.ts:7
 msgid "Not Equals"
@@ -1536,10 +1438,6 @@ msgstr "N'est pas égal à"
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:51
 msgid "Not generated"
 msgstr "Non généré"
-
-#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:55
-msgid "not set"
-msgstr "non défini"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:139
 msgid "Note"
@@ -1552,10 +1450,6 @@ msgstr "Ouvrez Monobank pour obtenir votre jeton"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:36
 msgid "Operator"
 msgstr "Opérateur"
-
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
-msgid "or"
-msgstr "ou"
 
 #: src/app/(tabs)/settings/index.tsx:104
 msgid "Organization"
@@ -1572,6 +1466,15 @@ msgstr "On vous doit"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Owes you"
 msgstr "Vous doit"
+
+#: src/app/(main)/pin.tsx:54
+#: src/auth/hook/use-pin-setup.hook.tsx:115
+msgid "PIN must be {PIN_LENGTH} digits"
+msgstr "Le code PIN doit comporter {PIN_LENGTH} chiffres"
+
+#: src/auth/hook/use-pin-setup.hook.tsx:94
+msgid "PINs do not match"
+msgstr "Les codes PIN ne correspondent pas"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:57
 msgid "Paid: {formattedBalance}"
@@ -1592,15 +1495,6 @@ msgstr "La permission d'accéder aux contacts a été refusée."
 #: src/account/constant/account-type-description.constant.ts:7
 msgid "Physical cash on hand"
 msgstr "Argent liquide physique"
-
-#: src/app/(main)/pin.tsx:54
-#: src/auth/hook/use-pin-setup.hook.tsx:115
-msgid "PIN must be {PIN_LENGTH} digits"
-msgstr "Le code PIN doit comporter {PIN_LENGTH} chiffres"
-
-#: src/auth/hook/use-pin-setup.hook.tsx:94
-msgid "PINs do not match"
-msgstr "Les codes PIN ne correspondent pas"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:36
 msgid "Please enter your Monobank API token"
@@ -1639,14 +1533,14 @@ msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 msgid "Privacy"
 msgstr "Confidentialité"
 
+#: src/account/constant/bank-provider-title.constant.ts:7
+msgid "PrivatBank"
+msgstr "PrivatBank"
+
 #: src/app/(main)/create-account/index.tsx:55
 #: src/rule/constant/external-source.constant.ts:8
 msgid "Privatbank"
 msgstr "Privatbank"
-
-#: src/account/constant/bank-provider-title.constant.ts:7
-msgid "PrivatBank"
-msgstr "PrivatBank"
 
 #: src/rule/components/rule-suggestion-pill/rule-suggestion-pill.tsx:108
 #: src/rule/components/suggest-rule-modal-content/suggest-rule-modal-content.tsx:33
@@ -1737,10 +1631,18 @@ msgstr "Comptes d'épargne"
 msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
 
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:112
+msgid "Search Keywords"
+msgstr "Mots-clés de recherche"
+
 #: src/app/account-selector.tsx:39
 #: src/app/transaction-account-filter.tsx:71
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
+
+#: src/app/(tabs)/settings/archived.tsx:57
+msgid "Search archived accounts..."
+msgstr "Rechercher des comptes archivés..."
 
 #: src/app/rule-mcc-selector.tsx:61
 msgid "Search by code or description..."
@@ -1764,9 +1666,9 @@ msgstr "Rechercher des devises..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Rechercher des icônes (ex. argent, voyage, nourriture)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:112
-msgid "Search Keywords"
-msgstr "Mots-clés de recherche"
+#: src/app/(tabs)/settings/inactive.tsx:30
+msgid "Search inactive accounts..."
+msgstr "Rechercher des comptes inactifs..."
 
 #: src/app/language-selector.tsx:68
 msgid "Search languages..."
@@ -1798,38 +1700,9 @@ msgstr "Sécurité"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/category/components/category-form/category-form.tsx:106
-msgid "Select a category to merge into"
-msgstr "Sélectionnez une catégorie pour fusionner"
-
-#: src/@generic/component/contact-selector/contact-selector.tsx:33
-msgid "Select a contact"
-msgstr "Sélectionner un contact"
-
-#: src/tag/components/tag-form/tag-form.tsx:94
-msgid "Select a tag to merge into"
-msgstr "Sélectionnez une étiquette pour fusionner"
-
-#: src/app/(tabs)/settings/import.tsx:54
-#: src/app/(tabs)/settings/import.tsx:57
-#: src/app/(tabs)/settings/import.tsx:58
-#: src/app/(tabs)/settings/import.tsx:59
-#: src/app/(tabs)/settings/import.tsx:60
-msgid "Select a valid column"
-msgstr "Sélectionnez une colonne valide"
-
-#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:26
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:68
-msgid "Select account"
-msgstr "Sélectionner un compte"
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:45
 msgid "Select Account"
 msgstr "Sélectionner un compte"
-
-#: src/sync/component/account-selection-step/account-selection-step.tsx:23
-msgid "Select accounts to sync:"
-msgstr "Sélectionner les comptes à synchroniser :"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:43
 msgid "Select Action Type"
@@ -1839,21 +1712,9 @@ msgstr "Sélectionner le type d'action"
 msgid "Select All"
 msgstr "Tout sélectionner"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
-msgid "Select all categories"
-msgstr "Sélectionner toutes les catégories"
-
-#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
-msgid "Select category"
-msgstr "Sélectionner la catégorie"
-
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:36
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
-
-#: src/import/components/import-column-mapper/import-column-mapper.tsx:41
-msgid "Select column..."
-msgstr "Sélectionner une colonne..."
 
 #: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:24
 msgid "Select External Source"
@@ -1881,13 +1742,62 @@ msgstr "Sélectionner un code MCC"
 msgid "Select Operator"
 msgstr "Sélectionner un opérateur"
 
-#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:25
-msgid "Select source"
-msgstr "Sélectionner la source"
-
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx:33
 msgid "Select Tag"
 msgstr "Sélectionner un tag"
+
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:24
+msgid "Select Transaction Type"
+msgstr "Sélectionner le type de transaction"
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
+msgid "Select Type"
+msgstr "Sélectionner le type"
+
+#: src/category/components/category-form/category-form.tsx:106
+msgid "Select a category to merge into"
+msgstr "Sélectionnez une catégorie pour fusionner"
+
+#: src/@generic/component/contact-selector/contact-selector.tsx:33
+msgid "Select a contact"
+msgstr "Sélectionner un contact"
+
+#: src/tag/components/tag-form/tag-form.tsx:94
+msgid "Select a tag to merge into"
+msgstr "Sélectionnez une étiquette pour fusionner"
+
+#: src/app/(tabs)/settings/import.tsx:54
+#: src/app/(tabs)/settings/import.tsx:57
+#: src/app/(tabs)/settings/import.tsx:58
+#: src/app/(tabs)/settings/import.tsx:59
+#: src/app/(tabs)/settings/import.tsx:60
+msgid "Select a valid column"
+msgstr "Sélectionnez une colonne valide"
+
+#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:26
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:68
+msgid "Select account"
+msgstr "Sélectionner un compte"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Select accounts to sync:"
+msgstr "Sélectionner les comptes à synchroniser :"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+msgid "Select all categories"
+msgstr "Sélectionner toutes les catégories"
+
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
+msgid "Select category"
+msgstr "Sélectionner la catégorie"
+
+#: src/import/components/import-column-mapper/import-column-mapper.tsx:41
+msgid "Select column..."
+msgstr "Sélectionner une colonne..."
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:25
+msgid "Select source"
+msgstr "Sélectionner la source"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Select the downloaded PDF file:"
@@ -1901,16 +1811,8 @@ msgstr "Sélectionnez le fichier XLSX exporté :"
 msgid "Select the type of account"
 msgstr "Sélectionnez le type de compte"
 
-#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:24
-msgid "Select Transaction Type"
-msgstr "Sélectionner le type de transaction"
-
 #: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:25
 msgid "Select type"
-msgstr "Sélectionner le type"
-
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
-msgid "Select Type"
 msgstr "Sélectionner le type"
 
 #: src/app/import-column-mapper.tsx:55
@@ -2065,17 +1967,13 @@ msgstr "Synchronisation de l'historique..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:30
-msgid "Tag → {tagTitle}"
-msgstr "Tag → {tagTitle}"
-
-#: src/rule/util/build-action-pill-parts.util.tsx:30
-msgid "tag <0>{tagTitle}</0>"
-msgstr "tag <0>{tagTitle}</0>"
-
 #: src/tag/components/tag-form/tag-form.tsx:140
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
+
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:30
+msgid "Tag → {tagTitle}"
+msgstr "Tag → {tagTitle}"
 
 #: src/app/(tabs)/settings/tags.tsx:73
 #: src/app/transaction-tag-filter.tsx:63
@@ -2096,9 +1994,17 @@ msgstr "Appuyez pour effacer"
 msgid "Target balance"
 msgstr "Solde cible"
 
-#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:38
-msgid "then set"
-msgstr "puis définir"
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "This Month"
+msgstr "Ce mois-ci"
+
+#: src/@generic/constant/date-period.constant.ts:8
+msgid "This Week"
+msgstr "Cette semaine"
+
+#: src/@generic/constant/date-period.constant.ts:10
+msgid "This Year"
+msgstr "Cette année"
 
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -2114,17 +2020,9 @@ msgstr "Cette action ne peut pas être annulée."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Cette catégorie a des transactions. Sélectionnez une autre catégorie pour les réassigner."
 
-#: src/@generic/constant/date-period.constant.ts:9
-msgid "This Month"
-msgstr "Ce mois-ci"
-
 #: src/app/(tabs)/settings/tags.tsx:41
 msgid "This tag has transactions. Select another tag to reassign them to."
 msgstr "Cette étiquette a des transactions. Sélectionnez une autre étiquette pour les réassigner."
-
-#: src/@generic/constant/date-period.constant.ts:8
-msgid "This Week"
-msgstr "Cette semaine"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
@@ -2138,18 +2036,10 @@ msgstr "Cela convertira la dépense en un transfert entre comptes."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Cela convertira le revenu en un transfert entre comptes."
 
-#: src/@generic/constant/date-period.constant.ts:10
-msgid "This Year"
-msgstr "Cette année"
-
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:13
 #: src/rule/constant/rule-condition-field.constant.ts:6
 msgid "Title"
 msgstr "Titre"
-
-#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
-msgid "to"
-msgstr "à"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
 msgid "To"
@@ -2228,6 +2118,10 @@ msgstr "Traduction des catégories..."
 msgid "Translating tags..."
 msgstr "Traduction des tags..."
 
+#: src/ai/component/voice-input-error/voice-input-error.tsx:33
+msgid "Try Again"
+msgstr "Réessayer"
+
 #: src/account/component/account-select-content/account-select-content.tsx:48
 #: src/app/contact-selector.tsx:43
 #: src/app/currency-selector.tsx:51
@@ -2246,10 +2140,6 @@ msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 #: src/transaction/components/transaction-list/transaction-list.tsx:42
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
-
-#: src/ai/component/voice-input-error/voice-input-error.tsx:33
-msgid "Try Again"
-msgstr "Réessayer"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:18
 #: src/rule/constant/rule-condition-field.constant.ts:11
@@ -2328,6 +2218,10 @@ msgstr "En attente"
 msgid "When should it be returned?"
 msgstr "Quand devrait-il être retourné ?"
 
+#: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
+msgid "Who do you owe?"
+msgstr "À qui devez-vous de l'argent ?"
+
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Qui vous doit de l'argent ?"
@@ -2355,3 +2249,140 @@ msgstr "Vous avez reçu de l'argent"
 #: src/sync/component/token-input-step/token-input-step.tsx:30
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La synchronisation continue en arrière-plan."
+
+#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
+#: src/rule/util/join-with-separators.util.tsx:6
+msgid "and"
+msgstr "et"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:13
+msgid "between"
+msgstr "entre"
+
+#: src/rule/util/build-action-pill-parts.util.tsx:18
+msgid "category to <0>{categoryTitle}</0>"
+msgstr "catégorie à <0>{categoryTitle}</0>"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:8
+msgid "contains"
+msgstr "contient"
+
+#: src/tag/components/tag-form/tag-form.tsx:148
+msgid "e.g. Business, Personal, Vacation"
+msgstr "p. ex. Affaires, Personnel, Vacances"
+
+#: src/category/components/category-title-input/category-title-input.tsx:31
+msgid "e.g. Groceries, Entertainment"
+msgstr "p. ex. Courses, Divertissement"
+
+#: src/@generic/component/account-details-field/account-details-field.tsx:56
+msgid "e.g. Savings Account"
+msgstr "ex. Compte d'épargne"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:6
+msgid "equals"
+msgstr "est égal à"
+
+#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
+msgid "from"
+msgstr "de"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:14
+msgid "in"
+msgstr "dans"
+
+#: src/rule/util/build-condition-parts.util.tsx:13
+msgid "is"
+msgstr "est"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:10
+msgid "matches"
+msgstr "correspond"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:9
+msgid "not contains"
+msgstr "ne contient pas"
+
+#: src/rule/constant/rule-condition-operator.constant.ts:7
+msgid "not equals"
+msgstr "n'est pas égal à"
+
+#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:55
+msgid "not set"
+msgstr "non défini"
+
+#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:30
+msgid "or"
+msgstr "ou"
+
+#: src/rule/util/build-action-pill-parts.util.tsx:30
+msgid "tag <0>{tagTitle}</0>"
+msgstr "tag <0>{tagTitle}</0>"
+
+#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:38
+msgid "then set"
+msgstr "puis définir"
+
+#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
+msgid "to"
+msgstr "à"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:50
+msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
+msgstr "{accountTitle} et toutes ses transactions seront définitivement supprimés. Les transferts seront convertis en revenus/dépenses sur les autres comptes. Cette action est irréversible."
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:31
+msgid "{accountTitle} will be restored to your main view and included in totals."
+msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans les totaux."
+
+#: src/account/component/inactive-account-card/inactive-account-card.tsx:26
+msgid "{accountTitle} will be restored to your main view."
+msgstr "{accountTitle} sera restauré dans votre vue principale."
+
+#: src/account/component/accounts-group/accounts-group.tsx:68
+msgid "{accountsCount} accounts"
+msgstr "{accountsCount} comptes"
+
+#: src/rule/components/rule-match-pill/rule-match-pill.tsx:64
+#: src/rule/hooks/use-rule-form.hook.ts:78
+msgid "{applied} updated, {failed} failed"
+msgstr "{applied} mis à jour, {failed} échoués"
+
+#: src/app/import-column-mapper.tsx:30
+msgid "{availableCount} columns available"
+msgstr "{availableCount} colonnes disponibles"
+
+#: src/ai/provider/ai-status.provider.tsx:39
+msgid "{completionRatio}% learned"
+msgstr "{completionRatio}% appris"
+
+#: src/rule/hooks/use-create-suggest-rule.hook.ts:42
+#: src/rule/hooks/use-rule-form.hook.ts:98
+msgid "{count} existing transactions match this rule."
+msgstr "{count} transactions existantes correspondent à cette règle."
+
+#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:36
+msgid "{formattedAmount} · {category}"
+msgstr "{formattedAmount} · {category}"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+msgid "{formattedRemaining} left to assign"
+msgstr "{formattedRemaining} à attribuer"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+msgid "{formattedRemaining} over budget"
+msgstr "{formattedRemaining} au-dessus du budget"
+
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+msgid "{percentage}% of expenses"
+msgstr "{percentage}% des dépenses"
+
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+msgid "{percentage}% of income"
+msgstr "{percentage}% des revenus"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:104
+msgid "{splitEntryCount} items"
+msgstr "{splitEntryCount} éléments"

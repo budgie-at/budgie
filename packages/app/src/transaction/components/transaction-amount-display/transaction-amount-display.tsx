@@ -85,7 +85,13 @@ export const TransactionAmountDisplay = ({
             <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                 <Animated.View style={shakeStyle} className="w-full">
                     <Animated.View style={scaleStyle}>
-                        <Text className={textVariants({ variant })} style={fontSizeStyle} adjustsFontSizeToFit numberOfLines={1}>
+                        <Text
+                            className={textVariants({ variant })}
+                            style={fontSizeStyle}
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                            testID={testID}
+                        >
                             {fullDisplay}
                         </Text>
                     </Animated.View>

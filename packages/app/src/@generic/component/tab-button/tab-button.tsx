@@ -1,10 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
-import { useVibration } from '../../hook/use-vibration.hook';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 import type { Href } from 'expo-router';
@@ -37,12 +36,8 @@ const tabIconVariants = cva('', {
     }
 });
 
-export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, ...rest }: TabButtonProps) => {
-    const [, hapticImpact] = useVibration();
-
+export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, testID, ...rest }: TabButtonProps) => {
     const handlePress = (event: GestureResponderEvent) => {
-        hapticImpact(ImpactFeedbackStyle.Light);
-
         if (navigateTo) {
             router.push(navigateTo);
         } else {
@@ -53,10 +48,10 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
-        <Pressable {...rest} onPress={handlePress}>
+        <HapticPressable {...rest} onPress={handlePress} testID={testID} hitSlop={12} accessibilityRole="button">
             <View className={tabVariants({ isFocused })} style={tabStyle}>
                 <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
-        </Pressable>
+        </HapticPressable>
     );
 };

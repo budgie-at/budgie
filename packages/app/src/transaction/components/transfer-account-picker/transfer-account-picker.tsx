@@ -15,6 +15,7 @@ interface Props {
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
     readonly variant: ColorPaletteVariant;
     readonly animatedStyle?: StyleProp<ViewStyle>;
+    readonly testID?: string;
     readonly onPress: () => void;
 }
 
@@ -22,7 +23,7 @@ const SPRING_CONFIG = { damping: 15, stiffness: 150 };
 const TITLE_FONT_SIZE_SELECTED = 15;
 const TITLE_FONT_SIZE_UNSELECTED = 14;
 
-export const TransferAccountPicker = ({ label, account, variant, animatedStyle, onPress }: Props) => {
+export const TransferAccountPicker = ({ label, account, variant, animatedStyle, testID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const accessibilityLabel = `${label}: ${account?.title ?? label}`;
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
@@ -42,6 +43,7 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
             <HapticPressable
                 className="flex-row items-center px-md py-md gap-sm bg-secondary-background rounded-2xl"
                 onPress={onPress}
+                testID={testID}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >

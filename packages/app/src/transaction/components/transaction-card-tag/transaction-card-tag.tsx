@@ -9,18 +9,18 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly testID?: string;
 }
 
 type TransactionTagWithTag = TransactionTagsEntityInterface & {
     [TransactionTagsAssociationEnum.TAG]: TagEntityInterface;
 };
 
-export const TransactionCardTag = ({ transaction, testID }: Props) => {
+export const TransactionCardTag = ({ transaction }: Props) => {
     const firstTransactionTag = transaction.transactionTags[0] as TransactionTagWithTag | undefined;
     const firstTag = isDefined(firstTransactionTag) ? firstTransactionTag.tag : null;
 
@@ -29,7 +29,7 @@ export const TransactionCardTag = ({ transaction, testID }: Props) => {
     }
 
     return (
-        <View testID={testID} className="flex-row items-center gap-x-xs">
+        <View className="flex-row items-center gap-x-xs" testID={TransactionCardSelectors.Tag(firstTag.title)}>
             <Icon icon={UserIconNameEnum.Tag} size={12} className="text-secondary-foreground" />
             <Text className="text-secondary-foreground text-xs" numberOfLines={1} ellipsizeMode="tail">
                 {firstTag.title}

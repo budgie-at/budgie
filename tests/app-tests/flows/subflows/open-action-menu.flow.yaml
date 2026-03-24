@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+env:
+  ACTION_ITEM_ID: ${ACTION_ITEM_ID || 'ActionItem.Expense'}
+---
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: ${ACTION_ITEM_ID}
+- waitForAnimationToEnd

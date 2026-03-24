@@ -1,6 +1,6 @@
-export const TabBarSelector = {
+export const TabBarSelectors = {
     Home: 'TabBar.Home',
-    Settings: 'TabBar.Settings',
+    Transactions: 'TabBar.Transactions',
     Analytics: 'TabBar.Analytics',
-    Transactions: 'TabBar.Transactions'
+    Settings: 'TabBar.Settings'
 } as const;

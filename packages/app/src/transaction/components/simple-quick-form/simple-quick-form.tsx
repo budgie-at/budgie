@@ -252,11 +252,11 @@ export const SimpleQuickForm = (props: Props) => {
                 <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                 <View className="flex-1 items-center justify-center">
                     <TransactionAmountDisplay
-                        testID={TransactionFormSelectors.AmountInput}
                         ref={amountDisplayRef}
                         amount={displayValue}
                         currencySymbol={currencySymbol}
                         variant={variant}
+                        testID={TransactionFormSelectors.AmountInput}
                     />
                     <View className="items-center mt-5">
                         <RulePillSlot
@@ -296,15 +296,17 @@ export const SimpleQuickForm = (props: Props) => {
                 onSplitPress={handleSplitIconPress}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
-                categorySelectorTestID={TransactionFormSelectors.CategorySelector}
+                categoryTestID={TransactionFormSelectors.CategorySelector}
+                tagsTestID={TransactionFormSelectors.TagsSelector}
+                commentTestID={TransactionFormSelectors.CommentInput}
             />
 
             <View className="mb-xl">
                 <TransactionAccountRow
-                    testID={TransactionFormSelectors.AccountSelector}
                     ref={accountRowRef}
                     variant={variant}
                     fieldName={accountFieldName}
+                    testID={TransactionFormSelectors.AccountSelector}
                 />
             </View>
 

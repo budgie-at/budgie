@@ -1,27 +1,27 @@
 platform:
-  ios:
-    snapshotKeyHonorModalViews: false
-    disableAnimations: true
-  android:
-    disableAnimations: true
+    ios:
+        snapshotKeyHonorModalViews: false
+        disableAnimations: true
+    android:
+        disableAnimations: true
 
 executionOrder:
-  continueOnFailure: false
-  flowsOrder:
-    - rules/01.rules-list-empty.flow
-    - rules/02.rules-create-basic.flow
-    - rules/03.rules-create-multiple-conditions.flow
-    - rules/04.rules-create-multiple-actions.flow
-    - rules/05.rules-edit.flow
-    - rules/06.rules-delete.flow
-    - rules/07.rules-toggle-enabled.flow
-    - rules/08.rules-all-field-types.flow
-    - rules/09.rule-applies-category.flow
-    - rules/10.rule-applies-tag.flow
-    - rules/11.rule-applies-multiple-actions.flow
-    - rules/12.disabled-rule-not-applied.flow
-    - rules/13.rule-apply-to-existing-toggle.flow
-    - rules/14.rule-not-applied-when-condition-not-match.flow
-    - rules/15.suggested-rule-applies-category.flow
-    - rules/16.rules-apply-during-import.flow
-    - rules/17.suggested-rule-creates-directly.flow
+    continueOnFailure: false
+    flowsOrder:
+        - rules/01.rules-list-empty.flow
+        - rules/02.rules-create-basic.flow
+        - rules/03.rules-create-multiple-conditions.flow
+        - rules/04.rules-create-multiple-actions.flow
+        - rules/05.rules-edit.flow
+        - rules/06.rules-delete.flow
+        - rules/07.rules-toggle-enabled.flow
+        - rules/08.rules-all-field-types.flow
+        - rules/09.rule-applies-category.flow
+        - rules/10.rule-applies-tag.flow
+        - rules/11.rule-applies-multiple-actions.flow
+        - rules/12.disabled-rule-not-applied.flow
+        - rules/13.rule-apply-to-existing-toggle.flow
+        - rules/14.rule-not-applied-when-condition-not-match.flow
+        - rules/15.suggested-rule-applies-category.flow
+        - rules/16.rules-apply-during-import.flow
+        - rules/17.suggested-rule-creates-directly.flow

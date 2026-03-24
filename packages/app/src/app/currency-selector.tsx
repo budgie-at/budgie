@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 
+import { CurrencySelectorSelectors } from '../@e2e/selectors/currency-selector.selector';
 import { CurrencySelectorCard } from '../@generic/component/currency-selector-card/currency-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useCurrencySelectorModal } from '../@generic/context/currency-selector-modal.context';
@@ -52,11 +52,14 @@ export default function CurrencySelectorModal() {
         </View>
     );
 
-    const listFooterComponent = <FormSheetSpacer />;
-
     return (
         <View style={containerStyle}>
-            <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search currencies...`} />
+            <SelectorModalSearchHeader
+                search={search}
+                onSearchChange={setSearch}
+                placeholder={t`Search currencies...`}
+                testID={CurrencySelectorSelectors.SearchInput}
+            />
 
             <FlatList
                 style={flatListStyle}
@@ -68,7 +71,6 @@ export default function CurrencySelectorModal() {
                 contentContainerStyle={contentContainerStyle}
                 ItemSeparatorComponent={ListItemSeparator}
                 ListEmptyComponent={listEmptyComponent}
-                ListFooterComponent={listFooterComponent}
             />
         </View>
     );

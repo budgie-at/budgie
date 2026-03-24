@@ -5,8 +5,8 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
-import { appService } from '../../../@generic/service/app.service';
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { appResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsCard } from '../settings-card/settings-card';
 
@@ -29,8 +29,7 @@ export const TruncateData = () => {
 
         setIsLoading(true);
         try {
-            await appService.truncateData();
-            await bankSyncRepository.truncate();
+            await appResetService.clearAllDataAndRestart();
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -50,6 +49,7 @@ export const TruncateData = () => {
             icon={UserIconNameEnum.Trash2}
             variant="destructive"
             isLoading={isLoading}
+            testID={SettingsPageSelectors.ClearDataCard}
         />
     );
 };
