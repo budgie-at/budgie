@@ -22,7 +22,7 @@ export const useDeferredMenuClose = (): UseDeferredMenuCloseReturn => {
     };
 
     const closeMenu = (afterClose?: EmptyFn) => {
-        setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
+        setDeferredAction(typeof afterClose === 'function' ? { execute: afterClose } : null);
         setIsMenuOpen(false);
     };
 
