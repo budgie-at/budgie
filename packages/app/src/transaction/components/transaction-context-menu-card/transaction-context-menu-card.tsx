@@ -22,6 +22,8 @@ import { TransactionCard } from '../transaction-card/transaction-card';
 
 import type { TransactionCardProps } from '../transaction-card/transaction-card';
 
+type TransactionContextMenuCardProps = Omit<TransactionCardProps, 'onPress' | 'onLongPress'>;
+
 const isConvertibleTransaction = (transaction: TransactionWithRelationsEntityInterface): boolean =>
     isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
 
@@ -30,7 +32,7 @@ const getConvertTransactionType = (
 ): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME =>
     isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
-export const TransactionContextMenuCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
+export const TransactionContextMenuCard = ({ transaction, formattedDate, categoryLabel }: TransactionContextMenuCardProps) => {
     const { t } = useLingui();
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
