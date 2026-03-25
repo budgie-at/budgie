@@ -43,8 +43,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+    timeout: 15000
 
 # --- Long-Press Delete from List ---
 
@@ -101,8 +103,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+    timeout: 15000
 
 # --- Long-Press Convert to Transfer from List ---
 

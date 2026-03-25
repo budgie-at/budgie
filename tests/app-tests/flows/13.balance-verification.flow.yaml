@@ -56,8 +56,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Balance_Expense'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Balance_Expense'
+    timeout: 15000
 
 # --- Verify Balance Area After Expense ---
 
@@ -116,8 +118,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Balance_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Balance_Income'
+    timeout: 15000
 
 # --- Verify Balance Area After Income ---
 

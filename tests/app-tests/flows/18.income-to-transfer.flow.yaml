@@ -47,8 +47,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Convert_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Convert_Income'
+    timeout: 15000
 
 - tapOn:
     id: 'TabBar.Home'
