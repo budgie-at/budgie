@@ -318,6 +318,8 @@ jobs:
 
       - name: Restore CocoaPods cache
         uses: actions/cache/restore@v4
+        timeout-minutes: 3
+        continue-on-error: true
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -336,6 +338,8 @@ jobs:
       - name: Restore ccache
         if: steps.setup-ccache.outputs.available != 'false'
         uses: actions/cache/restore@v4
+        timeout-minutes: 3
+        continue-on-error: true
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
@@ -364,6 +368,8 @@ jobs:
 
       - name: Restore Xcode DerivedData cache
         uses: actions/cache/restore@v4
+        timeout-minutes: 3
+        continue-on-error: true
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
           key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
@@ -514,6 +520,8 @@ jobs:
       - name: Save CocoaPods cache
         if: always()
         uses: actions/cache/save@v4
+        timeout-minutes: 3
+        continue-on-error: true
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -523,6 +531,8 @@ jobs:
       - name: Save ccache
         if: always() && steps.setup-ccache.outputs.available != 'false'
         uses: actions/cache/save@v4
+        timeout-minutes: 3
+        continue-on-error: true
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
@@ -530,6 +540,8 @@ jobs:
       - name: Save Xcode DerivedData cache
         if: always()
         uses: actions/cache/save@v4
+        timeout-minutes: 5
+        continue-on-error: true
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
           key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
