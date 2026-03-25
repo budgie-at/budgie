@@ -88,5 +88,8 @@ appId: ${APP_ID}
     visible:
       id: 'HomePage.TotalBalance'
 
-- assertVisible:
-    id: 'AccountCard.E2E Archive Account'
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.E2E Archive Account'
+    direction: DOWN
+    timeout: 30000
