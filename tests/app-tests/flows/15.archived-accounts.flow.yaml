@@ -6,6 +6,7 @@ appId: ${APP_ID}
 - retry:
     maxRetries: 2
     commands:
+      - stopApp
       - runFlow:
           file: subflows/import-database-fixture.flow.yaml
           env:
