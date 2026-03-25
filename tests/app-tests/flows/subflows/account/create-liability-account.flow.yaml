@@ -13,7 +13,6 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
 - hideKeyboard
-- waitForAnimationToEnd
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
 - waitForAnimationToEnd
 
@@ -31,7 +30,6 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CurrencySelector.SearchInput'
 - inputText: ${CURRENCY_CODE}
-- hideKeyboard
 - waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
@@ -43,10 +41,9 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
-- hideKeyboard
-- waitForAnimationToEnd
 
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
