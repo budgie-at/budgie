@@ -1,7 +1,10 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: subflows/enter-app.flow.yaml
+- runFlow:
+    file: subflows/enter-app.flow.yaml
+    env:
+      USE_APP_OWNED_RESET: 'true'
 
 - retry:
     maxRetries: 2
