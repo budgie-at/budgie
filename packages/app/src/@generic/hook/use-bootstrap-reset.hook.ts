@@ -11,18 +11,24 @@ import { appResetService } from '../service/app-reset.service';
 
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 
- 
-const isTestHooksEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+const getExtraConfigValue = (key: string): unknown => {
+    const extra: Record<string, unknown> | undefined = Constants.expoConfig?.extra;
+
+    return extra?.[key];
+};
+
+const getQueryParam = (queryParams: Record<string, unknown> | undefined, key: string): unknown => queryParams?.[key];
+
+const isTestHooksEnabled = () => getExtraConfigValue('e2eHooksEnabled') === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
 const getBootstrapParams = async () => {
     const initialUrl = await Linking.parseInitialURLAsync();
-     
-    const resetToken = normalizeQueryString(initialUrl.queryParams?.e2eResetToken);
-    const fixtureId = normalizeQueryString(initialUrl.queryParams?.e2eImportFixture);
-    const shouldReset = initialUrl.queryParams?.e2eReset === 'true';
-     
+    const queryParams = initialUrl.queryParams as Record<string, unknown> | undefined;
+    const resetToken = normalizeQueryString(getQueryParam(queryParams, 'e2eResetToken'));
+    const fixtureId = normalizeQueryString(getQueryParam(queryParams, 'e2eImportFixture'));
+    const shouldReset = getQueryParam(queryParams, 'e2eReset') === 'true';
 
     return {
         resetToken,
