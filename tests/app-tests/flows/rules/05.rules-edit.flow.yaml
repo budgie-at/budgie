@@ -1,4 +1,4 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
 env:
   TITLE_CONTAINS_TEXT: Netflix Updated
   CATEGORY_NAME: Test02 Category

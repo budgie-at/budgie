@@ -25,12 +25,14 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1'
+    timeout: 10000
 - tapOn:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
 
 - tapOn:
     id: 'TransactionForm.CategorySelector'
+- waitForAnimationToEnd
 - runFlow:
     file: ../shared/select-category-by-search.flow.yaml
     env:
@@ -39,20 +41,26 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.AddRuleButton'
+      id: 'SuggestRule.Pill'
+    timeout: 10000
 
 - tapOn:
-    id: 'SuggestRule.AddRuleButton'
+    id: 'SuggestRule.Pill'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.BottomSheet'
-
-- tapOn:
-    id: 'SuggestRule.ConditionChip.COMMENT'
+      id: 'SuggestRule.Modal'
+    timeout: 10000
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -65,3 +73,4 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.RuleCard.0'
+    timeout: 10000

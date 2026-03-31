@@ -133,17 +133,12 @@ env:
     visible: ${TAG_NAME}
 - tapOn: ${TAG_NAME}
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.ApplyToExistingToggle'
-    direction: DOWN
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.ApplyToExistingToggle'
-- waitForAnimationToEnd
-
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
 - waitForAnimationToEnd
 
 - assertVisible:
