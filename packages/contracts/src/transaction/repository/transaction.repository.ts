@@ -6,7 +6,6 @@ import { BaseTransactionFilterRepository } from '../../@generic/repository/base-
 import { DBOrTX } from '../../@generic/type/db.type';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { RuleAssociationEnum } from '../../rule/enum/rule-association.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -23,12 +22,6 @@ import type { TransactionWithEntriesEntityInterface } from '../entity/transactio
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = {
-        [TransactionAssociationEnum.APPLIED_RULE]: {
-            with: {
-                [RuleAssociationEnum.CONDITIONS]: true,
-                [RuleAssociationEnum.ACTIONS]: true
-            }
-        },
         [TransactionAssociationEnum.ENTRIES]: {
             with: {
                 [TransactionEntryAssociationEnum.ACCOUNT]: {

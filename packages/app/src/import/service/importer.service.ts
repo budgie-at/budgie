@@ -162,7 +162,7 @@ export class ImporterService {
             comment: normalizedRow.comment,
             toAccountId: source.account.id,
             fromAccountId: dest?.account.id ?? null,
-            appliedRuleId: null,
+            updatedBy: null,
             tagIds: [],
             entries: this.createEntries({ type, category, source, dest, externalId: normalizedRow.externalId })
         };

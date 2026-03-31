@@ -5,8 +5,8 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 
 import { doesRuleMatchTransaction } from './has-matching-rule.util';
 
-export const findMatchingRule = (
+export const findAllMatchingRules = (
     rules: RuleWithRelationsEntityInterface[],
     transactionInput: RuleEvaluationInputInterface,
     suggestRuleData: SuggestRuleDataInterface
-): RuleWithRelationsEntityInterface | undefined => rules.find(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
+): RuleWithRelationsEntityInterface[] => rules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));

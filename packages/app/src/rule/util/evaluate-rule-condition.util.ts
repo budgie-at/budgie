@@ -5,6 +5,9 @@ import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 
 const MAX_REGEX_LENGTH = 200;
+const NESTED_QUANTIFIER_PATTERN = /([+*}])\)?[+*{]/u;
+
+const hasNestedQuantifiers = (pattern: string): boolean => NESTED_QUANTIFIER_PATTERN.test(pattern);
 
 const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvaluationInputInterface): string | number | null => {
     switch (field) {
@@ -51,7 +54,7 @@ const matchOperator = (
             return !String(fieldValue).toLowerCase().includes(conditionValue.toLowerCase());
 
         case RuleConditionOperatorEnum.MATCHES_REGEX:
-            if (conditionValue.length > MAX_REGEX_LENGTH) {
+            if (conditionValue.length > MAX_REGEX_LENGTH || hasNestedQuantifiers(conditionValue)) {
                 return false;
             }
             try {

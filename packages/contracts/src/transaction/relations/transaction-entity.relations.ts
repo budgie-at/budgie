@@ -1,17 +1,12 @@
 import { relations } from 'drizzle-orm';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { RuleEntityTable } from '../../rule/table/rule-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntityRelations = relations(TransactionEntityTable, ({ many, one }) => ({
-    [TransactionAssociationEnum.APPLIED_RULE]: one(RuleEntityTable, {
-        fields: [TransactionEntityTable.appliedRuleId],
-        references: [RuleEntityTable.id]
-    }),
     [TransactionAssociationEnum.ENTRIES]: many(TransactionEntryEntityTable),
     [TransactionAssociationEnum.FROM_ACCOUNT]: one(AccountEntityTable, {
         fields: [TransactionEntityTable.fromAccountId],

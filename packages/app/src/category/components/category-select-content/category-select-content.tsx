@@ -29,7 +29,7 @@ export const CategorySelectContent = (props: Props) => {
     const { t } = useLingui();
     const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
-    const renderItem = ({ item, index }: { item: FlatListDataItem<CategoryEntityInterface>; index: number }) =>
+    const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
             <CategorySelectorCard
                 className="opacity-0"
@@ -48,7 +48,7 @@ export const CategorySelectContent = (props: Props) => {
                 variant={variant}
                 icon={item.icon}
                 id={item.id}
-                testID={cardTestID?.(item.title) ?? CategoryPickerBottomSheetSelectors.Card(index)}
+                testID={cardTestID?.(item.title) ?? CategoryPickerBottomSheetSelectors.Card(item.title)}
             />
         );
 
