@@ -8,6 +8,7 @@ import Animated, { FadeIn, FadeOut, cancelAnimation, useAnimatedStyle, useShared
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
@@ -98,6 +99,7 @@ export const RuleSuggestionPill = (props: Props) => {
 
     const pillContent = (
         <HapticPressable
+            testID={SuggestRuleSelectors.Pill}
             onPress={handlePillPress}
             className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
         >

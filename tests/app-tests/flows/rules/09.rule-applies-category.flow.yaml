@@ -58,16 +58,12 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- scrollUntilVisible:
-    element:
-      text: 'Apply to existing transactions'
-    direction: DOWN
-- waitForAnimationToEnd
-- tapOn: 'Apply to existing transactions'
-- waitForAnimationToEnd
-
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
 - waitForAnimationToEnd
 
 - assertVisible:

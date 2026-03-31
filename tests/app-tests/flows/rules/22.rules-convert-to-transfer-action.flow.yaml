@@ -1,0 +1,91 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '22'
+  ACCOUNT_NAME_FROM: ${ACCOUNT_NAME_FROM || 'Test22 Source'}
+  ACCOUNT_NAME_TO: ${ACCOUNT_NAME_TO || 'Test22 Destination'}
+  CATEGORY_NAME: ${CATEGORY_NAME || 'Test22 Category'}
+  TAG_NAME: ${TAG_NAME || 'Test22 Tag'}
+---
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+- runFlow:
+    file: ../setup/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME_FROM}
+
+- runFlow:
+    file: ../setup/create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME_TO}
+
+- runFlow:
+    file: ../setup/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.TRANSACTION_TYPE
+
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.TransactionTypeSelector'
+- tapOn: 'Expense'
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn: 'Title'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: 'Auto Transfer'
+
+- tapOn: return
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.TypeSelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.Action.0.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Action.0.AccountSelector'
+- runFlow:
+    file: ../shared/select-account-by-search.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME_TO}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'

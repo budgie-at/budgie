@@ -1,0 +1,19 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: ./02.rules-create-basic.flow.yaml
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'

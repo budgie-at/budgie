@@ -1,0 +1,105 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '24'
+  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test24 Account'}
+  CATEGORY_NAME: ${CATEGORY_NAME || 'Test24 Category'}
+  TAG_NAME: ${TAG_NAME || 'Test24 Tag'}
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Rule 1: EXTERNAL_SOURCE condition
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.EXTERNAL_SOURCE
+
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'monobank'
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Rule 2: MCC_CODE condition
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.MCC_CODE
+
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.MccSelector'
+- waitForAnimationToEnd
+- tapOn:
+    index: 0
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.1'

@@ -1,4 +1,4 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
 env:
   CATEGORY_NAME: Groceries
   COMMENT_CONTAINS_TEXT: Test08 Comment

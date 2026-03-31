@@ -1,0 +1,99 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '23'
+  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test23 Account'}
+  CATEGORY_NAME: ${CATEGORY_NAME || 'Test23 Category'}
+  TAG_NAME: ${TAG_NAME || 'Test23 Tag'}
+  TITLE_CONTAINS_TEXT: ${TITLE_CONTAINS_TEXT || 'TestRemove'}
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.RemoveButton'
+- waitForAnimationToEnd
+
+- assertNotVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ActionSection.AddButton'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.ActionSection.AddButton'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.1.TypeSelector'
+    direction: DOWN
+
+- assertVisible:
+    id: 'RuleForm.Action.1.TypeSelector'
+
+- tapOn:
+    id: 'RuleForm.Action.1.RemoveButton'
+- waitForAnimationToEnd
+
+- assertNotVisible:
+    id: 'RuleForm.Action.1.TypeSelector'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Condition.0.ValueInput'
+    direction: UP
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: ${TITLE_CONTAINS_TEXT}
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}

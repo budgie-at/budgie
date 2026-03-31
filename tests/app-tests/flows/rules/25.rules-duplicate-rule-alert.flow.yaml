@@ -1,8 +1,8 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '15'
+  TEST_ID: '25'
   CATEGORY_NAME: Groceries
-  CSV_DISPLAY_NAME: test15-suggested-rule
+  CSV_DISPLAY_NAME: test25-duplicate-rule
 ---
 
 - runFlow:
@@ -30,6 +30,7 @@ env:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
 
+# Change category to trigger suggest pill
 - tapOn:
     id: 'TransactionForm.CategorySelector'
 - waitForAnimationToEnd
@@ -44,6 +45,7 @@ env:
       id: 'SuggestRule.Pill'
     timeout: 10000
 
+# Create the first rule
 - tapOn:
     id: 'SuggestRule.Pill'
 - waitForAnimationToEnd
@@ -63,10 +65,19 @@ env:
       - tapOn: 'Skip'
 - waitForAnimationToEnd
 
-- runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
-
+# Tap the pill again to trigger duplicate rule alert
 - extendedWaitUntil:
     visible:
-      id: 'RulesPage.RuleCard.0'
+      id: 'SuggestRule.Pill'
     timeout: 10000
+
+- tapOn:
+    id: 'SuggestRule.Pill'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: 'Duplicate rule'
+    timeout: 10000
+
+- tapOn: 'Cancel'
+- waitForAnimationToEnd

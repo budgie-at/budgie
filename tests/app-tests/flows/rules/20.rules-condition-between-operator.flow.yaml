@@ -1,17 +1,18 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: 03
-  CATEGORY_NAME: Test03 Category
-  TITLE_CONTAINS_TEXT: Spotify
-  COMMENT_CONTAINS_TEXT: Premium
+  TEST_ID: '20'
+  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test20 Account'}
+  CATEGORY_NAME: ${CATEGORY_NAME || 'Test20 Category'}
+  TAG_NAME: ${TAG_NAME || 'Test20 Tag'}
 ---
-- runFlow:
-    file: ../shared/enter-app.flow.yaml
 
 - runFlow:
-    file: ../setup/create-category.flow.yaml
+    file: ../setup/setup-rules-test.flow.yaml
     env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
@@ -22,31 +23,29 @@ env:
     visible:
       id: 'RulesPage.CreateButton'
 - waitForAnimationToEnd
+
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
 
 - tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.AMOUNT
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.BETWEEN
+
+- tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- inputText: ${TITLE_CONTAINS_TEXT}
+- inputText: '10'
 
 - tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
-
-- tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
-
-- tapOn: Comment
-
-- tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
-- inputText: ${COMMENT_CONTAINS_TEXT}
-
-- tapOn: return
-
-- assertVisible:
-    text: 'Match All'
+    id: 'RuleForm.Condition.0.SecondaryValueInput'
+- inputText: '100'
 
 - scrollUntilVisible:
     element:
@@ -55,7 +54,6 @@ env:
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-
 - runFlow:
     file: ../shared/select-category-by-search.flow.yaml
     env:
@@ -69,5 +67,3 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-
-- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", |, Comment contains "${COMMENT_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}

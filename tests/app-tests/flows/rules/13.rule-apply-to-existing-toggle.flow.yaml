@@ -49,6 +49,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -69,15 +74,12 @@ env:
 - extendedWaitUntil:
     visible: 'Edit Rule'
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.ApplyToExistingToggle'
-    direction: DOWN
-- tapOn:
-    id: 'RuleForm.ApplyToExistingToggle'
-
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
 - waitForAnimationToEnd
 
 - tapOn:
