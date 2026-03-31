@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActionButton } from '../../@generic/component/action-button/action-button';
+import { CreateTransactionTrigger } from '../../@generic/component/action-button/action-button';
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
@@ -64,7 +64,7 @@ export default function TabsLayout() {
                         <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                             <TabButtons />
 
-                            <ActionButton isOpen={isMenuOpen} onPress={openMenu} />
+                            <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
                         </View>
                     </View>
                 </BlurGradient>
