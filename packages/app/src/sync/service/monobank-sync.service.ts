@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings */
+/* eslint-disable no-await-in-loop,no-console,lingui/no-unlocalized-strings */
 import { BankAccountInterface, BankSyncBatchResultInterface, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncEntityInterface, BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
@@ -77,16 +77,21 @@ class AppMonobankSyncService {
 
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
         if (this.isRunning) {
+            console.log('[BankSync] Already running, skipping');
+
             return BackgroundTask.BackgroundTaskResult.Success;
         }
         this.isRunning = true;
+        console.log('[BankSync] Starting sync');
         try {
             const mccCategories = await mccCategoryRepository.findAll();
             this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
+            console.log(`[BankSync] Loaded ${mccCategories.length} MCC categories`);
 
             return await this.executeSyncLoop();
         } finally {
             this.isRunning = false;
+            console.log('[BankSync] Sync finished');
         }
     }
 
@@ -121,12 +126,17 @@ class AppMonobankSyncService {
     private async executeSyncLoop(): Promise<BackgroundTask.BackgroundTaskResult> {
         try {
             const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
+            console.log(`[BankSync] Enabled syncs: ${enabledSyncs.length}`);
             if (!isNotEmptyArray(enabledSyncs)) {
+                console.log('[BankSync] No enabled syncs, exiting');
+
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
             return await this.processPendingSyncs();
         } catch (error: unknown) {
+            console.error('[BankSync] Sync loop error:', getErrorMessage(error));
+
             return await this.handleSyncError(error);
         }
     }
@@ -134,18 +144,26 @@ class AppMonobankSyncService {
     private async processPendingSyncs(): Promise<BackgroundTask.BackgroundTaskResult> {
         const pendingSync = await this.getNextPendingSync();
         if (!isDefined(pendingSync)) {
+            console.log('[BankSync] No pending syncs');
+
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
+        console.log(
+            `[BankSync] Processing sync id=${pendingSync.id} mode=${pendingSync.mode} status=${pendingSync.status} errors=${pendingSync.errorCount}`
+        );
         const result = await this.executeSyncBatch(pendingSync);
+        console.log(`[BankSync] Batch result: ${result.transactions.length} transactions, completed=${result.completed}`);
         await this.updateSyncProgress(pendingSync, result);
         await microPause(MONOBANK_RATE_LIMIT_MS);
 
         return await this.executeSyncLoop();
     }
 
+    // eslint-disable-next-line max-statements -- Error recovery with retry logic and batch status updates
     private async handleSyncError(error: unknown): Promise<BackgroundTask.BackgroundTaskResult> {
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
+        console.error(`[BankSync] handleSyncError: ${errorMessage}`);
         const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return BackgroundTask.BackgroundTaskResult.Failed;
@@ -221,10 +239,14 @@ class AppMonobankSyncService {
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            console.warn(`[BankSync] Account not found or no externalId for sync accountId=${sync.accountId}`);
+
             return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
+        console.log(`[BankSync] Fetching batch for account="${account.title}" externalId=${account.externalId} mode=${sync.mode}`);
         const result = await this.fetchTransactionBatch(sync, account.externalId);
+        console.log(`[BankSync] Fetched ${result.transactions.length} transactions from API`);
         await microPause();
 
         await this.createTransactionsWithRules(result, account.id);
@@ -236,12 +258,17 @@ class AppMonobankSyncService {
     private async createTransactionsWithRules(result: BankSyncBatchResultInterface, accountId: number): Promise<void> {
         const existingIds = await transactionService.findByExternalSource(this.provider);
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
+        console.log(
+            `[BankSync] Existing IDs: ${existingIds.size}, new transactions: ${newTxs.length} (filtered from ${result.transactions.length})`
+        );
 
         if (isNotEmptyArray(newTxs)) {
             const inputs = newTxs.map(tx =>
                 mapBankTransactionToCreateInput(tx, accountId, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
             );
+            console.log(`[BankSync] Creating ${inputs.length} transactions for accountId=${accountId}`);
             const createdTransactions = await transactionService.bulkCreate(inputs);
+            console.log(`[BankSync] Created ${createdTransactions.length} transactions`);
 
             try {
                 await ruleEngineService.applyRulesToTransactions(
@@ -249,8 +276,8 @@ class AppMonobankSyncService {
                     inputs
                 );
             } catch (error) {
-                // eslint-disable-next-line no-console
-                console.warn(getErrorMessage(error));
+                 
+                console.warn('[BankSync] Rule engine error:', getErrorMessage(error));
             }
         }
     }
@@ -258,10 +285,10 @@ class AppMonobankSyncService {
     private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
         const svc = new MonobankSyncService(sync.token);
         const isForward = sync.mode === BankSyncModeEnum.FORWARD;
+        const syncDate = isForward ? (sync.forwardSyncFromAt ?? new Date()) : (sync.backwardSyncFromAt ?? new Date());
+        console.log(`[BankSync] Fetching ${isForward ? 'forward' : 'backward'} from=${syncDate.toISOString()} extAccId=${extAccId}`);
 
-        return isForward
-            ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
-            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date());
+        return isForward ? await svc.syncTransactionsForward(extAccId, syncDate) : await svc.syncTransactionsBackward(extAccId, syncDate);
     }
 }
 

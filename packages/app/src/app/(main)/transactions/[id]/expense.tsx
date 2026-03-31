@@ -58,7 +58,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const {
         mode: ruleDetectionMode,
         suggestRuleData,
-        matchingRule,
+        matchingRulesCount,
         onRuleCreated
     } = useSuggestRuleDetection({
         transaction,
@@ -104,7 +104,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     mccCategoryId={mccCategoryId}
                     ruleDetectionMode={ruleDetectionMode}
                     suggestRuleData={suggestRuleData}
-                    matchingRule={matchingRule}
+                    matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}

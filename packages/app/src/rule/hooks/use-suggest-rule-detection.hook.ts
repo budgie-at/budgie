@@ -1,8 +1,4 @@
-import {
-    RuleWithRelationsEntityInterface,
-    TransactionCreateInputInterface,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useState } from 'react';
 import { Control, useWatch } from 'react-hook-form';
 
@@ -13,7 +9,7 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
-import { findMatchingRule } from '../util/find-matching-rule.util';
+import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
 
 interface UseSuggestRuleDetectionParams {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -23,7 +19,7 @@ interface UseSuggestRuleDetectionParams {
 interface UseSuggestRuleDetectionResult {
     readonly mode: RuleDetectionModeType;
     readonly suggestRuleData: SuggestRuleDataInterface;
-    readonly matchingRule: RuleWithRelationsEntityInterface | undefined;
+    readonly matchingRulesCount: number;
     readonly onRuleCreated: () => void;
 }
 
@@ -57,17 +53,15 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     };
 
     const transactionInput = convertTransactionToInput(transaction);
-    const matchingRule = findMatchingRule(enabledRules, transactionInput, suggestRuleData);
-    const { appliedRule } = transaction;
+    const matchingRules = findAllMatchingRules(enabledRules, transactionInput, suggestRuleData);
+    const matchingRulesCount = matchingRules.length;
     const hasChanges = categoryChanged || tagsChanged;
 
-    const mode = computeDetectionMode({ isBankSynced, hasChanges, ruleCreated, matchingRule, appliedRule });
+    const mode = computeDetectionMode({ isBankSynced, hasChanges, ruleCreated, matchingRulesCount });
 
     const onRuleCreated = () => {
         setRuleCreated(true);
     };
 
-    const resolvedRule = matchingRule ?? (isDefined(appliedRule) ? appliedRule : matchingRule);
-
-    return { mode, suggestRuleData, matchingRule: resolvedRule, onRuleCreated };
+    return { mode, suggestRuleData, matchingRulesCount, onRuleCreated };
 };
