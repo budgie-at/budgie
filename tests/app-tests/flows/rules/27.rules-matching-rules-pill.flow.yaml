@@ -1,0 +1,120 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '27'
+  CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
+  TAG_NAME: ${TAG_NAME || 'Subscription'}
+  CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME || 'test27-matching-rules-pill'}
+---
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+# Create category
+- runFlow:
+    file: ../setup/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+# Navigate to rules
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+# Create rule: Comment CONTAINS "Netflix" → SET_CATEGORY to Groceries
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- waitForAnimationToEnd
+- tapOn: 'Comment'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Netflix'
+
+- tapOn:
+    id: 'RuleForm.Action.0.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.SET_CATEGORY'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Import CSV transactions
+- runFlow:
+    file: ../shared/import-test-transactions.flow.yaml
+    env:
+      CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+
+# Navigate to transactions tab
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+# Open the Netflix transaction (auto-categorized by rule)
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+# Assert matching rules pill is visible
+- extendedWaitUntil:
+    visible:
+      id: 'MatchingRules.Pill'
+    timeout: 10000
+- assertVisible:
+    id: 'MatchingRules.Pill'
+
+# Tap the pill to navigate to rules page
+- tapOn:
+    id: 'MatchingRules.Pill'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+- assertVisible:
+    id: 'RulesPage.Page'
