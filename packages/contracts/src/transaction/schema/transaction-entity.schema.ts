@@ -6,6 +6,7 @@ import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-max-length.constant';
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable, {
@@ -19,5 +20,5 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     externalSource: zodEnum(ExternalSourceEnum).nullable().describe('The external source of the transaction.'),
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.'),
-    appliedRuleId: schema => schema.positive().nullable().describe('The id of the rule that was applied to this transaction.')
+    updatedBy: zodEnum(TransactionUpdatedByEnum).nullable().describe('Who last updated the transaction.')
 });

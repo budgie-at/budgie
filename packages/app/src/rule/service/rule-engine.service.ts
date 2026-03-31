@@ -1,8 +1,10 @@
 import {
     RuleActionEntityInterface,
     RuleActionTypeEnum,
+    RuleConditionFieldEnum,
     RuleWithRelationsEntityInterface,
     TransactionCreateInputInterface,
+    TransactionUpdatedByEnum,
     TransactionWithEntriesMccCategoryEntityInterface
 } from '@budgie/contracts';
 
@@ -10,6 +12,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     db,
+    mccCategoryRepository,
     ruleRepository,
     transactionEntryRepository,
     transactionRepository,
@@ -33,7 +36,8 @@ class RuleEngineService {
             return;
         }
 
-        const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input));
+        const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
+        const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
 
         for (let batchStart = 0; batchStart < transactionIds.length; batchStart += BATCH_SIZE) {
             // eslint-disable-next-line no-await-in-loop
@@ -93,7 +97,7 @@ class RuleEngineService {
             const batchIds = matchingIds.slice(batchStart, batchStart + BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const results = await Promise.allSettled(
-                batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.id, rule.actions))
+                batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions))
             );
 
             for (const result of results) {
@@ -123,36 +127,53 @@ class RuleEngineService {
         }
 
         const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
-        const [firstMatchingRule] = matchingRules;
 
         await db.transaction(async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
                 await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             }
-            await transactionRepository.updateById(transactionId, { appliedRuleId: firstMatchingRule.id }, transaction);
+            await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
         });
     }
 
-    private async applyRuleActionsToTransaction(
-        transactionId: number,
-        ruleId: number,
-        actions: RuleActionEntityInterface[]
-    ): Promise<void> {
+    private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
         await db.transaction(async transaction => {
             await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
-            await transactionRepository.updateById(transactionId, { appliedRuleId: ruleId }, transaction);
+            await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
         });
     }
 
-    private toRuleEvaluationInput(input: TransactionCreateInputInterface): RuleEvaluationInputInterface {
+    private toRuleEvaluationInput(input: TransactionCreateInputInterface, mccCodeMap: Map<number, string>): RuleEvaluationInputInterface {
         return {
             ...input,
             entries: input.entries.map(entry => ({
                 ...entry,
-                mccCode: null
+                mccCode: isDefined(entry.mccCategoryId) ? (mccCodeMap.get(entry.mccCategoryId) ?? null) : null
             }))
         };
+    }
+
+    private async buildMccCodeMapIfNeeded(
+        rules: RuleWithRelationsEntityInterface[],
+        inputs: TransactionCreateInputInterface[]
+    ): Promise<Map<number, string>> {
+        const emptyMap = new Map<number, string>();
+        const hasMccCondition = rules.some(rule => rule.conditions.some(condition => condition.field === RuleConditionFieldEnum.MCC_CODE));
+
+        if (!hasMccCondition) {
+            return emptyMap;
+        }
+
+        const mccCategoryIds = new Set(inputs.flatMap(input => input.entries.map(entry => entry.mccCategoryId).filter(isDefined)));
+
+        if (mccCategoryIds.size === 0) {
+            return emptyMap;
+        }
+
+        const mccCategories = await mccCategoryRepository.findAll();
+
+        return new Map(mccCategories.filter(category => mccCategoryIds.has(category.id)).map(category => [category.id, category.mcc]));
     }
 
     private async applyRuleActions(

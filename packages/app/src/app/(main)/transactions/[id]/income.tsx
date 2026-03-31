@@ -58,7 +58,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const {
         mode: ruleDetectionMode,
         suggestRuleData,
-        matchingRule,
+        matchingRulesCount,
         onRuleCreated
     } = useSuggestRuleDetection({
         transaction,
@@ -104,7 +104,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     mccCategoryId={mccCategoryId}
                     ruleDetectionMode={ruleDetectionMode}
                     suggestRuleData={suggestRuleData}
-                    matchingRule={matchingRule}
+                    matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}

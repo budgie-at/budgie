@@ -5,8 +5,8 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { RuleEntityTable } from '../../rule/table/rule-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 
 export const TransactionEntityTable = sqliteTable(
     'transactions',
@@ -22,6 +22,6 @@ export const TransactionEntityTable = sqliteTable(
         fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         exchangeRate: real('exchange_rate').notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
-        appliedRuleId: int('applied_rule_id', { mode: 'number' }).references(() => RuleEntityTable.id, { onDelete: 'set null' })
+        updatedBy: text('updated_by', { enum: convertEnumToDrizzleEnum(TransactionUpdatedByEnum) }).$type<TransactionUpdatedByEnum>()
     })
 );

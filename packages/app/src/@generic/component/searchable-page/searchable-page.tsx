@@ -16,7 +16,6 @@ import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, 
 
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
-
 interface Props<T extends IdInterface> {
     title: string;
     search: string;

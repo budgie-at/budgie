@@ -63,7 +63,7 @@ export default function RulesPage() {
         const order = index + 1;
 
         return (
-            <DeletableRow deleteActionTestID={RuleCardSelectors.DeleteAction(index)} id={item.id} onDelete={handleDeleteRule}>
+            <DeletableRow id={item.id} onDelete={handleDeleteRule}>
                 <RuleCard
                     testID={RuleCardSelectors.Card(index)}
                     switchTestID={RuleCardSelectors.EnabledSwitch(index)}
@@ -104,7 +104,6 @@ export default function RulesPage() {
                 />
             ) : (
                 <SearchablePageEmptyState
-                    testID={RulesPageSelectors.EmptyState}
                     title={t`No Rules Yet`}
                     icon={UserIconNameEnum.Zap}
                     description={t`Create rules to automatically categorize and tag your bank transactions`}

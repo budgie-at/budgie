@@ -231,7 +231,7 @@ class AccountService {
                 exchangeRate: 1,
                 fromAccountId: isIncome ? null : accountId,
                 toAccountId: isIncome ? accountId : null,
-                appliedRuleId: null
+                updatedBy: null
             },
             tx
         );

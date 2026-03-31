@@ -161,6 +161,7 @@ export { MccCategoryCreateEntitySchema } from './mcc-category/schema/mcc-categor
 export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
+export { TransactionUpdatedByEnum } from './transaction/enum/transaction-updated-by.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
