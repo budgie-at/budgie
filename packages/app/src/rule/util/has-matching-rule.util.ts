@@ -1,46 +1,12 @@
-import {
-    RuleConditionEntityInterface,
-    RuleConditionMatchTypeEnum,
-    RuleConditionOperatorEnum,
-    RuleWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { RuleConditionEntityInterface, RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 
-import { evaluateRuleCondition } from './evaluate-rule-condition.util';
+import { evaluateRuleCondition, matchOperator } from './evaluate-rule-condition.util';
 import { getSuggestRuleFieldValue } from './get-suggest-rule-field-value.util';
-
-const MAX_REGEX_LENGTH = 200;
-
-const matchStringCondition = (operator: RuleConditionOperatorEnum, fieldValue: string, conditionValue: string): boolean => {
-    const fieldLower = fieldValue.toLowerCase();
-    const valueLower = conditionValue.toLowerCase();
-
-    switch (operator) {
-        case RuleConditionOperatorEnum.EQUALS:
-            return fieldLower === valueLower;
-        case RuleConditionOperatorEnum.NOT_EQUALS:
-            return fieldLower !== valueLower;
-        case RuleConditionOperatorEnum.CONTAINS:
-            return fieldLower.includes(valueLower);
-        case RuleConditionOperatorEnum.NOT_CONTAINS:
-            return !fieldLower.includes(valueLower);
-        case RuleConditionOperatorEnum.MATCHES_REGEX:
-            if (conditionValue.length > MAX_REGEX_LENGTH) {
-                return false;
-            }
-            try {
-                return new RegExp(conditionValue, 'iu').test(fieldValue);
-            } catch {
-                return false;
-            }
-        default:
-            return false;
-    }
-};
 
 const evaluateConditionForDetection = (
     condition: RuleConditionEntityInterface,
@@ -50,7 +16,7 @@ const evaluateConditionForDetection = (
     const suggestValue = getSuggestRuleFieldValue(condition.field, suggestRuleData);
 
     if (isDefined(suggestValue)) {
-        return matchStringCondition(condition.operator, suggestValue, condition.value);
+        return matchOperator(condition.operator, suggestValue, condition.value, condition.secondaryValue);
     }
 
     return evaluateRuleCondition(condition, transactionInput);

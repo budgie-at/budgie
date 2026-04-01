@@ -19,15 +19,13 @@ import {
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
+import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
-
-const BATCH_SIZE = 20;
-const BATCH_DELAY_MS = 50;
 
 class RuleEngineService {
     async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
@@ -39,13 +37,13 @@ class RuleEngineService {
         const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
         const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
 
-        for (let batchStart = 0; batchStart < transactionIds.length; batchStart += BATCH_SIZE) {
+        for (let batchStart = 0; batchStart < transactionIds.length; batchStart += RULE_BATCH_SIZE) {
             // eslint-disable-next-line no-await-in-loop
             await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
+                setTimeout(resolve, RULE_BATCH_DELAY_MS);
             });
 
-            const batchIds = transactionIds.slice(batchStart, batchStart + BATCH_SIZE);
+            const batchIds = transactionIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             await Promise.allSettled(
                 batchIds.map((transactionId, offset) =>
@@ -88,13 +86,13 @@ class RuleEngineService {
         let processed = 0;
         let failed = 0;
 
-        for (let batchStart = 0; batchStart < total; batchStart += BATCH_SIZE) {
+        for (let batchStart = 0; batchStart < total; batchStart += RULE_BATCH_SIZE) {
             // eslint-disable-next-line no-await-in-loop
             await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
+                setTimeout(resolve, RULE_BATCH_DELAY_MS);
             });
 
-            const batchIds = matchingIds.slice(batchStart, batchStart + BATCH_SIZE);
+            const batchIds = matchingIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const results = await Promise.allSettled(
                 batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, rule.actions))

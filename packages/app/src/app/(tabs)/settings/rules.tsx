@@ -1,8 +1,8 @@
-import { RuleEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { ComponentProps, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -27,15 +27,13 @@ import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context'
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
 import { ruleService } from '../../../rule/service/rule.service';
 
-type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
-
 const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP };
 const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
 
 const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <MenuSpacer />;
 const handleGoBack = () => void goBackOrReplace('/settings');
-const getKeyExtractor = (item: RuleEntityInterface) => item.id.toString();
+const getKeyExtractor = (item: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => item.id.toString();
 
 export default function RulesPage() {
     const { t } = useLingui();
@@ -48,7 +46,7 @@ export default function RulesPage() {
         notify(NotificationFeedbackType.Success);
     };
 
-    const handleOpenRule = (rule: RuleEntityInterface) => void openRuleForm({ ruleId: rule.id });
+    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => void openRuleForm({ ruleId: rule.id });
     const handleCreateRule = () => void openRuleForm();
 
     useCreateAction({
@@ -59,7 +57,7 @@ export default function RulesPage() {
         testID: RulesPageSelectors.CreateButton
     });
 
-    const renderItem = ({ item, index }: { item: RuleWithRelationsType; index: number }): ReactElement => {
+    const renderItem = ({ item, index }: { item: RuleWithActionsRelationsEntityInterface; index: number }): ReactElement => {
         const order = index + 1;
 
         return (
