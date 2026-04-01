@@ -30,7 +30,7 @@ const getConditionFieldValue = (field: RuleConditionFieldEnum, input: RuleEvalua
     }
 };
 
-const matchOperator = (
+export const matchOperator = (
     operator: RuleConditionOperatorEnum,
     fieldValue: string | number | null,
     conditionValue: string,

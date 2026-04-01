@@ -1,13 +1,8 @@
-import { RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
+import { RuleConditionEntityInterface, RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-interface ConditionInput {
-    readonly field: string;
-    readonly operator: string;
-    readonly value: string;
-    readonly secondaryValue: string | null;
-}
+type ConditionInput = Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>;
 
 const serializeCondition = (condition: ConditionInput): string =>
     `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
