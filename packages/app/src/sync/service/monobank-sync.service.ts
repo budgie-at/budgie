@@ -276,7 +276,6 @@ class AppMonobankSyncService {
                     inputs
                 );
             } catch (error) {
-                 
                 console.warn('[BankSync] Rule engine error:', getErrorMessage(error));
             }
         }

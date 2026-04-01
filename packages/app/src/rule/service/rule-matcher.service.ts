@@ -14,6 +14,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
+import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
 import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
@@ -21,9 +22,6 @@ import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.ut
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
-
-const BATCH_SIZE = 20;
-const BATCH_DELAY_MS = 50;
 
 class RuleMatcherService {
     async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
@@ -143,8 +141,8 @@ class RuleMatcherService {
 
         let count = 0;
 
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
 
@@ -171,8 +169,8 @@ class RuleMatcherService {
 
         const matchingIds: number[] = [];
 
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + BATCH_SIZE);
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
 
@@ -262,11 +260,11 @@ class RuleMatcherService {
         while (hasMore) {
             // eslint-disable-next-line no-await-in-loop
             await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
+                setTimeout(resolve, RULE_BATCH_DELAY_MS);
             });
 
             // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
+            const transactions = await transactionRepository.getAllWithOffset(RULE_BATCH_SIZE, offset);
 
             if (!isNotEmptyArray(transactions)) {
                 break;
@@ -274,8 +272,8 @@ class RuleMatcherService {
 
             callback(transactions);
 
-            hasMore = transactions.length >= BATCH_SIZE;
-            offset += BATCH_SIZE;
+            hasMore = transactions.length >= RULE_BATCH_SIZE;
+            offset += RULE_BATCH_SIZE;
         }
     }
 
