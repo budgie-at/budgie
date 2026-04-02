@@ -33,7 +33,7 @@ export default function ConvertToTransferModal() {
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
     const excludeAccountId = currentParams?.excludeAccountId ?? 0;
     const sourceAmount = currentParams?.sourceAmount ?? 0;
-    const returnToList = currentParams?.returnToList === true;
+    const skipPostConvertNavigation = currentParams?.skipPostConvertNavigation === true;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const colorVariant = isExpense ? 'default' : 'positive';
@@ -93,7 +93,7 @@ export default function ConvertToTransferModal() {
                 await convertIncomeMutation(convertParams);
             }
 
-            if (returnToList) {
+            if (skipPostConvertNavigation) {
                 resolveConvertToTransfer(true);
             } else {
                 resolveConvertToTransfer(true, { skipBack: true });

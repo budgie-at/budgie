@@ -1,6 +1,6 @@
 name: Pull Request
 env:
-  MAESTRO_DRIVER_STARTUP_TIMEOUT: "300000"
+  MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
   TURBO_TEAM: vitalyiegorov
   TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -197,8 +197,7 @@ jobs:
   e2e-ios:
     needs: [code-quality]
     name: E2E Tests on iOS
-    runs-on: ${{ vars.IOS_RUNNER || 'macos-15' }}
-    timeout-minutes: 90
+    runs-on: self-hosted
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -281,45 +280,8 @@ jobs:
           xcode-select -p || true
           xcodebuild -version
 
-      - name: Ensure CocoaPods is installed
-        run: |
-          if command -v pod >/dev/null 2>&1; then
-            echo "CocoaPods $(pod --version) found"
-          else
-            echo "::warning::CocoaPods not found — installing via gem --user-install"
-            RUBY_VER=$(ruby -e 'puts RUBY_VERSION')
-            echo "Ruby version: $RUBY_VER"
-            # Ruby < 3.0 needs pinned ffi version (ffi >= 1.17.4 requires Ruby 3.0+)
-            if ruby -e 'exit(Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.0.0") ? 0 : 1)'; then
-              gem install ffi -v 1.17.3 --user-install --no-document
-            fi
-            gem install cocoapods --user-install --no-document
-            GEM_BIN="$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
-            echo "$GEM_BIN" >> "$GITHUB_PATH"
-            export PATH="$GEM_BIN:$PATH"
-            echo "Installed CocoaPods $(pod --version)"
-          fi
-
-      - name: Ensure ccache is available
-        id: setup-ccache
-        run: |
-          if command -v ccache >/dev/null 2>&1; then
-            echo "ccache found: $(ccache --version | head -1)"
-          elif command -v brew >/dev/null 2>&1 && [ -w "$(brew --prefix)/Cellar" ] 2>/dev/null; then
-            echo "::warning::ccache not found — installing via brew"
-            brew install ccache
-          else
-            echo "::warning::ccache unavailable and brew not writable — building without compiler cache"
-            echo "USE_CCACHE=0" >> "$GITHUB_ENV"
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "available=true" >> "$GITHUB_OUTPUT"
-
       - name: Restore CocoaPods cache
         uses: actions/cache/restore@v4
-        timeout-minutes: 3
-        continue-on-error: true
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -330,16 +292,17 @@ jobs:
             pods-${{ runner.os }}-
 
       - name: Setup ccache
-        if: steps.setup-ccache.outputs.available != 'false'
         run: |
-          mkdir -p "$CCACHE_DIR"
+          mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
+          command -v ccache >/dev/null || {
+            echo "::error::ccache is not installed on this runner."
+            exit 1
+          }
+          ccache --version
           ccache --zero-stats || true
 
       - name: Restore ccache
-        if: steps.setup-ccache.outputs.available != 'false'
         uses: actions/cache/restore@v4
-        timeout-minutes: 3
-        continue-on-error: true
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
@@ -352,9 +315,7 @@ jobs:
         env:
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
-        run: |
-          mkdir -p "$IOS_DERIVED_DATA"
-          npx expo prebuild -p ios
+        run: npx expo prebuild -p ios
 
       - name: Sync CocoaPods for E2E excludes
         working-directory: packages/app/ios
@@ -367,12 +328,13 @@ jobs:
           fi
 
       - name: Restore Xcode DerivedData cache
-        continue-on-error: true
-        run: |
-          # Use script-based cache restore with hard timeout to avoid
-          # actions/cache/restore@v4 hanging when GitHub Cache API is slow.
-          echo "Skipping DerivedData cache restore (actions/cache hangs on large caches)."
-          echo "The build will use ccache to speed up recompilation instead."
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
+            deriveddata-${{ runner.os }}-xcode26_3-e2e-
 
       - name: Shutdown stale simulators
         run: xcrun simctl shutdown all || true
@@ -517,8 +479,6 @@ jobs:
       - name: Save CocoaPods cache
         if: always()
         uses: actions/cache/save@v4
-        timeout-minutes: 3
-        continue-on-error: true
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -526,17 +486,18 @@ jobs:
           key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save ccache
-        if: always() && steps.setup-ccache.outputs.available != 'false'
+        if: always()
         uses: actions/cache/save@v4
-        timeout-minutes: 3
-        continue-on-error: true
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
-      # DerivedData cache save disabled — actions/cache/save@v4 hangs
-      # when uploading large caches during GitHub Cache API slowdowns.
-      # ccache handles incremental build speedups instead.
+      - name: Save Xcode DerivedData cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
 
   e2e-android:
     if: false
