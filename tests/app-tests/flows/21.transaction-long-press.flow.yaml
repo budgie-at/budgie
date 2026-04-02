@@ -48,6 +48,27 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
     timeout: 15000
 
+# --- Long-Press Edit from List ---
+
+- runFlow:
+    file: subflows/long-press-edit-transaction.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+
+- extendedWaitUntil:
+    visible: 'Edit Expense'
+    timeout: 15000
+
+- back
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 15000
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+    timeout: 15000
+
 # --- Long-Press Delete from List ---
 
 - runFlow:

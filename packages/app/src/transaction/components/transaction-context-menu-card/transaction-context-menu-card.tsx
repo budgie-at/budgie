@@ -6,6 +6,7 @@ import {
     isIncomeTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -14,6 +15,7 @@ import { TransactionContextMenuSelectors } from '../../../@e2e/selectors/transac
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
@@ -37,6 +39,7 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
+    const [, hapticImpact] = useVibration();
     const cardRef = useRef<View>(null);
     const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
 
@@ -49,10 +52,15 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     };
 
     const handleLongPress = () => {
+        hapticImpact(ImpactFeedbackStyle.Medium);
         cardRef.current?.measureInWindow((x, y, width, height) => {
             setAnchor({ x: x + width, y, width: 0, height });
             openMenu();
         });
+    };
+
+    const handleEditPress = () => {
+        closeMenu(() => void router.push(getTransactionHref(transaction)));
     };
 
     const handleDeletePress = () => {
@@ -72,7 +80,7 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
                     sourceAmount: convertFromMicroUnits(sourceEntry.amount),
                     sourceInstrumentId: sourceAccount.instrumentId,
                     sourceCode: sourceAccount.instrument.code,
-                    returnToList: true
+                    skipPostConvertNavigation: true
                 })
         );
     };
@@ -88,6 +96,12 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
             />
             <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
                 <View className="py-sm">
+                    <PopoverMenuItem
+                        icon={UserIconNameEnum.Pencil}
+                        label={t`Edit Transaction`}
+                        onPress={handleEditPress}
+                        testID={TransactionContextMenuSelectors.EditButton}
+                    />
                     {canConvert ? (
                         <PopoverMenuItem
                             icon={UserIconNameEnum.ArrowRightLeft}
