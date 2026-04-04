@@ -97,7 +97,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:148
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
 
@@ -234,10 +234,6 @@ msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. S
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:32
 msgid "Already syncing"
 msgstr "Ya sincronizando"
-
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:60
-msgid "Always categorize ‘{displayName}’ this way?"
-msgstr "¿Siempre categorizar ‘{displayName}’ de esta manera?"
 
 #: src/app/(tabs)/settings/import.tsx:197
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
@@ -395,7 +391,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:75
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:169
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:149
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
@@ -568,7 +564,7 @@ msgstr "No se pudo activar la cuenta."
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:201
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:181
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not create rule"
 msgstr "No se pudo crear la regla"
@@ -630,6 +626,7 @@ msgid "Could not save tag"
 msgstr "No se pudo guardar la etiqueta"
 
 #: src/rule/components/rule-card/rule-card.tsx:29
+#: src/rule/components/rule-update-card/rule-update-card.tsx:151
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not update rule"
 msgstr "No se pudo actualizar la regla"
@@ -650,10 +647,6 @@ msgstr "Crear una copia de seguridad de todos tus datos"
 msgid "Create a PIN"
 msgstr "Crear un PIN"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:54
-msgid "Create a rule for this transaction?"
-msgstr "Crear una regla para esta transacción?"
-
 #: src/app/transaction-account-filter.tsx:115
 msgid "Create Accounts"
 msgstr "Crear cuentas"
@@ -666,7 +659,7 @@ msgstr "Crear y copiar el token personal"
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:151
 msgid "Create anyway"
 msgstr "Crear de todos modos"
 
@@ -828,7 +821,7 @@ msgstr "Descarga tu extracto de cuenta en PDF desde George (banca online de Erst
 msgid "Downloading AI model..."
 msgstr "Descargando modelo de IA..."
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:148
 msgid "Duplicate rule"
 msgstr "Regla duplicada"
 
@@ -852,15 +845,15 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:170
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:150
 msgid "Edit existing"
 msgstr "Editar existente"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:90
+#: src/app/(main)/transactions/[id]/expense.tsx:91
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:90
+#: src/app/(main)/transactions/[id]/income.tsx:91
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
@@ -1642,6 +1635,10 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:43
+msgid "Quick rule"
+msgstr "Regla rápida"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
@@ -1691,9 +1688,13 @@ msgstr "Regla"
 msgid "Rule applied to {applied} transactions"
 msgstr "Regla aplicada a {applied} transacciones"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:188
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Regla creada · Aplicada a {appliedCount} transacciones"
+
+#: src/rule/components/rule-update-card/rule-update-card.tsx:138
+msgid "Rule updated · Applied to {appliedCount} transactions"
+msgstr "Regla actualizada · Aplicada a {appliedCount} transacciones"
 
 #: src/app/(tabs)/settings/rules.tsx:85
 msgid "Rules"
@@ -2271,6 +2272,10 @@ msgstr "Próximos"
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
+#: src/rule/components/rule-update-card/rule-update-card.tsx:33
+msgid "Update rule?"
+msgstr "¿Actualizar regla?"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2324,7 +2329,8 @@ msgstr "¿Quién te debe dinero?"
 msgid "Wise"
 msgstr "Wise"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:226
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:206
+#: src/rule/components/rule-update-card/rule-update-card.tsx:169
 msgid "Yes"
 msgstr "Sí"
 

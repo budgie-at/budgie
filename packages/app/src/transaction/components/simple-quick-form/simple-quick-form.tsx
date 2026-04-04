@@ -17,6 +17,7 @@ import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
+import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
 import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
@@ -48,6 +49,7 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly ruleDetectionMode?: RuleDetectionModeType;
     readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly updateRuleData?: UpdateRuleDataInterface | null;
     readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
     readonly onDismiss?: () => void;
@@ -74,6 +76,7 @@ export const SimpleQuickForm = (props: Props) => {
         mccCategoryId,
         ruleDetectionMode = 'none',
         suggestRuleData,
+        updateRuleData,
         matchingRulesCount,
         onRuleCreated,
         onDismiss,
@@ -264,6 +267,7 @@ export const SimpleQuickForm = (props: Props) => {
                         <RulePillSlot
                             ruleDetectionMode={ruleDetectionMode}
                             suggestRuleData={suggestRuleData}
+                            updateRuleData={updateRuleData}
                             matchingRulesCount={matchingRulesCount}
                             onRuleCreated={onRuleCreated}
                             onDismiss={onDismiss}

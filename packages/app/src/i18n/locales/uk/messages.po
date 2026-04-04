@@ -97,7 +97,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:148
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими самими умовами вже існує."
 
@@ -234,10 +234,6 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:32
 msgid "Already syncing"
 msgstr "Вже синхронізується"
-
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:60
-msgid "Always categorize ‘{displayName}’ this way?"
-msgstr "Завжди категоризувати ‘{displayName}’ таким чином?"
 
 #: src/app/(tabs)/settings/import.tsx:197
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
@@ -395,7 +391,7 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:75
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:169
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:149
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
@@ -568,7 +564,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:201
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:181
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not create rule"
 msgstr "Не вдалося створити правило"
@@ -630,6 +626,7 @@ msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
 #: src/rule/components/rule-card/rule-card.tsx:29
+#: src/rule/components/rule-update-card/rule-update-card.tsx:151
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
@@ -650,10 +647,6 @@ msgstr "Створити резервну копію всіх ваших дан�
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:54
-msgid "Create a rule for this transaction?"
-msgstr "Створити правило для цієї транзакції?"
-
 #: src/app/transaction-account-filter.tsx:115
 msgid "Create Accounts"
 msgstr "Створити рахунки"
@@ -666,7 +659,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:151
 msgid "Create anyway"
 msgstr "Створити все одно"
 
@@ -828,7 +821,7 @@ msgstr "Завантажте виписку з рахунку у форматі 
 msgid "Downloading AI model..."
 msgstr "Завантаження ШІ моделі..."
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:148
 msgid "Duplicate rule"
 msgstr "Дублікат правила"
 
@@ -852,15 +845,15 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:170
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:150
 msgid "Edit existing"
 msgstr "Редагувати існуюче"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:90
+#: src/app/(main)/transactions/[id]/expense.tsx:91
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:90
+#: src/app/(main)/transactions/[id]/income.tsx:91
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1642,6 +1635,10 @@ msgstr "Приватбанк"
 msgid "PrivatBank"
 msgstr "ПриватБанк"
 
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:43
+msgid "Quick rule"
+msgstr "Швидке правило"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
@@ -1691,9 +1688,13 @@ msgstr "Правило"
 msgid "Rule applied to {applied} transactions"
 msgstr "Правило застосовано до {applied} транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:188
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:168
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Правило створено · Застосовано до {appliedCount} транзакцій"
+
+#: src/rule/components/rule-update-card/rule-update-card.tsx:138
+msgid "Rule updated · Applied to {appliedCount} transactions"
+msgstr "Правило оновлено · Застосовано до {appliedCount} транзакцій"
 
 #: src/app/(tabs)/settings/rules.tsx:85
 msgid "Rules"
@@ -2271,6 +2272,10 @@ msgstr "Майбутні"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
+#: src/rule/components/rule-update-card/rule-update-card.tsx:33
+msgid "Update rule?"
+msgstr "Оновити правило?"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -2324,7 +2329,8 @@ msgstr "Хто винен вам гроші?"
 msgid "Wise"
 msgstr "Wise"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:226
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:206
+#: src/rule/components/rule-update-card/rule-update-card.tsx:169
 msgid "Yes"
 msgstr "Так"
 

@@ -97,7 +97,7 @@ describe('hasConflictWithRuleOutcomes', () => {
         expect(result).toBe(true);
     });
 
-    it('should return true when user has extra tags beyond rule tags', () => {
+    it('should return false when user only adds tags beyond rule tags (extension, not conflict)', () => {
         const result = hasConflictWithRuleOutcomes({
             userCategoryId: null,
             userTagIds: [10, 20, 30],
@@ -106,7 +106,7 @@ describe('hasConflictWithRuleOutcomes', () => {
             tagsChanged: true
         });
 
-        expect(result).toBe(true);
+        expect(result).toBe(false);
     });
 
     it('should return true when user removed a rule tag', () => {

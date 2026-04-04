@@ -13,7 +13,7 @@ describe('computeDetectionMode', () => {
         ).toBe('suggest');
     });
 
-    it('should return "match" when matching rules exist without conflict', () => {
+    it('should return "match" when multiple matching rules exist without conflict', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
@@ -49,7 +49,7 @@ describe('computeDetectionMode', () => {
         ).toBe('none');
     });
 
-    it('should return "none" when rule already created', () => {
+    it('should return "none" when rule already created and no matches', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
@@ -61,7 +61,7 @@ describe('computeDetectionMode', () => {
         ).toBe('none');
     });
 
-    it('should return "none" when dismissed', () => {
+    it('should return "none" when dismissed and no matches', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
@@ -85,7 +85,7 @@ describe('computeDetectionMode', () => {
         ).toBe('none');
     });
 
-    it('should return "match" over "suggest" when matching rules exist with changes but no conflict', () => {
+    it('should return "match" over "suggest" when multiple rules match with changes but no conflict', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
@@ -121,7 +121,7 @@ describe('computeDetectionMode', () => {
         ).toBe('none');
     });
 
-    it('should return "suggest" when matching rules exist but user has conflicting changes', () => {
+    it('should return "suggest" when multiple matching rules exist and user has conflicting changes', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
@@ -133,25 +133,25 @@ describe('computeDetectionMode', () => {
         ).toBe('suggest');
     });
 
-    it('should return "match" when conflict exists but suggestion was dismissed', () => {
+    it('should return "match" when conflict exists with multiple rules but suggestion was dismissed', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
                 ruleCreated: false,
                 isDismissed: true,
-                matchingRulesCount: 1,
+                matchingRulesCount: 2,
                 hasConflictWithMatchingRules: true
             })
         ).toBe('match');
     });
 
-    it('should return "match" when conflict exists but rule was already created', () => {
+    it('should return "match" when conflict exists with multiple rules but rule was already created', () => {
         expect(
             computeDetectionMode({
                 hasChanges: true,
                 ruleCreated: true,
                 isDismissed: false,
-                matchingRulesCount: 1,
+                matchingRulesCount: 2,
                 hasConflictWithMatchingRules: true
             })
         ).toBe('match');
@@ -167,5 +167,53 @@ describe('computeDetectionMode', () => {
                 hasConflictWithMatchingRules: true
             })
         ).toBe('none');
+    });
+
+    it('should return "update" when exactly 1 matching rule and user has changes', () => {
+        expect(
+            computeDetectionMode({
+                hasChanges: true,
+                ruleCreated: false,
+                isDismissed: false,
+                matchingRulesCount: 1,
+                hasConflictWithMatchingRules: false
+            })
+        ).toBe('update');
+    });
+
+    it('should return "update" when exactly 1 matching rule and user has conflicting changes', () => {
+        expect(
+            computeDetectionMode({
+                hasChanges: true,
+                ruleCreated: false,
+                isDismissed: false,
+                matchingRulesCount: 1,
+                hasConflictWithMatchingRules: true
+            })
+        ).toBe('update');
+    });
+
+    it('should return "match" when 1 rule matches but user already updated rule', () => {
+        expect(
+            computeDetectionMode({
+                hasChanges: true,
+                ruleCreated: true,
+                isDismissed: false,
+                matchingRulesCount: 1,
+                hasConflictWithMatchingRules: false
+            })
+        ).toBe('match');
+    });
+
+    it('should return "match" when 1 rule matches but suggestion was dismissed', () => {
+        expect(
+            computeDetectionMode({
+                hasChanges: true,
+                ruleCreated: false,
+                isDismissed: true,
+                matchingRulesCount: 1,
+                hasConflictWithMatchingRules: false
+            })
+        ).toBe('match');
     });
 });

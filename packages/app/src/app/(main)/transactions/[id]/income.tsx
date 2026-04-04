@@ -58,6 +58,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const {
         mode: ruleDetectionMode,
         suggestRuleData,
+        updateRuleData,
         matchingRulesCount,
         onRuleCreated,
         onDismiss
@@ -105,6 +106,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     mccCategoryId={mccCategoryId}
                     ruleDetectionMode={ruleDetectionMode}
                     suggestRuleData={suggestRuleData}
+                    updateRuleData={updateRuleData}
                     matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
                     onDismiss={onDismiss}
