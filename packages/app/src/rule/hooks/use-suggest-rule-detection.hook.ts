@@ -5,11 +5,13 @@ import { Control, useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
+import { dismissedSuggestions } from '../constant/dismissed-suggestions.constant';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
 import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
+import { selectSuggestCondition } from '../util/select-suggest-condition.util';
 
 interface UseSuggestRuleDetectionParams {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -21,11 +23,20 @@ interface UseSuggestRuleDetectionResult {
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly matchingRulesCount: number;
     readonly onRuleCreated: () => void;
+    readonly onDismiss: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Detection hook with multiple derived values
+const buildDismissKey = (transactionId: number, title: string, mccCode: string | null): string => {
+    const condition = selectSuggestCondition(title, mccCode);
+    const conditionSignature = isDefined(condition) ? `${condition.field}:${condition.value}` : 'none';
+
+    return `${transactionId}:${conditionSignature}`;
+};
+
+// eslint-disable-next-line max-statements -- Detection hook with multiple derived values and dismiss tracking
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParams): UseSuggestRuleDetectionResult => {
     const [ruleCreated, setRuleCreated] = useState(false);
+    const [isDismissed, setIsDismissed] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { enabledRules } = useGetEnabledRulesQuery();
@@ -42,11 +53,12 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         sortedTagIds.length !== sortedOriginalTagIds.length || sortedTagIds.some((id, index) => id !== sortedOriginalTagIds[index]);
 
     const mccCategory = transaction.entries[0]?.mccCategory ?? null;
+    const mccCode = isDefined(mccCategory) ? mccCategory.mcc : null;
 
     const suggestRuleData: SuggestRuleDataInterface = {
         title: transaction.title,
         comment: transaction.comment,
-        mccCode: isDefined(mccCategory) ? mccCategory.mcc : null,
+        mccCode,
         categoryId,
         tagIds
     };
@@ -56,11 +68,19 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const matchingRulesCount = matchingRules.length;
     const hasChanges = categoryChanged || tagsChanged;
 
-    const mode = computeDetectionMode({ hasChanges, ruleCreated, isDismissed: false, matchingRulesCount });
+    const dismissKey = buildDismissKey(transaction.id, transaction.title, mccCode);
+    const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
+
+    const mode = computeDetectionMode({ hasChanges, ruleCreated, isDismissed: isDismissed || wasPreviouslyDismissed, matchingRulesCount });
 
     const onRuleCreated = () => {
         setRuleCreated(true);
     };
 
-    return { mode, suggestRuleData, matchingRulesCount, onRuleCreated };
+    const onDismiss = () => {
+        dismissedSuggestions.add(dismissKey);
+        setIsDismissed(true);
+    };
+
+    return { mode, suggestRuleData, matchingRulesCount, onRuleCreated, onDismiss };
 };

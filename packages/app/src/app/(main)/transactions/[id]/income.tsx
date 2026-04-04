@@ -59,7 +59,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         mode: ruleDetectionMode,
         suggestRuleData,
         matchingRulesCount,
-        onRuleCreated
+        onRuleCreated,
+        onDismiss
     } = useSuggestRuleDetection({
         transaction,
         control: form.control
@@ -106,6 +107,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     suggestRuleData={suggestRuleData}
                     matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
+                    onDismiss={onDismiss}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
