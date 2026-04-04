@@ -1,5 +1,9 @@
 import { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -19,7 +23,11 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadge
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
-        await ruleService.toggleEnabled(rule.id, enabled);
+        try {
+            await ruleService.toggleEnabled(rule.id, enabled);
+        } catch (error: unknown) {
+            Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });
+        }
     };
 
     return (

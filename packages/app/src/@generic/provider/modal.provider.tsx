@@ -10,7 +10,6 @@ import { ImportColumnMapperModalProvider } from '../../import/provider/import-co
 import { RuleFormModalProvider } from '../../rule/provider/rule-form-modal.provider';
 import { RuleMccSelectorModalProvider } from '../../rule/provider/rule-mcc-selector-modal.provider';
 import { RuleSelectorModalProvider } from '../../rule/provider/rule-selector-modal.provider';
-import { SuggestRuleModalProvider } from '../../rule/provider/suggest-rule-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
 import { ConvertToTransferModalProvider } from '../../transaction/provider/convert-to-transfer-modal.provider';
@@ -51,9 +50,7 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                                     <RuleFormModalProvider>
                                                                                         <RuleSelectorModalProvider>
                                                                                             <RuleMccSelectorModalProvider>
-                                                                                                <SuggestRuleModalProvider>
-                                                                                                    {children}
-                                                                                                </SuggestRuleModalProvider>
+                                                                                                {children}
                                                                                             </RuleMccSelectorModalProvider>
                                                                                         </RuleSelectorModalProvider>
                                                                                     </RuleFormModalProvider>

@@ -50,6 +50,7 @@ interface Props {
     readonly suggestRuleData?: SuggestRuleDataInterface;
     readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
+    readonly onDismiss?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -75,6 +76,7 @@ export const SimpleQuickForm = (props: Props) => {
         suggestRuleData,
         matchingRulesCount,
         onRuleCreated,
+        onDismiss,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -264,6 +266,7 @@ export const SimpleQuickForm = (props: Props) => {
                             suggestRuleData={suggestRuleData}
                             matchingRulesCount={matchingRulesCount}
                             onRuleCreated={onRuleCreated}
+                            onDismiss={onDismiss}
                         />
                     </View>
                 </View>

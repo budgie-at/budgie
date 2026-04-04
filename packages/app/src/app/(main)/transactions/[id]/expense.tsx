@@ -59,7 +59,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         mode: ruleDetectionMode,
         suggestRuleData,
         matchingRulesCount,
-        onRuleCreated
+        onRuleCreated,
+        onDismiss
     } = useSuggestRuleDetection({
         transaction,
         control: form.control
@@ -106,6 +107,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     suggestRuleData={suggestRuleData}
                     matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
+                    onDismiss={onDismiss}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

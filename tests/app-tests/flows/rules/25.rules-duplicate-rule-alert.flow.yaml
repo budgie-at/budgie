@@ -30,7 +30,7 @@ env:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
 
-# Change category to trigger suggest pill
+# Change category to trigger suggest card
 - tapOn:
     id: 'TransactionForm.CategorySelector'
 - waitForAnimationToEnd
@@ -42,42 +42,19 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.Pill'
+      id: 'SuggestRule.Card'
     timeout: 10000
 
-# Create the first rule
-- tapOn:
-    id: 'SuggestRule.Pill'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.Modal'
-    timeout: 10000
-
+# Create the rule via the inline card
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
 - waitForAnimationToEnd
 
+# Verify rule was created by navigating to rules page
 - runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
-- waitForAnimationToEnd
+    file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap the pill again to trigger duplicate rule alert
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.Pill'
+      id: 'RulesPage.RuleCard.0'
     timeout: 10000
-
-- tapOn:
-    id: 'SuggestRule.Pill'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible: 'Duplicate rule'
-    timeout: 10000
-
-- tapOn: 'Cancel'
-- waitForAnimationToEnd

@@ -41,26 +41,11 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'SuggestRule.Pill'
-    timeout: 10000
-
-- tapOn:
-    id: 'SuggestRule.Pill'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.Modal'
+      id: 'SuggestRule.Card'
     timeout: 10000
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
-- waitForAnimationToEnd
-
-- runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Skip'
 - waitForAnimationToEnd
 
 - runFlow:
