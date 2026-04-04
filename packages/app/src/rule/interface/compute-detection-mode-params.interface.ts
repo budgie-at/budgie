@@ -3,4 +3,5 @@ export interface ComputeDetectionModeParamsInterface {
     readonly ruleCreated: boolean;
     readonly isDismissed: boolean;
     readonly matchingRulesCount: number;
+    readonly hasConflictWithMatchingRules: boolean;
 }
