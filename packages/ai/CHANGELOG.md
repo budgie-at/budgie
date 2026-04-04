@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2026-04-04)
+
+### Bug Fixes
+
+- **ai,contracts:** replace Buffer with Uint8Array for React Native compatibility ([ada8fea](https://github.com/budgie-at/budgie/commit/ada8feae38f5d60e0065b1cc990b3cd1a227abf7))
+- **ai:** prevent concurrent embedding inference and cache results ([f3279e3](https://github.com/budgie-at/budgie/commit/f3279e372c64dc3116fed615d3390514818d793b))
+- **ai:** relax vec search distance threshold from 0.9 to 1.0 ([19125c5](https://github.com/budgie-at/budgie/commit/19125c523f2e1badc774b3b144751736fbb6df5b))
+- **app,ai,contracts:** address PR review issues and add animated brain progress UI ([23cf3ea](https://github.com/budgie-at/budgie/commit/23cf3eacb74946cb6cc9ebd8e4f3dfdebde8ab11))
+
+### Features
+
+- **ai,app,contracts:** add nomic-embed-text-v2-moe as dedicated embedding model ([1c9016d](https://github.com/budgie-at/budgie/commit/1c9016deaacddbe99546cbde915657cc6faa0bdf))
+- **ai,app,contracts:** optimize embedding generation with parallel processing and skip redundant translations ([4b79982](https://github.com/budgie-at/budgie/commit/4b79982f74cff620c515e02b6601b7ff494d4ba7))
+- **app,ai,contracts:** add non-Latin translation, yield-to-UI progress, and brain icon improvements ([d91fbd9](https://github.com/budgie-at/budgie/commit/d91fbd9e5387db1c852f7aaf3dd2870d1676d91f))
+- **app,ai,contracts:** migrate to sqlite-vec vector search with AI settings UI ([e2ae76d](https://github.com/budgie-at/budgie/commit/e2ae76d4dcedda3d162ad233cd7a2f284f425f2c))
+- **app,ai:** add source debug labels to suggestion pills ([1796a77](https://github.com/budgie-at/budgie/commit/1796a777fb143f840cba7428a0a5b0bc4e8156f6))
+- **app,ai:** refactor AI data card UI, add debug logging, fix suggestion visibility ([eca1cc7](https://github.com/budgie-at/budgie/commit/eca1cc7e397ac0c52111219f041f4a3a36b692e0))
+- **app,contracts,ai:** replace embedding patterns with frequency-based suggestions and amount re-ranking ([58dd38e](https://github.com/budgie-at/budgie/commit/58dd38e6493a8379bdf4d432acbe010391de597d))
+- **app:** add pulsating brain animation, reuse in transaction form, fix UI glitches ([f4ac8c5](https://github.com/budgie-at/budgie/commit/f4ac8c51409c5f6e4441161585b2ee32607f4b5f))
+- **app:** decouple embedding suggestions from chat model loading ([238e16f](https://github.com/budgie-at/budgie/commit/238e16f2eb7999425f22230f95d17296670a617d))
+- **app:** swap chat model to Qwen3 1.7B Q4_K_M ([d18118f](https://github.com/budgie-at/budgie/commit/d18118f08cda9c3f3b264665204d045a57971884))
+- **contracts,ai,app:** split title_embeddings into merchant + comment tables ([1039b6c](https://github.com/budgie-at/budgie/commit/1039b6c68e5adbddcf734091993f83e5004169c6))
+
+### Performance Improvements
+
+- **app,ai,contracts:** optimize vector embedding queries and data integrity ([529f2ce](https://github.com/budgie-at/budgie/commit/529f2cec96221eaa02d2de02b83b4574c5373c79))
+
 ## [2.41.2](https://github.com/budgie-at/budgie/compare/v2.41.1...v2.41.2) (2026-03-17)
 
 **Note:** Version bump only for package @budgie/ai
