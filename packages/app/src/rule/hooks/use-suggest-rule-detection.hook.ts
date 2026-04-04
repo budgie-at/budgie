@@ -10,7 +10,9 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
+import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
+import { hasConflictWithRuleOutcomes } from '../util/has-conflict-with-rule-outcomes.util';
 import { selectSuggestCondition } from '../util/select-suggest-condition.util';
 
 interface UseSuggestRuleDetectionParams {
@@ -68,10 +70,25 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const matchingRulesCount = matchingRules.length;
     const hasChanges = categoryChanged || tagsChanged;
 
+    const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
+    const hasConflict = hasConflictWithRuleOutcomes({
+        userCategoryId: categoryId,
+        userTagIds: tagIds,
+        ruleOutcomes: ruleActionOutcomes,
+        categoryChanged,
+        tagsChanged
+    });
+
     const dismissKey = buildDismissKey(transaction.id, transaction.title, mccCode);
     const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
 
-    const mode = computeDetectionMode({ hasChanges, ruleCreated, isDismissed: isDismissed || wasPreviouslyDismissed, matchingRulesCount });
+    const mode = computeDetectionMode({
+        hasChanges,
+        ruleCreated,
+        isDismissed: isDismissed || wasPreviouslyDismissed,
+        matchingRulesCount,
+        hasConflictWithMatchingRules: hasConflict
+    });
 
     const onRuleCreated = () => {
         setRuleCreated(true);
