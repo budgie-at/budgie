@@ -30,7 +30,6 @@ import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-
 import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
-import { SUGGEST_RULE_MODAL_OPTIONS } from '../@generic/constant/suggest-rule-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
@@ -181,10 +180,6 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen
                                                                         name="transaction-tag-filter"
                                                                         options={SEARCHABLE_FILTER_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="suggest-rule"
-                                                                        options={SUGGEST_RULE_MODAL_OPTIONS}
                                                                     />
                                                                 </Stack>
                                                             </ModalProvider>

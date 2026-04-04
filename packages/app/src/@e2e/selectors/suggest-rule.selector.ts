@@ -1,6 +1,5 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 export const SuggestRuleSelectors = {
-    Pill: 'SuggestRule.Pill',
-    Modal: 'SuggestRule.Modal',
+    Card: 'SuggestRule.Card',
     CreateRuleButton: 'SuggestRule.CreateRuleButton'
 } as const;
