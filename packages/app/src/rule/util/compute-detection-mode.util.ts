@@ -3,13 +3,17 @@ import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 
 export const computeDetectionMode = (params: ComputeDetectionModeParamsInterface): RuleDetectionModeType => {
     const { hasChanges, ruleCreated, isDismissed, matchingRulesCount, hasConflictWithMatchingRules } = params;
-    const shouldSuggestOverride = hasConflictWithMatchingRules && matchingRulesCount > 0;
+    const canSuggest = hasChanges && !ruleCreated && !isDismissed;
 
-    if (matchingRulesCount > 0 && !shouldSuggestOverride) {
+    if (matchingRulesCount === 1 && canSuggest) {
+        return 'update';
+    }
+
+    if (matchingRulesCount > 0 && !hasConflictWithMatchingRules) {
         return 'match';
     }
 
-    if (hasChanges && !ruleCreated && !isDismissed && (matchingRulesCount === 0 || shouldSuggestOverride)) {
+    if (canSuggest) {
         return 'suggest';
     }
 

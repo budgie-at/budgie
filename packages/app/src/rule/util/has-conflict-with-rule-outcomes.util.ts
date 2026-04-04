@@ -15,12 +15,8 @@ export const hasConflictWithRuleOutcomes = (params: HasConflictParams): boolean 
 
     const hasCategoryConflict = categoryChanged && isDefined(ruleOutcomes.categoryId) && userCategoryId !== ruleOutcomes.categoryId;
 
-    const ruleTagIdSet = new Set(ruleOutcomes.tagIds);
     const userTagIdSet = new Set(userTagIds);
-    const hasTagConflict =
-        tagsChanged &&
-        ruleOutcomes.tagIds.length > 0 &&
-        (ruleTagIdSet.size !== userTagIdSet.size || ruleOutcomes.tagIds.some(tagId => !userTagIdSet.has(tagId)));
+    const hasTagConflict = tagsChanged && ruleOutcomes.tagIds.length > 0 && ruleOutcomes.tagIds.some(tagId => !userTagIdSet.has(tagId));
 
     return hasCategoryConflict || hasTagConflict;
 };

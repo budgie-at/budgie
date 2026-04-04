@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { dismissedSuggestions } from '../constant/dismissed-suggestions.constant';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
+import { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
@@ -23,6 +24,7 @@ interface UseSuggestRuleDetectionParams {
 interface UseSuggestRuleDetectionResult {
     readonly mode: RuleDetectionModeType;
     readonly suggestRuleData: SuggestRuleDataInterface;
+    readonly updateRuleData: UpdateRuleDataInterface | null;
     readonly matchingRulesCount: number;
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
@@ -90,6 +92,12 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         hasConflictWithMatchingRules: hasConflict
     });
 
+    const singleMatchingRule = matchingRulesCount === 1 ? matchingRules[0] : null;
+
+    const updateRuleData: UpdateRuleDataInterface | null = isDefined(singleMatchingRule)
+        ? { ruleId: singleMatchingRule.id, categoryId, tagIds }
+        : null;
+
     const onRuleCreated = () => {
         setRuleCreated(true);
     };
@@ -99,5 +107,5 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         setIsDismissed(true);
     };
 
-    return { mode, suggestRuleData, matchingRulesCount, onRuleCreated, onDismiss };
+    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss };
 };

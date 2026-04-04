@@ -1,1 +1,1 @@
-export type RuleDetectionModeType = 'suggest' | 'match' | 'none';
+export type RuleDetectionModeType = 'suggest' | 'update' | 'match' | 'none';
