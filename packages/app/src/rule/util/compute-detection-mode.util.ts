@@ -2,14 +2,14 @@ import { ComputeDetectionModeParamsInterface } from '../interface/compute-detect
 import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 
 export const computeDetectionMode = (params: ComputeDetectionModeParamsInterface): RuleDetectionModeType => {
-    const { isBankSynced, hasChanges, ruleCreated, matchingRulesCount } = params;
+    const { hasChanges, ruleCreated, isDismissed, matchingRulesCount } = params;
 
-    if (isBankSynced && hasChanges && !ruleCreated && matchingRulesCount === 0) {
-        return 'suggest';
+    if (matchingRulesCount > 0) {
+        return 'match';
     }
 
-    if (isBankSynced && matchingRulesCount > 0) {
-        return 'match';
+    if (hasChanges && !ruleCreated && !isDismissed && matchingRulesCount === 0) {
+        return 'suggest';
     }
 
     return 'none';
