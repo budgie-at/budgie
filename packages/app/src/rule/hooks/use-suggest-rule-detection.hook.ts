@@ -32,7 +32,6 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const categoryId = entries[0]?.categoryId ?? null;
 
-    const isBankSynced = isDefined(transaction.externalSource);
     const originalCategoryId = transaction.entries[0]?.categoryId ?? null;
     const originalTagIds = transaction.transactionTags.map(({ tagId }) => tagId);
 
@@ -57,7 +56,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const matchingRulesCount = matchingRules.length;
     const hasChanges = categoryChanged || tagsChanged;
 
-    const mode = computeDetectionMode({ isBankSynced, hasChanges, ruleCreated, matchingRulesCount });
+    const mode = computeDetectionMode({ hasChanges, ruleCreated, isDismissed: false, matchingRulesCount });
 
     const onRuleCreated = () => {
         setRuleCreated(true);
