@@ -2,7 +2,7 @@
 name: best-practices
 description: Semantic identifiers, atomic tests, project structure
 metadata:
-    tags: best-practices, patterns, structure, naming
+  tags: best-practices, patterns, structure, naming
 ---
 
 ## Use Semantic Identifiers
@@ -67,7 +67,7 @@ Always start with clean app state:
 
 ```yaml
 - launchApp:
-      clearState: true
+    clearState: true
 ```
 
 ## Project Structure
@@ -103,24 +103,24 @@ Extract common patterns:
 # subflows/login.yaml
 ---
 - tapOn:
-      id: 'email_field'
+    id: "email_field"
 - inputText: ${USERNAME}
 - tapOn:
-      id: 'password_field'
+    id: "password_field"
 - inputText: ${PASSWORD}
 - hideKeyboard
 - tapOn:
-      id: 'submit_button'
-- assertVisible: 'Dashboard'
+    id: "submit_button"
+- assertVisible: "Dashboard"
 ```
 
 Use in flows:
 
 ```yaml
 - runFlow:
-      file: subflows/login.yaml
-      env:
-          USERNAME: test@example.com
+    file: subflows/login.yaml
+    env:
+      USERNAME: test@example.com
 ```
 
 ## Always Hide Keyboard
@@ -128,37 +128,37 @@ Use in flows:
 Before tapping elements that might be obscured:
 
 ```yaml
-- inputText: 'password'
+- inputText: "password"
 - hideKeyboard
 - tapOn:
-      id: 'submit'
+    id: "submit"
 ```
 
 ## Take Screenshots at Key Points
 
 ```yaml
-- takeScreenshot: '01_before_action'
-- tapOn: 'Submit'
-- takeScreenshot: '02_after_action'
+- takeScreenshot: "01_before_action"
+- tapOn: "Submit"
+- takeScreenshot: "02_after_action"
 ```
 
 ## Use extendedWaitUntil for Async
 
 ```yaml
-- tapOn: 'Load Data'
+- tapOn: "Load Data"
 - extendedWaitUntil:
-      visible: 'Data Loaded'
-      timeout: 15000
+    visible: "Data Loaded"
+    timeout: 15000
 ```
 
 ## Handle Platform Differences
 
 ```yaml
 - runFlow:
-      when:
-          platform: Android
-      commands:
-          - tapOn: 'Allow' # Android permission
+    when:
+      platform: Android
+    commands:
+      - tapOn: "Allow" # Android permission
 ```
 
 ## Environment Variables for Secrets
@@ -166,8 +166,8 @@ Before tapping elements that might be obscured:
 ```yaml
 # Never hardcode credentials
 env:
-    USERNAME: ${USERNAME}
-    PASSWORD: ${PASSWORD}
+  USERNAME: ${USERNAME}
+  PASSWORD: ${PASSWORD}
 ---
 - inputText: ${USERNAME}
 ```

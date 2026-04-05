@@ -9,7 +9,6 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -151,7 +150,6 @@ export default function ImportScreen() {
     return (
         <>
             <Page
-                testID={ImportSelectors.Page}
                 header={
                     <PageHeader
                         title={t`Map CSV Columns`}
@@ -260,7 +258,6 @@ export default function ImportScreen() {
                             <ActivityIndicator size="small" />
                         ) : (
                             <Button
-                                testID={ImportSelectors.SubmitButton}
                                 content={buttonContent}
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}

@@ -5,7 +5,6 @@ Pure TypeScript AI package — no React dependencies. Provides embedding, sugges
 ## Architecture
 
 Dual model setup:
-
 - **Chat**: Qwen3 1.7B Q4_K_M — translation, extraction, categorization
 - **Embedding**: nomic-embed-text-v2-moe Q8_0 — 768-dimension multilingual embeddings
 

@@ -390,8 +390,7 @@ export default defineConfig(
             'max-statements': 'off',
             'func-names': 'off',
             'promise/no-nesting': 'off',
-            '@typescript-eslint/no-magic-numbers': 'warn',
-            'lingui/no-unlocalized-strings': 'off'
+            '@typescript-eslint/no-magic-numbers': 'warn'
         }
     }
 );

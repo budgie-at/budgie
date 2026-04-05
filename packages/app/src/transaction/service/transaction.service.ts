@@ -8,7 +8,6 @@ import {
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
-    TransactionUpdatedByEnum,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -138,7 +137,7 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.updateById(id, { ...input, updatedBy: TransactionUpdatedByEnum.USER }, tx);
+            const transaction = await transactionRepository.updateById(id, input, tx);
 
             await this.upsertEntriesAndTags(id, input, tx);
 

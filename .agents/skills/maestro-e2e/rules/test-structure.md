@@ -2,7 +2,7 @@
 name: test-structure
 description: YAML test structure, appId, env variables, and flow definition
 metadata:
-    tags: yaml, structure, appId, env, flow
+  tags: yaml, structure, appId, env, flow
 ---
 
 ## Basic Structure
@@ -13,13 +13,13 @@ Every Maestro test is a YAML file with two sections separated by `---`:
 # Header section (metadata)
 appId: com.example.myApp
 env:
-    USERNAME: test@example.com
-    PASSWORD: secret123
+  USERNAME: test@example.com
+  PASSWORD: secret123
 ---
 # Flow section (test steps)
 - launchApp
-- tapOn: 'Login'
-- assertVisible: 'Dashboard'
+- tapOn: "Login"
+- assertVisible: "Dashboard"
 ```
 
 ## Header Properties
@@ -38,9 +38,9 @@ Define constants in the header:
 ```yaml
 appId: com.example.myApp
 env:
-    API_URL: https://api.example.com
-    USERNAME: ${USERNAME || 'default@example.com'}
-    PASSWORD: ${PASSWORD || 'password123'}
+  API_URL: https://api.example.com
+  USERNAME: ${USERNAME || 'default@example.com'}
+  PASSWORD: ${PASSWORD || 'password123'}
 ---
 - inputText: ${USERNAME}
 ```

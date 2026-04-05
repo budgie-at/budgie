@@ -2,7 +2,7 @@
 name: assertions
 description: assertVisible, assertNotVisible, assertTrue, and AI assertions
 metadata:
-    tags: assertions, assert, visible, not-visible, ai
+  tags: assertions, assert, visible, not-visible, ai
 ---
 
 ## assertVisible
@@ -11,16 +11,16 @@ Assert that an element is visible on screen.
 
 ```yaml
 # By text
-- assertVisible: 'Welcome'
+- assertVisible: "Welcome"
 
 # By ID
 - assertVisible:
-      id: 'dashboard_header'
+    id: "dashboard_header"
 
 # With timeout (milliseconds)
 - assertVisible:
-      text: 'Loading complete'
-      timeout: 10000
+    text: "Loading complete"
+    timeout: 10000
 ```
 
 ## assertNotVisible
@@ -28,10 +28,10 @@ Assert that an element is visible on screen.
 Assert that an element is NOT visible.
 
 ```yaml
-- assertNotVisible: 'Error message'
+- assertNotVisible: "Error message"
 
 - assertNotVisible:
-      id: 'loading_spinner'
+    id: "loading_spinner"
 ```
 
 ## assertTrue
@@ -44,7 +44,7 @@ Assert a JavaScript expression evaluates to true.
 
 # With stored output
 - copyTextFrom:
-      id: 'price_label'
+    id: "price_label"
 - assertTrue: ${output.price.includes("$")}
 ```
 
@@ -55,9 +55,9 @@ Assert a JavaScript expression evaluates to true.
 Use natural language to describe expected state:
 
 ```yaml
-- assertWithAI: 'The shopping cart shows 3 items'
-- assertWithAI: 'User profile picture is visible in the header'
-- assertWithAI: 'The form has been submitted successfully'
+- assertWithAI: "The shopping cart shows 3 items"
+- assertWithAI: "User profile picture is visible in the header"
+- assertWithAI: "The form has been submitted successfully"
 ```
 
 ### assertNoDefectsWithAI
@@ -81,27 +81,27 @@ Detects:
 
 ```yaml
 - extendedWaitUntil:
-      visible: 'Dashboard'
-      timeout: 15000
-- assertVisible: 'Welcome back'
+    visible: "Dashboard"
+    timeout: 15000
+- assertVisible: "Welcome back"
 ```
 
 ### Multi-Element Assertions
 
 ```yaml
-- assertVisible: 'Username'
-- assertVisible: 'Password'
-- assertVisible: 'Login'
-- assertNotVisible: 'Error'
+- assertVisible: "Username"
+- assertVisible: "Password"
+- assertVisible: "Login"
+- assertNotVisible: "Error"
 ```
 
 ### Conditional Assertion
 
 ```yaml
 - runFlow:
-      when:
-          visible: 'Cookie Banner'
-      commands:
-          - tapOn: 'Accept'
-- assertNotVisible: 'Cookie Banner'
+    when:
+      visible: "Cookie Banner"
+    commands:
+      - tapOn: "Accept"
+- assertNotVisible: "Cookie Banner"
 ```

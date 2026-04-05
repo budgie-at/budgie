@@ -2,7 +2,7 @@
 name: web
 description: Desktop browser testing with Chromium
 metadata:
-    tags: web, browser, chromium, desktop, url
+  tags: web, browser, chromium, desktop, url
 ---
 
 ## Web Testing Overview
@@ -17,8 +17,8 @@ Use `url` instead of `appId`:
 url: https://example.com
 ---
 - launchApp
-- tapOn: 'Sign In'
-- assertVisible: 'Dashboard'
+- tapOn: "Sign In"
+- assertVisible: "Dashboard"
 ```
 
 ## Running Web Tests
@@ -40,28 +40,29 @@ maestro -p web studio
 ### By Text
 
 ```yaml
-- tapOn: 'Login'
-- assertVisible: 'Welcome'
+- tapOn: "Login"
+- assertVisible: "Welcome"
 ```
 
 ### By ID (data-testid)
 
 ```yaml
 - tapOn:
-      id: 'login-button'
+    id: "login-button"
 ```
 
 Add `data-testid` to HTML elements:
 
 ```html
-<button data-testid="login-button">Login</button> <input data-testid="email-input" type="email" />
+<button data-testid="login-button">Login</button>
+<input data-testid="email-input" type="email" />
 ```
 
 ### By Standard ID
 
 ```yaml
 - tapOn:
-      id: 'submit'
+    id: "submit"
 ```
 
 ```html
@@ -76,17 +77,17 @@ url: https://example.com/login
 - launchApp
 
 - tapOn:
-      id: 'email-input'
-- inputText: 'user@example.com'
+    id: "email-input"
+- inputText: "user@example.com"
 
 - tapOn:
-      id: 'password-input'
-- inputText: 'secret123'
+    id: "password-input"
+- inputText: "secret123"
 
 - tapOn:
-      id: 'login-button'
+    id: "login-button"
 
-- assertVisible: 'Welcome back'
+- assertVisible: "Welcome back"
 ```
 
 ## Navigation
@@ -94,7 +95,7 @@ url: https://example.com/login
 ### Page Navigation
 
 ```yaml
-- openLink: 'https://example.com/dashboard'
+- openLink: "https://example.com/dashboard"
 ```
 
 ### Back Button
@@ -106,7 +107,7 @@ url: https://example.com/login
 ## Screenshots
 
 ```yaml
-- takeScreenshot: 'homepage'
+- takeScreenshot: "homepage"
 ```
 
 ## Known Limitations
@@ -137,29 +138,29 @@ See [Flutter rules](./flutter.md) for details.
 ```yaml
 url: https://demo.example.com
 env:
-    EMAIL: test@example.com
-    PASSWORD: demo123
+  EMAIL: test@example.com
+  PASSWORD: demo123
 ---
 - launchApp
-- takeScreenshot: 'landing_page'
+- takeScreenshot: "landing_page"
 
 # Navigate to login
-- tapOn: 'Sign In'
+- tapOn: "Sign In"
 
 # Fill form
 - tapOn:
-      id: 'email-field'
+    id: "email-field"
 - inputText: ${EMAIL}
 
 - tapOn:
-      id: 'password-field'
+    id: "password-field"
 - inputText: ${PASSWORD}
 
 # Submit
 - tapOn:
-      id: 'submit-button'
+    id: "submit-button"
 
 # Verify success
-- assertVisible: 'Dashboard'
-- takeScreenshot: 'logged_in'
+- assertVisible: "Dashboard"
+- takeScreenshot: "logged_in"
 ```

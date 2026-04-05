@@ -21,7 +21,6 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
-import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
 import { EntryParamsInterface } from '../interface/entry-params.interface';
@@ -50,17 +49,7 @@ export class ImporterService {
         this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
 
         const transactions = await this.processTransactions(csvText, progress);
-        const createdTransactions = await transactionService.bulkCreate(transactions);
-
-        try {
-            await ruleEngineService.applyRulesToTransactions(
-                createdTransactions.map(transaction => transaction.id),
-                transactions
-            );
-        } catch (error) {
-            // eslint-disable-next-line no-console
-            console.warn(getErrorMessage(error));
-        }
+        await transactionService.bulkCreate(transactions);
 
         return progress;
     }
@@ -162,7 +151,6 @@ export class ImporterService {
             comment: normalizedRow.comment,
             toAccountId: source.account.id,
             fromAccountId: dest?.account.id ?? null,
-            updatedBy: null,
             tagIds: [],
             entries: this.createEntries({ type, category, source, dest, externalId: normalizedRow.externalId })
         };

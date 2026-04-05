@@ -55,23 +55,23 @@ account/
 
 ## Entities
 
-| Entity            | Table                       | Purpose                                       |
-| ----------------- | --------------------------- | --------------------------------------------- |
-| Account           | `accounts`                  | Financial accounts (bank, cash, crypto, etc.) |
-| AccountBalance    | `account_balances`          | Cached balance snapshots                      |
-| Transaction       | `transactions`              | Financial transactions                        |
-| TransactionEntry  | `transaction_entries`       | Double-entry bookkeeping lines                |
-| TransactionTags   | `transaction_tags`          | Many-to-many transaction-tag links            |
-| Category          | `categories`                | Transaction categorization                    |
-| Tag               | `tags`                      | User-defined labels                           |
-| Instrument        | `instruments`               | Currencies and assets                         |
-| ExchangeRate      | `exchange_rates`            | Currency conversion rates                     |
-| Settings          | `settings`                  | User preferences                              |
-| BankSync          | `bank_syncs`                | Bank integration configuration                |
-| MccGroup          | `mcc_groups`                | Merchant category groups                      |
-| MccCategory       | `mcc_categories`            | Merchant category codes                       |
-| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles         |
-| CommentEmbedding  | `title_embeddings_comment`  | Vector embeddings for transaction comments    |
+| Entity | Table | Purpose |
+|--------|-------|---------|
+| Account | `accounts` | Financial accounts (bank, cash, crypto, etc.) |
+| AccountBalance | `account_balances` | Cached balance snapshots |
+| Transaction | `transactions` | Financial transactions |
+| TransactionEntry | `transaction_entries` | Double-entry bookkeeping lines |
+| TransactionTags | `transaction_tags` | Many-to-many transaction-tag links |
+| Category | `categories` | Transaction categorization |
+| Tag | `tags` | User-defined labels |
+| Instrument | `instruments` | Currencies and assets |
+| ExchangeRate | `exchange_rates` | Currency conversion rates |
+| Settings | `settings` | User preferences |
+| BankSync | `bank_syncs` | Bank integration configuration |
+| MccGroup | `mcc_groups` | Merchant category groups |
+| MccCategory | `mcc_categories` | Merchant category codes |
+| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles |
+| CommentEmbedding | `title_embeddings_comment` | Vector embeddings for transaction comments |
 
 ## Drizzle Table Definitions
 
@@ -83,14 +83,13 @@ All tables use `withBaseEntityTableColumns()` for standard columns:
 import { withBaseEntityTableColumns } from '../@generic/util/with-base-entity-table-columns.util';
 
 export const AccountEntityTable = sqliteTable('accounts', {
-    ...withBaseEntityTableColumns(), // id, createdAt, updatedAt, deletedAt
-    title: text('title').notNull()
+    ...withBaseEntityTableColumns(),  // id, createdAt, updatedAt, deletedAt
+    title: text('title').notNull(),
     // ... other columns
 });
 ```
 
 **Standard columns:**
-
 - `id` - Auto-incrementing primary key
 - `createdAt` - Timestamp (default: current)
 - `updatedAt` - Timestamp (default: current)
@@ -111,7 +110,7 @@ export const TransactionEntityTable = sqliteTable('transactions', {
     title: text('title').notNull().default(''),
     operatedAt: integer('operated_at', { mode: 'timestamp' }).notNull(),
     fromAccountId: integer('from_account_id').references(() => AccountEntityTable.id),
-    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id)
+    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id),
 });
 ```
 
@@ -177,7 +176,6 @@ async getByAccountId(accountId: number, tx?: TX): Promise<EntityInterface | unde
 ```
 
 **When to add `tx?: TX`:**
-
 - All write methods (create, update, delete) — always
 - Read methods used inside transactions (e.g., check-before-create patterns) — add `tx` so reads see uncommitted writes within the same transaction
 
@@ -205,7 +203,6 @@ private async processBatchInner(batch: InputInterface[], tx: Transaction) {
 ### Query API Preference
 
 **Prefer:**
-
 ```typescript
 this.db.query.AccountEntityTable.findMany({
     where: eq(AccountEntityTable.isActive, true),
@@ -214,7 +211,6 @@ this.db.query.AccountEntityTable.findMany({
 ```
 
 **Use `db.select()` only for complex queries:**
-
 ```typescript
 this.db
     .select({ total: sql<number>`SUM(amount)` })
@@ -252,7 +248,7 @@ import { zodEnum } from '../@generic/util/zod-enum.util';
 export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     type: zodEnum(AccountTypeEnum),
     nature: zodEnum(AccountNatureEnum),
-    icon: zodEnum(UserIconNameEnum)
+    icon: zodEnum(UserIconNameEnum),
 });
 ```
 
@@ -263,7 +259,8 @@ Use `convertToCreateEntitySchema` to omit base fields:
 ```typescript
 import { convertToCreateEntitySchema } from '../@generic/util/convert-to-create-entity-schema.util';
 
-export const AccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema).omit({ titleSearch: true }); // Auto-generated fields
+export const AccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema)
+    .omit({ titleSearch: true });  // Auto-generated fields
 ```
 
 ### Input Interfaces
@@ -339,14 +336,14 @@ export const ACCOUNT_TITLE_MAX_LENGTH = 50;
 
 ### Common Enums
 
-| Enum                       | Values                                               |
-| -------------------------- | ---------------------------------------------------- |
-| `AccountTypeEnum`          | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
-| `AccountNatureEnum`        | ASSET, LIABILITY                                     |
-| `TransactionTypeEnum`      | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT          |
-| `TransactionEntryTypeEnum` | DEBIT, CREDIT                                        |
-| `LanguageEnum`             | EN, FR, UK, DE, ES                                   |
-| `ThemeEnum`                | LIGHT, DARK, SYSTEM                                  |
+| Enum | Values |
+|------|--------|
+| `AccountTypeEnum` | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
+| `AccountNatureEnum` | ASSET, LIABILITY |
+| `TransactionTypeEnum` | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT |
+| `TransactionEntryTypeEnum` | DEBIT, CREDIT |
+| `LanguageEnum` | EN, FR, UK, DE, ES |
+| `ThemeEnum` | LIGHT, DARK, SYSTEM |
 
 ### UserIconNameEnum
 
@@ -358,7 +355,9 @@ Create type guards for entity narrowing:
 
 ```typescript
 // transaction/type-guard/is-expense-transaction.type-guard.ts
-export const isExpenseTransaction = (transaction: TransactionInterface): transaction is ExpenseTransactionInterface =>
+export const isExpenseTransaction = (
+    transaction: TransactionInterface
+): transaction is ExpenseTransactionInterface =>
     transaction.type === TransactionTypeEnum.EXPENSE;
 ```
 
@@ -392,7 +391,6 @@ where: isNull(AccountEntityTable.deletedAt)
 ### Test Location
 
 Tests are in the same directory as the source file:
-
 ```
 schema/
 ├── account-create-input.schema.ts
@@ -417,7 +415,6 @@ describe('AccountCreateInputSchema', () => {
 ### Public API (index.ts)
 
 Export everything consumers need:
-
 - Entity types
 - Input interfaces
 - Schemas

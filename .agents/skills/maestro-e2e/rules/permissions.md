@@ -2,7 +2,7 @@
 name: permissions
 description: iOS vs Android permission configuration and dialog handling
 metadata:
-    tags: permissions, camera, location, dialogs, ios, android
+  tags: permissions, camera, location, dialogs, ios, android
 ---
 
 ## Permission Configuration at Launch
@@ -11,12 +11,12 @@ By default, all permissions are set to `allow`. Override with `launchApp`:
 
 ```yaml
 - launchApp:
-      clearState: true
-      permissions:
-          all: deny # Deny all first
-          camera: allow # Then allow specific
-          location: allow
-          notifications: deny
+    clearState: true
+    permissions:
+      all: deny # Deny all first
+      camera: allow # Then allow specific
+      location: allow
+      notifications: deny
 ```
 
 ## Setting Permissions Mid-Flow
@@ -25,9 +25,9 @@ Use `setPermissions` outside of launch (e.g., before deep links):
 
 ```yaml
 - setPermissions:
-      permissions:
-          camera: allow
-          microphone: allow
+    permissions:
+      camera: allow
+      microphone: allow
 ```
 
 ## Available Permissions
@@ -72,7 +72,7 @@ permissions:
 
 ```yaml
 permissions:
-    photos: limited # Limited access
+  photos: limited # Limited access
 ```
 
 ## Platform Differences
@@ -88,25 +88,25 @@ permissions:
 
 - Can **interact** with permission dialogs via `tapOn`
 - Dialog text varies by Android version:
-    - `"Allow"` / `"Deny"`
-    - `"While using the app"`
-    - `"Only this time"`
-    - `"Don't allow"`
+  - `"Allow"` / `"Deny"`
+  - `"While using the app"`
+  - `"Only this time"`
+  - `"Don't allow"`
 
 ### Android Dialog Example
 
 ```yaml
 - launchApp:
-      permissions:
-          camera: deny # Start denied
+    permissions:
+      camera: deny # Start denied
 
 - tapOn:
-      id: 'request_camera_button'
+    id: "request_camera_button"
 
 # Android only - tap system dialog
-- tapOn: 'While using the app'
+- tapOn: "While using the app"
 
-- assertVisible: 'Camera ready'
+- assertVisible: "Camera ready"
 ```
 
 ## Custom Android Permissions
@@ -115,6 +115,6 @@ Use full permission ID for non-standard permissions:
 
 ```yaml
 permissions:
-    android.permission.ADD_VOICEMAIL: allow
-    my.custom.permission: allow
+  android.permission.ADD_VOICEMAIL: allow
+  my.custom.permission: allow
 ```

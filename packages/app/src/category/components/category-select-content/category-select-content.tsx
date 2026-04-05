@@ -4,7 +4,6 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { CategoryPickerBottomSheetSelectors } from '../../../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -48,7 +47,7 @@ export const CategorySelectContent = (props: Props) => {
                 variant={variant}
                 icon={item.icon}
                 id={item.id}
-                testID={cardTestID?.(item.title) ?? CategoryPickerBottomSheetSelectors.Card(item.title)}
+                testID={cardTestID?.(item.title)}
             />
         );
 

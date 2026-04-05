@@ -1,6 +1,6 @@
 import { EMBEDDING_BATCH_LIMIT, EmbeddingService, LlmInterface, serializeEmbedding } from '@budgie/ai';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { BatchConfigInterface } from '../interface/batch-config.interface';
@@ -56,7 +56,6 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
     let cursor: number | undefined;
     let hasMore = true;
     let consecutiveFailures = 0;
-    let lastError: unknown;
 
     /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
@@ -73,31 +72,21 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
             const unembedded = contextData.filter(item => !existingKeys.has(config.getContextKey(item)));
 
             if (isNotEmptyArray(unembedded)) {
-                callbacks.onBatchDiscovered(unembedded.length);
                 const embeddings = await embeddingService.generateEmbeddings(unembedded.map(item => item.context));
 
                 if (embeddings.size === 0) {
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    lastError = new Error('Embedding service returned empty results');
                     consecutiveFailures += 1;
                 } else {
                     await storeEmbeddings({ items: unembedded, embeddings, existingKeys, callbacks, batchConfig: config });
-                    consecutiveFailures = 0;
                 }
             }
 
             if (consecutiveFailures === 0) {
                 hasMore = rawData.length === EMBEDDING_BATCH_LIMIT;
             }
-        } catch (error: unknown) {
-            lastError = error;
+        } catch {
             consecutiveFailures += 1;
         }
     }
     /* eslint-enable no-await-in-loop */
-
-    if (consecutiveFailures > 0) {
-        // eslint-disable-next-line lingui/no-unlocalized-strings
-        throw new Error(`Embedding generation failed: ${getErrorMessage(lastError)}`);
-    }
 };

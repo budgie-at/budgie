@@ -90,20 +90,17 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             const existingMerchantKeys = new Set(merchantKeys);
             const existingCommentKeys = new Set(commentKeys);
             const totalExisting = existingMerchantKeys.size + existingCommentKeys.size;
+            const estimatedTotal = totalExisting + 100;
+            const totalSteps = categories.length + tags.length + estimatedTotal;
 
-            setTotalContexts(totalExisting);
+            setTotalContexts(estimatedTotal);
             setEmbeddedCount(totalExisting);
             await microPause();
 
             let completedSteps = 0;
-            let totalSteps = categories.length + tags.length;
             const updateProgress = () => {
                 completedSteps += 1;
-                const percent = totalSteps === 0 ? 100 : Math.round((completedSteps / totalSteps) * 100);
-                setProgress(Math.min(100, percent));
-            };
-            const addSteps = (count: number) => {
-                totalSteps += count;
+                setProgress(Math.min(100, Math.round((completedSteps / totalSteps) * 100)));
             };
 
             const translationService = new TranslationLlmService(llm);
@@ -139,7 +136,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             await microPause();
             await processMerchantBatches(llm, existingMerchantKeys, {
                 onStep: updateProgress,
-                onBatchDiscovered: addSteps,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(count + existingCommentKeys.size);
                 }
@@ -150,7 +146,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             await microPause();
             await processCommentBatches(llm, existingCommentKeys, {
                 onStep: updateProgress,
-                onBatchDiscovered: addSteps,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(existingMerchantKeys.size + count);
                 }
@@ -164,8 +159,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             refreshProgress();
         } catch (error: unknown) {
             console.log('[AI-PREP] Error:', getErrorMessage(error)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-            setProgress(0);
-            setPhaseLabel('');
             Toast.show({
                 type: 'error',
                 text1: t`AI data preparation failed`,

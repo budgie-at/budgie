@@ -32,9 +32,3 @@ export { TransactionTagsEntityTable } from './transaction-tags/table/transaction
 export { TransactionTagsEntityRelations } from './transaction-tags/relations/transaction-tags-entity.relations';
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
 export { TransactionEntryEntityRelations } from './transaction-entry/relations/transaction-entry-entity.relations';
-export { RuleEntityTable } from './rule/table/rule-entity.table';
-export { RuleEntityRelations } from './rule/relations/rule-entity.relations';
-export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
-export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
-export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
-export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';

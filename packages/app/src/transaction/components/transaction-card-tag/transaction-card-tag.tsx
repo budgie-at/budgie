@@ -1,10 +1,4 @@
-import {
-    TagEntityInterface,
-    TransactionTagsAssociationEnum,
-    TransactionTagsEntityInterface,
-    TransactionWithRelationsEntityInterface,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,12 +10,8 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
-type TransactionTagWithTag = TransactionTagsEntityInterface & {
-    [TransactionTagsAssociationEnum.TAG]: TagEntityInterface;
-};
-
 export const TransactionCardTag = ({ transaction }: Props) => {
-    const firstTransactionTag = transaction.transactionTags[0] as TransactionTagWithTag | undefined;
+    const [firstTransactionTag] = transaction.transactionTags;
     const firstTag = isDefined(firstTransactionTag) ? firstTransactionTag.tag : null;
 
     if (!isDefined(firstTag)) {

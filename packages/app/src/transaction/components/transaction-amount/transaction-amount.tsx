@@ -33,7 +33,10 @@ const amountVariants = cva('text-sm font-semibold text-right', {
     variants: { type: FOREGROUND_COLOR_PALETTE }
 });
 
-const getAggregatedEntry = (transaction: TransactionWithRelationsEntityInterface, accountId: number | null): AggregatedEntry | null => {
+const getAggregatedEntry = (
+    transaction: TransactionWithRelationsEntityInterface,
+    accountId: number | null
+): AggregatedEntry | null => {
     const entries = transaction.entries.filter(entry => entry.accountId === accountId);
 
     return isNotEmptyArray(entries) ? { ...entries[0], amount: sumEntryAmounts(entries) } : null;

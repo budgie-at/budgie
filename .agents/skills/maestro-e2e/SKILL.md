@@ -2,7 +2,7 @@
 name: maestro-e2e
 description: E2E UI testing with Maestro for iOS, Android, Flutter, React Native, and Web
 metadata:
-    tags: maestro, e2e, testing, ui, automation, flutter, react-native, ios, android, web
+  tags: maestro, e2e, testing, ui, automation, flutter, react-native, ios, android, web
 ---
 
 ## When to use

@@ -43,7 +43,6 @@ export default function SettingsPage() {
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
-    const handleNavigateToRules = () => void router.push('/settings/rules');
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -123,14 +122,6 @@ export default function SettingsPage() {
                                 icon={UserIconNameEnum.Tag}
                                 variant="pink"
                                 testID={SettingsPageSelectors.ManageTagsCard}
-                            />
-                            <SettingsCard
-                                testID={SettingsPageSelectors.ManageRulesCard}
-                                onPress={handleNavigateToRules}
-                                title={t`Manage Rules`}
-                                description={t`Auto-categorize transactions`}
-                                icon={UserIconNameEnum.Zap}
-                                variant="ghost"
                             />
                             <SettingsCard
                                 onPress={handleNavigateToArchived}

@@ -44,17 +44,16 @@ src/
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
 2. **No displayName** - Never use `Component.displayName`
 3. **No forwardRef** - React 19 handles ref forwarding natively. Accept `ref` as a regular prop:
+   ```typescript
+   // Good - React 19 native ref
+   interface Props {
+       ref?: React.Ref<HTMLButtonElement>;
+   }
+   export const Button = ({ ref, ...props }: Props) => { ... };
 
-    ```typescript
-    // Good - React 19 native ref
-    interface Props {
-        ref?: React.Ref<HTMLButtonElement>;
-    }
-    export const Button = ({ ref, ...props }: Props) => { ... };
-
-    // Bad - forwardRef (currently in codebase, should be migrated)
-    export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
-    ```
+   // Bad - forwardRef (currently in codebase, should be migrated)
+   export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
+   ```
 
 ## Routing
 
@@ -90,7 +89,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
     return {
         title: t`Budgie - Expense Tracker`,
-        description: t`Track your expenses offline`
+        description: t`Track your expenses offline`,
     };
 };
 ```
@@ -128,13 +127,13 @@ Wrap with `LinguiClientProvider`:
 
 ### Supported Locales
 
-| Code | Language         |
-| ---- | ---------------- |
+| Code | Language |
+|------|----------|
 | `en` | English (source) |
-| `uk` | Ukrainian        |
-| `fr` | French           |
-| `de` | German           |
-| `es` | Spanish          |
+| `uk` | Ukrainian |
+| `fr` | French |
+| `de` | German |
+| `es` | Spanish |
 
 ### After Changes
 
@@ -151,28 +150,31 @@ Use `class-variance-authority` for component variants:
 ```typescript
 import { cva } from 'class-variance-authority';
 
-const buttonVariants = cva('inline-flex items-center justify-center rounded-md font-medium transition-colors', {
-    variants: {
-        variant: {
-            default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-            destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-            outline: 'border border-input bg-background hover:bg-accent',
-            secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-            ghost: 'hover:bg-accent hover:text-accent-foreground',
-            link: 'text-primary underline-offset-4 hover:underline'
+const buttonVariants = cva(
+    'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+    {
+        variants: {
+            variant: {
+                default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+                outline: 'border border-input bg-background hover:bg-accent',
+                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+                ghost: 'hover:bg-accent hover:text-accent-foreground',
+                link: 'text-primary underline-offset-4 hover:underline',
+            },
+            size: {
+                default: 'h-10 px-4 py-2',
+                sm: 'h-9 rounded-md px-3',
+                lg: 'h-11 rounded-md px-8',
+                icon: 'h-10 w-10',
+            },
         },
-        size: {
-            default: 'h-10 px-4 py-2',
-            sm: 'h-9 rounded-md px-3',
-            lg: 'h-11 rounded-md px-8',
-            icon: 'h-10 w-10'
-        }
-    },
-    defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        defaultVariants: {
+            variant: 'default',
+            size: 'default',
+        },
     }
-});
+);
 ```
 
 ### Utility Function
@@ -188,7 +190,6 @@ className={cn('base-classes', isActive && 'active-classes', className)}
 ### Design Tokens
 
 Semantic color tokens in CSS variables:
-
 - `--primary`, `--primary-foreground`
 - `--secondary`, `--secondary-foreground`
 - `--destructive`, `--destructive-foreground`
@@ -259,7 +260,9 @@ export const middleware = (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     // Check if locale is missing
-    const pathnameIsMissingLocale = locales.every(locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`);
+    const pathnameIsMissingLocale = locales.every(
+        locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+    );
 
     if (pathnameIsMissingLocale) {
         const locale = getLocale(request);
@@ -305,14 +308,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     return {
         title: {
             default: t`Budgie - Expense Tracker`,
-            template: `%s | Budgie`
+            template: `%s | Budgie`,
         },
         description: t`Track your expenses offline with Budgie`,
         openGraph: {
             title: t`Budgie - Expense Tracker`,
             description: t`Track your expenses offline`,
-            locale: lang
-        }
+            locale: lang,
+        },
     };
 };
 ```
@@ -328,7 +331,7 @@ Add JSON-LD for rich snippets where appropriate.
 MDX support enabled in `next.config.ts`:
 
 ```typescript
-pageExtensions: ['mdx', 'ts', 'tsx'];
+pageExtensions: ['mdx', 'ts', 'tsx']
 ```
 
 ### Blog Posts
@@ -337,17 +340,17 @@ Blog content in `/app/[lang]/blog/[slug]/page.tsx` with dynamic routes.
 
 ## Dependencies
 
-| Package                    | Purpose          |
-| -------------------------- | ---------------- |
-| `next`                     | Framework        |
-| `react`                    | UI Library       |
-| `@lingui/*`                | i18n             |
-| `framer-motion`            | Animations       |
-| `@radix-ui/*`              | UI Primitives    |
-| `tailwindcss`              | Styling          |
-| `class-variance-authority` | CVA variants     |
-| `next-themes`              | Dark mode        |
-| `negotiator`               | Locale detection |
+| Package | Purpose |
+|---------|---------|
+| `next` | Framework |
+| `react` | UI Library |
+| `@lingui/*` | i18n |
+| `framer-motion` | Animations |
+| `@radix-ui/*` | UI Primitives |
+| `tailwindcss` | Styling |
+| `class-variance-authority` | CVA variants |
+| `next-themes` | Dark mode |
+| `negotiator` | Locale detection |
 
 ## Experimental Features
 

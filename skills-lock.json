@@ -1,10 +1,10 @@
 {
-    "version": 1,
-    "skills": {
-        "maestro-e2e": {
-            "source": "raphaelbarbosaqwerty/maestro-dev-skills",
-            "sourceType": "github",
-            "computedHash": "7608fc573831ddb1666bfd4cf3814878dc21d697639e2638f6dce7ab0ddeb11f"
-        }
+  "version": 1,
+  "skills": {
+    "maestro-e2e": {
+      "source": "raphaelbarbosaqwerty/maestro-dev-skills",
+      "sourceType": "github",
+      "computedHash": "7608fc573831ddb1666bfd4cf3814878dc21d697639e2638f6dce7ab0ddeb11f"
     }
+  }
 }

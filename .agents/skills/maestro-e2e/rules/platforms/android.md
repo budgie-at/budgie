@@ -2,7 +2,7 @@
 name: android
 description: Android-specific features, ADB, permission dialogs, emulators
 metadata:
-    tags: android, adb, emulator, dialogs, permissions
+  tags: android, adb, emulator, dialogs, permissions
 ---
 
 ## What is ADB?
@@ -36,14 +36,14 @@ Maestro can **tap** Android permission dialogs:
 
 ```yaml
 - launchApp:
-      permissions:
-          camera: deny # Start denied to trigger dialog
+    permissions:
+      camera: deny # Start denied to trigger dialog
 
 - tapOn:
-      id: 'request_permission_button'
+    id: "request_permission_button"
 
 # Tap the system dialog
-- tapOn: 'While using the app'
+- tapOn: "While using the app"
 ```
 
 ### Common Dialog Texts
@@ -87,15 +87,15 @@ Returns XML tree of all visible elements with their properties, useful for findi
 
 ```yaml
 - setAirplaneMode:
-      enabled: true
+    enabled: true
 ```
 
 ### Location Mocking
 
 ```yaml
 - setLocation:
-      latitude: 37.7749
-      longitude: -122.4194
+    latitude: 37.7749
+    longitude: -122.4194
 ```
 
 ## Troubleshooting
@@ -116,5 +116,5 @@ Ensure app is started with `clearState: true` to reset permissions:
 
 ```yaml
 - launchApp:
-      clearState: true
+    clearState: true
 ```

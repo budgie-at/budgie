@@ -2,7 +2,7 @@
 name: debugging
 description: Maestro Studio, hierarchy inspection, troubleshooting
 metadata:
-    tags: debug, studio, hierarchy, troubleshooting
+  tags: debug, studio, hierarchy, troubleshooting
 ---
 
 ## Maestro Studio
@@ -58,11 +58,11 @@ maestro hierarchy | grep "login"
 2. Verify element is on screen (not below fold)
 3. Check for loading states blocking UI
 4. Add wait before interaction:
-    ```yaml
-    - extendedWaitUntil:
-          visible: 'Element'
-          timeout: 10000
-    ```
+   ```yaml
+   - extendedWaitUntil:
+       visible: "Element"
+       timeout: 10000
+   ```
 
 ### Keyboard Blocking Elements
 
@@ -71,10 +71,10 @@ maestro hierarchy | grep "login"
 **Solution:**
 
 ```yaml
-- inputText: 'password'
+- inputText: "password"
 - hideKeyboard
 - tapOn:
-      id: 'submit_button'
+    id: "submit_button"
 ```
 
 ### Element Below Fold
@@ -86,12 +86,12 @@ maestro hierarchy | grep "login"
 ```yaml
 - scroll
 - tapOn:
-      id: 'hidden_button'
+    id: "hidden_button"
 
 # Or
 - scrollUntilVisible:
-      element:
-          id: 'hidden_button'
+    element:
+      id: "hidden_button"
 ```
 
 ### Timing Issues
@@ -106,14 +106,14 @@ maestro hierarchy | grep "login"
 
 # Extended wait
 - extendedWaitUntil:
-      visible: 'Element'
-      timeout: 10000
+    visible: "Element"
+    timeout: 10000
 
 # Retry flaky actions
 - retry:
-      maxRetries: 3
-      commands:
-          - tapOn: 'Button'
+    maxRetries: 3
+    commands:
+      - tapOn: "Button"
 ```
 
 ### iOS Permission Dialog Not Dismissed
@@ -124,11 +124,11 @@ maestro hierarchy | grep "login"
 
 1. Ensure simulator language is **English**
 2. Use `permissions:` in launchApp:
-    ```yaml
-    - launchApp:
-          permissions:
-              camera: allow
-    ```
+   ```yaml
+   - launchApp:
+       permissions:
+         camera: allow
+   ```
 
 ### Android Dialog Not Responding
 
@@ -137,7 +137,7 @@ maestro hierarchy | grep "login"
 **Solution:**
 
 ```yaml
-- tapOn: 'While using the app'
+- tapOn: "While using the app"
 # Try exact text from dialog
 ```
 
@@ -145,9 +145,9 @@ maestro hierarchy | grep "login"
 
 ```yaml
 # Add screenshots at key points
-- takeScreenshot: 'step_1'
-- tapOn: 'Button'
-- takeScreenshot: 'step_2'
+- takeScreenshot: "step_1"
+- tapOn: "Button"
+- takeScreenshot: "step_2"
 ```
 
 ## Verbose Mode

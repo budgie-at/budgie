@@ -2,7 +2,7 @@
 name: commands
 description: Complete reference of 40+ Maestro commands
 metadata:
-    tags: commands, api, reference, launchApp, tapOn
+  tags: commands, api, reference, launchApp, tapOn
 ---
 
 ## App Lifecycle
@@ -19,13 +19,13 @@ metadata:
 
 ```yaml
 - launchApp:
-      clearState: true # Reset app data
-      clearKeychain: true # iOS only
-      permissions:
-          camera: allow
-          location: deny
-      arguments: # Launch arguments
-          env: staging
+    clearState: true # Reset app data
+    clearKeychain: true # iOS only
+    permissions:
+      camera: allow
+      location: deny
+    arguments: # Launch arguments
+      env: staging
 ```
 
 ## Interactions

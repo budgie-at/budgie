@@ -1,4 +1,5 @@
 import {
+    TransactionCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
@@ -7,7 +8,6 @@ import {
 } from '@budgie/contracts';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { RuleEvaluationInputInterface } from '../../rule/interface/rule-evaluation-input.interface';
 
 const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) => {
     if (
@@ -26,13 +26,12 @@ const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) =
     return 0;
 };
 
-export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): RuleEvaluationInputInterface => ({
+export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): TransactionCreateInputInterface => ({
     ...transaction,
     amount: convertFromMicroUnits(calculateAmount(transaction)),
     tagIds: transaction.transactionTags.map(({ tagId }) => tagId),
     entries: transaction.entries.map(entry => ({
         ...entry,
-        amount: convertFromMicroUnits(entry.amount),
-        mccCode: entry.mccCategory?.mcc ?? null
+        amount: convertFromMicroUnits(entry.amount)
     }))
 });

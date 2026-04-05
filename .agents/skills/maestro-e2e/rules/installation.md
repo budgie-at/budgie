@@ -2,7 +2,7 @@
 name: installation
 description: Installing Maestro on macOS, Linux, and Windows
 metadata:
-    tags: install, setup, brew, curl, cli
+  tags: install, setup, brew, curl, cli
 ---
 
 ## macOS (Homebrew)
