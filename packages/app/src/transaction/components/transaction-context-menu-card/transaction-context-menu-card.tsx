@@ -64,17 +64,15 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     };
 
     const handleDeletePress = () => {
-        closeMenu(async () => {
-            await deleteTransaction(transaction.id);
-        });
+        closeMenu(() => void deleteTransaction(transaction.id));
     };
 
     const handleConvertPress = () => {
         const [sourceEntry] = transaction.entries;
         const sourceAccount = sourceEntry.account;
 
-        closeMenu(async () => {
-            await openConvertToTransfer({
+        closeMenu(() =>
+            void openConvertToTransfer({
                 transactionId: transaction.id,
                 transactionType: getConvertTransactionType(transaction),
                 excludeAccountId: sourceEntry.accountId,
@@ -82,8 +80,8 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
                 sourceInstrumentId: sourceAccount.instrumentId,
                 sourceCode: sourceAccount.instrument.code,
                 skipPostConvertNavigation: true
-            });
-        });
+            })
+        );
     };
 
     return (
