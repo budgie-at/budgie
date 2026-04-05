@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { computeDetectionMode } from './compute-detection-mode.util';
 
 describe('computeDetectionMode', () => {

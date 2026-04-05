@@ -23,6 +23,7 @@ import {
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
 import type { DB } from '@budgie/contracts';
@@ -232,7 +233,8 @@ class AccountService {
                 operatedAt: new Date(),
                 exchangeRate: 1,
                 fromAccountId: isIncome ? null : accountId,
-                toAccountId: isIncome ? accountId : null
+                toAccountId: isIncome ? accountId : null,
+                updatedBy: null
             },
             tx
         );

@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
 import { selectSuggestCondition } from './select-suggest-condition.util';

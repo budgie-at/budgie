@@ -264,7 +264,7 @@ class RuleMatcherService {
             });
 
             // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(RULE_BATCH_SIZE, offset);
+            const transactions = await transactionRepository.findAllWithMccCategoryOffset(RULE_BATCH_SIZE, offset);
 
             if (!isNotEmptyArray(transactions)) {
                 break;
@@ -291,19 +291,19 @@ class RuleMatcherService {
         const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
         if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
-            return sumEntryAmounts(entries, TransactionEntryTypeEnum.CREDIT);
+            return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
         }
 
         if (transaction.type === TransactionTypeEnum.INCOME) {
-            return sumEntryAmounts(entries, TransactionEntryTypeEnum.DEBIT);
+            return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
         }
 
         if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
             const hasDebit = entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
 
             return hasDebit
-                ? sumEntryAmounts(entries, TransactionEntryTypeEnum.DEBIT)
-                : sumEntryAmounts(entries, TransactionEntryTypeEnum.CREDIT);
+                ? sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT))
+                : sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
         }
 
         return 0;

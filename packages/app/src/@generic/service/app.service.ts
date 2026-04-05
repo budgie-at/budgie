@@ -5,6 +5,9 @@ import {
     accountRepository,
     categoryRepository,
     db,
+    ruleActionRepository,
+    ruleConditionRepository,
+    ruleRepository,
     settingsRepository,
     tagRepository,
     transactionEntryRepository,
@@ -20,6 +23,9 @@ class AppService {
             await categoryRepository.truncate(false, tx);
             await transactionEntryRepository.truncate(tx);
             await transactionRepository.truncate(tx);
+            await ruleActionRepository.truncate(tx);
+            await ruleConditionRepository.truncate(tx);
+            await ruleRepository.truncate(tx);
             await accountBalanceRepository.truncate(tx);
             await settingsRepository.update(
                 {
