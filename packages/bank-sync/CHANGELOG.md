@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 4.0.0 (2026-04-05)
+
+### Bug Fixes
+
+- **app:** account calculation ([2b8973c](https://github.com/budgie-at/budgie/commit/2b8973cbb8ab06cddabb1175c92ca597b275a982))
+- **app:** account calculation ([40355ad](https://github.com/budgie-at/budgie/commit/40355adadc88baca8d4432335a8c1fe8e27752c5))
+- **app:** add mono 500 transactions limit handling ([272f7cb](https://github.com/budgie-at/budgie/commit/272f7cbf31d9e432df9d4fd3e16138e935568279))
+- **app:** added per account sync config ([6b4ff8a](https://github.com/budgie-at/budgie/commit/6b4ff8a144c157f862e7ffee10fb9f1a67f9ebe3))
+- **app:** added per account sync config ([405fc60](https://github.com/budgie-at/budgie/commit/405fc603852577bf0a4e4db018a5e595ff2ee79f))
+- **app:** added per account sync config ([846de41](https://github.com/budgie-at/budgie/commit/846de41dc16183e46a09fe92b7a59248b9d0b899))
+- **app:** added per account sync config ([24abacf](https://github.com/budgie-at/budgie/commit/24abacf28acd1becc9ab08a7e79d66d768cd64b7))
+- **app:** fix last transaction ([00cd885](https://github.com/budgie-at/budgie/commit/00cd885ec314a0ec6862158ef28bbc83b8588631))
+- **app:** fix last transaction ([1264e71](https://github.com/budgie-at/budgie/commit/1264e716a57be87ee5bf18d0378b3685c7aca0b9))
+- **app:** fix last transaction ([13bc0ac](https://github.com/budgie-at/budgie/commit/13bc0ac3a398a8d943424b630113bb295d460c00))
+- **app:** fix last transaction ([e106326](https://github.com/budgie-at/budgie/commit/e106326fae46505afd323840eb037625e0eee745))
+- **app:** fix syncing back in time ([5cb6430](https://github.com/budgie-at/budgie/commit/5cb643060cced8a078ee8334a4416fee70104a63))
+- **app:** fixed syncing ([4355cd4](https://github.com/budgie-at/budgie/commit/4355cd4b177f41f717ef66f71a3cb38712f7643e))
+- **app:** review fixes ([f5bd08c](https://github.com/budgie-at/budgie/commit/f5bd08cd87c7f822ab982e5bb98fd648a5eb1b86))
+- **app:** review fixes ([c5f29f0](https://github.com/budgie-at/budgie/commit/c5f29f082fc726d3457c71a220e0f958ba5c9289))
+- **app:** stop sync on 400 ([c4ec530](https://github.com/budgie-at/budgie/commit/c4ec530a36379a3c73277a6e2ec1d3b1ea0690e8))
+- **bank-sync,app:** improve Erste PDF parsing and update icon ([a07c146](https://github.com/budgie-at/budgie/commit/a07c1463b71e4e9db56110b032d1530632e6f03b)), closes [#1A3D6](https://github.com/budgie-at/budgie/issues/1A3D6)
+- **bank-sync:** add error handling and fix currency code mapping in Privatbank provider ([0040021](https://github.com/budgie-at/budgie/commit/0040021e695ac1e73bf95f9a4ba2ff943cb63410))
+- **bank-sync:** address code review feedback for Erste parsers ([8eb3c78](https://github.com/budgie-at/budgie/commit/8eb3c780083e3d19d940d1e033ac68115b91b349))
+- **bank-sync:** address code review findings for PrivatBank import ([089eb70](https://github.com/budgie-at/budgie/commit/089eb70fb0871c84c78a620dc93a830eae725089))
+- **bank-sync:** address CodeQL polynomial regex warnings ([0f1ac20](https://github.com/budgie-at/budgie/commit/0f1ac2056fb76eef68067676d14fa068f9ad46e4))
+- **bank-sync:** address deep review feedback for Erste parsers ([acef5eb](https://github.com/budgie-at/budgie/commit/acef5eb00bad561469744576840862948fd930e1))
+- **bank-sync:** eliminate last CodeQL alert in modern balance parser ([dad3e6e](https://github.com/budgie-at/budgie/commit/dad3e6eb63c2b2587a3180a392be959ca325f55f))
+- **bank-sync:** eliminate polynomial regex backtracking for CodeQL ([25afcf1](https://github.com/budgie-at/budgie/commit/25afcf1f3357f9eb44575e65e9974588bd24ed0f))
+- **bank-sync:** improve Erste Bank parser code quality ([b96956d](https://github.com/budgie-at/budgie/commit/b96956d16ea988386f609d5d25faca14e327aaab))
+- **bank-sync:** replace Node.js crypto with pure JS FNV-1a hash for Hermes ([e0cf35c](https://github.com/budgie-at/budgie/commit/e0cf35c515958adc9508a52dfcf35cb2d3cd8173))
+- **bank-sync:** use merchant name as transaction title in Erste PDF parser ([46d6b07](https://github.com/budgie-at/budgie/commit/46d6b07cb74af122a1c638c1442ce9787ab0d49a))
+- **bank-sync:** use merchant name as transaction title instead of reference ([df882ed](https://github.com/budgie-at/budgie/commit/df882ed0d6d04215fcf17c49ef0d3a2c66b117f5))
+- **bank-sync:** use Uint8Array instead of ArrayBuffer for Hermes compatibility ([a8c3551](https://github.com/budgie-at/budgie/commit/a8c355124c74eff30dbd7fd513d1a0f86789908b))
+- resolve cpd ([93d312b](https://github.com/budgie-at/budgie/commit/93d312b4e8d9e2219df0c1379c51c79f6f502fef))
+
+### Features
+
+- **app,bank-sync,contracts:** add Erste Bank PDF import support ([8d92aa7](https://github.com/budgie-at/budgie/commit/8d92aa79c5ef021edc581ddfebea8d61e2b3e5dc))
+- **app:** clean bank-sync exports ([d0d04b8](https://github.com/budgie-at/budgie/commit/d0d04b8abec8b9b54bcf7e14032cbbec26360fca))
+- **app:** migrate to ky ([0404c06](https://github.com/budgie-at/budgie/commit/0404c064e42ea71c9ba33b2f3799ba96ba56393c))
+- **app:** optimize lastaccount transaction date ([7e57364](https://github.com/budgie-at/budgie/commit/7e57364631454d34a186a2cf6b7f594724c3e34d))
+- **app:** reimplement sync through bg task and secure storage ([bfa3591](https://github.com/budgie-at/budgie/commit/bfa359122bf4af92988236c7f36c4a264cbd39d8))
+- **app:** transfer parsing ([6b722d4](https://github.com/budgie-at/budgie/commit/6b722d4ffde5073e1e1e5971c2f58af304f86779))
+- **banc-sync:** poc for monobank ([c8ace12](https://github.com/budgie-at/budgie/commit/c8ace1239824a4ba7ff5ba6f81cb951390a5ca9f))
+- **bank-sync:** add Erste modern PDF format support with strategy pattern ([ff1fd60](https://github.com/budgie-at/budgie/commit/ff1fd60e8f0ced0391c11610dbde88db400b1644))
+- **bank-sync:** add missing PrivatBank transfer categories to MCC group mapping ([368be94](https://github.com/budgie-at/budgie/commit/368be94bc7bb41585d37ce2c37d90f02fff6f079))
+- **bank-sync:** add Privatbank XLSX file provider ([07e7c4c](https://github.com/budgie-at/budgie/commit/07e7c4c5b139f01903ec7b656e59fc226e3e3680))
+- **bank-sync:** expand PrivatBank category-to-MCC-group mapping ([dec9f6b](https://github.com/budgie-at/budgie/commit/dec9f6b11b1a0e4f5762a92c788958af5e713690))
+
+### Performance Improvements
+
+- **app:** replace LLM category matcher with static map and optimize import ([c973d61](https://github.com/budgie-at/budgie/commit/c973d613c42df9947c8d4d04934679790f224770))
+
 # 3.0.0 (2026-04-04)
 
 ### Bug Fixes
