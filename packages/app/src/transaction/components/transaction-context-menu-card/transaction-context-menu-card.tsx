@@ -64,25 +64,26 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     };
 
     const handleDeletePress = () => {
-        closeMenu(() => void deleteTransaction(transaction.id));
+        closeMenu(async () => {
+            await deleteTransaction(transaction.id);
+        });
     };
 
     const handleConvertPress = () => {
         const [sourceEntry] = transaction.entries;
         const sourceAccount = sourceEntry.account;
 
-        closeMenu(
-            () =>
-                void openConvertToTransfer({
-                    transactionId: transaction.id,
-                    transactionType: getConvertTransactionType(transaction),
-                    excludeAccountId: sourceEntry.accountId,
-                    sourceAmount: convertFromMicroUnits(sourceEntry.amount),
-                    sourceInstrumentId: sourceAccount.instrumentId,
-                    sourceCode: sourceAccount.instrument.code,
-                    skipPostConvertNavigation: true
-                })
-        );
+        closeMenu(async () => {
+            await openConvertToTransfer({
+                transactionId: transaction.id,
+                transactionType: getConvertTransactionType(transaction),
+                excludeAccountId: sourceEntry.accountId,
+                sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+                sourceInstrumentId: sourceAccount.instrumentId,
+                sourceCode: sourceAccount.instrument.code,
+                skipPostConvertNavigation: true
+            });
+        });
     };
 
     return (
