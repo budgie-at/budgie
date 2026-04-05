@@ -1,134 +1,27 @@
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { ReactNode } from 'react';
-import { View } from 'react-native';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.interface';
+import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
+import { AiSuggestionOrchestrator } from '../ai-suggestion-orchestrator/ai-suggestion-orchestrator';
+import { PatternSuggestionOrchestrator } from '../pattern-suggestion-orchestrator/pattern-suggestion-orchestrator';
 
-import { useLlmContext } from '../../../ai/context/llm.context';
-import { BuildAiSuggestionRowParamsInterface } from '../../interface/build-ai-suggestion-row-params.interface';
-import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
-import { PatternSuggestionRow } from '../pattern-suggestion-row/pattern-suggestion-row';
-import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
-import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
-
-interface Props {
+interface Props extends SuggestionOrchestratorSharedProps {
     readonly isNewTransaction: boolean;
-    readonly isSplitActive: boolean;
-    readonly transactionType: TransactionTypeEnum;
-    readonly transactionTitle: string;
-    readonly categoryId: number | null;
-    readonly mccCategoryId: number | null;
-    readonly comment: string;
-    readonly aiContext: string;
-    readonly accountId: number;
-    readonly amount: number;
-    readonly hasTagsSelected: boolean;
-    readonly onSelectCategory: (categoryId: number) => void;
-    readonly onSelectTag: (tagId: number) => void;
-    readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-const buildAiSuggestionRow = (params: BuildAiSuggestionRowParamsInterface): ReactNode => {
-    if (params.showTagSuggestions) {
-        return (
-            <TagSuggestionRow
-                transactionTitle={params.transactionTitle}
-                categoryId={params.safeCategoryId}
-                mccCategoryId={params.mccCategoryId}
-                comment={params.comment}
-                aiContext={params.aiContext}
-                enabled={params.showTagSuggestions}
-                onSelect={params.onSelectTag}
-            />
-        );
-    }
-
-    if (params.showRepeatedSuggestions) {
-        return (
-            <PatternSuggestionRow
-                transactionType={params.transactionType}
-                accountId={params.accountId}
-                amount={params.amount}
-                categoryId={params.safeCategoryId}
-                enabled={params.showRepeatedSuggestions}
-                onSelect={params.onSelectRepeatedPattern}
-            />
-        );
-    }
-
-    if (params.showCategorySuggestions) {
-        return (
-            <CategorySuggestionRow
-                transactionTitle={params.transactionTitle}
-                mccCategoryId={params.mccCategoryId}
-                comment={params.comment}
-                aiContext={params.aiContext}
-                enabled={params.showCategorySuggestions}
-                onSelect={params.onSelectCategory}
-            />
-        );
-    }
-
-    return null;
+const NEW_TRANSACTION_PATTERN_CONFIG: PatternSuggestionOrchestratorConfig = {
+    loadPatternBeforeCategorySelection: true,
+    allowPatternComments: true,
+    autoFillAmountFromPattern: true
 };
 
 export const SuggestionsContainer = (props: Props) => {
-    const {
-        isNewTransaction,
-        isSplitActive,
-        transactionType,
-        transactionTitle,
-        categoryId,
-        mccCategoryId,
-        comment,
-        aiContext,
-        accountId,
-        amount,
-        hasTagsSelected,
-        onSelectCategory,
-        onSelectTag,
-        onSelectRepeatedPattern
-    } = props;
+    const { isNewTransaction, ...orchestratorProps } = props;
+    const isVoiceTransaction = isNewTransaction && isNotEmptyString(orchestratorProps.aiContext);
 
-    const { isAvailable: isAiAvailable } = useLlmContext();
-
-    const safeCategoryId = categoryId ?? 0;
-    const hasCategorySelected = safeCategoryId > 0;
-    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
-
-    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
-    const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
-    const showTagSuggestions =
-        isAiAvailable && !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
-
-    if (isSplitActive) {
-        return <SuggestionRowSpacer />;
+    if (!isNewTransaction || isVoiceTransaction) {
+        return <AiSuggestionOrchestrator {...orchestratorProps} />;
     }
 
-    const aiSuggestionRow = buildAiSuggestionRow({
-        showTagSuggestions,
-        showRepeatedSuggestions,
-        showCategorySuggestions,
-        transactionTitle,
-        safeCategoryId,
-        mccCategoryId,
-        comment,
-        aiContext,
-        transactionType,
-        accountId,
-        amount,
-        onSelectTag,
-        onSelectRepeatedPattern,
-        onSelectCategory
-    });
-
-    if (!isDefined(aiSuggestionRow)) {
-        return <SuggestionRowSpacer />;
-    }
-
-    return (
-        <View className="h-10 flex-row items-center overflow-hidden">
-            <View className="flex-1">{aiSuggestionRow}</View>
-        </View>
-    );
+    return <PatternSuggestionOrchestrator {...orchestratorProps} config={NEW_TRANSACTION_PATTERN_CONFIG} />;
 };

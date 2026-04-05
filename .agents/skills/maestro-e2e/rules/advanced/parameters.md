@@ -2,7 +2,7 @@
 name: parameters
 description: Environment variables, external params, ${} syntax
 metadata:
-    tags: parameters, env, variables, external, cli
+  tags: parameters, env, variables, external, cli
 ---
 
 ## Inline Parameters
@@ -12,9 +12,9 @@ Define in the flow header:
 ```yaml
 appId: com.example.myApp
 env:
-    USERNAME: test@example.com
-    PASSWORD: secret123
-    API_URL: https://api.example.com
+  USERNAME: test@example.com
+  PASSWORD: secret123
+  API_URL: https://api.example.com
 ---
 - inputText: ${USERNAME}
 ```
@@ -33,8 +33,8 @@ Use JavaScript logical OR for defaults:
 
 ```yaml
 env:
-    USERNAME: ${USERNAME || 'default@example.com'}
-    TIMEOUT: ${TIMEOUT || 5000}
+  USERNAME: ${USERNAME || 'default@example.com'}
+  TIMEOUT: ${TIMEOUT || 5000}
 ```
 
 If `USERNAME` is passed via CLI, it's used. Otherwise, default applies.
@@ -51,9 +51,9 @@ In flow:
 
 ```yaml
 - runScript:
-      file: api_test.js
-      env:
-          API_KEY: ${MAESTRO_API_KEY}
+    file: api_test.js
+    env:
+      API_KEY: ${MAESTRO_API_KEY}
 ```
 
 ## Using Parameters
@@ -67,25 +67,25 @@ In flow:
 ### In Assertions
 
 ```yaml
-- assertVisible: 'Welcome, ${USERNAME}'
+- assertVisible: "Welcome, ${USERNAME}"
 ```
 
 ### In JavaScript
 
 ```yaml
 - evalScript: |
-      const url = '${API_URL}/users';
-      output.fullUrl = url;
+    const url = '${API_URL}/users';
+    output.fullUrl = url;
 ```
 
 ### In Subflows
 
 ```yaml
 - runFlow:
-      file: login.yaml
-      env:
-          USERNAME: admin@example.com
-          PASSWORD: admin123
+    file: login.yaml
+    env:
+      USERNAME: admin@example.com
+      PASSWORD: admin123
 ```
 
 ## Parameter Scope
@@ -95,11 +95,11 @@ Parameters flow from parent to child:
 ```yaml
 # main_flow.yaml
 env:
-    BASE_URL: https://example.com
+  BASE_URL: https://example.com
 ---
 - runFlow:
-      file: child_flow.yaml
-      # child inherits BASE_URL
+    file: child_flow.yaml
+    # child inherits BASE_URL
 ```
 
 Child can override:
@@ -107,7 +107,7 @@ Child can override:
 ```yaml
 # child_flow.yaml
 env:
-    BASE_URL: ${BASE_URL || 'https://default.com'}
+  BASE_URL: ${BASE_URL || 'https://default.com'}
 ```
 
 ## CI/CD Pattern
@@ -116,9 +116,9 @@ env:
 # flow.yaml
 appId: com.example.myApp
 env:
-    USERNAME: ${USERNAME}
-    PASSWORD: ${PASSWORD}
-    ENV: ${ENV || 'staging'}
+  USERNAME: ${USERNAME}
+  PASSWORD: ${PASSWORD}
+  ENV: ${ENV || 'staging'}
 ---
 # tests...
 ```

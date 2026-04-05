@@ -1,23 +1,22 @@
 {
     "name": "@budgie-at/app",
-    "version": "2.41.3",
+    "version": "4.0.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
-        "db:generate": "drizzle-kit generate",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
         "i18n:sync": "yarn i18n:extract && yarn i18n:compile",
-        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true",
         "ios": "APP_VARIANT=development expo run:ios",
         "ios:device": "APP_VARIANT=development expo run:ios --device",
         "lint": "run -T eslint --fix src",
         "prebuild": "expo prebuild --clean",
         "start": "expo start --dev-client -c",
-        "test": "run -T jest",
         "ts": "run -T tsc -p .",
-        "web": "expo start --web"
+        "web": "expo start --web",
+        "db:generate": "drizzle-kit generate",
+        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true"
     },
     "resolutions": {
         "lightningcss": "1.30.1"

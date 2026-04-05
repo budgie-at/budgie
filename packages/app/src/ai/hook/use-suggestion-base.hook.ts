@@ -59,11 +59,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         let cancelled = false;
 
         const suggest = async (): Promise<void> => {
-            setResult(previous => {
-                const isBackgroundRefresh = previous.key === requestKey && previous.status === 'success';
-
-                return isBackgroundRefresh ? previous : { key: requestKey, status: 'loading', suggestions: [] };
-            });
+            setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();

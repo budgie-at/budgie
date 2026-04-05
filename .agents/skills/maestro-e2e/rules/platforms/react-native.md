@@ -2,7 +2,7 @@
 name: react-native
 description: React Native with testID and accessibilityLabel
 metadata:
-    tags: react-native, testID, accessibilityLabel, expo
+  tags: react-native, testID, accessibilityLabel, expo
 ---
 
 ## Element Identification
@@ -13,7 +13,7 @@ React Native uses two main approaches for testability:
 
 ```jsx
 <TouchableOpacity testID="login_button" onPress={handleLogin}>
-    <Text>Login</Text>
+  <Text>Login</Text>
 </TouchableOpacity>
 ```
 
@@ -21,7 +21,7 @@ In Maestro:
 
 ```yaml
 - tapOn:
-      id: 'login_button'
+    id: "login_button"
 ```
 
 ### accessibilityLabel
@@ -34,7 +34,7 @@ In Maestro:
 
 ```yaml
 - assertVisible:
-      id: 'welcome_message'
+    id: "welcome_message"
 ```
 
 ## Common Components
@@ -42,14 +42,19 @@ In Maestro:
 ### Text Input
 
 ```jsx
-<TextInput testID="email_input" placeholder="Enter email" value={email} onChangeText={setEmail} />
+<TextInput
+  testID="email_input"
+  placeholder="Enter email"
+  value={email}
+  onChangeText={setEmail}
+/>
 ```
 
 ### Buttons
 
 ```jsx
 <Pressable testID="submit_button" onPress={onSubmit}>
-    <Text>Submit</Text>
+  <Text>Submit</Text>
 </Pressable>
 ```
 
@@ -63,13 +68,13 @@ In Maestro:
 
 ```jsx
 <FlatList
-    testID="items_list"
-    data={items}
-    renderItem={({ item, index }) => (
-        <View testID={`item_${index}`}>
-            <Text>{item.name}</Text>
-        </View>
-    )}
+  testID="items_list"
+  data={items}
+  renderItem={({ item, index }) => (
+    <View testID={`item_${index}`}>
+      <Text>{item.name}</Text>
+    </View>
+  )}
 />
 ```
 
@@ -79,11 +84,11 @@ Use snake_case with descriptive names:
 
 ```jsx
 // Pattern: {screen}_{element}_{type}
-testID = 'login_email_input';
-testID = 'login_password_input';
-testID = 'login_submit_button';
-testID = 'home_profile_card';
-testID = 'settings_logout_button';
+testID = "login_email_input";
+testID = "login_password_input";
+testID = "login_submit_button";
+testID = "home_profile_card";
+testID = "settings_logout_button";
 ```
 
 ## Expo Projects
@@ -91,14 +96,14 @@ testID = 'settings_logout_button';
 Expo projects work identically:
 
 ```jsx
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text } from "react-native";
 
 export default function App() {
-    return (
-        <Pressable testID="hello_button">
-            <Text>Hello</Text>
-        </Pressable>
-    );
+  return (
+    <Pressable testID="hello_button">
+      <Text>Hello</Text>
+    </Pressable>
+  );
 }
 ```
 
@@ -106,29 +111,39 @@ export default function App() {
 
 ```jsx
 // LoginScreen.js
-import React, { useState } from 'react';
-import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput, Pressable, Text, StyleSheet } from "react-native";
 
 export const LoginScreen = ({ onLogin }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    return (
-        <View style={styles.container}>
-            <TextInput testID="login_email_input" placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
-            <TextInput
-                testID="login_password_input"
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-            />
-            <Pressable testID="login_submit_button" onPress={() => onLogin(email, password)} style={styles.button}>
-                <Text>Login</Text>
-            </Pressable>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <TextInput
+        testID="login_email_input"
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+      <TextInput
+        testID="login_password_input"
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+      />
+      <Pressable
+        testID="login_submit_button"
+        onPress={() => onLogin(email, password)}
+        style={styles.button}
+      >
+        <Text>Login</Text>
+      </Pressable>
+    </View>
+  );
 };
 ```
 
@@ -138,21 +153,21 @@ export const LoginScreen = ({ onLogin }) => {
 appId: com.example.myreactnativeapp
 ---
 - launchApp:
-      clearState: true
+    clearState: true
 
 - tapOn:
-      id: 'login_email_input'
-- inputText: 'test@example.com'
+    id: "login_email_input"
+- inputText: "test@example.com"
 
 - tapOn:
-      id: 'login_password_input'
-- inputText: 'password123'
+    id: "login_password_input"
+- inputText: "password123"
 
 - hideKeyboard
 - tapOn:
-      id: 'login_submit_button'
+    id: "login_submit_button"
 
-- assertVisible: 'Dashboard'
+- assertVisible: "Dashboard"
 ```
 
 ## Troubleshooting

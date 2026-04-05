@@ -11,7 +11,6 @@ export const SettingsPageSelectors = {
     DefaultAccountValue: (title: string) => `SettingsPage.DefaultAccountValue.${normalizePart(title)}` as const,
     ManageCategoriesCard: 'SettingsPage.ManageCategoriesCard',
     ManageTagsCard: 'SettingsPage.ManageTagsCard',
-    ManageRulesCard: 'SettingsPage.ManageRulesCard',
     ArchivedCard: 'SettingsPage.ArchivedCard',
     InactiveCard: 'SettingsPage.InactiveCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',

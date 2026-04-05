@@ -2,7 +2,7 @@
 name: nested-flows
 description: Reusable subflows with runFlow command
 metadata:
-    tags: subflows, runFlow, reusable, modular
+  tags: subflows, runFlow, reusable, modular
 ---
 
 ## What are Subflows?
@@ -21,19 +21,19 @@ Subflows are reusable test files that can be called from other flows. They help:
 # subflows/login.yaml
 appId: com.example.myApp
 env:
-    USERNAME: ${USERNAME || 'default@example.com'}
-    PASSWORD: ${PASSWORD || 'password123'}
+  USERNAME: ${USERNAME || 'default@example.com'}
+  PASSWORD: ${PASSWORD || 'password123'}
 ---
 - tapOn:
-      id: 'email_field'
+    id: "email_field"
 - inputText: ${USERNAME}
 - tapOn:
-      id: 'password_field'
+    id: "password_field"
 - inputText: ${PASSWORD}
 - hideKeyboard
 - tapOn:
-      id: 'login_button'
-- assertVisible: 'Dashboard'
+    id: "login_button"
+- assertVisible: "Dashboard"
 ```
 
 ### Call the Subflow
@@ -43,15 +43,15 @@ env:
 appId: com.example.myApp
 ---
 - launchApp:
-      clearState: true
+    clearState: true
 
 - runFlow:
-      file: subflows/login.yaml
-      env:
-          USERNAME: myuser@example.com
-          PASSWORD: mypassword
+    file: subflows/login.yaml
+    env:
+      USERNAME: myuser@example.com
+      PASSWORD: mypassword
 
-- tapOn: 'Settings'
+- tapOn: "Settings"
 ```
 
 ## Passing Parameters
@@ -60,10 +60,10 @@ Override subflow defaults:
 
 ```yaml
 - runFlow:
-      file: subflows/login.yaml
-      env:
-          USERNAME: admin@example.com
-          PASSWORD: adminpass
+    file: subflows/login.yaml
+    env:
+      USERNAME: admin@example.com
+      PASSWORD: adminpass
 ```
 
 ## Conditional Subflows
@@ -72,9 +72,9 @@ Run only when condition is met:
 
 ```yaml
 - runFlow:
-      when:
-          visible: 'Login'
-      file: subflows/login.yaml
+    when:
+      visible: "Login"
+    file: subflows/login.yaml
 ```
 
 ## Inline Commands
@@ -83,10 +83,10 @@ Run commands inline (without separate file):
 
 ```yaml
 - runFlow:
-      when:
-          visible: 'Cookie Banner'
-      commands:
-          - tapOn: 'Accept'
+    when:
+      visible: "Cookie Banner"
+    commands:
+      - tapOn: "Accept"
 ```
 
 ## Directory Structure
@@ -111,14 +111,14 @@ e2e/
 # subflows/login.yaml
 ---
 - tapOn:
-      id: 'email_field'
+    id: "email_field"
 - inputText: ${USERNAME}
 - tapOn:
-      id: 'password_field'
+    id: "password_field"
 - inputText: ${PASSWORD}
 - hideKeyboard
 - tapOn:
-      id: 'login_button'
+    id: "login_button"
 ```
 
 ### Navigation
@@ -127,9 +127,9 @@ e2e/
 # subflows/navigate_to_settings.yaml
 ---
 - tapOn:
-      id: 'menu_button'
-- tapOn: 'Settings'
-- assertVisible: 'Settings'
+    id: "menu_button"
+- tapOn: "Settings"
+- assertVisible: "Settings"
 ```
 
 ### Logout
@@ -138,10 +138,10 @@ e2e/
 # subflows/logout.yaml
 ---
 - tapOn:
-      id: 'menu_button'
+    id: "menu_button"
 - scroll
-- tapOn: 'Logout'
-- assertVisible: 'Login'
+- tapOn: "Logout"
+- assertVisible: "Login"
 ```
 
 ## Chaining Subflows
@@ -150,19 +150,19 @@ e2e/
 appId: com.example.myApp
 ---
 - launchApp:
-      clearState: true
+    clearState: true
 
 - runFlow:
-      file: subflows/login.yaml
+    file: subflows/login.yaml
 
 - runFlow:
-      file: subflows/navigate_to_settings.yaml
+    file: subflows/navigate_to_settings.yaml
 
 - runFlow:
-      file: subflows/change_password.yaml
+    file: subflows/change_password.yaml
 
 - runFlow:
-      file: subflows/logout.yaml
+    file: subflows/logout.yaml
 ```
 
 ## Subflow Best Practices

@@ -24,8 +24,6 @@ interface Props {
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
     readonly iconVariant?: ColorPaletteVariant;
-    readonly testID?: string;
-    readonly titleTestID?: string;
 }
 
 const headerVariant = cva<{ size: Record<PageHeaderSize, ClassValue> }>('px-5xl gap-y-3xl', {
@@ -47,11 +45,9 @@ export const PageHeader = ({
     descriptionClassName,
     icon,
     onGoBack,
-    right,
-    testID,
-    titleTestID
+    right
 }: Props) => (
-    <View testID={testID} className={cn(headerVariant({ size }), className)}>
+    <View className={cn(headerVariant({ size }), className)}>
         <View className="flex-row items-center gap-x-xl">
             {isDefined(onGoBack) ? <GoBackButton onPress={onGoBack} /> : null}
 
@@ -60,7 +56,7 @@ export const PageHeader = ({
             ) : null}
 
             <View className="gap-y-xs mr-auto flex-1">
-                <Text testID={titleTestID} className="text-primary font-medium text-3xl" numberOfLines={1}>
+                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
                     {title}
                 </Text>
 

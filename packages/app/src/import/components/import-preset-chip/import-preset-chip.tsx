@@ -9,7 +9,6 @@ interface Props {
     readonly title: string;
     readonly isSelected: boolean;
     readonly onSelect: () => void;
-    readonly testID?: string;
 }
 
 const chipVariants = cva('flex-row items-center gap-x-sm rounded-full px-lg py-md border', {
@@ -30,8 +29,8 @@ const titleVariants = cva('font-medium text-sm', {
     }
 });
 
-export const ImportPresetChip = ({ title, isSelected, onSelect, testID }: Props) => (
-    <HapticPressable testID={testID} className={chipVariants({ isSelected })} onPress={onSelect}>
+export const ImportPresetChip = ({ title, isSelected, onSelect }: Props) => (
+    <HapticPressable className={chipVariants({ isSelected })} onPress={onSelect}>
         <Text className={titleVariants({ isSelected })}>{title}</Text>
         {isSelected && <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary" />}
     </HapticPressable>

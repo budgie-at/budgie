@@ -2,7 +2,7 @@
 name: ios
 description: iOS-specific features, auto-dismiss dialogs, simulators, limitations
 metadata:
-    tags: ios, simulator, dialogs, permissions, auto-dismiss
+  tags: ios, simulator, dialogs, permissions, auto-dismiss
 ---
 
 ## Bundle ID Format
@@ -33,14 +33,14 @@ Maestro **automatically dismisses** permission dialogs on iOS by selecting "Allo
 
 ```yaml
 - launchApp:
-      permissions:
-          camera: deny # Will prompt and auto-allow
+    permissions:
+      camera: deny # Will prompt and auto-allow
 
 - tapOn:
-      id: 'open_camera_button'
+    id: "open_camera_button"
 
 # Dialog auto-dismissed, no tapOn needed
-- assertVisible: 'Camera Ready'
+- assertVisible: "Camera Ready"
 ```
 
 ## Simulator Setup
@@ -114,7 +114,7 @@ Clear iOS keychain (stored credentials):
 
 ```yaml
 - launchApp:
-      clearKeychain: true
+    clearKeychain: true
 ```
 
 Or as separate command:
@@ -139,10 +139,10 @@ If testing in non-English, pre-grant permissions:
 
 ```yaml
 - launchApp:
-      permissions:
-          camera: allow
-          location: allow
-          notifications: allow
+    permissions:
+      camera: allow
+      location: allow
+      notifications: allow
 ```
 
 This bypasses dialogs entirely.
