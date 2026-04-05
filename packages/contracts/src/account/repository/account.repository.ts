@@ -148,6 +148,10 @@ export class AccountRepository {
             .returning();
     }
 
+    async touchUpdatedAt(accountIds: number[], tx?: DB): Promise<void> {
+        await (tx ?? this.db).update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds));
+    }
+
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable);
     }
