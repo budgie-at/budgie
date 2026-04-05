@@ -75,18 +75,7 @@ export default function RulesPage() {
     };
 
     return (
-        <Page
-            testID={RulesPageSelectors.Page}
-            header={
-                <PageHeader
-                    testID={RulesPageSelectors.Header}
-                    titleTestID={RulesPageSelectors.HeaderTitle}
-                    onGoBack={handleGoBack}
-                    title={t`Rules`}
-                />
-            }
-            withBlur
-        >
+        <Page testID={RulesPageSelectors.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />} withBlur>
             {isNotEmptyArray(rules) ? (
                 <LegendList
                     style={LEGEND_LIST_STYLE}

@@ -12,12 +12,16 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
+import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
+import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -44,6 +48,12 @@ interface Props {
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
+    readonly ruleDetectionMode?: RuleDetectionModeType;
+    readonly suggestRuleData?: SuggestRuleDataInterface;
+    readonly updateRuleData?: UpdateRuleDataInterface | null;
+    readonly matchingRulesCount?: number;
+    readonly onRuleCreated?: () => void;
+    readonly onDismiss?: () => void;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
@@ -64,7 +74,13 @@ export const SimpleQuickForm = (props: Props) => {
         isNewTransaction = false,
         buildEntries,
         onSubmit,
-        onCancel
+        onCancel,
+        ruleDetectionMode = 'none',
+        suggestRuleData,
+        updateRuleData,
+        matchingRulesCount,
+        onRuleCreated,
+        onDismiss
     } = props;
 
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
@@ -198,16 +214,7 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const handleSplitIconPress = () => void handleSplitPress();
-
-    const handleConfirm = () => {
-        if (isSplitActive) {
-            handleSplitConfirm();
-
-            return;
-        }
-
-        handleNormalConfirm();
-    };
+    const handleConfirm = isSplitActive ? handleSplitConfirm : handleNormalConfirm;
 
     return (
         <View className="flex-1">
@@ -240,6 +247,15 @@ export const SimpleQuickForm = (props: Props) => {
                     />
                 </View>
             </View>
+
+            <RulePillSlot
+                ruleDetectionMode={ruleDetectionMode}
+                suggestRuleData={suggestRuleData}
+                updateRuleData={updateRuleData}
+                matchingRulesCount={matchingRulesCount}
+                onRuleCreated={onRuleCreated}
+                onDismiss={onDismiss}
+            />
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}

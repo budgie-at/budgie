@@ -13,6 +13,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
+import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -51,6 +52,18 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     });
 
     const toAccountId = form.watch('toAccountId');
+
+    const {
+        mode: ruleDetectionMode,
+        suggestRuleData,
+        updateRuleData,
+        matchingRulesCount,
+        onRuleCreated,
+        onDismiss
+    } = useSuggestRuleDetection({
+        transaction,
+        control: form.control
+    });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
@@ -93,6 +106,12 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
+                    ruleDetectionMode={ruleDetectionMode}
+                    suggestRuleData={suggestRuleData}
+                    updateRuleData={updateRuleData}
+                    matchingRulesCount={matchingRulesCount}
+                    onRuleCreated={onRuleCreated}
+                    onDismiss={onDismiss}
                 />
             </FullPage>
         </FormProvider>

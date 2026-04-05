@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { hasConflictWithRuleOutcomes } from './has-conflict-with-rule-outcomes.util';
 
 describe('hasConflictWithRuleOutcomes', () => {

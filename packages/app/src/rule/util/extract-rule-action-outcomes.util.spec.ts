@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { RuleActionTypeEnum, RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 import { extractRuleActionOutcomes } from './extract-rule-action-outcomes.util';

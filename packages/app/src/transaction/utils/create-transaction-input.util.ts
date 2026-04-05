@@ -8,6 +8,7 @@ export const createTransactionInput = (
     title: '',
     tagIds: [],
     comment: input.comment ?? '',
+    updatedBy: null,
     externalId: null,
     externalSource: null,
     operatedAt: new Date(),
