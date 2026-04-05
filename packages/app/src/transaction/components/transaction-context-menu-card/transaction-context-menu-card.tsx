@@ -11,6 +11,8 @@ import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { TransactionContextMenuSelectors } from '../../../@e2e/selectors/transaction-context-menu.selector';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
@@ -64,25 +66,26 @@ export const TransactionContextMenuCard = ({ transaction, formattedDate, categor
     };
 
     const handleDeletePress = () => {
-        closeMenu(() => void deleteTransaction(transaction.id));
+        closeMenu(() => {
+            deleteTransaction(transaction.id).catch(emptyFn);
+        });
     };
 
     const handleConvertPress = () => {
         const [sourceEntry] = transaction.entries;
         const sourceAccount = sourceEntry.account;
 
-        closeMenu(
-            () =>
-                void openConvertToTransfer({
-                    transactionId: transaction.id,
-                    transactionType: getConvertTransactionType(transaction),
-                    excludeAccountId: sourceEntry.accountId,
-                    sourceAmount: convertFromMicroUnits(sourceEntry.amount),
-                    sourceInstrumentId: sourceAccount.instrumentId,
-                    sourceCode: sourceAccount.instrument.code,
-                    skipPostConvertNavigation: true
-                })
-        );
+        closeMenu(() => {
+            openConvertToTransfer({
+                transactionId: transaction.id,
+                transactionType: getConvertTransactionType(transaction),
+                excludeAccountId: sourceEntry.accountId,
+                sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+                sourceInstrumentId: sourceAccount.instrumentId,
+                sourceCode: sourceAccount.instrument.code,
+                skipPostConvertNavigation: true
+            }).catch(emptyFn);
+        });
     };
 
     return (
