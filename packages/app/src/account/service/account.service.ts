@@ -246,6 +246,8 @@ class AccountService {
             },
             tx
         );
+
+        await accountRepository.touchUpdatedAt([accountId], tx);
     }
 
     private async createLiabilityAccount(
