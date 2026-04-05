@@ -1,5 +1,8 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { useRef } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -11,6 +14,13 @@ export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
         defaultInstrument.id,
         debtType
     ]);
+    const previousTotalRef = useRef(0);
 
-    return convertFromMicroUnits(data.at(0)?.total ?? 0);
+    const total = data.at(0)?.total;
+
+    if (isDefined(total)) {
+        previousTotalRef.current = convertFromMicroUnits(total);
+    }
+
+    return previousTotalRef.current;
 };
