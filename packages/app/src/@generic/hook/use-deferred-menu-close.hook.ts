@@ -6,6 +6,11 @@ interface DeferredAction {
     readonly execute: EmptyFn;
 }
 
+interface ExternalMenuStateParams {
+    readonly isOpen: boolean;
+    readonly onClose: EmptyFn;
+}
+
 interface UseDeferredMenuCloseReturn {
     readonly isMenuOpen: boolean;
     readonly closeMenu: (afterClose?: EmptyFn) => void;
@@ -13,7 +18,7 @@ interface UseDeferredMenuCloseReturn {
     readonly openMenu: EmptyFn;
 }
 
-export const useDeferredMenuClose = (): UseDeferredMenuCloseReturn => {
+export const useDeferredMenuClose = (externalState?: ExternalMenuStateParams): UseDeferredMenuCloseReturn => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [deferredAction, setDeferredAction] = useState<DeferredAction | null>(null);
 
@@ -23,7 +28,12 @@ export const useDeferredMenuClose = (): UseDeferredMenuCloseReturn => {
 
     const closeMenu = (afterClose?: EmptyFn) => {
         setDeferredAction(isDefined(afterClose) ? { execute: afterClose } : null);
-        setIsMenuOpen(false);
+
+        if (isDefined(externalState)) {
+            externalState.onClose();
+        } else {
+            setIsMenuOpen(false);
+        }
     };
 
     const handleCloseComplete = () => {
