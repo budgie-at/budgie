@@ -6,6 +6,7 @@ import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 
 export const TransactionEntityTable = sqliteTable(
     'transactions',
@@ -20,6 +21,7 @@ export const TransactionEntityTable = sqliteTable(
         toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         exchangeRate: real('exchange_rate').notNull(),
-        externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
+        externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
+        updatedBy: text('updated_by', { enum: convertEnumToDrizzleEnum(TransactionUpdatedByEnum) }).$type<TransactionUpdatedByEnum>()
     })
 );

@@ -7,4 +7,5 @@ export interface CreateActionInterface {
     label: string;
     variant: ColorPaletteVariant;
     onPress: () => void;
+    testID?: string;
 }

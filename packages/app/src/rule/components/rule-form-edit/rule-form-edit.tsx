@@ -66,7 +66,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
         return <LoadingScreen />;
     }
 
-    const header = <PageHeader testID={RuleFormSelectors.Page} title={t`Edit Rule`} onGoBack={onCancel} />;
+    const header = <PageHeader title={t`Edit Rule`} onGoBack={onCancel} />;
 
     const footer = (
         <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting}>

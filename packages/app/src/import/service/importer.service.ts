@@ -21,6 +21,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
+import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
 import { EntryParamsInterface } from '../interface/entry-params.interface';
@@ -49,7 +50,17 @@ export class ImporterService {
         this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
 
         const transactions = await this.processTransactions(csvText, progress);
-        await transactionService.bulkCreate(transactions);
+        const createdTransactions = await transactionService.bulkCreate(transactions);
+
+        try {
+            await ruleEngineService.applyRulesToTransactions(
+                createdTransactions.map(transaction => transaction.id),
+                transactions
+            );
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.warn(getErrorMessage(error));
+        }
 
         return progress;
     }
@@ -147,6 +158,7 @@ export class ImporterService {
             amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(dest?.amount ?? source.amount) : source.amount,
             externalId: normalizedRow.externalId,
             title: '',
+            updatedBy: null,
             externalSource: ExternalSourceEnum.CSV,
             comment: normalizedRow.comment,
             toAccountId: source.account.id,

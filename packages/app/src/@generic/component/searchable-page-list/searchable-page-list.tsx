@@ -20,7 +20,6 @@ import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT }
 
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
-
 interface Props<T extends IdInterface> {
     data: T[];
     onDelete?: (id: number) => Promise<void>;
