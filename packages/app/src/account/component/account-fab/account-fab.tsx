@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CreateTransactionTrigger } from '../../../@generic/component/action-button/action-button';
+import { CreateTransactionTrigger } from '../../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
 const FAB_ANIMATION_DELAY = 75;
 const FAB_INITIAL_SCALE = 0.85;

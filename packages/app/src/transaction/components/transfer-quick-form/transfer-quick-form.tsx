@@ -173,22 +173,19 @@ export const TransferQuickForm = (props: Props) => {
 
     return (
         <View className="flex-1">
-            <View className="flex-1 items-center justify-center">
-                <TransactionAmountDisplay
-                    testID={TransactionFormSelectors.AmountInput}
-                    ref={amountDisplayRef}
-                    amount={display.displayAmount}
-                    currencySymbol={display.displaySymbol}
-                    variant={variant}
-                    secondaryAmount={display.secondaryAmountText}
-                    label={display.amountLabel}
-                    isLabelFlipped={isEditingDestination}
-                    {...(conversion.isCrossCurrency && {
-                        onLabelPress: handleConversionRowPress,
-                        onSecondaryAmountPress: handleConversionRowPress
-                    })}
-                />
-            </View>
+            <TransactionAmountDisplay
+                ref={amountDisplayRef}
+                amount={display.displayAmount}
+                currencySymbol={display.displaySymbol}
+                variant={variant}
+                secondaryAmount={display.secondaryAmountText}
+                label={display.amountLabel}
+                isLabelFlipped={isEditingDestination}
+                {...(conversion.isCrossCurrency && {
+                    onLabelPress: handleConversionRowPress,
+                    onSecondaryAmountPress: handleConversionRowPress
+                })}
+            />
 
             <TransactionFieldIcons
                 variant={variant}

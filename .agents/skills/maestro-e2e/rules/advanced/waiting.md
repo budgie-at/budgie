@@ -2,7 +2,7 @@
 name: waiting
 description: extendedWaitUntil, waitForAnimationToEnd
 metadata:
-    tags: wait, timeout, animation, loading
+  tags: wait, timeout, animation, loading
 ---
 
 ## extendedWaitUntil
@@ -11,16 +11,16 @@ Wait for an element with custom timeout (default is ~5 seconds):
 
 ```yaml
 - extendedWaitUntil:
-      visible: 'Dashboard'
-      timeout: 15000 # 15 seconds
+    visible: "Dashboard"
+    timeout: 15000 # 15 seconds
 ```
 
 ### Wait for Not Visible
 
 ```yaml
 - extendedWaitUntil:
-      notVisible: 'Loading...'
-      timeout: 10000
+    notVisible: "Loading..."
+    timeout: 10000
 ```
 
 ### Optional Wait
@@ -29,9 +29,9 @@ Don't fail if timeout expires:
 
 ```yaml
 - extendedWaitUntil:
-      visible: 'Optional Element'
-      timeout: 5000
-      optional: true
+    visible: "Optional Element"
+    timeout: 5000
+    optional: true
 ```
 
 ## waitForAnimationToEnd
@@ -39,9 +39,9 @@ Don't fail if timeout expires:
 Wait for all UI animations to complete:
 
 ```yaml
-- tapOn: 'Animate'
+- tapOn: "Animate"
 - waitForAnimationToEnd
-- assertVisible: 'Animation Complete'
+- assertVisible: "Animation Complete"
 ```
 
 Useful after:
@@ -56,25 +56,25 @@ Useful after:
 ### Wait for Loading
 
 ```yaml
-- tapOn: 'Load Data'
+- tapOn: "Load Data"
 - extendedWaitUntil:
-      visible: 'Loading...'
-      timeout: 3000
-      optional: true
+    visible: "Loading..."
+    timeout: 3000
+    optional: true
 - extendedWaitUntil:
-      notVisible: 'Loading...'
-      timeout: 30000
-- assertVisible: 'Data loaded'
+    notVisible: "Loading..."
+    timeout: 30000
+- assertVisible: "Data loaded"
 ```
 
 ### Wait and Assert
 
 ```yaml
-- tapOn: 'Submit'
+- tapOn: "Submit"
 - extendedWaitUntil:
-      visible: 'Success'
-      timeout: 10000
-- assertVisible: 'Success'
+    visible: "Success"
+    timeout: 10000
+- assertVisible: "Success"
 ```
 
 ### Slow Network Handling
@@ -82,19 +82,19 @@ Useful after:
 ```yaml
 - launchApp
 - extendedWaitUntil:
-      visible: 'Home'
-      timeout: 30000 # Long timeout for slow networks
+    visible: "Home"
+    timeout: 30000 # Long timeout for slow networks
 ```
 
 ### Wait for Element After Navigation
 
 ```yaml
-- tapOn: 'Next Page'
+- tapOn: "Next Page"
 - waitForAnimationToEnd
 - extendedWaitUntil:
-      visible: 'Page Title'
-      timeout: 5000
-- assertVisible: 'Page Title'
+    visible: "Page Title"
+    timeout: 5000
+- assertVisible: "Page Title"
 ```
 
 ## Best Practices

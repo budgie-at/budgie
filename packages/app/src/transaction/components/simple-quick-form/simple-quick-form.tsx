@@ -1,6 +1,4 @@
-/* eslint-disable max-lines */
 import {
-    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -10,22 +8,16 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
-import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
-import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -47,12 +39,6 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly ruleDetectionMode?: RuleDetectionModeType;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly updateRuleData?: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount?: number;
-    readonly onRuleCreated?: () => void;
-    readonly onDismiss?: () => void;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
@@ -74,12 +60,6 @@ export const SimpleQuickForm = (props: Props) => {
         accountFieldName,
         transactionTitle,
         mccCategoryId,
-        ruleDetectionMode = 'none',
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        onRuleCreated,
-        onDismiss,
         aiContext = '',
         isNewTransaction = false,
         buildEntries,
@@ -118,32 +98,17 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
-    const handleSelectRepeatedPattern = async (pattern: RepeatedTransactionPatternInterface): Promise<void> => {
-        const displayAmount = convertFromMicroUnits(pattern.latestAmount);
+    const handleSelectComment = (selectedComment: string) => {
+        setValue('comment', selectedComment);
+    };
 
-        setValue('entries.0.categoryId', pattern.categoryId);
-        setValue('tagIds', pattern.tagIds);
-        setValue('amount', displayAmount);
-        setFromNumeric(displayAmount);
-        setValue('title', pattern.title);
-        if (isNotEmptyString(pattern.comment)) {
-            setValue('comment', pattern.comment);
+    const handleFillPatternAmount = (patternAmount: number) => {
+        if (amount > 0) {
+            return;
         }
 
-        const isAccountUsable = pattern.accountIsActive && !isDefined(pattern.accountDeletedAt);
-
-        if (isAccountUsable) {
-            setValue(accountFieldName, pattern.accountId);
-        } else {
-            try {
-                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
-                if (isDefined(fallbackAccount)) {
-                    setValue(accountFieldName, fallbackAccount.id);
-                }
-            } catch {
-                /* empty */
-            }
-        }
+        setValue('amount', patternAmount);
+        setFromNumeric(patternAmount);
     };
 
     const handleSplitPress = async () => {
@@ -189,31 +154,24 @@ export const SimpleQuickForm = (props: Props) => {
     const isSplitActive = splitEntryCount > 1;
     const hasTagsSelected = isNotEmptyArray(tagIds);
 
-    const validateAndBuildEntries = (): boolean => {
+    const handleNormalConfirm = () => {
         const amount = getValues('amount');
         const formCategoryId = getValues('entries.0.categoryId') ?? 0;
-        const formAccountId = getValues(accountFieldName) ?? 0;
+        const accountId = getValues(accountFieldName) ?? 0;
 
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: formCategoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
-            { isValid: formAccountId > 0, shake: () => accountRowRef.current?.shake() }
+            { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
 
         if (!isValid) {
-            return false;
-        }
-
-        const builtEntries = buildEntries({ accountId: formAccountId, categoryId: formCategoryId, amount, mccCategoryId });
-        setValue('entries', builtEntries, { shouldValidate: false });
-
-        return true;
-    };
-
-    const handleNormalConfirm = () => {
-        if (!validateAndBuildEntries()) {
             return;
         }
+
+        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
+
+        setValue('entries', builtEntries, { shouldValidate: false });
 
         onSubmit();
     };
@@ -253,28 +211,16 @@ export const SimpleQuickForm = (props: Props) => {
 
     return (
         <View className="flex-1">
-            <View className="flex-1 pt-3xl">
-                <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                <View className="flex-1 items-center justify-center">
-                    <TransactionAmountDisplay
-                        ref={amountDisplayRef}
-                        amount={displayValue}
-                        currencySymbol={currencySymbol}
-                        variant={variant}
-                        testID={TransactionFormSelectors.AmountInput}
-                    />
-                    <View className="items-center mt-5">
-                        <RulePillSlot
-                            ruleDetectionMode={ruleDetectionMode}
-                            suggestRuleData={suggestRuleData}
-                            updateRuleData={updateRuleData}
-                            matchingRulesCount={matchingRulesCount}
-                            onRuleCreated={onRuleCreated}
-                            onDismiss={onDismiss}
-                        />
-                    </View>
-                </View>
+            <View className="flex-1">
+                <TransactionAmountDisplay
+                    ref={amountDisplayRef}
+                    amount={displayValue}
+                    currencySymbol={currencySymbol}
+                    variant={variant}
+                    testID={TransactionFormSelectors.AmountInput}
+                />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
+                    <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                     <SuggestionsContainer
                         isNewTransaction={isNewTransaction}
                         isSplitActive={isSplitActive}
@@ -289,7 +235,8 @@ export const SimpleQuickForm = (props: Props) => {
                         hasTagsSelected={hasTagsSelected}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
-                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
+                        onSelectComment={handleSelectComment}
+                        onFillPatternAmount={handleFillPatternAmount}
                     />
                 </View>
             </View>

@@ -103,7 +103,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <View className="w-full" testID={netWorthValueTestID}>
+                    <View testID={netWorthValueTestID}>
                         <ProtectedMoney
                             decimalPlaces={decimalPlaces}
                             minFontSize={24}

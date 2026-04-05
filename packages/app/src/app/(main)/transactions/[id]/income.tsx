@@ -13,7 +13,6 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
-import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -30,15 +29,12 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
-
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
-
-    const handleGoBack = () => void goBackOrReplace('/');
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
@@ -55,18 +51,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     });
 
     const toAccountId = form.watch('toAccountId');
-    const {
-        mode: ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        onRuleCreated,
-        onDismiss
-    } = useSuggestRuleDetection({
-        transaction,
-        control: form.control
-    });
 
+    const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
     const sourceAmount = sourceEntry.amount;
     const sourceAccount = sourceEntry.account;
@@ -104,12 +90,6 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    ruleDetectionMode={ruleDetectionMode}
-                    suggestRuleData={suggestRuleData}
-                    updateRuleData={updateRuleData}
-                    matchingRulesCount={matchingRulesCount}
-                    onRuleCreated={onRuleCreated}
-                    onDismiss={onDismiss}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

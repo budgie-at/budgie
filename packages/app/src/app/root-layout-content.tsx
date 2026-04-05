@@ -25,8 +25,6 @@ import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-option
 import { FILTER_MODAL_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
-import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
-import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
 import { SEARCHABLE_FILTER_MODAL_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
@@ -107,15 +105,6 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
-                                                                    <Stack.Screen name="rule-form" options={RULE_FORM_MODAL_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="rule-selector"
-                                                                        options={RULE_SELECTOR_MODAL_OPTIONS}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="rule-mcc-selector"
-                                                                        options={SELECTOR_MODAL_OPTIONS}
-                                                                    />
                                                                     <Stack.Screen
                                                                         name="category-selector"
                                                                         options={SELECTOR_MODAL_OPTIONS}

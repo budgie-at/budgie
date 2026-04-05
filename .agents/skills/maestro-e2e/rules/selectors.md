@@ -2,7 +2,7 @@
 name: selectors
 description: Element targeting with id, text, index, and matchers
 metadata:
-    tags: selectors, id, text, index, matchers
+  tags: selectors, id, text, index, matchers
 ---
 
 ## Basic Selectors
@@ -10,18 +10,18 @@ metadata:
 ### By Text (Default)
 
 ```yaml
-- tapOn: 'Login'
-- assertVisible: 'Welcome to Dashboard'
+- tapOn: "Login"
+- assertVisible: "Welcome to Dashboard"
 ```
 
 ### By ID (Recommended)
 
 ```yaml
 - tapOn:
-      id: 'login_button'
+    id: "login_button"
 
 - assertVisible:
-      id: 'dashboard_header'
+    id: "dashboard_header"
 ```
 
 ### By Index
@@ -30,8 +30,8 @@ When multiple elements match:
 
 ```yaml
 - tapOn:
-      text: 'Item'
-      index: 0 # First match (0-indexed)
+    text: "Item"
+    index: 0 # First match (0-indexed)
 ```
 
 ## Combined Selectors
@@ -40,9 +40,9 @@ Combine multiple matchers (AND logic):
 
 ```yaml
 - tapOn:
-      id: 'button'
-      text: 'Submit'
-      enabled: true
+    id: "button"
+    text: "Submit"
+    enabled: true
 ```
 
 ## Selector Properties
@@ -65,18 +65,18 @@ Select relative to another element:
 ```yaml
 # Child of element
 - tapOn:
-      below: 'Username'
-      id: 'input_field'
+    below: "Username"
+    id: "input_field"
 
 # Element above another
 - tapOn:
-      above: 'Submit'
-      text: 'Terms'
+    above: "Submit"
+    text: "Terms"
 
 # Left/right of element
 - tapOn:
-      leftOf: 'Cancel'
-      text: 'OK'
+    leftOf: "Cancel"
+    text: "OK"
 ```
 
 ## Optional Selector
@@ -85,8 +85,8 @@ Don't fail if not found:
 
 ```yaml
 - tapOn:
-      optional: true
-      text: 'Skip'
+    optional: true
+    text: "Skip"
 ```
 
 ## Point Selector
@@ -95,7 +95,7 @@ Tap exact coordinates:
 
 ```yaml
 - tapOn:
-      point: '50%,50%' # Center of screen
+    point: "50%,50%" # Center of screen
 ```
 
 ## Platform-Specific IDs

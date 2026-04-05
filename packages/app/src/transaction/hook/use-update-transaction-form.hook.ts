@@ -37,7 +37,6 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
         try {
             await transactionService.updateById(id, data);
             onAfterSubmit?.(data);
-
             goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

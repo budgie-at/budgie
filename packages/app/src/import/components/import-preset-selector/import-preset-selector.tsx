@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
@@ -31,24 +30,13 @@ export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) 
                 </Text>
             </View>
             <View className="flex-row flex-wrap gap-sm">
+                <ImportPresetChip title="Budgie" isSelected={selectedPreset === ImportPresetEnum.Budgie} onSelect={handleBudgieSelect} />
                 <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('Budgie')}
-                    title="Budgie"
-                    isSelected={selectedPreset === ImportPresetEnum.Budgie}
-                    onSelect={handleBudgieSelect}
-                />
-                <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('SmartBudget')}
                     title="SmartBudget"
                     isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
                     onSelect={handleSmartBudgetSelect}
                 />
-                <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('FinEye')}
-                    title="FinEye"
-                    isSelected={selectedPreset === ImportPresetEnum.FinEye}
-                    onSelect={handleFinEyeSelect}
-                />
+                <ImportPresetChip title="FinEye" isSelected={selectedPreset === ImportPresetEnum.FinEye} onSelect={handleFinEyeSelect} />
             </View>
         </View>
     );

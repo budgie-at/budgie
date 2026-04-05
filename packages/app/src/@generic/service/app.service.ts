@@ -5,9 +5,6 @@ import {
     accountRepository,
     categoryRepository,
     db,
-    ruleActionRepository,
-    ruleConditionRepository,
-    ruleRepository,
     settingsRepository,
     tagRepository,
     transactionEntryRepository,
@@ -18,9 +15,6 @@ import {
 class AppService {
     async truncateData() {
         await transactionAsync(db, async tx => {
-            await ruleActionRepository.truncate(tx);
-            await ruleConditionRepository.truncate(tx);
-            await ruleRepository.truncate(tx);
             await transactionTagsRepository.truncate();
             await tagRepository.truncate(tx);
             await categoryRepository.truncate(false, tx);

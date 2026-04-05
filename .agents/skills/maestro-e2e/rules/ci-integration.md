@@ -2,7 +2,7 @@
 name: ci-integration
 description: GitHub Actions, GitLab CI, Maestro Cloud
 metadata:
-    tags: ci, cd, github-actions, gitlab, cloud
+  tags: ci, cd, github-actions, gitlab, cloud
 ---
 
 ## GitHub Actions
@@ -14,72 +14,72 @@ metadata:
 name: E2E Tests
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    e2e:
-        runs-on: macos-latest
-        steps:
-            - uses: actions/checkout@v4
+  e2e:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Install Maestro
-              run: |
-                  curl -Ls "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-            - name: Start iOS Simulator
-              run: |
-                  xcrun simctl boot "iPhone 15 Pro"
-                  xcrun simctl bootstatus "iPhone 15 Pro" -b
+      - name: Start iOS Simulator
+        run: |
+          xcrun simctl boot "iPhone 15 Pro"
+          xcrun simctl bootstatus "iPhone 15 Pro" -b
 
-            - name: Build iOS App
-              run: |
-                  xcodebuild -workspace MyApp.xcworkspace \
-                    -scheme MyApp \
-                    -sdk iphonesimulator \
-                    -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
-                    -derivedDataPath build
+      - name: Build iOS App
+        run: |
+          xcodebuild -workspace MyApp.xcworkspace \
+            -scheme MyApp \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+            -derivedDataPath build
 
-            - name: Install App
-              run: |
-                  xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MyApp.app
+      - name: Install App
+        run: |
+          xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MyApp.app
 
-            - name: Run E2E Tests
-              run: maestro test e2e/
+      - name: Run E2E Tests
+        run: maestro test e2e/
 
-            - name: Upload Screenshots
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: maestro-screenshots
-                  path: maestro_output/
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-screenshots
+          path: maestro_output/
 ```
 
 ### Android
 
 ```yaml
 jobs:
-    e2e-android:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
+  e2e-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Install Maestro
-              run: |
-                  curl -Ls "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-            - name: Set up Android
-              uses: android-actions/setup-android@v3
+      - name: Set up Android
+        uses: android-actions/setup-android@v3
 
-            - name: Run Android Emulator
-              uses: reactivecircus/android-emulator-runner@v2
-              with:
-                  api-level: 31
-                  script: maestro test e2e/
+      - name: Run Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          script: maestro test e2e/
 ```
 
 ## GitLab CI
@@ -87,13 +87,13 @@ jobs:
 ```yaml
 # .gitlab-ci.yml
 e2e:
-    image: mobile-dev-inc/maestro:latest
-    script:
-        - maestro test e2e/
-    artifacts:
-        when: always
-        paths:
-            - maestro_output/
+  image: mobile-dev-inc/maestro:latest
+  script:
+    - maestro test e2e/
+  artifacts:
+    when: always
+    paths:
+      - maestro_output/
 ```
 
 ## Maestro Cloud
@@ -109,12 +109,12 @@ maestro cloud --apiKey $MAESTRO_API_KEY app.apk e2e/
 ```yaml
 - name: Run on Maestro Cloud
   env:
-      MAESTRO_CLOUD_API_KEY: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+    MAESTRO_CLOUD_API_KEY: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
   run: |
-      maestro cloud \
-        --apiKey $MAESTRO_CLOUD_API_KEY \
-        --app app.apk \
-        e2e/
+    maestro cloud \
+      --apiKey $MAESTRO_CLOUD_API_KEY \
+      --app app.apk \
+      e2e/
 ```
 
 ## Environment Variables in CI
@@ -122,13 +122,13 @@ maestro cloud --apiKey $MAESTRO_API_KEY app.apk e2e/
 ```yaml
 - name: Run E2E Tests
   env:
-      MAESTRO_TEST_USER: ${{ secrets.TEST_USER }}
-      MAESTRO_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+    MAESTRO_TEST_USER: ${{ secrets.TEST_USER }}
+    MAESTRO_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
   run: |
-      maestro test \
-        -e USERNAME=$MAESTRO_TEST_USER \
-        -e PASSWORD=$MAESTRO_TEST_PASSWORD \
-        e2e/
+    maestro test \
+      -e USERNAME=$MAESTRO_TEST_USER \
+      -e PASSWORD=$MAESTRO_TEST_PASSWORD \
+      e2e/
 ```
 
 ## Parallelization
@@ -146,12 +146,12 @@ maestro test --shards 4 --shard-index 3 e2e/
 
 ```yaml
 jobs:
-    e2e:
-        strategy:
-            matrix:
-                shard: [0, 1, 2, 3]
-        steps:
-            - run: maestro test --shards 4 --shard-index ${{ matrix.shard }} e2e/
+  e2e:
+    strategy:
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - run: maestro test --shards 4 --shard-index ${{ matrix.shard }} e2e/
 ```
 
 ## Retry Failed Tests

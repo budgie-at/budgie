@@ -81,19 +81,11 @@ export class BaseBankSyncService {
     }
 
     private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
-        // eslint-disable-next-line no-console
-        console.log(`[BankSync:API] Fetching transactions accountId=${accountId} from=${this.toSeconds(from)} to=${this.toSeconds(to)}`);
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (result.success) {
-            // eslint-disable-next-line no-console
-            console.log(`[BankSync:API] Success: ${result.data.length} transactions`);
-
             return result.data;
         }
-
-        // eslint-disable-next-line no-console
-        console.error(`[BankSync:API] Error: code=${result.error.code} message=${getErrorMessage(result.error)}`);
 
         if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
             return [];

@@ -66,7 +66,12 @@ export default function TransactionTypeFilterModal() {
             </View>
 
             <Footer>
-                <Button variant="ghost" onPress={handleApply} content={buttonText} testID={TransactionFiltersSelectors.TypeApplyButton} />
+                <Button
+                    variant="ghost"
+                    onPress={handleApply}
+                    content={buttonText}
+                    testID={TransactionFiltersSelectors.TypeApplyButton}
+                />
             </Footer>
         </View>
     );

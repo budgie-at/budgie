@@ -2,7 +2,7 @@
 name: flutter
 description: Flutter integration using Semantics and identifier
 metadata:
-    tags: flutter, semantics, identifier, dart, widget
+  tags: flutter, semantics, identifier, dart, widget
 ---
 
 ## Requirement
@@ -39,7 +39,7 @@ In Maestro:
 
 ```yaml
 - tapOn:
-      id: 'login_button'
+    id: "login_button"
 ```
 
 ## Semantics Label (Alternative)
@@ -187,19 +187,19 @@ class LoginPage extends StatelessWidget {
 appId: com.example.myApp
 ---
 - launchApp:
-      clearState: true
+    clearState: true
 
 - tapOn:
-      id: 'login_email_field'
-- inputText: 'test@example.com'
+    id: "login_email_field"
+- inputText: "test@example.com"
 
 - tapOn:
-      id: 'login_password_field'
-- inputText: 'password123'
+    id: "login_password_field"
+- inputText: "password123"
 
 - hideKeyboard
 - tapOn:
-      id: 'login_submit_button'
+    id: "login_submit_button"
 
-- assertVisible: 'Dashboard'
+- assertVisible: "Dashboard"
 ```
