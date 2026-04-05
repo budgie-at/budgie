@@ -43,6 +43,7 @@ class AccountBalanceIncrementalService {
 
         if (isNotEmptyArray(balancesToInsert)) {
             await Promise.all(balancesToInsert.map(async balance => accountBalanceRepository.upsert(balance, tx)));
+            await accountRepository.touchUpdatedAt(accountIds, tx);
         }
     }
 
