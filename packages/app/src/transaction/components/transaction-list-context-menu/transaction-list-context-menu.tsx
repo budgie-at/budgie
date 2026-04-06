@@ -7,14 +7,14 @@ import {
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+import { useRef } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn, emptyFn } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
 import { TransactionContextMenuSelectors } from '../../../@e2e/selectors/transaction-context-menu.selector';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
@@ -41,18 +41,27 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
-    const { closeMenu, handleCloseComplete: handleDeferredClose } = useDeferredMenuClose({ isOpen, onClose });
-
-    const handleCloseCompleteAll = () => {
-        handleDeferredClose();
-        onCloseComplete();
-    };
+    const pendingActionRef = useRef<EmptyFn | null>(null);
 
     if (transaction === null) {
         return null;
     }
 
     const canConvert = isConvertibleTransaction(transaction);
+
+    const closeMenu = (afterClose?: EmptyFn) => {
+        pendingActionRef.current = afterClose ?? null;
+        onClose();
+    };
+
+    const handleCloseComplete = () => {
+        if (isDefined(pendingActionRef.current)) {
+            pendingActionRef.current();
+            pendingActionRef.current = null;
+        }
+
+        onCloseComplete();
+    };
 
     const handleEditPress = () => {
         closeMenu(() => void router.push(getTransactionHref(transaction)));
@@ -91,7 +100,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     ) : null;
 
     return (
-        <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseCompleteAll} anchor={anchor}>
+        <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
             <View className="py-sm">
                 <PopoverMenuItem
                     icon={UserIconNameEnum.Pencil}
