@@ -34,7 +34,7 @@ export const TransactionList = ({
     const baseAccountIds = isDefined(accountId) ? [accountId] : null;
     const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds ?? internalFilters.accountIds };
     const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters, focusKey);
 
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;

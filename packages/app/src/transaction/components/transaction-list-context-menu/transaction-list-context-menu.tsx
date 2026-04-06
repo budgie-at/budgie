@@ -54,6 +54,11 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
         onClose();
     };
 
+    const handleDismiss = () => {
+        pendingActionRef.current = null;
+        onClose();
+    };
+
     const handleCloseComplete = () => {
         if (isDefined(pendingActionRef.current)) {
             pendingActionRef.current();
@@ -100,7 +105,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     ) : null;
 
     return (
-        <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
+        <PopoverMenu isOpen={isOpen} onClose={handleDismiss} onCloseComplete={handleCloseComplete} anchor={anchor}>
             <View className="py-sm">
                 <PopoverMenuItem
                     icon={UserIconNameEnum.Pencil}
