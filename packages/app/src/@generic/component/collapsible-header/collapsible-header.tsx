@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro';
+import { useState } from 'react';
 import { LayoutChangeEvent, Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState } from 'react';
 
 import { HomePageSelectors } from '../../../@e2e/selectors/home-page.selector';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
@@ -28,6 +28,7 @@ const EXPANDED_SCALE_MIN = 0.9;
 const EXPANDED_TRANSLATE_Y = -20;
 const COLLAPSED_TRANSLATE_Y = 10;
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- Animated header with multiple interpolated styles
 export const CollapsibleHeader = ({ scrollY }: Props) => {
     const { top } = useSafeAreaInsets();
     const { defaultInstrument, decimalPlaces } = useSettingsContext();
