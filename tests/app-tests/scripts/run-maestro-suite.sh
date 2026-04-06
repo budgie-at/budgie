@@ -32,13 +32,21 @@ fi
 
 if [ -z "$USE_APP_OWNED_RESET" ]; then
     case "$APP_ID" in
-        *.e2e)
+        *.e2e|*.dev|*.development)
             USE_APP_OWNED_RESET=true
             ;;
         *)
             USE_APP_OWNED_RESET=false
             ;;
     esac
+fi
+
+if [ "$HANDLE_DEV_CLIENT_STARTUP" = "true" ]; then
+    echo "Warming up dev client..."
+    maestro test \
+        -e APP_ID="$APP_ID" \
+        -e HANDLE_DEV_CLIENT_STARTUP=true \
+        "$WORKSPACE_DIR/flows/subflows/warm-up-dev-client.flow.yaml" 2>/dev/null || true
 fi
 
 echo "Running ordered Maestro suite from $WORKSPACE_DIR"
