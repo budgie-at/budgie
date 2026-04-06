@@ -19,7 +19,7 @@ export default async function BlogPage(props: Props) {
 
     initLingui(lang);
 
-    const allArticles = getArticles();
+    const allArticles = await getArticles(lang);
     const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;

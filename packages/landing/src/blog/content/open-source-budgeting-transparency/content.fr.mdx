@@ -1,0 +1,354 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "Budget open source : pourquoi la transparence compte pour votre argent",
+    "description": "Découvrez pourquoi les applications de budget open source offrent la transparence et la sécurité que vos données financières méritent. Apprenez à évaluer les outils financiers open source et pourquoi Budgie est entièrement transparent.",
+    "tags": ["open-source", "transparence", "sécurité", "confidentialité", "communauté"],
+    "image": "/images/design-mode/ai-budgeting-app-4x.jpg",
+    "seo": {
+        "keywords": [
+            "application budget open source",
+            "application financière transparente",
+            "logiciel de budget auditable",
+            "suivi des dépenses open source",
+            "budget transparent",
+            "logiciel financier open source",
+            "application budget communautaire",
+            "suivi des dépenses vérifiable"
+        ],
+        "metaDescription": "Découvrez pourquoi les applications de budget open source offrent une sécurité et une transparence supérieures pour vos données financières. Apprenez à auditer un logiciel financier et pourquoi Budgie est 100 % open source."
+    }
+}
+
+# Budget open source : pourquoi la transparence compte pour votre argent
+
+Lorsque vous confiez vos données financières à une application, vous lui transmettez certaines des informations les plus sensibles sur votre vie. Vos habitudes de dépenses révèlent où vous vivez, où vous travaillez, ce que vous mangez, votre état de santé, vos relations et d'innombrables autres détails intimes. Pourtant, la plupart des gens n'ont aucune idée de ce qu'il advient de ces données une fois saisies dans leur application de budget.
+
+C'est le problème de la boîte noire des logiciels financiers modernes. Vous saisissez vos transactions, et quelque part dans un système propriétaire, des choses se passent. Lesquelles ? Vous ne le saurez jamais. Le code est verrouillé, les flux de données sont cachés, et les promesses de l'entreprise sont la seule chose qui sépare votre vie financière d'une utilisation abusive potentielle.
+
+Les applications de budget open source proposent une approche fondamentalement différente. Quand le code est public, tout change. Les chercheurs en sécurité peuvent vérifier les affirmations. Les défenseurs de la vie privée peuvent auditer le traitement des données. Et vous, en tant qu'utilisateur, pouvez faire confiance non pas parce qu'une entreprise vous le demande, mais parce que les preuves sont là, accessibles à tous.
+
+## Le problème des logiciels financiers à code fermé
+
+La plupart des applications de budget et de suivi des dépenses fonctionnent comme des boîtes noires. Vous téléchargez une application, créez un compte, connectez votre banque et commencez à suivre vos dépenses. L'interface est soignée, les fonctionnalités sont utiles et tout semble aller pour le mieux. Mais sous cette surface accueillante se cache un système que vous ne pouvez ni inspecter, ni vérifier, ni véritablement comprendre.
+
+### Aucune visibilité sur le traitement des données
+
+Lorsque vous utilisez une application financière à code fermé, vous n'avez aucun moyen de vérifier ce qui se passe réellement avec vos données. L'entreprise peut affirmer que vos informations sont chiffrées, stockées en toute sécurité et jamais partagées. Mais comment le savez-vous ? Leur politique de confidentialité est un document juridique rédigé par des avocats, pas une spécification technique vérifiable par rapport au code réel.
+
+Réfléchissez à ce qu'une application de budget typique sait de vous :
+
+- Chaque transaction que vous effectuez, y compris les montants, les commerçants et les lieux
+- Vos schémas de revenus et leurs sources
+- Vos soldes bancaires et numéros de compte
+- Vos catégories de dépenses et habitudes financières
+- Quand vous êtes payé et quand vous êtes à court d'argent
+- Vos abonnements récurrents et engagements financiers
+
+C'est un portrait financier extraordinairement détaillé. Avec un logiciel à code fermé, vous confiez la confidentialité de ce portrait uniquement sur la base de promesses d'entreprise et d'accords juridiques qui peuvent changer à tout moment.
+
+### Télémétrie et pistage cachés
+
+De nombreuses applications collectent bien plus de données que les utilisateurs ne le réalisent. Les plateformes d'analyse, les services de rapport de plantage, les SDK publicitaires et les intégrations tierces fonctionnent souvent silencieusement en arrière-plan. Chacun de ces systèmes peut collecter et transmettre des données sur vos habitudes d'utilisation, les informations de votre appareil, et potentiellement même vos activités financières.
+
+Avec les applications à code fermé, vous ne pouvez pas déterminer :
+
+- Quels services d'analyse sont intégrés dans l'application
+- Quelles données ces services collectent
+- Où ces données sont transmises
+- Qui y a accès
+- Combien de temps elles sont conservées
+- Si elles sont vendues ou partagées
+
+L'application pourrait envoyer vos données de transactions à un service d'analyse tiers pour « l'amélioration du produit ». Elle pourrait créer une empreinte de votre appareil et associer votre comportement financier à des profils publicitaires. Vous ne le sauriez jamais, car vous ne pouvez pas voir le code.
+
+### Aucun moyen de vérifier les affirmations de sécurité
+
+La sécurité par l'obscurité est un concept erroné qui persiste dans les logiciels à code fermé. Les entreprises affirment que leurs systèmes sont sécurisés, mais les chercheurs en sécurité ne peuvent pas examiner le code pour vérifier ces affirmations. Des vulnérabilités peuvent exister pendant des années avant d'être découvertes lors d'une violation plutôt que par un audit proactif.
+
+Les applications financières à code fermé font souvent des affirmations de sécurité qui semblent impressionnantes mais sont impossibles à vérifier :
+
+- « Chiffrement de niveau bancaire » (qu'est-ce que cela signifie concrètement dans leur implémentation ?)
+- « Vos données sont sécurisées » (contre quels modèles de menace ? testées par qui ?)
+- « Nous prenons la sécurité au sérieux » (comment ? montrez-nous les preuves)
+
+Sans accès au code source, ces affirmations sont du discours marketing, pas des faits vérifiables.
+
+## Ce que l'open source signifie pour la sécurité
+
+Le logiciel open source inverse le modèle de sécurité traditionnel. Au lieu de cacher le code en espérant que personne ne trouve de vulnérabilités, les projets open source exposent tout à l'examen. Cette transparence crée une posture de sécurité fondamentalement plus solide.
+
+### Audit communautaire
+
+Lorsque le code source est public, quiconque possède l'expertise pertinente peut l'examiner. Chercheurs en sécurité, défenseurs de la vie privée, utilisateurs concernés et auditeurs professionnels peuvent tous examiner le code à la recherche de problèmes potentiels. Cet audit distribué crée de multiples couches de surveillance que les entreprises à code fermé ne peuvent tout simplement pas égaler.
+
+La communauté de sécurité open source comprend :
+
+- Des chercheurs universitaires étudiant la sécurité des logiciels
+- Des testeurs d'intrusion professionnels et consultants en sécurité
+- Des organisations et groupes de défense de la vie privée
+- Des chercheurs en sécurité amateurs et chasseurs de bugs
+- D'autres développeurs qui ont besoin de comprendre le code
+
+Chacun de ces groupes apporte des perspectives, des compétences et des motivations différentes. Un chercheur en protection de la vie privée pourrait remarquer des schémas de collecte de données qu'un auditeur de sécurité ne verrait pas. Un développeur intégrant le projet pourrait découvrir des cas limites que les auteurs originaux ont manqués. Cette diversité d'attention est une force qu'aucune équipe de sécurité isolée ne peut reproduire.
+
+### Détection plus rapide des vulnérabilités
+
+Lorsque des vulnérabilités sont découvertes dans un logiciel open source, le chemin de la découverte à la correction est généralement plus rapide et plus transparent que dans les alternatives à code fermé. Les chercheurs en sécurité peuvent :
+
+1. Découvrir une vulnérabilité en examinant le code
+2. La signaler via des canaux établis (divulgation responsable)
+3. Potentiellement même soumettre un correctif eux-mêmes
+4. Vérifier que le correctif résout réellement le problème
+5. Confirmer que la version corrigée est publiée
+
+Comparez cela aux logiciels à code fermé, où les chercheurs ne peuvent souvent même pas vérifier si une vulnérabilité qu'ils ont signalée a été réellement corrigée. Ils doivent faire confiance à la parole du fournisseur, ce que l'histoire a montré n'être pas toujours fiable.
+
+### Pas de sécurité par l'obscurité
+
+Le principe de sécurité que l'open source adopte est simple : supposez que vos adversaires peuvent voir votre code et concevez une sécurité qui fonctionne malgré tout. Cela conduit à des architectures de sécurité fondamentalement plus solides :
+
+- Un chiffrement qui ne repose pas sur des algorithmes cachés
+- Des systèmes d'authentification qui restent sûrs même lorsqu'ils sont examinés
+- Un traitement des données qui résiste à un examen hostile
+- Aucune porte dérobée cachée que l'obscurité pourrait autrement dissimuler
+
+Lorsque vous ne pouvez pas cacher votre implémentation, vous devez la réaliser correctement. Cette pression produit de meilleurs résultats en matière de sécurité que le faux confort du code caché.
+
+## Comment auditer une application open source (même sans être développeur)
+
+Vous n'avez pas besoin d'être programmeur pour évaluer la fiabilité d'un projet open source. Même si vous ne pouvez pas examiner le code ligne par ligne, vous pouvez évaluer de nombreux facteurs importants qui indiquent si un projet mérite votre confiance.
+
+### Consultez les Issues et les discussions
+
+Tout projet open source bien maintenu dispose d'un système de suivi des problèmes où les bugs, les demandes de fonctionnalités et les préoccupations sont discutés. C'est une mine d'informations sur le fonctionnement du projet :
+
+**Ce qu'il faut rechercher :**
+
+- Comment les mainteneurs répondent-ils aux signalements de sécurité ?
+- Les préoccupations des utilisateurs sont-elles traitées avec respect et exhaustivité ?
+- Y a-t-il une discussion active sur la confidentialité et le traitement des données ?
+- Y a-t-il des problèmes non résolus qui vous préoccupent ?
+- À quelle vitesse les bugs critiques sont-ils traités ?
+
+Un projet qui ignore les problèmes de sécurité ou rejette les préoccupations des utilisateurs envoie des signaux clairs sur ses priorités. À l'inverse, un projet offrant des réponses réfléchies et rapides aux préoccupations démontre un engagement authentique envers ses utilisateurs.
+
+### Recherchez les audits de sécurité
+
+Les audits de sécurité professionnels représentent un investissement significatif qui démontre l'engagement d'un projet envers la sécurité. Recherchez :
+
+- Des rapports d'audit publiés par des entreprises de sécurité reconnues
+- Des programmes de Bug Bounty qui encouragent la divulgation responsable
+- Des entrées de journal des modifications axées sur la sécurité montrant des améliorations proactives
+- Le suivi et les réponses aux CVE (Common Vulnerabilities and Exposures)
+
+L'absence d'audits professionnels n'est pas nécessairement disqualifiante, surtout pour les petits projets. Mais pour les applications manipulant des données financières sensibles, une forme de validation externe de la sécurité est rassurante.
+
+### Examinez les dépendances
+
+Les logiciels modernes dépendent de nombreuses bibliothèques et frameworks externes. Une application peut avoir un excellent code en interne tout en reposant sur des dépendances problématiques. Vous pouvez évaluer la santé des dépendances en observant :
+
+- Les dépendances sont-elles régulièrement mises à jour ?
+- Y a-t-il des vulnérabilités connues dans les dépendances ?
+- Les dépendances proviennent-elles de sources fiables ?
+- Le projet utilise-t-il des bibliothèques bien maintenues ou abandonnées ?
+
+Des outils comme le graphe de dépendances et les alertes de sécurité de GitHub rendent ces informations visibles même aux utilisateurs non techniques. Un projet avec des dizaines de dépendances obsolètes et des alertes de sécurité non traitées devrait susciter des inquiétudes.
+
+### Comparez la politique de confidentialité avec le code réel
+
+L'un des aspects les plus puissants du logiciel open source est la possibilité de vérifier les affirmations de confidentialité par rapport à l'implémentation réelle. Même si vous ne pouvez pas lire le code vous-même, vous pouvez chercher :
+
+- Le projet dispose-t-il d'une documentation claire sur le traitement des données ?
+- Les membres de la communauté soucieux de la confidentialité discutent-ils de l'implémentation ?
+- Y a-t-il des requêtes réseau suspectes documentées dans les issues ?
+- La documentation correspond-elle à ce que d'autres rapportent sur le code ?
+
+Les communautés autour des logiciels open source axés sur la confidentialité incluent souvent des membres qui auditent spécifiquement les flux de données et partagent leurs découvertes. Leurs analyses peuvent vous aider à comprendre ce que le code fait réellement.
+
+## L'engagement open source de Budgie
+
+Budgie est construit sur le principe que vous ne devriez pas avoir à nous faire confiance. Vous devriez pouvoir vérifier nos affirmations, examiner notre code et confirmer que nous faisons ce que nous disons. Tout chez Budgie est open source, de l'application mobile aux services backend.
+
+### Ce qui est open source : tout
+
+Contrairement à certains projets qui n'ouvrent que des portions de leur code tout en gardant les composants critiques propriétaires, Budgie est 100 % open source :
+
+- **L'application mobile** — La base de code React Native complète pour iOS et Android
+- **Les services backend** — Tout le code côté serveur pour les fonctionnalités optionnelles comme la synchronisation bancaire
+- **La page d'accueil** — Même notre site marketing est open source
+- **L'infrastructure de build** — Nos pipelines CI/CD et configurations de déploiement
+- **La documentation** — Tous les guides, la documentation API et les spécifications techniques
+
+Cette transparence totale signifie qu'il n'y a aucun composant caché où un comportement préoccupant pourrait se dissimuler. Chaque ligne de code qui touche vos données est disponible pour examen.
+
+### Choix de la licence et raisons
+
+Budgie utilise la MIT License, l'une des licences open source les plus permissives disponibles. Nous avons choisi cette licence pour plusieurs raisons :
+
+**Pour les utilisateurs :**
+
+- Vous pouvez vérifier le code sans aucune préoccupation juridique
+- Vous pouvez modifier l'application pour votre propre usage
+- Vous pouvez partager vos modifications avec d'autres
+- Vous n'êtes enfermé dans aucun écosystème ni fournisseur
+
+**Pour la communauté :**
+
+- Les développeurs peuvent apprendre de notre base de code
+- Les chercheurs en sécurité peuvent auditer sans restriction
+- D'autres projets peuvent s'appuyer sur notre travail
+- L'écosystème se renforce grâce au partage des connaissances
+
+Nous croyons que les licences restrictives sapent les avantages de confiance de l'open source. Si vous ne pouvez pas librement examiner et partager le code, la transparence est incomplète.
+
+### Comment contribuer
+
+L'open source prospère grâce à la participation communautaire. Si vous souhaitez contribuer à Budgie, il existe de nombreuses façons de s'impliquer :
+
+**Pour les développeurs :**
+
+- Corrigez des bugs et soumettez des pull requests
+- Implémentez des fonctionnalités de la feuille de route
+- Améliorez la couverture des tests
+- Enrichissez la documentation
+
+**Pour les non-développeurs :**
+
+- Signalez des bugs et des problèmes d'ergonomie
+- Suggérez des fonctionnalités et des améliorations
+- Aidez avec les traductions
+- Faites connaître les alternatives respectueuses de la vie privée
+
+**Pour les chercheurs en sécurité :**
+
+- Auditez la base de code pour détecter des vulnérabilités
+- Examinez nos implémentations cryptographiques
+- Testez nos pratiques de traitement des données
+- Signalez vos découvertes via la divulgation responsable
+
+Visitez notre [dépôt GitHub](https://github.com/nicknisi/budgie) pour commencer.
+
+## Contributions communautaires et gouvernance
+
+Un projet open source est bien plus que du code public. C'est une communauté d'utilisateurs, de contributeurs et de mainteneurs travaillant ensemble vers des objectifs communs. La façon dont cette communauté est gouvernée est importante pour la santé à long terme et la fiabilité du projet.
+
+### Comment les décisions sont prises
+
+Budgie suit un processus décisionnel transparent :
+
+**Décisions fonctionnelles :**
+
+- Les fonctionnalités majeures sont discutées dans des issues GitHub publiques avant leur implémentation
+- L'avis de la communauté est sollicité et pris en compte
+- Les décisions et leurs justifications sont documentées publiquement
+- Les changements controversés nécessitent un consensus plus large
+
+**Décisions de sécurité :**
+
+- Les changements sensibles en matière de sécurité font l'objet d'un examen approfondi
+- Les contributions externes sur l'architecture de sécurité sont les bienvenues
+- Les changements de sécurité majeurs sont clairement communiqués
+- Les processus de divulgation responsable sont respectés
+
+**Décisions de confidentialité :**
+
+- Tout changement affectant le traitement des données est signalé pour examen
+- Les implications en matière de confidentialité sont discutées ouvertement
+- Le consentement et le contrôle des utilisateurs restent les considérations principales
+- Le principe de collecte minimale de données guide toutes les décisions
+
+### Transparence de la feuille de route
+
+Notre feuille de route de développement est publique et régulièrement mise à jour. Vous pouvez voir :
+
+- Quelles fonctionnalités sont prévues pour les prochaines versions
+- Ce sur quoi on travaille actuellement
+- Quels compromis sont envisagés
+- Comment les priorités sont déterminées
+
+Cette transparence vous permet de prendre des décisions éclairées sur l'adéquation de Budgie à vos besoins. Si une fonctionnalité prévue vous préoccupe, vous pouvez exprimer ces inquiétudes avant son implémentation. Si une fonctionnalité dont vous avez besoin est manquante, vous pouvez plaider pour son ajout ou la développer vous-même.
+
+### Bug Bounty et divulgation de sécurité
+
+Nous prenons les vulnérabilités de sécurité au sérieux et avons établi des processus de divulgation responsable :
+
+**Pour les chercheurs en sécurité :**
+
+- Signalez les vulnérabilités via notre canal de sécurité dédié
+- Accordez un délai raisonnable pour les correctifs avant la divulgation publique
+- Recevez une reconnaissance pour les vulnérabilités découvertes (si souhaité)
+- Divulgation coordonnée pour protéger les utilisateurs
+
+**Nos engagements :**
+
+- Accuser réception des signalements de sécurité dans les 48 heures
+- Fournir des mises à jour régulières sur l'avancement des correctifs
+- Créditer les chercheurs dans les avis de sécurité
+- Ne jamais engager de poursuites judiciaires contre la recherche en sécurité de bonne foi
+
+Nous croyons qu'accueillir la recherche en sécurité rend Budgie plus sûr pour tous. Les chercheurs qui examinent notre code rendent un service à nous et à nos utilisateurs.
+
+## Autres outils financiers open source à considérer
+
+Budgie n'est pas la seule option open source pour la gestion financière. Un écosystème sain d'alternatives existe, et nous croyons qu'il est juste de les mentionner honnêtement. Différents outils conviennent à différents besoins, et le meilleur choix dépend de vos exigences spécifiques.
+
+### Actual Budget
+
+Actual est un outil de budget axé sur la confidentialité avec une forte approche local-first. Il propose la méthode des enveloppes budgétaires, des capacités de synchronisation bancaire, et des options auto-hébergées et cloud. Si vous préférez le budget par enveloppes et souhaitez une expérience orientée bureau, Actual mérite d'être considéré.
+
+### Firefly III
+
+Firefly III est un gestionnaire complet de finances personnelles conçu pour l'auto-hébergement. Il offre un suivi détaillé des transactions, des fonctionnalités de budget et des rapports étendus. Si vous êtes à l'aise avec la gestion de votre propre infrastructure serveur et souhaitez un contrôle maximal, Firefly III offre de puissantes capacités.
+
+### GnuCash
+
+GnuCash est un vétéran des logiciels financiers open source, offrant la comptabilité en partie double adaptée aux particuliers et aux petites entreprises. Si vous avez besoin de fonctionnalités de niveau comptable comme la facturation et le suivi des dépenses professionnelles, la base de code mature de GnuCash bénéficie de décennies de développement.
+
+### Ce qui distingue Budgie
+
+Budgie se concentre spécifiquement sur le suivi des dépenses mobile-first et offline-first. Nos priorités sont :
+
+- **Expérience mobile native** — Conçu pour les téléphones, pas adapté du bureau
+- **Architecture offline-first** — Fonctionne sans internet, se synchronise quand c'est possible
+- **Confidentialité par conception** — Vos données restent sur votre appareil par défaut
+- **Expérience utilisateur moderne** — Interface épurée et intuitive pour le suivi quotidien
+
+Nous pensons qu'il y a de la place dans l'écosystème pour tous ces outils. Les utilisateurs bénéficient lorsqu'ils ont le choix, et la compétition entre projets open source stimule l'innovation tout en maintenant les avantages de confiance de la transparence.
+
+## Questions fréquemment posées
+
+### Le logiciel open source est-il vraiment plus sécurisé que le logiciel propriétaire ?
+
+Le logiciel open source n'est pas automatiquement plus sécurisé, mais il permet une meilleure sécurité grâce à la transparence. Lorsque le code est public, les failles de sécurité peuvent être trouvées et corrigées par quiconque possède l'expertise, pas uniquement par les développeurs originaux. Cet examen distribué détecte généralement les problèmes plus rapidement que les seules équipes de sécurité internes. Cependant, les avantages en matière de sécurité ne se concrétisent que lorsque la communauté examine effectivement le code, ce qui signifie que les projets actifs et bien maintenus sont plus susceptibles d'être sécurisés que les projets abandonnés.
+
+### Si le code est public, les pirates ne peuvent-ils pas l'utiliser pour trouver des vulnérabilités ?
+
+C'est une préoccupation courante, mais la recherche en sécurité montre constamment que l'obscurité offre une protection faible. Les attaquants déterminés peuvent effectuer de la rétro-ingénierie sur les applications à code fermé, trouver des vulnérabilités par fuzzing et sondage, ou exploiter les mêmes bugs que les développeurs internes ont manqués. Pendant ce temps, les chercheurs en sécurité légitimes sont empêchés d'aider. L'open source suppose que les adversaires étudieront le code et conçoit une sécurité qui fonctionne malgré tout. Cela produit des systèmes plus robustes que d'espérer que les attaquants ne regarderont pas de trop près.
+
+### Comment savoir si l'application que je télécharge correspond au code open source ?
+
+C'est une préoccupation légitime connue sous le nom de « vérification de build ». Budgie utilise des builds reproductibles lorsque c'est possible, permettant à quiconque de vérifier que l'application publiée correspond au code source. Pour les applications mobiles, une confiance supplémentaire est nécessaire dans la distribution via les stores, mais le code open source garantit que vous pouvez compiler l'application vous-même si vous souhaitez une vérification maximale. Nous fournissons également des sommes de contrôle pour les versions afin que vous puissiez vérifier l'intégrité du téléchargement.
+
+### Que se passe-t-il si le projet est abandonné ? Vais-je perdre l'accès à mes données ?
+
+L'un des principaux avantages de l'architecture open source et offline-first est la souveraineté des données. Vos données sont stockées localement sur votre appareil, pas enfermées dans le cloud d'une entreprise qui pourrait disparaître. Si le développement de Budgie s'arrêtait demain, vos données seraient toujours sur votre téléphone, et le code open source permettrait à quiconque de poursuivre le développement ou de créer des outils d'exportation. Vous n'êtes jamais enfermé.
+
+### L'open source signifie-t-il que n'importe qui peut modifier mon application sans que je le sache ?
+
+Non. Bien que n'importe qui puisse proposer des modifications au code, vous contrôlez quelle version vous utilisez. Les mises à jour ne s'installent que lorsque vous choisissez de mettre à jour l'application. Si une version particulière vous préoccupe, vous pouvez examiner les changements avant de mettre à jour ou même compiler votre propre version à partir du code source. La nature ouverte du code signifie que les changements sont visibles et examinables, vous donnant en réalité plus de contrôle, pas moins.
+
+### Comment Budgie gagne-t-il de l'argent si le logiciel est gratuit ?
+
+Budgie est gratuit avec des fonctionnalités premium optionnelles pour les utilisateurs qui souhaitent des capacités supplémentaires. Notre modèle économique repose sur les utilisateurs qui trouvent suffisamment de valeur dans le produit pour soutenir son développement, et non sur la monétisation des données utilisateur. La nature open source soutient en fait ce modèle, car les utilisateurs peuvent avoir confiance que leurs données ne sont pas vendues, ce qui les rend plus disposés à payer pour les fonctionnalités premium. Transparence et modèle économique durable peuvent coexister.
+
+## Prenez le chemin de la transparence
+
+Les logiciels financiers qui respectent votre vie privée ne devraient pas exiger une confiance aveugle. Lorsque vous choisissez une application de budget open source, vous choisissez une sécurité vérifiable plutôt que des promesses marketing. Vous choisissez la surveillance communautaire plutôt que l'opacité des entreprises. Vous choisissez de faire confiance aux preuves plutôt qu'aux affirmations.
+
+Budgie incarne cette approche transparente. Chaque ligne de code est publique. Chaque décision est documentée. Chaque affirmation est vérifiable. Nous ne vous demandons pas de nous faire confiance parce que nous le disons. Nous vous demandons de nous faire confiance parce que vous pouvez voir exactement ce que nous faisons.
+
+Vos données financières méritent ce niveau de transparence. Les schémas de vos dépenses révèlent des détails intimes sur votre vie, et vous avez tout à fait le droit de savoir exactement comment ces informations sont traitées. Le budget open source rend cette connaissance possible.
+
+Prêt à découvrir un suivi financier fondé sur la transparence ? Explorez notre [code open source](/{lang}#open-source), découvrez nos [pratiques de sécurité](/{lang}#security) et [rejoignez la liste d'attente](/{lang}#whitelist) pour être parmi les premiers à utiliser Budgie. Votre argent. Vos données. Votre capacité à vérifier chacune de nos affirmations.
