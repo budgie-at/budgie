@@ -12,7 +12,6 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
-- hideKeyboard
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
 - waitForAnimationToEnd
 
