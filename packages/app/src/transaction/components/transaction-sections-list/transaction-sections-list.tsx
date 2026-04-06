@@ -33,6 +33,7 @@ const getItemType = (item: TransactionListItemType | undefined) => item?.type ??
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
 export const TransactionSectionsList = ({
     sections,
     onEndReached,
