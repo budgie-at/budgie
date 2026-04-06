@@ -5,8 +5,6 @@ import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -48,6 +46,7 @@ export const TransactionSectionsList = ({
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
 
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
 
     const handlePress = (transaction: TransactionWithRelationsEntityInterface) => {
@@ -57,14 +56,18 @@ export const TransactionSectionsList = ({
     const handleLongPress = (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => {
         hapticImpact(ImpactFeedbackStyle.Medium);
         setMenuState({ transaction, anchor });
+        setIsMenuOpen(true);
     };
 
     const handleMenuClose = () => {
+        setIsMenuOpen(false);
+    };
+
+    const handleMenuCloseComplete = () => {
         setMenuState(null);
     };
 
-    const isMenuOpen = isDefined(menuState);
-    const menuTransaction = isDefined(menuState) ? menuState.transaction : null;
+    const menuTransaction = menuState?.transaction ?? null;
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
         item.type === 'header' ? (
@@ -121,7 +124,8 @@ export const TransactionSectionsList = ({
                 transaction={menuTransaction}
                 isOpen={isMenuOpen}
                 onClose={handleMenuClose}
-                {...(isDefined(menuState) && { anchor: menuState.anchor })}
+                onCloseComplete={handleMenuCloseComplete}
+                anchor={menuState?.anchor}
             />
         </>
     );

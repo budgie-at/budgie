@@ -15,12 +15,19 @@ export const useAccountTypeTotalQuery = (accountType: AccountTypeEnum) => {
         accountType
     ]);
     const previousTotalRef = useRef(0);
+    const previousDependenciesRef = useRef([defaultInstrument.id, accountType]);
 
     const total = data.at(0)?.total;
+    const haveDependenciesChanged =
+        defaultInstrument.id !== previousDependenciesRef.current[0] || accountType !== previousDependenciesRef.current[1];
 
     if (isDefined(total)) {
         previousTotalRef.current = convertFromMicroUnits(total);
+    } else if (haveDependenciesChanged) {
+        previousTotalRef.current = 0;
     }
+
+    previousDependenciesRef.current = [defaultInstrument.id, accountType];
 
     return previousTotalRef.current;
 };
