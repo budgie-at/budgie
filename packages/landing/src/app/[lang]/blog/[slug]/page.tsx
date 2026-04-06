@@ -24,7 +24,7 @@ interface Props extends PageLangParam {
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    const articles = getArticles();
+    const articles = await getArticles('en');
 
     return articles.map(article => ({ slug: article.slug }));
 }

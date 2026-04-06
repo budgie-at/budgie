@@ -1,0 +1,296 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "Wie Budgie Ihre Finanzdaten von der Cloud fernhaelt",
+    "description": "Ein technischer Tiefgang in Budgies Offline-First-Architektur: Wie SQLite, AES-256-Verschluesselung und Geraet-zu-Geraet-Synchronisierung Ihre Finanzdaten vollstaendig privat halten.",
+    "tags": ["Datenschutz", "Sicherheit", "Architektur", "Verschluesselung", "Open-Source", "Offline-First"],
+    "image": "/images/design-mode/ai-budgeting-app-4x.jpg",
+    "seo": {
+        "keywords": [
+            "Offline-Ausgabentracker",
+            "private Finanz-App",
+            "lokale Budget-App",
+            "Offline-Budget-App",
+            "Finanzdaten-Datenschutz",
+            "SQLite-Ausgabentracker",
+            "verschluesselte Budget-App",
+            "Finanz-App ohne Cloud",
+            "Ausgabentracker auf dem Geraet",
+            "Open-Source-Budget-App"
+        ],
+        "metaDescription": "Erfahren Sie genau, wie Budgie Ihre Finanzdaten von der Cloud fernhaelt. SQLite-Architektur, AES-256-Verschluesselung, Geraet-zu-Geraet-Synchronisierung und Open-Source-Transparenz."
+    }
+}
+
+# Wie Budgie Ihre Finanzdaten von der Cloud fernhaelt
+
+Wenn Sie die meisten Apps zur Ausgabenverfolgung oeffnen, passiert im Hintergrund etwas, das Sie moeglicherweise nicht bemerken: Ihre Transaktionsdaten, Kontosalden und Ausgabegewohnheiten werden auf Server hochgeladen, die Sie nicht kontrollieren. Diese Server koennen sich ueberall auf der Welt befinden, werden von Teams verwaltet, die Sie nie getroffen haben, und sind durch Sicherheitspraktiken geschuetzt, die Sie nicht ueberpruefen koennen.
+
+Budgie verfolgt einen grundlegend anderen Ansatz. Ihre Finanzdaten verlassen niemals Ihr Geraet. Dies ist keine Marketingaussage oder eine vereinfachte Erklaerung einer komplexeren Realitaet. Es ist eine woertliche Beschreibung der Funktionsweise der App auf Code-Ebene.
+
+In diesem Artikel werden wir genau erlaeutern, wie Budgie Ihre Finanzdaten von der Cloud fernhaelt. Wir behandeln die Datenbankarchitektur, die Verschluesselungsimplementierung, die Synchronisierungsmechanismen und die Sicherheitspraktiken, die dies ermoeglichen. Wenn Sie Budgie evaluieren und verstehen moechten, worauf Sie vertrauen, gibt Ihnen dieser Leitfaden das vollstaendige technische Bild.
+
+## Die Architektur: SQLite und Local-First-Design
+
+Im Kern von Budgie steht eine Local-First-Architektur, die auf SQLite aufgebaut ist — der am weitesten verbreiteten Datenbank-Engine der Welt. SQLite laeuft auf Milliarden von Geraeten und hat sich ueber mehr als zwei Jahrzehnte bewaehrt. Es ist dieselbe Datenbank, die Ihren Browserverlauf, Ihre mobilen Kontakte und zahllose andere Anwendungen antreibt, die zuverlaessigen lokalen Speicher benoetigen.
+
+### Warum SQLite statt Cloud-Datenbanken
+
+Cloud-basierte Ausgabentracker verwenden typischerweise Datenbanken wie PostgreSQL, MySQL oder MongoDB, die auf entfernten Servern laufen. Wenn Sie eine Transaktion hinzufuegen, reist sie ueber das Internet zu einem Rechenzentrum, wird verarbeitet, und dann kehrt eine Bestaetigung auf Ihr Geraet zurueck. Diese Architektur schafft mehrere Probleme:
+
+**Netzwerkabhaengigkeit**: Sie koennen nicht auf Ihre Daten zugreifen, ohne eine Internetverbindung zu haben. Versuchen Sie, eine Ausgabe in der U-Bahn oder in einem Gebiet mit schlechter Abdeckung hinzuzufuegen, und Sie stecken fest.
+
+**Latenz**: Jede Operation erfordert einen Hin- und Rueckweg zum Server. Selbst bei schnellen Verbindungen fuegt dies jeder Aktion eine spuerbare Verzoegerung hinzu.
+
+**Datenexposition**: Ihre Finanzdaten existieren auf Servern, die gehackt, gerichtlich vorgeladen oder von Mitarbeitern mit Administratorrechten eingesehen werden koennten.
+
+**Serviceabhaengigkeit**: Wenn das Unternehmen schliesst, uebernommen wird oder laengere Ausfaelle erleidet, verschwindet Ihr Zugang zu Ihrer eigenen Finanzhistorie.
+
+SQLite beseitigt all diese Probleme. Die Datenbankdatei befindet sich auf Ihrem Geraet, Operationen erfolgen in Mikrosekunden, und Ihre Daten bleiben unter Ihrer physischen Kontrolle.
+
+### Wie die Datenspeicherung in Budgie funktioniert
+
+Wenn Sie eine Transaktion in Budgie erstellen, passiert auf technischer Ebene Folgendes:
+
+1. Die App validiert die Eingabe mit Zod-Schemas, um die Datenintegritaet sicherzustellen
+2. Die Transaktion wird in eine SQLite-Datenbank geschrieben, die im sicheren App-Speicher Ihres Geraets gespeichert ist
+3. Die Datenbank verwendet Drizzle ORM fuer typsichere Operationen
+4. Der Schreibvorgang wird lokal abgeschlossen, ohne jegliche Netzwerkaktivitaet
+
+Es gibt keine Hintergrundsynchronisierung, die stillschweigend Ihre Daten hochlaedt. Es gibt kein Analyseereignis, das aufzeichnet, wofuer Sie Geld ausgegeben haben. Die Operation beginnt und endet auf Ihrem Geraet.
+
+Die SQLite-Datenbankdatei wird in einem geschuetzten Verzeichnis gespeichert, auf das nur Budgie zugreifen kann. Unter iOS ist dies das sandboxierte Documents-Verzeichnis der App. Unter Android ist es der interne App-Speicher, den andere Anwendungen nicht lesen koennen.
+
+### Keine Analytik, kein Tracking, keine Telemetrie
+
+Viele Apps, die behaupten, die Privatsphaere zu respektieren, sammeln dennoch anonymisierte Nutzungsdaten, Absturzberichte oder Analyseereignisse. Diese Datenstrjoeme koennen mehr offenbaren, als Sie vielleicht erwarten. Selbst ohne Ihren Namen koennen Nutzungsmuster identifizierend sein.
+
+Budgie enthaelt keinerlei Analyse-SDKs. Wir verwenden weder Firebase Analytics, Mixpanel, Amplitude noch einen aehnlichen Dienst. Wir sammeln keine Absturzberichte ueber Drittanbieterdienste. Wir erfassen nicht, welche Funktionen Sie nutzen, wie oft Sie die App oeffnen oder in welchen Kategorien Sie Geld ausgeben.
+
+Das liegt nicht daran, dass uns die Verbesserung des Produkts egal waere. Im Gegenteil. Aber wir haben uns entschieden, Feedback durch direkte Gespraeche mit Nutzern und Beitraege der Open-Source-Community zu sammeln, anstatt durch eine Ueberwachungsinfrastruktur.
+
+## Ende-zu-Ende-Verschluesselung erklaert
+
+Die lokale Datenspeicherung ist die erste Schutzschicht. Die Verschluesselung ist die zweite. Selbst wenn jemand physischen Zugang zu Ihrem Geraet erhaelt, sollten Ihre Finanzdaten ohne Ihre Autorisierung unlesbar bleiben.
+
+### AES-256-Verschluesselung im Ruhezustand
+
+Budgie verschluesselt Ihre Datenbank mit AES-256, demselben Verschluesselungsstandard, der von Regierungen und Finanzinstitutionen weltweit verwendet wird. AES-256 wurde durch keinen oeffentlich bekannten Angriff geknackt. Ein Brute-Force-Versuch, einen 256-Bit-Schluessel zu knacken, wuerde mehr Energie erfordern, als im beobachtbaren Universum existiert.
+
+Wenn Ihre Datenbank verschluesselt ist, erscheint die Datei auf der Festplatte als zufaellige Binaerdaten. Ohne den richtigen Schluessel ist es rechnerisch unmoeglich, aussagekraeftige Informationen zu extrahieren.
+
+### Wie Schluessel lokal verwaltet werden
+
+Der Verschluesselungsschluessel verlaesst nie Ihr Geraet und beruehrt nie unsere Server, da wir keine Server haben, die Benutzerdaten verarbeiten. So funktioniert die Schluesselverwaltung:
+
+**Schluesselableitung**: Ihr Verschluesselungsschluessel wird aus den Anmeldedaten Ihres Geraets mit branchenueblinen Schluesselableitungsfunktionen abgeleitet. Das bedeutet, der Schluessel ist einzigartig fuer Ihr Geraet und kann nirgendwo anders rekonstruiert werden.
+
+**Sichere Speicherung**: Der abgeleitete Schluessel wird in plattformspezifischen sicheren Enklaven gespeichert. Unter iOS ist das der Keychain. Unter Android ist es der Android Keystore, unterstuetzt durch Hardware-Sicherheitsmodule, wenn verfuegbar.
+
+**Schluesselisolierung**: Jedes Geraet hat seinen eigenen Verschluesselungsschluessel. Es gibt keinen Hauptschluessel, der alle Benutzerdatenbanken entschluesseln koennte, weil ein solcher Schluessel schlicht nicht existiert.
+
+**Speicherschutz**: Schluessel werden nur dann im Speicher gehalten, wenn sie fuer Datenbankoperationen benoetigt werden, und werden geloescht, wenn die App in den Hintergrund wechselt oder geschlossen wird.
+
+Diese Architektur bedeutet, dass selbst wenn jemand Ihr Geraet stiehlt, er Ihre Finanzdaten nicht lesen kann, ohne auch die Sicherheit Ihres Geraets zu kompromittieren (es mit Ihrer Biometrie oder Ihrem Zugangscode zu entsperren).
+
+### Wovor die Verschluesselung schuetzt
+
+Die Datenbankverschluesselung schuetzt Ihre Daten in mehreren Szenarien:
+
+**Geraetediebstahl**: Ein Dieb kann Ihr Telefon nicht an einen Computer anschliessen und lesbare Finanzdaten extrahieren.
+
+**Forensische Analyse**: Selbst mit ausgefeilten forensischen Werkzeugen kann die verschluesselte Datenbank ohne den Schluessel nicht sinnvoll analysiert werden.
+
+**Kompromittierung von Backups**: Wenn das Backup Ihres Geraets kompromittiert wird, bleibt die verschluesselte Datenbank darin geschuetzt.
+
+**App-Datenextraktion**: Auf gerooteten oder gejailbreakten Geraeten, wo die App-Sandbox umgangen werden kann, schuetzt die Verschluesselung die Daten weiterhin.
+
+## Was passiert bei der Synchronisierung zwischen Geraeten
+
+Eine der haeufigsten Fragen zu Offline-First-Apps lautet: Wie bekomme ich meine Daten auf ein neues Geraet? Budgie loest dies durch eine Geraet-zu-Geraet-Synchronisierung ohne Cloud-Vermittler.
+
+### Architektur der Geraet-zu-Geraet-Synchronisierung
+
+Wenn Sie Ihre Daten auf ein neues Geraet uebertragen moechten, nutzt Budgie direkte Peer-to-Peer-Kommunikation. So funktioniert der Prozess:
+
+1. **Erkennung**: Beide Geraete finden sich im lokalen Netzwerk oder ueber ein temporaeres Relay, das nur verschluesselte Blobs sieht
+2. **Authentifizierung**: Sie bestaetigen die Uebertragung auf beiden Geraeten, ueblicherweise durch Vergleich eines visuellen Codes
+3. **Verschluesselte Uebertragung**: Die Datenbank wird in verschluesselter Form uebertragen
+4. **Lokale Entschluesselung**: Das empfangende Geraet verwendet Schluesselaustauschprotokolle, um die Faehigkeit zur Entschluesselung der uebertragenen Daten herzustellen
+
+Der entscheidende Punkt ist, dass zu keinem Zeitpunkt lesbare Finanzdaten durch eine Drittanbieter-Infrastruktur fliessen. Selbst das temporaere Relay, das zur Erkennung verwendet wird, wenn sich die Geraete nicht im selben Netzwerk befinden, sieht nur verschluesselte Daten, die es nicht interpretieren kann.
+
+### Konfliktloesung ohne Server
+
+Traditionelle Cloud-Synchronisierung stuetzt sich auf einen zentralen Server als Quelle der Wahrheit bei Konflikten. Wenn Sie eine Transaktion auf zwei Geraeten bearbeiten, entscheidet der Server, welche Version gewinnt.
+
+Budgie verwendet einen anderen Ansatz, basierend auf konfliktfreien replizierten Datentypen (CRDTs) und operationalen Transformationen. Jede Aenderung wird als Operation mit Zeitstempel und Geraeteidentifikator aufgezeichnet. Bei der Synchronisierung:
+
+1. Operationen beider Geraete werden ausgetauscht
+2. Ein deterministischer Zusammenfuehrungsalgorithmus kombiniert die Operationen
+3. Beide Geraete gelangen zum gleichen Endzustand, ohne dass ein Server als Schiedsrichter benoetigt wird
+
+Das bedeutet, Sie koennen Budgie auf mehreren Geraeten nutzen, die sich gelegentlich synchronisieren, wenn sie im selben Netzwerk sind, und Ihre Daten werden schliesslich zu einem konsistenten Zustand konvergieren, ohne Datenverlust.
+
+### Der Kompromiss: Synchronisierungskomfort gegen Datenschutz
+
+Lassen Sie uns offen ueber die Kompromisse sprechen. Cloud-Synchronisierung ist bequemer. Sie muessen nicht im selben Netzwerk sein. Sie muessen keine Synchronisierung manuell starten. Aenderungen werden automatisch im Hintergrund uebertragen.
+
+Budgies Geraet-zu-Geraet-Synchronisierung erfordert mehr Beteiligung des Nutzers. Sie muessen die Synchronisierung explizit ausloesen, wenn Sie Daten uebertragen moechten. Beide Geraete muessen erreichbar sein — entweder im selben lokalen Netzwerk oder beide mit dem Internet verbunden fuer den relay-gestuetzten Handshake.
+
+Wir glauben, dass dieser Kompromiss fuer Finanzdaten lohnenswert ist. Der Komfort automatischer Cloud-Synchronisierung wird damit bezahlt, dass Ihre Daten auf Servern existieren, die Sie nicht kontrollieren. Fuer viele Datentypen ist dieser Kompromiss akzeptabel. Fuer Ihre vollstaendige Finanzhistorie sind wir der Meinung, dass lokale Kontrolle die zusaetzlichen Schritte wert ist.
+
+## Bankverbindungen ohne Plaid
+
+Die meisten Apps zur Ausgabenverfolgung, die Banksynchronisierung anbieten, verwenden Plaid, Yodlee oder aehnliche Aggregationsdienste. Diese Dienste funktionieren, indem sie Ihre Bankzugangsdaten oder OAuth-Token sammeln und dann in Ihrem Namen auf Ihr Konto zugreifen. Ihre Transaktionshistorie fliesst ueber deren Server, bevor sie Ihre App erreicht.
+
+Budgie verfolgt beim Bankdatenimport einen anderen Ansatz.
+
+### Manueller Import: Die datenschutzorientierte Option
+
+Der privateste Weg, Bankdaten in Budgie zu integrieren, ist der manuelle Import. Die meisten Banken ermoeglichen den Download der Transaktionshistorie in Standardformaten wie CSV, OFX oder QIF. Sie laden diese Datei direkt von Ihrer Bank herunter, und Budgie importiert sie lokal auf Ihrem Geraet.
+
+Kein Dritter sieht jemals Ihre Bankdaten. Keine Zugangsdaten werden mit irgendjemandem geteilt. Der Prozess sieht so aus:
+
+1. Melden Sie sich direkt in Ihrem Browser bei Ihrer Bank an
+2. Laden Sie Ihre Transaktionshistorie herunter
+3. Importieren Sie die Datei in Budgie
+4. Budgie analysiert und kategorisiert die Transaktionen lokal
+
+Die Analyse und Kategorisierung erfolgen vollstaendig auf Ihrem Geraet. Budgie beinhaltet Mustererkennung fuer gaengige Transaktionsformate der grossen Banken, und Sie koennen Kategorisierungsregeln anpassen, die lokal angewendet werden.
+
+### Warum wir Datenschutz statt Komfort gewaehlt haben
+
+Wir haetten Plaid integrieren koennen. Es waere fuer uns einfacher zu implementieren und fuer die Nutzer bequemer gewesen. Ein Klick und Ihre Transaktionen erscheinen automatisch.
+
+Aber dieser Komfort hat Kosten, die fuer Nutzer oft unsichtbar sind:
+
+**Datenspeicherung**: Aggregationsdienste speichern Ihre Transaktionshistorie auf ihren Servern, manchmal unbefristet.
+
+**Zugriff durch Dritte**: Ihre Bankdaten fliessen durch Infrastruktur, die von Unternehmen betrieben wird, deren Geschaeftsmodell von Daten abhaengt.
+
+**Zugangsdaten-Exposition**: Einige Dienste speichern Ihre Bankzugangsdaten und schaffen damit ein hochwertiges Ziel fuer Angreifer.
+
+**Regulatorisches Risiko**: Ihre Daten unterliegen den Rechtsordnungen und Anfragen der Laender, in denen sich diese Server befinden.
+
+Manueller Import erfordert mehr Aufwand, stellt aber sicher, dass Ihre Bankdaten denselben Datenschutzgarantien unterliegen wie der Rest von Budgie: Sie verlassen nie Ihr Geraet, und kein Dritter hat jemals Zugang.
+
+### Zukunftsperspektiven
+
+Wir erkunden Moeglichkeiten fuer unterstuetzten Bankimport, die die Datenschutzgarantien aufrechterhalten wuerden. Dies koennte lokales Parsen von Bank-E-Mails, Integration mit Open-Banking-APIs, die OAuth ohne Weitergabe von Zugangsdaten verwenden, oder Partnerschaften mit datenschutzorientierten Finanzdatenanbietern umfassen, die unter strengen Datenverarbeitungsvereinbarungen arbeiten.
+
+Jede zukuenftige Loesung wird unser Kernprinzip bewahren: Ihre Finanzdaten bleiben auf Ihrem Geraet, verschluesselt und unter Ihrer Kontrolle.
+
+## Open Source: Ueberpruefen Sie unsere Aussagen selbst
+
+Alles, was wir in diesem Artikel beschrieben haben, kann durch Pruefung unseres Quellcodes verifiziert werden. Budgie ist Open Source, und wir glauben, dass diese Transparenz fuer jede Anwendung, die mit sensiblen Finanzdaten umgeht, unerlisslich ist.
+
+### Link zum Repository
+
+Unser vollstaendiger Quellcode ist auf GitHub verfuegbar. Sie finden ihn in unserem [Open-Source-Bereich](/{lang}#open-source), wo der Repository-Link bereitgestellt wird.
+
+Das Repository umfasst:
+
+- Den vollstaendigen React-Native-Anwendungsquellcode
+- Datenbankschemas und Migrationsdateien
+- Details zur Verschluesselungsimplementierung
+- Implementierung des Synchronisierungsprotokolls
+- Build-Skripte und CI-Konfiguration
+
+Es gibt keine privaten Repositories, die den "echten" Code enthalten, der Ihre Daten anders verarbeitet. Was Sie sehen, ist das, was auf Ihrem Geraet laeuft.
+
+### Wie Sie den Code auditieren koennen
+
+Wenn Sie unsere Datenschutzaussagen verifizieren moechten, sind hier die Schluesselbereiche zur Pruefung:
+
+**Netzwerkschicht**: Suchen Sie nach HTTP-Clients, Fetch-Aufrufen oder Socket-Verbindungen. Sie werden feststellen, dass die Netzwerknutzung beschraenkt ist auf:
+- Abruf von Wechselkursen (ohne jegliche Benutzerdaten)
+- Optionale Geraet-zu-Geraet-Synchronisierung (Ende-zu-Ende-verschluesselt)
+- App-Update-Pruefungen (keine Benutzerdaten uebertragen)
+
+**Datenbankschicht**: Untersuchen Sie die Drizzle-ORM-Schemas und Repository-Klassen. Sie koennen genau nachverfolgen, wie Daten von der Benutzereingabe zur Datenbankspeicherung fliessen — alles lokal.
+
+**Analytik und Tracking**: Suchen Sie nach einer Initialisierung von Analyse-SDKs. Sie werden weder Firebase noch Amplitude, Mixpanel oder eine aehnliche Integration finden.
+
+**Drittanbieter-SDKs**: Ueberpruefen Sie den Abhaengigkeitsbaum. Wir minimieren externe Abhaengigkeiten, und jede wird sorgfaeltig ausgewaehlt, um datenschutzinvasive Bibliotheken zu vermeiden.
+
+Wir laden Sicherheitsforscher, Datenschutzvertreter und technisch neugierige Nutzer ein, unseren Code zu pruefen. Wenn Sie etwas finden, das unseren Datenschutzaussagen widerspricht, moechten wir davon erfahren.
+
+### Reproduzierbare Builds
+
+Wir arbeiten an vollstaendig reproduzierbaren Builds, die es Ihnen ermoeglichen wuerden, den Quellcode selbst zu kompilieren und zu verifizieren, dass die Binaerdatei mit dem uebereinstimmt, was ueber die App Stores verteilt wird. Dies ist der Goldstandard fuer verifizierbare Software und steht auf unserer Roadmap.
+
+## Sicherheitspraktiken und Transparenz
+
+Ueber die Architektur hinaus ist die Art und Weise, wie wir Budgie entwickeln und pflegen, fuer Ihre Sicherheit von Bedeutung.
+
+### Keine Drittanbieter-SDKs mit Tracking
+
+Jede Abhaengigkeit in Budgie wird vor der Aufnahme auf Datenschutzimplikationen bewertet. Wir vermeiden gezielt:
+
+- Analytik- und Absturzbericht-SDKs, die Nutzerverhaltenssdaten sammeln
+- Werbe-SDKs, die Nutzerprofile erstellen
+- Social-Login-SDKs, die Daten mit Plattformanbietern teilen
+- Jedes SDK, das Netzwerkkonnektivitaet fuer grundlegende Funktionalitaet erfordert
+
+Dies schraenkt unsere Auswahl im Vergleich zu Entwicklern, die den Datenschutz nicht priorisieren, erheblich ein. Aber es bedeutet, dass Sie darauf vertrauen koennen, dass das Oeffnen von Budgie Ihre Aktivitaeten nicht still an ein Dutzend verschiedener Datensammlungsdienste meldet.
+
+### Abhaengigkeitspruefung
+
+Open-Source-Software haengt von einer Kette von Abhaengigkeiten ab, und jedes Glied in dieser Kette koennte Schwachstellen oder Datenschutzprobleme einfuehren. Unsere Sicherheitspraktiken umfassen:
+
+**Regelmaessige Abhaengigkeitspruefungen**: Wir verwenden automatisierte Werkzeuge, um bekannte Schwachstellen in unserem Abhaengigkeitsbaum zu erkennen.
+
+**Philosophie minimaler Abhaengigkeiten**: Wir bevorzugen die eigene Implementierung von Funktionalitaet gegenueber dem Hinzufuegen von Abhaengigkeiten, um die Angriffsflaeche zu reduzieren.
+
+**Quellcode-Review fuer kritische Pfade**: Abhaengigkeiten, die Verschluesselung, Datenbankoperationen oder sensible Datenpfade beruehren, werden manuell ueberprueft.
+
+**Lock-Datei-Integritaet**: Abhaengigkeitsversionen werden gesperrt, um Supply-Chain-Angriffe durch kompromittierte Paket-Updates zu verhindern.
+
+### Verantwortungsvolle Offenlegung
+
+Wenn Sie eine Sicherheitsluecke in Budgie entdecken, moechten wir mit Ihnen zusammenarbeiten, um sie verantwortungsvoll zu beheben. Kontaktinformationen fuer Sicherheitsberichte sind in unserem Repository verfuegbar. Wir verpflichten uns zu:
+
+- Bestaetigung des Eingangs von Schwachstellenberichten innerhalb von 48 Stunden
+- Regelmaessigen Updates zum Fortschritt der Behebung
+- Nennung der Forscher, die gueltige Schwachstellen melden (mit deren Erlaubnis)
+- Keiner rechtlichen Verfolgung von gutglaeubiger Sicherheitsforschung
+
+## Haeufig gestellte Fragen
+
+### Was passiert mit meinen Daten, wenn ich mein Telefon verliere?
+
+Ihre Daten existieren nur auf Ihrem Geraet. Wenn Sie Ihr Telefon verlieren, ohne vorher mit einem anderen Geraet synchronisiert oder ein verschluesseltes Backup erstellt zu haben, sind Ihre Daten verloren. Das ist der Datenschutzkompromiss: Wir koennen Ihnen nicht bei der Datenwiederherstellung helfen, weil wir Ihre Daten nicht haben. Wir empfehlen regelmaessige Backups auf Ihren eigenen Speicher.
+
+### Koennen Strafverfolgungsbehoerden ueber Budgie auf meine Daten zugreifen?
+
+Wir koennen Ihre Daten weder an Strafverfolgungsbehoerden noch an irgendjemand anderen weitergeben, weil wir sie nicht haben. Es gibt keinen Server, der vorgeladen werden kann, keine Datenbank, die abgefragt werden kann, und kein Backup, das uebergeben werden kann. Ihre Daten befinden sich auf Ihrem Geraet, geschuetzt durch die Sicherheit Ihres Geraets und die Verschluesselung von Budgie.
+
+### Ist die Verschluesselungsimplementierung auditiert?
+
+Unsere Verschluesselung verwendet Standard-Bibliotheksimplementierungen von AES-256 aus plattformspezifischen Sicherheitsframeworks (iOS CryptoKit, Android Keystore). Diese Implementierungen werden von Apple und Google entwickelt und auditiert. Unsere Integration ist im Open-Source-Code zur Community-Ueberpruefung dokumentiert.
+
+### Wie exportiere ich meine Daten, wenn ich Budgie nicht mehr nutze?
+
+Budgie unterstuetzt den Export Ihrer vollstaendigen Finanzhistorie in Standardformaten (CSV, JSON). Sie sind Eigentuemer Ihrer Daten und koennen sie mitnehmen. Der Export erfolgt lokal und erzeugt eine Datei, die Sie mit jeder anderen Anwendung verwenden koennen.
+
+### Welche Daten sammeln Sie ueber den App Store?
+
+Wir sammeln anonymisierte Absturzberichte ueber die Mechanismen der App Stores (App Store Connect fuer iOS, Google Play Console fuer Android). Diese Berichte enthalten keine Finanzdaten. Wir verwenden sie, um Fehler zu beheben, die Abstuerze verursachen. Keine weiteren Daten werden ueber irgendeinen Kanal gesammelt.
+
+### Warum nicht Ende-zu-Ende-verschluesselte Cloud-Synchronisierung verwenden?
+
+Ende-zu-Ende-verschluesselte Cloud-Synchronisierung wuerde Server erfordern, um verschluesselte Blobs zu speichern. Obwohl der Inhalt verschluesselt waere, waeren Metadaten weiterhin sichtbar: wann Sie synchronisieren, wie viel Daten Sie haben, Synchronisierungsmuster, die Nutzungsgewohnheiten offenbaren koennten. Die Geraet-zu-Geraet-Synchronisierung eliminiert selbst diese Metadaten-Exposition.
+
+## Uebernehmen Sie die Kontrolle ueber Ihre finanzielle Privatsphaere
+
+Ihre Finanzdaten erzaehlen die vollstaendige Geschichte Ihres Lebens. Wo Sie wohnen, wo Sie einkaufen, was Ihnen wichtig ist, welche Herausforderungen Sie meistern, welche Hoffnungen Sie hegen. Diese Daten sind gerade deshalb wertvoll, weil sie so aufschlussreich sind.
+
+Budgie existiert, weil wir glauben, dass Sie diese intimen Informationen nicht fuer die Bequemlichkeit der Ausgabenverfolgung eintauschen sollten. Jede architektonische Entscheidung — von SQLite ueber lokale Verschluesselung bis hin zur Geraet-zu-Geraet-Synchronisierung — ist darauf ausgelegt, diese Informationen dort zu halten, wo sie hingehoeren: unter Ihrer Kontrolle.
+
+Wir haben unseren Ansatz im Detail beschrieben, nicht weil wir glauben, dass jeder Datenbankarchitekturen verstehen muss, sondern weil wir der Meinung sind, dass Sie es verdienen zu wissen, was genau eine App mit Ihren sensiblen Daten macht. Wir laden Sie ein, unsere Aussagen zu ueberpruefen, unseren Code zu untersuchen und uns an den Datenschutzstandards zu messen, die wir uns gesetzt haben.
+
+Fuer weitere Details zu unserer Sicherheitsarchitektur besuchen Sie unseren [Sicherheitsbereich](/{lang}#security). Um den vollstaendigen Quellcode einzusehen und alles zu verifizieren, was wir beschrieben haben, schauen Sie sich unseren [Open-Source-Bereich](/{lang}#open-source) an.
+
+Bereit, einen Ausgabentracker auszuprobieren, der Ihre Privatsphaere respektiert? [Treten Sie der Warteliste bei](/{lang}#whitelist) und gehoeren Sie zu den Ersten, die Finanzverwaltung ohne Ueberwachung erleben.
