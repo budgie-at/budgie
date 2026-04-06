@@ -11,7 +11,9 @@ import { isDefined } from '@rnw-community/shared';
 import { BlogDataInterface } from '../../../../blog/interface/blog-data.interface';
 import { calculateReadingTime } from '../../../../blog/util/calculate-reading-time.util';
 import { getArticles } from '../../../../blog/util/get-articles.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../../generic/component/motion/motion';
+import { BASE_URL, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 import { Button } from '../../../../ui/button';
@@ -49,20 +51,32 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],
+        alternates: {
+            canonical: `${BASE_URL}/${lang}/blog/${slug}`,
+            languages: {
+                en: `${BASE_URL}/en/blog/${slug}`,
+                uk: `${BASE_URL}/uk/blog/${slug}`,
+                fr: `${BASE_URL}/fr/blog/${slug}`,
+                de: `${BASE_URL}/de/blog/${slug}`,
+                es: `${BASE_URL}/es/blog/${slug}`
+            }
+        },
         openGraph: {
             title: metadata.title,
             description: metadata.seo.metaDescription,
             type: 'article',
+            url: `${BASE_URL}/${lang}/blog/${slug}`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
             publishedTime: metadata.date,
             authors: [metadata.author],
             tags: metadata.tags,
-            images: metadata.image ? [{ url: metadata.image }] : []
+            images: metadata.image ? [{ url: `${BASE_URL}${metadata.image}`, width: 1280, height: 720 }] : []
         },
         twitter: {
             card: 'summary_large_image',
             title: metadata.title,
             description: metadata.seo.metaDescription,
-            images: metadata.image ? [metadata.image] : []
+            images: metadata.image ? [`${BASE_URL}${metadata.image}`] : []
         }
     };
 }
@@ -89,8 +103,36 @@ export default async function BlogArticlePage(props: Props) {
 
     const readingTime = calculateReadingTime(Post.toString());
 
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const blogPostingData = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: metadata.title,
+        description: metadata.seo.metaDescription,
+        ...(isDefined(metadata.image) && { image: `${BASE_URL}${metadata.image}` }),
+        datePublished: metadata.date,
+        author: { '@type': 'Person', name: metadata.author },
+        publisher: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
+        url: `${BASE_URL}/${lang}/blog/${slug}`,
+        keywords: metadata.seo.keywords.join(', ')
+    };
+
+    const breadcrumbData = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/${lang}/blog` },
+            { '@type': 'ListItem', position: 3, name: metadata.title }
+        ]
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
+
     return (
         <main className="flex-1">
+            <JsonLd data={blogPostingData} />
+            <JsonLd data={breadcrumbData} />
+
             <article className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-4xl">
                     <Motion>

@@ -5,6 +5,8 @@ import localFont from 'next/font/local';
 import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
+import { JsonLd } from '../../generic/component/json-ld/json-ld';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
@@ -54,7 +56,8 @@ const fixelDisplay = localFont({
             weight: '700',
             style: 'italic'
         }
-    ]
+    ],
+    display: 'swap'
 });
 
 interface Props extends PageLangParam {
@@ -68,7 +71,8 @@ export async function generateStaticParams() {
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props) {
-    const i18n = getI18nInstance((await props.params).lang);
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
 
     return {
         title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
@@ -83,20 +87,33 @@ export async function generateMetadata(props: Props) {
         publisher: i18n._(msg`Budgie`),
         // eslint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
+        alternates: {
+            canonical: `${BASE_URL}/${lang}`,
+            languages: {
+                en: `${BASE_URL}/en`,
+                uk: `${BASE_URL}/uk`,
+                fr: `${BASE_URL}/fr`,
+                de: `${BASE_URL}/de`,
+                es: `${BASE_URL}/es`
+            }
+        },
         openGraph: {
             title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
             description: i18n._(
                 msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
             ),
             type: 'website',
-            locale: 'en_US'
+            url: `${BASE_URL}/${lang}`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
+            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1280, height: 720 }]
         },
         twitter: {
             card: 'summary_large_image',
             title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
             description: i18n._(
                 msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
-            )
+            ),
+            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`]
         }
     };
 }
@@ -106,9 +123,30 @@ export default async function RootLayout({ params, children }: Props) {
 
     initLingui(lang);
 
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const organizationData = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Budgie',
+        url: BASE_URL,
+        logo: `${BASE_URL}/logo/budgie-logo.svg`,
+        sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
+    };
+
+    const websiteData = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Budgie',
+        url: BASE_URL
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
+
     return (
         <html lang={lang} suppressHydrationWarning>
             <body className={fixelDisplay.className}>
+                <JsonLd data={organizationData} />
+                <JsonLd data={websiteData} />
+
                 <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                         <div className="flex min-h-dvh flex-col">
