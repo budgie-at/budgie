@@ -1,6 +1,6 @@
 name: Pull Request
 env:
-  MAESTRO_DRIVER_STARTUP_TIMEOUT: "300000"
+  MAESTRO_DRIVER_STARTUP_TIMEOUT: "120000"
   TURBO_TEAM: vitalyiegorov
   TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -197,8 +197,7 @@ jobs:
   e2e-ios:
     needs: [code-quality]
     name: E2E Tests on iOS
-    runs-on: ${{ vars.IOS_RUNNER || 'self-hosted' }}
-    timeout-minutes: 90
+    runs-on: self-hosted
     env:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
@@ -282,7 +281,6 @@ jobs:
           xcodebuild -version
 
       - name: Restore CocoaPods cache
-        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -297,14 +295,13 @@ jobs:
         run: |
           mkdir -p "$CCACHE_DIR" "$IOS_DERIVED_DATA"
           command -v ccache >/dev/null || {
-            echo "::warning::ccache not found, attempting install via Homebrew"
-            brew install ccache || { echo "::error::Failed to install ccache"; exit 1; }
+            echo "::error::ccache is not installed on this runner."
+            exit 1
           }
           ccache --version
           ccache --zero-stats || true
 
       - name: Restore ccache
-        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -323,10 +320,6 @@ jobs:
       - name: Sync CocoaPods for E2E excludes
         working-directory: packages/app/ios
         run: |
-          command -v pod >/dev/null || {
-            echo "::warning::CocoaPods not found, attempting install via Homebrew"
-            brew install cocoapods
-          }
           APP_VARIANT=e2e pod install
 
           if grep -En "expo-dev-client|expo-dev-launcher|expo-dev-menu|expo-dev-menu-interface" Podfile.lock Pods/Manifest.lock; then
@@ -335,7 +328,6 @@ jobs:
           fi
 
       - name: Restore Xcode DerivedData cache
-        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
@@ -486,7 +478,6 @@ jobs:
 
       - name: Save CocoaPods cache
         if: always()
-        continue-on-error: true
         uses: actions/cache/save@v4
         with:
           path: |
@@ -496,7 +487,6 @@ jobs:
 
       - name: Save ccache
         if: always()
-        continue-on-error: true
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -504,7 +494,6 @@ jobs:
 
       - name: Save Xcode DerivedData cache
         if: always()
-        continue-on-error: true
         uses: actions/cache/save@v4
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
