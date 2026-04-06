@@ -36,6 +36,7 @@ const getConvertTransactionType = (
 ): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME =>
     isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
+// eslint-disable-next-line max-statements -- Context menu component with deferred action pattern and multiple handlers
 export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClose, onCloseComplete }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
