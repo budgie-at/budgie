@@ -4,7 +4,6 @@ import { ArrowRight, Check, Clock, Shield, Sparkles } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { WhitelistSectionOfferBenefit } from '../whitelist-section-offer-benefit/whitelist-section-offer-benefit';
 
- 
 export const WhitelistSectionOffer = () => {
     const { t } = useLingui();
 
