@@ -16,22 +16,33 @@ interface Props {
     readonly className?: string;
     readonly fontSize?: number;
     readonly hasAnimation?: boolean;
+    readonly availableWidth?: number;
 }
 
 const TickItem = styled(Tick, { textClassName: 'textStyle' });
 const StaticCharItem = styled(StaticChar, { textClassName: 'textStyle' });
 
 export const Ticker = (props: Props) => {
-    const { number, textClassName, className, fontSize = 24, minFontSize = 10, maxFontSize = 200, hasAnimation = true } = props;
+    const {
+        number,
+        textClassName,
+        className,
+        fontSize = 24,
+        minFontSize = 10,
+        maxFontSize = 200,
+        hasAnimation = true,
+        availableWidth
+    } = props;
 
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
+    const resolvedContainerWidth = availableWidth ?? containerWidth;
 
     const textSize = calculateOptimalTextSize({
         minFontSize,
         maxFontSize,
-        containerWidth,
+        containerWidth: resolvedContainerWidth,
         defaultSize: fontSize,
         charCount: charArray.length
     });
@@ -68,7 +79,7 @@ export const Ticker = (props: Props) => {
     );
 
     return (
-        <View className="w-full" onLayout={handleLayout}>
+        <View className="w-full" {...(!availableWidth && { onLayout: handleLayout })}>
             <View className={cn('flex-row justify-center', className)}>{elements}</View>
         </View>
     );
