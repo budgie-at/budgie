@@ -75,7 +75,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
         return this.db.query.TransactionEntityTable.findMany({
             with: this.transactionRelations,
-            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)],
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
             limit,
             ...(isDefined(where) ? { where } : {})
         });
