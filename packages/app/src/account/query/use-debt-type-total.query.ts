@@ -15,12 +15,19 @@ export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
         debtType
     ]);
     const previousTotalRef = useRef(0);
+    const previousDependenciesRef = useRef([defaultInstrument.id, debtType]);
 
     const total = data.at(0)?.total;
+    const haveDependenciesChanged =
+        defaultInstrument.id !== previousDependenciesRef.current[0] || debtType !== previousDependenciesRef.current[1];
 
     if (isDefined(total)) {
         previousTotalRef.current = convertFromMicroUnits(total);
+    } else if (haveDependenciesChanged) {
+        previousTotalRef.current = 0;
     }
+
+    previousDependenciesRef.current = [defaultInstrument.id, debtType];
 
     return previousTotalRef.current;
 };

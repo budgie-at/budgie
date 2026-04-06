@@ -25,6 +25,7 @@ interface Props {
     readonly anchor?: PopoverMenuAnchor;
     readonly isOpen: boolean;
     readonly onClose: EmptyFn;
+    readonly onCloseComplete: EmptyFn;
 }
 
 const isConvertibleTransaction = (transaction: TransactionWithRelationsEntityInterface): boolean =>
@@ -35,7 +36,7 @@ const getConvertTransactionType = (
 ): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME =>
     isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
-export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClose }: Props) => {
+export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClose, onCloseComplete }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
@@ -85,7 +86,15 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     ) : null;
 
     return (
-        <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
+        <PopoverMenu
+            isOpen={isOpen}
+            onClose={closeMenu}
+            onCloseComplete={() => {
+                handleCloseComplete();
+                onCloseComplete();
+            }}
+            anchor={anchor}
+        >
             <View className="py-sm">
                 <PopoverMenuItem
                     icon={UserIconNameEnum.Pencil}
