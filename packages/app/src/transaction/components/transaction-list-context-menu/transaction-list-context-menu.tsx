@@ -41,7 +41,12 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
-    const { closeMenu, handleCloseComplete } = useDeferredMenuClose({ isOpen, onClose });
+    const { closeMenu, handleCloseComplete: handleDeferredClose } = useDeferredMenuClose({ isOpen, onClose });
+
+    const handleCloseCompleteAll = () => {
+        handleDeferredClose();
+        onCloseComplete();
+    };
 
     if (transaction === null) {
         return null;
@@ -86,15 +91,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     ) : null;
 
     return (
-        <PopoverMenu
-            isOpen={isOpen}
-            onClose={closeMenu}
-            onCloseComplete={() => {
-                handleCloseComplete();
-                onCloseComplete();
-            }}
-            anchor={anchor}
-        >
+        <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseCompleteAll} anchor={anchor}>
             <View className="py-sm">
                 <PopoverMenuItem
                     icon={UserIconNameEnum.Pencil}
