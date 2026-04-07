@@ -17,10 +17,11 @@ env:
           commands:
             - tapOn: 'Open'
 
-      - runFlow:
-          when:
-            true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
-          file: handle-dev-client-startup.flow.yaml
+      - retry:
+          maxRetries: 3
+          commands:
+            - runFlow: handle-dev-client-startup.flow.yaml
+            - waitForAnimationToEnd
 
       - extendedWaitUntil:
           visible:
