@@ -14,16 +14,11 @@ env:
           commands:
             - stopApp
             - openLink: 'budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}'
-            - runFlow:
-                when:
-                  visible: 'Open'
+            - retry:
+                maxRetries: 3
                 commands:
-                  - tapOn: 'Open'
-
-            - runFlow:
-                when:
-                  true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
-                file: handle-dev-client-startup.flow.yaml
+                  - runFlow: handle-dev-client-startup.flow.yaml
+                  - waitForAnimationToEnd
 
       - runFlow:
           when:
@@ -31,11 +26,11 @@ env:
           commands:
             - clearState
             - launchApp
-
-            - runFlow:
-                when:
-                  true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
-                file: handle-dev-client-startup.flow.yaml
+            - retry:
+                maxRetries: 3
+                commands:
+                  - runFlow: handle-dev-client-startup.flow.yaml
+                  - waitForAnimationToEnd
 
       - extendedWaitUntil:
           visible:
