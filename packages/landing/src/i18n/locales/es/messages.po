@@ -33,7 +33,7 @@ msgstr "# Audita el código tú mismo"
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Todos los derechos reservados."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:143
+#: src/app/[lang]/blog/[slug]/page.tsx:140
 msgid "← Back to Blog"
 msgstr "← Volver al blog"
 
@@ -87,13 +87,11 @@ msgstr "App"
 msgid "App Store"
 msgstr "App Store"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:46
+#: src/app/[lang]/blog/[slug]/page.tsx:52
 msgid "Article Not Found"
 msgstr "Artículo no encontrado"
 
 #: src/app/[lang]/blog/page.tsx:28
-#: src/app/[lang]/blog/page.tsx:43
-#: src/app/[lang]/blog/page.tsx:53
 msgid "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 msgstr "Artículos sobre privacidad financiera, mejores prácticas de seguridad, arquitectura offline-first y consejos para un mejor seguimiento de gastos."
 
@@ -183,24 +181,23 @@ msgstr "Encriptación biométrica"
 msgid "Blazing Fast"
 msgstr "Ultrarrápido"
 
+#: src/app/[lang]/blog/[slug]/page.tsx:122
 #: src/generic/component/footer/footer.tsx:112
 #: src/generic/component/header/header.tsx:74
 #: src/generic/component/mobile-menu/mobile-menu.tsx:33
 msgid "Blog"
 msgstr "Blog"
 
-#: src/app/[lang]/blog/page.tsx:90
+#: src/app/[lang]/blog/page.tsx:81
 msgid "Blog & Insights"
 msgstr "Blog y Perspectivas"
 
 #: src/app/[lang]/blog/page.tsx:26
-#: src/app/[lang]/blog/page.tsx:41
-#: src/app/[lang]/blog/page.tsx:51
 msgid "Blog & Insights | Budgie"
 msgstr "Blog y Novedades | Budgie"
 
-#: src/app/[lang]/layout.tsx:86
 #: src/app/[lang]/layout.tsx:87
+#: src/app/[lang]/layout.tsx:88
 #: src/generic/component/comparison-section/comparison-table-header.tsx:12
 #: src/generic/component/footer/footer.tsx:27
 #: src/generic/component/header/header.tsx:49
@@ -208,9 +205,9 @@ msgstr "Blog y Novedades | Budgie"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:78
-#: src/app/[lang]/layout.tsx:101
-#: src/app/[lang]/layout.tsx:112
+#: src/app/[lang]/layout.tsx:79
+#: src/app/[lang]/layout.tsx:93
+#: src/app/[lang]/layout.tsx:104
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie - Rastreador de Gastos con Privacidad Primero"
 
@@ -222,7 +219,7 @@ msgstr "Budgie (Sin Conexión Primero)"
 msgid "Budgie AI"
 msgstr "Budgie IA"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:50
+#: src/app/[lang]/blog/[slug]/page.tsx:56
 msgid "Budgie Blog"
 msgstr "Blog de Budgie"
 
@@ -239,7 +236,7 @@ msgstr "Interfaz de la aplicación móvil Budgie mostrando resumen de saldo con 
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie admite el seguimiento de las principales criptomonedas, acciones, ETFs y cuentas bancarias tradicionales. Puedes agregar manualmente cualquier activo o conectar intercambios y corredurías compatibles para seguimiento automático."
 
-#: src/app/[lang]/layout.tsx:85
+#: src/app/[lang]/layout.tsx:86
 msgid "Budgie Team"
 msgstr "Equipo Budgie"
 
@@ -260,7 +257,7 @@ msgstr "Construido Diferente. Construido Mejor."
 msgid "Bulk Import"
 msgstr "Importación Masiva"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:177
+#: src/app/[lang]/blog/[slug]/page.tsx:174
 msgid "By"
 msgstr "Por"
 
@@ -500,7 +497,7 @@ msgstr "Beneficios exclusivos para los primeros seguidores"
 msgid "Exclusive Perks"
 msgstr "Ventajas exclusivas"
 
-#: src/app/[lang]/layout.tsx:83
+#: src/app/[lang]/layout.tsx:84
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "rastreador de gastos, app de presupuesto, sincronización bancaria, seguimiento de cripto, privacidad, sin conexión primero, multimoneda, seguimiento de deudas, gestión financiera"
 
@@ -571,6 +568,10 @@ msgstr "Metas y Presupuestos"
 #: src/generic/component/ai-section-details/ai-section-details.tsx:49
 msgid "Here's your spending spike: 🎬 Movies & concerts: $180 🛍️ Online shopping: $120 🍕 Food delivery: $100. Consider setting a $200 entertainment budget next month?"
 msgstr "Aquí está tu pico de gastos: 🎬 Películas y conciertos: $180 🛍️ Compras online: $120 🍕 Entrega de comida: $100. ¿Consideras establecer un presupuesto de entretenimiento de $200 el próximo mes?"
+
+#: src/app/[lang]/blog/[slug]/page.tsx:121
+msgid "Home"
+msgstr "Inicio"
 
 #: src/generic/component/comparison-section/comparison-section-header.tsx:20
 msgid "Honest Comparison"
@@ -658,7 +659,7 @@ msgstr "Únete a más de 2,800 ahorradores inteligentes que se niegan a dejar es
 msgid "Join developers worldwide improving the app"
 msgstr "Únete a desarrolladores de todo el mundo mejorando la app"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:210
+#: src/app/[lang]/blog/[slug]/page.tsx:207
 msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
 msgstr "Únete a la lista de espera de Budgie y sé uno de los primeros en experimentar la gestión financiera verdaderamente privada."
 
@@ -671,7 +672,7 @@ msgstr "Únete a la Whitelist"
 msgid "Join Waitlist"
 msgstr "Unirse a la Lista de Espera"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:217
+#: src/app/[lang]/blog/[slug]/page.tsx:214
 #: src/generic/component/mobile-menu/mobile-menu.tsx:53
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:50
 msgid "Join Whitelist"
@@ -721,7 +722,7 @@ msgstr "Marcus Rodriguez"
 msgid "Mike owes you"
 msgstr "Mike te debe"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:171
+#: src/app/[lang]/blog/[slug]/page.tsx:168
 #: src/generic/component/blog-card/blog-card.tsx:76
 msgid "min read"
 msgstr "min de lectura"
@@ -762,7 +763,7 @@ msgstr "Nunca Olvides Quién Debe Qué"
 msgid "No account required"
 msgstr "Sin cuenta requerida"
 
-#: src/app/[lang]/blog/page.tsx:155
+#: src/app/[lang]/blog/page.tsx:146
 msgid "No articles found"
 msgstr "No se encontraron artículos"
 
@@ -882,7 +883,7 @@ msgstr "Rastreador de gastos que prioriza la privacidad y mantiene tus datos fin
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:206
+#: src/app/[lang]/blog/[slug]/page.tsx:203
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "¿Listo para tomar el control de tu privacidad financiera?"
 
@@ -1032,7 +1033,7 @@ msgstr "Estrellas"
 msgid "Start Tracking in Minutes"
 msgstr "Comienza a Rastrear en Minutos"
 
-#: src/app/[lang]/blog/page.tsx:94
+#: src/app/[lang]/blog/page.tsx:85
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Mantente informado sobre privacidad financiera, mejores prácticas de seguridad y las últimas funciones de Budgie."
 
@@ -1134,12 +1135,12 @@ msgstr "Rastrea Todo"
 msgid "Track expenses in any currency with real-time exchange rates. Perfect for travelers."
 msgstr "Rastrea gastos en cualquier moneda con tasas de cambio en tiempo real. Perfecto para viajeros."
 
-#: src/app/[lang]/layout.tsx:80
+#: src/app/[lang]/layout.tsx:81
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Rastrea gastos, sincroniza bancos, gestiona cripto y acciones con privacidad completa. Soporte multimoneda, seguimiento de deudas e información de IA, todo almacenado de forma segura en tu dispositivo."
 
-#: src/app/[lang]/layout.tsx:103
-#: src/app/[lang]/layout.tsx:114
+#: src/app/[lang]/layout.tsx:95
+#: src/app/[lang]/layout.tsx:106
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Rastrea gastos, sincroniza bancos, gestiona cripto y acciones con privacidad completa. Soporte multimoneda, seguimiento de deudas e información de IA."
 
@@ -1179,7 +1180,7 @@ msgstr "Transporte"
 msgid "True Privacy, Not Just Promises"
 msgstr "Privacidad Real, No Solo Promesas"
 
-#: src/app/[lang]/blog/page.tsx:159
+#: src/app/[lang]/blog/page.tsx:150
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Intenta ajustar tu consulta de búsqueda o navega por todos los artículos."
 

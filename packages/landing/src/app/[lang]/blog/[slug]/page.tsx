@@ -13,7 +13,8 @@ import { calculateReadingTime } from '../../../../blog/util/calculate-reading-ti
 import { getArticles } from '../../../../blog/util/get-articles.util';
 import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../../generic/component/motion/motion';
-import { BASE_URL, LOCALES, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
+import { buildAlternates } from '../../../../generic/util/build-alternates.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 import { Button } from '../../../../ui/button';
@@ -56,13 +57,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],
-        alternates: {
-            canonical: `${BASE_URL}/${lang}/blog/${slug}`,
-            languages: {
-                ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}/blog/${slug}`])),
-                'x-default': `${BASE_URL}/en/blog/${slug}`
-            }
-        },
+        alternates: buildAlternates(lang, `/blog/${slug}`),
         openGraph: {
             title: metadata.title,
             description: metadata.seo.metaDescription,
@@ -87,7 +82,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function BlogArticlePage(props: Props) {
     const { slug, lang } = await props.params;
 
-    initLingui(lang);
+    const i18n = initLingui(lang);
 
     const { default: Post, metadata } = await getPost(slug, lang).catch(() => {
         notFound();
@@ -123,8 +118,8 @@ export default async function BlogArticlePage(props: Props) {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/${lang}` },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/${lang}/blog` },
+            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: i18n._(msg`Blog`), item: `${BASE_URL}/${lang}/blog` },
             { '@type': 'ListItem', position: 3, name: metadata.title }
         ]
     };
