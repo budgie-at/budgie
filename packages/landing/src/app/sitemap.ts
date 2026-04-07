@@ -3,40 +3,35 @@ import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
 
 import type { MetadataRoute } from 'next';
 
-const locales = [...LOCALES];
-
 const staticPages = ['', '/blog', '/legal/privacy-policy', '/legal/terms-of-service', '/legal/license'];
+
+const buildDate = new Date('2026-04-08');
+
+const buildSitemapLanguages = (path: string) => ({
+    ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}${path}`])),
+    'x-default': `${BASE_URL}/en${path}`
+});
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     const articles = await getArticles('en');
 
-    const staticEntries = locales.flatMap(locale =>
+    const staticEntries = LOCALES.flatMap(locale =>
         staticPages.map(page => ({
             url: `${BASE_URL}/${locale}${page}`,
-            lastModified: new Date(),
+            lastModified: buildDate,
             changeFrequency: page === '' ? ('weekly' as const) : ('monthly' as const),
             priority: page === '' ? 1 : 0.8,
-            alternates: {
-                languages: {
-                    ...Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}${page}`])),
-                    'x-default': `${BASE_URL}/en${page}`
-                }
-            }
+            alternates: { languages: buildSitemapLanguages(page) }
         }))
     );
 
-    const blogEntries = locales.flatMap(locale =>
+    const blogEntries = LOCALES.flatMap(locale =>
         articles.map(article => ({
             url: `${BASE_URL}/${locale}/blog/${article.slug}`,
             lastModified: new Date(article.date),
             changeFrequency: 'monthly' as const,
             priority: 0.7,
-            alternates: {
-                languages: {
-                    ...Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}/blog/${article.slug}`])),
-                    'x-default': `${BASE_URL}/en/blog/${article.slug}`
-                }
-            }
+            alternates: { languages: buildSitemapLanguages(`/blog/${article.slug}`) }
         }))
     );
 

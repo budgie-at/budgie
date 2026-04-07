@@ -6,7 +6,8 @@ import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
-import { BASE_URL, LOCALES, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { buildAlternates } from '../../generic/util/build-alternates.util';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
@@ -87,13 +88,7 @@ export async function generateMetadata(props: Props) {
         publisher: i18n._(msg`Budgie`),
         // eslint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
-        alternates: {
-            canonical: `${BASE_URL}/${lang}`,
-            languages: {
-                ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}`])),
-                'x-default': `${BASE_URL}/en`
-            }
-        },
+        alternates: buildAlternates(lang, ''),
         openGraph: {
             title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
             description: i18n._(
