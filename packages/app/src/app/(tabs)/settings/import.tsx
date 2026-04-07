@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -262,6 +263,7 @@ export default function ImportScreen() {
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
                                 leftIcon={UserIconNameEnum.Database}
+                                testID={CsvPageSelectors.StartImportButton}
                             />
                         )}
                     </View>

@@ -1,0 +1,60 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: subflows/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '08-settings-navigation'
+      HANDLE_DEV_CLIENT_STARTUP: 'true'
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ScreenshotProtectionCard'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.ScreenshotProtectionSwitch'
+
+- stopApp
+- openLink: budgie://?e2eForceProtected=true
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
+
+- assertNotVisible: '$350.00'
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ScreenshotProtectionSwitch'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ScreenshotProtectionSwitch'
+
+- stopApp
+- launchApp
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000

@@ -3,6 +3,12 @@ const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
 /* eslint-disable lingui/no-unlocalized-strings */
 export const SettingsPageSelectors = {
     Container: 'SettingsPage.Container',
+    AppLockCard: 'SettingsPage.AppLockCard',
+    AppLockChangePinButton: 'SettingsPage.AppLockChangePinButton',
+    AppLockDisableButton: 'SettingsPage.AppLockDisableButton',
+    AppLockBiometricSwitch: 'SettingsPage.AppLockBiometricSwitch',
+    ScreenshotProtectionCard: 'SettingsPage.ScreenshotProtectionCard',
+    ScreenshotProtectionSwitch: 'SettingsPage.ScreenshotProtectionSwitch',
     LanguageCard: 'SettingsPage.LanguageCard',
     LanguageValue: (code: string) => `SettingsPage.LanguageValue.${normalizePart(code)}` as const,
     MainCurrencyCard: 'SettingsPage.MainCurrencyCard',

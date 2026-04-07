@@ -1,0 +1,110 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    commands:
+      - stopApp
+      - openLink: budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}
+      - runFlow:
+          when:
+            visible: 'Open'
+          commands:
+            - tapOn: 'Open'
+      - retry:
+          maxRetries: 3
+          commands:
+            - runFlow: subflows/handle-dev-client-startup.flow.yaml
+            - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 30000
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'CsvPage.ImportCard'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'CsvPage.ImportCard'
+
+- extendedWaitUntil:
+    visible: 'Map CSV Columns'
+    timeout: 10000
+
+- tapOn:
+    id: 'CsvPage.Preset.Budgie'
+
+- tapOn:
+    id: 'CsvPage.StartImportButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
+    timeout: 30000
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_CSV_Expense'
+    timeout: 30000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Expense'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Income'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Transfer'
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'CsvPage.ExportCard'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'CsvPage.ExportCard'
+
+- extendedWaitUntil:
+    visible: 'Done'
+    timeout: 10000
+
+- stopApp
+- openLink: budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}-export&e2eImportExportedCsv=true
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
+
+- runFlow: subflows/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_CSV_Expense'
+    timeout: 30000
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Expense'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Income'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_CSV_Transfer'

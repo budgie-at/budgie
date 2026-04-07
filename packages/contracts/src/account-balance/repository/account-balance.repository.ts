@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
@@ -33,7 +32,10 @@ export class AccountBalanceRepository {
     }
 
     async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db).select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountBalanceEntityTable)
+            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getAllBalances() {

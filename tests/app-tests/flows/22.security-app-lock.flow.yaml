@@ -1,0 +1,304 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    commands:
+      - stopApp
+      - openLink: budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}&e2eForceFaceId=true
+      - runFlow:
+          when:
+            visible: 'Open'
+          commands:
+            - tapOn: 'Open'
+      - retry:
+          maxRetries: 3
+          commands:
+            - runFlow: subflows/handle-dev-client-startup.flow.yaml
+            - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 30000
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.AppLockCard'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.AppLockCard'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.BiometricSetupSwitch'
+    timeout: 10000
+- tapOn:
+    id: 'PinPage.BiometricSetupSwitch'
+- tapOn:
+    id: 'PinPage.ContinueButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.AppLockChangePinButton'
+    timeout: 10000
+
+- stopApp
+- openLink: budgie://?e2eForceFaceId=true
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 30000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Error'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.AppLockChangePinButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.AppLockChangePinButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.AppLockBiometricSwitch'
+    timeout: 10000
+
+- stopApp
+- openLink: budgie://?e2eForceFaceId=true
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 30000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Error'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.AppLockBiometricSwitch'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.AppLockBiometricSwitch'
+
+- stopApp
+- openLink: budgie://?e2eForceFaceId=true&e2eBiometricAuthSuccess=true
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 30000
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.BiometricButton'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.BiometricButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
+
+- runFlow: subflows/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.AppLockDisableButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.AppLockDisableButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.AppLockCard'
+    timeout: 10000
+
+- stopApp
+- launchApp
+- retry:
+    maxRetries: 3
+    commands:
+      - runFlow: subflows/handle-dev-client-startup.flow.yaml
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000

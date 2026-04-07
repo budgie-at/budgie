@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
+import { PinPageSelectors } from '../../../@e2e/selectors/pin-page.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
@@ -27,19 +28,25 @@ export const PinForm = (props: Props) => {
     const canDelete = isNotEmptyString(currentInput) && !isLoading;
 
     return (
-        <View className="flex-1 justify-center">
+        <View className="flex-1 justify-center" testID={PinPageSelectors.Container}>
             <View className="border border-secondary-corner bg-secondary-background rounded-7xl p-5xl mx-auto mb-7xl">
                 <Icon icon={UserIconNameEnum.Lock} className="text-primary" size={40} />
             </View>
 
-            <Text className="text-3xl font-semibold text-primary text-center mb-md">{title}</Text>
+            <Text className="text-3xl font-semibold text-primary text-center mb-md" testID={PinPageSelectors.Title}>
+                {title}
+            </Text>
             <Text className="text-md text-secondary-foreground text-center mb-7xl">{description}</Text>
 
             <Shake isEnabled={isNotEmptyString(error)}>
                 <PinFormDots filled={currentInput.length} />
             </Shake>
 
-            {isNotEmptyString(error) ? <Text className="text-sm text-destructive-foreground text-center mt-5xl">{error}</Text> : null}
+            {isNotEmptyString(error) ? (
+                <Text className="text-sm text-destructive-foreground text-center mt-5xl" testID={PinPageSelectors.Error}>
+                    {error}
+                </Text>
+            ) : null}
 
             <View className="mt-8xl gap-y-lg items-center">
                 <View className="flex-row gap-x-lg">
@@ -64,6 +71,7 @@ export const PinForm = (props: Props) => {
                     <HapticPressable
                         disabled={!canScan}
                         onPress={onScanPress}
+                        testID={PinPageSelectors.BiometricButton}
                         className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
                     >
                         {canScan ? <Icon icon={UserIconNameEnum.ScanFace} className="text-primary" size={16} /> : null}
@@ -74,6 +82,7 @@ export const PinForm = (props: Props) => {
                     <HapticPressable
                         disabled={!canDelete}
                         onPress={onDeletePress}
+                        testID={PinPageSelectors.DeleteButton}
                         className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-23"
                     >
                         <Icon icon={UserIconNameEnum.Delete} className="text-primary" size={16} />

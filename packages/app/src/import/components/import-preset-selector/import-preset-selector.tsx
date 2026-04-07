@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
@@ -30,7 +31,12 @@ export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) 
                 </Text>
             </View>
             <View className="flex-row flex-wrap gap-sm">
-                <ImportPresetChip title="Budgie" isSelected={selectedPreset === ImportPresetEnum.Budgie} onSelect={handleBudgieSelect} />
+                <ImportPresetChip
+                    title="Budgie"
+                    isSelected={selectedPreset === ImportPresetEnum.Budgie}
+                    onSelect={handleBudgieSelect}
+                    testID={CsvPageSelectors.PresetBudgie}
+                />
                 <ImportPresetChip
                     title="SmartBudget"
                     isSelected={selectedPreset === ImportPresetEnum.SmartBudget}

@@ -10,8 +10,11 @@ APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 
 xcrun simctl addmedia "$SIMULATOR_UDID" "$CONTACT_FIXTURE_PATH" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts "$APP_ID" >/dev/null 2>&1 || true
+xcrun simctl privacy "$SIMULATOR_UDID" grant microphone "$APP_ID" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts com.vitalyiegorov.budgie.e2e >/dev/null 2>&1 || true
+xcrun simctl privacy "$SIMULATOR_UDID" grant microphone com.vitalyiegorov.budgie.e2e >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts com.vitalyiegorov.budgie.dev >/dev/null 2>&1 || true
+xcrun simctl privacy "$SIMULATOR_UDID" grant microphone com.vitalyiegorov.budgie.dev >/dev/null 2>&1 || true
 
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/19-transactions-filters.db" "e2e-19-transactions-filters.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/20-transactions-account-date.db" "e2e-20-transactions-account-date.db" "$SIMULATOR_UDID" "$APP_ID"
@@ -24,3 +27,4 @@ xcrun simctl privacy "$SIMULATOR_UDID" grant contacts com.vitalyiegorov.budgie.d
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/12-cross-currency-transfer-transaction.db" "e2e-12-cross-currency-transfer-transaction.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/17-expense-to-transfer.db" "e2e-17-expense-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/18-income-to-transfer.db" "e2e-18-income-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
+"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"

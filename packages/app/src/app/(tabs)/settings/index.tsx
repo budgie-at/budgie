@@ -14,6 +14,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -49,6 +50,7 @@ export default function SettingsPage() {
     };
 
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+    const aiEnabled = isAiEnabled();
 
     return (
         <Page
@@ -74,9 +76,11 @@ export default function SettingsPage() {
                                 variant="pink"
                                 title={t`Screenshot Protection`}
                                 description={t`Hide account balances and net worth when taking screenshots`}
+                                testID={SettingsPageSelectors.ScreenshotProtectionCard}
                                 right={
                                     <ThemedSwitch
                                         className="my-auto"
+                                        testID={SettingsPageSelectors.ScreenshotProtectionSwitch}
                                         onValueChange={handleToggle('isScreenshotProtectionEnabled')}
                                         value={isScreenshotProtectionEnabled}
                                     />
@@ -96,13 +100,15 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiDataCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
+                {aiEnabled ? (
+                    <View {...anchorLayout('ai')}>
+                        <SettingsGroup title={t`AI`}>
+                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                                <AiDataCard />
+                            </Animated.View>
+                        </SettingsGroup>
+                    </View>
+                ) : null}
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>
