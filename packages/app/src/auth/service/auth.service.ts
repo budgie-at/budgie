@@ -4,7 +4,9 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { e2eRuntimeService } from '../../@e2e/service/e2e-runtime.service';
 import { expoDb } from '../../@generic/drizzle/db/db';
+import { isE2EHooksEnabled } from '../../@generic/utils/is-e2e-hooks-enabled.util';
 import { PIN_KEY } from '../constant/pin-key.constant';
 
 class AuthService {
@@ -38,6 +40,12 @@ class AuthService {
     }
 
     async authenticateWithBiometrics(): Promise<boolean> {
+        const { biometricAuthSuccess } = e2eRuntimeService.getOverrides();
+
+        if (biometricAuthSuccess !== null) {
+            return biometricAuthSuccess;
+        }
+
         try {
             const result = await LocalAuthentication.authenticateAsync({
                 promptMessage: 'Authenticate to access the app',
@@ -54,6 +62,10 @@ class AuthService {
     async savePin(pin: string): Promise<void> {
         const oldPin = await this.getPin();
         await SecureStore.setItemAsync(PIN_KEY, pin);
+
+        if (isE2EHooksEnabled()) {
+            return;
+        }
 
         if (isNotEmptyString(oldPin)) {
             await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);

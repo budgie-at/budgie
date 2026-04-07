@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useExportAction } from '../../hook/use-export-action.hook';
 import { exporterService } from '../../service/exporter.service';
@@ -17,6 +18,7 @@ export const ExportCsv = () => {
             icon={UserIconNameEnum.Download}
             variant="default"
             isLoading={isLoading}
+            testID={CsvPageSelectors.ExportCard}
         />
     );
 };

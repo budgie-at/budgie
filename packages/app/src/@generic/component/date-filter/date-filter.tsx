@@ -58,9 +58,7 @@ export const DateFilter = ({ value, onChange }: Props) => {
 
     const hasDateFilterSelected = isDefined(value?.from) || isDefined(value?.to);
     const label = getLabel();
-    const chipTestID = hasDateFilterSelected
-        ? TransactionFiltersSelectors.DateChipActive
-        : TransactionFiltersSelectors.DateChip;
+    const chipTestID = hasDateFilterSelected ? TransactionFiltersSelectors.DateChipActive : TransactionFiltersSelectors.DateChip;
 
     return (
         <TransactionFilterChip

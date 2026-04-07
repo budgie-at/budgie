@@ -23,6 +23,9 @@ executionOrder:
         - 19.transactions-filters.flow
         - 20.transactions-account-date.flow
         - 21.transaction-long-press.flow
+        - 22.security-app-lock.flow
+        - 23.security-privacy.flow
+        - 24.csv-import-export.flow
 
 platform:
     ios:

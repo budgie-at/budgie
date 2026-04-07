@@ -3,6 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { PinPageSelectors } from '../../../@e2e/selectors/pin-page.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -39,10 +40,17 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
                 variant="ghost"
                 title={t`Biometric Authentication`}
                 description={t`Face ID / Touch ID`}
-                right={<ThemedSwitch className="my-auto" onValueChange={setEnableBiometrics} value={enableBiometrics} />}
+                right={
+                    <ThemedSwitch
+                        className="my-auto"
+                        testID={PinPageSelectors.BiometricSetupSwitch}
+                        onValueChange={setEnableBiometrics}
+                        value={enableBiometrics}
+                    />
+                }
             />
 
-            <Button onPress={handleContinue} content={t`Continue`} />
+            <Button testID={PinPageSelectors.ContinueButton} onPress={handleContinue} content={t`Continue`} />
         </View>
     );
 };
