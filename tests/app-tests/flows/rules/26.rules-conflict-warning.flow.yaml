@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '26'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test26 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test26 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test26 Tag'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 # Create first rule: Title CONTAINS "Test" → SET_CATEGORY
 - tapOn:

@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '24'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test24 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test24 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test24 Tag'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 # Rule 1: EXTERNAL_SOURCE condition
 - tapOn:
@@ -34,14 +28,20 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.EXTERNAL_SOURCE
-
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'monobank'
 
-- tapOn: return
+- tapOn:
+    text: 'Conditions'
+- waitForAnimationToEnd
 
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -75,10 +75,9 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.MCC_CODE
-
 - waitForAnimationToEnd
 - tapOn:
-    id: 'RuleForm.Condition.0.MccSelector'
+    id: 'RuleForm.Condition.0.ValueInput'
 - waitForAnimationToEnd
 - tapOn:
     index: 0

@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '19'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test19 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test19 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test19 Tag'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 # Rule 1: Title EQUALS operator
 - tapOn:
@@ -33,6 +27,7 @@ env:
     id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
     id: RuleForm.SelectorCard.EQUALS
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -72,11 +67,13 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.COMMENT
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
     id: RuleForm.SelectorCard.NOT_CONTAINS
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -98,9 +95,12 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
+- waitForAnimationToEnd
 
 - assertVisible:
     id: 'RulesPage.RuleCard.1'
@@ -121,11 +121,13 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
     id: RuleForm.SelectorCard.LESS_THAN
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -145,6 +147,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'

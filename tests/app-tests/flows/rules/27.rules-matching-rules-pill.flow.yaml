@@ -1,17 +1,16 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '27'
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Groceries'}
-  TAG_NAME: ${TAG_NAME || 'Subscription'}
-  CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME || 'test27-matching-rules-pill'}
+  CATEGORY_NAME: Groceries
+  TAG_NAME: Subscription
+  CSV_DISPLAY_NAME: test27-matching-rules-pill
 ---
 
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
 
 # Create category
 - runFlow:
-    file: ../setup/create-category.flow.yaml
+    file: ../subflows/create-category.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -48,10 +47,15 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
+- tapOn: return
+
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.SET_CATEGORY'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:

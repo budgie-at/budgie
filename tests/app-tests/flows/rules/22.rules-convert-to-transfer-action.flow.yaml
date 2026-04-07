@@ -1,32 +1,31 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '22'
-  ACCOUNT_NAME_FROM: ${ACCOUNT_NAME_FROM || 'Test22 Source'}
-  ACCOUNT_NAME_TO: ${ACCOUNT_NAME_TO || 'Test22 Destination'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test22 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test22 Tag'}
+  ACCOUNT_NAME_FROM: Test22 Source
+  ACCOUNT_NAME_TO: Test22 Destination
+  CATEGORY_NAME: Test22 Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: ../setup/create-account.flow.yaml
+    file: ../subflows/create-account.flow.yaml
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME_FROM}
 
 - runFlow:
-    file: ../setup/create-account.flow.yaml
+    file: ../subflows/create-account.flow.yaml
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME_TO}
 
 - runFlow:
-    file: ../setup/create-category.flow.yaml
+    file: ../subflows/create-category.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -44,24 +43,23 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.TRANSACTION_TYPE
-
 - waitForAnimationToEnd
+
 - tapOn:
-    id: 'RuleForm.Condition.0.TransactionTypeSelector'
+    id: 'RuleForm.Condition.0.ValueInput'
 - tapOn: 'Expense'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
-- tapOn: 'Title'
-
-- tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Auto Transfer'
 
-- tapOn: return
+- tapOn:
+    text: 'return'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
@@ -72,14 +70,34 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 - waitForAnimationToEnd
 
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.AccountSelector'
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: 'RuleForm.Action.0.AccountSelector'
-- runFlow:
-    file: ../shared/select-account-by-search.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME_TO}
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME_TO}
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME_TO}'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME_TO}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'

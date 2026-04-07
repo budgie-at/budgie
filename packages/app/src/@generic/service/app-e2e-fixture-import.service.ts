@@ -13,7 +13,8 @@ const E2E_FIXTURE_FILE_MAP = {
     '17-expense-to-transfer': 'e2e-17-expense-to-transfer.db',
     '18-income-to-transfer': 'e2e-18-income-to-transfer.db',
     '19-transactions-filters': 'e2e-19-transactions-filters.db',
-    '20-transactions-account-date': 'e2e-20-transactions-account-date.db'
+    '20-transactions-account-date': 'e2e-20-transactions-account-date.db',
+    'rules-base': 'e2e-rules-base.db'
 } as const;
 
 type E2EFixtureId = keyof typeof E2E_FIXTURE_FILE_MAP;

@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '18'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test18 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test18 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test18 Tag'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -33,14 +27,29 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.ACCOUNT_ID
-
 - waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
 - tapOn:
-    id: 'RuleForm.Condition.0.AccountSelector'
-- runFlow:
-    file: ../shared/select-account-by-search.flow.yaml
-    env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
+    id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.ConditionSection.AddButton'
@@ -49,16 +58,21 @@ env:
     id: 'RuleForm.Condition.1.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.TRANSACTION_TYPE
-
 - waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.1.ValueInput'
 - tapOn:
-    id: 'RuleForm.Condition.1.TransactionTypeSelector'
+    id: 'RuleForm.Condition.1.ValueInput'
 - tapOn: 'Expense'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'

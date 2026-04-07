@@ -11,6 +11,6 @@ appId: ${APP_ID}
 - inputText: ${CATEGORY_NAME}
 - extendedWaitUntil:
     visible:
-      id: 'CategoryPickerBottomSheet.Card.0'
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
 - tapOn:
-    id: 'CategoryPickerBottomSheet.Card.0'
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'

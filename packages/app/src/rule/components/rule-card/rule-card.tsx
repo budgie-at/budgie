@@ -17,9 +17,11 @@ interface Props {
     readonly testID?: string;
     readonly switchTestID?: string;
     readonly orderBadgeTestID?: string;
+    readonly conditionsTestID?: string;
+    readonly actionsTestID?: string;
 }
 
-export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadgeTestID }: Props) => {
+export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadgeTestID, conditionsTestID, actionsTestID }: Props) => {
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
@@ -40,7 +42,13 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadge
             </View>
 
             <View className="flex-1">
-                <RuleSummaryPills conditions={rule.conditions} actions={rule.actions} conditionMatchType={rule.conditionMatchType} />
+                <RuleSummaryPills
+                    conditions={rule.conditions}
+                    actions={rule.actions}
+                    conditionMatchType={rule.conditionMatchType}
+                    conditionsTestID={conditionsTestID}
+                    actionsTestID={actionsTestID}
+                />
             </View>
 
             <View testID={switchTestID} className="flex-row items-center justify-end">

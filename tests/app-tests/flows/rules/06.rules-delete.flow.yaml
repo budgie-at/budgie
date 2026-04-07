@@ -14,7 +14,7 @@ appId: ${APP_ID}
     duration: 300
 
 - tapOn:
-    id: RulesPage.RuleCard.0.DeleteAction
+    id: DeletableRow.DeleteButton
 
 - tapOn: Delete
 

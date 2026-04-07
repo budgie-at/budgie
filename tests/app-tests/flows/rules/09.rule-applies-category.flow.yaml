@@ -1,35 +1,30 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '09'
-  ACCOUNT_NAME: Test09 Account
-  CATEGORY_NAME: Test09 Category
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
   ORIGINAL_CATEGORY_NAME: Test09 Original Category
-  TAG_NAME: Test09 Tag
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../setup/create-category.flow.yaml
+    file: ../subflows/create-category.flow.yaml
     env:
       CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
 
 - runFlow:
-    file: ../shared/create-expense-transaction.flow.yaml
+    file: ../subflows/create-expense.flow.yaml
     env:
-      TITLE: 'Netflix Subscription'
-      AMOUNT: '15'
+      DIGIT_1: '1'
+      DIGIT_2: '5'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
+      COMMENT: 'Netflix Subscription'
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -50,6 +45,8 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
+
+- tapOn: return
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -80,11 +77,7 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1'
-- tapOn:
-    id: 'TransactionList.Card.1'
-- waitForAnimationToEnd
-
+      id: 'TransactionCard.Label.Netflix_Subscription'
 - extendedWaitUntil:
-    visible: ${CATEGORY_NAME}
-- assertNotVisible: ${ORIGINAL_CATEGORY_NAME}
+    visible:
+      id: 'TransactionCard.Category.Rules_Test_Category'

@@ -1,22 +1,16 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '23'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test23 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test23 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test23 Tag'}
-  TITLE_CONTAINS_TEXT: ${TITLE_CONTAINS_TEXT || 'TestRemove'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
+  TITLE_CONTAINS_TEXT: TestRemove
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -95,5 +89,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-
-- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'

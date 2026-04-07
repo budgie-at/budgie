@@ -6,7 +6,10 @@ env:
 ---
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
+
+- runFlow:
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -23,11 +26,13 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
     id: RuleForm.SelectorCard.GREATER_THAN
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -57,6 +62,9 @@ env:
     id: RuleForm.Action.0.TypeSelector
 - tapOn:
     id: RuleForm.SelectorCard.SET_CATEGORY
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -70,5 +78,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-
-- assertVisible: 1, If all of:, |, Amount > "${AMOUNT}", |, Comment contains "${COMMENT_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'

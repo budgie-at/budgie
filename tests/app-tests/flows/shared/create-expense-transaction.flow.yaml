@@ -6,21 +6,18 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.0'
-- waitForAnimationToEnd
+- runFlow:
+    file: ../subflows/open-action-menu.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
 
 - tapOn:
-    text: 'Expense'
+    id: 'ActionItem.Expense'
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'
 
-- tapOn:
-    id: 'TransactionForm.AmountInput'
+- waitForAnimationToEnd
 - inputText: ${AMOUNT}
 
 - tapOn:
@@ -28,17 +25,18 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'TransactionForm.AccountSearchInput'
+      id: 'AccountPickerBottomSheet.Input'
 - tapOn:
-    id: 'TransactionForm.AccountSearchInput'
+    id: 'AccountPickerBottomSheet.Input'
 - inputText: ${ACCOUNT_NAME}
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionForm.Account'
+    visible: ${ACCOUNT_NAME}
 - tapOn:
-    id: 'TransactionForm.Account'
+    text: ${ACCOUNT_NAME}
+    index: 1
 
-- tapOn: 'Select category'
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
 - runFlow:
     file: ./select-category-by-search.flow.yaml
     env:
@@ -49,10 +47,12 @@ appId: ${APP_ID}
       id: 'TransactionForm.CategorySelector'
     direction: UP
 
-- tapOn: 'Add a note...'
+- tapOn:
+    id: 'TransactionForm.CommentInput'
 - inputText: ${TITLE}
 
-- tapOn: 'Add Expense'
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
 
 - extendedWaitUntil:
     visible: 'Transactions'

@@ -1,16 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '16'
   TAG_NAME: Subscription
   CATEGORY_NAME: Groceries
   CSV_DISPLAY_NAME: test16-rules-import
 ---
 
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
 
 - runFlow:
-    file: ../setup/create-tag.flow.yaml
+    file: ../subflows/create-tag.flow.yaml
     env:
       TAG_NAME: ${TAG_NAME}
 
@@ -44,10 +43,15 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
+- tapOn: return
+
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.SET_CATEGORY'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:
@@ -84,10 +88,15 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Starbucks'
 
+- tapOn: return
+
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:
