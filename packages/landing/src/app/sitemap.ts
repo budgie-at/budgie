@@ -5,7 +5,7 @@ import type { MetadataRoute } from 'next';
 
 const staticPages = ['', '/blog', '/legal/privacy-policy', '/legal/terms-of-service', '/legal/license'];
 
-const buildDate = new Date('2026-04-08');
+const buildDate = new Date();
 
 const buildSitemapLanguages = (path: string) => ({
     ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}${path}`])),
