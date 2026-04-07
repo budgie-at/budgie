@@ -11,9 +11,10 @@ import { RuleConditionTransactionTypeSelector } from '../rule-condition-transact
 interface Props {
     readonly index: number;
     readonly testID?: string;
+    readonly secondaryTestID?: string;
 }
 
-export const RuleConditionValueInput = ({ index, testID }: Props) => {
+export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Props) => {
     const { control } = useFormContext<RuleCreateInputInterface>();
     const field = useWatch({ control, name: `conditions.${index}.field` });
 
@@ -27,7 +28,7 @@ export const RuleConditionValueInput = ({ index, testID }: Props) => {
         case RuleConditionFieldEnum.MCC_CODE:
             return <RuleConditionMccSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.AMOUNT:
-            return <RuleConditionAmountValueInput index={index} testID={testID} />;
+            return <RuleConditionAmountValueInput index={index} testID={testID} secondaryTestID={secondaryTestID} />;
         default:
             return <RuleConditionTextValueInput index={index} testID={testID} />;
     }

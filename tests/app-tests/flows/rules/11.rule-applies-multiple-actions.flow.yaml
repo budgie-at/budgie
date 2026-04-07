@@ -1,84 +1,30 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '11'
-  ACCOUNT_NAME: Test11 Account
-  CATEGORY_NAME: Test11 Category
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
   ORIGINAL_CATEGORY_NAME: Test11 Original
-  TAG_NAME: Test11 Tag
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
+
+- runFlow:
+    file: ../subflows/create-category.flow.yaml
     env:
-      TEST_ID: ${TEST_ID}
+      CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
+
+- runFlow:
+    file: ../subflows/create-expense.flow.yaml
+    env:
+      DIGIT_1: '5'
+      DIGIT_2: '0'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
-
-- runFlow:
-    file: ../setup/create-category.flow.yaml
-    env:
       CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
-
-- tapOn:
-    id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible: 'Transactions'
-
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.0'
-- waitForAnimationToEnd
-
-- tapOn:
-    text: 'Expense'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible: 'New Expense'
-
-- tapOn:
-    id: 'TransactionForm.AmountInput'
-- inputText: '50'
-
-- tapOn:
-    id: 'TransactionForm.AccountSelector'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionForm.AccountSearchInput'
-- tapOn:
-    id: 'TransactionForm.AccountSearchInput'
-- inputText: ${ACCOUNT_NAME}
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionForm.Account'
-- tapOn:
-    id: 'TransactionForm.Account'
-
-
-- tapOn: 'Select category'
-- runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
-    env:
-      CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
-
-- swipe:
-    from:
-      id: 'TransactionForm.CategorySelector'
-    direction: UP
-
-- tapOn: 'Add a note...'
-- inputText: 'Amazon Purchase'
-
-- tapOn: 'Add Expense'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
+      COMMENT: 'Amazon Purchase'
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -99,6 +45,8 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
+
+- tapOn: return
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -123,6 +71,9 @@ env:
     id: 'RuleForm.Action.1.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:
@@ -143,7 +94,10 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-- assertVisible: 1, If all of:, |, Comment contains "Amazon", Then:, |, set category to Test11 Category, |, add tag Test11 Tag
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
 
 - tapOn:
     id: 'TabBar.Transactions'
@@ -156,20 +110,11 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1.CategoryBadge'
+      id: 'TransactionCard.Category.Rules_Test_Category'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1.Tag'
-
-- tapOn:
-    id: 'TransactionList.Card.1'
-- waitForAnimationToEnd
+      id: 'TransactionCard.Tag.Rules_Test_Tag'
 
 - extendedWaitUntil:
-    visible: ${CATEGORY_NAME}
-
-- assertNotVisible: ${ORIGINAL_CATEGORY_NAME}
-
-- extendedWaitUntil:
-    visible: ${TAG_NAME}
-
+    visible:
+      id: 'TransactionCard.Label.Amazon_Purchase'

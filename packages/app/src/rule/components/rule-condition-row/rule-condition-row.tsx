@@ -41,7 +41,11 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
                 <RuleConditionOperatorSelector index={index} testID={RuleConditionSelectors.OperatorSelector(index)} />
             </View>
 
-            <RuleConditionValueInput index={index} testID={RuleConditionSelectors.ValueInput(index)} />
+            <RuleConditionValueInput
+                index={index}
+                testID={RuleConditionSelectors.ValueInput(index)}
+                secondaryTestID={RuleConditionSelectors.SecondaryValueInput(index)}
+            />
         </View>
     );
 };

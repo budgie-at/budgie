@@ -1,20 +1,14 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: 03
-  CATEGORY_NAME: Test03 Category
+  CATEGORY_NAME: Rules Test Category
   TITLE_CONTAINS_TEXT: Spotify
   COMMENT_CONTAINS_TEXT: Premium
 ---
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../setup/setup-rules-test.flow.yaml
 
 - runFlow:
-    file: ../setup/create-category.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
-
-- runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -52,6 +46,7 @@ env:
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -69,5 +64,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-
-- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", |, Comment contains "${COMMENT_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'

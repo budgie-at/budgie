@@ -2,17 +2,24 @@ appId: ${APP_ID}
 ---
 
 - tapOn:
+    id: 'TabBar.Home'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TabBar.Settings'
+- waitForAnimationToEnd
+- tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
-    visible: 'Settings'
+    visible:
+      id: 'SettingsPage.Container'
 
-- waitForAnimationToEnd
 - scrollUntilVisible:
     element:
-      id: 'Settings.ImportCsvCard'
+      text: 'Import CSV'
     direction: DOWN
-- tapOn:
-    id: 'Settings.ImportCsvCard'
+    speed: 20
+- waitForAnimationToEnd
+- tapOn: 'Import CSV'
 
 - tapOn:
     id: ${CSV_DISPLAY_NAME}, csv

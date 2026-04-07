@@ -16,32 +16,38 @@ interface Props {
     readonly conditions: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'id'>[];
     readonly actions: RuleActionWithRelationsEntityInterface[];
     readonly conditionMatchType: RuleConditionMatchTypeEnum;
+    readonly conditionsTestID?: string;
+    readonly actionsTestID?: string;
 }
 
 const ARROW_ICON_SIZE = 14;
 
-export const RuleSummaryPills = ({ conditions, actions, conditionMatchType }: Props) => {
+export const RuleSummaryPills = ({ conditions, actions, conditionMatchType, conditionsTestID, actionsTestID }: Props) => {
     const isMatchAll = conditionMatchType === RuleConditionMatchTypeEnum.ALL;
 
     return (
         <View className="flex-row flex-wrap items-center gap-sm">
-            {conditions.map((condition, index) => {
-                const isLast = index === conditions.length - 1;
-                const separator = isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>;
+            <View testID={conditionsTestID} className="flex-row flex-wrap items-center gap-sm">
+                {conditions.map((condition, index) => {
+                    const isLast = index === conditions.length - 1;
+                    const separator = isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>;
 
-                return (
-                    <Fragment key={condition.id}>
-                        <RuleConditionPill condition={condition} />
-                        {isLast ? null : <Text className="text-xs text-secondary-foreground">{separator}</Text>}
-                    </Fragment>
-                );
-            })}
+                    return (
+                        <Fragment key={condition.id}>
+                            <RuleConditionPill condition={condition} />
+                            {isLast ? null : <Text className="text-xs text-secondary-foreground">{separator}</Text>}
+                        </Fragment>
+                    );
+                })}
+            </View>
 
             <Icon icon={UserIconNameEnum.ArrowRight} size={ARROW_ICON_SIZE} className="text-secondary-foreground" />
 
-            {actions.map(action => (
-                <RuleActionPill key={action.id} action={action} />
-            ))}
+            <View testID={actionsTestID} className="flex-row flex-wrap items-center gap-sm">
+                {actions.map(action => (
+                    <RuleActionPill key={action.id} action={action} />
+                ))}
+            </View>
         </View>
     );
 };

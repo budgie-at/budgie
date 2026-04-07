@@ -1,20 +1,8 @@
 appId: ${APP_ID}
 ---
-
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
-
+    file: ../subflows/enter-app.flow.yaml
 - runFlow:
-    file: ./create-account.flow.yaml
+    file: ../subflows/import-database-fixture.flow.yaml
     env:
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-
-- runFlow:
-    file: ./create-category.flow.yaml
-    env:
-      CATEGORY_NAME: ${CATEGORY_NAME}
-
-- runFlow:
-    file: ./create-tag.flow.yaml
-    env:
-      TAG_NAME: ${TAG_NAME}
+      FIXTURE_ID: 'rules-base'
