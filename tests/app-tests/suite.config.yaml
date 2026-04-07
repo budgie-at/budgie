@@ -22,6 +22,7 @@ executionOrder:
         - 18.income-to-transfer.flow
         - 19.transactions-filters.flow
         - 20.transactions-account-date.flow
+        - 21.transaction-long-press.flow
 
 platform:
     ios:

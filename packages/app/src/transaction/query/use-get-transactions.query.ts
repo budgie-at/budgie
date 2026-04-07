@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -12,11 +12,19 @@ import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const DEFAULT_LIMIT = 20;
 
-export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) => {
+export const useGetTransactionsQuery = (filters?: TransactionFilterInterface, refreshKey?: number) => {
     const { formatMonthAndYear } = useFormatDate();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
-    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filters]);
+    useEffect(() => {
+        setLoadedCount(DEFAULT_LIMIT);
+    }, [refreshKey]);
+
+    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [
+        loadedCount,
+        filters,
+        refreshKey
+    ]);
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
