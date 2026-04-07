@@ -23,7 +23,11 @@ const isGenericTitle = (title: string): boolean => {
     return uniqueWords.size < MINIMUM_UNIQUE_WORDS && containsGenericPattern;
 };
 
-export const selectSuggestCondition = (title: string, mccCode: string | null): RuleConditionCreateInputInterface | null => {
+export const selectSuggestCondition = (
+    title: string,
+    mccCode: string | null,
+    comment?: string
+): RuleConditionCreateInputInterface | null => {
     const cleanedTitle = cleanMerchantTitle(title);
 
     if (isNotEmptyString(cleanedTitle) && cleanedTitle.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleanedTitle)) {
@@ -33,6 +37,19 @@ export const selectSuggestCondition = (title: string, mccCode: string | null): R
             value: cleanedTitle,
             secondaryValue: null
         };
+    }
+
+    if (isNotEmptyString(comment)) {
+        const cleanedComment = cleanMerchantTitle(comment);
+
+        if (isNotEmptyString(cleanedComment) && cleanedComment.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleanedComment)) {
+            return {
+                field: RuleConditionFieldEnum.COMMENT,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value: cleanedComment,
+                secondaryValue: null
+            };
+        }
     }
 
     if (isNotEmptyString(mccCode)) {

@@ -1,32 +1,12 @@
 appId: ${APP_ID}
 ---
 
-- tapOn:
-    id: 'TabBar.Home'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-
-- scrollUntilVisible:
-    element:
-      text: 'Import CSV'
-    direction: DOWN
-    speed: 20
-- waitForAnimationToEnd
-- tapOn: 'Import CSV'
-
-- tapOn:
-    id: ${CSV_DISPLAY_NAME}, csv
+- openLink: 'budgie:///settings/import?e2eCsvFixture=${CSV_DISPLAY_NAME}'
 
 - extendedWaitUntil:
     visible:
       id: 'ImportScreen.Page'
+    timeout: 10000
 
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
@@ -37,3 +17,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Transactions'
+    timeout: 30000

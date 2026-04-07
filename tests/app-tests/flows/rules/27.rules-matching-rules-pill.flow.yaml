@@ -98,10 +98,10 @@ env:
 # Open the Netflix transaction (auto-categorized by rule)
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1'
+      id: 'TransactionCard.Label.Netflix_Premium'
     timeout: 10000
 - tapOn:
-    id: 'TransactionList.Card.1'
+    id: 'TransactionCard.Label.Netflix_Premium'
 - waitForAnimationToEnd
 
 # Assert matching rules pill is visible

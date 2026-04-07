@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -20,6 +21,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
+import { appE2ECsvImportService } from '../../../@generic/service/app-e2e-csv-import.service';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
@@ -37,7 +39,9 @@ const SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
-    const { fileUri } = useLocalSearchParams<{ fileUri: string }>();
+    const { fileUri, e2eCsvFixture } = useLocalSearchParams<{ fileUri?: string; e2eCsvFixture?: string }>();
+
+    const resolvedFileUri = isNotEmptyString(e2eCsvFixture) ? appE2ECsvImportService.getCsvFixtureUri(e2eCsvFixture) : fileUri;
 
     const { t } = useLingui();
 
@@ -91,14 +95,14 @@ export default function ImportScreen() {
 
     useEffect(() => {
         const loadFile = async () => {
-            if (!isNotEmptyString(fileUri)) {
+            if (!isNotEmptyString(resolvedFileUri)) {
                 return;
             }
 
             setIsLoading(true);
 
             try {
-                const response = await fetch(fileUri);
+                const response = await fetch(resolvedFileUri);
                 const text = await response.text();
                 const [parsedHeaders, count] = await Promise.all([parseCsvHeaders(text), countCsvRows(text)]);
 
@@ -114,8 +118,9 @@ export default function ImportScreen() {
         };
 
         void loadFile();
-    }, [fileUri, t]);
+    }, [resolvedFileUri, t]);
 
+    // eslint-disable-next-line max-statements -- Import handler with multiple truncate calls and E2E navigation
     const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
@@ -135,7 +140,11 @@ export default function ImportScreen() {
 
             await accountBalanceIncrementalService.updateAllBalances(true);
 
-            router.back();
+            if (isNotEmptyString(e2eCsvFixture)) {
+                router.navigate('/(tabs)/settings');
+            } else {
+                router.back();
+            }
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
         }
@@ -150,6 +159,7 @@ export default function ImportScreen() {
     return (
         <>
             <Page
+                testID={ImportSelectors.Page}
                 header={
                     <PageHeader
                         title={t`Map CSV Columns`}
@@ -258,6 +268,7 @@ export default function ImportScreen() {
                             <ActivityIndicator size="small" />
                         ) : (
                             <Button
+                                testID={ImportSelectors.SubmitButton}
                                 content={buttonContent}
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}

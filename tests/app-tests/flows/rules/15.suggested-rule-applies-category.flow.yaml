@@ -23,10 +23,10 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1'
+      id: 'TransactionCard.Label.Test15_Unique_Purchase'
     timeout: 10000
 - tapOn:
-    id: 'TransactionList.Card.1'
+    id: 'TransactionCard.Label.Test15_Unique_Purchase'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -45,6 +45,14 @@ env:
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'SuggestRule.Card'
+    timeout: 10000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 - runFlow:

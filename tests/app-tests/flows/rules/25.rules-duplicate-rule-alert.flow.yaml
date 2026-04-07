@@ -23,10 +23,10 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1'
+      id: 'TransactionCard.Label.Test25_Duplicate_Check'
     timeout: 10000
 - tapOn:
-    id: 'TransactionList.Card.1'
+    id: 'TransactionCard.Label.Test25_Duplicate_Check'
 - waitForAnimationToEnd
 
 # Change category to trigger suggest card
@@ -47,6 +47,14 @@ env:
 # Create the rule via the inline card
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'SuggestRule.Card'
+    timeout: 10000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 # Verify rule was created by navigating to rules page
