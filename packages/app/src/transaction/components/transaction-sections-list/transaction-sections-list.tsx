@@ -1,13 +1,21 @@
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
-import { ReactElement } from 'react';
+import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { useRouter } from 'expo-router';
+import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
+import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
+import { TransactionListContextMenu } from '../transaction-list-context-menu/transaction-list-context-menu';
 
 interface Props {
     readonly sections: TransactionsByMonthSection[];
@@ -22,22 +30,10 @@ interface Props {
 const keyExtractor = (item: TransactionListItemType) => item.id;
 const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
 
-const renderItem = ({ item }: { item: TransactionListItemType }) =>
-    item.type === 'header' ? (
-        <View className="bg-primary-reverse py-sm">
-            <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
-        </View>
-    ) : (
-        <TransactionCard
-            transaction={item.data.transaction}
-            formattedDate={item.data.formattedDate}
-            categoryLabel={item.data.categoryLabel}
-        />
-    );
-
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
 export const TransactionSectionsList = ({
     sections,
     onEndReached,
@@ -47,7 +43,47 @@ export const TransactionSectionsList = ({
     footerSpacerMultiplier,
     focusKey
 }: Props) => {
+    const router = useRouter();
+    const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
+
+    const handlePress = (transaction: TransactionWithRelationsEntityInterface) => {
+        router.push(getTransactionHref(transaction));
+    };
+
+    const handleLongPress = (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => {
+        hapticImpact(ImpactFeedbackStyle.Medium);
+        setMenuState({ transaction, anchor });
+        setIsMenuOpen(true);
+    };
+
+    const handleMenuClose = () => {
+        setIsMenuOpen(false);
+    };
+
+    const handleMenuCloseComplete = () => {
+        setMenuState(null);
+    };
+
+    const menuTransaction = menuState?.transaction ?? null;
+
+    const renderItem = ({ item }: { item: TransactionListItemType }) =>
+        item.type === 'header' ? (
+            <View className="bg-primary-reverse py-sm">
+                <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
+            </View>
+        ) : (
+            <TransactionCard
+                transaction={item.data.transaction}
+                formattedDate={item.data.formattedDate}
+                categoryLabel={item.data.categoryLabel}
+                onPress={handlePress}
+                onLongPress={handleLongPress}
+            />
+        );
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
@@ -68,21 +104,30 @@ export const TransactionSectionsList = ({
     const listFooter = <MenuSpacer multiplier={footerSpacerMultiplier} />;
 
     return (
-        <LegendList
-            key={focusKey}
-            data={flatData}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            estimatedItemSize={80}
-            stickyIndices={getStickyIndices(flatData)}
-            recycleItems
-            onEndReached={onEndReached}
-            onEndReachedThreshold={0.3}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={contentContainerStyle}
-            ListEmptyComponent={listEmptyState}
-            getItemType={getItemType}
-            ListFooterComponent={listFooter}
-        />
+        <>
+            <LegendList
+                key={focusKey}
+                data={flatData}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                estimatedItemSize={80}
+                stickyIndices={getStickyIndices(flatData)}
+                recycleItems
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.3}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={contentContainerStyle}
+                ListEmptyComponent={listEmptyState}
+                getItemType={getItemType}
+                ListFooterComponent={listFooter}
+            />
+            <TransactionListContextMenu
+                transaction={menuTransaction}
+                isOpen={isMenuOpen}
+                onClose={handleMenuClose}
+                onCloseComplete={handleMenuCloseComplete}
+                anchor={menuState?.anchor}
+            />
+        </>
     );
 };
