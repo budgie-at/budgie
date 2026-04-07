@@ -23,10 +23,10 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1'
+      id: 'TransactionCard.Label.Test17_Direct_Create'
     timeout: 10000
 - tapOn:
-    id: 'TransactionList.Card.1'
+    id: 'TransactionCard.Label.Test17_Direct_Create'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -45,10 +45,14 @@ env:
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
-- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'SuggestRule.Card'
+    timeout: 10000
 
 - tapOn:
-    id: 'TransactionForm.SubmitButton'
+    id: 'PageHeader.BackButton'
 - waitForAnimationToEnd
 
 - runFlow:

@@ -7,6 +7,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly title: string;
+    readonly testID?: string;
     readonly isSelected: boolean;
     readonly onSelect: () => void;
 }
@@ -29,8 +30,8 @@ const titleVariants = cva('font-medium text-sm', {
     }
 });
 
-export const ImportPresetChip = ({ title, isSelected, onSelect }: Props) => (
-    <HapticPressable className={chipVariants({ isSelected })} onPress={onSelect}>
+export const ImportPresetChip = ({ title, testID, isSelected, onSelect }: Props) => (
+    <HapticPressable testID={testID} className={chipVariants({ isSelected })} onPress={onSelect}>
         <Text className={titleVariants({ isSelected })}>{title}</Text>
         {isSelected && <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary" />}
     </HapticPressable>

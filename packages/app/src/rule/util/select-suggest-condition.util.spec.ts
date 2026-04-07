@@ -26,7 +26,18 @@ describe('selectSuggestCondition', () => {
         });
     });
 
-    it('should return MCC_CODE EQUALS when title is empty', () => {
+    it('should return COMMENT CONTAINS when title is empty but comment is provided', () => {
+        const result = selectSuggestCondition('', null, 'Netflix Subscription');
+
+        expect(result).toEqual({
+            field: RuleConditionFieldEnum.COMMENT,
+            operator: RuleConditionOperatorEnum.CONTAINS,
+            value: 'Netflix Subscription',
+            secondaryValue: null
+        });
+    });
+
+    it('should return MCC_CODE EQUALS when title is empty and no comment', () => {
         const result = selectSuggestCondition('', '5411');
 
         expect(result).toEqual({

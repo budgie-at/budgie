@@ -25,3 +25,13 @@ xcrun simctl privacy "$SIMULATOR_UDID" grant contacts com.vitalyiegorov.budgie.d
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/17-expense-to-transfer.db" "e2e-17-expense-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/18-income-to-transfer.db" "e2e-18-income-to-transfer.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/rules-base.db" "e2e-rules-base.db" "$SIMULATOR_UDID" "$APP_ID"
+
+CSV_APP_DATA="$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)"
+if [ -n "$CSV_APP_DATA" ] && [ -d "$CSV_APP_DATA" ]; then
+    CSV_TARGET_DIR="$CSV_APP_DATA/Documents/E2ECsvFixtures"
+    mkdir -p "$CSV_TARGET_DIR"
+    for csv in "$SCRIPT_DIR/../fixtures/"*.csv; do
+        [ -f "$csv" ] || continue
+        cp "$csv" "$CSV_TARGET_DIR/$(basename "$csv")"
+    done
+fi
