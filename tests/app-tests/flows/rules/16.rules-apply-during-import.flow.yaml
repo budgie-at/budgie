@@ -129,26 +129,8 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionList.Card.1.Tag'
+      id: 'TransactionCard.Tag.Subscription'
+    timeout: 10000
 
-- tapOn:
-    id: 'TransactionList.Card.1'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible: ${TAG_NAME}
-
-- tapOn:
-    id: 'GoBackButton'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionList.Card.2.CategoryBadge'
-
-- tapOn:
-    id: 'TransactionList.Card.2'
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-    visible: 'Groceries'
+- assertVisible:
+    id: 'TransactionCard.Category.Groceries'

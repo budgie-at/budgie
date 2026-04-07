@@ -30,8 +30,8 @@ interface UseSuggestRuleDetectionResult {
     readonly onDismiss: () => void;
 }
 
-const buildDismissKey = (transactionId: number, title: string, mccCode: string | null): string => {
-    const condition = selectSuggestCondition(title, mccCode);
+const buildDismissKey = (transactionId: number, title: string, comment: string, mccCode: string | null): string => {
+    const condition = selectSuggestCondition(title, mccCode, comment);
     const conditionSignature = isDefined(condition) ? `${condition.field}:${condition.value}` : 'none';
 
     return `${transactionId}:${conditionSignature}`;
@@ -81,7 +81,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         tagsChanged
     });
 
-    const dismissKey = buildDismissKey(transaction.id, transaction.title, mccCode);
+    const dismissKey = buildDismissKey(transaction.id, transaction.title, transaction.comment, mccCode);
     const wasPreviouslyDismissed = dismissedSuggestions.has(dismissKey);
 
     const mode = computeDetectionMode({

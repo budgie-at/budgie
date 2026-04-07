@@ -41,7 +41,7 @@ interface Props {
 }
 
 const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
-    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode);
+    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
 
     if (!isDefined(condition)) {
         return null;
@@ -190,7 +190,7 @@ export const RuleSuggestionCard = (props: Props) => {
             <Animated.View style={animatedStyle}>
                 <View
                     testID={SuggestRuleSelectors.Card}
-                    className="max-w-[85%] flex-row items-center gap-sm px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
+                    className="self-start flex-row items-center gap-sm px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
                 >
                     <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
                     <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
