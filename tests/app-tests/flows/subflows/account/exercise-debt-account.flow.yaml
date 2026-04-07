@@ -94,6 +94,7 @@ appId: ${APP_ID}
     element:
       id: 'AccountForm.ActiveTitle'
     direction: DOWN
+    centerElement: true
 - assertVisible:
     id: 'AccountForm.ActiveTitle'
 - tapOn:
