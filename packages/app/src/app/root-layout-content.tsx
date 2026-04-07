@@ -4,6 +4,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
+import { Fragment } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
@@ -37,6 +38,7 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { isAiEnabled } from '../@generic/utils/is-ai-enabled.util';
+import { isE2EHooksEnabled } from '../@generic/utils/is-e2e-hooks-enabled.util';
 import { AiEmbeddingProgressDisabledProvider } from '../ai/provider/ai-embedding-progress-disabled.provider';
 import { AiEmbeddingProgressProvider } from '../ai/provider/ai-embedding-progress.provider';
 import { AiStatusDisabledProvider } from '../ai/provider/ai-status-disabled.provider';
@@ -59,6 +61,7 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 const aiEnabled = isAiEnabled();
+const isE2EEnabled = isE2EHooksEnabled();
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const AiProviderWrapper: typeof LlmDisabledProvider = aiEnabled ? require('../ai/provider/llm.provider').LlmProvider : LlmDisabledProvider;
 const AiStatusProviderWrapper: typeof AiStatusProvider = aiEnabled ? AiStatusProvider : AiStatusDisabledProvider;
@@ -66,6 +69,7 @@ const AiEmbeddingProgressProviderWrapper: typeof AiEmbeddingProgressProvider = a
     ? AiEmbeddingProgressProvider
     : AiEmbeddingProgressDisabledProvider;
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
+const RuntimeProviderWrapper = isE2EEnabled ? E2ERuntimeProvider : Fragment;
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
@@ -83,7 +87,7 @@ export const RootLayoutContent = () => {
     return (
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                <E2ERuntimeProvider>
+                <RuntimeProviderWrapper>
                     <SettingsProvider>
                         <DevMenuController />
                         <ScreenshotProtectionController />
@@ -205,7 +209,7 @@ export const RootLayoutContent = () => {
                             </KeyboardProvider>
                         </I18nProvider>
                     </SettingsProvider>
-                </E2ERuntimeProvider>
+                </RuntimeProviderWrapper>
             </SQLiteProvider>
         </SafeAreaProvider>
     );

@@ -16,7 +16,7 @@ const defaultValue: E2ERuntimeOverridesInterface = {
     biometricAuthSuccess: null
 };
 
-const isEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+const isEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
 const parseBooleanQueryParam = (value: unknown) => value === 'true';
 
@@ -33,9 +33,9 @@ const parseNullableBooleanQueryParam = (value: unknown) => {
 };
 
 const buildOverridesFromQueryParams = (queryParams: Record<string, unknown> | null | undefined): E2ERuntimeOverridesInterface => ({
-    forceProtected: parseBooleanQueryParam(queryParams?.e2eForceProtected),
-    forceFaceId: parseBooleanQueryParam(queryParams?.e2eForceFaceId),
-    biometricAuthSuccess: parseNullableBooleanQueryParam(queryParams?.e2eBiometricAuthSuccess)
+    forceProtected: parseBooleanQueryParam(queryParams?.['e2eForceProtected']),
+    forceFaceId: parseBooleanQueryParam(queryParams?.['e2eForceFaceId']),
+    biometricAuthSuccess: parseNullableBooleanQueryParam(queryParams?.['e2eBiometricAuthSuccess'])
 });
 
 const getOverrides = async () => {
@@ -43,17 +43,21 @@ const getOverrides = async () => {
         return defaultValue;
     }
 
-    const initialUrl = await Linking.getInitialURL();
+    try {
+        const initialUrl = await Linking.getInitialURL();
 
-    if (typeof initialUrl === 'string' && initialUrl.length > 0) {
-        const parsedUrl = Linking.parse(initialUrl);
+        if (typeof initialUrl === 'string' && initialUrl.length > 0) {
+            const parsedUrl = Linking.parse(initialUrl);
 
-        return buildOverridesFromQueryParams(parsedUrl.queryParams);
+            return buildOverridesFromQueryParams(parsedUrl.queryParams);
+        }
+
+        const parsedInitialUrl = await Linking.parseInitialURLAsync();
+
+        return buildOverridesFromQueryParams(parsedInitialUrl.queryParams);
+    } catch {
+        return defaultValue;
     }
-
-    const parsedInitialUrl = await Linking.parseInitialURLAsync();
-
-    return buildOverridesFromQueryParams(parsedInitialUrl.queryParams);
 };
 
 export const E2ERuntimeProvider = ({ children }: Props) => {

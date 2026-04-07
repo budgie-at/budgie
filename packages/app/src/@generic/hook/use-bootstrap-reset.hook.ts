@@ -12,15 +12,15 @@ import { appResetService } from '../service/app-reset.service';
 
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 
-const isTestHooksEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
 const getBootstrapParamsFromQueryParams = (queryParams: Record<string, unknown> | null | undefined) => {
-    const resetToken = normalizeQueryString(queryParams?.e2eResetToken);
-    const fixtureId = normalizeQueryString(queryParams?.e2eImportFixture);
-    const shouldReset = queryParams?.e2eReset === 'true';
-    const shouldImportExportedCsv = queryParams?.e2eImportExportedCsv === 'true';
+    const resetToken = normalizeQueryString(queryParams?.['e2eResetToken']);
+    const fixtureId = normalizeQueryString(queryParams?.['e2eImportFixture']);
+    const shouldReset = queryParams?.['e2eReset'] === 'true';
+    const shouldImportExportedCsv = queryParams?.['e2eImportExportedCsv'] === 'true';
 
     return {
         resetToken,
