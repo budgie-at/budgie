@@ -19,6 +19,10 @@ env:
                   visible: 'Open'
                 commands:
                   - tapOn: 'Open'
+            - runFlow:
+                when:
+                  true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
+                file: handle-dev-client-startup.flow.yaml
 
       - runFlow:
           when:
