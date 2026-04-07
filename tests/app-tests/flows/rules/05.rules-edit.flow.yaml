@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 env:
   TITLE_CONTAINS_TEXT: Netflix Updated
-  CATEGORY_NAME: Test02 Category
+  CATEGORY_NAME: Rules Test Category
 ---
 
 - runFlow:
@@ -22,6 +22,7 @@ env:
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-
-- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}
-
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'

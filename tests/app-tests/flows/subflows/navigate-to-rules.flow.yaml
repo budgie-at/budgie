@@ -1,0 +1,18 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+    speed: 20
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageRulesCard'
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'

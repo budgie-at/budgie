@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '20'
-  ACCOUNT_NAME: ${ACCOUNT_NAME || 'Test20 Account'}
-  CATEGORY_NAME: ${CATEGORY_NAME || 'Test20 Category'}
-  TAG_NAME: ${TAG_NAME || 'Test20 Tag'}
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
 ---
 
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
-    env:
-      TEST_ID: ${TEST_ID}
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
-      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -33,24 +27,35 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - tapOn:
     id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
 - tapOn:
     id: RuleForm.SelectorCard.BETWEEN
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: '10'
 
 - tapOn:
+    text: 'Conditions'
+- waitForAnimationToEnd
+
+- tapOn:
     id: 'RuleForm.Condition.0.SecondaryValueInput'
 - inputText: '100'
+
+- tapOn:
+    text: 'Actions'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -61,6 +66,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'

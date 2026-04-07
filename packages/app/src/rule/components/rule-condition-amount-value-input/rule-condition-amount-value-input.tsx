@@ -8,9 +8,10 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 interface Props {
     readonly index: number;
     readonly testID?: string;
+    readonly secondaryTestID?: string;
 }
 
-export const RuleConditionAmountValueInput = ({ index, testID }: Props) => {
+export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const operator = useWatch({ control, name: `conditions.${index}.operator` });
@@ -31,7 +32,7 @@ export const RuleConditionAmountValueInput = ({ index, testID }: Props) => {
         const numericValue = parseFloat(value ?? '') || 0;
         const handleChange = (amount: number) => void onChange(amount.toString());
 
-        return <AmountInput value={numericValue} onChangeValue={handleChange} placeholder={t`Enter amount...`} />;
+        return <AmountInput testID={secondaryTestID} value={numericValue} onChangeValue={handleChange} placeholder={t`Enter amount...`} />;
     };
 
     return (

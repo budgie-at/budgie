@@ -1,12 +1,11 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '15'
   CATEGORY_NAME: Groceries
   CSV_DISPLAY_NAME: test15-suggested-rule
 ---
 
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
 
 - runFlow:
     file: ../shared/import-test-transactions.flow.yaml
@@ -49,7 +48,7 @@ env:
 - waitForAnimationToEnd
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - extendedWaitUntil:
     visible:

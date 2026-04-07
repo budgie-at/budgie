@@ -1,12 +1,11 @@
 appId: ${APP_ID}
 env:
-  TEST_ID: '25'
   CATEGORY_NAME: Groceries
   CSV_DISPLAY_NAME: test25-duplicate-rule
 ---
 
 - runFlow:
-    file: ../shared/enter-app.flow.yaml
+    file: ../subflows/enter-app.flow.yaml
 
 - runFlow:
     file: ../shared/import-test-transactions.flow.yaml
@@ -52,7 +51,7 @@ env:
 
 # Verify rule was created by navigating to rules page
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ../subflows/navigate-to-rules.flow.yaml
 
 - extendedWaitUntil:
     visible:
