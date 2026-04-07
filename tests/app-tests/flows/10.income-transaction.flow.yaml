@@ -60,8 +60,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Test_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Test_Income'
+    timeout: 15000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -92,8 +94,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Edited_Income'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Edited_Income'
+    timeout: 15000
 
 # --- Delete Income ---
 

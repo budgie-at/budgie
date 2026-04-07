@@ -33,6 +33,7 @@ export default function ConvertToTransferModal() {
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
     const excludeAccountId = currentParams?.excludeAccountId ?? 0;
     const sourceAmount = currentParams?.sourceAmount ?? 0;
+    const skipPostConvertNavigation = currentParams?.skipPostConvertNavigation === true;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const colorVariant = isExpense ? 'default' : 'positive';
@@ -92,14 +93,18 @@ export default function ConvertToTransferModal() {
                 await convertIncomeMutation(convertParams);
             }
 
-            resolveConvertToTransfer(true, { skipBack: true });
-            const transferRoute = `/transactions/${transactionId}/transfer` as const;
+            if (skipPostConvertNavigation) {
+                resolveConvertToTransfer(true);
+            } else {
+                resolveConvertToTransfer(true, { skipBack: true });
+                const transferRoute = `/transactions/${transactionId}/transfer` as const;
 
-            if (router.canDismiss()) {
-                router.dismissAll();
+                if (router.canDismiss()) {
+                    router.dismissAll();
+                }
+
+                router.replace(transferRoute);
             }
-
-            router.replace(transferRoute);
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
         }

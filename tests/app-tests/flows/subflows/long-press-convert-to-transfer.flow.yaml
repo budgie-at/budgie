@@ -1,0 +1,12 @@
+appId: ${APP_ID}
+---
+- longPressOn:
+    id: ${TRANSACTION_CARD_ID}
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionContextMenu.ConvertToTransferButton'
+
+- tapOn:
+    id: 'TransactionContextMenu.ConvertToTransferButton'
+- waitForAnimationToEnd

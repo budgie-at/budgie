@@ -47,7 +47,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionFilters.CategorySearchInput'
 - inputText: 'Income Category'
-- hideKeyboard
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.CategoryOption.E2E Filter Income Category'
@@ -73,7 +73,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionFilters.CategorySearchInput'
 - inputText: 'Income Category'
-- hideKeyboard
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.CategoryOption.E2E Filter Income Category'
@@ -97,7 +97,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionFilters.TagSearchInput'
 - inputText: 'Expense Tag'
-- hideKeyboard
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.TagOption.E2E Filter Expense Tag'

@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { LayoutChangeEvent, Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -27,12 +28,14 @@ const EXPANDED_SCALE_MIN = 0.9;
 const EXPANDED_TRANSLATE_Y = -20;
 const COLLAPSED_TRANSLATE_Y = 10;
 
+// eslint-disable-next-line max-statements, max-lines-per-function -- Animated header with multiple interpolated styles
 export const CollapsibleHeader = ({ scrollY }: Props) => {
     const { top } = useSafeAreaInsets();
     const { defaultInstrument, decimalPlaces } = useSettingsContext();
     const netWorth = useNetWorthQuery();
     const showCents = useSetting('showCents');
     const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
     const netWorthValueTestID = HomePageSelectors.NetWorthValue(netWorth);
@@ -80,6 +83,11 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     }));
 
     const containerStyle = { paddingTop: top };
+    const availableTickerWidth = Math.max(expandedHeaderWidth - 40, 0);
+
+    const handleExpandedHeaderLayout = (event: LayoutChangeEvent) => {
+        setExpandedHeaderWidth(event.nativeEvent.layout.width);
+    };
 
     return (
         <View style={containerStyle}>
@@ -98,7 +106,11 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                     </ProtectedText>
                 </Animated.View>
 
-                <Animated.View className="absolute inset-x-0 top-0 bottom-0 px-5xl items-center justify-center" style={expandedHeaderStyle}>
+                <Animated.View
+                    className="absolute inset-x-0 top-0 bottom-0 px-5xl items-center justify-center"
+                    style={expandedHeaderStyle}
+                    onLayout={handleExpandedHeaderLayout}
+                >
                     <Text className="text-xs uppercase text-secondary-foreground mb-md">
                         <Trans>Total Balance</Trans>
                     </Text>
@@ -109,6 +121,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
                             minFontSize={24}
                             maxFontSize={60}
                             instrumentSymbol={defaultInstrument.symbol}
+                            availableWidth={availableTickerWidth}
                         >
                             {netWorth}
                         </ProtectedMoney>
