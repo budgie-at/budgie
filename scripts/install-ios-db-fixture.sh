@@ -28,6 +28,13 @@ cleanup() {
 trap cleanup EXIT
 
 prepare_fixture_copy() {
+    case "$TARGET_NAME" in
+    *.db) ;;
+    *)
+        return 0
+        ;;
+    esac
+
     if ! command -v sqlite3 >/dev/null 2>&1; then
         if [ "$TARGET_NAME" = "e2e-20-transactions-account-date.db" ]; then
             echo "sqlite3 is required to normalize $TARGET_NAME" >&2
