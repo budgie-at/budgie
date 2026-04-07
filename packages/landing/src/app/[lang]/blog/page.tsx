@@ -7,7 +7,7 @@ import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
 import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { Motion } from '../../../generic/component/motion/motion';
-import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
+import { BASE_URL, LOCALES, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
@@ -30,11 +30,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         alternates: {
             canonical: `${BASE_URL}/${lang}/blog`,
             languages: {
-                en: `${BASE_URL}/en/blog`,
-                uk: `${BASE_URL}/uk/blog`,
-                fr: `${BASE_URL}/fr/blog`,
-                de: `${BASE_URL}/de/blog`,
-                es: `${BASE_URL}/es/blog`
+                ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}/blog`])),
+                'x-default': `${BASE_URL}/en/blog`
             }
         },
         openGraph: {
