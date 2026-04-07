@@ -13,7 +13,7 @@ import { calculateReadingTime } from '../../../../blog/util/calculate-reading-ti
 import { getArticles } from '../../../../blog/util/get-articles.util';
 import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../../generic/component/motion/motion';
-import { BASE_URL, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
+import { BASE_URL, LOCALES, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 import { Button } from '../../../../ui/button';
@@ -31,8 +31,13 @@ export async function generateStaticParams() {
     return articles.map(article => ({ slug: article.slug }));
 }
 
-const getPost = async (slug: string, lang: string): Promise<BlogDataInterface> =>
-    (await import(`../../../../blog/content/${slug}/content.${lang}.mdx`)) as BlogDataInterface;
+const getPost = async (slug: string, lang: string): Promise<BlogDataInterface> => {
+    try {
+        return (await import(`../../../../blog/content/${slug}/content.${lang}.mdx`)) as BlogDataInterface;
+    } catch {
+        return (await import(`../../../../blog/content/${slug}/content.en.mdx`)) as BlogDataInterface;
+    }
+};
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -54,11 +59,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         alternates: {
             canonical: `${BASE_URL}/${lang}/blog/${slug}`,
             languages: {
-                en: `${BASE_URL}/en/blog/${slug}`,
-                uk: `${BASE_URL}/uk/blog/${slug}`,
-                fr: `${BASE_URL}/fr/blog/${slug}`,
-                de: `${BASE_URL}/de/blog/${slug}`,
-                es: `${BASE_URL}/es/blog/${slug}`
+                ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}/blog/${slug}`])),
+                'x-default': `${BASE_URL}/en/blog/${slug}`
             }
         },
         openGraph: {

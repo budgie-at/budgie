@@ -17,7 +17,10 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
             changeFrequency: page === '' ? ('weekly' as const) : ('monthly' as const),
             priority: page === '' ? 1 : 0.8,
             alternates: {
-                languages: Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}${page}`]))
+                languages: {
+                    ...Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}${page}`])),
+                    'x-default': `${BASE_URL}/en${page}`
+                }
             }
         }))
     );
@@ -29,7 +32,10 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
             changeFrequency: 'monthly' as const,
             priority: 0.7,
             alternates: {
-                languages: Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}/blog/${article.slug}`]))
+                languages: {
+                    ...Object.fromEntries(locales.map(altLocale => [altLocale, `${BASE_URL}/${altLocale}/blog/${article.slug}`])),
+                    'x-default': `${BASE_URL}/en/blog/${article.slug}`
+                }
             }
         }))
     );

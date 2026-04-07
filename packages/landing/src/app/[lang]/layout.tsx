@@ -6,7 +6,7 @@ import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
-import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { BASE_URL, LOCALES, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
@@ -90,11 +90,8 @@ export async function generateMetadata(props: Props) {
         alternates: {
             canonical: `${BASE_URL}/${lang}`,
             languages: {
-                en: `${BASE_URL}/en`,
-                uk: `${BASE_URL}/uk`,
-                fr: `${BASE_URL}/fr`,
-                de: `${BASE_URL}/de`,
-                es: `${BASE_URL}/es`
+                ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}`])),
+                'x-default': `${BASE_URL}/en`
             }
         },
         openGraph: {
