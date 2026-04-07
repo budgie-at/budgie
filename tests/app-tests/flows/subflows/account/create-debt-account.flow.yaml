@@ -28,7 +28,6 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 
-- hideKeyboard
 - tapOn: 'Debt Account'
 - scrollUntilVisible:
     element:

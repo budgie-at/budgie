@@ -12,7 +12,6 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
-- hideKeyboard
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
 - waitForAnimationToEnd
 
@@ -38,6 +37,12 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_AMOUNT}
 
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
