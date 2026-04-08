@@ -7,15 +7,15 @@ env:
 - retry:
     maxRetries: 2
     commands:
-      - stopApp
-
-      - openLink: 'budgie://?e2eResetToken=${MAESTRO_FILENAME}-${FIXTURE_ID}-${E2E_RUN_TOKEN}&e2eImportFixture=${FIXTURE_ID}'
-
-      - runFlow:
-          when:
-            visible: 'Open'
-          commands:
-            - tapOn: 'Open'
+      - launchApp:
+          appId: ${APP_ID}
+          clearState: false
+          permissions:
+            contacts: allow
+            microphone: allow
+          arguments:
+            e2eResetToken: '${MAESTRO_FILENAME}-${FIXTURE_ID}-${E2E_RUN_TOKEN}'
+            e2eImportFixture: '${FIXTURE_ID}'
 
       - retry:
           maxRetries: 3

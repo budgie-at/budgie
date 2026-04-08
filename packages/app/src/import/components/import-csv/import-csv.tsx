@@ -8,8 +8,8 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
+import { isE2ECsvModeEnabled } from '../../../@e2e/util/is-e2e-csv-mode-enabled.util';
 import { appE2ECsvService } from '../../../@generic/service/app-e2e-csv.service';
-import { isE2EHooksEnabled } from '../../../@generic/utils/is-e2e-hooks-enabled.util';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
 export const ImportCsv = () => {
@@ -19,7 +19,7 @@ export const ImportCsv = () => {
     const handleSelectAndNavigate = async () => {
         setIsLoading(true);
         try {
-            if (isE2EHooksEnabled()) {
+            if (isE2ECsvModeEnabled()) {
                 router.push({ pathname: '/settings/import', params: { fileUri: appE2ECsvService.getImportFixtureUri() } });
 
                 return;

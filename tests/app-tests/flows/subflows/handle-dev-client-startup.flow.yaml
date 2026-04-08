@@ -37,3 +37,9 @@ appId: ${APP_ID}
       visible: 'Close'
     commands:
       - tapOn: 'Close'
+
+- runFlow:
+    when:
+      visible: '.*Microphone.*'
+    commands:
+      - tapOn: 'Allow'

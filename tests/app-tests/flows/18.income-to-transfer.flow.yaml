@@ -64,6 +64,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Income_Source.100'
 
+- runFlow: subflows/relaunch-app.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
 - tapOn:

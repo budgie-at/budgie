@@ -23,6 +23,7 @@ import * as schema from './schema';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
+import { isE2EHooksEnabled } from '../../utils/is-e2e-hooks-enabled.util';
 
 import type { DB } from '@budgie/contracts';
 
@@ -35,7 +36,9 @@ const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
     const pin = SecureStore.getItem(PIN_KEY);
-    if (isNotEmptyString(pin)) {
+    const shouldApplyDbKey = !isE2EHooksEnabled() && isNotEmptyString(pin);
+
+    if (shouldApplyDbKey) {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
 

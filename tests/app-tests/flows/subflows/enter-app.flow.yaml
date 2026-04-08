@@ -12,8 +12,15 @@ env:
           when:
             true: ${USE_APP_OWNED_RESET === 'true'}
           commands:
-            - stopApp
-            - openLink: 'budgie://?e2eReset=true&e2eResetToken=${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}'
+            - launchApp:
+                appId: ${APP_ID}
+                clearState: false
+                permissions:
+                  contacts: allow
+                  microphone: allow
+                arguments:
+                  e2eReset: true
+                  e2eResetToken: '${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}'
             - retry:
                 maxRetries: 3
                 commands:
@@ -25,7 +32,10 @@ env:
             true: ${USE_APP_OWNED_RESET !== 'true'}
           commands:
             - clearState
-            - launchApp
+            - launchApp:
+                permissions:
+                  contacts: allow
+                  microphone: allow
             - retry:
                 maxRetries: 3
                 commands:

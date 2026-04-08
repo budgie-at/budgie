@@ -17,13 +17,10 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ScreenshotProtectionSwitch'
 
-- stopApp
-- openLink: budgie://?e2eForceProtected=true
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn: 'Open'
+- launchApp:
+    permissions:
+      contacts: allow
+      microphone: allow
 - retry:
     maxRetries: 3
     commands:
@@ -33,6 +30,15 @@ appId: ${APP_ID}
     visible:
       id: 'HomePage.TotalBalance'
     timeout: 30000
+- launchApp:
+    appId: ${APP_ID}
+    clearState: false
+    permissions:
+      contacts: allow
+      microphone: allow
+    arguments:
+      e2eForceProtected: true
+- waitForAnimationToEnd
 
 - assertNotVisible: '$350.00'
 
@@ -47,8 +53,10 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'SettingsPage.ScreenshotProtectionSwitch'
 
-- stopApp
-- launchApp
+- launchApp:
+    permissions:
+      contacts: allow
+      microphone: allow
 - retry:
     maxRetries: 3
     commands:
