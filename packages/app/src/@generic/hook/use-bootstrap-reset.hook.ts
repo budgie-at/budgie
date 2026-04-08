@@ -153,7 +153,12 @@ const runCsvImportBootstrapAction = async (resetToken: string, shouldImportExpor
     return false;
 };
 
-const runImportBootstrapAction = async (fixtureId: string, resetToken: string, shouldImportExportedCsv: boolean, shouldImportFixtureCsv: boolean) => {
+const runImportBootstrapAction = async (
+    fixtureId: string,
+    resetToken: string,
+    shouldImportExportedCsv: boolean,
+    shouldImportFixtureCsv: boolean
+) => {
     const didImportFixture = await runFixtureImportBootstrapAction(fixtureId, resetToken);
 
     if (didImportFixture) {
@@ -180,12 +185,7 @@ const runBootstrapAction = async ({
         await appResetService.clearAllData();
     }
 
-    const didRunImportAction = await runImportBootstrapAction(
-        fixtureId,
-        resetToken,
-        shouldImportExportedCsv,
-        shouldImportFixtureCsv
-    );
+    const didRunImportAction = await runImportBootstrapAction(fixtureId, resetToken, shouldImportExportedCsv, shouldImportFixtureCsv);
 
     if (didRunImportAction) {
         return;
