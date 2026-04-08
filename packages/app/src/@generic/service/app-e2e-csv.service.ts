@@ -13,6 +13,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../drizzle/db/db';
+import { readTextFileFromUri } from '../utils/read-text-file-from-uri.util';
 
 const E2E_FIXTURES_FOLDER = String.raw`E2EFixtures`;
 const E2E_CSV_IMPORT_FILE = String.raw`e2e-budgie-import.csv`;
@@ -39,6 +40,10 @@ class AppE2ECsvService {
         await this.importBudgieCsvFromUri(exportFile.uri);
     }
 
+    async importFixtureCsv(): Promise<void> {
+        await this.importBudgieCsvFromUri(this.getImportFixtureUri());
+    }
+
     saveExportedCsv(csvContent: string): string {
         const exportFile = new File(Paths.cache, E2E_CSV_EXPORT_FILE);
 
@@ -53,8 +58,7 @@ class AppE2ECsvService {
     }
 
     async importBudgieCsvFromUri(sourceUri: string): Promise<void> {
-        const response = await fetch(sourceUri);
-        const csvText = await response.text();
+        const csvText = await readTextFileFromUri(sourceUri);
         const totalRows = await countCsvRows(csvText);
         const importer = new ImporterService(IMPORT_PRESETS[ImportPresetEnum.Budgie]);
 

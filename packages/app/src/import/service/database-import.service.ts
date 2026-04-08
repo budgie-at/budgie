@@ -1,9 +1,9 @@
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
-import * as Updates from 'expo-updates';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
+import { reloadApp } from '../../@generic/utils/reload-app.util';
 
 class DatabaseImportService {
     async replaceFromUri(sourceUri: string): Promise<void> {
@@ -22,7 +22,7 @@ class DatabaseImportService {
 
     async importFromUri(sourceUri: string): Promise<void> {
         await this.replaceFromUri(sourceUri);
-        await Updates.reloadAsync();
+        await reloadApp();
     }
 
     private clearDatabaseGlobals() {

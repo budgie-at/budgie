@@ -60,9 +60,8 @@ appId: ${APP_ID}
     timeout: 15000
 
 - back
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
+- runFlow: subflows/relaunch-app.flow.yaml
+- runFlow: subflows/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
