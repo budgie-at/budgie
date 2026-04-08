@@ -5,12 +5,36 @@ import localFont from 'next/font/local';
 import linguiConfig from '../../../lingui.config.mjs';
 import { Footer } from '../../generic/component/footer/footer';
 import { Header } from '../../generic/component/header/header';
+import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { ThemeProvider } from '../../providers/theme-provider';
 
 import type { ReactNode } from 'react';
+
+/* eslint-disable lingui/no-unlocalized-strings */
+const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Budgie',
+    url: 'https://budgie.app',
+    logo: 'https://budgie.app/logo/black-on-white.svg',
+    sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
+};
+
+const webSiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Budgie',
+    url: 'https://budgie.app',
+    potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://budgie.app/en/blog?query={search_term_string}',
+        'query-input': 'required name=search_term_string'
+    }
+};
+/* eslint-enable lingui/no-unlocalized-strings */
 
 const fixelDisplay = localFont({
     src: [
@@ -68,7 +92,8 @@ export async function generateStaticParams() {
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props) {
-    const i18n = getI18nInstance((await props.params).lang);
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
 
     return {
         title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
@@ -83,13 +108,24 @@ export async function generateMetadata(props: Props) {
         publisher: i18n._(msg`Budgie`),
         // eslint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
+        alternates: {
+            canonical: `https://budgie.app/${lang}`,
+            languages: {
+                en: 'https://budgie.app/en',
+                uk: 'https://budgie.app/uk',
+                fr: 'https://budgie.app/fr',
+                de: 'https://budgie.app/de',
+                es: 'https://budgie.app/es',
+                'x-default': 'https://budgie.app/en'
+            }
+        },
         openGraph: {
             title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
             description: i18n._(
                 msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
             ),
             type: 'website',
-            locale: 'en_US'
+            locale: lang
         },
         twitter: {
             card: 'summary_large_image',
@@ -109,6 +145,8 @@ export default async function RootLayout({ params, children }: Props) {
     return (
         <html lang={lang} suppressHydrationWarning>
             <body className={fixelDisplay.className}>
+                <JsonLd data={organizationSchema} />
+                <JsonLd data={webSiteSchema} />
                 <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                         <div className="flex min-h-dvh flex-col">

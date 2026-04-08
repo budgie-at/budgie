@@ -1,15 +1,64 @@
+import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
 import { Suspense } from 'react';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
 import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { Motion } from '../../../generic/component/motion/motion';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+
+import type { Metadata } from 'next';
 
 interface Props extends PageLangParam {
     searchParams: Promise<{ query?: string; page?: string }>;
+}
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: Props): Promise<Metadata> {
+    const { lang } = await props.params;
+    const { query } = await props.searchParams;
+
+    const i18n = getI18nInstance(lang);
+
+    return {
+        title: i18n._(msg`Blog & Insights | Budgie`),
+        description: i18n._(
+            msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
+        ),
+        keywords: i18n._(msg`budgie blog, financial privacy, expense tracking tips, security best practices, personal finance`),
+        // eslint-disable-next-line lingui/no-unlocalized-strings
+        robots: isNotEmptyString(query) ? 'noindex, follow' : 'index, follow',
+        alternates: {
+            canonical: `https://budgie.app/${lang}/blog`,
+            languages: {
+                en: 'https://budgie.app/en/blog',
+                uk: 'https://budgie.app/uk/blog',
+                fr: 'https://budgie.app/fr/blog',
+                de: 'https://budgie.app/de/blog',
+                es: 'https://budgie.app/es/blog',
+                'x-default': 'https://budgie.app/en/blog'
+            }
+        },
+        openGraph: {
+            title: i18n._(msg`Blog & Insights | Budgie`),
+            description: i18n._(
+                msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
+            ),
+            type: 'website'
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: i18n._(msg`Blog & Insights | Budgie`),
+            description: i18n._(
+                msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
+            )
+        }
+    };
 }
 
 // eslint-disable-next-line max-lines-per-function

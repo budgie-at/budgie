@@ -11,6 +11,7 @@ import { isDefined } from '@rnw-community/shared';
 import { BlogDataInterface } from '../../../../blog/interface/blog-data.interface';
 import { calculateReadingTime } from '../../../../blog/util/calculate-reading-time.util';
 import { getArticles } from '../../../../blog/util/get-articles.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -49,6 +50,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],
+        alternates: {
+            canonical: `https://budgie.app/${lang}/blog/${slug}`,
+            languages: {
+                en: `https://budgie.app/en/blog/${slug}`,
+                uk: `https://budgie.app/uk/blog/${slug}`,
+                fr: `https://budgie.app/fr/blog/${slug}`,
+                de: `https://budgie.app/de/blog/${slug}`,
+                es: `https://budgie.app/es/blog/${slug}`,
+                'x-default': `https://budgie.app/en/blog/${slug}`
+            }
+        },
         openGraph: {
             title: metadata.title,
             description: metadata.seo.metaDescription,
@@ -89,8 +101,59 @@ export default async function BlogArticlePage(props: Props) {
 
     const readingTime = calculateReadingTime(Post.toString());
 
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const blogPostingSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: metadata.title,
+        description: metadata.description,
+        datePublished: metadata.date,
+        author: {
+            '@type': 'Person',
+            name: metadata.author
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Budgie',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://budgie.app/logo/black-on-white.svg'
+            }
+        },
+        image: metadata.image ?? '',
+        keywords: metadata.tags.join(', ')
+    };
+
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: `https://budgie.app/${lang}`
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Blog',
+                item: `https://budgie.app/${lang}/blog`
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: metadata.title,
+                item: `https://budgie.app/${lang}/blog/${slug}`
+            }
+        ]
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
+
     return (
         <main className="flex-1">
+            <JsonLd data={blogPostingSchema} />
+            <JsonLd data={breadcrumbSchema} />
             <article className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-4xl">
                     <Motion>

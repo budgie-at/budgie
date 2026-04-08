@@ -1,10 +1,26 @@
+import { msg } from '@lingui/core/macro';
 import { ReactNode } from 'react';
 
 import { Motion } from '../../../generic/component/motion/motion';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+
+import type { Metadata } from 'next';
 
 interface LegalLayoutProps extends PageLangParam {
     children: ReactNode;
+}
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: LegalLayoutProps): Promise<Metadata> {
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
+
+    return {
+        title: i18n._(msg`Legal | Budgie`),
+        // eslint-disable-next-line lingui/no-unlocalized-strings
+        robots: 'noindex, nofollow'
+    };
 }
 
 export default async function LegalLayout(props: LegalLayoutProps) {
