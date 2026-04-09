@@ -46,7 +46,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     }
 
     return {
-        title: `${metadata.title} | ${i18n._(msg`Budgie Blog`)}`,
+        title: metadata.title,
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],
@@ -68,7 +68,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
             publishedTime: metadata.date,
             authors: [metadata.author],
             tags: metadata.tags,
-            images: metadata.image ? [{ url: metadata.image }] : []
+            images: metadata.image ? [{ url: metadata.image }] : [],
+            locale: lang
         },
         twitter: {
             card: 'summary_large_image',
@@ -108,6 +109,11 @@ export default async function BlogArticlePage(props: Props) {
         headline: metadata.title,
         description: metadata.description,
         datePublished: metadata.date,
+        dateModified: metadata.date,
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://budgie.app/${lang}/blog/${slug}`
+        },
         author: {
             '@type': 'Person',
             name: metadata.author

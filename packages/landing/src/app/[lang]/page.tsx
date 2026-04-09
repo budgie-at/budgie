@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+
 import { AiSection } from '../../generic/component/ai-section/ai-section';
 import { AnalyticsSection } from '../../generic/component/analytics-section/analytics-section';
 import { BlogSection } from '../../generic/component/blog-section/blog-section';
@@ -16,7 +18,23 @@ import { SecuritySection } from '../../generic/component/security-section/securi
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
 import { TrustBanner } from '../../generic/component/trust-banner/trust-banner';
 import { UspPillarsSection } from '../../generic/component/usp-pillars-section/usp-pillars-section';
+import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
+
+import type { Metadata } from 'next';
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
+
+    return {
+        title: { absolute: i18n._(msg`Budgie - Privacy-First Offline Expense Tracker`) },
+        description: i18n._(
+            msg`Budgie keeps your financial data on your device. Track expenses, sync banks, manage crypto & investments - all offline, encrypted, and private. No cloud, no data mining.`
+        )
+    };
+}
 
 /* eslint-disable lingui/no-unlocalized-strings */
 const softwareApplicationSchema = {

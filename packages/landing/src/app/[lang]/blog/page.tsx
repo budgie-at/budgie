@@ -8,6 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
 import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
+import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
@@ -15,24 +16,26 @@ import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 import type { Metadata } from 'next';
 
 interface Props extends PageLangParam {
-    searchParams: Promise<{ query?: string; page?: string }>;
+    searchParams: Promise<{ q?: string; page?: string }>;
 }
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props): Promise<Metadata> {
     const { lang } = await props.params;
-    const { query } = await props.searchParams;
+    const { q: query, page } = await props.searchParams;
 
     const i18n = getI18nInstance(lang);
 
+    const shouldNoIndex = isNotEmptyString(query) || Number(page) > 1;
+
     return {
-        title: i18n._(msg`Blog & Insights | Budgie`),
+        title: i18n._(msg`Blog & Insights`),
         description: i18n._(
             msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
         ),
         keywords: i18n._(msg`budgie blog, financial privacy, expense tracking tips, security best practices, personal finance`),
         // eslint-disable-next-line lingui/no-unlocalized-strings
-        robots: isNotEmptyString(query) ? 'noindex, follow' : 'index, follow',
+        robots: shouldNoIndex ? 'noindex, follow' : 'index, follow',
         alternates: {
             canonical: `https://budgie.app/${lang}/blog`,
             languages: {
@@ -45,7 +48,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
             }
         },
         openGraph: {
-            title: i18n._(msg`Blog & Insights | Budgie`),
+            title: i18n._(msg`Blog & Insights`),
             description: i18n._(
                 msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
             ),
@@ -53,7 +56,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         },
         twitter: {
             card: 'summary_large_image',
-            title: i18n._(msg`Blog & Insights | Budgie`),
+            title: i18n._(msg`Blog & Insights`),
             description: i18n._(
                 msg`Articles about financial privacy, security best practices, and tips for managing your expenses with Budgie.`
             )
@@ -64,9 +67,30 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 // eslint-disable-next-line max-lines-per-function
 export default async function BlogPage(props: Props) {
     const { lang } = await props.params;
-    const { query = '', page = '1' } = await props.searchParams;
+    const { q: query = '', page = '1' } = await props.searchParams;
 
     initLingui(lang);
+
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: `https://budgie.app/${lang}`
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Blog',
+                item: `https://budgie.app/${lang}/blog`
+            }
+        ]
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
 
     const allArticles = getArticles();
     const searchQuery = query.toLowerCase() || '';
@@ -88,6 +112,7 @@ export default async function BlogPage(props: Props) {
 
     return (
         <main className="flex-1">
+            <JsonLd data={breadcrumbSchema} />
             <section className="w-full py-20 md:py-32 overflow-hidden">
                 <div className="container px-4 md:px-6">
                     <Motion className="text-center mb-12">
