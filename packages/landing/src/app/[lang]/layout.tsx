@@ -23,17 +23,17 @@ const organizationSchema = {
     sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
 };
 
-const webSiteSchema = {
+const createWebSiteSchema = (lang: string) => ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Budgie',
     url: 'https://budgie.app',
     potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://budgie.app/en/blog?query={search_term_string}',
+        target: `https://budgie.app/${lang}/blog?q={search_term_string}`,
         'query-input': 'required name=search_term_string'
     }
-};
+});
 /* eslint-enable lingui/no-unlocalized-strings */
 
 const fixelDisplay = localFont({
@@ -96,7 +96,11 @@ export async function generateMetadata(props: Props) {
     const i18n = getI18nInstance(lang);
 
     return {
-        title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
+        title: {
+            default: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
+            // eslint-disable-next-line lingui/no-unlocalized-strings
+            template: '%s | Budgie'
+        },
         description: i18n._(
             msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device.`
         ),
@@ -146,7 +150,7 @@ export default async function RootLayout({ params, children }: Props) {
         <html lang={lang} suppressHydrationWarning>
             <body className={fixelDisplay.className}>
                 <JsonLd data={organizationSchema} />
-                <JsonLd data={webSiteSchema} />
+                <JsonLd data={createWebSiteSchema(lang)} />
                 <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                         <div className="flex min-h-dvh flex-col">

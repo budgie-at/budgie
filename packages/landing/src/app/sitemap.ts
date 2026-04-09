@@ -21,24 +21,6 @@ const sitemap = (): MetadataRoute.Sitemap => {
             lastModified: currentDate,
             changeFrequency: 'weekly' as const,
             priority: 0.8
-        },
-        {
-            url: `${BASE_URL}/${locale}/legal/privacy-policy`,
-            lastModified: currentDate,
-            changeFrequency: 'yearly' as const,
-            priority: 0.3
-        },
-        {
-            url: `${BASE_URL}/${locale}/legal/terms-of-service`,
-            lastModified: currentDate,
-            changeFrequency: 'yearly' as const,
-            priority: 0.3
-        },
-        {
-            url: `${BASE_URL}/${locale}/legal/license`,
-            lastModified: currentDate,
-            changeFrequency: 'yearly' as const,
-            priority: 0.3
         }
     ]);
 

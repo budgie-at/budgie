@@ -17,7 +17,7 @@ export async function generateMetadata(props: LegalLayoutProps): Promise<Metadat
     const i18n = getI18nInstance(lang);
 
     return {
-        title: i18n._(msg`Legal | Budgie`),
+        title: i18n._(msg`Legal`),
         // eslint-disable-next-line lingui/no-unlocalized-strings
         robots: 'noindex, nofollow'
     };
