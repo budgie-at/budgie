@@ -9,6 +9,7 @@ export const ERSTE_CLASSIC_BALANCE_AMOUNT_REGEX = /(\d[\d.,]*)$/u;
 
 export const ERSTE_MODERN_FORMAT_MARKER = 'Buchungstext/Booking Text';
 export const ERSTE_MODERN_TRANSACTION_DATE_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+([\d.,]+)(-)?$/u;
+export const ERSTE_MODERN_INLINE_TRANSACTION_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+([\d.,]+)(-)?$/u;
 export const ERSTE_MODERN_END_MARKER = 'Neuer Kontostand/New Balance';
 export const ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT = 3;
 export const ERSTE_MODERN_BALANCE_AMOUNT_REGEX = /^\d[\d.,]*$/u;
