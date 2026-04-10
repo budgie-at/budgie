@@ -20,3 +20,25 @@ appId: ${APP_ID}
 # --- Settings Tab Renders ---
 
 - runFlow: subflows/navigate-to-settings.flow.yaml
+
+# --- Rules Empty State ---
+
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+    speed: 20
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'SettingsPage.ManageRulesCard'
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+- assertVisible:
+    text: 'No Rules Yet'
+- assertVisible:
+    text: 'Create rules to automatically categorize and tag your bank transactions'
