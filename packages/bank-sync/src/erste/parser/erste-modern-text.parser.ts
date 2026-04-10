@@ -6,6 +6,7 @@ import {
     ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT,
     ERSTE_MODERN_END_MARKER,
     ERSTE_MODERN_FORMAT_MARKER,
+    ERSTE_MODERN_INLINE_TRANSACTION_REGEX,
     ERSTE_MODERN_TRANSACTION_DATE_REGEX
 } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
@@ -80,17 +81,35 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         let descriptionLines: string[] = [];
 
         for (const line of lines) {
-            const transactionMatch = line.match(ERSTE_MODERN_TRANSACTION_DATE_REGEX);
+            const standardMatch = line.match(ERSTE_MODERN_TRANSACTION_DATE_REGEX);
 
-            if (isDefined(transactionMatch)) {
-                const transaction = this.createTransaction(transactionMatch, descriptionLines);
+            if (isDefined(standardMatch)) {
+                const transaction = this.createStandardTransaction(standardMatch, descriptionLines);
 
                 if (isDefined(transaction)) {
                     transactions.push(transaction);
                 }
 
                 descriptionLines = [];
-            } else if (isNotEmptyString(line)) {
+
+                continue;
+            }
+
+            const inlineMatch = line.match(ERSTE_MODERN_INLINE_TRANSACTION_REGEX);
+
+            if (isDefined(inlineMatch)) {
+                const transaction = this.createInlineTransaction(inlineMatch);
+
+                if (isDefined(transaction)) {
+                    transactions.push(transaction);
+                }
+
+                descriptionLines = [];
+
+                continue;
+            }
+
+            if (isNotEmptyString(line)) {
                 descriptionLines.push(line);
             }
         }
@@ -98,7 +117,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         return transactions;
     }
 
-    private createTransaction(match: RegExpMatchArray, descriptionLines: string[]): ErsteRowInterface | null {
+    private createStandardTransaction(match: RegExpMatchArray, descriptionLines: string[]): ErsteRowInterface | null {
         const [, day, month, year, amount, debitMarker] = match;
 
         if (!isNotEmptyString(day) || !isNotEmptyString(month) || !isNotEmptyString(year) || !isNotEmptyString(amount)) {
@@ -117,6 +136,33 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
             reference,
             description,
             details,
+            amount: parsedAmount,
+            isCredit: !isDebit
+        };
+    }
+
+    private createInlineTransaction(match: RegExpMatchArray): ErsteRowInterface | null {
+        const [, description, day, month, year, amount, debitMarker] = match;
+
+        if (
+            !isNotEmptyString(description) ||
+            !isNotEmptyString(day) ||
+            !isNotEmptyString(month) ||
+            !isNotEmptyString(year) ||
+            !isNotEmptyString(amount)
+        ) {
+            return null;
+        }
+
+        const isDebit = debitMarker === '-';
+        const parsedAmount = parseErsteAmount(amount, isDebit);
+        const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), 12, 0, 0);
+
+        return {
+            date,
+            reference: description,
+            description,
+            details: '',
             amount: parsedAmount,
             isCredit: !isDebit
         };
