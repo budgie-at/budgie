@@ -1,0 +1,1027 @@
+appId: ${APP_ID}
+env:
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+  TAG_NAME: Rules Test Tag
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+
+- runFlow:
+    file: ../subflows/navigate-to-rules.flow.yaml
+
+# --- Create Basic Rule (title contains "Netflix" → set category) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: Netflix
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Edit Rule (change condition value to "Netflix Updated") ---
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- eraseText
+- inputText: Netflix Updated
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Toggle Enabled/Disabled ---
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# --- Delete Rule (swipe-to-delete, verify empty state) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+- assertVisible:
+    text: 'No Rules Yet'
+- assertVisible:
+    text: 'Create rules to automatically categorize and tag your bank transactions'
+
+# --- Create Rule with Multiple Conditions (title + comment) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: Spotify
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- tapOn: Comment
+
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: Premium
+
+- tapOn: return
+
+- assertVisible:
+    text: 'Match All'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- Create Rule with Multiple Actions (category + tag) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: Amazon
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ActionSection.AddButton'
+    direction: DOWN
+- tapOn:
+    id: 'RuleForm.ActionSection.AddButton'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.1.TypeSelector'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'RuleForm.Action.1.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.ADD_TAG'
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.1.TagSelector'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'RuleForm.Action.1.TagSelector'
+- runFlow:
+    file: ../shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- Remove Condition and Action (add extras, remove them, then submit) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.RemoveButton'
+- waitForAnimationToEnd
+
+- assertNotVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ActionSection.AddButton'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.ActionSection.AddButton'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.1.TypeSelector'
+    direction: DOWN
+
+- assertVisible:
+    id: 'RuleForm.Action.1.TypeSelector'
+
+- tapOn:
+    id: 'RuleForm.Action.1.RemoveButton'
+- waitForAnimationToEnd
+
+- assertNotVisible:
+    id: 'RuleForm.Action.1.TypeSelector'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Condition.0.ValueInput'
+    direction: UP
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: TestRemove
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- All Field Types (amount GREATER_THAN + comment) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.GREATER_THAN
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: '100'
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- tapOn: Comment
+
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: 'Test08 Comment'
+
+- tapOn: return
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.TypeSelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: RuleForm.Action.0.TypeSelector
+- tapOn:
+    id: RuleForm.SelectorCard.SET_CATEGORY
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Conditions'
+- assertVisible:
+    id: 'RulesPage.RuleCard.0.Actions'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- Account & Transaction Type Conditions ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.ACCOUNT_ID
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.0.ValueInput'
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.TRANSACTION_TYPE
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.Condition.1.ValueInput'
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- tapOn: 'Expense'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- Condition Operators (EQUALS, NOT_CONTAINS, LESS_THAN) ---
+
+# Rule 1: Title EQUALS operator
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.EQUALS
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Exact Match'
+
+- tapOn: return
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Rule 2: Comment NOT_CONTAINS operator
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.COMMENT
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.NOT_CONTAINS
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'exclude'
+
+- tapOn: return
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.1'
+
+# Rule 3: Amount LESS_THAN operator
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.LESS_THAN
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: '50'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.2'
+
+# --- Delete All 3 Rules (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+- tapOn:
+    id: DeletableRow.DeleteButton
+- tapOn: Delete
+- waitForAnimationToEnd
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+- tapOn:
+    id: DeletableRow.DeleteButton
+- tapOn: Delete
+- waitForAnimationToEnd
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+- tapOn:
+    id: DeletableRow.DeleteButton
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- BETWEEN Operator (amount 10–100) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.AMOUNT
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.BETWEEN
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: '10'
+
+- tapOn:
+    text: 'Conditions'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RuleForm.Condition.0.SecondaryValueInput'
+- inputText: '100'
+
+- tapOn:
+    text: 'Actions'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# --- Delete Rule (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+- tapOn:
+    id: DeletableRow.DeleteButton
+
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- External Source & MCC Conditions ---
+
+# Rule 1: EXTERNAL_SOURCE condition
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.EXTERNAL_SOURCE
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'monobank'
+
+- tapOn:
+    text: 'Conditions'
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Rule 2: MCC_CODE condition
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- tapOn:
+    id: RuleForm.SelectorCard.MCC_CODE
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
+- tapOn:
+    index: 0
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.1'
+
+# --- Delete All 2 Rules (clean up) ---
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+- tapOn:
+    id: DeletableRow.DeleteButton
+- tapOn: Delete
+- waitForAnimationToEnd
+
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+- tapOn:
+    id: DeletableRow.DeleteButton
+- tapOn: Delete
+
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+
+# --- Match Type Any (with transaction verification) ---
+
+- tapOn:
+    id: 'ActionButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'RulesPage.CreateButton'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Netflix'
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn: 'Comment'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: 'Spotify'
+
+- tapOn: return
+
+- assertVisible:
+    text: 'Match All'
+
+- tapOn:
+    id: 'RuleForm.ConditionMatchType'
+- waitForAnimationToEnd
+
+- assertVisible:
+    text: 'Match Any'
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
+- waitForAnimationToEnd
+
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.Spotify_Premium'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Category.Rules_Test_Category'
