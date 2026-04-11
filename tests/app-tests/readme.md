@@ -5,6 +5,7 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 ## Running Tests Locally
 
 ### Prerequisites
+
 - Install Maestro CLI: `curl -fsSL "https://get.maestro.mobile.dev" | bash`
 - iOS Simulator or Android Emulator running
 - App installed on the simulator/emulator
@@ -12,20 +13,24 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 ### Commands
 
 iOS:
+
 ```bash
 sh ./scripts/setup-ios-simulator.sh
 sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
 Local Erste Bank PDF flow:
+
 ```bash
 sh ./scripts/setup-ios-simulator.sh
 maestro test ./flows/22.erste-bank-import.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e
 ```
-Both variants expect `AT802011184943859800_2026008.pdf` and `AT802011184943859800_2026009.pdf` at the repo root so `setup-erste-fixtures.sh` can copy them into `Documents/E2EFixtures`.
+
+Both variants use committed sanitized PDF fixtures from `tests/app-tests/fixtures/erste/`.
 
 Android:
+
 ```bash
 sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e
 ```
