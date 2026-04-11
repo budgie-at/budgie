@@ -1,3 +1,5 @@
+import { msg } from '@lingui/core/macro';
+
 import { AiSection } from '../../generic/component/ai-section/ai-section';
 import { AnalyticsSection } from '../../generic/component/analytics-section/analytics-section';
 import { BlogSection } from '../../generic/component/blog-section/blog-section';
@@ -19,6 +21,18 @@ import { UspPillarsSection } from '../../generic/component/usp-pillars-section/u
 import { buildLandingJsonLd } from '../../generic/util/build-landing-json-ld.util';
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
+
+import type { Metadata } from 'next';
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
+
+    return {
+        title: { absolute: i18n._(msg`Budgie - Privacy-First Expense Tracker`) }
+    };
+}
 
 export default async function LandingPage(props: PageLangParam) {
     const { lang } = await props.params;

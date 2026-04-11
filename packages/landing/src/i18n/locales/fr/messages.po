@@ -29,7 +29,7 @@ msgstr "{formattedCount}+ personnes déjà inscrites"
 msgid "# Audit the code yourself"
 msgstr "# Auditez le code vous-même"
 
-#: src/generic/component/footer/footer.tsx:162
+#: src/generic/component/footer/footer.tsx:159
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Tous droits réservés."
 
@@ -53,6 +53,7 @@ msgstr "2 800 $ restants"
 msgid "$7,200 of $10,000"
 msgstr "7 200 $ sur 10 000 $"
 
+#: src/app/[lang]/opengraph-image.tsx:90
 #: src/generic/component/comparison-section/comparison-table-body.tsx:7
 #: src/generic/component/hero-section/hero-section-header.tsx:23
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:44
@@ -91,7 +92,7 @@ msgstr "App Store"
 msgid "Article Not Found"
 msgstr "Article non trouvé"
 
-#: src/app/[lang]/blog/page.tsx:28
+#: src/app/[lang]/blog/page.tsx:32
 msgid "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 msgstr "Articles sur la confidentialité financière, les meilleures pratiques de sécurité, l'architecture offline-first et des conseils pour un meilleur suivi des dépenses."
 
@@ -182,22 +183,20 @@ msgid "Blazing Fast"
 msgstr "Ultra rapide"
 
 #: src/app/[lang]/blog/[slug]/page.tsx:122
-#: src/generic/component/footer/footer.tsx:112
+#: src/app/[lang]/blog/page.tsx:77
+#: src/generic/component/footer/footer.tsx:109
 #: src/generic/component/header/header.tsx:74
 #: src/generic/component/mobile-menu/mobile-menu.tsx:33
 msgid "Blog"
 msgstr "Blog"
 
-#: src/app/[lang]/blog/page.tsx:81
+#: src/app/[lang]/blog/page.tsx:30
+#: src/app/[lang]/blog/page.tsx:102
 msgid "Blog & Insights"
 msgstr "Blog et Perspectives"
 
-#: src/app/[lang]/blog/page.tsx:26
-msgid "Blog & Insights | Budgie"
-msgstr "Blog & Actualités | Budgie"
-
-#: src/app/[lang]/layout.tsx:87
-#: src/app/[lang]/layout.tsx:88
+#: src/app/[lang]/layout.tsx:97
+#: src/app/[lang]/layout.tsx:98
 #: src/generic/component/comparison-section/comparison-table-header.tsx:12
 #: src/generic/component/footer/footer.tsx:27
 #: src/generic/component/header/header.tsx:49
@@ -205,9 +204,8 @@ msgstr "Blog & Actualités | Budgie"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:79
-#: src/app/[lang]/layout.tsx:93
-#: src/app/[lang]/layout.tsx:104
+#: src/app/[lang]/layout.tsx:78
+#: src/app/[lang]/page.tsx:33
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie – Gestionnaire de dépenses axé sur la confidentialité"
 
@@ -218,10 +216,6 @@ msgstr "Budgie (hors ligne d'abord)"
 #: src/generic/component/ai-section-details/ai-section-details.tsx:15
 msgid "Budgie AI"
 msgstr "Budgie AI"
-
-#: src/app/[lang]/blog/[slug]/page.tsx:56
-msgid "Budgie Blog"
-msgstr "Blog Budgie"
 
 #: src/generic/component/logo/logo.tsx:19
 msgid "Budgie logo"
@@ -236,7 +230,7 @@ msgstr "Interface de l'application mobile Budgie affichant une vue d'ensemble du
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie prend en charge le suivi des principales cryptomonnaies, actions, ETF et comptes bancaires traditionnels. Vous pouvez ajouter manuellement tout actif ou connecter les plateformes et courtiers pris en charge pour un suivi automatique."
 
-#: src/app/[lang]/layout.tsx:86
+#: src/app/[lang]/layout.tsx:96
 msgid "Budgie Team"
 msgstr "Équipe Budgie"
 
@@ -429,7 +423,7 @@ msgstr "Découvrez des informations sur la confidentialité financière, les mei
 msgid "Does bank sync work offline?"
 msgstr "La synchronisation bancaire fonctionne-t-elle hors ligne ?"
 
-#: src/generic/component/footer/footer.tsx:93
+#: src/generic/component/footer/footer.tsx:90
 msgid "Download"
 msgstr "Télécharger"
 
@@ -460,6 +454,10 @@ msgstr "Les membres en accès anticipé bénéficient de 50 % de réduction à v
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:27
 msgid "Emily Johnson"
 msgstr "Emily Johnson"
+
+#: src/app/[lang]/opengraph-image.tsx:91
+msgid "Encrypted"
+msgstr "Chiffré"
 
 #: src/generic/component/problem-solution-section/solution-items.tsx:18
 msgid "Encrypted with your biometrics"
@@ -497,7 +495,7 @@ msgstr "Avantages exclusifs pour les premiers supporters"
 msgid "Exclusive Perks"
 msgstr "Avantages exclusifs"
 
-#: src/app/[lang]/layout.tsx:84
+#: src/app/[lang]/layout.tsx:94
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "gestionnaire de dépenses, application budget, synchronisation bancaire, suivi crypto, confidentialité, offline-first, multidevise, suivi des dettes, gestion financière"
 
@@ -561,6 +559,10 @@ msgstr "Prenez totalement le contrôle de vos finances en quelques étapes simpl
 msgid "GitHub"
 msgstr "GitHub"
 
+#: src/app/[lang]/not-found.tsx:25
+msgid "Go Home"
+msgstr "Accueil"
+
 #: src/generic/component/features-section/features-section-grid.tsx:70
 msgid "Goals & Budgets"
 msgstr "Objectifs et budgets"
@@ -570,6 +572,7 @@ msgid "Here's your spending spike: 🎬 Movies & concerts: $180 🛍️ Online s
 msgstr "Voici le pic de vos dépenses : 🎬 Films et concerts : 180 $ 🛍️ Achats en ligne : 120 $ 🍕 Livraison de repas : 100 $. Souhaitez-vous fixer un budget divertissement de 200 $ le mois prochain ?"
 
 #: src/app/[lang]/blog/[slug]/page.tsx:121
+#: src/app/[lang]/blog/page.tsx:76
 msgid "Home"
 msgstr "Accueil"
 
@@ -690,11 +693,12 @@ msgstr "Dernières actualités de notre blog"
 msgid "Launching Q1 2026"
 msgstr "Lancement T1 2026"
 
-#: src/generic/component/footer/footer.tsx:128
+#: src/app/[lang]/legal/layout.tsx:20
+#: src/generic/component/footer/footer.tsx:125
 msgid "Legal"
 msgstr "Mentions légales"
 
-#: src/generic/component/footer/footer.tsx:153
+#: src/generic/component/footer/footer.tsx:150
 msgid "License"
 msgstr "Licence"
 
@@ -763,7 +767,7 @@ msgstr "N'oubliez jamais qui doit quoi"
 msgid "No account required"
 msgstr "Aucun compte requis"
 
-#: src/app/[lang]/blog/page.tsx:146
+#: src/app/[lang]/blog/page.tsx:167
 msgid "No articles found"
 msgstr "Aucun article trouvé"
 
@@ -819,6 +823,7 @@ msgstr "Assistant sur l'appareil"
 msgid "Only you see your data"
 msgstr "Vous seul voyez vos données"
 
+#: src/app/[lang]/opengraph-image.tsx:92
 #: src/generic/component/hero-section/hero-section-header.tsx:33
 #: src/generic/component/open-source-section/open-source-content.tsx:19
 #: src/generic/component/trust-banner/trust-banner.tsx:54
@@ -830,7 +835,7 @@ msgstr "Open source"
 msgid "Open source code"
 msgstr "Code open source"
 
-#: src/generic/component/footer/footer.tsx:184
+#: src/generic/component/footer/footer.tsx:181
 msgid "Open Source License"
 msgstr "Licence open source"
 
@@ -845,6 +850,10 @@ msgstr "Autres"
 #: src/generic/component/ai-section/ai-section.tsx:56
 msgid "Other apps send your financial questions to ChatGPT or Google—exposing your salary, debts, and spending habits. Budgie's AI runs 100% on your device. Your conversations never touch the internet."
 msgstr "Les autres applications envoient vos questions financières à ChatGPT ou Google — exposant votre salaire, vos dettes et vos habitudes de dépenses. L'IA de Budgie fonctionne à 100 % sur votre appareil. Vos conversations ne touchent jamais Internet."
+
+#: src/app/[lang]/not-found.tsx:14
+msgid "Page Not Found"
+msgstr "Page introuvable"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:30
 msgid "Paid off $12K in debt"
@@ -866,14 +875,18 @@ msgstr "Support prioritaire"
 msgid "Privacy advocate"
 msgstr "Défenseur de la vie privée"
 
-#: src/generic/component/footer/footer.tsx:137
-#: src/generic/component/footer/footer.tsx:170
+#: src/generic/component/footer/footer.tsx:134
+#: src/generic/component/footer/footer.tsx:167
 msgid "Privacy Policy"
 msgstr "Politique de confidentialité"
 
 #: src/generic/component/cta-section/cta-section.tsx:56
 msgid "Privacy-first design"
 msgstr "Conception axée sur la confidentialité"
+
+#: src/app/[lang]/opengraph-image.tsx:88
+msgid "Privacy-First Expense Tracker"
+msgstr "Gestionnaire de dépenses axé sur la confidentialité"
 
 #: src/generic/util/build-landing-json-ld.util.ts:48
 msgid "Privacy-first expense tracker that keeps your financial data on your device."
@@ -882,6 +895,10 @@ msgstr "Suivi de dépenses axé sur la confidentialité qui garde vos données f
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:17
 msgid "PrivatBank"
 msgstr "PrivatBank"
+
+#: src/app/[lang]/not-found.tsx:32
+msgid "Read Blog"
+msgstr "Lire le blog"
 
 #: src/app/[lang]/blog/[slug]/page.tsx:203
 msgid "Ready to Take Control of Your Financial Privacy?"
@@ -900,7 +917,7 @@ msgstr "De vraies histoires d'utilisateurs qui ont pris le contrôle de leur arg
 msgid "Requires internet connection"
 msgstr "Nécessite une connexion Internet"
 
-#: src/generic/component/footer/footer.tsx:106
+#: src/generic/component/footer/footer.tsx:103
 msgid "Resources"
 msgstr "Ressources"
 
@@ -912,7 +929,7 @@ msgstr "Examinez chaque fonction qui touche vos données financières"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/generic/component/footer/footer.tsx:98
+#: src/generic/component/footer/footer.tsx:95
 msgid "Roadmap"
 msgstr "Feuille de route"
 
@@ -1001,7 +1018,7 @@ msgstr "Résultats pour : <0>{searchQuery}</0>"
 msgid "Something went wrong. Please try again."
 msgstr "Une erreur s'est produite. Veuillez réessayer."
 
-#: src/generic/component/footer/footer.tsx:120
+#: src/generic/component/footer/footer.tsx:117
 msgid "Source Code"
 msgstr "Code source"
 
@@ -1033,7 +1050,7 @@ msgstr "Stars"
 msgid "Start Tracking in Minutes"
 msgstr "Commencez le suivi en quelques minutes"
 
-#: src/app/[lang]/blog/page.tsx:85
+#: src/app/[lang]/blog/page.tsx:106
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Restez informé de la confidentialité financière, des meilleures pratiques de sécurité et des dernières fonctionnalités de Budgie."
 
@@ -1065,8 +1082,8 @@ msgstr "Synchronisez automatiquement avec les grandes banques et institutions fi
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Synchronisation avec plus de 1000 banques et institutions financières"
 
-#: src/generic/component/footer/footer.tsx:145
-#: src/generic/component/footer/footer.tsx:177
+#: src/generic/component/footer/footer.tsx:142
+#: src/generic/component/footer/footer.tsx:174
 msgid "Terms of Service"
 msgstr "Conditions d'utilisation"
 
@@ -1082,6 +1099,10 @@ msgstr "Ce café quotidien ? 150 $/mois. Les abonnements oubliés ? 80 $/mois. B
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:28
 msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
 msgstr "La fonction de suivi des dettes m'a aidé à rembourser mes prêts étudiants 6 mois plus tôt. Voir cette barre de progression se remplir m'a motivé chaque jour."
+
+#: src/app/[lang]/not-found.tsx:18
+msgid "The page you are looking for does not exist or has been moved."
+msgstr "La page que vous recherchez n'existe pas ou a été déplacée."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:49
 msgid "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
@@ -1135,12 +1156,15 @@ msgstr "Tout suivre"
 msgid "Track expenses in any currency with real-time exchange rates. Perfect for travelers."
 msgstr "Suivez les dépenses dans n'importe quelle devise avec des taux de change en temps réel. Parfait pour les voyageurs."
 
-#: src/app/[lang]/layout.tsx:81
+#: src/app/[lang]/opengraph-image.tsx:89
+msgid "Track expenses, sync banks, manage crypto & investments — all offline, encrypted, and on your device."
+msgstr "Suivez vos dépenses, synchronisez vos banques, gérez crypto et investissements — entièrement hors ligne, chiffré et sur votre appareil."
+
+#: src/app/[lang]/layout.tsx:91
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Suivez vos dépenses, synchronisez vos banques, gérez crypto et actions en toute confidentialité. Prise en charge multidevise, suivi des dettes et insights IA — le tout stocké en sécurité sur votre appareil."
 
-#: src/app/[lang]/layout.tsx:95
-#: src/app/[lang]/layout.tsx:106
+#: src/app/[lang]/layout.tsx:80
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Suivez vos dépenses, synchronisez vos banques, gérez crypto et actions en toute confidentialité. Prise en charge multidevise, suivi des dettes et insights IA."
 
@@ -1180,7 +1204,7 @@ msgstr "Transport"
 msgid "True Privacy, Not Just Promises"
 msgstr "Une vraie confidentialité, pas seulement des promesses"
 
-#: src/app/[lang]/blog/page.tsx:150
+#: src/app/[lang]/blog/page.tsx:171
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Essayez d'ajuster votre requête de recherche ou parcourez tous les articles."
 
@@ -1253,7 +1277,7 @@ msgstr "Quelles cryptomonnaies et quels actifs puis-je suivre ?"
 msgid "What Makes Us Different"
 msgstr "Ce qui nous différencie"
 
-#: src/generic/component/footer/footer.tsx:88
+#: src/generic/component/footer/footer.tsx:85
 #: src/generic/component/header/header.tsx:82
 #: src/generic/component/mobile-menu/mobile-menu.tsx:37
 msgid "Whitelist"

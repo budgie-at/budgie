@@ -75,8 +75,18 @@ export async function generateMetadata(props: Props) {
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
+    const siteTitle = i18n._(msg`Budgie - Privacy-First Expense Tracker`);
+    const shortDescription = i18n._(
+        msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
+    );
+
     return {
-        title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
+        metadataBase: new URL(BASE_URL),
+        title: {
+            default: siteTitle,
+            // eslint-disable-next-line lingui/no-unlocalized-strings
+            template: '%s | Budgie'
+        },
         description: i18n._(
             msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device.`
         ),
@@ -90,10 +100,8 @@ export async function generateMetadata(props: Props) {
         robots: 'index, follow',
         alternates: buildAlternates(lang, ''),
         openGraph: {
-            title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
-            description: i18n._(
-                msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
-            ),
+            title: siteTitle,
+            description: shortDescription,
             type: 'website',
             url: `${BASE_URL}/${lang}`,
             locale: OG_LOCALE_MAP[lang] ?? 'en_US',
@@ -101,10 +109,8 @@ export async function generateMetadata(props: Props) {
         },
         twitter: {
             card: 'summary_large_image',
-            title: i18n._(msg`Budgie - Privacy-First Expense Tracker`),
-            description: i18n._(
-                msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
-            ),
+            title: siteTitle,
+            description: shortDescription,
             images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`]
         }
     };
