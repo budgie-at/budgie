@@ -11,6 +11,7 @@ PLIST="$BUNDLE_PATH/Info.plist"
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
+ERSTE_FIXTURES_DIR="$REPO_ROOT/tests/app-tests/fixtures/erste"
 
 /usr/libexec/PlistBuddy -c "Add :UIFileSharingEnabled bool true" "$PLIST" 2>/dev/null || \
 /usr/libexec/PlistBuddy -c "Set :UIFileSharingEnabled true" "$PLIST"
@@ -19,7 +20,7 @@ REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 
 mkdir -p "$FIXTURES_DIR"
 
-cp "$REPO_ROOT/AT802011184943859800_2026008.pdf" "$FIXTURES_DIR/"
-cp "$REPO_ROOT/AT802011184943859800_2026009.pdf" "$FIXTURES_DIR/"
+cp "$ERSTE_FIXTURES_DIR/erste-statement-008.pdf" "$FIXTURES_DIR/"
+cp "$ERSTE_FIXTURES_DIR/erste-statement-009.pdf" "$FIXTURES_DIR/"
 
 echo "Erste fixtures ready"

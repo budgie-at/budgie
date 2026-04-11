@@ -1,15 +1,19 @@
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
 import { describe, expect, it } from '@jest/globals';
 
 import { parseErsteText } from './parse-erste-pdf.util';
 
-const readFixture = (fileName: string): string => readFileSync(path.join(process.cwd(), '..', '..', fileName), 'utf8');
+const getFixturePath = (fileName: string): string =>
+    path.join(process.cwd(), '..', '..', 'tests', 'app-tests', 'fixtures', 'erste', fileName);
+
+const extractPdfText = (fileName: string): string =>
+    execFileSync('pdftotext', ['-layout', getFixturePath(fileName), '-'], { encoding: 'utf8' });
 
 describe('parseErsteText real fixtures', () => {
-    it('parses the real 2026008 modern Erste statement with human-readable titles', () => {
-        const parsedData = parseErsteText(readFixture('AT802011184943859800_2026008.txt'));
+    it('parses the sanitized 2026008 modern Erste statement with human-readable titles', () => {
+        const parsedData = parseErsteText(extractPdfText('erste-statement-008.pdf'));
         const descriptions = parsedData.transactions.map(transaction => transaction.description);
 
         expect(descriptions).toEqual([
@@ -23,7 +27,7 @@ describe('parseErsteText real fixtures', () => {
             'Wiener Staedtische Versicherung AG',
             'Best in Parking Garagen GmbH & Co K',
             'FITINN FEBU SCHWEDENPLATZ',
-            'Josef Summerauer'
+            'Sample Counterparty'
         ]);
     });
 });
