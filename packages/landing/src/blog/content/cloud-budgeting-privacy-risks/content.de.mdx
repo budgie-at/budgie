@@ -2,12 +2,12 @@ import jsonMetadata from './metadata.json';
 
 export const metadata = {
     ...jsonMetadata,
-    "title": "Warum Cloud-Budget-Apps ein Alptraum fuer die Privatsphaere sind",
-    "description": "Eine ausfuehrliche technische Analyse, wie cloudbasierte Budget-Apps Ihre Finanzdaten durch Plaid-Integrationen, Datenpannen und Drittanbieter-Aggregation sammeln, weitergeben und offenlegen.",
-    "tags": ["Privatsphaere", "Sicherheit", "Cloud-Sicherheit", "Datenpannen", "Plaid", "finanzielle-Privatsphaere", "Fintech"],
+    "title": "Warum Cloud-Budget-Apps ein Alptraum für die Privatsphäre sind",
+    "description": "Eine ausführliche technische Analyse, wie cloudbasierte Budget-Apps Ihre Finanzdaten durch Plaid-Integrationen, Datenpannen und Drittanbieter-Aggregation sammeln, weitergeben und offenlegen.",
+    "tags": ["Privatsphäre", "Sicherheit", "Cloud-Sicherheit", "Datenpannen", "Plaid", "finanzielle-Privatsphäre", "Fintech"],
     "seo": {
         "keywords": [
-            "Cloud-Budget-App Privatsphaere",
+            "Cloud-Budget-App Privatsphäre",
             "Plaid Datenschutzrisiken",
             "Datenpannen Finanz-Apps",
             "Mint Datenpanne",
@@ -15,22 +15,22 @@ export const metadata = {
             "Finanzdaten-Aggregation",
             "Screen-Scraping Banking",
             "Fintech Datenschutzbedenken",
-            "Sicherheit persoenliche Finanz-Apps",
+            "Sicherheit persönliche Finanz-Apps",
             "Offline-Budget-App"
         ],
         "metaDescription": "Technische Analyse der Datenschutzrisiken in Cloud-Budget-Apps: Plaid-Datenweitergabe, reale Datenpannen (Mint, Cash App), Gefahren des Screen-Scrapings und wie Sie die Sicherheit von Finanz-Apps bewerten."
     }
 }
 
-# Warum Cloud-Budget-Apps ein Alptraum fuer die Privatsphaere sind
+# Warum Cloud-Budget-Apps ein Alptraum für die Privatsphäre sind
 
-Sie verfolgen jeden Kaffee, jedes Abonnement, jede Gehaltszahlung. Ihre Budget-App weiss mehr ueber Ihr Leben als Ihre engsten Freunde. Sie weiss, wo Sie essen, was Sie kaufen, wann Sie bezahlt werden und wie hoch Ihre Schulden sind. Nun bedenken Sie Folgendes: Diese Daten liegen auf Servern, die Sie nicht kontrollieren, verwaltet von Unternehmen, deren primaeres Geschaeftsmodell auf der Monetarisierung von Nutzerdaten basiert.
+Sie verfolgen jeden Kaffee, jedes Abonnement, jede Gehaltszahlung. Ihre Budget-App weiß mehr über Ihr Leben als Ihre engsten Freunde. Sie weiß, wo Sie essen, was Sie kaufen, wann Sie bezahlt werden und wie hoch Ihre Schulden sind. Nun bedenken Sie Folgendes: Diese Daten liegen auf Servern, die Sie nicht kontrollieren, verwaltet von Unternehmen, deren primäres Geschäftsmodell auf der Monetarisierung von Nutzerdaten basiert.
 
-Dies ist keine hypothetische Risikobewertung. Dies ist die Realitaet cloudbasierter Finanz-Apps im Jahr 2025.
+Dies ist keine hypothetische Risikobewertung. Dies ist die Realität cloudbasierter Finanz-Apps im Jahr 2025.
 
 ## Die versteckten Kosten "kostenloser" Budget-Apps
 
-Der Markt fuer persoenliche Finanz-Apps ist explodiert. Mint, YNAB, Copilot, Monarch Money, Lunch Money und Dutzende weitere versprechen, Ihnen bei der Verwaltung Ihres Geldes zu helfen. Die meisten bieten kostenlose Stufen oder guenstige monatliche Abonnements, die fuer den gebotenen Wert angemessen erscheinen.
+Der Markt für persönliche Finanz-Apps ist explodiert. Mint, YNAB, Copilot, Monarch Money, Lunch Money und Dutzende weitere versprechen, Ihnen bei der Verwaltung Ihres Geldes zu helfen. Die meisten bieten kostenlose Stufen oder günstige monatliche Abonnements, die für den gebotenen Wert angemessen erscheinen.
 
 Hier ist die erste Frage, die jeder IT-Fachmann stellen sollte: **Wie verdient ein Unternehmen Geld, das einen kostenlosen Service anbietet, der erhebliche Infrastruktur, Entwicklungsressourcen und regulatorische Compliance erfordert?**
 
@@ -38,10 +38,10 @@ Die Antwort variiert je nach Unternehmen, aber die Muster sind konsistent:
 
 1. **Datenmonetarisierung**: Aggregierte Finanzdaten werden an Marktforschungsunternehmen, Werbetreibende und Finanzinstitute verkauft
 2. **Partner-Empfehlungen**: Apps empfehlen Kreditkarten, Darlehen und Anlageprodukte und verdienen dabei Affiliate-Provisionen
-3. **Upselling von Finanzprodukten**: Die App wird zum Vertriebskanal fuer Versicherungs-, Bank- und Anlagedienstleistungen
+3. **Upselling von Finanzprodukten**: Die App wird zum Vertriebskanal für Versicherungs-, Bank- und Anlagedienstleistungen
 4. **Werbung**: Gezielte Anzeigen basierend auf Ihren Ausgabemustern und Ihrer finanziellen Situation
 
-Keines dieser Erloesmodelle funktioniert ohne das Sammeln, Analysieren und Aufbewahren Ihrer Finanzdaten. Ihre Transaktionshistorie ist nicht nur eine Funktion des Produkts. Sie **ist** das Produkt.
+Keines dieser Erlösmodelle funktioniert ohne das Sammeln, Analysieren und Aufbewahren Ihrer Finanzdaten. Ihre Transaktionshistorie ist nicht nur eine Funktion des Produkts. Sie **ist** das Produkt.
 
 ### Der Datenerfassungs-Stack
 
@@ -64,48 +64,48 @@ Backend der Budget-App
        └──► Drittanbieter-Analyse (Mixpanel, Amplitude usw.)
 ```
 
-Ihre einzelne Bankverbindung erzeugt Kopien Ihrer Daten in mehreren Systemen, von denen jedes eine andere Sicherheitsarchitektur, Aufbewahrungsrichtlinien und Zugriffskontrollen hat. Die Angriffsflaeche ist nicht Ihre Bank. Es ist jedes System in dieser Kette.
+Ihre einzelne Bankverbindung erzeugt Kopien Ihrer Daten in mehreren Systemen, von denen jedes eine andere Sicherheitsarchitektur, Aufbewahrungsrichtlinien und Zugriffskontrollen hat. Die Angriffsfläche ist nicht Ihre Bank. Es ist jedes System in dieser Kette.
 
 ## Wie Cloud-Budget-Apps Ihre Daten sammeln
 
-Das Verstaendnis der technischen Mechanismen der Datenerfassung offenbart, warum cloudbasierte Finanz-Apps inhaerente Datenschutzrisiken bergen.
+Das Verständnis der technischen Mechanismen der Datenerfassung offenbart, warum cloudbasierte Finanz-Apps inhärente Datenschutzrisiken bergen.
 
 ### Methode 1: Plaid und APIs zur Datenaggregation
 
-Plaid dominiert den Markt fuer die Aggregation von Finanzdaten. Wenn Sie einen Login-Bildschirm Ihrer Bank innerhalb einer Budget-App sehen, steckt meist Plaid dahinter. Hier ist, was Plaid sammelt:
+Plaid dominiert den Markt für die Aggregation von Finanzdaten. Wenn Sie einen Login-Bildschirm Ihrer Bank innerhalb einer Budget-App sehen, steckt meist Plaid dahinter. Hier ist, was Plaid sammelt:
 
 - **Kontoinformationen**: Kontonamen, Nummern (oft maskiert), Salden und Kontotypen
-- **Transaktionsdaten**: Jede Transaktion einschliesslich Betrag, Datum, Haendler, Kategorie und Standort
-- **Identitaetsinformationen**: Name, Adresse, Telefonnummer, E-Mail aus Ihrem Bankprofil
+- **Transaktionsdaten**: Jede Transaktion einschließlich Betrag, Datum, Händler, Kategorie und Standort
+- **Identitätsinformationen**: Name, Adresse, Telefonnummer, E-Mail aus Ihrem Bankprofil
 - **Anlagepositionen**: Positionen, Mengen, Anschaffungskosten, aktuelle Werte
-- **Verbindlichkeitsdetails**: Kreditbetraege, Zinssaetze, Mindestzahlungen, Vergabedaten
+- **Verbindlichkeitsdetails**: Kreditbeträge, Zinssätze, Mindestzahlungen, Vergabedaten
 
-Die Datenschutzrichtlinie von Plaid besagt ausdruecklich, dass sie diese Daten aufbewahren und fuer Produktverbesserung, Analysen und die Entwicklung neuer Dienste nutzen duerfen. Wenn Sie Ihre Bank ueber Plaid verbinden, teilen Sie Daten nicht nur mit der Budget-App. Sie teilen sie mit Plaid, das als separater Datenverantwortlicher agiert.
+Die Datenschutzrichtlinie von Plaid besagt ausdrücklich, dass sie diese Daten aufbewahren und für Produktverbesserung, Analysen und die Entwicklung neuer Dienste nutzen dürfen. Wenn Sie Ihre Bank über Plaid verbinden, teilen Sie Daten nicht nur mit der Budget-App. Sie teilen sie mit Plaid, das als separater Datenverantwortlicher agiert.
 
-Im Jahr 2022 einigte sich Plaid in einem Vergleich einer Sammelklage ueber 58 Millionen Dollar wegen Vorwuerfen, mehr Daten gesammelt zu haben, als die Nutzer autorisiert hatten, und sie laenger als noetig aufbewahrt zu haben. Der Vergleich umfasste Behauptungen, dass Plaid Anmeldedaten ueber Oberflaechen erlangte, die wie Bank-Loginseiten aussahen, sodass Nutzer glaubten, sie wuerden sich direkt bei ihrer Bank anmelden.
+Im Jahr 2022 einigte sich Plaid in einem Vergleich einer Sammelklage über 58 Millionen Dollar wegen Vorwürfen, mehr Daten gesammelt zu haben, als die Nutzer autorisiert hatten, und sie länger als nötig aufbewahrt zu haben. Der Vergleich umfasste Behauptungen, dass Plaid Anmeldedaten über Oberflächen erlangte, die wie Bank-Loginseiten aussahen, sodass Nutzer glaubten, sie würden sich direkt bei ihrer Bank anmelden.
 
 ### Methode 2: Screen Scraping
 
-Vor der API-basierten Aggregation nutzten Apps Screen Scraping: automatisierte Systeme, die sich mit Ihren Zugangsdaten bei Ihrer Bank anmelden und das HTML Ihrer Kontoseiten parsen. Diese Methode wird noch verwendet, wenn Banken keinen API-Zugang unterstuetzen.
+Vor der API-basierten Aggregation nutzten Apps Screen Scraping: automatisierte Systeme, die sich mit Ihren Zugangsdaten bei Ihrer Bank anmelden und das HTML Ihrer Kontoseiten parsen. Diese Methode wird noch verwendet, wenn Banken keinen API-Zugang unterstützen.
 
 Die Sicherheitsimplikationen sind schwerwiegend:
 
-- **Speicherung von Zugangsdaten**: Ihr tatsaechlicher Benutzername und Ihr Passwort muessen (auch wenn verschluesselt) auf Drittanbieter-Servern gespeichert werden
-- **Risiko der Session-Uebernahme**: Automatisierte Login-Sitzungen koennen abgefangen werden
-- **Verstoss gegen Bank-AGB**: Die meisten Banken verbieten ausdruecklich die Weitergabe von Zugangsdaten an Dritte
-- **Keine granulare Einwilligung**: Der Scraper hat vollen Zugriff auf Ihr Konto, einschliesslich der Moeglichkeit, Ueberweisungen zu initiieren
+- **Speicherung von Zugangsdaten**: Ihr tatsächlicher Benutzername und Ihr Passwort müssen (auch wenn verschlüsselt) auf Drittanbieter-Servern gespeichert werden
+- **Risiko der Session-Uebernahme**: Automatisierte Login-Sitzungen können abgefangen werden
+- **Verstoß gegen Bank-AGB**: Die meisten Banken verbieten ausdrücklich die Weitergabe von Zugangsdaten an Dritte
+- **Keine granulare Einwilligung**: Der Scraper hat vollen Zugriff auf Ihr Konto, einschließlich der Möglichkeit, Ueberweisungen zu initiieren
 
-Screen Scraping bedeutet, dass ein Dritter alles tun kann, was Sie in Ihrem Bankkonto tun koennen. Sie entscheiden sich dagegen, aber die technische Faehigkeit besteht.
+Screen Scraping bedeutet, dass ein Dritter alles tun kann, was Sie in Ihrem Bankkonto tun können. Sie entscheiden sich dagegen, aber die technische Fähigkeit besteht.
 
 ### Methode 3: Direkter API-Zugriff (Open Banking)
 
-Open-Banking-Regulierungen in der EU und Grossbritannien sowie freiwillige API-Programme von US-Banken ermoeglichen einen kontrollierteren Datenaustausch. Apps fordern spezifische Zugriffsumfaenge an, und Sie autorisieren ueber die Oberflaeche Ihrer Bank.
+Open-Banking-Regulierungen in der EU und Großbritannien sowie freiwillige API-Programme von US-Banken ermöglichen einen kontrollierteren Datenaustausch. Apps fordern spezifische Zugriffsumfänge an, und Sie autorisieren über die Oberfläche Ihrer Bank.
 
 Dies ist sicherer als Screen Scraping, aber Datenschutzbedenken bleiben:
 
-- **Berechtigungsausweitung**: Apps fordern oft mehr Berechtigungen an als noetig
-- **Persistenter Zugriff**: Tokens ermoeglichen fortlaufenden Datenzugriff bis zum expliziten Widerruf
-- **Aggregator-Persistenz**: Auch bei direkten APIs nutzen Apps oft Aggregatoren, die einen weiteren Datenhalter hinzufuegen
+- **Berechtigungsausweitung**: Apps fordern oft mehr Berechtigungen an als nötig
+- **Persistenter Zugriff**: Tokens ermöglichen fortlaufenden Datenzugriff bis zum expliziten Widerruf
+- **Aggregator-Persistenz**: Auch bei direkten APIs nutzen Apps oft Aggregatoren, die einen weiteren Datenhalter hinzufügen
 - **Erneuerungsmechanismen**: Die meisten Implementierungen erlauben unbefristete Zugriffserneuerung ohne erneute Autorisierung
 
 ## Reale Datenpannen bei Finanz-Apps
@@ -114,76 +114,76 @@ Dies ist nicht theoretisch. Finanz-Apps wurden gehackt, und Nutzerdaten wurden o
 
 ### Mint (Intuit) -- 2023
 
-Im Dezember 2023 kuendigte Intuit die Einstellung von Mint nach 17 Jahren an. Die Nutzer erhielten 90 Tage, um ihre Daten zu exportieren, bevor sie geloescht wurden. Dies wirft mehrere Bedenken auf:
+Im Dezember 2023 kündigte Intuit die Einstellung von Mint nach 17 Jahren an. Die Nutzer erhielten 90 Tage, um ihre Daten zu exportieren, bevor sie gelöscht wurden. Dies wirft mehrere Bedenken auf:
 
-- **Datenportabilitaet**: Jahre an Finanzhistorie in einem proprietaeren Format eingesperrt
-- **Erzwungene Migration**: Nutzer werden zu Credit Karma gedraengt, einem anderen Intuit-Produkt mit anderen Datenschutzbedingungen
-- **Aufbewahrungsfragen**: Was passiert mit den Backup-Baendern, Analysedatasets und ML-Trainingsdaten, die Transaktionen von Mint-Nutzern enthielten?
+- **Datenportabilität**: Jahre an Finanzhistorie in einem proprietären Format eingesperrt
+- **Erzwungene Migration**: Nutzer werden zu Credit Karma gedrängt, einem anderen Intuit-Produkt mit anderen Datenschutzbedingungen
+- **Aufbewahrungsfragen**: Was passiert mit den Backup-Bändern, Analysedatasets und ML-Trainingsdaten, die Transaktionen von Mint-Nutzern enthielten?
 
-Wenn ein Unternehmen schliesst, verschwinden die Daten nicht unbedingt. Sie werden oft zu einem Vermoegenswert, der an das uebernehmende Unternehmen verkauft oder in Archiven mit unklaren Zugriffsrichtlinien aufbewahrt wird.
+Wenn ein Unternehmen schließt, verschwinden die Daten nicht unbedingt. Sie werden oft zu einem Vermögenswert, der an das übernehmende Unternehmen verkauft oder in Archiven mit unklaren Zugriffsrichtlinien aufbewahrt wird.
 
 ### Cash App (Block) -- 2022
 
-Block, die Muttergesellschaft von Cash App, gab bekannt, dass ein ehemaliger Mitarbeiter interne Berichte mit Kundendaten von ueber 8 Millionen Nutzern heruntergeladen hatte. Die Datenpanne umfasste:
+Block, die Muttergesellschaft von Cash App, gab bekannt, dass ein ehemaliger Mitarbeiter interne Berichte mit Kundendaten von über 8 Millionen Nutzern heruntergeladen hatte. Die Datenpanne umfasste:
 
-- Vollstaendige Namen
+- Vollständige Namen
 - Brokerage-Kontonummern
 - Portfoliowerte
-- Aktienhandelsaktivitaeten
+- Aktienhandelsaktivitäten
 
-Diese Datenpanne veranschaulicht das Insider-Bedrohungsrisiko. Kein externer Hacker war beteiligt. Ein Mitarbeiter mit legitimem Zugriff entschied sich, Daten zu exfiltrieren. Cloud-Systeme mit zentralisierten Datenspeichern sind von Natur aus anfaellig fuer diesen Angriffsvektor.
+Diese Datenpanne veranschaulicht das Insider-Bedrohungsrisiko. Kein externer Hacker war beteiligt. Ein Mitarbeiter mit legitimem Zugriff entschied sich, Daten zu exfiltrieren. Cloud-Systeme mit zentralisierten Datenspeichern sind von Natur aus anfällig für diesen Angriffsvektor.
 
 ### Plaid -- anhaltende Bedenken
 
-Ueber den Vergleich von 2022 hinaus steht Plaid unter staendiger Beobachtung:
+Ueber den Vergleich von 2022 hinaus steht Plaid unter ständiger Beobachtung:
 
-- **Versagen bei der Datenminimierung**: Erfassung vollstaendiger Transaktionshistorien, wenn Apps nur aktuelle Salden benoetigen
+- **Versagen bei der Datenminimierung**: Erfassung vollständiger Transaktionshistorien, wenn Apps nur aktuelle Salden benötigen
 - **Aufbewahrungsrichtlinien**: Aufbewahrung von Daten, nachdem Nutzer Konten von Apps getrennt haben
-- **Sekundaernutzung**: Verwendung aggregierter Daten zur Entwicklung von Kredit-Scoring- und Identitaetsprodukten
+- **Sekundärnutzung**: Verwendung aggregierter Daten zur Entwicklung von Kredit-Scoring- und Identitätsprodukten
 
-Wenn Sie sich ueber Plaid verbinden, gehen Sie eine Beziehung mit Plaid ein, nicht nur mit der App. Plaids Geschaeftsinteressen stimmen moeglicherweise nicht mit Ihren Datenschutzpraeferenzen ueberein.
+Wenn Sie sich über Plaid verbinden, gehen Sie eine Beziehung mit Plaid ein, nicht nur mit der App. Plaids Geschäftsinteressen stimmen möglicherweise nicht mit Ihren Datenschutzpräferenzen überein.
 
 ### Yodlee-Vergleich -- 2024
 
-Envestnet Yodlee, ein weiterer grosser Datenaggregator, sah sich einer FTC-Klage wegen des angeblichen Verkaufs detaillierter Finanzdaten gegenueber, die zur Identifizierung von Einzelpersonen verwendet werden konnten. Die Daten enthielten Informationen auf Transaktionsebene, die in Kombination mit anderen Datenquellen ein detailliertes Verbraucherprofiling ermoaglichten.
+Envestnet Yodlee, ein weiterer großer Datenaggregator, sah sich einer FTC-Klage wegen des angeblichen Verkaufs detaillierter Finanzdaten gegenüber, die zur Identifizierung von Einzelpersonen verwendet werden konnten. Die Daten enthielten Informationen auf Transaktionsebene, die in Kombination mit anderen Datenquellen ein detailliertes Verbraucherprofiling ermoaglichten.
 
-## Was mit Ihren Daten passiert, wenn Unternehmen verkauft werden oder schliessen
+## Was mit Ihren Daten passiert, wenn Unternehmen verkauft werden oder schließen
 
-Der Lebenszyklus Ihrer Finanzdaten reicht weit ueber Ihre aktive Nutzung einer App hinaus.
+Der Lebenszyklus Ihrer Finanzdaten reicht weit über Ihre aktive Nutzung einer App hinaus.
 
 ### Uebernahmeszenarien
 
-Wenn ein Fintech-Unternehmen uebernommen wird, sind Nutzerdaten typischerweise der wertvollste Vermoegenswert. Bedenken Sie, was passiert:
+Wenn ein Fintech-Unternehmen übernommen wird, sind Nutzerdaten typischerweise der wertvollste Vermögenswert. Bedenken Sie, was passiert:
 
-1. **Due Diligence**: Das uebernehmende Unternehmen prueft Nutzerdaten, Transaktionsvolumina und Engagement-Metriken
-2. **Vermoegenswerttransfer**: Nutzerdatenbanken werden auf neue Infrastruktur mit neuen Zugriffskontrollen migriert
-3. **Richtliniennaenderungen**: Datenschutzrichtlinien werden aktualisiert, um die neue Eigentuemerschaft und Datenpraktiken widerzuspiegeln
-4. **Integration**: Daten koennen mit den bestehenden Nutzerdaten des Erwerbers zusammengefuehrt werden
+1. **Due Diligence**: Das übernehmende Unternehmen prüft Nutzerdaten, Transaktionsvolumina und Engagement-Metriken
+2. **Vermögenswerttransfer**: Nutzerdatenbanken werden auf neue Infrastruktur mit neuen Zugriffskontrollen migriert
+3. **Richtlinienänderungen**: Datenschutzrichtlinien werden aktualisiert, um die neue Eigentümerschaft und Datenpraktiken widerzuspiegeln
+4. **Integration**: Daten können mit den bestehenden Nutzerdaten des Erwerbers zusammengeführt werden
 
-Sie haben der Datenschutzrichtlinie eines Unternehmens zugestimmt. Nach der Uebernahme kontrolliert ein anderes Unternehmen mit anderen Richtlinien Ihre Daten. Die rechtliche Grundlage dafuer ist meist tief in den urspruenglichen Nutzungsbedingungen vergraben.
+Sie haben der Datenschutzrichtlinie eines Unternehmens zugestimmt. Nach der Uebernahme kontrolliert ein anderes Unternehmen mit anderen Richtlinien Ihre Daten. Die rechtliche Grundlage dafür ist meist tief in den ursprünglichen Nutzungsbedingungen vergraben.
 
-### Schliessungsszenarien
+### Schließungsszenarien
 
 Wenn Unternehmen scheitern, variiert der Umgang mit Daten:
 
-- **Bester Fall**: Daten werden gemaess der Datenschutzrichtlinie geloescht
-- **Ueblicher Fall**: Daten werden als Vermoegenswert zur Schuldendeckung verkauft
-- **Schlimmster Fall**: Daten werden auf Servern zurueckgelassen, die schliesslich ausser Betrieb genommen werden, wobei die Festplatten an unbekannten Orten landen
+- **Bester Fall**: Daten werden gemäß der Datenschutzrichtlinie gelöscht
+- **Ueblicher Fall**: Daten werden als Vermögenswert zur Schuldendeckung verkauft
+- **Schlimmster Fall**: Daten werden auf Servern zurückgelassen, die schließlich außer Betrieb genommen werden, wobei die Festplatten an unbekannten Orten landen
 
 Fintech-Unternehmen operieren auf einem volatilen Markt. Die App, der Sie heute vertrauen, existiert vielleicht in zwei Jahren nicht mehr.
 
 ### Das Aggregator-Persistenzproblem
 
-Selbst wenn Sie Ihr Konto bei einer Budget-App loeschen, kann der Aggregator (Plaid, Yodlee usw.) Ihre Daten behalten. Sie haben eine Beziehung zur App und eine separate Beziehung zum Aggregator. Das Loeschen der einen beeinflusst nicht unbedingt die andere.
+Selbst wenn Sie Ihr Konto bei einer Budget-App löschen, kann der Aggregator (Plaid, Yodlee usw.) Ihre Daten behalten. Sie haben eine Beziehung zur App und eine separate Beziehung zum Aggregator. Das Löschen der einen beeinflusst nicht unbedingt die andere.
 
-Um sich vollstaendig zu trennen, muessen Sie:
+Um sich vollständig zu trennen, müssen Sie:
 
-1. Ihr Konto in der Budget-App loeschen
-2. Den Zugriff ueber die Einstellungen fuer verbundene Apps Ihrer Bank widerrufen
-3. Den Aggregator direkt kontaktieren, um die Datenloesung zu beantragen
+1. Ihr Konto in der Budget-App löschen
+2. Den Zugriff über die Einstellungen für verbundene Apps Ihrer Bank widerrufen
+3. Den Aggregator direkt kontaktieren, um die Datenlösung zu beantragen
 4. Hoffen, dass sie dem nachkommen
 
-Die meisten Nutzer fuehren Schritt 3 oder 4 nie durch.
+Die meisten Nutzer führen Schritt 3 oder 4 nie durch.
 
 ## Das Plaid-Problem: Risiken der Datenaggregation durch Dritte
 
@@ -191,191 +191,191 @@ Plaid verdient eine fokussierte Analyse aufgrund seiner Marktdominanz. Ueber 12.
 
 ### Das Einwilligungsmodell
 
-Wenn Sie sich ueber Plaid verbinden, funktioniert der Einwilligungsablauf folgendermassen:
+Wenn Sie sich über Plaid verbinden, funktioniert der Einwilligungsablauf folgendermaßen:
 
 1. Die App fordert die Verbindung zu Ihrer Bank an
-2. Plaid praesentiert einen Bildschirm (oft gestaltet wie eine Bank-Loginseite)
-3. Sie geben Zugangsdaten ein oder autorisieren ueber OAuth
+2. Plaid präsentiert einen Bildschirm (oft gestaltet wie eine Bank-Loginseite)
+3. Sie geben Zugangsdaten ein oder autorisieren über OAuth
 4. Plaid stellt die Verbindung her und beginnt mit der Datenerfassung
-5. Plaid teilt Daten mit der App gemaess API-Anfragen
-6. Plaid bewahrt Daten gemaess eigenen Richtlinien auf
+5. Plaid teilt Daten mit der App gemäß API-Anfragen
+6. Plaid bewahrt Daten gemäß eigenen Richtlinien auf
 
-Die Einwilligung, die Sie der App erteilen, beschraenkt nicht, was Plaid sammelt. Plaids Systeme ziehen umfassende Daten, und die App fordert Teilmengen ueber die API an. Die Differenz zwischen dem, was Plaid sammelt, und dem, was die App benoetigt, verbleibt in Plaids Infrastruktur.
+Die Einwilligung, die Sie der App erteilen, beschränkt nicht, was Plaid sammelt. Plaids Systeme ziehen umfassende Daten, und die App fordert Teilmengen über die API an. Die Differenz zwischen dem, was Plaid sammelt, und dem, was die App benötigt, verbleibt in Plaids Infrastruktur.
 
 ### Datenaufbewahrung nach der Trennung
 
 Plaids Datenschutzrichtlinie erlaubt die Datenaufbewahrung auch nach Ihrer Trennung:
 
-- Fuer Compliance und rechtliche Verpflichtungen
-- Zur Betrugspraevention
-- Fuer Produktverbesserung und Analysen
+- Für Compliance und rechtliche Verpflichtungen
+- Zur Betrugsprävention
+- Für Produktverbesserung und Analysen
 - Um anderen Plaid-Kunden Dienste bereitzustellen
 
-Der letzte Punkt ist bedeutsam. Ihre Daten in aggregierter Form koennen in Produkte einfliessen, denen Sie nie zugestimmt haben.
+Der letzte Punkt ist bedeutsam. Ihre Daten in aggregierter Form können in Produkte einfließen, denen Sie nie zugestimmt haben.
 
-### Die Entwicklung von Plaids Geschaeftsmodell
+### Die Entwicklung von Plaids Geschäftsmodell
 
-Plaid begann als Infrastruktur fuer Fintech-Apps. Es hat sich weiterentwickelt zu:
+Plaid begann als Infrastruktur für Fintech-Apps. Es hat sich weiterentwickelt zu:
 
-- **Plaid Identity**: Identitaetspruefung mit Finanzdaten
-- **Plaid Income**: Einkommensueberpruefung fuer Kreditgeber und Vermieter
-- **Plaid Monitor**: Transaktionsueberwachung zur Risikobewertung
+- **Plaid Identity**: Identitätsprüfung mit Finanzdaten
+- **Plaid Income**: Einkommensüberprüfung für Kreditgeber und Vermieter
+- **Plaid Monitor**: Transaktionsüberwachung zur Risikobewertung
 
-Ihre Transaktionsdaten tragen zu Produkten bei, die an Vermieter verkauft werden, die Mietantraege bewerten, an Kreditgeber, die Kreditrisiken einschaetzen, und an Arbeitgeber, die Einkommensangaben ueberpruefen. Der Infrastrukturanbieter wurde zu einem Datenunternehmen.
+Ihre Transaktionsdaten tragen zu Produkten bei, die an Vermieter verkauft werden, die Mietanträge bewerten, an Kreditgeber, die Kreditrisiken einschätzen, und an Arbeitgeber, die Einkommensangaben überprüfen. Der Infrastrukturanbieter wurde zu einem Datenunternehmen.
 
 ## So bewerten Sie den Datenschutz einer Budget-App
 
-Wenn Sie eine cloudbasierte Finanz-App nutzen muessen, hier ist eine technische Checkliste zur Bewertung.
+Wenn Sie eine cloudbasierte Finanz-App nutzen müssen, hier ist eine technische Checkliste zur Bewertung.
 
 ### Bewertung der Datenerfassung
 
 | Frage | Warnsignal | Positives Zeichen |
 |-------|-----------|-------------------|
-| Welcher Datenaggregator wird verwendet? | Plaid, Yodlee, MX mit breiter Datenerfassung | Direktes OAuth mit Bank, begrenzte Zugriffsumfaenge |
-| Welche Transaktionshistorie wird erfasst? | Vollstaendige Historie seit Kontoeroeffnung | Nur aktuelle Transaktionen, die fuer Funktionen benoetigt werden |
-| Werden Standortdaten erfasst? | Transaktionsstandort wird gespeichert | Keine Geolokalisierung ueber Transaktionsmetadaten hinaus |
-| Was passiert mit geloeschten Transaktionen? | Weiches Loeschen, Aufbewahrung in Backups | Endgueltiges Loeschen mit ueberpruefbarer Entfernung |
+| Welcher Datenaggregator wird verwendet? | Plaid, Yodlee, MX mit breiter Datenerfassung | Direktes OAuth mit Bank, begrenzte Zugriffsumfänge |
+| Welche Transaktionshistorie wird erfasst? | Vollständige Historie seit Kontoeröffnung | Nur aktuelle Transaktionen, die für Funktionen benötigt werden |
+| Werden Standortdaten erfasst? | Transaktionsstandort wird gespeichert | Keine Geolokalisierung über Transaktionsmetadaten hinaus |
+| Was passiert mit gelöschten Transaktionen? | Weiches Löschen, Aufbewahrung in Backups | Endgültiges Löschen mit überprüfbarer Entfernung |
 
 ### Bewertung der Infrastruktur
 
 | Frage | Warnsignal | Positives Zeichen |
 |-------|-----------|-------------------|
 | Wo werden Daten gespeichert? | Mehrere Cloud-Anbieter, unklare Region | Ein Anbieter, spezifische Regionen, SOC 2 Type II |
-| Wer hat Zugriff auf Rohdaten? | Vage Richtlinien, keine Zugriffsprotokolle | Rollenbasierter Zugriff, Audit-Protokolle, regelmaessige Ueberpruefung |
-| Wie werden Zugangsdaten gehandhabt? | Gespeicherte Zugangsdaten (auch verschluesselt) | Nur OAuth, keine Speicherung von Zugangsdaten |
-| Wie lange werden Backups aufbewahrt? | Unbefristet | Definierte Aufbewahrung mit ueberpruefbarer Loesung |
+| Wer hat Zugriff auf Rohdaten? | Vage Richtlinien, keine Zugriffsprotokolle | Rollenbasierter Zugriff, Audit-Protokolle, regelmäßige Überprüfung |
+| Wie werden Zugangsdaten gehandhabt? | Gespeicherte Zugangsdaten (auch verschlüsselt) | Nur OAuth, keine Speicherung von Zugangsdaten |
+| Wie lange werden Backups aufbewahrt? | Unbefristet | Definierte Aufbewahrung mit überprüfbarer Lösung |
 
-### Bewertung des Geschaeftsmodells
+### Bewertung des Geschäftsmodells
 
 | Frage | Warnsignal | Positives Zeichen |
 |-------|-----------|-------------------|
-| Wie verdient die App Geld? | Kostenloses Angebot ohne klares Erloesmodell | Klares Abonnement oder Einmalkauf |
+| Wie verdient die App Geld? | Kostenloses Angebot ohne klares Erlösmodell | Klares Abonnement oder Einmalkauf |
 | Werden Finanzprodukte beworben? | Personalisierte Kreditkarten-/Darlehensangebote | Keine Affiliate-Beziehungen |
 | Werden Daten mit Partnern geteilt? | Einnahmen aus Datenlizenzierung | Kein Datenverkauf an Dritte |
-| Was passiert bei einer Uebernahme? | Stille Richtliniennaenderungen erlaubt | Datenloeschungsoption bei Uebernahme |
+| Was passiert bei einer Uebernahme? | Stille Richtlinienänderungen erlaubt | Datenlöschungsoption bei Uebernahme |
 
 ### Rechtliche Bewertung
 
 | Frage | Warnsignal | Positives Zeichen |
 |-------|-----------|-------------------|
 | Welche Gerichtsbarkeit regelt Streitigkeiten? | Bindende Schiedsgerichtsbarkeit, Verzicht auf Sammelklagen | Gerichtsoption, erreichbarer Standort |
-| Kann sich die Datenschutzrichtlinie ohne Vorankuendigung aendern? | Aenderungen sofort wirksam | Vorankuendigungsfrist, Widerspruchsrecht bei wesentlichen Aenderungen |
-| Gibt es eine Datenexportfunktion? | Kein Export oder proprietaeres Format | Standardformate (CSV, JSON) fuer alle Daten |
-| Gibt es eine Loeschgarantie? | 90-taegige Bearbeitungszeit | Sofortige Loesung mit Bestaetigung |
+| Kann sich die Datenschutzrichtlinie ohne Vorankündigung ändern? | Aenderungen sofort wirksam | Vorankündigungsfrist, Widerspruchsrecht bei wesentlichen Aenderungen |
+| Gibt es eine Datenexportfunktion? | Kein Export oder proprietäres Format | Standardformate (CSV, JSON) für alle Daten |
+| Gibt es eine Löschgarantie? | 90-tägige Bearbeitungszeit | Sofortige Lösung mit Bestätigung |
 
 ## Die Alternative: Offline-First-Architektur
 
-Die oben beschriebenen Datenschutzprobleme haben eine gemeinsame Ursache: zentralisierte Datenspeicherung auf Servern, die Sie nicht kontrollieren. Die Offline-First-Architektur eliminiert diesen Angriffsvektor vollstaendig.
+Die oben beschriebenen Datenschutzprobleme haben eine gemeinsame Ursache: zentralisierte Datenspeicherung auf Servern, die Sie nicht kontrollieren. Die Offline-First-Architektur eliminiert diesen Angriffsvektor vollständig.
 
 ### Wie Offline-First funktioniert
 
 In einer Offline-First-Anwendung:
 
-1. **Daten leben auf Ihrem Geraet**: Ihre Transaktionen, Konten und Budgets existieren nur im lokalen Speicher
-2. **Keine serverseitige Verarbeitung**: Berechnungen, Kategorisierung und Auswertungen finden auf dem Geraet statt
+1. **Daten leben auf Ihrem Gerät**: Ihre Transaktionen, Konten und Budgets existieren nur im lokalen Speicher
+2. **Keine serverseitige Verarbeitung**: Berechnungen, Kategorisierung und Auswertungen finden auf dem Gerät statt
 3. **Kein Konto erforderlich**: Die App funktioniert ohne Erstellung eines Benutzerkontos oder Anmeldung
 4. **Optionale Synchronisation ist lokal**: Falls Synchronisation existiert, nutzt sie Ihre eigene Infrastruktur (iCloud, lokales Netzwerk)
 
-Der Server kann nicht gehackt werden, weil es keinen Server gibt. Mitarbeiterzugriff ist unmoeglich, weil keine Mitarbeiter Zugriff auf Ihre Daten haben. Datenaggregratoren sind nicht beteiligt, weil es keine Aggregation gibt.
+Der Server kann nicht gehackt werden, weil es keinen Server gibt. Mitarbeiterzugriff ist unmöglich, weil keine Mitarbeiter Zugriff auf Ihre Daten haben. Datenaggregratoren sind nicht beteiligt, weil es keine Aggregation gibt.
 
 ### Banksynchronisation ohne Datenleck
 
-Offline-First bedeutet nicht, dass Sie sich nicht mit Banken synchronisieren koennen. Es bedeutet, dass die Synchronisationsarchitektur Ihre Privatsphaere schuetzt:
+Offline-First bedeutet nicht, dass Sie sich nicht mit Banken synchronisieren können. Es bedeutet, dass die Synchronisationsarchitektur Ihre Privatsphäre schützt:
 
 **Traditionelle Cloud-Synchronisation:**
 ```
-Ihr Geraet → Cloud-Server → Aggregator → Bank
+Ihr Gerät → Cloud-Server → Aggregator → Bank
        ↓              ↓           ↓
    Analysen    Datenbank    Deren Datenbank
 ```
 
 **Offline-First-Synchronisation:**
 ```
-Ihr Geraet → Bank-API (ueber sicheren Proxy)
+Ihr Gerät → Bank-API (über sicheren Proxy)
        ↓
    Nur lokale Datenbank
 ```
 
-Mit Offline-First fliessen Bankdaten direkt auf Ihr Geraet. Keine Zwischenserver speichern Ihre Transaktionen. Keine Aggregatoren bewahren Ihre Historie auf.
+Mit Offline-First fließen Bankdaten direkt auf Ihr Gerät. Keine Zwischenserver speichern Ihre Transaktionen. Keine Aggregatoren bewahren Ihre Historie auf.
 
 ### Worauf Sie verzichten
 
 Die Offline-First-Architektur bringt Kompromisse mit sich:
 
-- **Synchronisation zwischen Geraeten**: Ihre Daten existieren auf einem Geraet, es sei denn, Sie uebertragen sie manuell
+- **Synchronisation zwischen Geräten**: Ihre Daten existieren auf einem Gerät, es sei denn, Sie übertragen sie manuell
 - **Webzugriff**: Kein browserbasiertes Dashboard
 - **Gemeinsame Budgets**: Kollaborative Funktionen erfordern lokale Netzwerk-Synchronisation
 - **Cloud-Backup**: Sie verwalten Ihre eigenen Backups
 
-Fuer Nutzer, die Privatsphaere priorisieren, sind diese Kompromisse akzeptabel. Ihre Finanzdaten sind zu sensibel, um sie Unternehmen anzuvertrauen, deren Interessen moeglicherweise nicht mit Ihren uebereinstimmen.
+Für Nutzer, die Privatsphäre priorisieren, sind diese Kompromisse akzeptabel. Ihre Finanzdaten sind zu sensibel, um sie Unternehmen anzuvertrauen, deren Interessen möglicherweise nicht mit Ihren übereinstimmen.
 
 ### Budgies Ansatz
 
 Budgie implementiert die Offline-First-Architektur ohne Kompromisse:
 
-- **Nur lokale Speicherung**: Alle Daten werden in SQLite auf Ihrem Geraet gespeichert
+- **Nur lokale Speicherung**: Alle Daten werden in SQLite auf Ihrem Gerät gespeichert
 - **Keine Telemetrie**: Keine Analysen, keine Absturzberichte, kein Nutzungstracking
 - **Keine Konten**: Die App funktioniert ohne Registrierung oder Anmeldung
-- **Optionale Banksynchronisation**: Wenn verfuegbar, werden direkte Verbindungen ohne Datenaggregratoren verwendet
-- **Open Source**: Sicherheitsaussagen sind durch Code-Review ueberpruefbar
+- **Optionale Banksynchronisation**: Wenn verfügbar, werden direkte Verbindungen ohne Datenaggregratoren verwendet
+- **Open Source**: Sicherheitsaussagen sind durch Code-Review überprüfbar
 
-Die [Sicherheitsarchitektur](/{lang}#security) ist fuer Nutzer konzipiert, die die in diesem Artikel beschriebenen Risiken verstehen und eine Alternative suchen.
+Die [Sicherheitsarchitektur](/{lang}#security) ist für Nutzer konzipiert, die die in diesem Artikel beschriebenen Risiken verstehen und eine Alternative suchen.
 
-## Praktische Schritte zum Schutz der Privatsphaere
+## Praktische Schritte zum Schutz der Privatsphäre
 
 Wenn Sie derzeit cloudbasierte Finanz-Apps nutzen, hier sind konkrete Schritte zur Reduzierung Ihrer Exposition.
 
-### Sofortmassnahmen
+### Sofortmaßnahmen
 
-1. **Verbundene Konten pruefen**: Ueberpruefen Sie die Einstellungen fuer verbundene Apps jeder Bank und widerrufen Sie unnoetige Verbindungen
-2. **Plaid-Verbindungen ueberpruefen**: Besuchen Sie [my.plaid.com](https://my.plaid.com), um Ihre Plaid-Verbindungen einzusehen und zu verwalten
+1. **Verbundene Konten prüfen**: Überprüfen Sie die Einstellungen für verbundene Apps jeder Bank und widerrufen Sie unnötige Verbindungen
+2. **Plaid-Verbindungen überprüfen**: Besuchen Sie [my.plaid.com](https://my.plaid.com), um Ihre Plaid-Verbindungen einzusehen und zu verwalten
 3. **Daten exportieren**: Laden Sie die Transaktionshistorie herunter, bevor Sie eine Migration in Betracht ziehen
-4. **Datenschutzrichtlinien lesen**: Verstehen Sie, wozu Sie zugestimmt haben und was sich geaendert hat
+4. **Datenschutzrichtlinien lesen**: Verstehen Sie, wozu Sie zugestimmt haben und was sich geändert hat
 
 ### Migrationsstrategie
 
-1. **Identifizieren Sie Ihren tatsaechlichen Bedarf**: Die meisten Nutzer brauchen Ausgabenverfolgung und Budgetierung, nicht den vollen Funktionsumfang komplexer Apps
-2. **Bewerten Sie Offline-Alternativen**: Budgie und aehnliche Apps bieten [Kernfunktionen](/{lang}#features) ohne Datenschutzkompromisse
-3. **Planen Sie den Uebergang**: Betreiben Sie parallele Systeme waehrend der Migration, um Datenkontinuitaet sicherzustellen
-4. **Alte Konten loeschen**: Loeschen Sie nach der Migration vollstaendig die Konten bei Cloud-Apps und widerrufen Sie den Zugriff der Aggregatoren
+1. **Identifizieren Sie Ihren tatsächlichen Bedarf**: Die meisten Nutzer brauchen Ausgabenverfolgung und Budgetierung, nicht den vollen Funktionsumfang komplexer Apps
+2. **Bewerten Sie Offline-Alternativen**: Budgie und ähnliche Apps bieten [Kernfunktionen](/{lang}#features) ohne Datenschutzkompromisse
+3. **Planen Sie den Uebergang**: Betreiben Sie parallele Systeme während der Migration, um Datenkontinuität sicherzustellen
+4. **Alte Konten löschen**: Löschen Sie nach der Migration vollständig die Konten bei Cloud-Apps und widerrufen Sie den Zugriff der Aggregatoren
 
 ### Laufende Praktiken
 
 1. **Verbindungen minimieren**: Verbinden Sie nur Konten, die echten Mehrwert bieten
-2. **Regelmaessige Zugriffsueberpruefung**: Vierteljaahrliche Ueberpruefung aller verbundenen Dienste
+2. **Regelmäßige Zugriffsüberprüfung**: Vierteljaahrliche Überprüfung aller verbundenen Dienste
 3. **Informiert bleiben**: Verfolgen Sie Fintech-Sicherheitsnachrichten und Bekanntmachungen zu Datenpannen
-4. **Starke Geraetesicherheit nutzen**: Offline-First-Apps haengen von der Geraetesicherheit ab
+4. **Starke Gerätesicherheit nutzen**: Offline-First-Apps hängen von der Gerätesicherheit ab
 
 ## FAQ
 
 ### Ist es legal, dass Budget-Apps meine Finanzdaten sammeln und verkaufen?
 
-Ja, mit Einwilligung. Wenn Sie Nutzungsbedingungen und Datenschutzrichtlinien zustimmen, gewaehren Sie typischerweise umfassende Rechte zur Datenerfassung und -weitergabe. Der rechtliche Rahmen in den meisten Rechtsgebieten erlaubt eine umfangreiche Datennutzung, wenn sie in Richtlinien offengelegt wird, die die meisten Nutzer nie lesen. Die DSGVO in Europa bietet staerkeren Schutz, einschliesslich Anforderungen zur Datenminimierung, aber die Durchsetzung variiert. In den USA ist der Schutz von Finanzdaten auf einzelstaatliche Gesetze verteilt, ohne einen umfassenden Bundesstandard.
+Ja, mit Einwilligung. Wenn Sie Nutzungsbedingungen und Datenschutzrichtlinien zustimmen, gewähren Sie typischerweise umfassende Rechte zur Datenerfassung und -weitergabe. Der rechtliche Rahmen in den meisten Rechtsgebieten erlaubt eine umfangreiche Datennutzung, wenn sie in Richtlinien offengelegt wird, die die meisten Nutzer nie lesen. Die DSGVO in Europa bietet stärkeren Schutz, einschließlich Anforderungen zur Datenminimierung, aber die Durchsetzung variiert. In den USA ist der Schutz von Finanzdaten auf einzelstaatliche Gesetze verteilt, ohne einen umfassenden Bundesstandard.
 
-### Kann ich die Loesung meiner Daten bei Plaid und anderen Aggregatoren beantragen?
+### Kann ich die Lösung meiner Daten bei Plaid und anderen Aggregatoren beantragen?
 
-Sie koennen die Loesung beantragen, und nach CCPA (Kalifornien) und DSGVO (Europa) muessen Unternehmen dem nachkommen. Es gibt jedoch Ausnahmen fuer Compliance, Betrugspraevention und berechtigte Geschaeftsinteressen, die eine Aufbewahrung rechtfertigen koennen. Der Prozess erfordert typischerweise die direkte Kontaktaufnahme mit jedem Aggregator, nicht nur mit der App, die Sie genutzt haben. Plaid bietet unter my.plaid.com ein Portal zum Einsehen und Verwalten von Verbindungen. Eine vollstaendige Ueberpruefung der Loesung ist schwer zu bestaetigen.
+Sie können die Lösung beantragen, und nach CCPA (Kalifornien) und DSGVO (Europa) müssen Unternehmen dem nachkommen. Es gibt jedoch Ausnahmen für Compliance, Betrugsprävention und berechtigte Geschäftsinteressen, die eine Aufbewahrung rechtfertigen können. Der Prozess erfordert typischerweise die direkte Kontaktaufnahme mit jedem Aggregator, nicht nur mit der App, die Sie genutzt haben. Plaid bietet unter my.plaid.com ein Portal zum Einsehen und Verwalten von Verbindungen. Eine vollständige Überprüfung der Lösung ist schwer zu bestätigen.
 
 ### Sind Open-Banking-APIs sicherer als Screen Scraping?
 
-Open-Banking-APIs sind deutlich sicherer als Screen Scraping. APIs bieten granulare Einwilligung, begrenzte Zugriffsumfaenge und keine Weitergabe von Zugangsdaten. Datenschutzbedenken bleiben jedoch bestehen, da Aggregatoren weiterhin Daten sammeln und aufbewahren und Apps oft mehr Zugriff anfordern als noetig. Open Banking loest Sicherheitsprobleme (Diebstahl von Zugangsdaten, Session-Uebernahme), aber nicht Datenschutzprobleme (Datenaggregation, Aufbewahrung, Sekundaernutzung).
+Open-Banking-APIs sind deutlich sicherer als Screen Scraping. APIs bieten granulare Einwilligung, begrenzte Zugriffsumfänge und keine Weitergabe von Zugangsdaten. Datenschutzbedenken bleiben jedoch bestehen, da Aggregatoren weiterhin Daten sammeln und aufbewahren und Apps oft mehr Zugriff anfordern als nötig. Open Banking löst Sicherheitsprobleme (Diebstahl von Zugangsdaten, Session-Uebernahme), aber nicht Datenschutzprobleme (Datenaggregation, Aufbewahrung, Sekundärnutzung).
 
-### Was ist mit Ende-zu-Ende-verschluesselten Cloud-Budget-Apps?
+### Was ist mit Ende-zu-Ende-verschlüsselten Cloud-Budget-Apps?
 
-Echte Ende-zu-Ende-Verschluesselung wuerde den Anbieter daran hindern, auf Ihre Daten zuzugreifen, aber die meisten Cloud-Budget-Apps, die Verschluesselung beanspruchen, verwenden Verschluesselung waehrend der Uebertragung und im Ruhezustand, nicht Ende-zu-Ende. Sie koennen weiterhin auf Ihre Daten zugreifen, weil sie die Schluessel besitzen. Apps mit echter Ende-zu-Ende-Verschluesselung verlieren Funktionalitaet (serverseitige Kategorisierung, Webzugriff, gemeinsame Budgets), die die meisten Cloud-Apps anbieten, was darauf hindeutet, dass ihre Verschluesselungsaussagen moeglicherweise nicht alle Daten abdecken.
+Echte Ende-zu-Ende-Verschlüsselung würde den Anbieter daran hindern, auf Ihre Daten zuzugreifen, aber die meisten Cloud-Budget-Apps, die Verschlüsselung beanspruchen, verwenden Verschlüsselung während der Uebertragung und im Ruhezustand, nicht Ende-zu-Ende. Sie können weiterhin auf Ihre Daten zugreifen, weil sie die Schlüssel besitzen. Apps mit echter Ende-zu-Ende-Verschlüsselung verlieren Funktionalität (serverseitige Kategorisierung, Webzugriff, gemeinsame Budgets), die die meisten Cloud-Apps anbieten, was darauf hindeutet, dass ihre Verschlüsselungsaussagen möglicherweise nicht alle Daten abdecken.
 
-### Wie handhabt Budgie die Banksynchronisation ohne die Privatsphaere zu kompromittieren?
+### Wie handhabt Budgie die Banksynchronisation ohne die Privatsphäre zu kompromittieren?
 
-Budgies Banksynchronisation nutzt direkte Verbindungen zu Bank-APIs, wo verfuegbar, und umgeht Datenaggregratoren vollstaendig. Zugangsdaten werden lokal auf Ihrem Geraet mit hardwaregestuetzter Verschluesselung gespeichert, nicht auf einem Server. Transaktionsdaten fliessen direkt von Ihrer Bank auf Ihr Geraet ohne Zwischenspeicherung. In Regionen, in denen kein direkter API-Zugang verfuegbar ist, bietet der manuelle Import aus Bankexporten eine vollstaendig private Alternative.
+Budgies Banksynchronisation nutzt direkte Verbindungen zu Bank-APIs, wo verfügbar, und umgeht Datenaggregratoren vollständig. Zugangsdaten werden lokal auf Ihrem Gerät mit hardwaregestützter Verschlüsselung gespeichert, nicht auf einem Server. Transaktionsdaten fließen direkt von Ihrer Bank auf Ihr Gerät ohne Zwischenspeicherung. In Regionen, in denen kein direkter API-Zugang verfügbar ist, bietet der manuelle Import aus Bankexporten eine vollständig private Alternative.
 
 ### Was passiert mit meinen Daten, wenn Budgie eingestellt wird?
 
-Mit Ihren Daten passiert nichts, weil Budgie Ihre Daten nicht hat. Alles wird lokal auf Ihrem Geraet gespeichert. Wenn Budgie als Unternehmen aufhoeren wuerde zu existieren, wuerde Ihre App weiterhin mit all Ihren Daten funktionieren. Sie koennen Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server, der abgeschaltet werden muesste, keine Migration, ueber die Sie sich Sorgen machen muessten, keine Uebernahme, die den Umgang mit Daten aendern koennte. Ihre Daten bleiben dauerhaft Ihre.
+Mit Ihren Daten passiert nichts, weil Budgie Ihre Daten nicht hat. Alles wird lokal auf Ihrem Gerät gespeichert. Wenn Budgie als Unternehmen aufhören würde zu existieren, würde Ihre App weiterhin mit all Ihren Daten funktionieren. Sie können Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server, der abgeschaltet werden müsste, keine Migration, über die Sie sich Sorgen machen müssten, keine Uebernahme, die den Umgang mit Daten ändern könnte. Ihre Daten bleiben dauerhaft Ihre.
 
 ---
 
-Cloud-Budget-Apps loesen ein echtes Problem, aber sie loesen es auf eine Weise, die neue Probleme schafft. Die Bequemlichkeit des automatischen Transaktionsimports, der KI-Kategorisierung und der geraetuebergreifenden Synchronisation geht auf Kosten Ihrer finanziellen Privatsphaere.
+Cloud-Budget-Apps lösen ein echtes Problem, aber sie lösen es auf eine Weise, die neue Probleme schafft. Die Bequemlichkeit des automatischen Transaktionsimports, der KI-Kategorisierung und der gerätübergreifenden Synchronisation geht auf Kosten Ihrer finanziellen Privatsphäre.
 
-Fuer IT-Fachleute, die diese Kompromisse verstehen, bietet die Offline-First-Architektur einen Weg nach vorn. Ihre Finanzdaten verdienen die gleiche Sicherheitshaltung, die Sie auf Produktionszugangsdaten oder Kundendaten anwenden wuerden.
+Für IT-Fachleute, die diese Kompromisse verstehen, bietet die Offline-First-Architektur einen Weg nach vorn. Ihre Finanzdaten verdienen die gleiche Sicherheitshaltung, die Sie auf Produktionszugangsdaten oder Kundendaten anwenden würden.
 
-Bereit, die Kontrolle ueber Ihre Finanzdaten zu uebernehmen? [Treten Sie der Budgie-Warteliste bei](/{lang}#whitelist) und erleben Sie wirklich privates Ausgabentracking.
+Bereit, die Kontrolle über Ihre Finanzdaten zu übernehmen? [Treten Sie der Budgie-Warteliste bei](/{lang}#whitelist) und erleben Sie wirklich privates Ausgabentracking.
