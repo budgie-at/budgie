@@ -8,13 +8,23 @@ appId: ${APP_ID}
       id: 'HomePage.TotalBalance'
 
 - tapOn:
-    id: 'ActionButton'
+    text: 'Add Account'
+    optional: true
+
+- runFlow:
+    when:
+      notVisible:
+        text: '.*Monobank.*'
+    commands:
+      - tapOn:
+          id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: 'ActionItem.AddAccount'
+          timeout: 10000
+      - tapOn:
+          id: 'ActionItem.AddAccount'
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
-      id: 'ActionItem.AddAccount'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'ActionItem.AddAccount'
-- extendedWaitUntil:
-    visible: 'New Account'
+      text: '.*Monobank.*'

@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: subflows/enter-app.flow.yaml
+- runFlow: subflows/relaunch-app.flow.yaml
 
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml

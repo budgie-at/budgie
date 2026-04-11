@@ -3,7 +3,6 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -15,6 +14,7 @@ import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
+import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
@@ -50,7 +50,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} allowNegative />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={variant} control={control} nameInputTestID={AccountFormSelectors.NameInput} />
+                <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
                 <CreateAccountCurrencyField control={control} />
                 <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
