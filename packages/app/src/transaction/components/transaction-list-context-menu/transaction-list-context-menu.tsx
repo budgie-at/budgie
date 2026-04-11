@@ -12,13 +12,14 @@ import { View } from 'react-native';
 
 import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
-import { TransactionContextMenuSelectors } from '../../../@e2e/selectors/transaction-context-menu.selector';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
+
+import { TransactionListContextMenuSelector } from './transaction-list-context-menu.selector';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface | null;
@@ -101,7 +102,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
             icon={UserIconNameEnum.ArrowRightLeft}
             label={t`Convert to Transfer`}
             onPress={handleConvertPress}
-            testID={TransactionContextMenuSelectors.ConvertToTransferButton}
+            testID={TransactionListContextMenuSelector.ConvertToTransferButton}
         />
     ) : null;
 
@@ -112,7 +113,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
                     icon={UserIconNameEnum.Pencil}
                     label={t`Edit Transaction`}
                     onPress={handleEditPress}
-                    testID={TransactionContextMenuSelectors.EditButton}
+                    testID={TransactionListContextMenuSelector.EditButton}
                 />
                 {convertMenuItem}
                 <PopoverMenuItem
@@ -120,7 +121,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
                     label={t`Delete Transaction`}
                     onPress={handleDeletePress}
                     variant="destructive"
-                    testID={TransactionContextMenuSelectors.DeleteButton}
+                    testID={TransactionListContextMenuSelector.DeleteButton}
                 />
             </View>
         </PopoverMenu>

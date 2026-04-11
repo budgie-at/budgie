@@ -7,6 +7,8 @@ import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 
+import { BankAccountPreviewCardSelector } from './bank-account-preview-card.selector';
+
 interface Props {
     readonly preview: BankAccountPreviewInterface;
     readonly isSelected: boolean;
@@ -19,7 +21,7 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
     };
 
     return (
-        <Card className="p-4xl">
+        <Card className="p-4xl" onPress={handleToggle} testID={BankAccountPreviewCardSelector.Row(preview.title)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-1 mr-md">
                     <Text className="text-primary font-semibold text-base">{preview.title}</Text>
@@ -33,7 +35,11 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
                         </Text>
                     )}
                 </View>
-                <ThemedSwitch value={isSelected} onValueChange={handleToggle} />
+                <ThemedSwitch
+                    value={isSelected}
+                    onValueChange={handleToggle}
+                    testID={BankAccountPreviewCardSelector.Toggle(preview.title)}
+                />
             </View>
         </Card>
     );

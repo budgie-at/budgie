@@ -7,7 +7,6 @@ import { ScrollView, View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
@@ -16,6 +15,7 @@ import { SearchableFilterEmptyResult } from '../transaction/components/searchabl
 import { SearchableFilterFooter } from '../transaction/components/searchable-filter-footer/searchable-filter-footer';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
 import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
@@ -76,9 +76,9 @@ export default function TransactionTagFilterModal() {
                     onSelectAll={handleSelectAll}
                     onDeselectAll={handleDeselectAll}
                     isVisible={showControls}
-                    searchInputTestID={TransactionFiltersSelectors.TagSearchInput}
-                    selectAllButtonTestID={TransactionFiltersSelectors.TagSelectAllButton}
-                    deselectAllButtonTestID={TransactionFiltersSelectors.TagDeselectAllButton}
+                    searchInputTestID={TransactionFiltersSelector.TagSearchInput}
+                    selectAllButtonTestID={TransactionFiltersSelector.TagSelectAllButton}
+                    deselectAllButtonTestID={TransactionFiltersSelector.TagDeselectAllButton}
                 />
                 {/* jscpd:ignore-end */}
 
@@ -118,7 +118,7 @@ export default function TransactionTagFilterModal() {
             <SearchableFilterFooter
                 selectedCount={localSelectedCount}
                 onApply={handleApply}
-                applyButtonTestID={TransactionFiltersSelectors.TagApplyButton}
+                applyButtonTestID={TransactionFiltersSelector.TagApplyButton}
             />
         </View>
     );

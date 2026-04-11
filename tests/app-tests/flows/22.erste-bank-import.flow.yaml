@@ -1,0 +1,116 @@
+appId: ${APP_ID}
+env:
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+  FIRST_PDF_NAME_MATCH: '.*2026008.*'
+  FIRST_PDF_TILE_POINT: '16%,28%'
+  SECOND_PDF_NAME_MATCH: '.*2026009.*'
+  SECOND_PDF_TILE_POINT: '43%,26%'
+---
+
+- runFlow:
+    file: subflows/enter-app.flow.yaml
+    env:
+      HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
+
+- evalScript: ${output.phase = 'clear-state-import'}
+
+- runFlow: subflows/account/open-new-account.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      text: '.*Erste Bank.*'
+    direction: DOWN
+    timeout: 10000
+    visibilityPercentage: 50
+    speed: 20
+
+- tapOn:
+    text: '.*Erste Bank.*'
+
+- runFlow:
+    file: subflows/import-erste-pdf-from-picker.flow.yaml
+    env:
+      PDF_NAME_MATCH: ${FIRST_PDF_NAME_MATCH}
+      PDF_TILE_POINT: ${FIRST_PDF_TILE_POINT}
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.Erste EUR'
+    direction: DOWN
+    timeout: 10000
+
+- tapOn:
+    id: 'AccountCard.Erste EUR'
+
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.Habenzinsen'
+    direction: DOWN
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.Kest'
+    direction: DOWN
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.Kontof_hrung'
+    direction: DOWN
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.Bonus_Kontof_hrung'
+    direction: DOWN
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.Josef_Summerauer'
+    direction: UP
+    timeout: 20000
+    speed: 20
+    visibilityPercentage: 30
+    centerElement: true
+
+- tapOn:
+    point: '8%,7%'
+
+- extendedWaitUntil:
+    visible:
+      id: 'AccountCard.Erste EUR'
+    timeout: 10000
+
+- evalScript: ${output.phase = 'existing-account-quick-import'}
+
+- longPressOn:
+    id: 'AccountCard.Erste EUR'
+
+- runFlow:
+    file: subflows/quick-import-erste-pdf-from-picker.flow.yaml
+    env:
+      PDF_NAME_MATCH: ${SECOND_PDF_NAME_MATCH}
+      PDF_TILE_POINT: ${SECOND_PDF_TILE_POINT}
+
+- tapOn:
+    id: 'AccountCard.Erste EUR'
+
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.AREALIS_GmbH'
+    direction: DOWN
+    timeout: 30000
+    speed: 80
+    visibilityPercentage: 50

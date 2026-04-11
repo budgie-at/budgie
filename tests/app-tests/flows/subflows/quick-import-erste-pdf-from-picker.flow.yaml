@@ -1,0 +1,51 @@
+appId: ${APP_ID}
+env:
+  PDF_NAME_MATCH: ${PDF_NAME_MATCH}
+  PDF_TILE_POINT: ${PDF_TILE_POINT}
+---
+- runFlow:
+    when:
+      visible: 'No Recents'
+    commands:
+      - tapOn: 'Browse'
+
+- extendedWaitUntil:
+    visible:
+      text: 'budgie|E2EFixtures|${PDF_NAME_MATCH}'
+    timeout: 15000
+
+- runFlow:
+    when:
+      visible: 'budgie'
+    commands:
+      - tapOn: 'budgie'
+      - extendedWaitUntil:
+          visible:
+            text: 'E2EFixtures|${PDF_NAME_MATCH}'
+          timeout: 15000
+
+- runFlow:
+    when:
+      visible: 'E2EFixtures'
+    commands:
+      - tapOn:
+          point: '18%,30%'
+      - extendedWaitUntil:
+          visible:
+            text: ${PDF_NAME_MATCH}
+          timeout: 15000
+
+- runFlow:
+    when:
+      visible:
+        text: ${PDF_NAME_MATCH}
+    commands:
+      - tapOn:
+          point: ${PDF_TILE_POINT}
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
+
+- waitForAnimationToEnd

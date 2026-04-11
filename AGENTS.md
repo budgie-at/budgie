@@ -319,6 +319,15 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands
 
+## E2E Testing
+
+1. Prefer black-box E2E flows over app-owned test hooks.
+2. Use real user-visible import paths for database backups and bank PDFs.
+3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
+4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
+5. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
+6. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the app before rerunning the test.
+
 ### Commit Format
 
 Conventional commits: `type(scope): description`

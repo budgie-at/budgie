@@ -7,7 +7,6 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -15,6 +14,7 @@ import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.ho
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 
 const ANIMATION_DELAY = 170;
 
@@ -69,7 +69,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
                         <Text
                             className="text-md font-medium text-primary"
                             numberOfLines={1}
-                            {...(isDefined(account?.title) && { testID: TransactionFormSelectors.SelectedAccount(account.title) })}
+                            {...(isDefined(account?.title) && { testID: SimpleQuickFormSelector.SelectedAccount(account.title) })}
                         >
                             {account?.title ?? t`Select account`}
                         </Text>

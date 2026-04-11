@@ -2,11 +2,11 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
+import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly isSelected: boolean;
@@ -39,7 +39,7 @@ export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }
         <HapticPressable
             onPress={handleSelect}
             className={categoryVariants({ isSelected })}
-            testID={TransactionFiltersSelectors.CategoryOption(category.title)}
+            testID={TransactionFiltersSelector.CategoryOption(category.title)}
         >
             <CircleIcon icon={category.icon} variant="ghost" size={26} iconSize={12} />
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>{category.title}</Text>
@@ -48,7 +48,7 @@ export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }
                     size={16}
                     icon={UserIconNameEnum.Check}
                     className="text-primary"
-                    testID={TransactionFiltersSelectors.CategoryOptionSelected(category.title)}
+                    testID={TransactionFiltersSelector.CategoryOptionSelected(category.title)}
                 />
             ) : null}
         </HapticPressable>

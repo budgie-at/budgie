@@ -1,0 +1,57 @@
+appId: ${APP_ID}
+env:
+  FIXTURE_FILE: ${FIXTURE_FILE}
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+---
+- openLink: 'budgie://settings?anchor=data'
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.ImportDatabaseCard'
+    timeout: 15000
+
+- tapOn:
+    id: 'SettingsPage.ImportDatabaseCard'
+
+- extendedWaitUntil:
+    visible:
+      text: 'SQLite|${FIXTURE_FILE}'
+    timeout: 15000
+
+- runFlow:
+    when:
+      visible: 'SQLite'
+    commands:
+      - tapOn:
+          point: '18%,30%'
+
+- extendedWaitUntil:
+    visible: ${FIXTURE_FILE}
+    timeout: 15000
+
+- tapOn:
+    point: '78%,26%'
+
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- extendedWaitUntil:
+    visible: 'Import Database|Datenbank importieren'
+    timeout: 15000
+
+- tapOn:
+    text: 'Import Database|Datenbank importieren'
+    index: 1
+
+- runFlow:
+    file: relaunch-app.flow.yaml
+    env:
+      HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}

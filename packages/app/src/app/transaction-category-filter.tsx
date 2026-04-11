@@ -7,7 +7,6 @@ import { ScrollView, View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
@@ -18,6 +17,7 @@ import { SearchableFilterFooter } from '../transaction/components/searchable-fil
 import { TransactionCategoryFilterItem } from '../transaction/components/transaction-category-filter/transaction-category-filter-item';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
 import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -76,9 +76,9 @@ export default function TransactionCategoryFilterModal() {
                     onSelectAll={handleSelectAll}
                     onDeselectAll={handleDeselectAll}
                     isVisible={showControls}
-                    searchInputTestID={TransactionFiltersSelectors.CategorySearchInput}
-                    selectAllButtonTestID={TransactionFiltersSelectors.CategorySelectAllButton}
-                    deselectAllButtonTestID={TransactionFiltersSelectors.CategoryDeselectAllButton}
+                    searchInputTestID={TransactionFiltersSelector.CategorySearchInput}
+                    selectAllButtonTestID={TransactionFiltersSelector.CategorySelectAllButton}
+                    deselectAllButtonTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
                 />
 
                 {isNotEmptyArray(items) ? (
@@ -115,7 +115,7 @@ export default function TransactionCategoryFilterModal() {
             <SearchableFilterFooter
                 selectedCount={localSelectedCount}
                 onApply={handleApply}
-                applyButtonTestID={TransactionFiltersSelectors.CategoryApplyButton}
+                applyButtonTestID={TransactionFiltersSelector.CategoryApplyButton}
             />
         </View>
     );

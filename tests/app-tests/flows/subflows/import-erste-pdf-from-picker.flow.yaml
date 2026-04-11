@@ -1,0 +1,75 @@
+appId: ${APP_ID}
+env:
+  PDF_NAME_MATCH: ${PDF_NAME_MATCH}
+  PDF_TILE_POINT: ${PDF_TILE_POINT}
+---
+- extendedWaitUntil:
+    visible:
+      text: 'Select File|Datei auswählen'
+    timeout: 10000
+
+- tapOn:
+    text: 'Select File|Datei auswählen'
+
+- runFlow:
+    when:
+      visible: 'No Recents'
+    commands:
+      - tapOn: 'Browse'
+
+- extendedWaitUntil:
+    visible:
+      text: 'budgie|E2EFixtures|${PDF_NAME_MATCH}'
+    timeout: 15000
+
+- runFlow:
+    when:
+      visible: 'budgie'
+    commands:
+      - tapOn: 'budgie'
+      - extendedWaitUntil:
+          visible:
+            text: 'E2EFixtures|${PDF_NAME_MATCH}'
+          timeout: 15000
+
+- runFlow:
+    when:
+      visible: 'E2EFixtures'
+    commands:
+      - tapOn:
+          point: '18%,30%'
+      - extendedWaitUntil:
+          visible:
+            text: ${PDF_NAME_MATCH}
+          timeout: 15000
+
+- runFlow:
+    when:
+      visible:
+        text: ${PDF_NAME_MATCH}
+    commands:
+      - tapOn:
+          point: ${PDF_TILE_POINT}
+
+- extendedWaitUntil:
+    visible:
+      id: 'SyncAccountSelection.Row.Erste_EUR'
+    timeout: 15000
+
+- tapOn:
+    id: 'SyncAccountSelection.Row.Erste_EUR'
+
+- extendedWaitUntil:
+    visible:
+      text: 'Start Sync|Synchronisation starten'
+    timeout: 15000
+
+- tapOn:
+    text: 'Start Sync|Synchronisation starten'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
+
+- waitForAnimationToEnd

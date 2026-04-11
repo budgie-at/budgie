@@ -9,11 +9,11 @@ interface Props {
 }
 
 export const RecurringCalendarDayDetail = ({ entries }: Props) => (
-        <View className="gap-y-lg">
-            {entries.map((entry, index) => {
-                const key = getRecurringEntryKey(entry);
+    <View className="gap-y-lg">
+        {entries.map((entry, index) => {
+            const key = getRecurringEntryKey(entry);
 
-                return <RecurringCalendarEntryRow key={key} entry={entry} index={index} />;
-            })}
-        </View>
-    );
+            return <RecurringCalendarEntryRow key={key} entry={entry} index={index} />;
+        })}
+    </View>
+);

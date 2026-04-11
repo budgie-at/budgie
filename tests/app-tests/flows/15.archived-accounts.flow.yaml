@@ -2,9 +2,7 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: subflows/enter-app.flow.yaml
-    env:
-      USE_APP_OWNED_RESET: 'true'
+    file: subflows/relaunch-app.flow.yaml
 
 - retry:
     maxRetries: 2

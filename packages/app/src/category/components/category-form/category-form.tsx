@@ -5,7 +5,6 @@ import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboa
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
@@ -24,6 +23,8 @@ import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-cat
 import { categoryService } from '../../service/category.service';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
+
+import { CategoryFormSelector } from './category-form.selector';
 
 type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 
@@ -150,15 +151,15 @@ export const CategoryForm = (props: Props) => {
                 <CategoryIconDisplay
                     icon={icon}
                     onPress={handleIconPress}
-                    triggerTestID={CategoryFormSelectors.IconTrigger}
-                    iconTestID={CategoryFormSelectors.CurrentIcon(icon)}
+                    triggerTestID={CategoryFormSelector.IconTrigger}
+                    iconTestID={CategoryFormSelector.CurrentIcon(icon)}
                 />
 
                 <CategoryTitleInput
                     value={title}
                     onChange={handleTitleChange}
                     onBlur={handleTitleBlur}
-                    testID={CategoryFormSelectors.Input}
+                    testID={CategoryFormSelector.Input}
                 />
 
                 {/* jscpd:ignore-start */}
@@ -180,7 +181,7 @@ export const CategoryForm = (props: Props) => {
                 <View className="px-3xl pb-3xl gap-y-md pt-xl">
                     {isEditing ? (
                         <ModalFormMergeButton
-                            testID={CategoryFormSelectors.Merge}
+                            testID={CategoryFormSelector.Merge}
                             onPress={handleMerge}
                             content={t`Merge into another category`}
                         />
@@ -188,7 +189,7 @@ export const CategoryForm = (props: Props) => {
 
                     <View className="flex-row gap-x-md">
                         <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
+                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelector.Submit} />
                     </View>
                 </View>
             </KeyboardStickyView>

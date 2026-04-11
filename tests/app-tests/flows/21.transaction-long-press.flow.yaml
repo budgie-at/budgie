@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: subflows/enter-app.flow.yaml
+- runFlow: subflows/relaunch-app.flow.yaml
 
 - runFlow:
     file: subflows/import-database-fixture.flow.yaml
@@ -59,7 +59,8 @@ appId: ${APP_ID}
     visible: 'Edit Expense'
     timeout: 15000
 
-- back
+- tapOn:
+    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     visible: 'Transactions'
     timeout: 15000

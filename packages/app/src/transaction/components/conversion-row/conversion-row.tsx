@@ -4,8 +4,8 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { TransferFormSelectors } from '../../../@e2e/selectors/transfer-form.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
 interface Props {
     readonly destinationAmount: number;
@@ -36,7 +36,7 @@ export const ConversionRow = (props: Props) => {
         <Animated.View entering={ENTERING_ANIMATION}>
             <HapticPressable
                 className="flex-row items-center justify-between px-md py-sm bg-secondary-background rounded-2xl"
-                testID={TransferFormSelectors.ConversionRow}
+                testID={TransferQuickFormSelector.ConversionRow}
                 accessibilityLabel={accessibilityLabel}
                 onPress={onPress}
             >
