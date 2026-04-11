@@ -32,7 +32,6 @@
         "metro-minify-terser",
         "react-compiler-runtime",
         "babel-jest",
-        "tsx",
         "@jest/globals",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
