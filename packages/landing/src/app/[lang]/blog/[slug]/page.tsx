@@ -11,7 +11,10 @@ import { isDefined } from '@rnw-community/shared';
 import { BlogDataInterface } from '../../../../blog/interface/blog-data.interface';
 import { calculateReadingTime } from '../../../../blog/util/calculate-reading-time.util';
 import { getArticles } from '../../../../blog/util/get-articles.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../../generic/component/motion/motion';
+import { BASE_URL, OG_LOCALE_MAP } from '../../../../generic/constant/seo.constant';
+import { buildAlternates } from '../../../../generic/util/build-alternates.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
 import { Button } from '../../../../ui/button';
@@ -24,13 +27,18 @@ interface Props extends PageLangParam {
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    const articles = getArticles();
+    const articles = await getArticles('en');
 
     return articles.map(article => ({ slug: article.slug }));
 }
 
-const getPost = async (slug: string, lang: string): Promise<BlogDataInterface> =>
-    (await import(`../../../../blog/content/${slug}/content.${lang}.mdx`)) as BlogDataInterface;
+const getPost = async (slug: string, lang: string): Promise<BlogDataInterface> => {
+    try {
+        return (await import(`../../../../blog/content/${slug}/content.${lang}.mdx`)) as BlogDataInterface;
+    } catch {
+        return (await import(`../../../../blog/content/${slug}/content.en.mdx`)) as BlogDataInterface;
+    }
+};
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -49,20 +57,23 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],
+        alternates: buildAlternates(lang, `/blog/${slug}`),
         openGraph: {
             title: metadata.title,
             description: metadata.seo.metaDescription,
             type: 'article',
+            url: `${BASE_URL}/${lang}/blog/${slug}`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US',
             publishedTime: metadata.date,
             authors: [metadata.author],
             tags: metadata.tags,
-            images: metadata.image ? [{ url: metadata.image }] : []
+            images: metadata.image ? [{ url: `${BASE_URL}${metadata.image}`, width: 1280, height: 720 }] : []
         },
         twitter: {
             card: 'summary_large_image',
             title: metadata.title,
             description: metadata.seo.metaDescription,
-            images: metadata.image ? [metadata.image] : []
+            images: metadata.image ? [`${BASE_URL}${metadata.image}`] : []
         }
     };
 }
@@ -71,7 +82,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function BlogArticlePage(props: Props) {
     const { slug, lang } = await props.params;
 
-    initLingui(lang);
+    const i18n = initLingui(lang);
 
     const { default: Post, metadata } = await getPost(slug, lang).catch(() => {
         notFound();
@@ -89,8 +100,36 @@ export default async function BlogArticlePage(props: Props) {
 
     const readingTime = calculateReadingTime(Post.toString());
 
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const blogPostingData = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: metadata.title,
+        description: metadata.seo.metaDescription,
+        ...(isDefined(metadata.image) && { image: `${BASE_URL}${metadata.image}` }),
+        datePublished: metadata.date,
+        author: { '@type': 'Person', name: metadata.author },
+        publisher: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
+        url: `${BASE_URL}/${lang}/blog/${slug}`,
+        keywords: metadata.seo.keywords.join(', ')
+    };
+
+    const breadcrumbData = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: i18n._(msg`Blog`), item: `${BASE_URL}/${lang}/blog` },
+            { '@type': 'ListItem', position: 3, name: metadata.title }
+        ]
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
+
     return (
         <main className="flex-1">
+            <JsonLd data={blogPostingData} />
+            <JsonLd data={breadcrumbData} />
+
             <article className="w-full py-20 md:py-32">
                 <div className="container px-4 md:px-6 max-w-4xl">
                     <Motion>

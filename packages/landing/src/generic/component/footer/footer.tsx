@@ -108,7 +108,7 @@ export const Footer = ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href="/blog">
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/blog`}>
                                     <Trans>Blog</Trans>
                                 </Link>
                             </li>

@@ -1,0 +1,381 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "Por que las aplicaciones de presupuesto en la nube son una pesadilla para la privacidad",
+    "description": "Un analisis tecnico en profundidad sobre como las aplicaciones de presupuesto en la nube recopilan, comparten y exponen tus datos financieros a traves de integraciones con Plaid, filtraciones de datos y agregacion por terceros.",
+    "tags": ["privacidad", "seguridad", "seguridad-en-la-nube", "filtraciones-de-datos", "plaid", "privacidad-financiera", "fintech"],
+    "seo": {
+        "keywords": [
+            "privacidad aplicacion presupuesto nube",
+            "riesgos de privacidad Plaid",
+            "filtraciones de datos aplicaciones financieras",
+            "filtracion de datos Mint",
+            "seguridad aplicacion presupuesto",
+            "agregacion datos financieros",
+            "screen scraping bancario",
+            "preocupaciones privacidad fintech",
+            "seguridad aplicaciones finanzas personales",
+            "aplicacion presupuesto sin conexion"
+        ],
+        "metaDescription": "Analisis tecnico de los riesgos de privacidad en aplicaciones de presupuesto en la nube: intercambio de datos con Plaid, filtraciones reales (Mint, Cash App), peligros del screen scraping y como evaluar la seguridad de las aplicaciones financieras."
+    }
+}
+
+# Por que las aplicaciones de presupuesto en la nube son una pesadilla para la privacidad
+
+Rastrear cada cafe, cada suscripcion, cada nomina. Tu aplicacion de presupuesto sabe mas sobre tu vida que tus amigos mas cercanos. Sabe donde comes, que compras, cuando cobras y cuanta deuda tienes. Ahora considera esto: esos datos estan en servidores que no controlas, gestionados por empresas cuyo modelo de negocio principal depende de monetizar los datos de los usuarios.
+
+Esto no es una evaluacion de riesgos hipotetica. Esta es la realidad de las aplicaciones de finanzas personales basadas en la nube en 2025.
+
+## El coste oculto de las aplicaciones de presupuesto "gratuitas"
+
+El mercado de aplicaciones de finanzas personales ha explotado. Mint, YNAB, Copilot, Monarch Money, Lunch Money y decenas de otras prometen ayudarte a gestionar tu dinero. La mayoria ofrece niveles gratuitos o suscripciones mensuales bajas que parecen razonables por el valor proporcionado.
+
+Esta es la primera pregunta que todo profesional de TI deberia hacerse: **Como gana dinero una empresa que ofrece un servicio gratuito que requiere infraestructura significativa, recursos de desarrollo y cumplimiento normativo?**
+
+La respuesta varia segun la empresa, pero los patrones son consistentes:
+
+1. **Monetizacion de datos**: Los datos financieros agregados se venden a empresas de investigacion de mercado, anunciantes e instituciones financieras
+2. **Referencias de socios**: Las aplicaciones recomiendan tarjetas de credito, prestamos y productos de inversion, ganando comisiones de afiliacion
+3. **Venta adicional de productos financieros**: La aplicacion se convierte en un canal de distribucion para servicios de seguros, banca e inversiones
+4. **Publicidad**: Anuncios dirigidos basados en tus patrones de gasto y situacion financiera
+
+Ninguno de estos modelos de ingresos funciona sin recopilar, analizar y retener tus datos financieros. Tu historial de transacciones no es solo una funcion del producto. **Es** el producto.
+
+### La pila de recopilacion de datos
+
+Cuando conectas una cuenta bancaria a una aplicacion de presupuesto en la nube, esto es lo que sucede tipicamente:
+
+```
+Tu cuenta bancaria
+       │
+       ▼
+Agregador de datos (Plaid, Yodlee, MX, Finicity)
+       │
+       ├──► Almacen de datos del agregador
+       │
+       ▼
+Backend de la aplicacion de presupuesto
+       │
+       ├──► Base de datos de la aplicacion (a menudo AWS, GCP)
+       ├──► Pipeline de analisis
+       ├──► Datos de entrenamiento ML/AI
+       └──► Analitica de terceros (Mixpanel, Amplitude, etc.)
+```
+
+Tu unica conexion bancaria crea copias de tus datos en multiples sistemas, cada uno con diferentes posturas de seguridad, politicas de retencion y controles de acceso. La superficie de ataque no es tu banco. Es cada sistema en esta cadena.
+
+## Como las aplicaciones de presupuesto en la nube recopilan tus datos
+
+Comprender los mecanismos tecnicos de la recopilacion de datos revela por que las aplicaciones financieras basadas en la nube conllevan riesgos inherentes para la privacidad.
+
+### Metodo 1: Plaid y APIs de agregacion de datos
+
+Plaid domina el mercado de agregacion de datos financieros. Cuando ves una pantalla de inicio de sesion de tu banco dentro de una aplicacion de presupuesto, Plaid esta generalmente detras. Esto es lo que Plaid recopila:
+
+- **Informacion de cuenta**: Nombres de cuentas, numeros (a menudo enmascarados), saldos y tipos
+- **Datos de transacciones**: Cada transaccion incluyendo monto, fecha, comerciante, categoria y ubicacion
+- **Informacion de identidad**: Nombre, direccion, numero de telefono, correo electronico de tu perfil bancario
+- **Posiciones de inversion**: Posiciones, cantidades, coste de adquisicion, valores actuales
+- **Detalles de obligaciones**: Montos de prestamos, tasas de interes, pagos minimos, fechas de origen
+
+La politica de privacidad de Plaid establece explicitamente que retienen estos datos y pueden usarlos para mejora de productos, analisis y desarrollo de nuevos servicios. Cuando conectas tu banco a traves de Plaid, no solo compartes datos con la aplicacion de presupuesto. Los compartes con Plaid, que opera como un controlador de datos independiente.
+
+En 2022, Plaid llego a un acuerdo en una demanda colectiva de 58 millones de dolares por acusaciones de haber recopilado mas datos de los que los usuarios autorizaron y haberlos retenido mas tiempo del necesario. El acuerdo incluia alegaciones de que Plaid obtenia credenciales de inicio de sesion a traves de interfaces disenadas para parecer paginas de inicio de sesion bancarias, llevando a los usuarios a creer que estaban iniciando sesion directamente en sus bancos.
+
+### Metodo 2: Screen scraping
+
+Antes de la agregacion basada en API, las aplicaciones usaban screen scraping: sistemas automatizados que inician sesion en tu banco con tus credenciales y analizan el HTML de las paginas de tu cuenta. Este metodo todavia se usa cuando los bancos no soportan acceso por API.
+
+Las implicaciones de seguridad son graves:
+
+- **Almacenamiento de credenciales**: Tu nombre de usuario y contrasena reales deben almacenarse (incluso cifrados) en servidores de terceros
+- **Riesgo de secuestro de sesion**: Las sesiones de inicio de sesion automatizadas pueden ser interceptadas
+- **Violacion de los terminos del banco**: La mayoria de los bancos prohiben explicitamente compartir credenciales con terceros
+- **Sin granularidad de consentimiento**: El scraper tiene acceso completo a tu cuenta, incluida la capacidad de iniciar transferencias
+
+El screen scraping significa que un tercero puede hacer todo lo que tu puedes hacer en tu cuenta bancaria. Eligen no hacerlo, pero la capacidad tecnica existe.
+
+### Metodo 3: Acceso directo por API (Open Banking)
+
+Las regulaciones de Open Banking en la UE y el Reino Unido, junto con programas API voluntarios de bancos estadounidenses, permiten un intercambio de datos mas controlado. Las aplicaciones solicitan alcances especificos de acceso y tu autorizas a traves de la interfaz de tu banco.
+
+Esto es mas seguro que el screen scraping, pero las preocupaciones de privacidad persisten:
+
+- **Ampliacion progresiva**: Las aplicaciones a menudo solicitan mas permisos de los necesarios
+- **Acceso persistente**: Los tokens permiten acceso continuo a los datos hasta que se revoque explicitamente
+- **Persistencia del agregador**: Incluso con APIs directas, las aplicaciones a menudo usan agregadores que agregan otro titular de datos
+- **Mecanismos de renovacion**: La mayoria de las implementaciones permiten renovacion indefinida del acceso sin reautorizacion
+
+## Filtraciones de datos reales en aplicaciones financieras
+
+Esto no es teorico. Aplicaciones financieras han sido comprometidas y los datos de los usuarios han sido expuestos.
+
+### Mint (Intuit) -- 2023
+
+En diciembre de 2023, Intuit anuncio que cerraria Mint despues de 17 anos. Los usuarios recibieron 90 dias para exportar sus datos antes de su eliminacion. Esto plantea varias preocupaciones:
+
+- **Portabilidad de datos**: Anos de historial financiero bloqueados en un formato propietario
+- **Migracion forzada**: Usuarios empujados a Credit Karma, otro producto de Intuit con diferentes terminos de privacidad
+- **Preguntas de retencion**: Que pasa con las cintas de respaldo, los conjuntos de datos analiticos y los datos de entrenamiento ML que incluian transacciones de usuarios de Mint?
+
+Cuando una empresa cierra, los datos no desaparecen necesariamente. A menudo se convierten en un activo vendido a la empresa adquirente o retenido en archivos con politicas de acceso poco claras.
+
+### Cash App (Block) -- 2022
+
+Block, la empresa matriz de Cash App, revelo que un exempleado descargo informes internos que contenian datos de clientes de mas de 8 millones de usuarios. La filtracion incluia:
+
+- Nombres completos
+- Numeros de cuentas de corretaje
+- Valores de cartera
+- Actividad de trading de acciones
+
+Esta filtracion ilustra el riesgo de amenaza interna. Ningun hacker externo estuvo involucrado. Un empleado con acceso legitimo eligio exfiltrar datos. Los sistemas en la nube con almacenes de datos centralizados son inherentemente vulnerables a este vector de ataque.
+
+### Plaid -- preocupaciones continuas
+
+Mas alla del acuerdo de 2022, Plaid ha enfrentado escrutinio continuo:
+
+- **Fallos en la minimizacion de datos**: Recopilacion de historiales de transacciones completos cuando las aplicaciones solo necesitan saldos actuales
+- **Politicas de retencion**: Conservacion de datos despues de que los usuarios desconectan cuentas de las aplicaciones
+- **Uso secundario**: Uso de datos agregados para construir productos de scoring crediticio e identidad
+
+Cuando te conectas a traves de Plaid, entras en una relacion con Plaid, no solo con la aplicacion. Los intereses comerciales de Plaid pueden no alinearse con tus preferencias de privacidad.
+
+### Acuerdo de Yodlee -- 2024
+
+Envestnet Yodlee, otro importante agregador de datos, enfrento una accion de la FTC por supuestamente vender datos financieros detallados que podian usarse para identificar a individuos. Los datos incluian informacion a nivel de transacciones que, combinada con otras fuentes de datos, permitia un perfilado detallado de consumidores.
+
+## Que sucede con tus datos cuando las empresas se venden o cierran
+
+El ciclo de vida de tus datos financieros se extiende mucho mas alla de tu uso activo de una aplicacion.
+
+### Escenarios de adquisicion
+
+Cuando una empresa fintech es adquirida, los datos de los usuarios son tipicamente el activo mas valioso. Considera lo que sucede:
+
+1. **Due diligence**: La empresa adquirente revisa los datos de usuarios, volumenes de transacciones y metricas de engagement
+2. **Transferencia de activos**: Las bases de datos de usuarios se migran a nueva infraestructura con nuevos controles de acceso
+3. **Cambios de politica**: Las politicas de privacidad se actualizan para reflejar la nueva propiedad y practicas de datos
+4. **Integracion**: Los datos pueden fusionarse con los datos de usuarios existentes del adquirente
+
+Aceptaste la politica de privacidad de una empresa. Despues de la adquisicion, una empresa diferente con politicas diferentes controla tus datos. La base legal para esto suele estar enterrada en los terminos de servicio originales.
+
+### Escenarios de cierre
+
+Cuando las empresas fracasan, el manejo de datos varia:
+
+- **Mejor caso**: Los datos se eliminan segun la politica de privacidad
+- **Caso comun**: Los datos se venden como activo para cubrir deudas
+- **Peor caso**: Los datos se abandonan en servidores que eventualmente se decomisionan, con discos que terminan en ubicaciones desconocidas
+
+Las empresas fintech operan en un mercado volatil. La aplicacion en la que confias hoy puede no existir en dos anos.
+
+### El problema de persistencia del agregador
+
+Incluso si eliminas tu cuenta de una aplicacion de presupuesto, el agregador (Plaid, Yodlee, etc.) puede retener tus datos. Tienes una relacion con la aplicacion y una relacion separada con el agregador. Eliminar una no afecta necesariamente a la otra.
+
+Para desconectarte completamente, debes:
+
+1. Eliminar tu cuenta en la aplicacion de presupuesto
+2. Revocar el acceso a traves de la configuracion de aplicaciones conectadas de tu banco
+3. Contactar al agregador directamente para solicitar la eliminacion de datos
+4. Esperar que cumplan
+
+La mayoria de los usuarios nunca completan los pasos 3 o 4.
+
+## El problema de Plaid: riesgos de la agregacion de datos por terceros
+
+Plaid merece un analisis enfocado por su dominio del mercado. Mas de 12.000 aplicaciones usan Plaid, conectandose a mas de 12.000 instituciones financieras. Si usas productos fintech, casi con certeza tienes datos en los sistemas de Plaid.
+
+### El modelo de consentimiento
+
+Cuando te conectas a traves de Plaid, el flujo de consentimiento funciona asi:
+
+1. La aplicacion solicita conexion a tu banco
+2. Plaid presenta una pantalla (a menudo estilizada para parecer una pagina de inicio de sesion bancaria)
+3. Introduces credenciales o autorizas via OAuth
+4. Plaid establece la conexion y comienza la recopilacion de datos
+5. Plaid comparte datos con la aplicacion segun las solicitudes de API
+6. Plaid retiene datos segun sus propias politicas
+
+El consentimiento que proporcionas a la aplicacion no limita lo que Plaid recopila. Los sistemas de Plaid extraen datos exhaustivos, y la aplicacion solicita subconjuntos a traves de la API. La diferencia entre lo que Plaid recopila y lo que la aplicacion necesita permanece en la infraestructura de Plaid.
+
+### Retencion de datos despues de la desconexion
+
+La politica de privacidad de Plaid permite la retencion de datos incluso despues de tu desconexion:
+
+- Para cumplimiento y obligaciones legales
+- Para prevencion del fraude
+- Para mejora de productos y analisis
+- Para proporcionar servicios a otros clientes de Plaid
+
+Este ultimo punto es significativo. Tus datos, en forma agregada, pueden alimentar productos a los que nunca diste tu consentimiento.
+
+### La evolucion del modelo de negocio de Plaid
+
+Plaid comenzo como infraestructura para aplicaciones fintech. Ha evolucionado hacia:
+
+- **Plaid Identity**: Verificacion de identidad usando datos financieros
+- **Plaid Income**: Verificacion de ingresos para prestamistas y arrendadores
+- **Plaid Monitor**: Monitoreo de transacciones para evaluacion de riesgos
+
+Tus datos de transacciones contribuyen a productos vendidos a arrendadores evaluando solicitudes de alquiler, prestamistas evaluando riesgo crediticio y empleadores verificando declaraciones de ingresos. El proveedor de infraestructura se convirtio en una empresa de datos.
+
+## Como evaluar la privacidad de una aplicacion de presupuesto
+
+Si debes usar una aplicacion financiera en la nube, aqui tienes una lista de verificacion tecnica para la evaluacion.
+
+### Evaluacion de la recopilacion de datos
+
+| Pregunta | Senal de alerta | Buena senal |
+|----------|----------------|-------------|
+| Que agregador de datos se usa? | Plaid, Yodlee, MX con recopilacion amplia de datos | OAuth directo con el banco, alcances limitados |
+| Que historial de transacciones se recopila? | Historial completo desde la apertura de la cuenta | Solo transacciones recientes necesarias para las funcionalidades |
+| Se recopilan datos de ubicacion? | Ubicacion de transacciones almacenada | Sin geolocalizacion mas alla de metadatos de transacciones |
+| Que pasa con las transacciones eliminadas? | Eliminacion logica, retenidas en respaldos | Eliminacion definitiva con verificacion |
+
+### Evaluacion de infraestructura
+
+| Pregunta | Senal de alerta | Buena senal |
+|----------|----------------|-------------|
+| Donde se almacenan los datos? | Multiples proveedores de nube, region poco clara | Un proveedor, regiones especificas, SOC 2 Type II |
+| Quien tiene acceso a los datos sin procesar? | Politicas vagas, sin registros de acceso | Acceso basado en roles, registros de auditoria, revision periodica |
+| Como se manejan las credenciales? | Credenciales almacenadas (incluso cifradas) | Solo OAuth, sin almacenamiento de credenciales |
+| Cual es la retencion de respaldos? | Indefinida | Retencion definida con eliminacion verificable |
+
+### Evaluacion del modelo de negocio
+
+| Pregunta | Senal de alerta | Buena senal |
+|----------|----------------|-------------|
+| Como gana dinero la aplicacion? | Nivel gratuito sin modelo de ingresos claro | Suscripcion clara o compra unica |
+| Se promueven productos financieros? | Ofertas personalizadas de tarjetas de credito/prestamos | Sin relaciones de afiliacion |
+| Se comparten datos con socios? | Ingresos por licenciamiento de datos | Sin venta de datos a terceros |
+| Que pasa en una adquisicion? | Cambios silenciosos de politica permitidos | Opcion de eliminacion de datos en la adquisicion |
+
+### Evaluacion legal
+
+| Pregunta | Senal de alerta | Buena senal |
+|----------|----------------|-------------|
+| Que jurisdiccion rige las disputas? | Arbitraje vinculante, renuncia a demandas colectivas | Opcion judicial, ubicacion accesible |
+| Puede cambiar la politica de privacidad sin aviso? | Cambios efectivos inmediatamente | Periodo de aviso, opcion de exclusion para cambios materiales |
+| Hay funcion de exportacion de datos? | Sin exportacion o formato propietario | Formatos estandar (CSV, JSON) para todos los datos |
+| Hay garantia de eliminacion? | Procesamiento de solicitud en 90 dias | Eliminacion inmediata con confirmacion |
+
+## La alternativa: arquitectura Offline-First
+
+Los problemas de privacidad descritos arriba comparten una causa raiz: almacenamiento centralizado de datos en servidores que no controlas. La arquitectura Offline-First elimina este vector de ataque por completo.
+
+### Como funciona Offline-First
+
+En una aplicacion Offline-First:
+
+1. **Los datos viven en tu dispositivo**: Tus transacciones, cuentas y presupuestos existen solo en almacenamiento local
+2. **Sin procesamiento del lado del servidor**: Los calculos, categorizacion y analisis se realizan en el dispositivo
+3. **Sin cuentas requeridas**: La aplicacion funciona sin crear una cuenta de usuario ni iniciar sesion
+4. **La sincronizacion opcional es local**: Si existe sincronizacion, usa tu propia infraestructura (iCloud, red local)
+
+El servidor no puede ser vulnerado porque no hay servidor. El acceso de empleados es imposible porque no hay empleados con acceso a tus datos. Los agregadores de datos no estan involucrados porque no hay agregacion.
+
+### Sincronizacion bancaria sin fuga de datos
+
+Offline-First no significa que no puedas sincronizar con bancos. Significa que la arquitectura de sincronizacion protege tu privacidad:
+
+**Sincronizacion en la nube tradicional:**
+```
+Tu dispositivo → Servidor en la nube → Agregador → Banco
+       ↓              ↓           ↓
+   Analitica    Base de datos    Su base de datos
+```
+
+**Sincronizacion Offline-First:**
+```
+Tu dispositivo → API bancaria (via proxy seguro)
+       ↓
+   Solo base de datos local
+```
+
+Con Offline-First, los datos bancarios fluyen directamente a tu dispositivo. Ningun servidor intermedio almacena tus transacciones. Ningun agregador retiene tu historial.
+
+### A que renuncias
+
+La arquitectura Offline-First implica compromisos:
+
+- **Sincronizacion multi-dispositivo**: Tus datos existen en un solo dispositivo a menos que los transfieras manualmente
+- **Acceso web**: Sin panel de control en el navegador
+- **Presupuestos compartidos**: Las funciones colaborativas requieren sincronizacion por red local
+- **Respaldo en la nube**: Tu gestionas tus propios respaldos
+
+Para usuarios que priorizan la privacidad, estos compromisos son aceptables. Tus datos financieros son demasiado sensibles para confiarlos a empresas cuyos intereses pueden no alinearse con los tuyos.
+
+### El enfoque de Budgie
+
+Budgie implementa la arquitectura Offline-First sin compromisos:
+
+- **Solo almacenamiento local**: Todos los datos almacenados en SQLite en tu dispositivo
+- **Sin telemetria**: Sin analitica, sin reportes de errores, sin rastreo de uso
+- **Sin cuentas**: La aplicacion funciona sin registro ni inicio de sesion
+- **Sincronizacion bancaria opcional**: Cuando esta disponible, usa conexiones directas sin agregadores de datos
+- **Codigo abierto**: Las afirmaciones de seguridad son verificables mediante revision de codigo
+
+La [arquitectura de seguridad](/{lang}#security) esta disenada para usuarios que entienden los riesgos descritos en este articulo y quieren una alternativa.
+
+## Pasos practicos para la proteccion de la privacidad
+
+Si actualmente usas aplicaciones financieras en la nube, aqui tienes pasos concretos para reducir tu exposicion.
+
+### Acciones inmediatas
+
+1. **Audita las cuentas conectadas**: Revisa la configuracion de aplicaciones conectadas de cada banco y revoca conexiones innecesarias
+2. **Revisa las conexiones de Plaid**: Visita [my.plaid.com](https://my.plaid.com) para ver y gestionar tus conexiones de Plaid
+3. **Exporta tus datos**: Descarga el historial de transacciones antes de considerar la migracion
+4. **Revisa las politicas de privacidad**: Entiende a que accediste y que ha cambiado
+
+### Estrategia de migracion
+
+1. **Identifica tus necesidades reales**: La mayoria de los usuarios necesitan seguimiento de gastos y presupuestacion, no el conjunto completo de funciones de aplicaciones complejas
+2. **Evalua alternativas offline**: Budgie y aplicaciones similares ofrecen [funcionalidades principales](/{lang}#features) sin compromisos de privacidad
+3. **Planifica la transicion**: Ejecuta sistemas en paralelo durante la migracion para asegurar la continuidad de datos
+4. **Elimina las cuentas antiguas**: Despues de la migracion, elimina completamente las cuentas de aplicaciones en la nube y revoca el acceso de los agregadores
+
+### Practicas continuas
+
+1. **Minimiza las conexiones**: Solo conecta cuentas que proporcionen valor genuino
+2. **Revision periodica de accesos**: Revision trimestral de todos los servicios conectados
+3. **Mantente informado**: Sigue las noticias de seguridad fintech y las divulgaciones de filtraciones
+4. **Usa seguridad robusta en el dispositivo**: Las aplicaciones Offline-First dependen de la seguridad del dispositivo
+
+## Preguntas frecuentes
+
+### Es legal que las aplicaciones de presupuesto recopilen y vendan mis datos financieros?
+
+Si, con consentimiento. Cuando aceptas los terminos de servicio y las politicas de privacidad, tipicamente otorgas amplios derechos de recopilacion y comparticion de datos. El marco legal en la mayoria de las jurisdicciones permite un uso extenso de datos si se divulga en politicas que la mayoria de los usuarios nunca leen. El RGPD en Europa proporciona protecciones mas fuertes, incluyendo requisitos de minimizacion de datos, pero la aplicacion varia. En Estados Unidos, la proteccion de datos financieros esta fragmentada entre leyes estatales sin un estandar federal integral.
+
+### Puedo solicitar la eliminacion de mis datos de Plaid y otros agregadores?
+
+Puedes solicitar la eliminacion, y bajo la CCPA (California) y el RGPD (Europa), las empresas deben cumplir. Sin embargo, existen excepciones para cumplimiento, prevencion del fraude e intereses comerciales legitimos que pueden justificar la retencion. El proceso tipicamente requiere contactar a cada agregador directamente, no solo a la aplicacion que usaste. Plaid proporciona un portal en my.plaid.com para ver y gestionar conexiones. La verificacion completa de la eliminacion es dificil de confirmar.
+
+### Son las APIs de Open Banking mas seguras que el screen scraping?
+
+Las APIs de Open Banking son significativamente mas seguras que el screen scraping. Las APIs proporcionan consentimiento granular, alcances limitados y no comparten credenciales. Sin embargo, las preocupaciones de privacidad persisten porque los agregadores siguen recopilando y reteniendo datos, y las aplicaciones a menudo solicitan mas acceso del necesario. Open Banking resuelve problemas de seguridad (robo de credenciales, secuestro de sesion) pero no resuelve problemas de privacidad (agregacion de datos, retencion, uso secundario).
+
+### Que pasa con las aplicaciones de presupuesto en la nube con cifrado de extremo a extremo?
+
+El verdadero cifrado de extremo a extremo impediria al proveedor acceder a tus datos, pero la mayoria de las aplicaciones de presupuesto en la nube que afirman usar cifrado utilizan cifrado en transito y en reposo, no de extremo a extremo. Aun pueden acceder a tus datos porque poseen las claves. Las aplicaciones con verdadero cifrado de extremo a extremo pierden funcionalidad (categorizacion del lado del servidor, acceso web, presupuestos compartidos) que la mayoria de las aplicaciones en la nube ofrecen, lo que sugiere que sus afirmaciones de cifrado pueden no cubrir todos los datos.
+
+### Como maneja Budgie la sincronizacion bancaria sin comprometer la privacidad?
+
+La sincronizacion bancaria de Budgie usa conexiones directas a las APIs bancarias cuando estan disponibles, omitiendo completamente los agregadores de datos. Las credenciales se almacenan localmente en tu dispositivo con cifrado respaldado por hardware, no en ningun servidor. Los datos de transacciones fluyen directamente desde tu banco a tu dispositivo sin almacenamiento intermedio. En regiones donde el acceso directo por API no esta disponible, la importacion manual desde exportaciones bancarias proporciona una alternativa completamente privada.
+
+### Que pasa con mis datos si Budgie cierra?
+
+No pasa nada con tus datos porque Budgie no tiene tus datos. Todo se almacena localmente en tu dispositivo. Si Budgie como empresa dejara de existir, tu aplicacion seguiria funcionando con todos tus datos intactos. Puedes exportar datos en cualquier momento en formatos estandar. No hay servidor que apagar, no hay migracion de la que preocuparse, no hay adquisicion que pueda cambiar el manejo de datos. Tus datos siguen siendo tuyos permanentemente.
+
+---
+
+Las aplicaciones de presupuesto en la nube resuelven un problema real, pero lo resuelven de una manera que crea nuevos problemas. La comodidad de la importacion automatica de transacciones, la categorizacion por IA y la sincronizacion entre dispositivos tiene un coste: tu privacidad financiera.
+
+Para profesionales de TI que entienden estos compromisos, la arquitectura Offline-First ofrece un camino a seguir. Tus datos financieros merecen la misma postura de seguridad que aplicarias a credenciales de produccion o datos de clientes.
+
+Listo para tomar el control de tus datos financieros? [Unete a la lista de espera de Budgie](/{lang}#whitelist) y experimenta un seguimiento de gastos verdaderamente privado.
