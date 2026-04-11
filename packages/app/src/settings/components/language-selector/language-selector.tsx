@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
 import { useSetting } from '../../hook/use-setting.hook';
@@ -36,8 +36,8 @@ export const LanguageSelector = () => {
             title={t`Language`}
             onPress={handleOpen}
             description={`${selectedLanguage.emoji} ${t(selectedLanguage.name)}`}
-            testID={SettingsPageSelectors.LanguageCard}
-            descriptionTestID={SettingsPageSelectors.LanguageValue(selectedLanguage.code)}
+            testID={SettingsPageSelector.LanguageCard}
+            descriptionTestID={SettingsPageSelector.LanguageValue(selectedLanguage.code)}
         />
     );
 };

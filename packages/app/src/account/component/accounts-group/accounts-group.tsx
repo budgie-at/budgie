@@ -4,9 +4,9 @@ import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountFilterCard } from '../account-filter-card/account-filter-card';
@@ -56,18 +56,14 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
             <View className="flex-row items-center py-xl">
-                <HapticPressable
-                    onPress={toggleOpen}
-                    className="p-xl"
-                    testID={TransactionFiltersSelectors.AccountGroupToggle(type)}
-                >
+                <HapticPressable onPress={toggleOpen} className="p-xl" testID={TransactionFiltersSelector.AccountGroupToggle(type)}>
                     <Icon size={16} icon={arrowIcon} className="text-secondary-foreground" />
                 </HapticPressable>
 
                 <HapticPressable
                     onPress={handleSelectAll}
                     className="flex-row items-center gap-x-xl flex-1 px-3xl"
-                    testID={TransactionFiltersSelectors.AccountGroupSelectAll(type)}
+                    testID={TransactionFiltersSelector.AccountGroupSelectAll(type)}
                 >
                     <Icon size={16} icon={ACCOUNT_ICON[type]} className="text-secondary-foreground" />
 

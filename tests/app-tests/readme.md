@@ -17,6 +17,14 @@ sh ./scripts/setup-ios-simulator.sh
 sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
+Local Erste Bank PDF flow:
+```bash
+sh ./scripts/setup-ios-simulator.sh
+maestro test ./flows/22.erste-bank-import.flow.yaml \
+  -e APP_ID=com.vitalyiegorov.budgie.e2e
+```
+Both variants expect `AT802011184943859800_2026008.pdf` and `AT802011184943859800_2026009.pdf` at the repo root so `setup-erste-fixtures.sh` can copy them into `Documents/E2EFixtures`.
+
 Android:
 ```bash
 sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e

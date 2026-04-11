@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { useTransactionTypeFilterModal } from '../../context/transaction-type-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
+import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly value: TransactionTypeEnum[] | null;
@@ -33,7 +33,7 @@ export const TransactionTypeFilter = ({ value, onChange }: Props) => {
             icon={UserIconNameEnum.Layers}
             label={label}
             onPress={handleOpen}
-            testID={TransactionFiltersSelectors.TypeChip}
+            testID={TransactionFiltersSelector.TypeChip}
         />
     );
 };

@@ -11,9 +11,10 @@ import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keybo
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
-import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
+
+import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
     title: string;
@@ -54,7 +55,12 @@ export const SearchablePage = <T extends IdInterface>({
         <View className="flex-1">
             <Page testID={testID} withBlur header={<PageHeader onGoBack={onGoBack} title={title} />}>
                 {isNotEmptyArray(data) ? (
-                    <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard} getDeleteConfirmation={getDeleteConfirmation}>
+                    <SearchablePageList
+                        onDelete={onDelete}
+                        data={data}
+                        renderCard={renderCard}
+                        getDeleteConfirmation={getDeleteConfirmation}
+                    >
                         {children}
                     </SearchablePageList>
                 ) : (

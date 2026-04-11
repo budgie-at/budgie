@@ -1,20 +1,20 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: subflows/enter-app.flow.yaml
+- runFlow: subflows/relaunch-app.flow.yaml
 
 - runFlow:
-    file: subflows/import-database-fixture.flow.yaml
+    file: subflows/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ID: '08-settings-navigation'
+      FIXTURE_FILE: 'e2e-08-settings-navigation.db'
 
-- runFlow: subflows/navigate-to-settings.flow.yaml
+- openLink: 'budgie://settings?anchor=general'
 
 - assertVisible:
     id: 'SettingsPage.LanguageValue.en'
 
 - tapOn:
-    id: 'SettingsPage.LanguageCard'
+    point: '35%,47%'
 - extendedWaitUntil:
     visible:
       id: 'LanguageSelector.SearchInput'
@@ -30,7 +30,7 @@ appId: ${APP_ID}
     timeout: 10000
 
 - tapOn:
-    id: 'SettingsPage.MainCurrencyCard'
+    point: '35%,57%'
 - extendedWaitUntil:
     visible:
       id: 'CurrencySelector.SearchInput'

@@ -5,7 +5,6 @@ import { ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { Button } from '../@generic/component/button/button';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
@@ -15,6 +14,7 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
 import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
 export default function DateFilterModal() {
     const { t } = useLingui();
@@ -47,7 +47,7 @@ export default function DateFilterModal() {
                             period={period}
                             onSelect={handlePeriodSelect}
                             isSelected={period === selectedPeriod}
-                            testID={TransactionFiltersSelectors.DatePeriod(period)}
+                            testID={TransactionFiltersSelector.DatePeriod(period)}
                         />
                     ))}
                 </ScrollView>
@@ -62,7 +62,7 @@ export default function DateFilterModal() {
                     variant="ghost"
                     onPress={handleApply}
                     content={t`Apply Filter`}
-                    testID={TransactionFiltersSelectors.DateApplyButton}
+                    testID={TransactionFiltersSelector.DateApplyButton}
                 />
             </Footer>
         </View>

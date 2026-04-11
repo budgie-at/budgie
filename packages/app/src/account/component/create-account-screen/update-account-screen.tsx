@@ -12,11 +12,10 @@ import { View } from 'react-native';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
-import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
-import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -26,6 +25,8 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
+
+import { CreateAccountScreenSelector } from './create-account-screen.selector';
 
 interface Props<T extends FieldValues> {
     readonly account: AccountEntityInterface;
@@ -72,15 +73,25 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                         variant={variant}
                         content={t`Update Account`}
                         className="flex-1"
-                        testID={AccountFormSelectors.SubmitButton}
+                        testID={CreateAccountScreenSelector.SubmitButton}
                     />
                 </View>
             }
         >
-            <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} allowNegative={allowNegativeBalance} />
+            <AccountBalanceField
+                variant={variant}
+                instrumentSymbol={instrumentSymbol}
+                control={control}
+                allowNegative={allowNegativeBalance}
+            />
 
             <FormLayoutGroup>
-                <AccountDetailsField control={control} variant={variant} nameInputTestID={AccountFormSelectors.NameInput} selectNameOnFocus />
+                <AccountDetailsField
+                    control={control}
+                    variant={variant}
+                    nameInputTestID={CreateAccountScreenSelector.NameInput}
+                    selectNameOnFocus
+                />
 
                 {children}
 
