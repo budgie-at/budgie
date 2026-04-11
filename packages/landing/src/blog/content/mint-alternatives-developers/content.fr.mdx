@@ -1,0 +1,532 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "Fermeture de Mint : Vers quelles solutions les développeurs migrent-ils ?",
+    "description": "Guide complet pour les développeurs à la recherche d'alternatives à Mint après sa fermeture. Comparaison d'applications budgétaires open source, axées sur la confidentialité et compatibles avec les API, incluant Budgie, Actual Budget, Firefly III et plus encore.",
+    "tags": ["alternatives-mint", "applications-budget", "outils-developpeur", "open-source", "confidentialite", "finances-personnelles"],
+    "seo": {
+        "keywords": [
+            "alternatives mint",
+            "fermeture mint",
+            "remplacement mint",
+            "application budget developpeur",
+            "alternative mint confidentialite",
+            "meilleures alternatives mint 2025",
+            "application mint arretee",
+            "application budget open source",
+            "application finance auto-hebergee",
+            "suivi budget prive"
+        ],
+        "metaDescription": "Mint n'existe plus. Découvrez vers quelles solutions les développeurs migrent leurs finances grâce à cette comparaison complète d'alternatives axées sur la confidentialité et compatibles avec les API, incluant Budgie, Actual Budget et Firefly III."
+    }
+}
+
+# Fermeture de Mint : Vers quelles solutions les développeurs migrent-ils ?
+
+Après 17 ans à aider des millions de personnes à suivre leurs dépenses, Mint a officiellement fermé ses portes le 23 mars 2024. Si vous êtes un développeur qui comptait sur Mint, vous ressentez probablement de la frustration, un sentiment de trahison, et peut-être une certaine anxiété quant à l'avenir de vos données financières.
+
+Vous n'êtes pas seul. La fermeture a touché plus de 3,6 millions d'utilisateurs actifs, et le parcours de transition proposé par Intuit (Credit Karma) a laissé la plupart d'entre nous profondément insatisfaits. Pour les développeurs en particulier, l'approche de Credit Karma en matière de confidentialité des données et son manque de fonctionnalités techniques en font une option rédhibitoire.
+
+Ce guide est écrit par des développeurs, pour des développeurs. Nous avons testé chaque grande alternative à Mint et les avons évaluées selon ce qui compte vraiment pour les utilisateurs techniques : propriété des données, accès API, capacités d'export, pratiques de confidentialité et possibilité d'auto-hébergement ou de fonctionnement hors ligne.
+
+Trouvons votre nouveau foyer financier.
+
+## La fin d'une époque : Que s'est-il passé avec Mint ?
+
+Mint a été lancé en 2007 et est rapidement devenu la référence en matière d'applications de finances personnelles. Intuit l'a acquis en 2009 pour 170 millions de dollars, et pendant des années, cela ressemblait à un mariage parfait. Mint agrégait vos comptes, catégorisait automatiquement les transactions et offrait un tableau de bord clair de votre vie financière.
+
+Puis les choses ont commencé à se détériorer.
+
+**Chronologie du déclin de Mint :**
+
+- **2020-2022** : Stagnation des fonctionnalités. Alors que les concurrents innovaient, l'interface de Mint est restée pratiquement inchangée.
+- **2022** : Problèmes de synchronisation croissants. Les connexions bancaires sont devenues peu fiables, avec des utilisateurs signalant des jours entiers de synchronisations échouées.
+- **Novembre 2023** : Intuit annonce l'arrêt de Mint, redirigeant les utilisateurs vers Credit Karma.
+- **Janvier 2024** : La migration des données vers Credit Karma commence pour les utilisateurs qui acceptent.
+- **23 mars 2024** : Mint ferme officiellement. Les utilisateurs perdent l'accès à leurs données historiques s'ils ne les ont pas exportées.
+
+La fermeture n'était pas qu'une question de produit défaillant. C'était un signal d'alarme sur les risques de confier ses données financières à un service gratuit, financé par la publicité, appartenant à une entreprise dont les priorités peuvent changer du jour au lendemain.
+
+## Pourquoi Credit Karma n'est pas la solution
+
+La recommandation officielle d'Intuit était de migrer vers Credit Karma. En apparence, c'est logique : même société mère, plateforme établie, utilisation gratuite. Mais pour les développeurs et les utilisateurs soucieux de leur confidentialité, Credit Karma pose des problèmes fondamentaux.
+
+### Le problème de la confidentialité
+
+Le modèle économique de Credit Karma repose entièrement sur la monétisation de vos données financières. Ils offrent un suivi de crédit gratuit en échange de recommandations ciblées de produits financiers. Chaque carte de crédit, prêt et offre d'assurance que vous voyez est là parce que les algorithmes de Credit Karma ont déterminé que vous êtes une cible pertinente en fonction de votre profil financier.
+
+Ce n'est pas caché. Credit Karma est transparent sur le fait qu'ils gagnent de l'argent lorsque vous acceptez des offres. Mais les implications sont significatives :
+
+- Vos données de transaction alimentent leur moteur de recommandation
+- Vos habitudes de dépenses sont analysées pour évaluer votre solvabilité
+- Les partenaires tiers reçoivent des données comportementales anonymisées (mais détaillées)
+- Vous devenez le produit, pas le client
+
+### Fonctionnalités manquantes pour les développeurs
+
+Au-delà des préoccupations de confidentialité, Credit Karma manque tout simplement de fonctionnalités que les utilisateurs techniques attendent :
+
+- **Pas d'accès API** : Impossible d'accéder programmatiquement à vos données
+- **Pas d'export en masse** : Capacité limitée d'exporter l'historique des transactions
+- **Pas de support multi-devises** : Rédhibitoire pour les travailleurs à distance et les utilisateurs internationaux
+- **Pas de catégories personnalisées** : Vous êtes limité à leur catégorisation prédéfinie
+- **Pas d'accès hors ligne** : 100 % dépendant du cloud, sans option de stockage local
+
+### Le facteur confiance
+
+Le plus important, peut-être : Credit Karma appartient à la même entreprise qui vient de fermer Mint. Si Intuit a décidé que Mint ne valait pas la peine d'être maintenu après 17 ans, quelles garanties avez-vous quant à la pérennité de Credit Karma ?
+
+Pour les développeurs qui valorisent la propriété des données et la fiabilité du système, c'est un risque inacceptable.
+
+## Ce que les développeurs attendent réellement d'une application de budget
+
+Avant de plonger dans les alternatives, établissons ce que les utilisateurs techniques priorisent généralement. D'après les discussions dans les communautés de développeurs comme Hacker News, le subreddit r/selfhosted et divers serveurs Discord, voici ce qui compte le plus :
+
+### 1. Propriété et portabilité des données
+
+Vos données financières vous appartiennent. Point final. Une bonne application de budget doit :
+
+- Stocker les données localement ou sur une infrastructure que vous contrôlez
+- Offrir des fonctionnalités d'export complètes (CSV, JSON, SQL)
+- Ne jamais vous enfermer dans un format propriétaire
+- Vous permettre de supprimer complètement vos données si vous partez
+
+### 2. Accès API
+
+Les développeurs veulent intégrer leurs données financières avec d'autres outils :
+
+- Tableaux de bord et visualisations personnels
+- Alertes et notifications automatisées
+- Rapports et scripts d'analyse personnalisés
+- Intégration avec des tableurs ou des bases de données
+
+### 3. Confidentialité dès la conception
+
+Cela signifie bien plus qu'une simple politique de confidentialité. Une véritable confidentialité exige :
+
+- Une collecte de données minimale (uniquement le nécessaire)
+- Une architecture local-first ou auto-hébergée quand c'est possible
+- Aucune publicité ni monétisation des données
+- Des pratiques de sécurité transparentes
+- Un code open source pour vérification
+
+### 4. Fiabilité technique
+
+L'application doit fonctionner :
+
+- Synchronisation bancaire stable (quand proposée)
+- Performances rapides avec un historique de transactions important
+- Intégrité des données fiable
+- Développement actif et corrections de bugs
+
+### 5. Flexibilité et personnalisation
+
+Les développeurs détestent les limitations arbitraires :
+
+- Catégories et tags personnalisés
+- Support multi-devises
+- Plusieurs types de comptes (courant, épargne, investissements, crypto)
+- Automatisation de la catégorisation basée sur des règles
+
+Avec ces critères en tête, évaluons les alternatives.
+
+## Guide du développeur pour les alternatives à Mint : Comparaison complète
+
+Nous avons testé chacune de ces applications en profondeur. Voici comment elles se positionnent pour les utilisateurs techniques :
+
+| Fonctionnalité | Budgie | Actual Budget | Firefly III | Lunch Money | Copilot | YNAB | Monarch Money |
+|----------------|--------|---------------|-------------|-------------|---------|------|---------------|
+| **Stockage des données** | Appareil uniquement | Local/Auto-hébergé | Auto-hébergé | Cloud | Cloud | Cloud | Cloud |
+| **Open source** | Oui | Oui | Oui | Non | Non | Non | Non |
+| **Accès API** | Bientôt | Oui | Oui | Oui | Non | Oui | Limité |
+| **Synchronisation bancaire** | Optionnelle | Via SimpleFIN | Manuelle/plugins | Plaid | Plaid | Plaid | Plaid |
+| **Multi-devises** | 150+ | Oui | Oui | Oui | Limité | Oui | Oui |
+| **Support hors ligne** | Complet | Complet (local) | Auto-hébergé | Non | Non | Non | Non |
+| **Niveau de confidentialité** | Maximum | Élevé | Maximum | Moyen | Faible | Moyen | Faible |
+| **Application mobile** | Native iOS/Android | PWA | PWA | Oui | iOS uniquement | Oui | Oui |
+| **Prix** | Gratuit | Gratuit/Hébergement payant | Gratuit | 10 $/mois | 12 $/mois | 14 $/mois | 15 $/mois |
+| **Idéal pour** | Utilisateurs axés confidentialité | Adeptes de l'auto-hébergement | Utilisateurs techniques | SaaS pour développeurs | Utilisateurs Apple | Budget par enveloppes | Réfugiés de Mint |
+
+Examinons chaque option en détail.
+
+## Avis détaillés : Trouver votre solution idéale
+
+### Budgie : La confidentialité sans compromis
+
+**Idéal pour :** Les développeurs qui priorisent la confidentialité et veulent une expérience moderne, hors ligne en priorité.
+
+Budgie adopte une approche fondamentalement différente des applications de finances personnelles. Au lieu de stocker vos données dans le cloud, tout reste sur votre appareil. Aucun serveur à pirater. Aucune entreprise ayant accès à vos transactions. Aucun risque qu'une fermeture à la Mint emporte vos données.
+
+**Ce qui distingue Budgie :**
+
+- **Architecture véritablement hors ligne en priorité** : Vos données financières ne quittent jamais votre téléphone sauf si vous les exportez explicitement. Ce n'est pas seulement une question de confidentialité, c'est une question de fiabilité. Pas d'internet ? Pas de problème. Budgie fonctionne partout.
+
+- **Transparence open source** : L'intégralité du code source est disponible pour inspection. Les chercheurs en sécurité peuvent vérifier les affirmations en matière de confidentialité. Vous pouvez même compiler l'application vous-même pour une assurance totale.
+
+- **Synchronisation bancaire à connaissance zéro** : Si vous souhaitez l'importation automatique des transactions, la synchronisation bancaire de Budgie utilise le chiffrement de bout en bout. Vos identifiants sont chiffrés sur votre appareil, et la synchronisation s'effectue directement entre votre téléphone et votre banque. Budgie ne voit jamais vos identifiants bancaires ni vos données de transaction.
+
+- **Support multi-devises natif** : Suivez vos comptes dans plus de 150 devises avec mise à jour automatique des taux de change. Parfait pour les nomades numériques, les travailleurs à distance avec des clients internationaux ou toute personne possédant des comptes à l'étranger.
+
+- **Suivi crypto et actions** : Au-delà des comptes traditionnels, Budgie suit les avoirs en cryptomonnaies et les portefeuilles d'investissement, le tout avec les mêmes garanties de confidentialité.
+
+**Fonctionnalités pour les développeurs :**
+
+- Base de code propre et moderne construite avec React Native et Expo
+- Base de données SQLite locale avec Drizzle ORM (vous pouvez interroger vos propres données)
+- API planifiée pour les utilisateurs avancés souhaitant créer des intégrations personnalisées
+- Export en JSON, CSV, ou accès direct à la base de données
+
+**Compromis à considérer :**
+
+- Application plus récente, encore en phase de rattrapage fonctionnel par rapport aux acteurs établis
+- La synchronisation bancaire nécessite de faire confiance au fournisseur de synchronisation (bien que toujours plus privée que les applications cloud)
+- L'orientation mono-appareil signifie pas de synchronisation automatique entre téléphone et tablette
+
+**Prix :** Gratuit. Pas de publicité, pas de niveaux premium, pas de monétisation des données.
+
+[Découvrez comment Budgie se compare aux autres applications](/{lang}#comparison)
+
+---
+
+### Actual Budget : Le rêve de l'auto-hébergeur
+
+**Idéal pour :** Les développeurs à l'aise avec Docker qui veulent un contrôle total sur l'infrastructure.
+
+Actual Budget a démarré comme une application commerciale, puis est devenu open source en 2022. Il est maintenant maintenu par une communauté active et est devenu le choix privilégié des passionnés d'auto-hébergement.
+
+**Points forts :**
+
+- **Véritable auto-hébergement** : Exécutez-le sur votre propre serveur, Raspberry Pi ou VM cloud. Vos données ne touchent jamais une infrastructure tierce, sauf si vous choisissez une option d'hébergement.
+
+- **Synchronisation en temps réel** : Contrairement aux applications purement locales, Actual peut se synchroniser entre les appareils si vous exécutez votre propre serveur.
+
+- **Budget par enveloppes** : Implémente efficacement la méthodologie du budget base zéro, vous aidant à allouer chaque euro.
+
+- **Intégration SimpleFIN** : Synchronisation bancaire disponible via SimpleFIN, qui a une approche plus respectueuse de la confidentialité que Plaid.
+
+- **API complète** : L'API GraphQL permet un accès programmatique complet à vos données.
+
+**Fonctionnalités pour les développeurs :**
+
+- Déploiement Docker avec fichiers compose fournis
+- Base de données SQLite que vous possédez et contrôlez
+- Communauté GitHub active avec des mises à jour régulières
+- Base de code TypeScript, facile pour contribuer
+
+**Compromis à considérer :**
+
+- Nécessite une configuration technique (pas du plug-and-play)
+- L'expérience mobile est une PWA, pas une application native
+- La fiabilité de la synchronisation bancaire varie selon l'établissement
+- L'auto-hébergement signifie que vous êtes responsable des sauvegardes et de la sécurité
+
+**Prix :** Gratuit en auto-hébergement. Option d'hébergement payant disponible via la communauté.
+
+---
+
+### Firefly III : La personnalisation maximale
+
+**Idéal pour :** Les utilisateurs avancés qui veulent un contrôle granulaire sur chaque aspect du suivi financier.
+
+Firefly III est le Linux des applications de finances personnelles : incroyablement puissant, profondément personnalisable et nécessitant un investissement pour être correctement configuré. Pour les développeurs qui veulent un contrôle total, il est difficile à surpasser.
+
+**Points forts :**
+
+- **Incroyablement complet** : Suit les actifs, les passifs, les budgets, les tirelires, les factures et bien plus. Si vous pouvez imaginer un scénario financier, Firefly III le gère probablement.
+
+- **Moteur de règles** : Des règles d'automatisation puissantes peuvent catégoriser les transactions, ajouter des tags et mettre à jour des champs selon une logique personnalisée.
+
+- **Rapports et analyses** : Les rapports intégrés sont complets, et vous pouvez toujours interroger la base de données directement.
+
+- **Devises et localisation** : Support multi-devises complet avec paramètres régionaux personnalisables.
+
+**Fonctionnalités pour les développeurs :**
+
+- API REST complète avec documentation détaillée
+- Support des webhooks pour les intégrations
+- Backend PostgreSQL ou MySQL (au choix)
+- Importateur de données supportant des dizaines de formats
+- Écosystème de plugins actif
+
+**Compromis à considérer :**
+
+- Courbe d'apprentissage élevée
+- Pas de synchronisation bancaire officielle (importateurs communautaires disponibles)
+- L'interface semble datée comparée aux applications modernes
+- Complexité d'auto-hébergement (application PHP avec base de données)
+- L'expérience mobile se limite à l'interface web
+
+**Prix :** Gratuit et open source.
+
+---
+
+### Lunch Money : Le SaaS orienté développeurs
+
+**Idéal pour :** Les développeurs qui veulent un accès API sans gérer une infrastructure d'auto-hébergement.
+
+Lunch Money a été créé par un développeur solo et conserve une philosophie favorable aux développeurs. C'est la meilleure option cloud pour ceux qui veulent un accès programmatique à leurs données.
+
+**Points forts :**
+
+- **API de premier ordre** : Une API REST bien documentée permettant des opérations CRUD complètes sur les transactions, catégories, budgets et plus encore.
+
+- **Excellence multi-devises** : Excellent support de multiples devises, y compris l'intégration crypto.
+
+- **Interface épurée** : Application web moderne et rapide avec un UX soigné.
+
+- **Intégration Plaid** : Synchronisation bancaire fiable via Plaid pour les banques américaines, canadiennes et britanniques.
+
+- **Communauté de développeurs** : Discord actif avec accès direct au développeur.
+
+**Fonctionnalités pour les développeurs :**
+
+- Documentation API complète
+- Webhooks pour les intégrations en temps réel
+- Import/export CSV
+- Suivi de portefeuille crypto
+
+**Compromis à considérer :**
+
+- Basé sur le cloud, donc vos données sont sur leurs serveurs
+- Petite équipe (risque de bus factor)
+- Pas d'applications mobiles natives (uniquement web responsive)
+- Abonnement requis (10 $/mois)
+
+**Prix :** 10 $/mois après un essai gratuit de 14 jours.
+
+---
+
+### Copilot : Le choix de l'écosystème Apple
+
+**Idéal pour :** Les utilisateurs iOS/Mac qui priorisent le design et sont à l'aise dans l'univers fermé d'Apple.
+
+Copilot est une application magnifiquement conçue, exclusive aux plateformes Apple. Si vous êtes profondément ancré dans l'écosystème Apple et que l'esthétique compte pour vous, il mérite d'être considéré.
+
+**Points forts :**
+
+- **Design époustouflant** : Probablement la plus belle application financière sur iOS.
+- **Performances natives** : Conçu spécifiquement pour les plateformes Apple, il est rapide et réactif.
+- **Intégration Apple** : Compatible avec Apple Watch, Siri, les widgets et les Raccourcis.
+- **Synchronisation bancaire fiable** : Alimentée par Plaid avec une stabilité de connexion généralement bonne.
+
+**Fonctionnalités pour les développeurs :**
+
+- L'intégration Raccourcis permet une certaine automatisation
+- Fonctionnalité d'export bien conçue
+- Bonnes règles de catégorisation
+
+**Compromis à considérer :**
+
+- Apple uniquement (pas d'Android, pas de web)
+- Pas d'accès API
+- Stockage des données dans le cloud
+- Entreprise financée par le capital-risque (pression à la monétisation)
+- Relativement cher pour ce qu'il offre
+
+**Prix :** 12 $/mois ou 95 $/an.
+
+---
+
+### YNAB (You Need A Budget) : Le maître de la méthodologie
+
+**Idéal pour :** Les développeurs qui veulent adopter le budget base zéro et qui acceptent le stockage cloud.
+
+YNAB existe depuis 2004 et possède une communauté dévouée. Il s'agit moins de suivre les dépenses que d'allouer intentionnellement son argent. La méthodologie fonctionne, mais l'implémentation a ses compromis.
+
+**Points forts :**
+
+- **Méthodologie éprouvée** : Le budget base zéro aide de nombreuses personnes à reprendre le contrôle de leurs finances.
+- **Ressources pédagogiques** : Tutoriels, webinaires et support communautaire abondants.
+- **API mature** : API bien documentée et stable pour les intégrations.
+- **Support multi-devises** : Bonne gestion des devises internationales.
+
+**Fonctionnalités pour les développeurs :**
+
+- API basée sur OAuth avec documentation complète
+- Communauté de développeurs active
+- Nombreuses intégrations tierces disponibles
+
+**Compromis à considérer :**
+
+- Cloud uniquement (pas de fonctionnalité hors ligne)
+- Cher à 14 $/mois
+- Courbe d'apprentissage pour la méthodologie
+- La synchronisation bancaire peut être peu fiable
+- Les récentes hausses de prix ont frustré les utilisateurs de longue date
+
+**Prix :** 14 $/mois ou 99 $/an.
+
+---
+
+### Monarch Money : Le successeur spirituel de Mint
+
+**Idéal pour :** Les utilisateurs qui veulent quelque chose de similaire à Mint avec une meilleure fiabilité et un meilleur support.
+
+Monarch Money a été fondé par d'anciens employés de Mint qui voulaient construire ce que Mint aurait dû devenir. C'est le remplacement le plus direct pour les utilisateurs traditionnels de Mint sans exigences techniques.
+
+**Points forts :**
+
+- **Expérience similaire à Mint** : Approche d'agrégation familière avec une meilleure exécution.
+- **Fonctionnalités collaboratives** : Excellent pour les couples qui gèrent leurs finances ensemble.
+- **Suivi des investissements** : Bonnes capacités de suivi de portefeuille.
+- **Synchronisation fiable** : Stabilité de connexion bancaire généralement meilleure que celle de Mint.
+
+**Fonctionnalités pour les développeurs :**
+
+- Accès API basique disponible
+- Bonne fonctionnalité d'export
+
+**Compromis à considérer :**
+
+- Basé sur le cloud avec partage de données via Plaid
+- API limitée comparée aux options orientées développeurs
+- Pas d'option d'auto-hébergement
+- Abonnement mensuel requis
+- Modèle de confidentialité similaire à ce qui rendait Mint problématique
+
+**Prix :** 15 $/mois ou 99 $/an.
+
+## Budgie : Créé par des développeurs, pour des développeurs
+
+Après avoir évalué toutes ces options, nous avons créé Budgie parce qu'aucune d'entre elles ne satisfaisait pleinement ce que nous recherchions en tant que développeurs.
+
+**Le problème que nous avons identifié :**
+
+Les options open source nécessitaient une expertise significative en auto-hébergement. Les services cloud monétisaient les données utilisateur ou facturaient des frais mensuels conséquents. Les expériences mobiles étaient souvent reléguées au second plan (PWA au lieu d'applications natives). Et la confidentialité était toujours un compromis.
+
+**Notre solution :**
+
+Budgie est nativement mobile, entièrement fonctionnel hors ligne et radicalement privé. Vos données vivent sur votre appareil dans une base de données SQLite que vous pouvez interroger directement. La synchronisation bancaire, lorsqu'elle est utilisée, emploie une architecture à connaissance zéro. L'application est open source pour que vous puissiez vérifier chaque affirmation que nous faisons.
+
+**Pourquoi les développeurs choisissent Budgie :**
+
+1. **Pas de dépendance à un fournisseur** : Exportez tout, à tout moment, dans des formats standards.
+2. **Pas de frais d'abonnement** : Gratuit pour toujours, pas de niveaux premium.
+3. **Pas de monétisation des données** : Nous ne voulons pas de vos données. Nous ne pouvons même pas y accéder.
+4. **Pas de dépendance serveur** : Fonctionne dans un avion, en pleine nature, pendant une panne.
+5. **Stack technique moderne** : React Native, Expo, Drizzle ORM, TypeScript de bout en bout.
+
+**Les compromis que nous acceptons :**
+
+L'orientation mono-appareil signifie pas de synchronisation cloud automatique entre les appareils. Nous pensons que c'est le bon compromis pour la confidentialité, mais nous comprenons que ce n'est pas pour tout le monde. Si vous avez besoin de la synchronisation multi-appareils, Actual Budget avec auto-hébergement pourrait mieux vous convenir.
+
+[En savoir plus sur notre engagement open source](/{lang}#open-source)
+
+## Comment exporter vos données Mint (avant qu'il ne soit trop tard)
+
+Si vous n'avez pas encore exporté vos données Mint, voici ce que vous devez savoir :
+
+**La mauvaise nouvelle :** Depuis le 23 mars 2024, Mint est complètement fermé. Si vous n'avez pas exporté avant cette date, vos données historiques sont peut-être perdues.
+
+**Si vous avez migré vers Credit Karma :** Votre historique de transactions devrait avoir été transféré, mais il est désormais au format Credit Karma. Vous pouvez exporter depuis Credit Karma, mais la structure des données diffère de celle de Mint.
+
+**Si vous avez exporté avant la fermeture :**
+
+Le format d'export de Mint était un fichier CSV avec ces colonnes :
+- Date
+- Description
+- Original Description
+- Amount
+- Transaction Type
+- Category
+- Account Name
+- Labels
+- Notes
+
+La plupart des alternatives à Mint peuvent importer ce format directement ou avec des ajustements mineurs.
+
+**Importation dans Budgie :**
+
+1. Ouvrez Budgie et allez dans Paramètres > Importer des données
+2. Sélectionnez votre fichier CSV exporté de Mint
+3. Associez les colonnes aux champs de Budgie
+4. Vérifiez l'aperçu de l'importation
+5. Confirmez pour ajouter les transactions à vos comptes
+
+Budgie tente automatiquement de faire correspondre les catégories et peut apprendre de vos corrections pour améliorer la catégorisation future.
+
+**Pour les autres applications :**
+
+- **Actual Budget** : Importez via File > Import > CSV
+- **Firefly III** : Utilisez l'outil d'importation de données avec le préréglage Mint
+- **Lunch Money** : Importez directement dans Settings > Import
+- **YNAB** : File Import supporte le format CSV de Mint
+
+## Questions fréquentes
+
+### Qu'est-il advenu de toutes mes données Mint ?
+
+Si vous avez exporté avant le 23 mars 2024, vous devriez avoir un fichier CSV contenant votre historique de transactions. Si vous avez migré vers Credit Karma, ces données ont été transférées vers votre nouveau compte. Si vous n'avez fait ni l'un ni l'autre, malheureusement, les données sont probablement irrécupérables. C'est exactement pourquoi la propriété des données est importante.
+
+### Credit Karma est-il sûr à utiliser ?
+
+Credit Karma est une entreprise légitime appartenant à Intuit. Cependant, leur modèle économique repose sur la monétisation de vos données financières via des recommandations de produits ciblées. Si la confidentialité est une priorité, ce n'est pas le meilleur choix. Si vous voulez simplement un suivi de crédit gratuit et que la publicité ciblée ne vous dérange pas, cela fonctionne très bien.
+
+### Peut-on auto-héberger Budgie ?
+
+Budgie est conçu comme une application mobile hors ligne. Il n'y a pas de composant serveur à auto-héberger car vos données ne quittent jamais votre appareil. C'est intentionnel : cela élimine la complexité et la responsabilité de sécurité liées à la gestion de votre propre serveur, tout en offrant des garanties de confidentialité encore plus fortes.
+
+### Quelle alternative est la meilleure pour les couples ?
+
+Pour les finances partagées, Monarch Money offre les meilleures fonctionnalités collaboratives. Pour les couples soucieux de la confidentialité, chaque partenaire pourrait utiliser Budgie indépendamment et partager périodiquement un résumé exporté. Actual Budget avec auto-hébergement peut aussi bien convenir aux couples prêts à gérer leur propre serveur.
+
+### L'une de ces applications fonctionne-t-elle sans internet ?
+
+Budgie offre une fonctionnalité hors ligne complète. Actual Budget fonctionne hors ligne lorsqu'il est auto-hébergé localement. Firefly III fonctionne hors ligne sur votre réseau local. Toutes les options cloud (Lunch Money, YNAB, Monarch, Copilot) nécessitent une connexion internet pour une fonctionnalité complète.
+
+### Comment fonctionnent les connexions bancaires dans les applications axées sur la confidentialité ?
+
+La plupart des applications utilisent Plaid, ce qui nécessite de partager vos identifiants bancaires avec un tiers. Actual Budget utilise SimpleFIN, qui est un peu plus respectueux de la confidentialité. Budgie utilise une synchronisation à connaissance zéro où les identifiants sont chiffrés sur votre appareil et jamais visibles par nous. Firefly III repose généralement sur des importations manuelles ou des importateurs développés par la communauté.
+
+### Quelle est la courbe d'apprentissage de ces applications ?
+
+- **Budgie** : Minimale. Interface familière, configuration rapide.
+- **Actual Budget** : Modérée. Le budget par enveloppes demande une adaptation.
+- **Firefly III** : Élevée. Puissant mais complexe.
+- **Lunch Money** : Faible. Interface épurée et intuitive.
+- **YNAB** : Modérée à élevée. La méthodologie exige de l'engagement.
+- **Monarch** : Faible. Expérience très similaire à Mint.
+
+### Budgie deviendra-t-il payant un jour ?
+
+Budgie est et restera gratuit. L'application est open source, et nous sommes engagés dans un modèle durable qui ne repose pas sur la monétisation des données utilisateur ni sur le blocage de fonctionnalités derrière un paywall. Nous pourrons proposer des services optionnels à l'avenir (comme une sauvegarde hébergée), mais l'application principale sera toujours gratuite et pleinement fonctionnelle.
+
+## Prendre votre décision
+
+Choisir un remplacement pour Mint n'est pas qu'une question de fonctionnalités. C'est une question de valeurs. Demandez-vous :
+
+**Quelle importance accordez-vous à la confidentialité ?**
+- Confidentialité maximale : Budgie ou Firefly III
+- Confidentialité élevée : Actual Budget (auto-hébergé)
+- Confidentialité modérée : Lunch Money, YNAB
+- Confidentialité plus faible : Monarch Money, Copilot, Credit Karma
+
+**Quel est votre niveau technique ?**
+- Non technique : Monarch Money, Copilot, YNAB
+- Moyennement technique : Budgie, Lunch Money
+- Très technique : Actual Budget, Firefly III
+
+**Quel est votre budget ?**
+- Gratuit : Budgie, Actual Budget (auto-hébergé), Firefly III
+- Coût faible : Lunch Money (10 $/mois)
+- Coût plus élevé : Copilot (12 $), YNAB (14 $), Monarch (15 $)
+
+**Quelles plateformes utilisez-vous ?**
+- iOS uniquement : Toute option convient (Copilot est exclusif à iOS)
+- Android : Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, Monarch
+- Principalement web : Toutes sauf Budgie et Copilot
+
+## Le mot de la fin
+
+La fermeture de Mint nous a rappelé que les services gratuits ont des coûts cachés. Vos données financières ont de la valeur, et les entreprises trouveront des moyens de les monétiser à moins que l'application ne soit conçue dès le départ pour rendre cela impossible.
+
+Pour les développeurs, la voie à suivre est claire : priorisez la propriété des données, choisissez l'open source quand c'est possible, et méfiez-vous des services qui semblent trop beaux pour être vrais.
+
+Budgie existe parce que nous voulions une application financière qui traite les utilisateurs comme des clients, pas comme des produits. Une application qui fonctionne hors ligne, respecte la confidentialité et vous donne le contrôle total de vos données. Si cela vous parle, nous serions ravis que vous l'essayiez.
+
+Votre argent. Vos données. Votre contrôle.
+
+---
+
+Prêt à reprendre le contrôle de vos finances sans sacrifier votre confidentialité ? [Rejoignez la communauté Budgie](/{lang}#whitelist) et faites partie des premiers à découvrir un suivi de dépenses véritablement privé.

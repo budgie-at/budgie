@@ -1,3 +1,4 @@
+import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
 import { Suspense } from 'react';
@@ -6,10 +7,44 @@ import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
 import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { Motion } from '../../../generic/component/motion/motion';
+import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
+import { buildAlternates } from '../../../generic/util/build-alternates.util';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+
+import type { Metadata } from 'next';
 
 interface Props extends PageLangParam {
     searchParams: Promise<{ query?: string; page?: string }>;
+}
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: Props): Promise<Metadata> {
+    const { lang } = await props.params;
+    const i18n = getI18nInstance(lang);
+
+    const title = i18n._(msg`Blog & Insights | Budgie`);
+    const description = i18n._(
+        msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
+    );
+
+    return {
+        title,
+        description,
+        alternates: buildAlternates(lang, '/blog'),
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `${BASE_URL}/${lang}/blog`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description
+        }
+    };
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -19,7 +54,7 @@ export default async function BlogPage(props: Props) {
 
     initLingui(lang);
 
-    const allArticles = getArticles();
+    const allArticles = await getArticles(lang);
     const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;

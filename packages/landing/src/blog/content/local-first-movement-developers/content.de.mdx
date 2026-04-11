@@ -1,0 +1,347 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "Die Local-First-Bewegung: Warum Entwickler Offline-Apps bauen",
+    "description": "Entdecken Sie die Local-First-Softwarebewegung, von CRDTs bis zu Sync-Engines. Erfahren Sie, warum Entwickler Offline-First-Architektur wählen und wie sie Apps für persönliche Finanzen transformiert.",
+    "tags": ["local-first", "offline-first", "CRDTs", "Sync-Engines", "Software-Architektur", "Datenschutz", "Entwickler"],
+    "seo": {
+        "keywords": [
+            "Local-First-Software",
+            "Offline-First-Architektur",
+            "CRDTs erklärt",
+            "konfliktfreie replizierte Datentypen",
+            "Sync-Engines",
+            "Ink and Switch",
+            "Local-First-Prinzipien",
+            "Offline-App-Entwicklung",
+            "Local-First persönliche Finanzen",
+            "datenschutzorientierte Software-Architektur"
+        ],
+        "metaDescription": "Tiefer Einblick in die Local-First-Softwarebewegung. Erfahren Sie mehr über CRDTs, Sync-Engines und warum Entwickler Offline-First-Apps für Datenschutz und Datensouveränität bauen."
+    }
+}
+
+# Die Local-First-Bewegung: Warum Entwickler Offline-Apps bauen
+
+Fast zwei Jahrzehnte lang hat Cloud Computing dominiert, wie wir Software entwickeln. Jede Startup-Präsentation zeigte die gleiche Architektur: dünner Client, mächtiger Server, Daten in der Cloud. Doch etwas Interessantes geschieht. Eine wachsende Bewegung von Entwicklern, Forschern und Unternehmen stellt diese Orthodoxie infrage und baut Software, die anders funktioniert. Sie nennen es **Local-First-Software**.
+
+Dies ist keine Ablehnung des Internets oder der Zusammenarbeit. Stattdessen ist es ein grundlegendes Umdenken darüber, wo Daten leben, wem sie gehören und wie Anwendungen sich verhalten sollten. Für Entwickler, die persönliche Software bauen, insbesondere in sensiblen Bereichen wie Finanzen, Gesundheit und persönlicher Produktivität, bietet die Local-First-Architektur überzeugende Vorteile, die Cloud-First-Ansätze schlicht nicht bieten können.
+
+## Was ist Local-First-Software?
+
+Local-First-Software ist ein Ansatz, bei dem Ihre Daten primär auf Ihrem Gerät leben, nicht auf einem entfernten Server. Die Anwendung funktioniert standardmäßig offline, behandelt die lokale Kopie als Quelle der Wahrheit und synchronisiert sich mit anderen Geräten oder Nutzern, wenn Konnektivität verfügbar ist.
+
+Dies unterscheidet sich auf wichtige Weise von traditionellen Ansätzen:
+
+**Cloud-First-Anwendungen** speichern Ihre Daten auf entfernten Servern. Das lokale Gerät ist lediglich ein Fenster zu Daten, die anderswo liegen. Wenn Sie offline sind, ist die Funktionalität eingeschränkt oder nicht vorhanden. Beispiele sind Google Docs, Notion und die meisten SaaS-Anwendungen.
+
+**Offline-fähige Anwendungen** können ohne Internet funktionieren, behandeln aber weiterhin den Server als kanonische Datenquelle. Ihre lokalen Änderungen werden zwischengespeichert, bis sie an den Server gesendet werden können. Beispiele sind viele mobile Apps, die Daten für die Offline-Ansicht cachen.
+
+**Local-First-Anwendungen** drehen dieses Modell um. Ihr Gerät hält die primäre Kopie Ihrer Daten. Sie können unbegrenzt ohne Netzwerkzugang arbeiten, ohne Funktionalitätseinbußen. Die Synchronisation ist eine Peer-to-Peer-Operation zwischen Geräten, kein Client-Server-Upload. Beispiele sind Git, Obsidian und die Sync-Architektur von Linear.
+
+Diese Unterscheidung ist wichtig, weil sie grundlegende Annahmen über Eigentum, Verfügbarkeit und Datenschutz verändert.
+
+## Das Ink & Switch-Manifest und seine Wirkung
+
+Im Jahr 2019 veröffentlichte ein Forschungslabor namens Ink & Switch eine Arbeit, die die Local-First-Vision kristallisierte. Ihr Essay „Local-First Software: You Own Your Data, in Spite of the Cloud" formulierte sieben Ideale für Local-First-Software:
+
+1. **Keine Ladebalken: Ihre Arbeit griffbereit.** Die Software reagiert sofort, weil die Daten lokal sind. Es gibt keinen Netzwerk-Roundtrip zwischen Ihnen und Ihrer Arbeit.
+
+2. **Ihre Arbeit ist nicht auf ein Gerät beschränkt.** Obwohl die Daten lokal sind, sollten Sie nahtlos von mehreren Geräten auf Ihre Arbeit zugreifen können.
+
+3. **Das Netzwerk ist optional.** Volle Funktionalität sollte offline verfügbar sein. Das Netzwerk erweitert die Möglichkeiten, ist aber für Kernoperationen nicht erforderlich.
+
+4. **Nahtlose Zusammenarbeit mit Kollegen.** Local-First bedeutet nicht Einzelnutzer. Echtzeit-Zusammenarbeit sollte bei bestehender Verbindung reibungslos funktionieren.
+
+5. **Die lange Sicht.** Ihre Daten sollten jede einzelne Anwendung, jeden Dienst oder jedes Unternehmen überleben. Datenbeständigkeit ist ein zentrales Designprinzip.
+
+6. **Sicherheit und Datenschutz standardmäßig.** Da Daten lokal bleiben, gibt es keinen zentralen Server, der die Informationen aller speichert. Datenschutz wird zu einer natürlichen Eigenschaft der Architektur.
+
+7. **Sie behalten die ultimative Eigentümerschaft und Kontrolle.** Kein Unternehmen kann Ihnen den Zugang zu Ihren Daten sperren, Ihr Konto löschen oder Nutzungsbedingungen so ändern, dass Ihre bestehende Arbeit betroffen ist.
+
+Dieses Manifest fand tiefen Anklang bei Entwicklern, die von den Einschränkungen und der Abhängigkeit von Cloud-Diensten frustriert waren. Es entfachte ein erneuertes Interesse an Technologien, die Local-First-Software in großem Maßstab praktikabel machen könnten.
+
+Die Ink & Switch-Arbeit hat diese Ideen nicht erfunden. Forscher verteilter Systeme arbeiteten seit Jahrzehnten an den zugrundeliegenden Problemen. Aber die Arbeit brachte akademische Konzepte in die praktische Softwareentwicklungsdiskussion und gab der Bewegung eine kohärente Identität.
+
+## Technische Grundlagen: CRDTs und Sync-Engines
+
+Der Bau von Local-First-Software erfordert die Lösung schwieriger Probleme verteilter Systeme. Wenn mehrere Geräte Daten unabhängig und ohne Koordination ändern können, wie führt man diese Änderungen ohne Konflikte zusammen? Wie stellt man sicher, dass alle letztendlich denselben Zustand sehen?
+
+### Konfliktfreie replizierte Datentypen (CRDTs)
+
+CRDTs sind Datenstrukturen, die speziell für verteilte Systeme entwickelt wurden, in denen Knoten den Zustand ohne Koordination ändern können. Die zentrale Erkenntnis ist: Wenn man seine Datenstrukturen sorgfältig entwirft, können gleichzeitige Änderungen immer automatisch und ohne Konflikte zusammengeführt werden.
+
+Betrachten wir ein einfaches Beispiel: einen Zähler. In einem traditionellen System entsteht ein Konflikt, wenn zwei Nutzer gleichzeitig einen Zähler von 5 auf 6 erhöhen. Welcher Wert ist korrekt?
+
+Ein CRDT-Zähler funktioniert anders. Statt einer einzelnen Zahl speichert er die Inkremente jedes Nutzers separat. Die Inkremente von Nutzer A werden unabhängig von Nutzer B verfolgt. Der aktuelle Wert wird durch Summierung aller Inkremente berechnet. Wenn A einmal und B einmal inkrementiert, ist die Gesamtsumme 7, unabhängig von der Reihenfolge, in der die Operationen empfangen werden. Kein Konflikt, keine Koordination erforderlich.
+
+Dieses Prinzip erstreckt sich auf komplexere Datenstrukturen:
+
+**G-Counter und PN-Counter** behandeln reine Inkrement-Zähler beziehungsweise Inkrement-Dekrement-Zähler.
+
+**G-Set und 2P-Set** behandeln Mengen, bei denen Elemente nur hinzugefügt oder hinzugefügt und entfernt werden können (aber nach dem Entfernen nicht erneut hinzugefügt).
+
+**LWW-Register (Last-Writer-Wins)** behandelt einzelne Werte, bei denen der neueste Schreibvorgang Vorrang hat, wobei Zeitstempel zur Bestimmung der Reihenfolge verwendet werden.
+
+**OR-Set (Observed-Remove Set)** behandelt Mengen, bei denen Elemente hinzugefügt, entfernt und erneut hinzugefügt werden können, wobei die Operationshistorie zur Konfliktlösung verfolgt wird.
+
+**RGA (Replicated Growable Array)** behandelt geordnete Sequenzen wie Text und ermöglicht kollaborative Textbearbeitung.
+
+Die CRDT-Forschungsgemeinschaft hat Strukturen für verschiedene Anwendungsfälle entwickelt: Maps, Graphen, JSON-Dokumente und Rich Text. Bibliotheken wie Yjs, Automerge und CRDTs bieten produktionsreife Implementierungen.
+
+### Sync-Engines
+
+CRDTs lösen das Konfliktlösungsproblem, lassen aber die Frage offen, wie sich Änderungen zwischen Geräten ausbreiten. Sync-Engines kümmern sich um diese Schicht und verwalten:
+
+**Änderungserkennung:** Identifizierung dessen, was seit der letzten Synchronisation geändert wurde.
+
+**Delta-Berechnung:** Bestimmung der minimalen Menge an Änderungen, die übertragen werden müssen.
+
+**Transport:** Übertragung von Änderungen zwischen Geräten, sei es über einen Relay-Server, eine Peer-to-Peer-Verbindung oder einen physischen Datenträger.
+
+**Ordnung:** Sicherstellung, dass Operationen in einer konsistenten Reihenfolge auf allen Replikaten angewendet werden.
+
+**Persistenz:** Dauerhafte Speicherung des Operationsprotokolls und des aktuellen Zustands.
+
+Moderne Sync-Engines wie Replicache, PowerSync und Electric SQL bieten diese Fähigkeiten als Infrastruktur, auf der Anwendungen aufbauen können. Sie bewältigen die Komplexität der Zustandssynchronisation und stellen dabei einfache APIs zum Lesen und Schreiben von Daten bereit.
+
+### Das CAP-Theorem und Local-First-Kompromisse
+
+Das CAP-Theorem besagt, dass ein verteiltes System höchstens zwei von drei Garantien bieten kann: Konsistenz (Consistency), Verfügbarkeit (Availability) und Partitionstoleranz (Partition tolerance). Da Netzwerkpartitionen unvermeidlich sind (Ihr Gerät wird offline gehen), müssen praktische Systeme zwischen Konsistenz und Verfügbarkeit wählen.
+
+Cloud-First-Systeme wählen typischerweise Konsistenz. Wenn Sie offline sind, können Sie keine Änderungen vornehmen, weil das System nicht garantieren kann, dass diese Änderungen mit dem konsistent sind, was andere tun.
+
+Local-First-Systeme wählen Verfügbarkeit. Sie können immer arbeiten, auch offline. Das System verwendet CRDTs oder ähnliche Techniken, um sicherzustellen, dass bei Wiederherstellung der Verbindung alle Änderungen ohne Konflikte zusammengeführt werden können. Der Kompromiss ist die eventuelle Konsistenz: Verschiedene Geräte sehen möglicherweise temporär unterschiedliche Zustände, die mit der Zeit konvergieren.
+
+Für die meisten Anwendungen im Bereich persönliche Produktivität und Finanzen ist dieser Kompromiss vorteilhaft. Nutzer arbeiten lieber jetzt und synchronisieren später, als blockiert zu sein und auf Netzwerkzugang zu warten.
+
+## Praxisbeispiele für Local-First-Apps
+
+Der Local-First-Ansatz ist nicht nur Theorie. Mehrere erfolgreiche Produkte demonstrieren seine Praxistauglichkeit:
+
+### Linear
+
+Linear ist ein Projektmanagement-Tool, das durch Local-First-Architektur bemerkenswerte Leistung erzielt hat. Obwohl es ein kollaboratives Tool für Teams ist, speichert Linear Daten lokal und synchronisiert zwischen Geräten. Das Ergebnis ist eine Anwendung, die sich sofort anfühlt. Jede Aktion reagiert unmittelbar, weil sie zunächst lokal stattfindet.
+
+Linear verwendet eine eigene Sync-Engine zur Verbreitung von Änderungen. Wenn Sie ein Issue erstellen, existiert es sofort lokal und synchronisiert sich im Hintergrund mit dem Server und den Geräten anderer Teammitglieder. Wenn Sie offline sind, arbeiten Sie weiter. Änderungen werden bei der Wiederverbindung automatisch zusammengeführt.
+
+### Figma
+
+Die Echtzeit-Zusammenarbeit von Figma wird unter der Haube von CRDTs angetrieben. Mehrere Designer können gleichzeitig an derselben Datei arbeiten, weil das Datenmodell von Figma für gleichzeitige Änderungen ausgelegt ist. Änderungen werden automatisch ohne Konflikte zusammengeführt.
+
+Obwohl Figma primär in der Cloud gehostet wird, demonstriert die zugrundeliegende Technologie CRDT-Prinzipien im großen Maßstab. Das Engineering-Team hat ausführlich über die Multiplayer-Architektur und die CRDT-ähnlichen Strukturen publiziert.
+
+### Obsidian
+
+Obsidian ist eine Notiz-Anwendung, die Notizen als einfache Markdown-Dateien in Ihrem lokalen Dateisystem speichert. Es gibt keinen Server. Ihre Notizen sind Dateien auf Ihrer Festplatte, die Sie mit jedem Texteditor öffnen können.
+
+Für die Synchronisation bietet Obsidian optionale Dienste an, oder Sie können Ihre eigene Sync-Lösung verwenden (Dropbox, iCloud, Git, Syncthing). Dieser Ansatz gibt den Nutzern vollständige Eigentümerschaft und Flexibilität. Ihre Notizen können nicht in einem proprietären Format eingesperrt werden und überleben unabhängig davon, was mit Obsidian als Unternehmen geschieht.
+
+### Excalidraw
+
+Excalidraw ist ein virtuelles Open-Source-Whiteboard, das vollständig offline funktioniert. Es speichert Zeichnungen im lokalen Speicher Ihres Browsers und kann in Dateien exportieren. Live-Zusammenarbeit ist verfügbar, aber optional. Die grundlegende Zeichenerfahrung benötigt überhaupt keinen Server.
+
+### Apple Notes und Reminders
+
+Apples integrierte Produktivitäts-Apps verwenden eine Local-First-Architektur mit iCloud-Synchronisation. Daten werden auf dem Gerät gespeichert und über Apples Infrastruktur synchronisiert. Entscheidend ist, dass die Apps vollständig offline funktionieren und Änderungen bei Rückkehr der Konnektivität übertragen werden.
+
+## Warum Entwickler Local-First wählen
+
+Die Local-First-Bewegung gewinnt an Dynamik, weil Entwickler konkrete Vorteile erkennen:
+
+### Unübertreffbare Leistung
+
+Wenn Daten lokal sind, ist jede Operation schnell. Es gibt keine Netzwerklatenz zwischen dem Nutzer und seinen Daten. Dies schafft Anwendungen, die sich qualitativ von Cloud-First-Alternativen unterscheiden.
+
+Nutzer bemerken den Unterschied sofort. Anwendungen fühlen sich „flüssig" und „reaktionsschnell" an, auf eine Art, die schwer in Worte zu fassen, aber unmittelbar spürbar ist. Das ist keine Optimierung — es ist ein fundamentaler architektonischer Vorteil.
+
+### Echte Offline-Fähigkeit
+
+Cloud-First-Anwendungen behandeln Offline als Randfall, den man tolerieren muss. Local-First-Anwendungen behandeln Offline als primären Anwendungsfall. Der Unterschied zeigt sich in der Benutzererfahrung.
+
+Mit Local-First gibt es keinen „Offline-Modus", der Funktionalität einschränkt. Es gibt keine Sorge, ob Änderungen gespeichert werden. Die Anwendung funktioniert gleich, ob Sie im Flugzeug, im Keller oder mit schnellem WLAN verbunden sind.
+
+### Dateneigentum der Nutzer
+
+Wenn Daten auf Nutzergeräten leben, besitzen die Nutzer ihre Daten in einem echten Sinne. Sie können sie sichern, exportieren, inspizieren und mitnehmen, wenn sie die Anwendung wechseln. Es gibt keine Anbieterbindung durch Datengefangenschaft.
+
+Dieses Eigentum erstreckt sich auf die Datenbeständigkeit. Lokale Datendateien bleiben Jahrzehnte lang lesbar. SaaS-Dienste werden regelmäßig eingestellt, sodass Nutzer sich beeilen müssen, Daten zu exportieren, bevor sie verschwinden.
+
+### Datenschutz als Architektur
+
+Local-First-Software ist konstruktionsbedingt privat. Wenn Daten das Gerät nicht verlassen, können sie nicht von einem Server geleakt werden. Es gibt keinen Server zum Hacken, keine Datenbank zum Angreifen, keinen Mitarbeiterzugang zum Missbrauchen.
+
+Das ist kein Datenschutz durch Richtlinien, sondern Datenschutz durch Architektur. Nutzer müssen den Datenschutzpraktiken des Unternehmens nicht vertrauen, weil die Architektur Datenschutzverletzungen technisch unmöglich macht.
+
+### Reduzierte Infrastrukturkosten
+
+Der Betrieb einer Cloud-First-Anwendung erfordert Server, Datenbanken und laufende Betriebskosten, die mit den Nutzern skalieren. Local-First-Anwendungen verlagern Berechnung und Speicherung auf die Geräte der Nutzer. Die Grenzkosten eines zusätzlichen Nutzers tendieren gegen null.
+
+Für Indie-Entwickler und kleine Teams verändert dies die Wirtschaftlichkeit der Softwareentwicklung. Sie können nachhaltige Software bauen, ohne Wagniskapital zur Finanzierung der Serverinfrastruktur.
+
+### Einfacheres Entwicklungsmodell
+
+Trotz der Komplexität der Konzepte verteilter Systeme kann Local-First-Entwicklung einfacher sein als Cloud-First. Sie bauen zunächst eine Anwendung, die auf einem einzelnen Gerät funktioniert. Dann fügen Sie Synchronisation darüber hinzu. Die Kernlogik ist unkomplizierte Anwendungsentwicklung ohne die Komplexität verteilter Systeme.
+
+Moderne Sync-Engines abstrahieren den Großteil der Komplexität verteilter Systeme. Entwickler arbeiten mit vertrauten APIs, während die Infrastruktur Konfliktlösung und Zustandspropagation übernimmt.
+
+## Local-First in persönlichen Finanzen: Der perfekte Anwendungsfall
+
+Persönliche Finanzen sind ein idealer Bereich für die Local-First-Architektur. Die Anforderungen stimmen perfekt mit den Stärken von Local-First überein:
+
+### Sensibilität finanzieller Daten
+
+Finanzdaten gehören zu den sensibelsten Informationen, die Menschen besitzen. Transaktionsverläufe offenbaren, wo Sie einkaufen, was Sie kaufen, an wen Sie zahlen und wie viel Sie verdienen. Diese Daten in falschen Händen ermöglichen Identitätsdiebstahl, Stalking, Diskriminierung und Manipulation.
+
+Cloud-gehostete Finanz-Apps stellen attraktive Ziele für Angreifer dar. Zentralisierte Datenbanken mit den Finanzhistorien von Millionen Nutzern sind hochwertige Ziele. Datenpannen sind nicht hypothetisch — sie geschehen regelmäßig.
+
+Die Local-First-Architektur eliminiert diese Risikokategorie vollständig. Es gibt keine zentralisierte Datenbank zum Hacken, weil die Daten auf den Geräten der Nutzer bleiben.
+
+### Bedarf an zuverlässigem Zugang
+
+Menschen benötigen Zugang zu ihren Finanzdaten unter allen Umständen: auf Reisen im Ausland, in Gebieten mit schlechter Verbindung, während Dienstausfällen. Eine Budget-App, die offline nicht funktioniert, ist nicht zuverlässig genug als primäres Finanzwerkzeug.
+
+Local-First-Finanz-Apps funktionieren überall, jederzeit. Ihre Finanzdaten sind auf Ihrem Gerät, zugänglich unabhängig von den Netzwerkbedingungen.
+
+### Von Natur aus persönlich und privat
+
+Finanzmanagement ist von Natur aus persönlich. Anders als bei kollaborativen Dokumenten oder Teamprojekten müssen die meisten Menschen ihre Ausgabenverfolgung nicht in Echtzeit mit anderen teilen. Die Einzelnutzer-Optimierung von Local-First ist ein Vorteil, keine Einschränkung.
+
+Dies vereinfacht auch die Implementierung. Ohne Echtzeit-Kollaborationsanforderungen kann sich die Sync-Schicht auf die Gerät-zu-Gerät-Synchronisation für denselben Nutzer konzentrieren, statt auf Mehrbenutzter-Konfliktlösung.
+
+### Langfristige Datenanforderungen
+
+Menschen verfolgen ihre Finanzen über Jahre oder Jahrzehnte. Sie brauchen Ihre Daten auch 2030 und darüber hinaus zugänglich. Wird dieser Cloud-Dienst noch existieren? Werden sie ihre Preise ändern? Werden sie aufgekauft und eingestellt?
+
+Local-First-Daten überleben unabhängig von jedem Unternehmen. Einfache Datendateien auf Ihrem Gerät bleiben lesbar, solange Sie Backups pflegen.
+
+### Regulatorische und Compliance-Aspekte
+
+Für Nutzer in bestimmten Rechtsgebieten oder Berufen wirft die Speicherung von Finanzdaten bei Dritten Compliance-Fragen auf. Die Local-First-Architektur vereinfacht die Compliance, indem sie die Daten unter Nutzerkontrolle belässt.
+
+## Wie Budgie Local-First-Prinzipien umsetzt
+
+Budgie wurde von Grund auf als Local-First-App für persönliche Finanzen konzipiert. So setzen wir die Local-First-Ideale um:
+
+### Speicherung auf dem Gerät
+
+Alle Ihre Finanzdaten, einschließlich Transaktionen, Konten, Budgets und Kategorien, werden in einer lokalen SQLite-Datenbank auf Ihrem Gerät gespeichert. Wir verwenden Drizzle ORM für typsichere Datenbankoperationen und gewährleisten Datenintegrität, während alles lokal bleibt.
+
+Es gibt keinen Budgie-Server, der Ihre Finanzdaten hält. Wir haben keinen Zugang zu Ihren Transaktionen, weil wir sie nie erhalten.
+
+### Sofortige Leistung
+
+Weil die Daten lokal sind, ist jede Interaktion unmittelbar. Eine Transaktion hinzufügen, Ausgaben kategorisieren, Berichte ansehen: all das geschieht mit lokaler Geschwindigkeit. Es gibt keine Ladebalken, die auf Netzwerkantworten warten.
+
+Das ist besonders bei datenintensiven Operationen wie der Berichtserstellung oder der Suche im Transaktionsverlauf spürbar. Operationen, die in einer Cloud-Architektur teure Datenbankabfragen erfordern würden, werden auf dem Gerät sofort ausgeführt.
+
+### Echter Offline-Betrieb
+
+Budgie funktioniert vollständig offline. Sie können Ausgaben im Flugzeug verfolgen, Ihr Budget in einer abgelegenen Hütte überprüfen oder Finanzen in Gebieten ohne Mobilfunkabdeckung verwalten. Jede Funktion funktioniert ohne Netzwerkzugang.
+
+Wenn Sie eine Verbindung haben, kann Budgie optional mit Ihrer Bank synchronisieren, um Transaktionen automatisch zu importieren. Aber das ist eine Ergänzung, die den Local-First-Kern bereichert, anstatt ihn vorauszusetzen.
+
+### Optionale Banksynchronisation
+
+Für Nutzer, die automatischen Transaktionsimport wünschen, bietet Budgie Banksynchronisation mit einer Zero-Knowledge-Architektur. Ihre Bankzugangsdaten werden lokal auf Ihrem Gerät verschlüsselt. Synchronisationsoperationen finden direkt zwischen Ihrem Gerät und Ihrer Bank statt. Budgies Infrastruktur sieht nie Ihre Zugangsdaten oder Transaktionsdaten.
+
+Das bietet Ihnen den Komfort des automatischen Imports, ohne die Datenschutzgarantien der Local-First-Architektur zu opfern. Mehr über unseren Sicherheitsansatz erfahren Sie in [unserem Sicherheitsbereich](/{lang}#security).
+
+### Open-Source-Transparenz
+
+Budgies Codebasis ist Open Source und ermöglicht es Sicherheitsforschern und neugierigen Nutzern, unsere Behauptungen zu überprüfen. Sie können genau nachvollziehen, wie Daten gespeichert werden, bestätigen, dass nichts an unsere Server übertragen wird, und die Anwendung sogar selbst bauen.
+
+Open Source adressiert auch die Beständigkeitsfrage. Selbst wenn Budgie als Unternehmen verschwinden sollte, bleibt der Code verfügbar. Gemeinschaften können ihn unbegrenzt pflegen und erweitern.
+
+### Export und Portabilität
+
+Ihre Daten gehören Ihnen. Budgie unterstützt den Export Ihrer Finanzdaten in Standardformaten. Wenn Sie jemals zu einer anderen Anwendung wechseln oder Ihre Daten in einer Tabellenkalkulation analysieren möchten, haben Sie vollen Zugriff.
+
+Wir glauben daran, Ihre fortgesetzte Nutzung durch Qualität zu verdienen, nicht Sie durch Datenbindung zu halten.
+
+## Einstieg in die Local-First-Entwicklung
+
+Für Entwickler, die sich für den Bau von Local-First-Anwendungen interessieren, hier sind praktische Ausgangspunkte:
+
+### Wählen Sie Ihren Stack
+
+Mehrere produktionsreife Bibliotheken bieten Local-First-Infrastruktur:
+
+**Yjs** ist eine CRDT-Implementierung mit Fokus auf kollaborative Textbearbeitung. Sie treibt mehrere kollaborative Editoren an und verfügt über ein ausgereiftes Ökosystem.
+
+**Automerge** ist eine JSON-CRDT-Implementierung, die die Arbeit mit komplexen Dokumentstrukturen erleichtert. Sie ist besonders stark für Anwendungen, die beliebige JSON-Daten synchronisieren müssen.
+
+**Replicache** bietet eine Sync-Engine, die mit Ihrem bestehenden Backend funktioniert. Sie bewältigt die Komplexität der Offline-First-Synchronisation, während Sie Ihre bestehende Serverarchitektur beibehalten können.
+
+**PowerSync** bietet Echtzeit-Synchronisation für mobile und Web-Anwendungen mit Postgres-Backends.
+
+**Electric SQL** synchronisiert SQLite-Datenbanken zwischen Geräten und Cloud-Postgres und ermöglicht Local-First mit vertrautem SQL.
+
+### Beginnen Sie einfach
+
+Starten Sie mit einer Einzelgerät-Anwendung und fügen Sie die Synchronisation später hinzu. Bringen Sie zunächst Ihr Datenmodell für lokale Speicherung in Ordnung. Verstehen Sie, welchen Zustand Ihre Anwendung benötigt und wie er sich ändert.
+
+Dann schichten Sie die Synchronisation darüber. Moderne Sync-Engines machen diesen inkrementellen Ansatz praktikabel. Sie müssen nicht von Tag eins an für verteilte Systeme entwerfen.
+
+### Akzeptieren Sie eventuelle Konsistenz
+
+Mentale Modelle sind wichtig. In einer Local-First-Anwendung können verschiedene Geräte temporär unterschiedliche Zustände sehen. Gestalten Sie Ihre Benutzeroberfläche so, dass sie damit elegant umgeht.
+
+In der Praxis ist dies für die meisten persönlichen Anwendungen für Nutzer selten sichtbar. Die Synchronisation ist schnell genug, sodass Inkonsistenzfenster kurz sind. Aber Ihr Code sollte nicht von sofortiger Konsistenz ausgehen.
+
+### Durchdenken Sie die Randfälle
+
+Denken Sie Szenarien durch wie: Was passiert, wenn ein Nutzer widersprüchliche Änderungen auf zwei Geräten macht, bevor synchronisiert wird? Was passiert, wenn die Synchronisation mittendrin fehlschlägt? Was passiert, wenn ein Gerät für einen längeren Zeitraum offline ist?
+
+CRDTs bewältigen dies automatisch für die Datenzusammenführung. Aber Ihre Anwendungslogik muss möglicherweise ebenfalls damit umgehen. Eine Budget-App sollte sich sinnvoll verhalten, wenn dieselbe Transaktion auf zwei Geräten eingegeben wird.
+
+## Die Zukunft von Local-First
+
+Die Local-First-Bewegung beschleunigt sich. Mehrere Trends deuten darauf hin, dass es sich nicht um ein Nischenthema handelt, sondern um einen fundamentalen Wandel:
+
+**Wachsendes Datenschutzbewusstsein** treibt die Nachfrage nach Software, die Nutzerdaten respektiert. Während die Menschen sich des Überwachungskapitalismus bewusster werden, bietet Local-First eine echte Alternative.
+
+**Edge Computing** bringt Berechnungen näher an die Nutzer. Die Infrastrukturbranche erkennt, dass nicht alles in zentralisierten Rechenzentren stattfinden muss.
+
+**Bessere Werkzeuge** machen die Local-First-Entwicklung zugänglicher. Was einst tiefe Expertise in verteilten Systemen erforderte, wird durch hochwertige Bibliotheken und Frameworks zugänglich.
+
+**Regulatorischer Druck** rund um Datenschutz und Datensouveränität macht Local-First aus Compliance-Gründen attraktiv.
+
+**Nutzererwartungen** an die Leistung steigen. Während Local-First-Apps zeigen, was möglich ist, wird die Cloud-First-Latenz weniger akzeptabel.
+
+Das Pendel schwingt zurück von maximaler Zentralisierung hin zu einer ausgewogeneren Architektur, in der lokale und Cloud-Berechnungen jeweils das übernehmen, was sie am besten können.
+
+## Häufig gestellte Fragen
+
+### Was ist der Unterschied zwischen Local-First und Offline-First?
+
+Die Begriffe werden oft synonym verwendet, aber es gibt einen Unterschied. Offline-First bedeutet typischerweise eine Anwendung, die Daten für den Offline-Zugriff cached, aber den Server weiterhin als autoritativ betrachtet. Local-First geht weiter: Das lokale Gerät ist die Quelle der Wahrheit, und der Server (falls vorhanden) ist nur ein weiterer Peer für die Synchronisation. Local-First impliziert echtes Dateneigentum, nicht nur Offline-Caching.
+
+### Unterstützen Local-First-Apps Echtzeit-Zusammenarbeit?
+
+Ja. CRDTs wurden speziell entwickelt, um Echtzeit-Zusammenarbeit ohne zentrale Koordination zu ermöglichen. Anwendungen wie Figma und Linear demonstrieren, dass Local-First-Architektur ausgefeilte Kollaborationsfunktionen unterstützen kann. Der wesentliche Unterschied ist, dass Zusammenarbeit durch Peer-Synchronisation stattfindet, nicht über einen zentralen Server.
+
+### Wie funktionieren Backups ohne Cloud-Server?
+
+Nutzer kontrollieren ihre eigene Backup-Strategie. Das kann lokale Gerätesicherungen (iCloud, Google Backup), manuelle Exporte oder Synchronisation mit einem Dienst ihrer Wahl umfassen. Einige Local-First-Apps bieten optionale Cloud-Backup-Dienste zur Bequemlichkeit an, aber diese sind Ergänzungen und keine Voraussetzungen. Ihre Daten bleiben über lokale Backups zugänglich, selbst wenn ein Cloud-Dienst verschwindet.
+
+### Ist Local-First-Entwicklung teurer?
+
+Anfangs gibt es zusätzliche Komplexität beim Verständnis von CRDTs und Synchronisation. Jedoch kann Local-First insgesamt günstiger sein, weil Sie keine Serverinfrastruktur im großen Maßstab aufbauen und warten müssen. Für Indie-Entwickler und kleine Teams können die reduzierten Betriebskosten die anfängliche Lernkurve überwiegen. Moderne Bibliotheken und Frameworks reduzieren zudem die Implementierungskomplexität erheblich.
+
+### Was ist mit Apps, die serverseitige Verarbeitung benötigen?
+
+Einige Anwendungen benötigen tatsächlich Serverfähigkeiten, wie das Senden von E-Mails oder die Verarbeitung von Zahlungen. Local-First geht darum, wo Daten leben und wem sie gehören, nicht darum, Server vollständig zu eliminieren. Eine Local-First-Anwendung kann Server für bestimmte Funktionen nutzen und gleichzeitig die Nutzerdaten lokal halten. Der Schlüssel ist, dass der Server Aktionen verarbeitet, nicht persönliche Daten speichert.
+
+### Wie gehen Local-First-Apps mit Sicherheit um?
+
+Local-First-Apps profitieren von einer grundlegend besseren Sicherheitsposition: Es gibt keine zentralisierte Datenbank mit Nutzerdaten, die gehackt werden könnte. Sicherheitsbedenken verlagern sich auf die Gerätesicherheit, die Nutzer durch Gerätepasswörter, Biometrie und Verschlüsselung kontrollieren. Für sensible Daten wie Finanzinformationen ist dies typischerweise eine erhebliche Nettoverbesserung der Sicherheit.
+
+---
+
+Die Local-First-Bewegung stellt eine echte Evolution dar, wie wir über Software-Architektur denken. Für Entwickler, die persönliche Tools, Produktivitätssoftware oder Anwendungen in sensiblen Bereichen wie Finanzen und Gesundheit bauen, bietet Local-First einen Weg zu besserer Leistung, stärkerem Datenschutz und echter Nutzersouveränität.
+
+Budgie ist unser Beitrag zu dieser Zukunft: eine App für persönliche Finanzen, die Ihre Finanzdaten dort behält, wo sie hingehören — auf Ihrem Gerät unter Ihrer Kontrolle.
+
+Bereit, Local-First-Finanzverwaltung zu erleben? [Tragen Sie sich in unsere Warteliste ein](/{lang}#whitelist), um zu den Ersten zu gehören, die Budgie ausprobieren.

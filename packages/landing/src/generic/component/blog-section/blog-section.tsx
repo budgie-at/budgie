@@ -11,8 +11,8 @@ interface Props {
     locale: string;
 }
 
-export const BlogSection = ({ locale }: Props) => {
-    const recentArticles = getArticles().slice(0, 3);
+export const BlogSection = async ({ locale }: Props) => {
+    const recentArticles = (await getArticles(locale)).slice(0, 3);
 
     return (
         <section className="w-full py-20 md:py-32 bg-muted/30">

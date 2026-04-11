@@ -1,0 +1,347 @@
+import jsonMetadata from './metadata.json';
+
+export const metadata = {
+    ...jsonMetadata,
+    "title": "El movimiento Local-First: por qué los desarrolladores crean aplicaciones offline",
+    "description": "Explora el movimiento del software local-first, desde los CRDTs hasta los motores de sincronización. Descubre por qué los desarrolladores eligen la arquitectura offline-first y cómo transforma las aplicaciones de finanzas personales.",
+    "tags": ["local-first", "offline-first", "CRDTs", "motores-de-sincronización", "arquitectura-de-software", "privacidad", "desarrolladores"],
+    "seo": {
+        "keywords": [
+            "software local-first",
+            "arquitectura offline-first",
+            "CRDTs explicados",
+            "tipos de datos replicados sin conflicto",
+            "motores de sincronización",
+            "Ink and Switch",
+            "principios local-first",
+            "desarrollo de aplicaciones offline",
+            "finanzas personales local-first",
+            "arquitectura de software orientada a la privacidad"
+        ],
+        "metaDescription": "Inmersión profunda en el movimiento del software local-first. Conoce los CRDTs, los motores de sincronización y por qué los desarrolladores crean aplicaciones offline-first para la privacidad y la soberanía de los datos."
+    }
+}
+
+# El movimiento Local-First: por qué los desarrolladores crean aplicaciones offline
+
+Durante casi dos décadas, la computación en la nube ha dominado la forma en que construimos software. Cada presentación de startup mostraba la misma arquitectura: cliente ligero, servidor potente, datos en la nube. Pero algo interesante está ocurriendo. Un movimiento creciente de desarrolladores, investigadores y empresas cuestiona esta ortodoxia y construye software que funciona de manera diferente. Lo llaman **software local-first**.
+
+No se trata de un rechazo a internet ni a la colaboración. Es, en cambio, un replanteamiento fundamental de dónde residen los datos, a quién pertenecen y cómo deben comportarse las aplicaciones. Para los desarrolladores que crean software personal, especialmente en ámbitos sensibles como las finanzas, la salud y la productividad personal, la arquitectura local-first ofrece ventajas convincentes que los enfoques cloud-first simplemente no pueden igualar.
+
+## ¿Qué es el software Local-First?
+
+El software local-first es un enfoque donde tus datos residen principalmente en tu dispositivo, no en un servidor remoto. La aplicación funciona offline por defecto, trata la copia local como la fuente de verdad y se sincroniza con otros dispositivos o usuarios cuando hay conectividad disponible.
+
+Esto difiere de los enfoques tradicionales de formas importantes:
+
+**Las aplicaciones cloud-first** almacenan tus datos en servidores remotos. El dispositivo local es simplemente una ventana hacia datos que residen en otro lugar. Cuando estás sin conexión, la funcionalidad es limitada o inexistente. Los ejemplos incluyen Google Docs, Notion y la mayoría de las aplicaciones SaaS.
+
+**Las aplicaciones con capacidad offline** pueden funcionar sin internet pero siguen tratando al servidor como la fuente canónica de datos. Tus cambios locales se almacenan temporalmente hasta que pueden enviarse al servidor. Los ejemplos incluyen muchas aplicaciones móviles que almacenan datos en caché para visualización offline.
+
+**Las aplicaciones local-first** invierten este modelo. Tu dispositivo contiene la copia principal de tus datos. Puedes trabajar indefinidamente sin acceso a la red y sin pérdida de funcionalidad. La sincronización es una operación punto a punto entre dispositivos, no una carga cliente-servidor. Los ejemplos incluyen Git, Obsidian y la arquitectura de sincronización de Linear.
+
+La distinción es importante porque cambia las suposiciones fundamentales sobre propiedad, disponibilidad y privacidad.
+
+## El manifiesto de Ink & Switch y su impacto
+
+En 2019, un laboratorio de investigación llamado Ink & Switch publicó un artículo que cristalizó la visión local-first. Su ensayo «Local-First Software: You Own Your Data, in Spite of the Cloud» articuló siete ideales para el software local-first:
+
+1. **Sin indicadores de carga: tu trabajo al alcance de la mano.** El software responde al instante porque los datos son locales. No hay ida y vuelta de red entre tú y tu trabajo.
+
+2. **Tu trabajo no está atrapado en un solo dispositivo.** A pesar de que los datos son locales, deberías poder acceder a tu trabajo desde múltiples dispositivos sin fricción.
+
+3. **La red es opcional.** La funcionalidad completa debe estar disponible offline. La red mejora las capacidades pero no es necesaria para las operaciones principales.
+
+4. **Colaboración fluida con colegas.** Local-first no significa un solo usuario. La colaboración en tiempo real debe funcionar sin problemas cuando hay conexión.
+
+5. **La visión a largo plazo.** Tus datos deben sobrevivir a cualquier aplicación, servicio o empresa en particular. La longevidad de los datos es un principio de diseño fundamental.
+
+6. **Seguridad y privacidad por defecto.** Como los datos permanecen locales, no hay un servidor central almacenando la información de todos. La privacidad se convierte en una propiedad natural de la arquitectura.
+
+7. **Conservas la propiedad y el control absoluto.** Ninguna empresa puede bloquearte el acceso a tus datos, eliminar tu cuenta o cambiar las condiciones del servicio de formas que afecten tu trabajo existente.
+
+Este manifiesto resonó profundamente entre los desarrolladores frustrados con las limitaciones y la dependencia de los servicios en la nube. Despertó un renovado interés en tecnologías que podrían hacer viable el software local-first a gran escala.
+
+El artículo de Ink & Switch no inventó estas ideas. Los investigadores de sistemas distribuidos llevaban décadas trabajando en los problemas subyacentes. Pero el artículo trasladó conceptos académicos a la conversación práctica del desarrollo de software y dio al movimiento una identidad coherente.
+
+## Fundamentos técnicos: CRDTs y motores de sincronización
+
+Construir software local-first requiere resolver problemas complejos de sistemas distribuidos. Cuando múltiples dispositivos pueden modificar datos de forma independiente y sin coordinación, ¿cómo se fusionan esos cambios sin conflictos? ¿Cómo se asegura que todos acaben viendo el mismo estado?
+
+### Tipos de datos replicados sin conflicto (CRDTs)
+
+Los CRDTs son estructuras de datos diseñadas específicamente para sistemas distribuidos donde los nodos pueden modificar el estado sin coordinación. La idea clave es que si diseñas tus estructuras de datos cuidadosamente, las modificaciones concurrentes siempre pueden fusionarse automáticamente sin conflictos.
+
+Consideremos un ejemplo sencillo: un contador. En un sistema tradicional, si dos usuarios incrementan simultáneamente un contador de 5 a 6, hay un conflicto. ¿Qué valor es el correcto?
+
+Un contador CRDT funciona de manera diferente. En lugar de almacenar un único número, almacena los incrementos de cada usuario por separado. Los incrementos del Usuario A se rastrean independientemente de los del Usuario B. El valor actual se calcula sumando todos los incrementos. Si A incrementa una vez y B incrementa una vez, el total es 7, independientemente del orden en que se reciban las operaciones. Sin conflictos, sin coordinación necesaria.
+
+Este principio se extiende a estructuras de datos más complejas:
+
+**G-Counter y PN-Counter** manejan contadores de solo incremento y contadores de incremento-decremento respectivamente.
+
+**G-Set y 2P-Set** manejan conjuntos donde los elementos solo pueden añadirse, o añadirse y eliminarse (pero no reañadirse después de la eliminación).
+
+**LWW-Register (Last-Writer-Wins)** maneja valores individuales donde la escritura más reciente tiene prioridad, usando marcas de tiempo para determinar el orden.
+
+**OR-Set (Observed-Remove Set)** maneja conjuntos donde los elementos pueden añadirse, eliminarse y reañadirse, rastreando el historial de operaciones para resolver conflictos.
+
+**RGA (Replicated Growable Array)** maneja secuencias ordenadas como texto, permitiendo la edición colaborativa de texto.
+
+La comunidad investigadora de CRDTs ha desarrollado estructuras para diversos casos de uso: mapas, grafos, documentos JSON y texto enriquecido. Bibliotecas como Yjs, Automerge y CRDTs proporcionan implementaciones listas para producción.
+
+### Motores de sincronización
+
+Los CRDTs resuelven el problema de resolución de conflictos pero dejan abiertas preguntas sobre cómo se propagan los cambios entre dispositivos. Los motores de sincronización gestionan esta capa, encargándose de:
+
+**Detección de cambios:** Identificar qué ha sido modificado desde la última sincronización.
+
+**Cálculo de deltas:** Determinar el conjunto mínimo de cambios a transmitir.
+
+**Transporte:** Mover cambios entre dispositivos, ya sea a través de un servidor de retransmisión, conexión punto a punto o soporte físico.
+
+**Ordenamiento:** Asegurar que las operaciones se apliquen en un orden consistente en todas las réplicas.
+
+**Persistencia:** Almacenar durablemente el registro de operaciones y el estado actual.
+
+Los motores de sincronización modernos como Replicache, PowerSync y Electric SQL proporcionan estas capacidades como infraestructura sobre la que las aplicaciones pueden construirse. Gestionan la complejidad de la sincronización de estado mientras exponen APIs sencillas para leer y escribir datos.
+
+### El teorema CAP y los compromisos de Local-First
+
+El teorema CAP establece que un sistema distribuido puede proporcionar como máximo dos de tres garantías: consistencia (Consistency), disponibilidad (Availability) y tolerancia a particiones (Partition tolerance). Dado que las particiones de red son inevitables (tu dispositivo se desconectará), los sistemas prácticos deben elegir entre consistencia y disponibilidad.
+
+Los sistemas cloud-first típicamente eligen consistencia. Cuando estás sin conexión, no puedes hacer cambios porque el sistema no puede garantizar que esos cambios serán consistentes con lo que otros están haciendo.
+
+Los sistemas local-first eligen disponibilidad. Siempre puedes trabajar, incluso sin conexión. El sistema usa CRDTs o técnicas similares para asegurar que cuando las particiones se resuelvan, todos los cambios puedan fusionarse sin conflictos. El compromiso es la consistencia eventual: diferentes dispositivos pueden ver temporalmente estados diferentes, convergiendo con el tiempo.
+
+Para la mayoría de las aplicaciones de productividad personal y finanzas, este compromiso es favorable. Los usuarios prefieren trabajar ahora y sincronizar después a quedarse bloqueados esperando acceso a la red.
+
+## Ejemplos reales de aplicaciones Local-First
+
+El enfoque local-first no es solo teórico. Varios productos exitosos demuestran su viabilidad:
+
+### Linear
+
+Linear es una herramienta de gestión de proyectos que ha logrado un rendimiento notable gracias a la arquitectura local-first. A pesar de ser una herramienta colaborativa usada por equipos, Linear almacena datos localmente y los sincroniza entre dispositivos. El resultado es una aplicación que se siente instantánea. Cada acción responde de inmediato porque ocurre localmente primero.
+
+Linear usa un motor de sincronización personalizado para propagar cambios. Cuando creas una incidencia, existe localmente al instante y se sincroniza con el servidor y los dispositivos de otros miembros del equipo en segundo plano. Si estás sin conexión, sigues trabajando. Los cambios se fusionan automáticamente al reconectarse.
+
+### Figma
+
+La colaboración en tiempo real de Figma funciona con CRDTs bajo el capó. Múltiples diseñadores pueden trabajar en el mismo archivo simultáneamente porque el modelo de datos de Figma está diseñado para la modificación concurrente. Los cambios se fusionan automáticamente sin conflictos.
+
+Aunque Figma está principalmente alojado en la nube, su tecnología subyacente demuestra los principios de los CRDTs a escala. Su equipo de ingeniería ha publicado extensamente sobre su arquitectura multijugador y las estructuras similares a CRDTs que utilizan.
+
+### Obsidian
+
+Obsidian es una aplicación de toma de notas que almacena las notas como archivos Markdown simples en tu sistema de archivos local. No hay servidor. Tus notas son archivos en tu disco que puedes abrir con cualquier editor de texto.
+
+Para la sincronización, Obsidian ofrece servicios opcionales o puedes usar tu propia solución de sincronización (Dropbox, iCloud, Git, Syncthing). Este enfoque da a los usuarios propiedad y flexibilidad completas. Tus notas no pueden quedar atrapadas en un formato propietario y sobreviven independientemente de lo que le ocurra a Obsidian como empresa.
+
+### Excalidraw
+
+Excalidraw es una pizarra virtual de código abierto que funciona completamente offline. Almacena dibujos en el almacenamiento local de tu navegador y puede exportar a archivos. La colaboración en vivo está disponible pero es opcional. La experiencia básica de dibujo no requiere ningún servidor.
+
+### Apple Notes y Reminders
+
+Las aplicaciones de productividad integradas de Apple usan una arquitectura local-first con sincronización iCloud. Los datos se almacenan en el dispositivo y se sincronizan a través de la infraestructura de Apple. De forma crucial, las aplicaciones funcionan completamente offline, y los cambios se propagan cuando regresa la conectividad.
+
+## Por qué los desarrolladores eligen Local-First
+
+El movimiento local-first está cobrando impulso porque los desarrolladores reconocen beneficios concretos:
+
+### Rendimiento inigualable
+
+Cuando los datos son locales, cada operación es rápida. No hay latencia de red entre el usuario y sus datos. Esto crea aplicaciones que se sienten cualitativamente diferentes a las alternativas cloud-first.
+
+Los usuarios notan la diferencia de inmediato. Las aplicaciones se sienten «ágiles» y «receptivas» de maneras difíciles de articular pero inmediatamente evidentes. Esto no es optimización; es una ventaja arquitectónica fundamental.
+
+### Capacidad offline genuina
+
+Las aplicaciones cloud-first tratan el modo offline como un caso extremo que hay que tolerar. Las aplicaciones local-first tratan el modo offline como un caso de uso principal. La diferencia se nota en la experiencia de usuario.
+
+Con local-first, no hay un «modo offline» que limite la funcionalidad. No hay ansiedad sobre si los cambios se guardarán. La aplicación funciona igual ya estés en un avión, en un sótano o conectado a WiFi rápido.
+
+### Propiedad de los datos del usuario
+
+Cuando los datos viven en los dispositivos de los usuarios, estos poseen sus datos de manera significativa. Pueden hacer copias de seguridad, exportarlos, inspeccionarlos y llevarlos consigo si cambian de aplicación. No hay dependencia del proveedor mediante la cautividad de datos.
+
+Esta propiedad se extiende a la longevidad de los datos. Los archivos de datos locales seguirán siendo legibles durante décadas. Los servicios SaaS cierran regularmente, dejando a los usuarios apresurándose para exportar datos antes de que desaparezcan.
+
+### La privacidad como arquitectura
+
+El software local-first es privado por construcción. Si los datos no abandonan el dispositivo, no pueden filtrarse desde un servidor. No hay servidor que hackear, no hay base de datos que atacar, no hay acceso de empleados del que abusar.
+
+Esto no es privacidad por política sino privacidad por arquitectura. Los usuarios no necesitan confiar en las prácticas de privacidad de la empresa porque la arquitectura hace las violaciones de privacidad técnicamente imposibles.
+
+### Costes de infraestructura reducidos
+
+Ejecutar una aplicación cloud-first requiere servidores, bases de datos y costes operativos continuos que escalan con los usuarios. Las aplicaciones local-first descargan el cómputo y el almacenamiento en los dispositivos de los usuarios. El coste marginal de un usuario adicional se aproxima a cero.
+
+Para desarrolladores independientes y equipos pequeños, esto cambia la economía del desarrollo de software. Puedes construir software sostenible sin capital de riesgo para financiar infraestructura de servidores.
+
+### Modelo de desarrollo más simple
+
+A pesar de la complejidad de los conceptos de sistemas distribuidos, el desarrollo local-first puede ser más simple que el cloud-first. Construyes una aplicación que funciona en un único dispositivo primero. Luego añades la sincronización encima. La lógica central es desarrollo de aplicaciones directo sin la complejidad de los sistemas distribuidos.
+
+Los motores de sincronización modernos abstraen la mayor parte de la complejidad de los sistemas distribuidos. Los desarrolladores trabajan con APIs familiares mientras la infraestructura gestiona la resolución de conflictos y la propagación del estado.
+
+## Local-First en finanzas personales: el caso de uso perfecto
+
+Las finanzas personales son un ámbito ideal para la arquitectura local-first. Los requisitos se alinean perfectamente con las fortalezas del local-first:
+
+### Sensibilidad de los datos financieros
+
+Los datos financieros están entre la información más sensible que poseen las personas. Los historiales de transacciones revelan dónde compras, qué compras, a quién pagas y cuánto ganas. Estos datos en manos equivocadas permiten el robo de identidad, el acoso, la discriminación y la manipulación.
+
+Las aplicaciones financieras alojadas en la nube representan objetivos atractivos para los atacantes. Las bases de datos centralizadas que contienen los historiales financieros de millones de usuarios son objetivos de alto valor. Las brechas de seguridad no son hipotéticas: ocurren regularmente.
+
+La arquitectura local-first elimina esta categoría de riesgo por completo. No hay base de datos centralizada que hackear porque los datos permanecen en los dispositivos de los usuarios.
+
+### Necesidad de acceso fiable
+
+Las personas necesitan acceder a sus datos financieros en todas las circunstancias: viajando al extranjero, en zonas con mala conectividad, durante caídas del servicio. Una aplicación de presupuesto que no funciona sin conexión no es lo suficientemente fiable como herramienta financiera principal.
+
+Las aplicaciones financieras local-first funcionan en cualquier lugar y en cualquier momento. Tus datos financieros están en tu dispositivo, accesibles independientemente de las condiciones de red.
+
+### Personal y privado por naturaleza
+
+La gestión financiera es intrínsecamente personal. A diferencia de los documentos colaborativos o los proyectos de equipo, la mayoría de las personas no necesitan compartir el seguimiento de sus gastos con otros en tiempo real. La optimización para un único usuario del local-first es una ventaja, no una limitación.
+
+Esto también simplifica la implementación. Sin requisitos de colaboración en tiempo real, la capa de sincronización puede centrarse en la sincronización dispositivo a dispositivo para el mismo usuario en lugar de la resolución de conflictos multiusuario.
+
+### Requisitos de datos a largo plazo
+
+Las personas rastrean sus finanzas durante años o décadas. Necesitas que tus datos sean accesibles en 2030 y más allá. ¿Seguirá existiendo ese servicio en la nube? ¿Cambiarán sus precios? ¿Serán adquiridos y cerrados?
+
+Los datos local-first sobreviven independientemente de cualquier empresa. Simples archivos de datos en tu dispositivo seguirán siendo legibles mientras mantengas copias de seguridad.
+
+### Preocupaciones regulatorias y de cumplimiento
+
+Para usuarios en ciertas jurisdicciones o profesiones, almacenar datos financieros con terceros plantea cuestiones de cumplimiento normativo. La arquitectura local-first simplifica el cumplimiento manteniendo los datos bajo control del usuario.
+
+## Cómo Budgie implementa los principios Local-First
+
+Budgie está construido desde cero como una aplicación local-first de finanzas personales. Así es como implementamos los ideales local-first:
+
+### Almacenamiento en el dispositivo
+
+Todos tus datos financieros, incluyendo transacciones, cuentas, presupuestos y categorías, se almacenan en una base de datos SQLite local en tu dispositivo. Usamos Drizzle ORM para operaciones de base de datos con tipado seguro, garantizando la integridad de los datos mientras todo permanece local.
+
+No hay un servidor de Budgie almacenando tus datos financieros. No tenemos acceso a tus transacciones porque nunca las recibimos.
+
+### Rendimiento instantáneo
+
+Como los datos son locales, cada interacción es inmediata. Añadir una transacción, categorizar gastos, ver informes: todo esto ocurre a velocidad local. No hay indicadores de carga esperando respuestas de red.
+
+Esto es particularmente notable en operaciones intensivas en datos como generar informes o buscar en el historial de transacciones. Operaciones que requerirían consultas costosas a la base de datos en una arquitectura en la nube se completan instantáneamente en el dispositivo.
+
+### Operación offline real
+
+Budgie funciona completamente sin conexión. Puedes registrar gastos en un vuelo, revisar tu presupuesto en una cabaña remota o gestionar tus finanzas en zonas sin cobertura móvil. Cada función opera sin acceso a la red.
+
+Cuando tienes conectividad, Budgie puede sincronizarse opcionalmente con tu banco para la importación automática de transacciones. Pero esto es un complemento que mejora el núcleo local-first en lugar de requerirlo.
+
+### Sincronización bancaria opcional
+
+Para usuarios que desean importación automática de transacciones, Budgie ofrece sincronización bancaria con una arquitectura de conocimiento cero. Tus credenciales bancarias se cifran localmente en tu dispositivo. Las operaciones de sincronización ocurren directamente entre tu dispositivo y tu banco. La infraestructura de Budgie nunca ve tus credenciales ni tus datos de transacciones.
+
+Esto te da la comodidad de la importación automática sin sacrificar las garantías de privacidad de la arquitectura local-first. Puedes aprender más sobre nuestro enfoque de seguridad en [nuestra sección de seguridad](/{lang}#security).
+
+### Transparencia de código abierto
+
+El código base de Budgie es de código abierto, permitiendo a investigadores de seguridad y usuarios curiosos verificar nuestras afirmaciones. Puedes inspeccionar exactamente cómo se almacenan los datos, confirmar que nada se transmite a nuestros servidores e incluso compilar la aplicación tú mismo.
+
+El código abierto también aborda la preocupación de la longevidad. Incluso si Budgie como empresa desapareciera, el código permanece disponible. Las comunidades pueden mantenerlo y extenderlo indefinidamente.
+
+### Exportación y portabilidad
+
+Tus datos son tuyos. Budgie permite exportar tus datos financieros en formatos estándar. Si alguna vez quieres cambiar a una aplicación diferente o analizar tus datos en una hoja de cálculo, tienes acceso completo.
+
+Creemos en ganarnos tu uso continuado a través de la calidad, no en retenerte mediante la dependencia de datos.
+
+## Cómo empezar con el desarrollo Local-First
+
+Para desarrolladores interesados en construir aplicaciones local-first, aquí hay puntos de partida prácticos:
+
+### Elige tu stack
+
+Varias bibliotecas listas para producción proporcionan infraestructura local-first:
+
+**Yjs** es una implementación de CRDTs enfocada en la edición colaborativa de texto. Impulsa múltiples editores colaborativos y tiene un ecosistema maduro.
+
+**Automerge** es una implementación JSON CRDT que facilita el trabajo con estructuras de documentos complejas. Es particularmente fuerte para aplicaciones que necesitan sincronizar datos JSON arbitrarios.
+
+**Replicache** proporciona un motor de sincronización que funciona con tu backend existente. Gestiona la complejidad de la sincronización offline-first mientras te permite mantener tu arquitectura de servidor existente.
+
+**PowerSync** ofrece sincronización en tiempo real para aplicaciones móviles y web con backends Postgres.
+
+**Electric SQL** sincroniza bases de datos SQLite entre dispositivos y Postgres en la nube, habilitando local-first con SQL familiar.
+
+### Empieza simple
+
+Comienza con una aplicación de un solo dispositivo y añade la sincronización después. Primero ajusta correctamente tu modelo de datos para el almacenamiento local. Comprende qué estado necesita tu aplicación y cómo cambia.
+
+Luego superpón la sincronización encima. Los motores de sincronización modernos hacen este enfoque incremental práctico. No necesitas diseñar para sistemas distribuidos desde el primer día.
+
+### Acepta la consistencia eventual
+
+Los modelos mentales importan. En una aplicación local-first, diferentes dispositivos pueden ver temporalmente estados distintos. Diseña tu interfaz para manejar esto con elegancia.
+
+En la práctica, para la mayoría de las aplicaciones personales, esto raramente es visible para los usuarios. La sincronización es lo suficientemente rápida para que las ventanas de inconsistencia sean cortas. Pero tu código no debe asumir consistencia instantánea.
+
+### Contempla los casos límite
+
+Piensa en escenarios como: ¿qué pasa si un usuario hace cambios contradictorios en dos dispositivos antes de sincronizar? ¿Qué pasa si la sincronización falla a mitad de camino? ¿Qué pasa si un dispositivo está offline durante un período prolongado?
+
+Los CRDTs manejan esto automáticamente para la fusión de datos. Pero la lógica de tu aplicación también podría necesitar gestionarlos. Una aplicación de presupuesto debe comportarse de forma sensata si la misma transacción se introduce en dos dispositivos.
+
+## El futuro de Local-First
+
+El movimiento local-first se está acelerando. Varias tendencias sugieren que no se trata de una preocupación de nicho sino de un cambio fundamental:
+
+**La creciente conciencia sobre la privacidad** impulsa la demanda de software que respete los datos de los usuarios. A medida que las personas se vuelven más conscientes del capitalismo de vigilancia, local-first ofrece una alternativa genuina.
+
+**La computación en el borde** acerca el cómputo a los usuarios. La industria de infraestructura reconoce que no todo necesita ocurrir en centros de datos centralizados.
+
+**Mejores herramientas** hacen el desarrollo local-first más accesible. Lo que antes requería profunda experiencia en sistemas distribuidos se está haciendo accesible a través de bibliotecas y frameworks de alta calidad.
+
+**La presión regulatoria** en torno a la protección de datos y la soberanía hace que local-first sea atractivo por razones de cumplimiento.
+
+**Las expectativas de los usuarios** respecto al rendimiento están aumentando. A medida que las aplicaciones local-first demuestran lo que es posible, la latencia cloud-first se vuelve menos aceptable.
+
+El péndulo oscila de vuelta desde la centralización máxima hacia una arquitectura más equilibrada donde la computación local y en la nube gestionan cada una lo que mejor saben hacer.
+
+## Preguntas frecuentes
+
+### ¿Cuál es la diferencia entre local-first y offline-first?
+
+Los términos se usan a menudo indistintamente, pero hay una distinción. Offline-first típicamente significa una aplicación que almacena datos en caché para acceso sin conexión pero sigue tratando al servidor como autoritativo. Local-first va más allá: el dispositivo local es la fuente de verdad, y el servidor (si existe) es solo otro par para la sincronización. Local-first implica verdadera propiedad de los datos, no solo caché offline.
+
+### ¿Las aplicaciones local-first admiten colaboración en tiempo real?
+
+Sí. Los CRDTs fueron diseñados específicamente para habilitar la colaboración en tiempo real sin coordinación central. Aplicaciones como Figma y Linear demuestran que la arquitectura local-first puede admitir funciones colaborativas sofisticadas. La diferencia clave es que la colaboración ocurre a través de sincronización entre pares en lugar de a través de un servidor central.
+
+### ¿Cómo funcionan las copias de seguridad sin un servidor en la nube?
+
+Los usuarios controlan su propia estrategia de copias de seguridad. Esto puede incluir copias de seguridad locales del dispositivo (iCloud, Google backup), exportaciones manuales o sincronización con un servicio de su elección. Algunas aplicaciones local-first ofrecen servicios opcionales de copia de seguridad en la nube por comodidad, pero son complementarios y no obligatorios. Tus datos permanecen accesibles a través de copias de seguridad locales incluso si cualquier servicio en la nube desaparece.
+
+### ¿Es más caro desarrollar local-first?
+
+Inicialmente, hay complejidad adicional para entender los CRDTs y la sincronización. Sin embargo, local-first puede ser más económico en general porque no necesitas construir y mantener infraestructura de servidores a escala. Para desarrolladores independientes y equipos pequeños, los costes operativos reducidos pueden compensar la curva de aprendizaje inicial. Las bibliotecas y frameworks modernos también reducen significativamente la complejidad de implementación.
+
+### ¿Qué pasa con las aplicaciones que requieren procesamiento del lado del servidor?
+
+Algunas aplicaciones genuinamente necesitan capacidades de servidor, como enviar correos electrónicos o procesar pagos. Local-first trata sobre dónde viven los datos y quién los posee, no sobre eliminar servidores por completo. Una aplicación local-first puede usar servidores para capacidades específicas mientras mantiene los datos del usuario localmente. La clave es que el servidor gestiona acciones, no almacenamiento de datos personales.
+
+### ¿Cómo gestionan la seguridad las aplicaciones local-first?
+
+Las aplicaciones local-first se benefician de una postura de seguridad fundamentalmente mejor: no hay una base de datos centralizada de datos de usuarios que hackear. Las preocupaciones de seguridad se desplazan a la seguridad del dispositivo, que los usuarios controlan mediante contraseñas, biometría y cifrado. Para datos sensibles como la información financiera, esto suele representar una mejora neta significativa en la seguridad.
+
+---
+
+El movimiento local-first representa una evolución genuina en cómo pensamos sobre la arquitectura de software. Para los desarrolladores que crean herramientas personales, software de productividad o aplicaciones en ámbitos sensibles como las finanzas y la salud, local-first ofrece un camino hacia mejor rendimiento, mayor privacidad y verdadera propiedad por parte del usuario.
+
+Budgie es nuestra contribución a este futuro: una aplicación de finanzas personales que mantiene tus datos financieros donde deben estar, en tu dispositivo bajo tu control.
+
+¿Listo para experimentar las finanzas personales local-first? [Únete a nuestra lista de espera](/{lang}#whitelist) para ser de los primeros en probar Budgie.
