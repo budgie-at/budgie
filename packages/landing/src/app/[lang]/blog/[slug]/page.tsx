@@ -53,7 +53,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     }
 
     return {
-        title: `${metadata.title} | ${i18n._(msg`Budgie Blog`)}`,
+        title: metadata.title,
         description: metadata.seo.metaDescription,
         keywords: metadata.seo.keywords.join(', '),
         authors: [{ name: metadata.author }],

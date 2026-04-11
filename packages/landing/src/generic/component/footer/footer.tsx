@@ -76,25 +76,22 @@ export const Footer = ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#features`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#features`}>
                                     <Trans>Features</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/#whitelist`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#whitelist`}>
                                     <Trans>Whitelist</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#download`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#download`}>
                                     <Trans>Download</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#roadmap`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#roadmap`}>
                                     <Trans>Roadmap</Trans>
                                 </Link>
                             </li>

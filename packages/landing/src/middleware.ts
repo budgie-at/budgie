@@ -5,6 +5,8 @@ import linguiConfig from '../lingui.config.mjs';
 
 const { locales } = linguiConfig;
 
+const PERMANENT_REDIRECT_STATUS = 301;
+
 const getRequestLocale = (requestHeaders: Headers): string => {
     // eslint-disable-next-line no-undefined
     const langHeader = requestHeaders.get('accept-language') || undefined;
@@ -27,12 +29,12 @@ export function middleware(request: NextRequest) {
     const locale = getRequestLocale(request.headers);
     request.nextUrl.pathname = `/${locale}${pathname}`;
 
-    // e.g. incoming request is /products
-    // The new URL is now /en/products
     // eslint-disable-next-line consistent-return
-    return NextResponse.redirect(request.nextUrl);
+    return NextResponse.redirect(request.nextUrl, PERMANENT_REDIRECT_STATUS);
 }
 
 export const config = {
-    matcher: ['/((?!_next/static|_next/image|favicon.ico|.well-known|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)']
+    matcher: [
+        '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.well-known|[^.]*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+    ]
 };
