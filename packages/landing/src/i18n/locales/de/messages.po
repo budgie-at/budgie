@@ -1622,7 +1622,7 @@ msgstr "72% bezahlt"
 
 #: src/blog/constant/article-registry.constant.ts:63
 msgid "A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more."
-msgstr ""
+msgstr "Ein umfassender Entwickler-Leitfaden zu Mint-Alternativen nach der Einstellung. Detaillierter Vergleich von Budgie, Actual Budget, Firefly III, Lunch Money, YNAB und mehr."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:297
 msgid "A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user separately. User A’s increments are tracked independently from User B’s. The current value is computed by summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the operations are received. No conflict, no coordination required."
@@ -1630,7 +1630,7 @@ msgstr "Ein CRDT-Zähler funktioniert anders. Statt einer einzelnen Zahl speiche
 
 #: src/blog/constant/article-registry.constant.ts:39
 msgid "A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation."
-msgstr ""
+msgstr "Eine detaillierte technische Analyse, wie cloudbasierte Budget-Apps Ihre Finanzdaten durch Plaid-Integrationen, Datenlecks und Drittanbieter-Aggregation sammeln, teilen und offenlegen."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:471
 msgid "A deterministic merge algorithm combines the operations"
@@ -1648,7 +1648,7 @@ msgstr "Ein technischer Tiefgang in Budgies Offline-First-Architektur: Wie SQLit
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:103
 msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr ""
+msgstr "Ein technischer Tiefgang in Budgies Offline-First-Architektur: Wie SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Synchronisierung Ihre Finanzdaten vollständig privat halten."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:318
 msgid "Academic researchers studying software security"
@@ -1743,11 +1743,11 @@ msgstr "Nach der Bewertung all dieser Optionen haben wir Budgie entwickelt, weil
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:43
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:69
 msgid "After Mint's shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie, Actual Budget, Firefly III, and more."
-msgstr ""
+msgstr "Nach der Einstellung von Mint brauchen Entwickler eine Finanz-App, die Dateneigentum und Privatsphäre respektiert. Vergleichen Sie Budgie, Actual Budget, Firefly III und mehr."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:102
 msgid "After Mint’s shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie, Actual Budget, Firefly III, and more."
-msgstr ""
+msgstr "Nach der Einstellung von Mint brauchen Entwickler eine Finanz-App, die Dateneigentum und Privatsphäre respektiert. Vergleichen Sie Budgie, Actual Budget, Firefly III und mehr."
 
 #: src/generic/component/ai-section/ai-section.tsx:52
 msgid "AI That Never Leaks Your Secrets"
@@ -2074,7 +2074,7 @@ msgstr "Starten Sie mit einer Einzelgerät-Anwendung und fügen Sie die Synchron
 
 #: src/blog/constant/article-registry.constant.ts:98
 msgid "Best YNAB Alternatives for Privacy-Conscious Users"
-msgstr ""
+msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:67
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:48
@@ -2086,7 +2086,7 @@ msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer (2025)"
 
 #: src/blog/constant/article-registry.constant.ts:102
 msgid "Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide."
-msgstr ""
+msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer. Detaillierter Vergleich von Offline-First- und Open-Source-Budget-Apps mit YNAB-Migrationsleitfaden."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1095
 msgid "Better household features"
@@ -2227,7 +2227,7 @@ msgstr "Budgie folgt einem transparenten Entscheidungsprozess:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1793
 msgid "Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and feature-rich. Lunch Money is low with a clean, intuitive interface. YNAB is moderate to steep as the methodology requires commitment. Monarch provides a low curve with a very Mint-like experience."
-msgstr ""
+msgstr "Budgie hat eine minimale Lernkurve mit einer vertrauten Oberfläche und schneller Einrichtung. Actual Budget ist moderat, da Umschlag-Budgetierung Eingewöhnung erfordert. Firefly III hat eine steile Kurve, ist aber leistungsstark und funktionsreich. Lunch Money ist niedrig mit einer klaren, intuitiven Oberfläche. YNAB ist moderat bis steil, da die Methodik Engagement erfordert. Monarch bietet eine niedrige Kurve mit einer sehr Mint-ähnlichen Erfahrung."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:971
 msgid "Budgie implements offline-first architecture with no compromises:"
@@ -2581,12 +2581,12 @@ msgstr "Warum Cloud-Budget-Apps ein Alptraum für die Privatsphäre sind"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:45
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:71
 msgid "cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker"
-msgstr ""
+msgstr "Cloud-Budgetierung Datenschutz, Finanzdaten-Risiken, Plaid-Datensammlung, Offline-First-Budgetierung, privater Ausgabentracker"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:59
 msgid "cloud risks"
-msgstr ""
+msgstr "Cloud-Risiken"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1214
 msgid "Cloud-based"
@@ -2738,11 +2738,11 @@ msgstr "Umfassende API-Dokumentation"
 
 #: src/blog/constant/article-registry.constant.ts:99
 msgid "Comprehensive comparison of privacy-focused YNAB alternatives. Detailed reviews of Budgie, Actual Budget, Firefly III, and more with migration guide."
-msgstr ""
+msgstr "Umfassender Vergleich datenschutzorientierter YNAB-Alternativen. Detaillierte Bewertungen von Budgie, Actual Budget, Firefly III und mehr mit Migrationsleitfaden."
 
 #: src/blog/constant/article-registry.constant.ts:66
 msgid "Comprehensive developer's guide to Mint alternatives: detailed comparison of privacy-focused budget apps including Budgie, Actual Budget, Firefly III, and more."
-msgstr ""
+msgstr "Umfassender Entwickler-Leitfaden zu Mint-Alternativen: Detaillierter Vergleich datenschutzorientierter Budget-Apps einschließlich Budgie, Actual Budget, Firefly III und mehr."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:495
 msgid "Comprehensive expense tracking"
@@ -3116,7 +3116,7 @@ msgstr "Entdecken Sie Einblicke in finanzielle Privatsphäre, Sicherheits-Best-P
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:69
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:102
 msgid "Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data."
-msgstr ""
+msgstr "Entdecken Sie die versteckten Datenschutzrisiken cloudbasierter Budget-Apps und erfahren Sie, warum Offline-First-Architektur die sicherere Alternative für Ihre Finanzdaten ist."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:43
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:69
@@ -3126,7 +3126,7 @@ msgstr "Warum Offline-First der einzige Weg für Ihre finanzielle Privatsphäre 
 
 #: src/blog/constant/article-registry.constant.ts:75
 msgid "Discover why offline-first architecture is the only truly private approach for financial apps. Learn about data risks, privacy by design, and how Budgie keeps your finances secure."
-msgstr ""
+msgstr "Erfahren Sie, warum Offline-First-Architektur der einzig wirklich private Ansatz für Finanz-Apps ist. Lernen Sie über Datenrisiken, Privacy by Design und wie Budgie Ihre Finanzen schützt."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:43
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:69
@@ -3357,11 +3357,11 @@ msgstr "Teuer mit 14 $/Monat"
 
 #: src/blog/constant/article-registry.constant.ts:51
 msgid "Explore the local-first movement, CRDTs, sync engines, and why developers are choosing offline-first architecture for privacy-sensitive applications."
-msgstr ""
+msgstr "Entdecken Sie die Local-First-Bewegung, CRDTs, Sync-Engines und warum Entwickler Offline-First-Architektur für datenschutzsensible Anwendungen wählen."
 
 #: src/blog/constant/article-registry.constant.ts:54
 msgid "Explore the local-first movement: CRDTs, sync engines, real-world examples, and why developers are building offline-first apps for better privacy and performance."
-msgstr ""
+msgstr "Entdecken Sie die Local-First-Bewegung: CRDTs, Sync-Engines, praxisnahe Beispiele und warum Entwickler Offline-First-Apps für besseren Datenschutz und mehr Leistung bauen."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:43
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:71
@@ -4126,7 +4126,7 @@ msgstr "Schließen Sie sich Entwicklern weltweit an, die die App verbessern"
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx:21
 msgid "Join the Budgie waitlist and be the first to experience truly private expense tracking."
-msgstr ""
+msgstr "Treten Sie der Budgie-Warteliste bei und erleben Sie als Erste wirklich private Ausgabenverfolgung."
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:14
 msgid "Join the Whitelist"
@@ -4173,15 +4173,15 @@ msgstr "Lernen Sie genau, wie Budgetierung funktioniert"
 
 #: src/blog/constant/article-registry.constant.ts:78
 msgid "Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data."
-msgstr ""
+msgstr "Erfahren Sie, warum Offline-First-Architektur der einzige Weg ist, finanzielle Privatsphäre zu garantieren. Entdecken Sie die verborgenen Gefahren von Cloud-Apps und wie Budgie Ihre Daten schützt."
 
 #: src/blog/constant/article-registry.constant.ts:87
 msgid "Learn why open-source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data."
-msgstr ""
+msgstr "Erfahren Sie, warum Offline-First-Architektur der einzige Weg ist, finanzielle Privatsphäre zu garantieren. Entdecken Sie die verborgenen Gefahren von Cloud-Apps und wie Budgie Ihre Daten schützt."
 
 #: src/blog/constant/article-registry.constant.ts:90
 msgid "Learn why open-source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data."
-msgstr ""
+msgstr "Erfahren Sie, warum Open Source für Finanzsoftware wichtig ist, wie Sie Apps selbst prüfen können und wie Budgies transparente Entwicklung Ihre Finanzdaten schützt."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1430
 msgid "Learning curve for the methodology"
@@ -4296,7 +4296,7 @@ msgstr "Local-First-Software ist konstruktionsbedingt privat. Wenn Daten das Ger
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:45
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:73
 msgid "local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance"
-msgstr ""
+msgstr "Local-First-Software, Offline-First-Architektur, CRDTs erklärt, Sync-Engines, Local-First persönliche Finanzen"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:417
 msgid "Local-first systems choose availability. You can always work, even offline. The system uses CRDTs or similar techniques to ensure that when partitions heal, all changes can be merged without conflicts. The trade-off is eventual consistency: different devices might temporarily see different states, converging over time."
@@ -4362,7 +4362,7 @@ msgstr "Verwaltet USD, EUR & GBP"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1710
 msgid "Manual budgeting is simpler than it sounds. Check accounts daily—it takes 2-3 minutes to enter new transactions. Use receipts and enter transactions as you make purchases. Do weekly reconciliation to match your app against bank statements. Embrace the awareness—manual entry makes you more conscious of spending. Many users find manual entry actually improves their financial awareness compared to automatic sync."
-msgstr ""
+msgstr "Manuelles Budgetieren ist einfacher als es klingt. Prüfen Sie Konten täglich – es dauert 2-3 Minuten, neue Transaktionen einzugeben. Nutzen Sie Quittungen und erfassen Sie Transaktionen beim Einkaufen. Machen Sie wöchentliche Abstimmungen, um Ihre App mit Kontoauszügen abzugleichen. Nutzen Sie das Bewusstsein – manuelle Eingabe macht Sie bewusster beim Ausgeben. Viele Nutzer finden, dass manuelle Eingabe ihr Finanzbewusstsein im Vergleich zur automatischen Synchronisierung tatsächlich verbessert."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:612
 msgid "Manual import takes more effort, but it ensures that your bank data follows the same privacy guarantees as the rest of Budgie: it never leaves your device, and no third party ever has access."
@@ -4445,7 +4445,7 @@ msgstr "Fehlende Funktionen für Entwickler"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:45
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:71
 msgid "Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app"
-msgstr ""
+msgstr "Mint-Alternativen, Mint-Einstellung, Budget-App für Entwickler, Datenschutz-Finanz-App, Offline-Budget-App"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:154
 msgid "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
@@ -4838,7 +4838,7 @@ msgstr "Offline-Fähigkeit wichtig ist"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:45
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:72
 msgid "offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app"
-msgstr ""
+msgstr "Offline-Ausgabentracker, private Finanz-App, lokale Budget-App, Offline-Budget-App, Finanzdaten-Datenschutz, SQLite-Ausgabentracker, verschlüsselte Budget-App"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:62
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
@@ -4867,7 +4867,7 @@ msgstr "Offline-First-Budget-App"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:913
 msgid "Offline-first does not mean you cannot sync with banks. It means the sync architecture protects your privacy. With traditional cloud sync, your data flows from your device to a cloud server, then to an aggregator, and finally to the bank, with databases at each step. With offline-first sync, bank data flows directly to your device through a secure proxy and is stored only in your local database."
-msgstr ""
+msgstr "Offline-First bedeutet nicht, dass Sie nicht mit Banken synchronisieren können. Es bedeutet, dass die Synchronisierungsarchitektur Ihre Privatsphäre schützt. Bei herkömmlicher Cloud-Synchronisierung fließen Ihre Daten von Ihrem Gerät zu einem Cloud-Server, dann zu einem Aggregator und schließlich zur Bank, mit Datenbanken bei jedem Schritt. Bei Offline-First-Synchronisierung fließen Bankdaten über einen sicheren Proxy direkt auf Ihr Gerät und werden nur in Ihrer lokalen Datenbank gespeichert."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:274
 msgid "Offline-first means independence:"
@@ -5955,7 +5955,7 @@ msgstr "Uebernehmen Sie die Kontrolle über Ihre finanzielle Privatsphäre"
 
 #: src/blog/constant/article-registry.constant.ts:42
 msgid "Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security."
-msgstr ""
+msgstr "Technische Analyse der Datenschutzrisiken cloudbasierter Budget-Apps: Plaid-Datenweitergabe, reale Datenpannen, Screen-Scraping-Gefahren und wie Sie die Sicherheit von Finanz-Apps bewerten."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:266
 msgid "Technical Foundations: CRDTs and Sync Engines"
@@ -6366,7 +6366,7 @@ msgstr "Diese vollständige Transparenz bedeutet, dass es keine versteckten Komp
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1738
 msgid "This depends entirely on the app’s architecture. Cloud-based apps (YNAB, Monarch, Lunch Money) typically give you advance notice and an export window, but your historical data depends on their cooperation. Self-hosted apps (Actual, Firefly III) keep your data on your hardware, so company status doesn’t affect access. Local-first apps (Budgie) store data on your device, which remains accessible regardless of app or company status. This is a key advantage of local-first and self-hosted solutions—true data ownership means you’re never at the mercy of a company’s business decisions."
-msgstr ""
+msgstr "Das hängt vollständig von der Architektur der App ab. Cloudbasierte Apps (YNAB, Monarch, Lunch Money) geben Ihnen in der Regel eine Vorankündigung und ein Exportfenster, aber Ihre historischen Daten hängen von deren Kooperation ab. Selbst gehostete Apps (Actual, Firefly III) speichern Ihre Daten auf Ihrer Hardware, sodass der Unternehmensstatus keinen Einfluss auf den Zugriff hat. Local-First-Apps (Budgie) speichern Daten auf Ihrem Gerät, das unabhängig vom App- oder Unternehmensstatus zugänglich bleibt. Dies ist ein entscheidender Vorteil von Local-First- und selbst gehosteten Lösungen – echtes Dateneigentum bedeutet, dass Sie nie den Geschäftsentscheidungen eines Unternehmens ausgeliefert sind."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:154
 msgid "This differs from traditional approaches in important ways:"
@@ -6986,7 +6986,7 @@ msgstr "Wenn Sie die Banksynchronisierung in Budgie aktivieren, passiert Folgend
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:201
 msgid "When you connect a bank account to a cloud budgeting app, your single bank connection creates copies of your data across multiple systems, each with different security postures, retention policies, and access controls. Your data flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the aggregator’s data warehouse, and then into the budgeting app’s backend. From there, it may feed into analytics pipelines, ML/AI training data, and third-party analytics services. The attack surface is not your bank. It is every system in this chain."
-msgstr ""
+msgstr "Wenn Sie ein Bankkonto mit einer cloudbasierten Budget-App verbinden, erstellt Ihre einzelne Bankverbindung Kopien Ihrer Daten über mehrere Systeme hinweg, jedes mit unterschiedlichen Sicherheitsstandards, Aufbewahrungsrichtlinien und Zugriffskontrollen. Ihre Daten fließen von Ihrem Bankkonto über einen Datenaggregator wie Plaid, Yodlee, MX oder Finicity in das Datenwarehouse des Aggregators und dann in das Backend der Budget-App. Von dort können sie in Analysepipelines, ML/KI-Trainingsdaten und Drittanbieter-Analysedienste einfließen. Die Angriffsfläche ist nicht Ihre Bank. Es ist jedes System in dieser Kette."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:623
 msgid "When you connect through Plaid, the consent flow works like this:"
@@ -7253,7 +7253,7 @@ msgstr "Die besten YNAB-Alternativen für datenschutzbewusste Nutzer (2025)"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:45
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:72
 msgid "ynab alternatives, ynab alternative privacy, private budget app, ynab replacement, budget app without bank sync, offline budget app"
-msgstr ""
+msgstr "YNAB-Alternativen, YNAB-Alternative Datenschutz, private Budget-App, YNAB-Ersatz, Budget-App ohne Banksynchronisierung, Offline-Budget-App"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1674
 msgid "YNAB employs industry-standard security practices and has a good track record. However, “safe“ and “private” are different concepts. YNAB is relatively safe from hackers, but your data is still stored on their servers, accessible to their employees (with proper authorization), and subject to their privacy policy. For users who want true financial privacy, this centralized storage model is the core concern—not necessarily YNAB’s security practices."
