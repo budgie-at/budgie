@@ -91,7 +91,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        After Mint's shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie,
+                        After Mint’s shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie,
                         Actual Budget, Firefly III, and more.
                     </Trans>
                 </p>
@@ -116,29 +116,29 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             After 17 years of helping millions track their spending, Mint officially shut down on March 23, 2024. If
-                            you're a developer who relied on Mint, you're probably feeling frustrated, betrayed, and maybe a bit anxious
+                            you’re a developer who relied on Mint, you’re probably feeling frustrated, betrayed, and maybe a bit anxious
                             about where your financial data will live next.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            You're not alone. The shutdown affected over 3.6 million active users, and the transition path Intuit offered
-                            (Credit Karma) left most of us deeply unsatisfied. For developers especially, Credit Karma's approach to data
+                            You’re not alone. The shutdown affected over 3.6 million active users, and the transition path Intuit offered
+                            (Credit Karma) left most of us deeply unsatisfied. For developers especially, Credit Karma’s approach to data
                             privacy and lack of technical features makes it a non-starter.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            This guide is written by developers, for developers. We've tested every major Mint alternative and evaluated
+                            This guide is written by developers, for developers. We’ve tested every major Mint alternative and evaluated
                             them based on what actually matters to technical users: data ownership, API access, export capabilities,
                             privacy practices, and the ability to self-host or run offline.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>Let's find your new financial home.</Trans>
+                        <Trans>Let’s find your new financial home.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
@@ -160,13 +160,13 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>The Timeline of Mint's Decline</Trans>
+                        <Trans>The Timeline of Mint’s Decline</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>2020-2022</strong>: Feature stagnation. While competitors innovated, Mint's interface remained
+                                <strong>2020-2022</strong>: Feature stagnation. While competitors innovated, Mint’s interface remained
                                 largely unchanged.
                             </Trans>
                         </BlogArticleListItem>
@@ -197,7 +197,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            The shutdown wasn't just about a product failing. It was a wake-up call about the risks of trusting your
+                            The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your
                             financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight.
                         </Trans>
                     </BlogArticleProse>
@@ -205,12 +205,12 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Why Credit Karma Isn't the Answer</Trans>
+                        <Trans>Why Credit Karma Isn’t the Answer</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Intuit's official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent
+                            Intuit’s official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent
                             company, established platform, free to use. But for developers and privacy-conscious users, Credit Karma has
                             fundamental problems.
                         </Trans>
@@ -222,16 +222,16 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Credit Karma's business model is built entirely on monetizing your financial data. They offer free credit
+                            Credit Karma’s business model is built entirely on monetizing your financial data. They offer free credit
                             monitoring in exchange for showing you targeted financial product recommendations. Every credit card, loan,
-                            and insurance offer you see is there because Credit Karma's algorithms determined you're a good target based
+                            and insurance offer you see is there because Credit Karma’s algorithms determined you’re a good target based
                             on your financial profile.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            This isn't hidden. Credit Karma is upfront that they make money when you accept offers. But the implications
+                            This isn’t hidden. Credit Karma is upfront that they make money when you accept offers. But the implications
                             are significant:
                         </Trans>
                     </BlogArticleProse>
@@ -277,7 +277,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No custom categories</strong>: You're stuck with their predetermined categorization
+                                <strong>No custom categories</strong>: You’re stuck with their predetermined categorization
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -294,7 +294,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Perhaps most importantly, Credit Karma is owned by the same company that just shut down Mint. If Intuit
-                            decided Mint wasn't worth maintaining after 17 years, what guarantees do you have about Credit Karma's
+                            decided Mint wasn’t worth maintaining after 17 years, what guarantees do you have about Credit Karma’s
                             longevity?
                         </Trans>
                     </BlogArticleProse>
@@ -313,9 +313,9 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Before diving into alternatives, let's establish what technical users typically prioritize. Based on
-                            discussions in developer communities like Hacker News, Reddit's r/selfhosted, and various Discord servers,
-                            here's what matters most:
+                            Before diving into alternatives, let’s establish what technical users typically prioritize. Based on
+                            discussions in developer communities like Hacker News, Reddit’s r/selfhosted, and various Discord servers,
+                            here’s what matters most:
                         </Trans>
                     </BlogArticleProse>
 
@@ -375,7 +375,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Minimal data collection (only what's necessary)</Trans>
+                            <Trans>Minimal data collection (only what’s necessary)</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Local-first or self-hosted architecture when possible</Trans>
@@ -438,18 +438,18 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>With these criteria in mind, let's evaluate the alternatives.</Trans>
+                        <Trans>With these criteria in mind, let’s evaluate the alternatives.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>The Developer's Guide to Mint Alternatives: Complete Comparison</Trans>
+                        <Trans>The Developer’s Guide to Mint Alternatives: Complete Comparison</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            We've tested each of these apps extensively. Here's how they stack up for technical users:
+                            We’ve tested each of these apps extensively. Here’s how they stack up for technical users:
                         </Trans>
                     </BlogArticleProse>
 
@@ -853,7 +853,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>Let's dive deeper into each option.</Trans>
+                        <Trans>Let’s dive deeper into each option.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
@@ -881,16 +881,14 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>What Sets Budgie Apart:</strong>
-                        </Trans>
+                        <strong><Trans>What Sets Budgie Apart:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>True offline-first architecture</strong>: Your financial data never leaves your phone unless you
-                                explicitly export it. This isn't just about privacy, it's about reliability. No internet? No problem.
+                                explicitly export it. This isn’t just about privacy, it’s about reliability. No internet? No problem.
                                 Budgie works everywhere.
                             </Trans>
                         </BlogArticleListItem>
@@ -903,7 +901,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Zero-knowledge bank sync</strong>: If you want automatic transaction imports, Budgie's bank sync
+                                <strong>Zero-knowledge bank sync</strong>: If you want automatic transaction imports, Budgie’s bank sync
                                 uses end-to-end encryption. Your credentials are encrypted on your device, and sync happens directly
                                 between your phone and your bank. Budgie never sees your banking credentials or transaction data.
                             </Trans>
@@ -924,9 +922,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -945,9 +941,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -973,7 +967,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleSubheading>
-                        <Trans>Actual Budget: The Self-Hoster's Dream</Trans>
+                        <Trans>Actual Budget: The Self-Hoster’s Dream</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
@@ -984,15 +978,13 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Actual Budget started as a commercial app, then became open source in 2022. It's now maintained by an active
+                            Actual Budget started as a commercial app, then became open source in 2022. It’s now maintained by an active
                             community and has become the go-to choice for self-hosting enthusiasts.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1028,9 +1020,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1049,9 +1039,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1065,7 +1053,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                             <Trans>Bank sync reliability varies by institution</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Self-hosting means you're responsible for backups and security</Trans>
+                            <Trans>Self-hosting means you’re responsible for backups and security</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -1090,14 +1078,12 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Firefly III is the Linux of personal finance apps: incredibly powerful, deeply customizable, and requires
-                            some investment to set up properly. For developers who want complete control, it's hard to beat.
+                            some investment to set up properly. For developers who want complete control, it’s hard to beat.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1127,9 +1113,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1151,9 +1135,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1194,15 +1176,13 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Lunch Money was built by a solo developer and maintains a developer-friendly ethos. It's the best
+                            Lunch Money was built by a solo developer and maintains a developer-friendly ethos. It’s the best
                             cloud-based option for those who want programmatic access to their data.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1236,9 +1216,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1257,9 +1235,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1291,21 +1267,19 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Best for:</strong> iOS/Mac users who prioritize design and are comfortable in Apple's walled garden.
+                            <strong>Best for:</strong> iOS/Mac users who prioritize design and are comfortable in Apple’s walled garden.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Copilot is a beautifully designed app exclusive to Apple platforms. If you're deeply embedded in the Apple
-                            ecosystem and aesthetics matter to you, it's worth considering.
+                            Copilot is a beautifully designed app exclusive to Apple platforms. If you’re deeply embedded in the Apple
+                            ecosystem and aesthetics matter to you, it’s worth considering.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1332,9 +1306,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1350,9 +1322,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1387,21 +1357,19 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Best for:</strong> Developers who want to adopt zero-based budgeting and don't mind cloud storage.
+                            <strong>Best for:</strong> Developers who want to adopt zero-based budgeting and don’t mind cloud storage.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            YNAB has been around since 2004 and has a devoted following. It's less about tracking spending and more
+                            YNAB has been around since 2004 and has a devoted following. It’s less about tracking spending and more
                             about intentional money allocation. The methodology works, but the implementation has trade-offs.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1429,9 +1397,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1447,9 +1413,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1490,15 +1454,13 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Monarch Money was founded by former Mint employees who wanted to build what Mint should have become. It's
-                            the most direct replacement for traditional Mint users who don't have technical requirements.
+                            Monarch Money was founded by former Mint employees who wanted to build what Mint should have become. It’s
+                            the most direct replacement for traditional Mint users who don’t have technical requirements.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Strengths:</strong>
-                        </Trans>
+                        <strong><Trans>Strengths:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1525,9 +1487,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Developer-Friendly Features:</strong>
-                        </Trans>
+                        <strong><Trans>Developer-Friendly Features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1540,9 +1500,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Trade-offs to Consider:</strong>
-                        </Trans>
+                        <strong><Trans>Trade-offs to Consider:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1623,7 +1581,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No data monetization</strong>: We don't want your data. We can't even access it.
+                                <strong>No data monetization</strong>: We don’t want your data. We can’t even access it.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1645,7 +1603,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Single-device focus means no automatic cloud sync between devices. We think this is the right trade-off for
-                            privacy, but we understand it's not for everyone. If you need multi-device sync, Actual Budget with
+                            privacy, but we understand it’s not for everyone. If you need multi-device sync, Actual Budget with
                             self-hosting might be better for you.
                         </Trans>
                     </BlogArticleProse>
@@ -1653,24 +1611,24 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>How to Export Your Mint Data (Before It's Too Late)</Trans>
+                        <Trans>How to Export Your Mint Data (Before It’s Too Late)</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>If you haven't exported your Mint data yet, here's what you need to know:</Trans>
+                        <Trans>If you haven’t exported your Mint data yet, here’s what you need to know:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>The Bad News:</strong> As of March 23, 2024, Mint is fully shut down. If you didn't export before
+                            <strong>The Bad News:</strong> As of March 23, 2024, Mint is fully shut down. If you didn’t export before
                             then, your historical data may be gone.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>If You Migrated to Credit Karma:</strong> Your transaction history should have transferred, but it's
-                            in Credit Karma's format now. You can export from Credit Karma, but the data structure differs from Mint.
+                            <strong>If You Migrated to Credit Karma:</strong> Your transaction history should have transferred, but it’s
+                            in Credit Karma’s format now. You can export from Credit Karma, but the data structure differs from Mint.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1679,7 +1637,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Mint's export format was a CSV file with these columns:</Trans>
+                        <Trans>Mint’s export format was a CSV file with these columns:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1728,7 +1686,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                             <Trans>Select your Mint CSV export file</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Map the columns to Budgie's fields</Trans>
+                            <Trans>Map the columns to Budgie’s fields</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Review the import preview</Trans>
@@ -1790,14 +1748,14 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>Is Credit Karma safe to use?</Trans>}>
                             <Trans>
                                 Credit Karma is a legitimate company owned by Intuit. However, their business model relies on
-                                monetizing your financial data through targeted product recommendations. If privacy is a priority, it's
-                                not the best choice. If you just want free credit monitoring and don't mind targeted ads, it works fine.
+                                monetizing your financial data through targeted product recommendations. If privacy is a priority, it’s
+                                not the best choice. If you just want free credit monitoring and don’t mind targeted ads, it works fine.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I self-host Budgie?</Trans>}>
                             <Trans>
-                                Budgie is designed as a mobile-first, offline application. There's no server component to self-host
+                                Budgie is designed as a mobile-first, offline application. There’s no server component to self-host
                                 because your data never leaves your device. This is intentional: it eliminates the complexity and
                                 security responsibility of running your own server while providing even stronger privacy guarantees.
                             </Trans>
@@ -1828,7 +1786,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>What's the learning curve for these apps?</Trans>}>
+                        <BlogFaqItem question={<Trans>What’s the learning curve for these apps?</Trans>}>
                             <Trans>
                                 Budgie has a minimal learning curve with a familiar interface and quick setup. Actual Budget is
                                 moderate as envelope budgeting takes adjustment. Firefly III has a steep curve but is powerful and
@@ -1839,8 +1797,8 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>Will Budgie ever charge for features?</Trans>}>
                             <Trans>
-                                Budgie is and will remain free. The app is open source, and we're committed to a sustainable model
-                                that doesn't rely on monetizing user data or gating features behind paywalls. We may offer optional
+                                Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model
+                                that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional
                                 services in the future (like hosted backup), but the core app will always be free and fully functional.
                             </Trans>
                         </BlogFaqItem>
@@ -1854,7 +1812,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Choosing a Mint replacement isn't just about features. It's about values. Ask yourself:
+                            Choosing a Mint replacement isn’t just about features. It’s about values. Ask yourself:
                         </Trans>
                     </BlogArticleProse>
 
@@ -1908,7 +1866,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleSubheading>
-                        <Trans>What's your budget?</Trans>
+                        <Trans>What’s your budget?</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleList>
@@ -1959,7 +1917,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Mint's shutdown was a reminder that free services have hidden costs. Your financial data is valuable, and
+                            Mint’s shutdown was a reminder that free services have hidden costs. Your financial data is valuable, and
                             companies will find ways to monetize it unless the app is designed from the ground up to make that
                             impossible.
                         </Trans>
@@ -1975,7 +1933,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Budgie exists because we wanted a financial app that treats users as customers, not products. One that works
-                            offline, respects privacy, and gives you complete control over your data. If that resonates with you, we'd
+                            offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d
                             love to have you try it.
                         </Trans>
                     </BlogArticleProse>

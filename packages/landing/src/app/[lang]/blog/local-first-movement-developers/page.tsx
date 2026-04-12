@@ -171,7 +171,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <Trans>
                             <strong>Local-first applications</strong> flip this model. Your device holds the primary copy of your data. You
                             can work indefinitely without network access with no functionality loss. Synchronization is a peer-to-peer
-                            operation between devices, not a client-server upload. Examples include Git, Obsidian, and Linear's sync
+                            operation between devices, not a client-server upload. Examples include Git, Obsidian, and Linear’s sync
                             architecture.
                         </Trans>
                     </BlogArticleProse>
@@ -191,7 +191,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             In 2019, a research lab called Ink & Switch published a paper that crystallized the local-first vision. Their
-                            essay "Local-First Software: You Own Your Data, in Spite of the Cloud" articulated seven ideals for local-first
+                            essay “Local-First Software: You Own Your Data, in Spite of the Cloud” articulated seven ideals for local-first
                             software:
                         </Trans>
                     </BlogArticleProse>
@@ -230,7 +230,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>Security and privacy by default.</strong> Since data stays local, there is no central server
-                                holding everyone's information. Privacy becomes a natural property of the architecture.
+                                holding everyone’s information. Privacy becomes a natural property of the architecture.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -293,7 +293,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user
-                            separately. User A's increments are tracked independently from User B's. The current value is computed by
+                            separately. User A’s increments are tracked independently from User B’s. The current value is computed by
                             summing all increments. If A increments once and B increments once, the total is 7, regardless of the order
                             the operations are received. No conflict, no coordination required.
                         </Trans>
@@ -453,7 +453,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Linear uses a custom sync engine to propagate changes. When you create an issue, it exists locally immediately
-                            and syncs to the server and other team members' devices in the background. If you are offline, you keep
+                            and syncs to the server and other team members’ devices in the background. If you are offline, you keep
                             working. Changes merge automatically when you reconnect.
                         </Trans>
                     </BlogArticleProse>
@@ -464,8 +464,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Figma's real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same
-                            file simultaneously because Figma's data model is designed for concurrent modification. Changes merge
+                            Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same
+                            file simultaneously because Figma’s data model is designed for concurrent modification. Changes merge
                             automatically without conflicts.
                         </Trans>
                     </BlogArticleProse>
@@ -504,7 +504,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Excalidraw is an open-source virtual whiteboard that works entirely offline. It stores drawings in your
-                            browser's local storage and can export to files. Live collaboration is available but optional. The core drawing
+                            browser’s local storage and can export to files. Live collaboration is available but optional. The core drawing
                             experience requires no server at all.
                         </Trans>
                     </BlogArticleProse>
@@ -515,8 +515,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Apple's built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored
-                            on device and syncs through Apple's infrastructure. Critically, the apps work fully offline, with changes
+                            Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored
+                            on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes
                             propagating when connectivity returns.
                         </Trans>
                     </BlogArticleProse>
@@ -546,7 +546,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Users notice the difference immediately. Applications feel "snappy" or "responsive" in ways that are hard to
+                            Users notice the difference immediately. Applications feel “snappy“ or “responsive” in ways that are hard to
                             articulate but immediately apparent. This is not optimization; it is a fundamental architectural advantage.
                         </Trans>
                     </BlogArticleProse>
@@ -564,7 +564,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            With local-first, there is no "offline mode" that limits functionality. There is no anxiety about whether
+                            With local-first, there is no “offline mode” that limits functionality. There is no anxiety about whether
                             changes will be saved. The application works the same whether you are on a plane, in a basement, or connected
                             to fast WiFi.
                         </Trans>
@@ -602,7 +602,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            This is not privacy through policy but privacy through architecture. Users do not need to trust the company's
+                            This is not privacy through policy but privacy through architecture. Users do not need to trust the company’s
                             privacy practices because the architecture makes privacy violations technically impossible.
                         </Trans>
                     </BlogArticleProse>
@@ -673,7 +673,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Cloud-hosted finance applications represent attractive targets for attackers. Centralized databases holding
-                            millions of users' financial histories are high-value targets. Breaches are not hypothetical; they happen
+                            millions of users’ financial histories are high-value targets. Breaches are not hypothetical; they happen
                             regularly.
                         </Trans>
                     </BlogArticleProse>
@@ -829,7 +829,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <Trans>
                             For users who want automatic transaction import, Budgie offers bank synchronization with a zero-knowledge
                             architecture. Your bank credentials are encrypted locally on your device. Sync operations happen directly
-                            between your device and your bank. Budgie's infrastructure never sees your credentials or transaction data.
+                            between your device and your bank. Budgie’s infrastructure never sees your credentials or transaction data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -846,7 +846,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie's codebase is open source, allowing security researchers and curious users to verify our claims. You can
+                            Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can
                             inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the
                             application yourself.
                         </Trans>
@@ -1062,7 +1062,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <BlogFaqItem question={<Trans>How do backups work without a cloud server?</Trans>}>
                             <Trans>
                                 Users control their own backup strategy. This might include local device backups (iCloud, Google backup),
-                                manual exports, or sync to a service of the user's choice. Some local-first apps offer optional cloud
+                                manual exports, or sync to a service of the user’s choice. Some local-first apps offer optional cloud
                                 backup services for convenience, but these are additive rather than required. Your data remains accessible
                                 through local backups even if any cloud service disappears.
                             </Trans>

@@ -132,7 +132,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>The Hidden Cost of "Free" Budgeting Apps</Trans>
+                        <Trans>The Hidden Cost of “Free” Budgeting Apps</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
@@ -199,7 +199,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             When you connect a bank account to a cloud budgeting app, your single bank connection creates copies of your data
                             across multiple systems, each with different security postures, retention policies, and access controls. Your data
                             flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the
-                            aggregator's data warehouse, and then into the budgeting app's backend. From there, it may feed into analytics
+                            aggregator’s data warehouse, and then into the budgeting app’s backend. From there, it may feed into analytics
                             pipelines, ML/AI training data, and third-party analytics services. The attack surface is not your bank. It is
                             every system in this chain.
                         </Trans>
@@ -259,7 +259,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Plaid's privacy policy explicitly states they retain this data and may use it for product improvement, analytics,
+                            Plaid’s privacy policy explicitly states they retain this data and may use it for product improvement, analytics,
                             and to develop new services. When you connect your bank through Plaid, you are not just sharing data with the
                             budgeting app. You are sharing it with Plaid, which operates as a separate data controller.
                         </Trans>
@@ -329,7 +329,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Open Banking regulations in the EU and UK, along with voluntary API programs from US banks, enable more controlled
-                            data sharing. Apps request specific scopes of access, and you authorize through your bank's interface.
+                            data sharing. Apps request specific scopes of access, and you authorize through your bank’s interface.
                         </Trans>
                     </BlogArticleProse>
 
@@ -461,7 +461,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            When you connect through Plaid, you enter into a relationship with Plaid, not just the app. Plaid's business
+                            When you connect through Plaid, you enter into a relationship with Plaid, not just the app. Plaid’s business
                             interests may not align with your privacy preferences.
                         </Trans>
                     </BlogArticleProse>
@@ -519,14 +519,14 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Integration</strong>: Data may be merged with the acquirer's existing user data
+                                <strong>Integration</strong>: Data may be merged with the acquirer’s existing user data
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            You agreed to one company's privacy policy. After acquisition, a different company with different policies
+                            You agreed to one company’s privacy policy. After acquisition, a different company with different policies
                             controls your data. The legal basis for this is usually buried in the original terms of service.
                         </Trans>
                     </BlogArticleProse>
@@ -585,7 +585,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             <Trans>Delete your account in the budgeting app</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Revoke access through your bank's connected apps settings</Trans>
+                            <Trans>Revoke access through your bank’s connected apps settings</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Contact the aggregator directly to request data deletion</Trans>
@@ -608,7 +608,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Plaid deserves focused analysis because of its market dominance. Over 12,000 apps use Plaid, connecting to
-                            12,000+ financial institutions. If you use fintech products, you almost certainly have data in Plaid's systems.
+                            12,000+ financial institutions. If you use fintech products, you almost certainly have data in Plaid’s systems.
                         </Trans>
                     </BlogArticleProse>
 
@@ -643,9 +643,9 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            The consent you provide to the app does not limit what Plaid collects. Plaid's systems pull comprehensive data,
+                            The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data,
                             and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in
-                            Plaid's infrastructure.
+                            Plaid’s infrastructure.
                         </Trans>
                     </BlogArticleProse>
 
@@ -654,7 +654,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Plaid's privacy policy allows data retention even after you disconnect:</Trans>
+                        <Trans>Plaid’s privacy policy allows data retention even after you disconnect:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -679,7 +679,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Plaid's Business Model Evolution</Trans>
+                        <Trans>Plaid’s Business Model Evolution</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
@@ -716,7 +716,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>How to Evaluate a Budgeting App's Privacy</Trans>
+                        <Trans>How to Evaluate a Budgeting App’s Privacy</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
@@ -961,7 +961,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Budgie's Approach</Trans>
+                        <Trans>Budgie’s Approach</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
@@ -1022,7 +1022,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Audit connected accounts</strong>: Check each bank's connected apps settings and revoke unnecessary
+                                <strong>Audit connected accounts</strong>: Check each bank’s connected apps settings and revoke unnecessary
                                 connections
                             </Trans>
                         </BlogArticleListItem>
@@ -1170,7 +1170,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             }
                         >
                             <Trans>
-                                Budgie's bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely.
+                                Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely.
                                 Credentials are stored locally on your device with hardware-backed encryption, not on any server. Transaction
                                 data flows directly from your bank to your device without intermediate storage. In regions where direct API
                                 access is not available, manual import from bank exports provides a fully private alternative.

@@ -91,7 +91,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and
+                        A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and
                         device-to-device sync keep your financial data completely private.
                     </Trans>
                 </p>
@@ -218,7 +218,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                The transaction is written to a SQLite database stored in your device's secure app storage
+                                The transaction is written to a SQLite database stored in your device’s secure app storage
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -239,7 +239,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the
-                            app's sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot
+                            app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot
                             read.
                         </Trans>
                     </BlogArticleProse>
@@ -346,7 +346,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             This architecture means that even if someone steals your device, they cannot read your financial data without also
-                            compromising your device's security (unlocking it with your biometrics or passcode).
+                            compromising your device’s security (unlocking it with your biometrics or passcode).
                         </Trans>
                     </BlogArticleProse>
 
@@ -492,7 +492,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie's device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want
+                            Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want
                             data to transfer. Both devices need to be accessible, either on the same local network or both connected to the
                             internet for the relay-assisted handshake.
                         </Trans>
@@ -679,7 +679,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            There are no private repositories containing the "real" code that handles your data differently. What you see is
+                            There are no private repositories containing the “real” code that handles your data differently. What you see is
                             what runs on your device.
                         </Trans>
                     </BlogArticleProse>
@@ -868,7 +868,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>
                                 We cannot provide your data to law enforcement or anyone else because we do not have it. There is no server to
                                 subpoena, no database to query, and no backup to hand over. Your data is on your device, protected by your
-                                device security and Budgie's encryption.
+                                device security and Budgie’s encryption.
                             </Trans>
                         </BlogFaqItem>
 

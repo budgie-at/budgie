@@ -1,4 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
+import { isDefined } from '@rnw-community/shared';
+
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { BASE_URL } from '../../../generic/constant/seo.constant';
 
@@ -23,7 +25,7 @@ export const BlogPostingJsonLd = ({ title, description, date, author, image, loc
         author: { '@type': 'Person', name: author },
         publisher: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
         url: `${BASE_URL}/${locale}/blog/${slug}`,
-        ...(image !== undefined && { image: `${BASE_URL}${image}` }),
+        ...(isDefined(image) && { image: `${BASE_URL}${image}` }),
         keywords
     };
 

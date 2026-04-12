@@ -124,7 +124,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            If you've landed on this article, you're probably wondering:{' '}
+                            If you’ve landed on this article, you’re probably wondering:{' '}
                             <strong>
                                 What are the best YNAB alternatives that actually respect your financial privacy?
                             </strong>
@@ -133,9 +133,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            In this comprehensive guide, we'll explore why people are leaving YNAB, what to look for in a privacy-focused
-                            alternative, and provide honest reviews of the top options available in 2025. Whether you're concerned about
-                            cloud data storage, subscription fatigue, or simply want more control over your financial information, we've
+                            In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused
+                            alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about
+                            cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve
                             got you covered.
                         </Trans>
                     </BlogArticleProse>
@@ -148,7 +148,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Before diving into alternatives, let's understand the key reasons driving users away from YNAB.
+                            Before diving into alternatives, let’s understand the key reasons driving users away from YNAB.
                         </Trans>
                     </BlogArticleProse>
 
@@ -158,7 +158,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            YNAB's pricing has seen significant increases over the years. What started as a one-time purchase has evolved
+                            YNAB’s pricing has seen significant increases over the years. What started as a one-time purchase has evolved
                             into a subscription model that now costs $14.99/month or $99/year. For some users, especially those on tight
                             budgets (ironically, the very people who need budgeting tools most), this recurring cost is difficult to
                             justify when free or one-time purchase alternatives exist.
@@ -182,7 +182,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Bank sync requires sharing credentials.</strong> To use YNAB's automatic import feature, you
+                                <strong>Bank sync requires sharing credentials.</strong> To use YNAB’s automatic import feature, you
                                 connect through Plaid or similar aggregators, sharing read access to your bank accounts with third
                                 parties.
                             </Trans>
@@ -209,14 +209,14 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             YNAB requires an internet connection for most functionality. While the mobile app has some offline
-                            capabilities, it's fundamentally designed around cloud synchronization. This creates several issues:
+                            capabilities, it’s fundamentally designed around cloud synchronization. This creates several issues:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Service outages mean no access.</strong> If YNAB's servers go down, so does your ability to
+                                <strong>Service outages mean no access.</strong> If YNAB’s servers go down, so does your ability to
                                 manage your budget.
                             </Trans>
                         </BlogArticleListItem>
@@ -253,7 +253,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Not all "private" budget apps are created equal. Here's a checklist for evaluating alternatives:
+                            Not all “private” budget apps are created equal. Here’s a checklist for evaluating alternatives:
                         </Trans>
                     </BlogArticleProse>
 
@@ -323,7 +323,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Closed source:</strong> Trust the company's claims
+                                <strong>Closed source:</strong> Trust the company’s claims
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -648,9 +648,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Excellent</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Excellent</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -662,9 +660,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>What makes Budgie different:</strong>
-                        </Trans>
+                        <strong><Trans>What makes Budgie different:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -694,15 +690,13 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Modern, intuitive design.</strong> Privacy doesn't mean sacrificing user experience.
+                                <strong>Modern, intuitive design.</strong> Privacy doesn’t mean sacrificing user experience.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -724,9 +718,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -755,9 +747,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Excellent (when self-hosted)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Excellent (when self-hosted)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -768,9 +758,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Key features:</strong>
-                        </Trans>
+                        <strong><Trans>Key features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -782,7 +770,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>YNAB-like methodology.</strong> Envelope budgeting similar to YNAB's approach.
+                                <strong>YNAB-like methodology.</strong> Envelope budgeting similar to YNAB’s approach.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -799,9 +787,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -823,9 +809,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -845,7 +829,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Best for:</strong> Technical users comfortable with self-hosting who want maximum control and don't
+                            <strong>Best for:</strong> Technical users comfortable with self-hosting who want maximum control and don’t
                             mind a steeper learning curve.
                         </Trans>
                     </BlogArticleProse>
@@ -857,9 +841,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Excellent (self-hosted)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Excellent (self-hosted)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -870,9 +852,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Key features:</strong>
-                        </Trans>
+                        <strong><Trans>Key features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -904,9 +884,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -928,9 +906,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -962,22 +938,18 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Good (Apple ecosystem)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Good (Apple ecosystem)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
                             Copilot is a beautifully designed finance app exclusive to Apple devices. While it does use cloud storage
-                            (iCloud), it keeps your data within Apple's ecosystem rather than third-party servers.
+                            (iCloud), it keeps your data within Apple’s ecosystem rather than third-party servers.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Key features:</strong>
-                        </Trans>
+                        <strong><Trans>Key features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1009,9 +981,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1033,9 +1003,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1070,22 +1038,18 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Average (cloud-based)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Average (cloud-based)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Monarch Money positions itself as a modern YNAB alternative with enhanced features. It's cloud-based and
+                            Monarch Money positions itself as a modern YNAB alternative with enhanced features. It’s cloud-based and
                             focuses on households and collaborative budgeting.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Key features:</strong>
-                        </Trans>
+                        <strong><Trans>Key features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1111,15 +1075,13 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Clean interface.</strong> Modern design that improves on YNAB's UX.
+                                <strong>Clean interface.</strong> Modern design that improves on YNAB’s UX.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1141,9 +1103,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1166,7 +1126,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Best for:</strong> Users who want something similar to YNAB with better household features and don't
+                            <strong>Best for:</strong> Users who want something similar to YNAB with better household features and don’t
                             mind cloud storage.
                         </Trans>
                     </BlogArticleProse>
@@ -1178,9 +1138,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Average (cloud-based)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Average (cloud-based)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -1191,9 +1149,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Key features:</strong>
-                        </Trans>
+                        <strong><Trans>Key features:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1225,9 +1181,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1249,9 +1203,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1286,22 +1238,18 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy Rating: Excellent (with caveats)</strong>
-                        </Trans>
+                        <strong><Trans>Privacy Rating: Excellent (with caveats)</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Sometimes the simplest solution is the most private. Spreadsheets offer complete control—if you're willing to
+                            Sometimes the simplest solution is the most private. Spreadsheets offer complete control—if you’re willing to
                             put in the work.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Options include:</strong>
-                        </Trans>
+                        <strong><Trans>Options include:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1328,9 +1276,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Pros:</strong>
-                        </Trans>
+                        <strong><Trans>Pros:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1352,9 +1298,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Cons:</strong>
-                        </Trans>
+                        <strong><Trans>Cons:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1377,7 +1321,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Best for:</strong> Users who want absolute control, enjoy working with data, and don't mind manual
+                            <strong>Best for:</strong> Users who want absolute control, enjoy working with data, and don’t mind manual
                             entry.
                         </Trans>
                     </BlogArticleProse>
@@ -1390,7 +1334,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            At Budgie, we believe financial privacy shouldn't be a premium feature—it should be the foundation. Here's how
+                            At Budgie, we believe financial privacy shouldn’t be a premium feature—it should be the foundation. Here’s how
                             our architecture differs from cloud-based alternatives.
                         </Trans>
                     </BlogArticleProse>
@@ -1402,7 +1346,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             Most budgeting apps treat your phone as a thin client—a window into data stored on remote servers. Budgie
-                            flips this model. Your phone isn't just displaying your budget; it's storing it. There's no Budgie server with
+                            flips this model. Your phone isn’t just displaying your budget; it’s storing it. There’s no Budgie server with
                             a copy of your financial life because we never receive it in the first place.
                         </Trans>
                     </BlogArticleProse>
@@ -1412,7 +1356,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>When you choose to enable bank synchronization in Budgie, here's what happens:</Trans>
+                        <Trans>When you choose to enable bank synchronization in Budgie, here’s what happens:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1426,7 +1370,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Transaction data flows from your bank to your device—never through our servers</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>We literally cannot see your transactions because we're not in the data path</Trans>
+                            <Trans>We literally cannot see your transactions because we’re not in the data path</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -1453,7 +1397,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>That's a lot of copies of your financial data floating around.</Trans>
+                        <Trans>That’s a lot of copies of your financial data floating around.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -1472,7 +1416,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Security researchers can audit our privacy claims</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Privacy advocates can verify we're not collecting telemetry</Trans>
+                            <Trans>Privacy advocates can verify we’re not collecting telemetry</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Developers can see exactly how bank sync works</Trans>
@@ -1483,7 +1427,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>We're not asking you to trust us. We're giving you the tools to verify.</Trans>
+                        <Trans>We’re not asking you to trust us. We’re giving you the tools to verify.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -1492,7 +1436,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Because your data lives on your device in standard formats, you're never locked in:
+                            Because your data lives on your device in standard formats, you’re never locked in:
                         </Trans>
                     </BlogArticleProse>
 
@@ -1501,7 +1445,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Export anytime in CSV or JSON</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Your data doesn't disappear if we go out of business</Trans>
+                            <Trans>Your data doesn’t disappear if we go out of business</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>No subscription required to access your own information</Trans>
@@ -1519,7 +1463,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            If you've decided to make the switch, here's how to move your financial data from YNAB to a privacy-focused
+                            If you’ve decided to make the switch, here’s how to move your financial data from YNAB to a privacy-focused
                             alternative.
                         </Trans>
                     </BlogArticleProse>
@@ -1539,7 +1483,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Go to Settings</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Scroll down to "Export Budget"</Trans>
+                            <Trans>Scroll down to “Export Budget”</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Download the ZIP file containing your data</Trans>
@@ -1566,11 +1510,11 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleSubheading>
-                        <Trans>Step 2: Understand What You're Moving</Trans>
+                        <Trans>Step 2: Understand What You’re Moving</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>YNAB's export includes several CSV files:</Trans>
+                        <Trans>YNAB’s export includes several CSV files:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1603,9 +1547,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For Budgie:</strong>
-                        </Trans>
+                        <strong><Trans>For Budgie:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1624,9 +1566,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For Actual Budget:</strong>
-                        </Trans>
+                        <strong><Trans>For Actual Budget:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1642,9 +1582,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For Firefly III:</strong>
-                        </Trans>
+                        <strong><Trans>For Firefly III:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -1675,7 +1613,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>You want to rethink your category structure</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Historical data isn't critical for your goals</Trans>
+                            <Trans>Historical data isn’t critical for your goals</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>You prefer a clean slate</Trans>
@@ -1717,7 +1655,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            This approach eliminates the fear of "what if I made the wrong choice" and lets you experience the differences
+                            This approach eliminates the fear of “what if I made the wrong choice” and lets you experience the differences
                             firsthand.
                         </Trans>
                     </BlogArticleProse>
@@ -1731,27 +1669,27 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogFaqSection>
                         <BlogFaqItem question={<Trans>Is YNAB safe to use?</Trans>}>
                             <Trans>
-                                YNAB employs industry-standard security practices and has a good track record. However, "safe" and
-                                "private" are different concepts. YNAB is relatively safe from hackers, but your data is still stored on
+                                YNAB employs industry-standard security practices and has a good track record. However, “safe“ and
+                                “private” are different concepts. YNAB is relatively safe from hackers, but your data is still stored on
                                 their servers, accessible to their employees (with proper authorization), and subject to their privacy
                                 policy. For users who want true financial privacy, this centralized storage model is the core
-                                concern—not necessarily YNAB's security practices.
+                                concern—not necessarily YNAB’s security practices.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I use YNAB without linking my bank account?</Trans>}>
                             <Trans>
                                 Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some
-                                users find the manual-only experience less polished. If you're using YNAB without bank sync for privacy
+                                users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy
                                 reasons, you might consider an app that was designed for manual entry from the start.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>What's the best free YNAB alternative?</Trans>}>
+                        <BlogFaqItem question={<Trans>What’s the best free YNAB alternative?</Trans>}>
                             <Trans>
                                 For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with
                                 strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free
-                                tier with core budgeting functionality. If privacy isn't your primary concern and you just want free,
+                                tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free,
                                 there are many options, but most involve trading your data for access.
                             </Trans>
                         </BlogFaqItem>
@@ -1760,7 +1698,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>
                                 Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first.
                                 Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives
-                                (Actual, Firefly III) have web interfaces that work on mobile but aren't native apps, which can feel less
+                                (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less
                                 polished on a phone.
                             </Trans>
                         </BlogFaqItem>
@@ -1778,8 +1716,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <BlogFaqItem question={<Trans>Is Monarch Money better than YNAB?</Trans>}>
                             <Trans>
                                 Monarch Money offers some improvements over YNAB, including better household features and investment
-                                tracking. However, from a privacy perspective, it's similar to YNAB—cloud-based with bank sync
-                                integration. If privacy is your reason for leaving YNAB, Monarch doesn't solve that problem. If you're
+                                tracking. However, from a privacy perspective, it’s similar to YNAB—cloud-based with bank sync
+                                integration. If privacy is your reason for leaving YNAB, Monarch doesn’t solve that problem. If you’re
                                 leaving for other reasons (price, features, UX), Monarch could be a good fit.
                             </Trans>
                         </BlogFaqItem>
@@ -1795,12 +1733,12 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>What happens to my data if a budgeting app shuts down?</Trans>}>
                             <Trans>
-                                This depends entirely on the app's architecture. Cloud-based apps (YNAB, Monarch, Lunch Money) typically
+                                This depends entirely on the app’s architecture. Cloud-based apps (YNAB, Monarch, Lunch Money) typically
                                 give you advance notice and an export window, but your historical data depends on their cooperation.
-                                Self-hosted apps (Actual, Firefly III) keep your data on your hardware, so company status doesn't affect
+                                Self-hosted apps (Actual, Firefly III) keep your data on your hardware, so company status doesn’t affect
                                 access. Local-first apps (Budgie) store data on your device, which remains accessible regardless of app
                                 or company status. This is a key advantage of local-first and self-hosted solutions—true data ownership
-                                means you're never at the mercy of a company's business decisions.
+                                means you’re never at the mercy of a company’s business decisions.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
@@ -1813,7 +1751,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Choosing a budgeting app is personal. The "best" choice depends on your priorities:
+                            Choosing a budgeting app is personal. The “best” choice depends on your priorities:
                         </Trans>
                     </BlogArticleProse>
 
@@ -1842,7 +1780,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>You're comfortable self-hosting</Trans>
+                            <Trans>You’re comfortable self-hosting</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>You want something free and open source</Trans>
@@ -1870,7 +1808,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>You need advanced reporting</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You're a power user</Trans>
+                            <Trans>You’re a power user</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -1880,7 +1818,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>You're all-in on Apple</Trans>
+                            <Trans>You’re all-in on Apple</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>You trust iCloud with your data</Trans>
@@ -1889,7 +1827,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Native app experience is priority</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You don't mind bank sync</Trans>
+                            <Trans>You don’t mind bank sync</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -1905,7 +1843,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>Household budgeting is important</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You're comfortable with cloud storage</Trans>
+                            <Trans>You’re comfortable with cloud storage</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Investment tracking matters</Trans>
@@ -1924,10 +1862,10 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                             <Trans>You enjoy working with data</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You don't need mobile apps</Trans>
+                            <Trans>You don’t need mobile apps</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You're very patient</Trans>
+                            <Trans>You’re very patient</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
                 </BlogArticleSection>
