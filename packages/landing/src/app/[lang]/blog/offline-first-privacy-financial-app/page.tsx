@@ -114,7 +114,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                         <Trans>
                             In an era where data breaches and privacy violations make headlines daily, the way we handle our financial
                             information has never been more critical. When it comes to managing your money,{' '}
-                            <strong>your privacy isn't just a feature—it's a fundamental right</strong>.
+                            <strong>your privacy isn’t just a feature—it’s a fundamental right</strong>.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -136,24 +136,24 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>When your financial information lives on someone else's server, you're trusting that:</Trans>
+                        <Trans>When your financial information lives on someone else’s server, you’re trusting that:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>The company won't be hacked</Trans>
+                            <Trans>The company won’t be hacked</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Employees won't access your data</Trans>
+                            <Trans>Employees won’t access your data</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>The service won't be shut down</Trans>
+                            <Trans>The service won’t be shut down</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Your data won't be sold to third parties</Trans>
+                            <Trans>Your data won’t be sold to third parties</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Government agencies won't request access</Trans>
+                            <Trans>Government agencies won’t request access</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -165,11 +165,11 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>2. You're Not in Control</Trans>
+                        <Trans>2. You’re Not in Control</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>With cloud-based apps, you don't truly own your data:</Trans>
+                        <Trans>With cloud-based apps, you don’t truly own your data:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -183,7 +183,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                             <Trans>Service outages leave you without access</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You can't control who sees your information</Trans>
+                            <Trans>You can’t control who sees your information</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -193,7 +193,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
 
                     <BlogArticleProse>
                         <Trans>
-                            That "secure" app you trusted? Its privacy policy can change with a simple update. What's private today might be
+                            That “secure” app you trusted? Its privacy policy can change with a simple update. What’s private today might be
                             sold to advertisers tomorrow.
                         </Trans>
                     </BlogArticleProse>
@@ -242,7 +242,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Privacy isn't an afterthought—it's the foundation:</Trans>
+                        <Trans>Privacy isn’t an afterthought—it’s the foundation:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -293,7 +293,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>Budgie takes offline-first seriously. Here's how we protect your financial privacy:</Trans>
+                        <Trans>Budgie takes offline-first seriously. Here’s how we protect your financial privacy:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -303,7 +303,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     <BlogArticleProse>
                         <Trans>
                             All your financial data is stored exclusively on your device. Your transactions, accounts, budgets, and insights
-                            never touch our servers because <strong>we don't have any</strong>.
+                            never touch our servers because <strong>we don’t have any</strong>.
                         </Trans>
                     </BlogArticleProse>
 
@@ -326,7 +326,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                             <Trans>We never see your banking credentials or transaction data</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Even if someone intercepts the connection, they can't decrypt it</Trans>
+                            <Trans>Even if someone intercepts the connection, they can’t decrypt it</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -396,15 +396,15 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Scenario 2: Financial Independence</strong> — Authoritarian regimes and overzealous governments can't
-                            access what they can't reach. Your financial privacy is your freedom.
+                            <strong>Scenario 2: Financial Independence</strong> — Authoritarian regimes and overzealous governments can’t
+                            access what they can’t reach. Your financial privacy is your freedom.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Scenario 3: Data Monetization</strong> — Many "free" apps make money by selling your data. With Budgie,
-                            there's nothing to sell—your data never leaves your device.
+                            <strong>Scenario 3: Data Monetization</strong> — Many “free” apps make money by selling your data. With Budgie,
+                            there’s nothing to sell—your data never leaves your device.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -415,23 +415,23 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleHeading>
 
                     <BlogFaqSection>
-                        <BlogFaqItem question={<Trans>"But I need cloud backup!"</Trans>}>
+                        <BlogFaqItem question={<Trans>“But I need cloud backup!”</Trans>}>
                             <Trans>
                                 Budgie supports encrypted local backups that you control. Export your data and store it wherever you
                                 want—your own cloud service, USB drive, or secure storage.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>"How do I sync across devices?"</Trans>}>
+                        <BlogFaqItem question={<Trans>“How do I sync across devices?”</Trans>}>
                             <Trans>
-                                Budgie focuses on the device you use most—your phone. This isn't a limitation; it's a feature. One device
+                                Budgie focuses on the device you use most—your phone. This isn’t a limitation; it’s a feature. One device
                                 means one point of vulnerability instead of many.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>"Isn't cloud more convenient?"</Trans>}>
+                        <BlogFaqItem question={<Trans>“Isn’t cloud more convenient?”</Trans>}>
                             <Trans>
-                                We've designed Budgie to be just as convenient without the privacy tradeoffs. Import statements, track
+                                We’ve designed Budgie to be just as convenient without the privacy tradeoffs. Import statements, track
                                 crypto, manage multiple currencies—all without internet dependency.
                             </Trans>
                         </BlogFaqItem>
@@ -446,7 +446,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     <BlogArticleProse>
                         <Trans>
                             As awareness of digital privacy grows, more people are realizing that{' '}
-                            <strong>convenience shouldn't come at the cost of privacy</strong>. The offline-first movement represents a
+                            <strong>convenience shouldn’t come at the cost of privacy</strong>. The offline-first movement represents a
                             return to user sovereignty over personal data.
                         </Trans>
                     </BlogArticleProse>
@@ -474,7 +474,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>Do you really want all of that on someone else's server?</Trans>
+                        <Trans>Do you really want all of that on someone else’s server?</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
@@ -484,7 +484,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>Budgie proves that you don't have to choose between powerful features and privacy. You can have:</Trans>
+                        <Trans>Budgie proves that you don’t have to choose between powerful features and privacy. You can have:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -509,20 +509,18 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>All while keeping your data completely private.</strong>
-                        </Trans>
+                        <strong><Trans>All while keeping your data completely private.</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            The question isn't whether you should use an offline-first financial app. The question is: why would you trust
+                            The question isn’t whether you should use an offline-first financial app. The question is: why would you trust
                             your financial privacy to anything else?
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>Your money, your data, your control. That's the Budgie promise.</Trans>
+                        <Trans>Your money, your data, your control. That’s the Budgie promise.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>

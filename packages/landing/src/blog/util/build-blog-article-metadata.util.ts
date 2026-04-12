@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
 
@@ -37,12 +39,12 @@ export const buildBlogArticleMetadata = ({
         locale: OG_LOCALE_MAP[locale] ?? 'en_US',
         publishedTime: date,
         authors: [author],
-        ...(image !== undefined && { images: [{ url: `${BASE_URL}${image}`, width: 1280, height: 720 }] })
+        ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1280, height: 720 }] })
     },
     twitter: {
         card: 'summary_large_image',
         title,
         description,
-        ...(image !== undefined && { images: [`${BASE_URL}${image}`] })
+        ...(isDefined(image) && { images: [`${BASE_URL}${image}`] })
     }
 });
