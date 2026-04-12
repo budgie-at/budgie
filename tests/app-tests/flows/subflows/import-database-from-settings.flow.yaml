@@ -5,17 +5,19 @@ env:
   PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
-- openLink: 'budgie://settings?anchor=data'
-- runFlow:
-    when:
-      visible: 'Open'
+- retry:
+    maxRetries: 2
     commands:
-      - tapOn: 'Open'
-
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.ImportDatabaseCard'
-    timeout: 15000
+      - openLink: 'budgie://settings?anchor=data'
+      - runFlow:
+          when:
+            visible: 'Open'
+          commands:
+            - tapOn: 'Open'
+      - extendedWaitUntil:
+          visible:
+            id: 'SettingsPage.ImportDatabaseCard'
+          timeout: 15000
 
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
