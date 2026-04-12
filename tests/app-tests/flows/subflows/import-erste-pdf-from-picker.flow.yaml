@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 env:
   PDF_NAME_MATCH: ${PDF_NAME_MATCH}
-  PDF_TILE_POINT: ${PDF_TILE_POINT}
+  PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
 ---
 - extendedWaitUntil:
     visible:
@@ -12,44 +12,10 @@ env:
     text: 'Select File|Datei auswählen'
 
 - runFlow:
-    when:
-      visible: 'No Recents'
-    commands:
-      - tapOn: 'Browse'
-
-- extendedWaitUntil:
-    visible:
-      text: 'budgie|E2EFixtures|${PDF_NAME_MATCH}'
-    timeout: 15000
-
-- runFlow:
-    when:
-      visible: 'budgie'
-    commands:
-      - tapOn: 'budgie'
-      - extendedWaitUntil:
-          visible:
-            text: 'E2EFixtures|${PDF_NAME_MATCH}'
-          timeout: 15000
-
-- runFlow:
-    when:
-      visible: 'E2EFixtures'
-    commands:
-      - tapOn:
-          point: '18%,30%'
-      - extendedWaitUntil:
-          visible:
-            text: ${PDF_NAME_MATCH}
-          timeout: 15000
-
-- runFlow:
-    when:
-      visible:
-        text: ${PDF_NAME_MATCH}
-    commands:
-      - tapOn:
-          point: ${PDF_TILE_POINT}
+    file: select-file-from-app-provider.flow.yaml
+    env:
+      FILE_NAME_MATCH: ${PDF_NAME_MATCH}
+      PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH}
 
 - extendedWaitUntil:
     visible:
@@ -65,11 +31,18 @@ env:
     timeout: 15000
 
 - tapOn:
-    text: 'Start Sync|Synchronisation starten'
+      text: 'Start Sync|Synchronisation starten'
+
+- runFlow:
+      when:
+          visible: 'Already syncing|Synchronisiert bereits'
+      commands:
+          - tapOn:
+                id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 30000
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 30000
 
 - waitForAnimationToEnd

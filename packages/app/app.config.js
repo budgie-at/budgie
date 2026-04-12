@@ -120,6 +120,13 @@ export default ({ config }) => ({
         './plugins/with-vec-xcframework-fix',
         'expo-asset',
         'expo-image',
+        [
+            'expo-file-system',
+            {
+                enableFileSharing: IS_E2E,
+                supportsOpeningDocumentsInPlace: IS_E2E
+            }
+        ],
         'expo-sharing',
         'expo-localization',
         'expo-secure-store',

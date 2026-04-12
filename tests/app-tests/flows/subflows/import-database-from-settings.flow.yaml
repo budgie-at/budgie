@@ -1,6 +1,7 @@
 appId: ${APP_ID}
 env:
   FIXTURE_FILE: ${FIXTURE_FILE}
+  PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
 - openLink: 'budgie://settings?anchor=data'
@@ -18,24 +19,12 @@ env:
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
 
-- extendedWaitUntil:
-    visible:
-      text: 'SQLite|${FIXTURE_FILE}'
-    timeout: 15000
-
 - runFlow:
-    when:
-      visible: 'SQLite'
-    commands:
-      - tapOn:
-          point: '18%,30%'
-
-- extendedWaitUntil:
-    visible: ${FIXTURE_FILE}
-    timeout: 15000
-
-- tapOn:
-    point: '78%,26%'
+    file: select-file-from-app-provider.flow.yaml
+    env:
+      FILE_NAME_MATCH: ${FIXTURE_FILE}
+      FILE_ROW_ID_MATCH: '${FIXTURE_FILE}, .*'
+      PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH}
 
 - runFlow:
     when:
@@ -44,12 +33,16 @@ env:
       - tapOn: 'Open'
 
 - extendedWaitUntil:
-    visible: 'Import Database|Datenbank importieren'
+    visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
     timeout: 15000
 
-- tapOn:
-    text: 'Import Database|Datenbank importieren'
-    index: 1
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn:
+          text: 'Import Database|Datenbank importieren'
+          index: 1
+      - waitForAnimationToEnd
 
 - runFlow:
     file: relaunch-app.flow.yaml

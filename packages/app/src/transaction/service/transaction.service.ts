@@ -29,6 +29,10 @@ class TransactionService {
         return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
 
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        return transactionRepository.findIdMapByExternalSource(externalSource);
+    }
+
     async deleteById(id: number) {
         await transactionAsync(db, async tx => {
             await transactionRepository.deleteById(id, tx);
@@ -54,6 +58,29 @@ class TransactionService {
             : this.processBatch.bind(this);
 
         const transactions = await processInputWithBatches(inputs, batchSize, batchProcessor);
+
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        }
+
+        return transactions;
+    }
+
+    async bulkUpsertImported(
+        inputs: TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>,
+        tx?: DB
+    ): Promise<TransactionEntityInterface[]> {
+        if (!isNotEmptyArray(inputs)) {
+            return [];
+        }
+
+        const processor = isDefined(tx)
+            ? (batch: TransactionCreateInputInterface[]) => this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
+            : (batch: TransactionCreateInputInterface[]) =>
+                  transactionAsync(db, async innerTx => this.processImportedBatchInner(batch, existingTransactionIdMap, innerTx));
+
+        const transactions = await processInputWithBatches(inputs, 500, processor);
 
         if (isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -366,6 +393,53 @@ class TransactionService {
 
     private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
         return transactionAsync(db, async tx => this.processBatchInner(batch, tx));
+    }
+
+    private async processImportedBatchInner(
+        batch: TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>,
+        tx: DB
+    ): Promise<TransactionEntityInterface[]> {
+        const newInputs = batch.filter(input => !isDefined(input.externalId) || !existingTransactionIdMap.has(input.externalId));
+        const existingInputs = batch.filter(input => isDefined(input.externalId) && existingTransactionIdMap.has(input.externalId));
+
+        const createdTransactions = await this.processBatchInner(newInputs, tx);
+        const updatedTransactions: TransactionEntityInterface[] = [];
+
+        for (const input of existingInputs) {
+            const externalId = input.externalId;
+
+            if (!isDefined(externalId)) {
+                continue;
+            }
+
+            const transactionId = existingTransactionIdMap.get(externalId);
+
+            if (!isDefined(transactionId)) {
+                continue;
+            }
+
+            const updatedTransaction = await transactionRepository.updateById(
+                transactionId,
+                {
+                    title: input.title,
+                    comment: input.comment,
+                    type: input.type,
+                    operatedAt: input.operatedAt,
+                    exchangeRate: input.exchangeRate,
+                    externalId: input.externalId,
+                    externalSource: input.externalSource,
+                    fromAccountId: input.fromAccountId,
+                    toAccountId: input.toAccountId
+                },
+                tx
+            );
+
+            await this.upsertEntriesAndTags(transactionId, input, tx);
+            updatedTransactions.push(updatedTransaction);
+        }
+
+        return [...updatedTransactions, ...createdTransactions];
     }
 
     private async processBatchInner(batch: TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {

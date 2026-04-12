@@ -2,21 +2,12 @@ appId: ${APP_ID}
 env:
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
+- runFlow:
+    file: relaunch-app.flow.yaml
+    env:
+      HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
 
-- retry:
-    maxRetries: 2
-    commands:
-      - clearState
-      - launchApp
-
-      - runFlow:
-          when:
-            true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
-          file: handle-dev-client-startup.flow.yaml
-
-      - extendedWaitUntil:
-          visible:
-            id: 'HomePage.TotalBalance'
-          timeout: 60000
-
-- waitForAnimationToEnd
+- runFlow:
+    file: clear-data-from-settings.flow.yaml
+    env:
+      HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}

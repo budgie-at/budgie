@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+env:
+  HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
+---
+- openLink: 'budgie://settings?anchor=data'
+
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.ClearDataCard'
+    timeout: 15000
+
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn:
+          id: 'SettingsPage.ClearDataCard'
+      - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible: 'Delete data|Daten löschen'
+          timeout: 5000
+
+- tapOn:
+    point: '68%,58%'
+
+- runFlow:
+    file: relaunch-app.flow.yaml
+    env:
+      HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}

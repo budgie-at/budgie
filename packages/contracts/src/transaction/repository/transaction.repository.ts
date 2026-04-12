@@ -117,6 +117,29 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }
 
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        const results = await this.db
+            .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return new Map(
+            results.flatMap(({ id, externalId }) => {
+                if (!isDefined(externalId)) {
+                    return [];
+                }
+
+                return [[externalId, id] as const];
+            })
+        );
+    }
+
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
             where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),

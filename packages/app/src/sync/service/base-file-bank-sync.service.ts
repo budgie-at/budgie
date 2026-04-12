@@ -99,13 +99,11 @@ export abstract class BaseFileBankSyncService {
         await this.createBankSyncRecord(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
-        const newTransactions = transactions.filter(transaction => !context.existingExternalIds.has(transaction.id));
-
-        if (!isNotEmptyArray(newTransactions)) {
+        if (!isNotEmptyArray(transactions)) {
             return;
         }
 
-        const transactionInputs = newTransactions.map(transaction => {
+        const transactionInputs = transactions.map(transaction => {
             const mccCategoryId = isNotEmptyString(transaction.category)
                 ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
                 : null;
@@ -113,17 +111,17 @@ export abstract class BaseFileBankSyncService {
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        await transactionService.bulkCreate(transactionInputs, context.tx);
+        await transactionService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx);
     }
 
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryIdMap, existingExternalIds] = await Promise.all([
+        const [mccCategoryIdMap, existingTransactionIdMap] = await Promise.all([
             this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findByExternalSource(this.provider)
+            transactionService.findIdMapByExternalSource(this.provider)
         ]);
 
         await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryIdMap, existingExternalIds, tx };
+            const context: ImportContextInterface = { mccCategoryIdMap, existingTransactionIdMap, tx };
 
             for (const bankAccount of bankAccounts) {
                 await this.importAccountTransactions(client, bankAccount, context);
