@@ -1789,7 +1789,7 @@ msgstr "Allow reasonable time for fixes before public disclosure"
 msgid "Allow you to delete your data completely if you leave"
 msgstr "Allow you to delete your data completely if you leave"
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:58
 msgid "alternatives"
 msgstr "alternatives"
@@ -1862,7 +1862,7 @@ msgstr "Apple-only (no Android, no web)"
 msgid "Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes propagating when connectivity returns."
 msgstr "Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes propagating when connectivity returns."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:59
 msgid "architecture"
 msgstr "architecture"
@@ -2076,7 +2076,7 @@ msgstr "Begin with a single-device application and add sync later. Get your data
 msgid "Best YNAB Alternatives for Privacy-Conscious Users"
 msgstr "Best YNAB Alternatives for Privacy-Conscious Users"
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:55
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:67
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:48
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:75
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:94
@@ -2164,7 +2164,7 @@ msgstr "budget app"
 msgid "Budget settings and categories"
 msgstr "Budget settings and categories"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:59
 msgid "budgeting"
 msgstr "budgeting"
@@ -2583,7 +2583,7 @@ msgstr "Cloud budgeting privacy risks"
 msgid "cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker"
 msgstr "cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker"
 
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:59
 msgid "cloud risks"
 msgstr "cloud risks"
@@ -2847,7 +2847,7 @@ msgstr "Copilot: Apple Ecosystem Privacy"
 msgid "Copilot: The Apple Ecosystem Choice"
 msgstr "Copilot: The Apple Ecosystem Choice"
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:59
 msgid "CRDTs"
 msgstr "CRDTs"
@@ -3049,7 +3049,7 @@ msgstr "Detailed Reviews"
 msgid "Detailed Reviews: Finding Your Perfect Match"
 msgstr "Detailed Reviews: Finding Your Perfect Match"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:58
 msgid "developer tools"
 msgstr "developer tools"
@@ -3773,7 +3773,7 @@ msgstr "How Budgie Implements Local-First Principles"
 msgid "How Budgie keeps your financial data off the cloud"
 msgstr "How Budgie keeps your financial data off the cloud"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:55
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:67
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:48
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:75
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:94
@@ -4256,7 +4256,7 @@ msgstr "Lisa Thompson"
 msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
 msgstr "Local SQLite database with Drizzle ORM (you can query your own data)"
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:57
 msgid "local-first"
 msgstr "local-first"
@@ -4433,7 +4433,7 @@ msgstr "Minimal data collection (only what’s necessary)"
 msgid "Mint (Intuit) - 2023"
 msgstr "Mint (Intuit) - 2023"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:57
 msgid "mint alternatives"
 msgstr "mint alternatives"
@@ -4451,7 +4451,7 @@ msgstr "Mint alternatives, Mint shutdown, budget app for developers, privacy fin
 msgid "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 msgstr "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:55
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:67
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:48
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:74
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:93
@@ -4841,9 +4841,9 @@ msgid "offline expense tracker, private finance app, local budget app, offline b
 msgstr "offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:62
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:58
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:59
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:61
 msgid "offline-first"
@@ -4985,7 +4985,7 @@ msgid "Open Source: Verify Our Claims Yourself"
 msgstr "Open Source: Verify Our Claims Yourself"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:61
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:57
 msgid "open-source"
 msgstr "open-source"
@@ -5003,7 +5003,7 @@ msgstr "Open-source budgeting transparency"
 msgid "open-source budgeting, financial transparency, budget app security, open-source finance"
 msgstr "open-source budgeting, financial transparency, budget app security, open-source finance"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:55
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:67
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:48
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:74
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:93
@@ -5196,17 +5196,17 @@ msgstr "Preserves more of your category structure"
 msgid "Priority Support"
 msgstr "Priority Support"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:57
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:57
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:62
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:59
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:57
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:61
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:59
 msgid "privacy"
 msgstr "privacy"
@@ -5570,11 +5570,11 @@ msgstr "Secure your finances with Face ID or Touch ID. Only you can access your 
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:58
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:58
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:58
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:60
 msgid "security"
@@ -6159,7 +6159,7 @@ msgstr "The local-first movement is gaining momentum because developers are reco
 msgid "The local-first movement represents a genuine evolution in how we think about software architecture. For developers building personal tools, productivity software, or applications in sensitive domains like finance and health, local-first offers a path to better performance, stronger privacy, and genuine user ownership."
 msgstr "The local-first movement represents a genuine evolution in how we think about software architecture. For developers building personal tools, productivity software, or applications in sensitive domains like finance and health, local-first offers a path to better performance, stronger privacy, and genuine user ownership."
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:55
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:67
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:48
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:76
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:95
@@ -6578,7 +6578,7 @@ msgstr "Transaction data flows from your bank to your device—never through our
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:58
 msgid "transparency"
 msgstr "transparency"
@@ -7070,7 +7070,7 @@ msgstr "Who has access to it"
 msgid "Why Budgie Takes a Different Approach"
 msgstr "Why Budgie Takes a Different Approach"
 
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:55
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:67
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:48
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:74
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:93
@@ -7111,7 +7111,7 @@ msgstr "Why not use end-to-end encrypted cloud sync?"
 msgid "Why Offline-First Changes Everything"
 msgstr "Why Offline-First Changes Everything"
 
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:55
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:67
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:48
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:74
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:93
@@ -7233,7 +7233,7 @@ msgstr "Yes! You can sync your data across devices using your own cloud storage 
 msgid "Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination. Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated collaborative features. The key difference is that collaboration happens through peer synchronization rather than through a central server."
 msgstr "Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination. Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated collaborative features. The key difference is that collaboration happens through peer synchronization rather than through a central server."
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:57
 msgid "ynab"
 msgstr "ynab"

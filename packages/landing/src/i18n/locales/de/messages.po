@@ -148,7 +148,7 @@ msgstr "<0>Apple Watch-Unterstützung.</0> Schneller Zugriff vom Handgelenk."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:805
 msgid "<0>Are financial products promoted?</0> Red flag: Personalized credit card/loan offers. Green flag: No affiliate relationships"
-msgstr "<0>Warnsignal</0>: Personalisierte Kreditkarten-/Darlehensangebote"
+msgstr "<0>Werden Finanzprodukte beworben?</0> Red flag: Personalisierte Kreditkarten-/Darlehensangebote. Green flag: Keine Affiliate-Beziehungen"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:514
 msgid "<0>Asset transfer</0>: User databases are migrated to new infrastructure with new access controls"
@@ -350,7 +350,7 @@ msgstr "<0>Budgetvorlagen.</0> Viele kostenlose Vorlagen verfügbar"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:836
 msgid "<0>Can privacy policy change without notice?</0> Red flag: Changes effective immediately. Green flag: Notice period, opt-out for material changes"
-msgstr "<0>Positives Zeichen</0>: Vorankündigungsfrist, Widerspruchsrecht bei wesentlichen Aenderungen"
+msgstr "<0>Kann sich die Datenschutzrichtlinie ohne Vorankündigung ändern?</0> Red flag: Aenderungen sofort wirksam. Green flag: Vorankündigungsfrist, Widerspruchsrecht bei wesentlichen Aenderungen"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:362
 msgid "<0>Change detection:</0> Identifying what has been modified since the last sync."
@@ -616,11 +616,11 @@ msgstr "<0>Haushalts-Zusammenarbeit.</0> Entwickelt für Paare und Familien, die
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:780
 msgid "<0>How are credentials handled?</0> Red flag: Stored credentials (even encrypted). Green flag: OAuth only, no credential storage"
-msgstr "<0>Warnsignal</0>: Gespeicherte Zugangsdaten (auch verschlüsselt)"
+msgstr "<0>Wie werden Zugangsdaten gehandhabt?</0> Red flag: Gespeicherte Zugangsdaten (auch verschlüsselt). Green flag: Nur OAuth, keine Speicherung von Zugangsdaten"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:799
 msgid "<0>How does the app make money?</0> Red flag: Free tier with no clear revenue model. Green flag: Clear subscription or one-time purchase"
-msgstr "<0>Positives Zeichen</0>: Klares Abonnement oder Einmalkauf"
+msgstr "<0>Wie verdient die App Geld?</0> Red flag: Kostenloses Angebot ohne klares Erlösmodell. Green flag: Klares Abonnement oder Einmalkauf"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:965
 msgid "<0>iCloud sync.</0> Data syncs through your own iCloud account."
@@ -664,19 +664,19 @@ msgstr "Nur iOS: Jede Option funktioniert (Copilot ist iOS-exklusiv)"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:811
 msgid "<0>Is data shared with partners?</0> Red flag: Revenue from data licensing. Green flag: No third-party data sales"
-msgstr "<0>Warnsignal</0>: Einnahmen aus Datenlizenzierung"
+msgstr "<0>Werden Daten mit Partnern geteilt?</0> Red flag: Einnahmen aus Datenlizenzierung. Green flag: Kein Datenverkauf an Dritte"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:749
 msgid "<0>Is location data collected?</0> Red flag: Transaction location stored. Green flag: No geolocation beyond transaction metadata"
-msgstr "<0>Positives Zeichen</0>: Keine Geolokalisierung über Transaktionsmetadaten hinaus"
+msgstr "<0>Werden Standortdaten erfasst?</0> Red flag: Transaktionsstandort wird gespeichert. Green flag: Keine Geolokalisierung über Transaktionsmetadaten hinaus"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:842
 msgid "<0>Is there a data export feature?</0> Red flag: No export or proprietary format. Green flag: Standard formats (CSV, JSON) for all data"
-msgstr "<0>Positives Zeichen</0>: Standardformate (CSV, JSON) für alle Daten"
+msgstr "<0>Gibt es eine Datenexportfunktion?</0> Red flag: Kein Export oder proprietäres Format. Green flag: Standardformate (CSV, JSON) für alle Daten"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:848
 msgid "<0>Is there a deletion guarantee?</0> Red flag: 90-day request processing. Green flag: Immediate deletion with confirmation"
-msgstr "<0>Positives Zeichen</0>: Sofortige Lösung mit Bestätigung"
+msgstr "<0>Gibt es eine Löschgarantie?</0> Red flag: 90-tägige Bearbeitungszeit. Green flag: Sofortige Lösung mit Bestätigung"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:189
 msgid "<0>January 2024</0>: Data migration to Credit Karma begins for users who opt in."
@@ -1483,35 +1483,35 @@ msgstr "Primär Web: Alle außer Budgie und Copilot"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:737
 msgid "<0>What data aggregator is used?</0> Red flag: Plaid, Yodlee, MX with broad data collection. Green flag: Direct OAuth with bank, limited scopes"
-msgstr "<0>Warnsignal</0>: Plaid, Yodlee, MX mit breiter Datenerfassung"
+msgstr "<0>Welcher Datenaggregator wird verwendet?</0> Red flag: Plaid, Yodlee, MX mit breiter Datenerfassung. Green flag: Direktes OAuth mit Bank, begrenzte Zugriffsumfänge"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:817
 msgid "<0>What happens at acquisition?</0> Red flag: Silent policy changes allowed. Green flag: Data deletion option at acquisition"
-msgstr "<0>Positives Zeichen</0>: Datenlöschungsoption bei Uebernahme"
+msgstr "<0>Was passiert bei einer Uebernahme?</0> Red flag: Stille Richtlinienänderungen erlaubt. Green flag: Datenlöschungsoption bei Uebernahme"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:755
 msgid "<0>What happens to deleted transactions?</0> Red flag: Soft delete, retained in backups. Green flag: Hard delete with verifiable removal"
-msgstr "<0>Positives Zeichen</0>: Endgültiges Löschen mit überprüfbarer Entfernung"
+msgstr "<0>Was passiert mit gelöschten Transaktionen?</0> Red flag: Weiches Löschen, Aufbewahrung in Backups. Green flag: Endgültiges Löschen mit überprüfbarer Entfernung"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:786
 msgid "<0>What is the backup retention?</0> Red flag: Indefinite. Green flag: Defined retention with verifiable deletion"
-msgstr "<0>Positives Zeichen</0>: Definierte Aufbewahrung mit überprüfbarer Lösung"
+msgstr "<0>Wie lange werden Backups aufbewahrt?</0> Red flag: Unbefristet. Green flag: Definierte Aufbewahrung mit überprüfbarer Lösung"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:830
 msgid "<0>What jurisdiction governs disputes?</0> Red flag: Binding arbitration, class action waiver. Green flag: Court option, location you can access"
-msgstr "<0>Warnsignal</0>: Bindende Schiedsgerichtsbarkeit, Verzicht auf Sammelklagen"
+msgstr "<0>Welche Gerichtsbarkeit regelt Streitigkeiten?</0> Red flag: Bindende Schiedsgerichtsbarkeit, Verzicht auf Sammelklagen. Green flag: Gerichtsoption, erreichbarer Standort"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:743
 msgid "<0>What transaction history is collected?</0> Red flag: Full history back to account opening. Green flag: Only recent transactions needed for features"
-msgstr "<0>Positives Zeichen</0>: Nur aktuelle Transaktionen, die für Funktionen benötigt werden"
+msgstr "<0>Welche Transaktionshistorie wird erfasst?</0> Red flag: Vollständige Historie seit Kontoeröffnung. Green flag: Nur aktuelle Transaktionen, die für Funktionen benötigt werden"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:768
 msgid "<0>Where is data stored?</0> Red flag: Multiple cloud providers, unclear region. Green flag: Single provider, specific regions, SOC 2 Type II"
-msgstr "<0>Positives Zeichen</0>: Ein Anbieter, spezifische Regionen, SOC 2 Type II"
+msgstr "<0>Wo werden Daten gespeichert?</0> Red flag: Mehrere Cloud-Anbieter, unklare Region. Green flag: Ein Anbieter, spezifische Regionen, SOC 2 Type II"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:774
 msgid "<0>Who has access to raw data?</0> Red flag: Vague policies, no access logging. Green flag: Role-based access, audit logs, regular review"
-msgstr "<0>Positives Zeichen</0>: Rollenbasierter Zugriff, Audit-Protokolle, regelmäßige Überprüfung"
+msgstr "<0>Wer hat Zugriff auf Rohdaten?</0> Red flag: Vage Richtlinien, keine Zugriffsprotokolle. Green flag: Rollenbasierter Zugriff, Audit-Protokolle, regelmäßige Überprüfung"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:557
 msgid "<0>Worst case</0>: Data is abandoned on servers that eventually get decommissioned, with drives ending up in unknown locations"
@@ -1789,7 +1789,7 @@ msgstr "Gewähren Sie angemessene Zeit für Fixes vor der öffentlichen Offenleg
 msgid "Allow you to delete your data completely if you leave"
 msgstr "Ihnen erlauben, Ihre Daten vollständig zu löschen, wenn Sie wechseln"
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:58
 msgid "alternatives"
 msgstr "alternativen"
@@ -1862,7 +1862,7 @@ msgstr "Nur Apple (kein Android, kein Web)"
 msgid "Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes propagating when connectivity returns."
 msgstr "Apples integrierte Produktivitäts-Apps verwenden eine Local-First-Architektur mit iCloud-Synchronisation. Daten werden auf dem Gerät gespeichert und über Apples Infrastruktur synchronisiert. Entscheidend ist, dass die Apps vollständig offline funktionieren und Änderungen bei Rückkehr der Konnektivität übertragen werden."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:59
 msgid "architecture"
 msgstr "Architektur"
@@ -2076,7 +2076,7 @@ msgstr "Starten Sie mit einer Einzelgerät-Anwendung und fügen Sie die Synchron
 msgid "Best YNAB Alternatives for Privacy-Conscious Users"
 msgstr ""
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:55
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:67
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:48
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:75
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:94
@@ -2164,7 +2164,7 @@ msgstr "Actual Budget: PWA"
 msgid "Budget settings and categories"
 msgstr "Budgeteinstellungen und Kategorien"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:59
 msgid "budgeting"
 msgstr "Actual Budget"
@@ -2583,7 +2583,7 @@ msgstr "Warum Cloud-Budget-Apps ein Alptraum für die Privatsphäre sind"
 msgid "cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker"
 msgstr ""
 
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:59
 msgid "cloud risks"
 msgstr ""
@@ -2847,7 +2847,7 @@ msgstr "Copilot: Datenschutz im Apple-Ökosystem"
 msgid "Copilot: The Apple Ecosystem Choice"
 msgstr "Copilot: Die Wahl für das Apple-Ökosystem"
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:59
 msgid "CRDTs"
 msgstr "CRDTs"
@@ -3049,7 +3049,7 @@ msgstr "Detaillierte Bewertungen"
 msgid "Detailed Reviews: Finding Your Perfect Match"
 msgstr "Detaillierte Bewertungen: Die perfekte Lösung finden"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:58
 msgid "developer tools"
 msgstr "Warum Entwickler Budgie wählen:"
@@ -3773,7 +3773,7 @@ msgstr "Wie Budgie Local-First-Prinzipien umsetzt"
 msgid "How Budgie keeps your financial data off the cloud"
 msgstr "Wie Budgie Ihre Finanzdaten von der Cloud fernhält"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:55
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:67
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:48
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:75
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:94
@@ -4256,7 +4256,7 @@ msgstr "Lisa Thompson"
 msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
 msgstr "Lokale SQLite-Datenbank mit Drizzle ORM (Sie können Ihre eigenen Daten abfragen)"
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:57
 msgid "local-first"
 msgstr "local-first"
@@ -4433,7 +4433,7 @@ msgstr "Minimale Datenerfassung (nur das Notwendige)"
 msgid "Mint (Intuit) - 2023"
 msgstr "Mint (Intuit) -- 2023"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:57
 msgid "mint alternatives"
 msgstr "Welche Alternative ist am besten für Paare?"
@@ -4451,7 +4451,7 @@ msgstr ""
 msgid "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 msgstr "Mint wurde 2007 gestartet und wurde schnell zum Goldstandard unter den Apps für persönliche Finanzen. Intuit übernahm die Plattform 2009 für 170 Millionen Dollar, und jahrelang schien es wie eine perfekte Verbindung. Mint aggregierte Ihre Konten, kategorisierte Transaktionen automatisch und bot ein übersichtliches Dashboard für Ihr Finanzleben."
 
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:55
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:67
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:48
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:74
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:93
@@ -4841,9 +4841,9 @@ msgid "offline expense tracker, private finance app, local budget app, offline b
 msgstr ""
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:62
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:58
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:59
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:61
 msgid "offline-first"
@@ -4985,7 +4985,7 @@ msgid "Open Source: Verify Our Claims Yourself"
 msgstr "Open Source: Überprüfen Sie unsere Aussagen selbst"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:61
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:57
 msgid "open-source"
 msgstr "Open-Source"
@@ -5003,7 +5003,7 @@ msgstr "Open-Source-Budgetierung: Warum Transparenz für Ihr Geld wichtig ist"
 msgid "open-source budgeting, financial transparency, budget app security, open-source finance"
 msgstr "Open-Source-Budgetierung: Warum Transparenz für Ihr Geld wichtig ist"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:55
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:67
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:48
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:74
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:93
@@ -5196,17 +5196,17 @@ msgstr "Bewahrt mehr Ihrer Kategoriestruktur"
 msgid "Priority Support"
 msgstr "Prioritäts-Support"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:57
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:57
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:62
-#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
+#: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:68
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:59
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:57
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:61
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:59
 msgid "privacy"
 msgstr "Datenschutz"
@@ -5570,11 +5570,11 @@ msgstr "Sichern Sie Ihre Finanzen mit Face ID oder Touch ID. Nur Sie können auf
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Verknüpfen Sie sicher Ihre Bankkonten, Krypto-Wallets und Investmentkonten für automatisches Tracking."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
+#: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:68
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:58
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:56
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:68
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:58
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:56
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:68
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:58
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:60
 msgid "security"
@@ -6159,7 +6159,7 @@ msgstr "Die Local-First-Bewegung gewinnt an Dynamik, weil Entwickler konkrete Vo
 msgid "The local-first movement represents a genuine evolution in how we think about software architecture. For developers building personal tools, productivity software, or applications in sensitive domains like finance and health, local-first offers a path to better performance, stronger privacy, and genuine user ownership."
 msgstr "Die Local-First-Bewegung stellt eine echte Evolution dar, wie wir über Software-Architektur denken. Für Entwickler, die persönliche Tools, Produktivitätssoftware oder Anwendungen in sensiblen Bereichen wie Finanzen und Gesundheit bauen, bietet Local-First einen Weg zu besserer Leistung, stärkerem Datenschutz und echter Nutzersouveränität."
 
-#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:55
+#: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:67
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:48
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:76
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:95
@@ -6578,7 +6578,7 @@ msgstr "Transaktionsdaten fließen von Ihrer Bank zu Ihrem Gerät — niemals ü
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:68
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:58
 msgid "transparency"
 msgstr "Transparenz"
@@ -7070,7 +7070,7 @@ msgstr "Wer darauf Zugriff hat"
 msgid "Why Budgie Takes a Different Approach"
 msgstr "Warum Budgie einen anderen Weg geht"
 
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:55
+#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/opengraph-image.tsx:67
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:48
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:74
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:93
@@ -7111,7 +7111,7 @@ msgstr "Warum nicht Ende-zu-Ende-verschlüsselte Cloud-Synchronisierung verwende
 msgid "Why Offline-First Changes Everything"
 msgstr "Warum Offline-First alles verändert"
 
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:55
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:67
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:48
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:74
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:93
@@ -7233,7 +7233,7 @@ msgstr "Ja! Sie können Ihre Daten über Ihre eigene Cloud-Speicherung (iCloud, 
 msgid "Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination. Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated collaborative features. The key difference is that collaboration happens through peer synchronization rather than through a central server."
 msgstr "Ja. CRDTs wurden speziell entwickelt, um Echtzeit-Zusammenarbeit ohne zentrale Koordination zu ermöglichen. Anwendungen wie Figma und Linear demonstrieren, dass Local-First-Architektur ausgefeilte Kollaborationsfunktionen unterstützen kann. Der wesentliche Unterschied ist, dass Zusammenarbeit durch Peer-Synchronisation stattfindet, nicht über einen zentralen Server."
 
-#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:56
+#: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx:68
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:57
 msgid "ynab"
 msgstr "ynab"
