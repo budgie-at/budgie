@@ -88,14 +88,14 @@ env:
     commands:
       - scrollUntilVisible:
           element:
-            text: '${FILE_NAME_MATCH}'
+            text: '${FILE_NAME_MATCH}(, .*)?'
           direction: DOWN
           timeout: 15000
           speed: 20
           visibilityPercentage: 50
           centerElement: true
       - tapOn:
-          text: '${FILE_NAME_MATCH}'
+          text: '${FILE_NAME_MATCH}(, .*)?'
 
 - runFlow:
     when:
