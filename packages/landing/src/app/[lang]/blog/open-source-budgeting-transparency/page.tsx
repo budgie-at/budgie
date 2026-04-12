@@ -114,7 +114,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                 <BlogArticleSection>
                     <BlogArticleProse>
                         <Trans>
-                            When you hand over your financial data to an app, you're trusting it with some of the most sensitive
+                            When you hand over your financial data to an app, you’re trusting it with some of the most sensitive
                             information about your life. Your spending patterns reveal where you live, where you work, what you eat, your
                             health conditions, your relationships, and countless other intimate details. Yet most people have no idea what
                             happens to this data once it enters their budget app.
@@ -124,8 +124,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             This is the black box problem of modern financial software. You input your transactions, and somewhere inside a
-                            proprietary system, things happen. What things? You'll never know. The code is locked away, the data flows are
-                            hidden, and the company's promises are the only thing standing between your financial life and potential misuse.
+                            proprietary system, things happen. What things? You’ll never know. The code is locked away, the data flows are
+                            hidden, and the company’s promises are the only thing standing between your financial life and potential misuse.
                         </Trans>
                     </BlogArticleProse>
 
@@ -182,7 +182,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>Your spending categories and financial habits</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>When you're paid and when you're broke</Trans>
+                            <Trans>When you’re paid and when you’re broke</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Your recurring subscriptions and financial commitments</Trans>
@@ -191,7 +191,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            This is an extraordinarily detailed financial portrait. With closed-source software, you're trusting that
+                            This is an extraordinarily detailed financial portrait. With closed-source software, you’re trusting that
                             portrait to remain private based solely on corporate promises and legal agreements that can change at any time.
                         </Trans>
                     </BlogArticleProse>
@@ -227,16 +227,16 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>Who has access to it</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>How long it's retained</Trans>
+                            <Trans>How long it’s retained</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Whether it's ever sold or shared</Trans>
+                            <Trans>Whether it’s ever sold or shared</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The app might be sending your transaction data to a third-party analytics service for "product improvement." It
+                            The app might be sending your transaction data to a third-party analytics service for “product improvement.” It
                             might be fingerprinting your device and linking your financial behavior to advertising profiles. You would never
                             know, because you cannot see the code.
                         </Trans>
@@ -250,7 +250,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <Trans>
                             Security through obscurity is a flawed concept that persists in closed-source software. Companies claim their
                             systems are secure, but security researchers cannot examine the code to verify those claims. Vulnerabilities may
-                            exist for years before they're discovered through a breach rather than through proactive auditing.
+                            exist for years before they’re discovered through a breach rather than through proactive auditing.
                         </Trans>
                     </BlogArticleProse>
 
@@ -263,14 +263,14 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                "Bank-level encryption" (what does that actually mean in their implementation?)
+                                “Bank-level encryption” (what does that actually mean in their implementation?)
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>"Your data is secure" (against what threat models? tested by whom?)</Trans>
+                            <Trans>“Your data is secure” (against what threat models? tested by whom?)</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>"We take security seriously" (how? show us the evidence)</Trans>
+                            <Trans>“We take security seriously” (how? show us the evidence)</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -369,7 +369,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             Compare this to closed-source software, where researchers often cannot even verify whether a vulnerability they
-                            reported was actually fixed. They have to trust the vendor's word, which history has shown is not always
+                            reported was actually fixed. They have to trust the vendor’s word, which history has shown is not always
                             reliable.
                         </Trans>
                     </BlogArticleProse>
@@ -387,7 +387,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Encryption that doesn't rely on hidden algorithms</Trans>
+                            <Trans>Encryption that doesn’t rely on hidden algorithms</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Authentication systems that remain secure even when examined</Trans>
@@ -415,7 +415,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            You don't need to be a programmer to evaluate the trustworthiness of an open-source project. While you may not
+                            You don’t need to be a programmer to evaluate the trustworthiness of an open-source project. While you may not
                             be able to review code line by line, you can assess many important factors that indicate whether a project
                             deserves your trust.
                         </Trans>
@@ -433,9 +433,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>What to look for:</strong>
-                        </Trans>
+                        <strong><Trans>What to look for:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -470,7 +468,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Professional security audits are a significant investment that demonstrates a project's commitment to security.
+                            Professional security audits are a significant investment that demonstrates a project’s commitment to security.
                             Look for:
                         </Trans>
                     </BlogArticleProse>
@@ -492,7 +490,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            The absence of professional audits isn't necessarily disqualifying, especially for smaller projects. But for apps
+                            The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps
                             handling sensitive financial data, some form of external security validation is reassuring.
                         </Trans>
                     </BlogArticleProse>
@@ -525,7 +523,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Tools like GitHub's dependency graph and security advisories make this information visible even to non-technical
+                            Tools like GitHub’s dependency graph and security advisories make this information visible even to non-technical
                             users. A project with dozens of outdated dependencies and unaddressed security warnings should raise concerns.
                         </Trans>
                     </BlogArticleProse>
@@ -566,19 +564,19 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Budgie's Open-Source Commitment</Trans>
+                        <Trans>Budgie’s Open-Source Commitment</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie is built on the principle that you shouldn't have to trust us. You should be able to verify our claims,
+                            Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims,
                             examine our code, and confirm that we do what we say. Everything about Budgie is open source, from the mobile
                             app to the backend services.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>What's Open Source: Everything</Trans>
+                        <Trans>What’s Open Source: Everything</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
@@ -635,9 +633,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For users:</strong>
-                        </Trans>
+                        <strong><Trans>For users:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -651,14 +647,12 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>You can share your modifications with others</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>You're not locked into any ecosystem or vendor</Trans>
+                            <Trans>You’re not locked into any ecosystem or vendor</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For the community:</strong>
-                        </Trans>
+                        <strong><Trans>For the community:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -695,9 +689,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For developers:</strong>
-                        </Trans>
+                        <strong><Trans>For developers:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -716,9 +708,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For non-developers:</strong>
-                        </Trans>
+                        <strong><Trans>For non-developers:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -737,9 +727,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For security researchers:</strong>
-                        </Trans>
+                        <strong><Trans>For security researchers:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -769,8 +757,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            An open-source project is more than just public code. It's a community of users, contributors, and maintainers
-                            working together toward shared goals. How that community is governed matters for the project's long-term health
+                            An open-source project is more than just public code. It’s a community of users, contributors, and maintainers
+                            working together toward shared goals. How that community is governed matters for the project’s long-term health
                             and trustworthiness.
                         </Trans>
                     </BlogArticleProse>
@@ -784,9 +772,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Feature decisions:</strong>
-                        </Trans>
+                        <strong><Trans>Feature decisions:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -805,9 +791,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Security decisions:</strong>
-                        </Trans>
+                        <strong><Trans>Security decisions:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -826,9 +810,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Privacy decisions:</strong>
-                        </Trans>
+                        <strong><Trans>Privacy decisions:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -859,7 +841,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>What features are planned for upcoming releases</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>What's currently being worked on</Trans>
+                            <Trans>What’s currently being worked on</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>What trade-offs are being considered</Trans>
@@ -872,7 +854,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             This transparency lets you make informed decisions about whether Budgie is right for you. If a planned feature
-                            concerns you, you can raise those concerns before it's implemented. If a feature you need is missing, you can
+                            concerns you, you can raise those concerns before it’s implemented. If a feature you need is missing, you can
                             advocate for it or contribute it yourself.
                         </Trans>
                     </BlogArticleProse>
@@ -888,9 +870,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>For security researchers:</strong>
-                        </Trans>
+                        <strong><Trans>For security researchers:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -909,9 +889,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            <strong>Our commitments:</strong>
-                        </Trans>
+                        <strong><Trans>Our commitments:</Trans></strong>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -944,7 +922,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie isn't the only open-source option for financial management. A healthy ecosystem of alternatives exists,
+                            Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists,
                             and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on
                             your specific requirements.
                         </Trans>
@@ -969,7 +947,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             Firefly III is a comprehensive personal finance manager designed for self-hosting. It offers detailed transaction
-                            tracking, budgeting features, and extensive reporting. If you're comfortable managing your own server
+                            tracking, budgeting features, and extensive reporting. If you’re comfortable managing your own server
                             infrastructure and want maximum control, Firefly III provides powerful capabilities.
                         </Trans>
                     </BlogArticleProse>
@@ -981,7 +959,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             GnuCash is a veteran of open-source finance software, offering double-entry accounting suitable for personal and
-                            small business use. If you need accounting-grade features like invoicing and business expense tracking, GnuCash's
+                            small business use. If you need accounting-grade features like invoicing and business expense tracking, GnuCash’s
                             mature codebase has decades of development behind it.
                         </Trans>
                     </BlogArticleProse>
@@ -1021,7 +999,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            We think there's room in the ecosystem for all these tools. Users benefit when they have choices, and competition
+                            We think there’s room in the ecosystem for all these tools. Users benefit when they have choices, and competition
                             among open-source projects drives innovation while maintaining the trust benefits of transparency.
                         </Trans>
                     </BlogArticleProse>
@@ -1039,7 +1017,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             }
                         >
                             <Trans>
-                                Open-source software isn't automatically more secure, but it enables better security through transparency.
+                                Open-source software isn’t automatically more secure, but it enables better security through transparency.
                                 When code is public, security flaws can be found and fixed by anyone with the expertise, not just the
                                 original developers. This distributed scrutiny typically catches problems faster than relying solely on
                                 internal security teams. However, the security benefits only materialize when the community actually reviews
@@ -1050,7 +1028,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <BlogFaqItem
                             question={
                                 <Trans>
-                                    If the code is public, can't hackers use it to find vulnerabilities?
+                                    If the code is public, can’t hackers use it to find vulnerabilities?
                                 </Trans>
                             }
                         >
@@ -1059,7 +1037,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                                 Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing
                                 and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security
                                 researchers are blocked from helping. Open source assumes adversaries will study the code and designs
-                                security that works anyway. This produces more robust systems than hoping attackers won't look too closely.
+                                security that works anyway. This produces more robust systems than hoping attackers won’t look too closely.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1069,7 +1047,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             }
                         >
                             <Trans>
-                                This is a valid concern known as "build verification." Budgie uses reproducible builds where possible,
+                                This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible,
                                 allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust
                                 is required in the app store distribution, but the open-source code ensures you can build the app yourself if
                                 you want maximum verification. We also provide checksums for releases so you can verify download integrity.
@@ -1085,9 +1063,9 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         >
                             <Trans>
                                 One of the key benefits of open-source and offline-first architecture is data sovereignty. Your data is
-                                stored locally on your device, not locked in some company's cloud that might disappear. If Budgie development
+                                stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie development
                                 stopped tomorrow, your data would still be on your phone, and the open-source code would allow anyone to
-                                continue development or create export tools. You're never locked in.
+                                continue development or create export tools. You’re never locked in.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1100,7 +1078,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         >
                             <Trans>
                                 No. While anyone can propose changes to the code, you control which version you run. Updates only install
-                                when you choose to update the app. If you're concerned about a particular version, you can review the changes
+                                when you choose to update the app. If you’re concerned about a particular version, you can review the changes
                                 before updating or even build your own version from source. The open nature of the code means changes are
                                 visible and reviewable, actually giving you more control rather than less.
                             </Trans>
@@ -1114,7 +1092,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>
                                 Budgie is free to use with optional premium features for users who want additional capabilities. Our business
                                 model relies on users who find enough value in the product to support its development, not on monetizing user
-                                data. The open-source nature actually supports this model because users can trust their data isn't being
+                                data. The open-source nature actually supports this model because users can trust their data isn’t being
                                 sold, making them more willing to pay for premium features. Transparency and sustainable business can
                                 coexist.
                             </Trans>
@@ -1129,16 +1107,16 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Financial software that respects your privacy shouldn't require blind faith. When you choose an open-source
-                            budget app, you're choosing verifiable security over marketing promises. You're choosing community oversight over
-                            corporate opacity. You're choosing to trust evidence rather than assertions.
+                            Financial software that respects your privacy shouldn’t require blind faith. When you choose an open-source
+                            budget app, you’re choosing verifiable security over marketing promises. You’re choosing community oversight over
+                            corporate opacity. You’re choosing to trust evidence rather than assertions.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
                             Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every
-                            claim is verifiable. We don't ask you to trust us because we say so. We ask you to trust us because you can see
+                            claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see
                             exactly what we do.
                         </Trans>
                     </BlogArticleProse>
