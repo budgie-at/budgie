@@ -16,15 +16,23 @@ interface Props {
 }
 
 export const BlogPostingJsonLd = ({ title, description, date, author, image, locale, slug, keywords }: Props) => {
+    const url = `${BASE_URL}/${locale}/blog/${slug}`;
     const data = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: title,
         description,
         datePublished: date,
+        dateModified: date,
         author: { '@type': 'Person', name: author },
-        publisher: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
-        url: `${BASE_URL}/${locale}/blog/${slug}`,
+        publisher: {
+            '@type': 'Organization',
+            name: 'Budgie',
+            url: BASE_URL,
+            logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/budgie-logo.svg` }
+        },
+        url,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
         ...(isDefined(image) && { image: `${BASE_URL}${image}` }),
         keywords
     };
