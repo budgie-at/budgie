@@ -18,13 +18,13 @@ export const BlogPostingJsonLd = ({ title, description, date, author, image, loc
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: title,
-        description: description,
+        description,
         datePublished: date,
         author: { '@type': 'Person', name: author },
         publisher: { '@type': 'Organization', name: 'Budgie', url: BASE_URL },
         url: `${BASE_URL}/${locale}/blog/${slug}`,
         ...(image !== undefined && { image: `${BASE_URL}${image}` }),
-        keywords: keywords
+        keywords
     };
 
     return <JsonLd data={data} />;

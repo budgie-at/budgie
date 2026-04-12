@@ -3,7 +3,6 @@ import { Calendar, Clock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { calculateReadingTime } from '../../../blog/util/calculate-reading-time.util';
 import { Badge } from '../../../ui/badge';
 import { Card } from '../../../ui/card/card';
 import { CardContent } from '../../../ui/card/card-content';
@@ -17,12 +16,13 @@ interface Props {
     tags: readonly string[];
     image?: string;
     locale: string;
+    readingTimeMinutes: number;
     index?: number;
 }
 
 const whileInView = { opacity: 1, y: 0 };
 
-export const BlogCard = ({ slug, title, description, date, tags, image, locale, index = 0 }: Props) => {
+export const BlogCard = ({ slug, title, description, date, tags, image, locale, readingTimeMinutes, index = 0 }: Props) => {
     const { t } = useLingui();
 
     const formattedDate = new Date(date).toLocaleDateString(locale, {
@@ -30,8 +30,6 @@ export const BlogCard = ({ slug, title, description, date, tags, image, locale, 
         month: 'long',
         day: 'numeric'
     });
-
-    const readingTime = calculateReadingTime(description);
 
     return (
         <Motion index={index} whileInView={whileInView}>
@@ -73,7 +71,7 @@ export const BlogCard = ({ slug, title, description, date, tags, image, locale, 
                                 <Clock className="size-4" />
 
                                 <span>
-                                    {readingTime} {t`min read`}
+                                    {readingTimeMinutes} {t`min read`}
                                 </span>
                             </div>
                         </div>

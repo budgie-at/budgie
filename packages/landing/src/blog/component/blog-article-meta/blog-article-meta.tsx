@@ -5,7 +5,6 @@ import { Badge } from '../../../ui/badge';
 
 import type { ReactNode } from 'react';
 
-
 interface Props {
     date: string;
     author: string;

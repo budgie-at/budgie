@@ -21,7 +21,8 @@ export const BlogSection = ({ locale }: Props) => {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        image: entry.image
+        image: entry.image,
+        readingTimeMinutes: entry.readingTimeMinutes
     }))
         .sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime())
         .slice(0, 3);
@@ -50,6 +51,7 @@ export const BlogSection = ({ locale }: Props) => {
                             image={article.image}
                             index={index}
                             locale={locale}
+                            readingTimeMinutes={article.readingTimeMinutes}
                             slug={article.slug}
                             tags={article.tags}
                             title={article.title}
