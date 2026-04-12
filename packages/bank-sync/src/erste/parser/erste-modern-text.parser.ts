@@ -8,7 +8,7 @@ import {
     ERSTE_MODERN_END_MARKER,
     ERSTE_MODERN_FORMAT_MARKER,
     ERSTE_MODERN_FULL_DATE_REGEX,
-    ERSTE_MODERN_INLINE_TRANSACTION_REGEX,
+    ERSTE_MODERN_INLINE_TRANSACTION_TAIL_REGEX,
     ERSTE_MODERN_NOTE_HEADER_MARKERS,
     ERSTE_MODERN_TRANSACTION_DATE_REGEX
 } from '../constant/erste.constant';
@@ -25,6 +25,15 @@ import type { ErsteRowInterface } from '../interface/erste-row.interface';
 interface ErsteGroupedTransactionBlockInterface {
     readonly reference: string;
     readonly continuationLines: string[];
+}
+
+interface ErsteModernInlineTransactionMatchInterface {
+    readonly description: string;
+    readonly day: string;
+    readonly month: string;
+    readonly year: string;
+    readonly amount: string;
+    readonly debitMarker: string | undefined;
 }
 
 interface ErsteModernParseStateInterface {
@@ -136,7 +145,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
                     .some(
                         currentLine =>
                             !ERSTE_MODERN_TRANSACTION_DATE_REGEX.test(currentLine) &&
-                            !ERSTE_MODERN_INLINE_TRANSACTION_REGEX.test(currentLine) &&
+                            !this.isInlineTransactionLine(currentLine) &&
                             !this.isNoteHeaderLine(currentLine)
                     );
 
@@ -226,7 +235,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
             return;
         }
 
-        const inlineMatch = line.match(ERSTE_MODERN_INLINE_TRANSACTION_REGEX);
+        const inlineMatch = this.parseInlineTransactionMatch(line);
 
         if (isDefined(inlineMatch)) {
             this.startInlineTransaction(state, inlineMatch);
@@ -274,7 +283,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         state.isIgnoringNoteBlock = false;
     }
 
-    private startInlineTransaction(state: ErsteModernParseStateInterface, match: RegExpMatchArray): void {
+    private startInlineTransaction(state: ErsteModernParseStateInterface, match: ErsteModernInlineTransactionMatchInterface): void {
         this.finalizeCurrentTransaction(state);
         state.currentTransaction = this.parseInlineTransactionState(match);
         state.pendingLeadingLines = [];
@@ -301,8 +310,8 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         };
     }
 
-    private parseInlineTransactionState(match: RegExpMatchArray): ErsteModernInlineTransactionStateInterface {
-        const [, description, day, month, year, amount, debitMarker] = match;
+    private parseInlineTransactionState(match: ErsteModernInlineTransactionMatchInterface): ErsteModernInlineTransactionStateInterface {
+        const { description, day, month, year, amount, debitMarker } = match;
         const parsedDateAndAmount = parseErsteModernDateAmount({
             day,
             month,
@@ -318,6 +327,35 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
             amount: parsedDateAndAmount.amount,
             isCredit: parsedDateAndAmount.isCredit,
             continuationLines: []
+        };
+    }
+
+    private isInlineTransactionLine(line: string): boolean {
+        return isDefined(this.parseInlineTransactionMatch(line));
+    }
+
+    private parseInlineTransactionMatch(line: string): ErsteModernInlineTransactionMatchInterface | null {
+        const tailMatch = ERSTE_MODERN_INLINE_TRANSACTION_TAIL_REGEX.exec(line);
+
+        if (!isDefined(tailMatch) || !isDefined(tailMatch.index)) {
+            return null;
+        }
+
+        const description = this.normalizeWhitespace(line.slice(0, tailMatch.index));
+
+        if (!isNotEmptyString(description)) {
+            return null;
+        }
+
+        const [, day, month, year, amount, debitMarker] = tailMatch;
+
+        return {
+            description,
+            day,
+            month,
+            year,
+            amount,
+            debitMarker
         };
     }
 

@@ -6,7 +6,7 @@ export const ERSTE_ACCOUNT_NUMBER_REGEX = /(\d{3}-\d{3}-\d{3}\/\d{2})/u;
 
 export const ERSTE_MODERN_FORMAT_MARKER = 'Buchungstext/Booking Text';
 export const ERSTE_MODERN_TRANSACTION_DATE_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-)?$/u;
-export const ERSTE_MODERN_INLINE_TRANSACTION_REGEX = /^(\S.*?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-)?$/u;
+export const ERSTE_MODERN_INLINE_TRANSACTION_TAIL_REGEX = /(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-)?$/u;
 export const ERSTE_MODERN_FULL_DATE_REGEX = /\b\d{2}\.\d{2}\.\d{4}\b/u;
 export const ERSTE_MODERN_END_MARKER = 'Neuer Kontostand/New Balance';
 export const ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT = 3;
