@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ import type { Metadata } from 'next';
 
 const SLUG = 'budgie-offline-financial-data';
 const DATE = '2025-02-10';
+// eslint-disable-next-line lingui/no-unlocalized-strings
 const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 19;
@@ -51,6 +52,15 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function BudgieOfflineFinancialDataArticle(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
+
+    const articleTags = [
+                        <Trans key="privacy">privacy</Trans>,
+                        <Trans key="security">security</Trans>,
+                        <Trans key="architecture">architecture</Trans>,
+                        <Trans key="encryption">encryption</Trans>,
+                        <Trans key="open-source">open-source</Trans>,
+                        <Trans key="offline-first">offline-first</Trans>
+                    ];
 
     return (
         <main className="flex-1">
@@ -101,14 +111,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     date={DATE}
                     locale={lang}
                     readingTimeMinutes={READING_TIME}
-                    tags={[
-                        <Trans key="privacy">privacy</Trans>,
-                        <Trans key="security">security</Trans>,
-                        <Trans key="architecture">architecture</Trans>,
-                        <Trans key="encryption">encryption</Trans>,
-                        <Trans key="open-source">open-source</Trans>,
-                        <Trans key="offline-first">offline-first</Trans>
-                    ]}
+                    tags={articleTags}
                 />
             </BlogArticleHero>
 
