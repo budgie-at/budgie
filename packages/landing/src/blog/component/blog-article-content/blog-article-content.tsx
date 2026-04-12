@@ -2,7 +2,6 @@ import { Motion } from '../../../generic/component/motion/motion';
 
 import type { ReactNode } from 'react';
 
-
 interface Props {
     children: ReactNode;
 }

@@ -70,7 +70,8 @@ export default async function BlogPage(props: Props) {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        image: entry.image
+        image: entry.image,
+        readingTimeMinutes: entry.readingTimeMinutes
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
     const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
@@ -132,6 +133,7 @@ export default async function BlogPage(props: Props) {
                                         image={article.image}
                                         index={index}
                                         locale={lang}
+                                        readingTimeMinutes={article.readingTimeMinutes}
                                         slug={article.slug}
                                         tags={article.tags}
                                         title={article.title}
