@@ -2,7 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { getArticles } from '../../../blog/util/get-articles.util';
+import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { Button } from '../../../ui/button';
 import { BlogCard } from '../blog-card/blog-card';
 import { Motion } from '../motion/motion';
@@ -11,8 +12,19 @@ interface Props {
     locale: string;
 }
 
-export const BlogSection = async ({ locale }: Props) => {
-    const recentArticles = (await getArticles(locale)).slice(0, 3);
+export const BlogSection = ({ locale }: Props) => {
+    const i18n = getI18nInstance(locale);
+    const recentArticles = ARTICLE_REGISTRY.map(entry => ({
+        slug: entry.slug,
+        title: i18n._(entry.title),
+        description: i18n._(entry.description),
+        date: entry.date,
+        author: entry.author,
+        tags: entry.tags,
+        image: entry.image
+    }))
+        .sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime())
+        .slice(0, 3);
 
     return (
         <section className="w-full py-20 md:py-32 bg-muted/30">

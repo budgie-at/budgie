@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
-import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
@@ -63,7 +63,15 @@ export default async function BlogPage(props: Props) {
 
     initLingui(lang);
 
-    const allArticles = await getArticles(lang);
+    const allArticles = ARTICLE_REGISTRY.map(entry => ({
+        slug: entry.slug,
+        title: i18n._(entry.title),
+        description: i18n._(entry.description),
+        date: entry.date,
+        author: entry.author,
+        tags: entry.tags,
+        image: entry.image
+    })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
     const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;
