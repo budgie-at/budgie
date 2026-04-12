@@ -131,12 +131,14 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
                     ERSTE_MODERN_TRANSACTION_DATE_REGEX.test(currentLine)
                 ).length;
                 const containsOnlyDateRows = remainingLines.every(currentLine => ERSTE_MODERN_TRANSACTION_DATE_REGEX.test(currentLine));
-                const containsLeadingContent = lines.slice(0, index).some(
-                    currentLine =>
-                        !ERSTE_MODERN_TRANSACTION_DATE_REGEX.test(currentLine) &&
-                        !ERSTE_MODERN_INLINE_TRANSACTION_REGEX.test(currentLine) &&
-                        !this.isNoteHeaderLine(currentLine)
-                );
+                const containsLeadingContent = lines
+                    .slice(0, index)
+                    .some(
+                        currentLine =>
+                            !ERSTE_MODERN_TRANSACTION_DATE_REGEX.test(currentLine) &&
+                            !ERSTE_MODERN_INLINE_TRANSACTION_REGEX.test(currentLine) &&
+                            !this.isNoteHeaderLine(currentLine)
+                    );
 
                 if (containsOnlyDateRows && standardTransactionLineCount >= 2 && containsLeadingContent) {
                     return index;
@@ -147,7 +149,6 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         return null;
     }
 
-     
     private buildGroupedTransactionBlocks(lines: string[]): ErsteGroupedTransactionBlockInterface[] {
         const blocks: ErsteGroupedTransactionBlockInterface[] = [];
         let currentLines: string[] = [];
@@ -184,7 +185,10 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
 
     private createGroupedTransactionBlock(lines: string[]): ErsteGroupedTransactionBlockInterface {
         const reference = this.normalizeWhitespace(lines[0]);
-        const continuationLines = lines.slice(1).map(line => this.normalizeWhitespace(line)).filter(isNotEmptyString);
+        const continuationLines = lines
+            .slice(1)
+            .map(line => this.normalizeWhitespace(line))
+            .filter(isNotEmptyString);
 
         return { reference, continuationLines };
     }
@@ -277,10 +281,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
         state.isIgnoringNoteBlock = false;
     }
 
-    private parseStandardTransactionState(
-        match: RegExpMatchArray,
-        leadingLines: string[]
-    ): ErsteModernStandardTransactionStateInterface {
+    private parseStandardTransactionState(match: RegExpMatchArray, leadingLines: string[]): ErsteModernStandardTransactionStateInterface {
         const [, day, month, year, amount, debitMarker] = match;
         const parsedDateAndAmount = parseErsteModernDateAmount({
             day,

@@ -400,44 +400,12 @@ class TransactionService {
         existingTransactionIdMap: Map<string, number>,
         tx: DB
     ): Promise<TransactionEntityInterface[]> {
-        const newInputs = batch.filter(input => !isDefined(input.externalId) || !existingTransactionIdMap.has(input.externalId));
-        const existingInputs = batch.filter(input => isDefined(input.externalId) && existingTransactionIdMap.has(input.externalId));
-
+        const newInputs = batch.filter(input => !this.isExistingImportedTransaction(input, existingTransactionIdMap));
+        const importedUpdateParams = this.buildImportedUpdateParams(batch, existingTransactionIdMap);
         const createdTransactions = await this.processBatchInner(newInputs, tx);
-        const updatedTransactions: TransactionEntityInterface[] = [];
-
-        for (const input of existingInputs) {
-            const externalId = input.externalId;
-
-            if (!isDefined(externalId)) {
-                continue;
-            }
-
-            const transactionId = existingTransactionIdMap.get(externalId);
-
-            if (!isDefined(transactionId)) {
-                continue;
-            }
-
-            const updatedTransaction = await transactionRepository.updateById(
-                transactionId,
-                {
-                    title: input.title,
-                    comment: input.comment,
-                    type: input.type,
-                    operatedAt: input.operatedAt,
-                    exchangeRate: input.exchangeRate,
-                    externalId: input.externalId,
-                    externalSource: input.externalSource,
-                    fromAccountId: input.fromAccountId,
-                    toAccountId: input.toAccountId
-                },
-                tx
-            );
-
-            await this.upsertEntriesAndTags(transactionId, input, tx);
-            updatedTransactions.push(updatedTransaction);
-        }
+        const updatedTransactions = await Promise.all(
+            importedUpdateParams.map(params => this.updateImportedTransaction(params.transactionId, params.input, tx))
+        );
 
         return [...updatedTransactions, ...createdTransactions];
     }
@@ -491,6 +459,62 @@ class TransactionService {
                 tx
             );
         }
+    }
+
+    private isExistingImportedTransaction(input: TransactionCreateInputInterface, existingTransactionIdMap: Map<string, number>): boolean {
+        return isDefined(input.externalId) && existingTransactionIdMap.has(input.externalId);
+    }
+
+    private buildImportedUpdateParams(
+        batch: TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): Array<{ transactionId: number; input: TransactionCreateInputInterface }> {
+        return batch.map(input => this.buildImportedUpdateParam(input, existingTransactionIdMap)).filter(isDefined);
+    }
+
+    private buildImportedUpdateParam(
+        input: TransactionCreateInputInterface,
+        existingTransactionIdMap: Map<string, number>
+    ): { transactionId: number; input: TransactionCreateInputInterface } | null {
+        const { externalId } = input;
+
+        if (!isDefined(externalId)) {
+            return null;
+        }
+
+        const transactionId = existingTransactionIdMap.get(externalId);
+
+        if (!isDefined(transactionId)) {
+            return null;
+        }
+
+        return { transactionId, input };
+    }
+
+    private async updateImportedTransaction(
+        transactionId: number,
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<TransactionEntityInterface> {
+        const updatedTransaction = await transactionRepository.updateById(
+            transactionId,
+            {
+                title: input.title,
+                comment: input.comment,
+                type: input.type,
+                operatedAt: input.operatedAt,
+                exchangeRate: input.exchangeRate,
+                externalId: input.externalId,
+                externalSource: input.externalSource,
+                fromAccountId: input.fromAccountId,
+                toAccountId: input.toAccountId
+            },
+            tx
+        );
+
+        await this.upsertEntriesAndTags(transactionId, input, tx);
+
+        return updatedTransaction;
     }
 }
 

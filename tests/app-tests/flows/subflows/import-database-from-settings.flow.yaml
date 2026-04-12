@@ -32,9 +32,19 @@ env:
     commands:
       - tapOn: 'Open'
 
-- extendedWaitUntil:
-    visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
-    timeout: 15000
+- retry:
+    maxRetries: 2
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: '${FIXTURE_FILE}, .*'
+          commands:
+            - tapOn:
+                id: '${FIXTURE_FILE}, .*'
+      - extendedWaitUntil:
+          visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
+          timeout: 5000
 
 - retry:
     maxRetries: 2
