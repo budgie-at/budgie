@@ -96,7 +96,7 @@ export const RecurringCalendarDay = (props: Props) => {
     const totalCount = entryCount + forecastedCount;
     const hasEntries = totalCount > 0;
     const hasOnlyForecasted = entryCount === 0 && forecastedCount > 0;
-    const { isSelected } = day;
+    const {isSelected} = day;
 
     const actualDots = Math.min(entryCount, MAX_DOTS);
     const remainingSlots = MAX_DOTS - actualDots;
