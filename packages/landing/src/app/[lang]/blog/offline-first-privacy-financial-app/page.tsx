@@ -30,7 +30,7 @@ const DATE = '2025-11-06';
 // eslint-disable-next-line lingui/no-unlocalized-strings
 const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
-const READING_TIME = 8;
+const READING_TIME = 5;
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
