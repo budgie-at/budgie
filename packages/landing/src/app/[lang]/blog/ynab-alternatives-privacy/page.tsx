@@ -10,6 +10,7 @@ import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/bl
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
+import { Badge } from '../../../../ui/badge';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -52,15 +53,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function YnabAlternativesPrivacyArticle(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
-
-    const articleTags = [
-                        <Trans key="ynab">ynab</Trans>,
-                        <Trans key="alternatives">alternatives</Trans>,
-                        <Trans key="privacy">privacy</Trans>,
-                        <Trans key="comparison">comparison</Trans>,
-                        <Trans key="offline-first">offline-first</Trans>,
-                        <Trans key="open-source">open source</Trans>,
-                    ];
 
     return (
         <main className="flex-1">
@@ -111,7 +103,16 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     date={DATE}
                     locale={lang}
                     readingTimeMinutes={READING_TIME}
-                    tags={articleTags}
+                    tags={
+                        <>
+                            <Badge variant="secondary"><Trans>ynab</Trans></Badge>
+                            <Badge variant="secondary"><Trans>alternatives</Trans></Badge>
+                            <Badge variant="secondary"><Trans>privacy</Trans></Badge>
+                            <Badge variant="secondary"><Trans>comparison</Trans></Badge>
+                            <Badge variant="secondary"><Trans>offline-first</Trans></Badge>
+                            <Badge variant="secondary"><Trans>open source</Trans></Badge>
+                        </>
+                    }
                 />
             </BlogArticleHero>
 
