@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.1.0](https://github.com/budgie-at/budgie/compare/v5.0.0...v5.1.0) (2026-04-12)
+
+### Bug Fixes
+
+- **landing:** compute accurate reading times from article content ([c8ce846](https://github.com/budgie-at/budgie/commit/c8ce846568fbebb86dff0af12a01aa4718ebde3d))
+- **landing:** correct Red flag/Green flag evaluation table translations in .po catalogs ([7a9fb5a](https://github.com/budgie-at/budgie/commit/7a9fb5a316186820673d56f2443205a1c8ea0a46))
+- **landing:** escape quotes in blog article JSX and fix no-undefined violations ([19881fe](https://github.com/budgie-at/budgie/commit/19881fedd02f7e413b7ec8b69e824373b6359ef3))
+- **landing:** extract inline styles to constants in OG image components ([95fb218](https://github.com/budgie-at/budgie/commit/95fb2185d683d7eda0552458ee782f3a314b57e6))
+- **landing:** localize article OG images and add specific alt text ([0ebd5d7](https://github.com/budgie-at/budgie/commit/0ebd5d74a4ba518d5a65f5135d674f1322338088))
+- **landing:** replace transliterated German umlauts with proper ä/ö/ü/ß ([e32d8b0](https://github.com/budgie-at/budgie/commit/e32d8b0e45486d03e0a6686f0db3a5e9998783f7))
+- **landing:** resolve remaining lint errors in blog article pages ([52a8e01](https://github.com/budgie-at/budgie/commit/52a8e01d8859b3ad01a188a51ade0ae3bbf4f35c))
+- **landing:** sync reading times and complete BlogPosting JSON-LD schema ([ab959d2](https://github.com/budgie-at/budgie/commit/ab959d230ca713070be5be7e797cafe27cf48651))
+
+### Features
+
+- **landing:** add article registry and blog metadata builder ([4f4ae3c](https://github.com/budgie-at/budgie/commit/4f4ae3c8652afa8a57f7ea152a523267b8c08b9e))
+- **landing:** add blog breadcrumbs with schema.org markup and JSON-LD ([74ec90d](https://github.com/budgie-at/budgie/commit/74ec90d237212f147a23c98af40fd5b341df19b8))
+- **landing:** add generic blog article composition components ([57d3117](https://github.com/budgie-at/budgie/commit/57d311782d97c172c7dbd065f2455cab67514c93))
+- **landing:** add per-article OpenGraph images for blog static routes ([b69ce5b](https://github.com/budgie-at/budgie/commit/b69ce5b7369d70aa6e9024689951a9b82c278c45))
+- **landing:** convert budgie-offline-financial-data article to static TSX route ([dbf26f1](https://github.com/budgie-at/budgie/commit/dbf26f11bdb27f07deaa99b2a8298dda2e8456ac))
+- **landing:** convert cloud-budgeting-privacy-risks article to static TSX route ([6dc0fca](https://github.com/budgie-at/budgie/commit/6dc0fca9dad3b02c7f1de71392bc6982312ba04a))
+- **landing:** convert local-first-movement-developers article to static TSX route ([910f8b5](https://github.com/budgie-at/budgie/commit/910f8b5da3b9ace03115ae159e287c0696d49867))
+- **landing:** convert mint-alternatives-developers article to static TSX route ([288cbdd](https://github.com/budgie-at/budgie/commit/288cbdd851a0be9a79726d3f1f72b826e2f7dcb7))
+- **landing:** convert offline-first-privacy article to static TSX route ([7e96d0c](https://github.com/budgie-at/budgie/commit/7e96d0cf0393864d957e1d3cfcc67163f027f424))
+- **landing:** convert open-source-budgeting-transparency article to static TSX route ([743dd1c](https://github.com/budgie-at/budgie/commit/743dd1cb6ef3ad71be28226adad9494265c5b439))
+- **landing:** convert ynab-alternatives-privacy article to static TSX route ([142ce7a](https://github.com/budgie-at/budgie/commit/142ce7af3aef5eaa55944c29b26cbf443bd9be35))
+- **landing:** enhance SEO with OG images, manifest, 404, and search noindex ([5470ecf](https://github.com/budgie-at/budgie/commit/5470ecf450f7b0453c70b0b03cd8f0179bd1cb01))
+- **landing:** translate blog articles and add SEO foundation ([fe59adb](https://github.com/budgie-at/budgie/commit/fe59adb7d125b5a1592eb42c31b80b472d1a7c6e))
+- **landing:** translate remaining 29 blog strings across all locales ([1a4421d](https://github.com/budgie-at/budgie/commit/1a4421dea83f1552ad5092c98c4d1ae595a80273))
+- **landing:** use per-article OG images as blog card previews ([9cb5b5f](https://github.com/budgie-at/budgie/commit/9cb5b5f0cea046c846830ca984de1a9a24b44021))
+
 # [5.0.0](https://github.com/budgie-at/budgie/compare/v4.0.0...v5.0.0) (2026-04-07)
 
 **Note:** Version bump only for package @budgie-at/landing
