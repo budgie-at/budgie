@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
+import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
