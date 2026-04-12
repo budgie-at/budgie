@@ -1,4 +1,4 @@
-import { getArticles } from '../blog/util/get-articles.util';
+import { ARTICLE_REGISTRY } from '../blog/constant/article-registry.constant';
 import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
 
 import type { MetadataRoute } from 'next';
@@ -12,9 +12,7 @@ const buildSitemapLanguages = (path: string) => ({
     'x-default': `${BASE_URL}/en${path}`
 });
 
-const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-    const articles = await getArticles('en');
-
+const sitemap = (): MetadataRoute.Sitemap => {
     const staticEntries = LOCALES.flatMap(locale =>
         staticPages.map(page => ({
             url: `${BASE_URL}/${locale}${page}`,
@@ -26,12 +24,12 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     );
 
     const blogEntries = LOCALES.flatMap(locale =>
-        articles.map(article => ({
-            url: `${BASE_URL}/${locale}/blog/${article.slug}`,
-            lastModified: new Date(article.date),
+        ARTICLE_REGISTRY.map(entry => ({
+            url: `${BASE_URL}/${locale}/blog/${entry.slug}`,
+            lastModified: new Date(entry.date),
             changeFrequency: 'monthly' as const,
             priority: 0.7,
-            alternates: { languages: buildSitemapLanguages(`/blog/${article.slug}`) }
+            alternates: { languages: buildSitemapLanguages(`/blog/${entry.slug}`) }
         }))
     );
 

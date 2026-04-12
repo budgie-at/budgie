@@ -14,7 +14,7 @@ interface Props {
     title: string;
     description: string;
     date: string;
-    tags: string[];
+    tags: readonly string[];
     image?: string;
     locale: string;
     index?: number;
