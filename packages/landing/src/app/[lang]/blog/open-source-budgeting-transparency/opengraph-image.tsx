@@ -1,12 +1,12 @@
 /* eslint-disable lingui/no-unlocalized-strings */
+import { t } from '@lingui/core/macro';
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Budgie Blog';
+import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+
+export const alt = 'Open-Source Budgeting: Why Transparency Matters for Your Money';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-
-const TITLE = 'Open-Source Budgeting: Why Transparency Matters for Your Money';
-const TAGS = ['open-source', 'transparency', 'budgeting'];
 
 const backgroundStyle = {
     background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
@@ -48,18 +48,24 @@ const logoStyle = {
     color: 'white'
 };
 
-const OgImage = () =>
-    new ImageResponse(
+const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
+    const { lang } = await params;
+    const i18n = getI18nInstance(lang);
+
+    const title = t(i18n)`Open-Source Budgeting: Why Transparency Matters for Your Money`;
+    const tags = [t(i18n)`open-source`, t(i18n)`transparency`, t(i18n)`budgeting`];
+
+    return new ImageResponse(
         <div style={backgroundStyle}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
-                    {TAGS.slice(0, 3).map(tag => (
+                    {tags.slice(0, 3).map(tag => (
                         <span key={tag} style={tagStyle}>
                             {tag}
                         </span>
                     ))}
                 </div>
-                <h1 style={titleStyle}>{TITLE}</h1>
+                <h1 style={titleStyle}>{title}</h1>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -71,5 +77,6 @@ const OgImage = () =>
         </div>,
         { ...size }
     );
+};
 
 export default OgImage;
