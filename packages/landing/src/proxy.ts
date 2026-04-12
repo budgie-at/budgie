@@ -17,7 +17,7 @@ const getRequestLocale = (requestHeaders: Headers): string => {
 };
 
 // eslint-disable-next-line func-style,no-implicit-globals
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     const pathnameHasLocale = locales.some(locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`);
