@@ -8,6 +8,7 @@ env:
       HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
 
 - runFlow:
-    file: clear-data-from-settings.flow.yaml
+    file: import-database-from-settings.flow.yaml
     env:
+      FIXTURE_FILE: 'e2e-00-empty-state.db'
       HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}

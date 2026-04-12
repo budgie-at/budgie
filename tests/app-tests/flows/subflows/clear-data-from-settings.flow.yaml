@@ -10,6 +10,26 @@ env:
     commands:
       - tapOn: 'Open'
 
+- runFlow:
+    when:
+      notVisible:
+        id: 'SettingsPage.ClearDataCard'
+    commands:
+      - tapOn:
+          id: 'TabBar.Settings'
+      - waitForAnimationToEnd
+      - tapOn:
+          id: 'TabBar.Settings'
+      - extendedWaitUntil:
+          visible:
+            id: 'SettingsPage.Container'
+          timeout: 10000
+      - scrollUntilVisible:
+          element:
+            id: 'SettingsPage.ClearDataCard'
+          direction: DOWN
+          centerElement: true
+
 - extendedWaitUntil:
     visible:
       id: 'SettingsPage.ClearDataCard'
@@ -21,12 +41,20 @@ env:
       - tapOn:
           id: 'SettingsPage.ClearDataCard'
       - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible: 'Delete data|Daten löschen'
-          timeout: 5000
+      - runFlow:
+          when:
+            notVisible: 'Delete data|Daten löschen'
+          commands:
+            - tapOn:
+                id: 'SettingsPage.ClearDataCard'
+            - waitForAnimationToEnd
 
-- tapOn:
-    point: '68%,58%'
+- runFlow:
+    when:
+      visible: 'Delete data|Daten löschen'
+    commands:
+      - tapOn:
+          point: '68%,58%'
 
 - runFlow:
     file: relaunch-app.flow.yaml
