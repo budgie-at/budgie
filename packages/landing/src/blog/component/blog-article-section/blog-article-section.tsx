@@ -4,6 +4,4 @@ interface Props {
     children: ReactNode;
 }
 
-export const BlogArticleSection = ({ children }: Props) => (
-    <section className="space-y-4">{children}</section>
-);
+export const BlogArticleSection = ({ children }: Props) => <section className="space-y-4">{children}</section>;
