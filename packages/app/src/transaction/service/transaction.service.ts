@@ -496,25 +496,15 @@ class TransactionService {
         input: TransactionCreateInputInterface,
         tx: DB
     ): Promise<TransactionEntityInterface> {
-        const updatedTransaction = await transactionRepository.updateById(
+        return transactionRepository.updateById(
             transactionId,
             {
                 title: input.title,
                 comment: input.comment,
-                type: input.type,
-                operatedAt: input.operatedAt,
-                exchangeRate: input.exchangeRate,
-                externalId: input.externalId,
-                externalSource: input.externalSource,
-                fromAccountId: input.fromAccountId,
-                toAccountId: input.toAccountId
+                operatedAt: input.operatedAt
             },
             tx
         );
-
-        await this.upsertEntriesAndTags(transactionId, input, tx);
-
-        return updatedTransaction;
     }
 }
 
