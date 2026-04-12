@@ -13,7 +13,13 @@ export const LlmProvider = ({ children }: Props) => {
     const llm = useLlamaLlm();
     const stt = useSpeechToText({ model: WHISPER_SMALL });
 
-    console.log('[LLM-PROVIDER] LLM state:', { isReady: llm.isReady, isEmbeddingReady: llm.isEmbeddingReady, isInitializing: llm.isInitializing, error: llm.error, downloadProgress: llm.downloadProgress }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+    console.log('[LLM-PROVIDER] LLM state:', {
+        isReady: llm.isReady,
+        isEmbeddingReady: llm.isEmbeddingReady,
+        isInitializing: llm.isInitializing,
+        error: llm.error,
+        downloadProgress: llm.downloadProgress
+    });  
     const value = { isAvailable: true, llm, stt };
 
     return <LlmContext value={value}>{children}</LlmContext>;

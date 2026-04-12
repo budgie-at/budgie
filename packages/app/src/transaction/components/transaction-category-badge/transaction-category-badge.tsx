@@ -1,4 +1,8 @@
-import { TransactionWithRelationsEntityInterface, isNegativeAdjustmentTransaction, isPositiveAdjustmentTransaction } from '@budgie/contracts';
+import {
+    TransactionWithRelationsEntityInterface,
+    isNegativeAdjustmentTransaction,
+    isPositiveAdjustmentTransaction
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -53,9 +57,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     const [firstEntry] = transaction.entries;
     const { mccCategory } = firstEntry;
     const showMccChip = isDefined(mccCategory) && isDefined(firstEntry.category);
-    const badgeTestID = isAdjustment
-        ? TransactionCardSelectors.AdjustmentBadge
-        : TransactionCardSelectors.Category(categoryLabel);
+    const badgeTestID = isAdjustment ? TransactionCardSelectors.AdjustmentBadge : TransactionCardSelectors.Category(categoryLabel);
 
     return (
         <View className="flex-row gap-xs">
