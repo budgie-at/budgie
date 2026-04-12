@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ import type { Metadata } from 'next';
 
 const SLUG = 'local-first-movement-developers';
 const DATE = '2025-01-29';
+// eslint-disable-next-line lingui/no-unlocalized-strings
 const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 22;
@@ -51,6 +52,16 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function LocalFirstMovementDevelopersArticle(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
+
+    const articleTags = [
+                        <Trans key="local-first">local-first</Trans>,
+                        <Trans key="offline-first">offline-first</Trans>,
+                        <Trans key="CRDTs">CRDTs</Trans>,
+                        <Trans key="sync-engines">sync engines</Trans>,
+                        <Trans key="software-architecture">software architecture</Trans>,
+                        <Trans key="privacy">privacy</Trans>,
+                        <Trans key="developers">developers</Trans>
+                    ];
 
     return (
         <main className="flex-1">
@@ -101,15 +112,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     date={DATE}
                     locale={lang}
                     readingTimeMinutes={READING_TIME}
-                    tags={[
-                        <Trans key="local-first">local-first</Trans>,
-                        <Trans key="offline-first">offline-first</Trans>,
-                        <Trans key="CRDTs">CRDTs</Trans>,
-                        <Trans key="sync-engines">sync engines</Trans>,
-                        <Trans key="software-architecture">software architecture</Trans>,
-                        <Trans key="privacy">privacy</Trans>,
-                        <Trans key="developers">developers</Trans>
-                    ]}
+                    tags={articleTags}
                 />
             </BlogArticleHero>
 
