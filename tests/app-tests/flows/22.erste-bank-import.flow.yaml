@@ -2,7 +2,14 @@ appId: ${APP_ID}
 env:
     HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
     FIRST_PDF_NAME_MATCH: '.*erste-statement-008.*'
+    FIRST_PDF_PICK_POINT: '79%,44%'
+    FIRST_PDF_PICK_SCROLL_UP: 'false'
+    FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
     SECOND_PDF_NAME_MATCH: '.*erste-statement-009.*'
+    SECOND_PDF_PICK_POINT: '19%,64%'
+    SECOND_PDF_PICK_SCROLL_UP: 'true'
+    SECOND_PDF_PICK_SCROLL_FROM_ID: 'e2e-17-expense-to-transfer.db, db'
+    SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009, pdf'
 ---
 - runFlow:
       file: subflows/relaunch-app.flow.yaml
@@ -33,6 +40,9 @@ env:
       file: subflows/import-erste-pdf-from-picker.flow.yaml
       env:
           PDF_NAME_MATCH: ${FIRST_PDF_NAME_MATCH}
+          PDF_PICK_POINT: ${FIRST_PDF_PICK_POINT}
+          PDF_PICK_SCROLL_UP: ${FIRST_PDF_PICK_SCROLL_UP}
+          PDF_ROW_ID_MATCH: ${FIRST_PDF_ROW_ID_MATCH}
 
 - scrollUntilVisible:
       element:
@@ -73,6 +83,10 @@ env:
       file: subflows/quick-import-erste-pdf-from-picker.flow.yaml
       env:
           PDF_NAME_MATCH: ${SECOND_PDF_NAME_MATCH}
+          PDF_PICK_POINT: ${SECOND_PDF_PICK_POINT}
+          PDF_PICK_SCROLL_UP: ${SECOND_PDF_PICK_SCROLL_UP}
+          PDF_PICK_SCROLL_FROM_ID: ${SECOND_PDF_PICK_SCROLL_FROM_ID}
+          PDF_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
 - assertVisible:
       id: 'AccountCard.Balance.Erste_EUR._3412_05'
