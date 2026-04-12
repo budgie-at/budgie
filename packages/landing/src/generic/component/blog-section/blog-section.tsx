@@ -21,7 +21,7 @@ export const BlogSection = ({ locale }: Props) => {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        image: entry.image,
+        image: `/${locale}/blog/${entry.slug}/opengraph-image`,
         readingTimeMinutes: entry.readingTimeMinutes
     }))
         .sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime())
