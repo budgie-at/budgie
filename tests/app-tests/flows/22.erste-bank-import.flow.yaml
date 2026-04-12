@@ -2,12 +2,15 @@ appId: ${APP_ID}
 env:
     HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
     FIRST_PDF_NAME_MATCH: '.*erste-statement-008.*'
-    FIRST_PDF_TILE_POINT: '16%,28%'
     SECOND_PDF_NAME_MATCH: '.*erste-statement-009.*'
-    SECOND_PDF_TILE_POINT: '43%,26%'
 ---
 - runFlow:
-      file: subflows/enter-app.flow.yaml
+      file: subflows/relaunch-app.flow.yaml
+      env:
+          HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
+
+- runFlow:
+      file: subflows/clear-data-from-settings.flow.yaml
       env:
           HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
 
@@ -30,13 +33,15 @@ env:
       file: subflows/import-erste-pdf-from-picker.flow.yaml
       env:
           PDF_NAME_MATCH: ${FIRST_PDF_NAME_MATCH}
-          PDF_TILE_POINT: ${FIRST_PDF_TILE_POINT}
 
 - scrollUntilVisible:
       element:
           id: 'AccountCard.Erste EUR'
       direction: DOWN
       timeout: 10000
+
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._477_73'
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -46,41 +51,13 @@ env:
           id: 'AccountDetails.EditButton'
       timeout: 10000
 
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.Habenzinsen'
-      direction: DOWN
-      timeout: 10000
-
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.Kest'
-      direction: DOWN
-      timeout: 10000
-
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.Kontof_hrung'
-      direction: DOWN
-      timeout: 10000
-
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.Bonus_Kontof_hrung'
-      direction: DOWN
-      timeout: 10000
-
-- scrollUntilVisible:
-      element:
+- extendedWaitUntil:
+      visible:
           id: 'TransactionCard.Label.Sample_Counterparty'
-      direction: UP
       timeout: 20000
-      speed: 20
-      visibilityPercentage: 30
-      centerElement: true
 
 - tapOn:
-      point: '8%,7%'
+      id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:
       visible:
@@ -96,7 +73,9 @@ env:
       file: subflows/quick-import-erste-pdf-from-picker.flow.yaml
       env:
           PDF_NAME_MATCH: ${SECOND_PDF_NAME_MATCH}
-          PDF_TILE_POINT: ${SECOND_PDF_TILE_POINT}
+
+- assertVisible:
+      id: 'AccountCard.Balance.Erste_EUR._3412_05'
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -110,6 +89,6 @@ env:
       element:
           id: 'TransactionCard.Label.AREALIS_GmbH'
       direction: DOWN
-      timeout: 30000
-      speed: 80
-      visibilityPercentage: 50
+      timeout: 20000
+      speed: 20
+      visibilityPercentage: 30

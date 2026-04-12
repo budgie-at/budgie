@@ -51,6 +51,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
+    timeout: 30000
 
 - scrollUntilVisible:
     element:

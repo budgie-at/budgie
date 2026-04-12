@@ -30,10 +30,8 @@ export { generatePrivatbankExternalId } from './privatbank/util/generate-privatb
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { ErsteFileClient } from './erste/client/erste-file.client';
-export { ErsteFormatEnum } from './erste/enum/erste-format.enum';
 export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
 export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
-export { detectErsteFormat } from './erste/util/detect-erste-format.util';
 export { parseErsteText } from './erste/util/parse-erste-pdf.util';
 export { generateErsteExternalId } from './erste/util/generate-erste-external-id.util';
 
