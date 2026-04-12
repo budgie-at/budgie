@@ -53,20 +53,22 @@ env:
           commands:
             - runFlow:
                 when:
-                  visible: '${FIXTURE_FILE}'
+                  visible: '${FIXTURE_FILE}(, .*)?'
                 commands:
-                  - tapOn: '${FIXTURE_FILE}'
-      - extendedWaitUntil:
-          visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
-          timeout: 5000
+                  - tapOn:
+                      text: '${FIXTURE_FILE}(, .*)?'
 
-- retry:
-    maxRetries: 2
+- runFlow:
+    when:
+      visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
     commands:
-      - tapOn:
-          text: 'Import Database|Datenbank importieren'
-          index: 1
-      - waitForAnimationToEnd
+      - retry:
+          maxRetries: 2
+          commands:
+            - tapOn:
+                text: 'Import Database|Datenbank importieren'
+                index: 1
+            - waitForAnimationToEnd
 
 - runFlow:
     file: relaunch-app.flow.yaml
