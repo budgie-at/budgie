@@ -10,6 +10,5 @@ export const filterAccountsBySearchQuery = <T extends SearchableAccount>(account
     }
 
     const normalizedSearch = search.trim().toLowerCase();
-
     return accounts.filter(account => account.title.toLowerCase().includes(normalizedSearch));
 };
