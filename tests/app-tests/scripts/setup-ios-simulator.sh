@@ -22,6 +22,7 @@ fi
 
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/19-transactions-filters.db" "e2e-19-transactions-filters.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/20-transactions-account-date.db" "e2e-20-transactions-account-date.db" "$SIMULATOR_UDID" "$APP_ID"
+"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/00-empty-state.db" "e2e-00-empty-state.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/08-settings-navigation.db" "e2e-08-settings-navigation.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/15-archived-accounts.db" "e2e-15-archived-accounts.db" "$SIMULATOR_UDID" "$APP_ID"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/09-expense-transaction.db" "e2e-09-expense-transaction.db" "$SIMULATOR_UDID" "$APP_ID"
