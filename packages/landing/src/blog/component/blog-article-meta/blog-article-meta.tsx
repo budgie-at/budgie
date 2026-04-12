@@ -1,8 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { Calendar, Clock } from 'lucide-react';
 
-import { Badge } from '../../../ui/badge';
-
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -10,7 +8,7 @@ interface Props {
     author: string;
     locale: string;
     readingTimeMinutes: number;
-    tags: ReactNode[];
+    tags: ReactNode;
 }
 
 export const BlogArticleMeta = ({ date, author, locale, readingTimeMinutes, tags }: Props) => {
@@ -23,11 +21,7 @@ export const BlogArticleMeta = ({ date, author, locale, readingTimeMinutes, tags
     return (
         <div className="border-b pb-6 space-y-4">
             <div className="flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
-                        {tag}
-                    </Badge>
-                ))}
+                {tags}
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">

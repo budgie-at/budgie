@@ -28,8 +28,18 @@ interface Props {
 }
 
 export const AccountActionCard = (props: Props) => {
-    const { account, actionIcon, actionButtonText, confirmTitle, confirmDescription, errorText, currencySymbol, onAction, testID, actionButtonTestID } =
-        props;
+    const {
+        account,
+        actionIcon,
+        actionButtonText,
+        confirmTitle,
+        confirmDescription,
+        errorText,
+        currencySymbol,
+        onAction,
+        testID,
+        actionButtonTestID
+    } = props;
     const { icon, title, type } = account;
 
     const { balance } = useAccountBalanceQuery(account.id);

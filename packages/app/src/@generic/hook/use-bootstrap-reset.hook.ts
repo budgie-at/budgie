@@ -11,15 +11,15 @@ import { appResetService } from '../service/app-reset.service';
 
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 
-const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
+const isTestHooksEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
 const getBootstrapParams = async () => {
     const initialUrl = await Linking.parseInitialURLAsync();
-    const resetToken = normalizeQueryString(initialUrl.queryParams?.['e2eResetToken']);
-    const fixtureId = normalizeQueryString(initialUrl.queryParams?.['e2eImportFixture']);
-    const shouldReset = initialUrl.queryParams?.['e2eReset'] === 'true';
+    const resetToken = normalizeQueryString(initialUrl.queryParams?.e2eResetToken);
+    const fixtureId = normalizeQueryString(initialUrl.queryParams?.e2eImportFixture);
+    const shouldReset = initialUrl.queryParams?.e2eReset === 'true';
 
     return {
         resetToken,
@@ -72,10 +72,7 @@ export const useBootstrapReset = () => {
 
                 const bootstrapParams = await getBootstrapParams();
 
-                if (
-                    isNotEmptyString(bootstrapParams.resetToken) &&
-                    bootstrapParams.hasBootstrapAction
-                ) {
+                if (isNotEmptyString(bootstrapParams.resetToken) && bootstrapParams.hasBootstrapAction) {
                     await runBootstrapAction(bootstrapParams);
                 } else {
                     await SecureStore.deleteItemAsync(E2E_BOOTSTRAP_TOKEN_KEY);
