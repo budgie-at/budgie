@@ -1,6 +1,7 @@
 appId: ${APP_ID}
 env:
   FIXTURE_FILE: ${FIXTURE_FILE}
+  FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH || ''}
   PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
@@ -23,7 +24,7 @@ env:
     file: select-file-from-app-provider.flow.yaml
     env:
       FILE_NAME_MATCH: ${FIXTURE_FILE}
-      FILE_ROW_ID_MATCH: '${FIXTURE_FILE}, .*'
+      FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
       PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH}
 
 - runFlow:
@@ -37,16 +38,24 @@ env:
     commands:
       - runFlow:
           when:
-            visible:
-              id: '${FIXTURE_FILE}, .*'
+            true: ${FIXTURE_ROW_ID_MATCH !== ''}
           commands:
-            - tapOn:
-                id: '${FIXTURE_FILE}, .*'
+            - runFlow:
+                when:
+                  visible:
+                    id: '${FIXTURE_ROW_ID_MATCH}'
+                commands:
+                  - tapOn:
+                      id: '${FIXTURE_ROW_ID_MATCH}'
       - runFlow:
           when:
-            visible: '${FIXTURE_FILE}'
+            true: ${FIXTURE_ROW_ID_MATCH === ''}
           commands:
-            - tapOn: '${FIXTURE_FILE}'
+            - runFlow:
+                when:
+                  visible: '${FIXTURE_FILE}'
+                commands:
+                  - tapOn: '${FIXTURE_FILE}'
       - extendedWaitUntil:
           visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
           timeout: 5000
