@@ -48,6 +48,18 @@ const logoStyle = {
     color: 'white'
 };
 
+
+const columnStyle = { display: 'flex' as const, flexDirection: 'column' as const };
+
+const tagsContainerStyle = { display: 'flex' as const, gap: '12px', marginBottom: '32px' };
+
+const footerStyle = { display: 'flex' as const, alignItems: 'center' as const, justifyContent: 'space-between' as const };
+
+const brandStyle = { display: 'flex' as const, alignItems: 'center' as const, gap: '12px' };
+
+const brandTextStyle = { fontSize: '24px', fontWeight: 600, color: 'white' };
+
+const domainStyle = { fontSize: '18px', color: '#64748b' };
 const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
@@ -57,8 +69,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return new ImageResponse(
         <div style={backgroundStyle}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '32px' }}>
+            <div style={columnStyle}>
+                <div style={tagsContainerStyle}>
                     {tags.slice(0, 3).map(tag => (
                         <span key={tag} style={tagStyle}>
                             {tag}
@@ -67,12 +79,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
                 </div>
                 <h1 style={titleStyle}>{title}</h1>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={footerStyle}>
+                <div style={brandStyle}>
                     <div style={logoStyle}>B</div>
-                    <span style={{ fontSize: '24px', fontWeight: 600, color: 'white' }}>Budgie Blog</span>
+                    <span style={brandTextStyle}>Budgie Blog</span>
                 </div>
-                <span style={{ fontSize: '18px', color: '#64748b' }}>budgie.at</span>
+                <span style={domainStyle}>budgie.at</span>
             </div>
         </div>,
         { ...size }

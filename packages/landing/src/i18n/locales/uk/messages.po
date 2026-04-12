@@ -19,27 +19,27 @@ msgstr "Так! Ви можете синхронізувати свої дані
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:268
 msgid "“Bank-level encryption” (what does that actually mean in their implementation?)"
-msgstr ""
+msgstr "«Шифрування банківського рівня» (що це насправді означає в їхній реалізації?)"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:421
 msgid "“But I need cloud backup!”"
-msgstr ""
+msgstr "\"Але мені потрібне хмарне резервне копіювання!\""
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:428
 msgid "“How do I sync across devices?”"
-msgstr ""
+msgstr "\"Як мені синхронізувати між пристроями?\""
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:435
 msgid "“Isn’t cloud more convenient?”"
-msgstr ""
+msgstr "\"Хіба хмара не зручніша?\""
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:276
 msgid "“We take security seriously” (how? show us the evidence)"
-msgstr ""
+msgstr "«Ми серйозно ставимося до безпеки» (як саме? покажіть докази)"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:273
 msgid "“Your data is secure” (against what threat models? tested by whom?)"
-msgstr ""
+msgstr "«Ваші дані в безпеці» (від яких загроз? хто тестував?)"
 
 #: src/generic/component/hero-section/hero-section-header.tsx:84
 msgid "(Beta testers)"
@@ -69,7 +69,7 @@ msgstr "← Назад до блогу"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:171
 msgid "<0>2020-2022</0>: Feature stagnation. While competitors innovated, Mint’s interface remained largely unchanged."
-msgstr ""
+msgstr "<0>2020-2022</0>: Стагнація функцій. Поки конкуренти впроваджували інновації, інтерфейс Mint залишався практично незмінним."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:177
 msgid "<0>2022</0>: Increasing sync issues. Bank connections became unreliable, with users reporting days of failed syncs."
@@ -121,7 +121,7 @@ msgstr "<0>Copilot</0>: Обмежено"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:703
 msgid "<0>API Access</0>: No"
-msgstr ""
+msgstr "<0>Доступ до API</0>: Ні"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:532
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:589
@@ -156,7 +156,7 @@ msgstr "<0>Передача активів</0>: Бази даних корист
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1027
 msgid "<0>Audit connected accounts</0>: Check each bank’s connected apps settings and revoke unnecessary connections"
-msgstr ""
+msgstr "<0>Синхронізація між пристроями</0>: Ваші дані існують на одному пристрої, якщо ви не перенесете їх вручну"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:423
 msgid "<0>Authentication</0>: You confirm the transfer on both devices, usually by comparing a visual code"
@@ -176,7 +176,7 @@ msgstr "<0>Вбудована синхронізація з банком.</0> А
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:187
 msgid "<0>Bank sync requires sharing credentials.</0> To use YNAB’s automatic import feature, you connect through Plaid or similar aggregators, sharing read access to your bank accounts with third parties."
-msgstr ""
+msgstr "<0>Синхронізація з банком вимагає передачі облікових даних.</0> Для використання функції автоматичного імпорту YNAB ви підключаєтесь через Plaid або подібні агрегатори, надаючи доступ на читання ваших банківських рахунків третім сторонам."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:617
 msgid "<0>Bank Sync</0>: Manual"
@@ -246,11 +246,11 @@ msgstr "<0>Найкраще для:</0> Розробників, які хочу�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1362
 msgid "<0>Best for:</0> Developers who want to adopt zero-based budgeting and don’t mind cloud storage."
-msgstr ""
+msgstr "<0>Найкраще для:</0> Розробників, які хочуть прийняти бюджетування з нуля та не заперечують проти хмарного зберігання."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1272
 msgid "<0>Best for:</0> iOS/Mac users who prioritize design and are comfortable in Apple’s walled garden."
-msgstr ""
+msgstr "<0>Найкраще для:</0> Користувачів iOS/Mac, які надають пріоритет дизайну та комфортно почуваються у закритому середовищі Apple."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1076
 msgid "<0>Best for:</0> Power users who want granular control over every aspect of financial tracking."
@@ -262,11 +262,11 @@ msgstr "<0>Найкраще для:</0> Досвідчених користув�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:834
 msgid "<0>Best for:</0> Technical users comfortable with self-hosting who want maximum control and don’t mind a steeper learning curve."
-msgstr ""
+msgstr "<0>Найкраще для:</0> Технічних користувачів, яким зручно з self-hosted і які хочуть максимального контролю та не проти крутішої кривої навчання."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1326
 msgid "<0>Best for:</0> Users who want absolute control, enjoy working with data, and don’t mind manual entry."
-msgstr ""
+msgstr "<0>Найкраще для:</0> Користувачів, які хочуть абсолютного контролю, насолоджуються роботою з даними і не проти ручного введення."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1453
 msgid "<0>Best for:</0> Users who want something similar to Mint with better reliability and support."
@@ -274,7 +274,7 @@ msgstr "<0>Найкраще для:</0> Користувачів, які хоч�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1131
 msgid "<0>Best for:</0> Users who want something similar to YNAB with better household features and don’t mind cloud storage."
-msgstr ""
+msgstr "<0>Найкраще для:</0> Користувачів, які хочуть щось подібне до YNAB з кращими функціями для домогосподарства і яких не турбує хмарне зберігання."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:740
 msgid "<0>Best for:</0> Users who want strong privacy without sacrificing modern app design and user experience. Ideal for those who prefer mobile-first budgeting."
@@ -358,7 +358,7 @@ msgstr "<0>Виявлення змін:</0> Визначення того, що 
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1080
 msgid "<0>Clean interface.</0> Modern design that improves on YNAB’s UX."
-msgstr ""
+msgstr "<0>Чистий інтерфейс.</0> Сучасний дизайн, що покращує UX YNAB."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1205
 msgid "<0>Clean interface</0>: Modern, fast web app with thoughtful UX."
@@ -366,7 +366,7 @@ msgstr "<0>Чистий інтерфейс</0>: Сучасний, швидкий
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:328
 msgid "<0>Closed source:</0> Trust the company’s claims"
-msgstr ""
+msgstr "<0>Закритий код:</0> Довіряйте заявам компанії"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:953
 msgid "<0>Cloud backup</0>: You manage your own backups"
@@ -636,7 +636,7 @@ msgstr "<0>Ідентифікаційна інформація</0>: Ім'я, а�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1632
 msgid "<0>If You Migrated to Credit Karma:</0> Your transaction history should have transferred, but it’s in Credit Karma’s format now. You can export from Credit Karma, but the data structure differs from Mint."
-msgstr ""
+msgstr "<0>Якщо ви мігрували до Credit Karma:</0> Ваша історія транзакцій мала перенестися, але тепер вона у форматі Credit Karma. Ви можете експортувати з Credit Karma, але структура даних відрізняється від Mint."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1094
 msgid "<0>Incredibly comprehensive</0>: Tracks assets, liabilities, budgets, piggy banks, bills, and more. If you can think of a financial scenario, Firefly III probably handles it."
@@ -644,7 +644,7 @@ msgstr "<0>Надзвичайно всеосяжний</0>: Відстежує �
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:524
 msgid "<0>Integration</0>: Data may be merged with the acquirer’s existing user data"
-msgstr ""
+msgstr "<0>Інтеграція</0>: Дані можуть бути об'єднані з існуючими даними користувачів покупця"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:252
 msgid "<0>Investment holdings</0>: Positions, quantities, cost basis, current values"
@@ -712,7 +712,7 @@ msgstr "<0>Локальні табличні додатки.</0> LibreOffice Cal
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:174
 msgid "<0>Local-first applications</0> flip this model. Your device holds the primary copy of your data. You can work indefinitely without network access with no functionality loss. Synchronization is a peer-to-peer operation between devices, not a client-server upload. Examples include Git, Obsidian, and Linear’s sync architecture."
-msgstr ""
+msgstr "<0>Local-first застосунки</0> перевертають цю модель. Ваш пристрій зберігає основну копію ваших даних. Ви можете працювати необмежено без мережевого доступу і без втрати функціональності. Синхронізація — це однорангова операція між пристроями, а не завантаження клієнт-сервер. Прикладами є Git, Obsidian та архітектура синхронізації Linear."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:769
 msgid "<0>Local-first with optional sync.</0> Run it completely locally or set up your own server for multi-device sync."
@@ -819,7 +819,7 @@ msgstr "<0>Сучасний досвід користувача</0> — Чист
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:695
 msgid "<0>Modern, intuitive design.</0> Privacy doesn’t mean sacrificing user experience."
-msgstr ""
+msgstr "<0>Сучасний, інтуїтивний дизайн.</0> Приватність не означає жертвування зручністю."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1199
 msgid "<0>Multi-currency excellence</0>: Excellent support for multiple currencies, including crypto integration."
@@ -899,11 +899,11 @@ msgstr "<0>Відсутність деталізації згоди</0>: Скр�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:282
 msgid "<0>No custom categories</0>: You’re stuck with their predetermined categorization"
-msgstr ""
+msgstr "<0>Немає власних категорій</0>: Ви обмежені їхньою заздалегідь визначеною категоризацією"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1586
 msgid "<0>No data monetization</0>: We don’t want your data. We can’t even access it."
-msgstr ""
+msgstr "<0>Без монетизації даних</0>: Ми не хочемо ваших даних. Ми навіть не можемо отримати до них доступ."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:372
 msgid "<0>No export:</0> Complete vendor lock-in"
@@ -955,7 +955,7 @@ msgstr "<0>Листопад 2023</0>: Intuit оголошує про закри�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:490
 msgid "<0>Offline Support</0>: Full"
-msgstr ""
+msgstr "<0>Офлайн-підтримка</0>: Повна"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:547
 msgid "<0>Offline Support</0>: Full (local)"
@@ -1311,11 +1311,11 @@ msgstr "<0>Сценарій 1: Запобігання крадіжці особ�
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:401
 msgid "<0>Scenario 2: Financial Independence</0> — Authoritarian regimes and overzealous governments can’t access what they can’t reach. Your financial privacy is your freedom."
-msgstr ""
+msgstr "<0>Сценарій 2: Фінансова незалежність</0> Авторитарні режими та надмірно ретельні уряди не можуть отримати доступ до того, до чого не можуть дотягнутися. Ваша фінансова конфіденційність — це ваша свобода."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:408
 msgid "<0>Scenario 3: Data Monetization</0> — Many “free” apps make money by selling your data. With Budgie, there’s nothing to sell—your data never leaves your device."
-msgstr ""
+msgstr "<0>Сценарій 3: Монетизація даних</0> Багато \"безкоштовних\" додатків заробляють гроші, продаючи ваші дані. З Budgie продавати нічого — ваші дані ніколи не залишають ваш пристрій."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1535
 msgid "<0>Scheduled.csv:</0> Recurring transaction templates"
@@ -1339,7 +1339,7 @@ msgstr "<0>Безпечне зберігання</0>: Згенерований �
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:234
 msgid "<0>Security and privacy by default.</0> Since data stays local, there is no central server holding everyone’s information. Privacy becomes a natural property of the architecture."
-msgstr ""
+msgstr "<0>Безпека та приватність за замовчуванням.</0> Оскільки дані залишаються локальними, немає центрального сервера, що зберігає інформацію всіх. Приватність стає природною властивістю архітектури."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1265
 msgid "<0>Self-hosted solutions.</0> Nextcloud with OnlyOffice"
@@ -1355,7 +1355,7 @@ msgstr "<0>Залежність від сервісу</0>: Якщо компан
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:221
 msgid "<0>Service outages mean no access.</0> If YNAB’s servers go down, so does your ability to manage your budget."
-msgstr ""
+msgstr "<0>Збої сервісу означають відсутність доступу.</0> Якщо сервери YNAB вийдуть з ладу, ваша можливість керувати бюджетом також зникне."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:304
 msgid "<0>Session hijacking risk</0>: Automated login sessions can be intercepted"
@@ -1403,7 +1403,7 @@ msgstr "<0>Бекенд-сервіси</0> — Весь серверний ко�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1625
 msgid "<0>The Bad News:</0> As of March 23, 2024, Mint is fully shut down. If you didn’t export before then, your historical data may be gone."
-msgstr ""
+msgstr "<0>Погана новина:</0> Станом на 23 березня 2024 року Mint повністю закритий. Якщо ви не експортували дані до цього моменту, ваша історична інформація може бути втрачена."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:609
 msgid "<0>The build infrastructure</0> - Our CI/CD pipelines and deployment configurations"
@@ -1451,7 +1451,7 @@ msgstr "<0>Справжня офлайн-перша архітектура.</0> 
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:892
 msgid "<0>True offline-first architecture</0>: Your financial data never leaves your phone unless you explicitly export it. This isn’t just about privacy, it’s about reliability. No internet? No problem. Budgie works everywhere."
-msgstr ""
+msgstr "<0>Справжня офлайн-перша архітектура</0>: Ваші фінансові дані ніколи не покидають ваш телефон, якщо ви явно не експортуєте їх. Це не лише про приватність — це про надійність. Немає інтернету? Не проблема. Budgie працює скрізь."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:995
 msgid "<0>True self-hosting</0>: Run it on your own server, Raspberry Pi, or cloud VM. Your data never touches third-party infrastructure unless you choose a hosted option."
@@ -1523,7 +1523,7 @@ msgstr "<0>Yjs</0> — це реалізація CRDT, орієнтована н
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:775
 msgid "<0>YNAB-like methodology.</0> Envelope budgeting similar to YNAB’s approach."
-msgstr ""
+msgstr "<0>Методологія, схожа на YNAB.</0> Конвертне бюджетування, подібне до підходу YNAB."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1730
 msgid "<0>YNAB</0>: File Import supports Mint CSV format"
@@ -1543,7 +1543,7 @@ msgstr "<0>Ваша робота не прив'язана до одного пр
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:906
 msgid "<0>Zero-knowledge bank sync</0>: If you want automatic transaction imports, Budgie’s bank sync uses end-to-end encryption. Your credentials are encrypted on your device, and sync happens directly between your phone and your bank. Budgie never sees your banking credentials or transaction data."
-msgstr ""
+msgstr "<0>Банківська синхронізація з нульовим знанням</0>: Якщо ви хочете автоматичний імпорт транзакцій, банківська синхронізація Budgie використовує наскрізне шифрування. Ваші облікові дані шифруються на вашому пристрої, а синхронізація відбувається безпосередньо між вашим телефоном та банком. Budgie ніколи не бачить ваших банківських облікових даних чи даних про транзакції."
 
 #: src/generic/component/whitelist-section/whitelist-section.tsx:30
 msgid "🎉 EXCLUSIVE WHITELIST OFFER"
@@ -1590,7 +1590,7 @@ msgstr "Опціональна синхронізація банку з нуль
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:171
 msgid "2. You’re Not in Control"
-msgstr ""
+msgstr "Ви не контролюєте ситуацію"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:337
 msgid "3. Multi-Currency Support Without Tracking"
@@ -1626,7 +1626,7 @@ msgstr ""
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:297
 msgid "A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user separately. User A’s increments are tracked independently from User B’s. The current value is computed by summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the operations are received. No conflict, no coordination required."
-msgstr ""
+msgstr "CRDT-лічильник працює інакше. Замість зберігання одного числа він зберігає інкременти від кожного користувача окремо. Інкременти Користувача A відстежуються незалежно від Користувача B. Поточне значення обчислюється як сума всіх інкрементів. Якщо A збільшує один раз і B збільшує один раз, загальна сума дорівнює 7, незалежно від порядку отримання операцій. Жодного конфлікту, жодної координації."
 
 #: src/blog/constant/article-registry.constant.ts:39
 msgid "A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation."
@@ -1710,7 +1710,7 @@ msgstr "Actual Budget виник з руїн Actual — комерційного
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:983
 msgid "Actual Budget started as a commercial app, then became open source in 2022. It’s now maintained by an active community and has become the go-to choice for self-hosting enthusiasts."
-msgstr ""
+msgstr "Actual Budget починав як комерційний додаток, а потім став відкритим у 2022 році. Зараз він підтримується активною спільнотою та став основним вибором для ентузіастів самохостингу."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:749
 msgid "Actual Budget: Open Source Power for Technical Users"
@@ -1718,7 +1718,7 @@ msgstr "Actual Budget: потужність відкритого коду для
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:973
 msgid "Actual Budget: The Self-Hoster’s Dream"
-msgstr ""
+msgstr "Actual Budget: Мрія ентузіаста самохостингу"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:939
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
@@ -1734,7 +1734,7 @@ msgstr "Шифрування AES-256 у стані спокою"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:120
 msgid "After 17 years of helping millions track their spending, Mint officially shut down on March 23, 2024. If you’re a developer who relied on Mint, you’re probably feeling frustrated, betrayed, and maybe a bit anxious about where your financial data will live next."
-msgstr ""
+msgstr "Після 17 років допомоги мільйонам людей відстежувати витрати, Mint офіційно припинив роботу 23 березня 2024 року. Якщо ви розробник, який покладався на Mint, ви, напевно, відчуваєте розчарування, зраду і, можливо, трохи тривоги щодо того, де тепер зберігатимуться ваші фінансові дані."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1540
 msgid "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
@@ -1763,7 +1763,7 @@ msgstr "Усі транзакції"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:515
 msgid "All while keeping your data completely private."
-msgstr ""
+msgstr "Все це при повній конфіденційності ваших даних."
 
 #: src/generic/component/security-section/security-section-cards.tsx:24
 msgid "All your data is stored locally on your device. We have no servers storing your information—because we never see it in the first place."
@@ -1771,7 +1771,7 @@ msgstr "Усі ваші дані зберігаються локально на 
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:307
 msgid "All your financial data is stored exclusively on your device. Your transactions, accounts, budgets, and insights never touch our servers because <0>we don’t have any</0>."
-msgstr ""
+msgstr "Всі ваші фінансові дані зберігаються виключно на вашому пристрої. Ваші транзакції, рахунки, бюджети та аналітика ніколи не торкаються наших серверів, тому що <0>у нас їх немає</0>."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:776
 msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while keeping everything local."
@@ -1796,7 +1796,7 @@ msgstr "альтернативи"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1701
 msgid "Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first. Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a phone."
-msgstr ""
+msgstr "Серед варіантів з фокусом на приватність, Budgie пропонує найкращий мобільний досвід, оскільки був побудований з пріоритетом на мобільні пристрої. Copilot має відмінний iOS додаток, але потребує екосистему Apple та синхронізацію з банком. Більшість альтернатив з відкритим кодом (Actual, Firefly III) мають веб-інтерфейси, які працюють на мобільних, але не є нативними додатками, що може відчуватися менш зручно на телефоні."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1657
 msgid "Amount"
@@ -1808,7 +1808,7 @@ msgstr "Офлайн-перший підхід фундаментально пе
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:762
 msgid "An open-source project is more than just public code. It’s a community of users, contributors, and maintainers working together toward shared goals. How that community is governed matters for the project’s long-term health and trustworthiness."
-msgstr ""
+msgstr "Проєкт з відкритим кодом — це більше, ніж просто публічний код. Це спільнота користувачів, учасників та мейнтейнерів, які працюють разом над спільними цілями. Те, як ця спільнота управляється, має значення для довгострокового здоров'я та надійності проєкту."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:770
 msgid "Analytics and crash reporting SDKs that collect user behavior data"
@@ -1860,7 +1860,7 @@ msgstr "Лише Apple (немає Android, немає веб)"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:520
 msgid "Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes propagating when connectivity returns."
-msgstr ""
+msgstr "Вбудовані застосунки продуктивності Apple використовують архітектуру local-first із синхронізацією через iCloud. Дані зберігаються на пристрої та синхронізуються через інфраструктуру Apple. Критично важливо, що застосунки повноцінно працюють офлайн, а зміни поширюються при відновленні зв'язку."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx:56
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:59
@@ -1905,7 +1905,7 @@ msgstr "Як фрілансер із доходами в 3 валютах, Budgi
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:450
 msgid "As awareness of digital privacy grows, more people are realizing that <0>convenience shouldn’t come at the cost of privacy</0>. The offline-first movement represents a return to user sovereignty over personal data."
-msgstr ""
+msgstr "У міру зростання обізнаності про цифрову конфіденційність все більше людей усвідомлюють, що <0>зручність не повинна коштувати конфіденційності</0>. Рух офлайн-перший представляє повернення до суверенітету користувача над особистими даними."
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:13
 msgid "Ask \"Where did my money go?\" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone."
@@ -1913,7 +1913,7 @@ msgstr "Запитайте «Куди зникли мої гроші?» і от�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1339
 msgid "At Budgie, we believe financial privacy shouldn’t be a premium feature—it should be the foundation. Here’s how our architecture differs from cloud-based alternatives."
-msgstr ""
+msgstr "У Budgie ми віримо, що фінансова конфіденційність не повинна бути преміум-функцією — вона має бути фундаментом. Ось як наша архітектура відрізняється від хмарних альтернатив."
 
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:40
 msgid "At current pace, you'll be debt-free by August 2025"
@@ -2050,7 +2050,7 @@ msgstr "Оскільки дані локальні, кожна взаємоді�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1441
 msgid "Because your data lives on your device in standard formats, you’re never locked in:"
-msgstr ""
+msgstr "Оскільки ваші дані зберігаються на вашому пристрої у стандартних форматах, ви ніколи не прив'язані:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:285
 msgid "Before API-based aggregation, apps used screen scraping: automated systems that log into your bank with your credentials and parse the HTML of your account pages. This method is still used when banks do not support API access."
@@ -2058,11 +2058,11 @@ msgstr "До появи агрегації через API додатки вик�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:318
 msgid "Before diving into alternatives, let’s establish what technical users typically prioritize. Based on discussions in developer communities like Hacker News, Reddit’s r/selfhosted, and various Discord servers, here’s what matters most:"
-msgstr ""
+msgstr "Перш ніж занурюватися в альтернативи, визначимо, що зазвичай є пріоритетним для технічних користувачів. На основі обговорень у спільнотах розробників, таких як Hacker News, r/selfhosted на Reddit та різних серверах Discord, ось що найважливіше:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:153
 msgid "Before diving into alternatives, let’s understand the key reasons driving users away from YNAB."
-msgstr ""
+msgstr "Перш ніж переходити до альтернатив, давайте розберемося в основних причинах, які відштовхують користувачів від YNAB."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1638
 msgid "Before fully committing:"
@@ -2199,7 +2199,7 @@ msgstr "Budgie автоматично намагається зіставити 
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1120
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
-msgstr ""
+msgstr "Budgie втілює цей прозорий підхід. Кожен рядок коду публічний. Кожне рішення задокументоване. Кожну заяву можна перевірити. Ми не просимо вас довіряти нам, бо ми так кажемо. Ми просимо вас довіряти нам, бо ви можете точно бачити, що ми робимо."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:295
 msgid "Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial institutions worldwide. AES-256 has never been broken by any publicly known attack. A brute-force attempt to crack a 256-bit key would require more energy than exists in the observable universe."
@@ -2211,11 +2211,11 @@ msgstr "Budgie існує, тому що ми вважаємо, що вам не
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1937
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
-msgstr ""
+msgstr "Budgie існує тому, що ми хотіли фінансовий додаток, який ставиться до користувачів як до клієнтів, а не продуктів. Такий, що працює офлайн, поважає приватність та дає вам повний контроль над вашими даними. Якщо це резонує з вами, ми будемо раді, якщо ви його спробуєте."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:429
 msgid "Budgie focuses on the device you use most—your phone. This isn’t a limitation; it’s a feature. One device means one point of vulnerability instead of many."
-msgstr ""
+msgstr "Budgie зосереджується на пристрої, який ви використовуєте найбільше — вашому телефоні. Це не обмеження; це функція. Один пристрій означає одну точку вразливості замість багатьох."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:975
 msgid "Budgie focuses specifically on mobile-first, offline-first expense tracking. Our priorities are:"
@@ -2239,7 +2239,7 @@ msgstr "Budgie не містить жодних аналітичних SDK. Ми
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1802
 msgid "Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in the future (like hosted backup), but the core app will always be free and fully functional."
-msgstr ""
+msgstr "Budgie є і залишиться безкоштовним. Додаток з відкритим кодом, і ми відданні сталій моделі, яка не залежить від монетизації даних користувачів або обмеження функцій за paywall. Ми можемо запропонувати додаткові послуги в майбутньому (наприклад, хостинг резервних копій), але основний додаток завжди буде безкоштовним та повністю функціональним."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:765
 msgid "Budgie is built from the ground up as a local-first personal finance application. Here is how we implement the local-first ideals:"
@@ -2247,15 +2247,15 @@ msgstr "Budgie побудований з нуля як local-first застос�
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:574
 msgid "Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims, examine our code, and confirm that we do what we say. Everything about Budgie is open source, from the mobile app to the backend services."
-msgstr ""
+msgstr "Budgie побудований на принципі, що вам не потрібно нам довіряти. Ви повинні мати можливість перевірити наші заяви, вивчити наш код і підтвердити, що ми робимо те, що говоримо. Все в Budgie має відкритий код — від мобільного додатку до бекенд-сервісів."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1760
 msgid "Budgie is designed as a mobile-first, offline application. There’s no server component to self-host because your data never leaves your device. This is intentional: it eliminates the complexity and security responsibility of running your own server while providing even stronger privacy guarantees."
-msgstr ""
+msgstr "Budgie створений як мобільний офлайн-додаток. Немає серверного компонента для самохостингу, тому що ваші дані ніколи не залишають ваш пристрій. Це зроблено навмисно: це усуває складність та відповідальність за безпеку під час запуску власного сервера, забезпечуючи при цьому ще сильніші гарантії приватності."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1095
 msgid "Budgie is free to use with optional premium features for users who want additional capabilities. Our business model relies on users who find enough value in the product to support its development, not on monetizing user data. The open-source nature actually supports this model because users can trust their data isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable business can coexist."
-msgstr ""
+msgstr "Budgie безкоштовний у використанні з додатковими преміум-функціями для користувачів, які хочуть розширені можливості. Наша бізнес-модель спирається на користувачів, які знаходять достатню цінність у продукті, щоб підтримати його розробку, а не на монетизації даних користувачів. Відкрита природа коду фактично підтримує цю модель, оскільки користувачі можуть довіряти, що їхні дані не продаються, що робить їх більш готовими платити за преміум-функції. Прозорість та стійкий бізнес можуть співіснувати."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1563
 msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
@@ -2267,7 +2267,7 @@ msgstr "Budgie — це наш внесок у це майбутнє: засто
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:927
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
-msgstr ""
+msgstr "Budgie — не єдиний варіант з відкритим кодом для управління фінансами. Існує здорова екосистема альтернатив, і ми вважаємо за правильне чесно їх згадати. Різні інструменти підходять для різних потреб, і найкращий вибір залежить від ваших конкретних вимог."
 
 #: src/generic/component/logo/logo.tsx:19
 msgid "Budgie logo"
@@ -2287,7 +2287,7 @@ msgstr "Budgie розбирає та категоризує транзакції
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:490
 msgid "Budgie proves that you don’t have to choose between powerful features and privacy. You can have:"
-msgstr ""
+msgstr "Budgie доводить, що вам не потрібно вибирати між потужними функціями та конфіденційністю. Ви можете мати:"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:422
 msgid "Budgie supports encrypted local backups that you control. Export your data and store it wherever you want—your own cloud service, USB drive, or secure storage."
@@ -2320,7 +2320,7 @@ msgstr "Budgie обирає принципово інший підхід. Ваш
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:299
 msgid "Budgie takes offline-first seriously. Here’s how we protect your financial privacy:"
-msgstr ""
+msgstr "Budgie серйозно ставиться до офлайн-першого підходу. Ось як ми захищаємо вашу фінансову конфіденційність:"
 
 #: src/app/[lang]/layout.tsx:96
 msgid "Budgie Team"
@@ -2361,23 +2361,23 @@ msgstr "Budgie: конфіденційність на першому місці,
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:967
 msgid "Budgie’s Approach"
-msgstr ""
+msgstr "Без серверної обробки: Обчислення, категоризація та аналітика відбуваються на пристрої"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1175
 msgid "Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely. Credentials are stored locally on your device with hardware-backed encryption, not on any server. Transaction data flows directly from your bank to your device without intermediate storage. In regions where direct API access is not available, manual import from bank exports provides a fully private alternative."
-msgstr ""
+msgstr "Видаліть старі акаунти: Після міграції повністю видаліть акаунти хмарних додатків та відкликайте доступ агрегаторів"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:851
 msgid "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
-msgstr ""
+msgstr "Кодова база Budgie є відкритою, що дозволяє дослідникам безпеки та допитливим користувачам перевіряти наші заяви. Ви можете точно перевірити, як зберігаються дані, підтвердити, що нічого не передається на наші сервери, і навіть зібрати застосунок самостійно."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:497
 msgid "Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want data to transfer. Both devices need to be accessible, either on the same local network or both connected to the internet for the relay-assisted handshake."
-msgstr ""
+msgstr "Синхронізація між пристроями в Budgie потребує більше залученості користувача. Вам потрібно явно ініціювати синхронізацію, коли ви хочете передати дані. Обидва пристрої повинні бути доступні — або в одній локальній мережі, або обидва підключені до інтернету для рукопотиску через ретранслятор."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:570
 msgid "Budgie’s Open-Source Commitment"
-msgstr ""
+msgstr "Відданість Budgie відкритому коду"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:866
 msgid "Bug Bounty and Security Disclosure"
@@ -2519,11 +2519,11 @@ msgstr "Оберіть свій стек"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1756
 msgid "Choosing a budgeting app is personal. The “best” choice depends on your priorities:"
-msgstr ""
+msgstr "Вибір бюджетного додатку — це особиста справа. \"Найкращий\" вибір залежить від ваших пріоритетів:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1817
 msgid "Choosing a Mint replacement isn’t just about features. It’s about values. Ask yourself:"
-msgstr ""
+msgstr "Вибір заміни Mint — це не лише про функції. Це про цінності. Запитайте себе:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1198
 msgid "Clean, focused interface"
@@ -2630,7 +2630,7 @@ msgstr "Хмарні системи зазвичай обирають узгод
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:677
 msgid "Cloud-hosted finance applications represent attractive targets for attackers. Centralized databases holding millions of users’ financial histories are high-value targets. Breaches are not hypothetical; they happen regularly."
-msgstr ""
+msgstr "Хмарні фінансові застосунки є привабливими цілями для зловмисників. Централізовані бази даних з фінансовими історіями мільйонів користувачів — це високоцінні цілі. Зломи не є гіпотетичними — вони трапляються регулярно."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1424
 msgid "Cloud-only (no offline functionality)"
@@ -2697,7 +2697,7 @@ msgstr "Порівняйте досвід та точність"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:373
 msgid "Compare this to closed-source software, where researchers often cannot even verify whether a vulnerability they reported was actually fixed. They have to trust the vendor’s word, which history has shown is not always reliable."
-msgstr ""
+msgstr "Порівняйте це з програмним забезпеченням із закритим кодом, де дослідники часто навіть не можуть перевірити, чи була повідомлена ними вразливість дійсно виправлена. Їм доводиться довіряти слову постачальника, а історія показує, що це не завжди надійно."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1381
 msgid "Compare this to traditional bank sync, where:"
@@ -2784,7 +2784,7 @@ msgstr "Підключіть банківські рахунки та імпор
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1209
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1304
 msgid "Cons:"
-msgstr ""
+msgstr "Недоліки:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:290
 msgid "Consider a simple example: a counter. In a traditional system, if two users both increment a counter from 5 to 6 simultaneously, you have a conflict. Which value is correct?"
@@ -2833,11 +2833,11 @@ msgstr "Copilot: Ні"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1278
 msgid "Copilot is a beautifully designed app exclusive to Apple platforms. If you’re deeply embedded in the Apple ecosystem and aesthetics matter to you, it’s worth considering."
-msgstr ""
+msgstr "Copilot — це красиво оформлений додаток, ексклюзивний для платформ Apple. Якщо ви глибоко вбудовані в екосистему Apple і естетика для вас важлива, його варто розглянути."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:948
 msgid "Copilot is a beautifully designed finance app exclusive to Apple devices. While it does use cloud storage (iCloud), it keeps your data within Apple’s ecosystem rather than third-party servers."
-msgstr ""
+msgstr "Copilot — це красиво розроблений фінансовий додаток, ексклюзивний для пристроїв Apple. Хоча він використовує хмарне сховище (iCloud), ваші дані залишаються в екосистемі Apple, а не на серверах третіх сторін."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:940
 msgid "Copilot: Apple Ecosystem Privacy"
@@ -2874,11 +2874,11 @@ msgstr "Кредитні картки"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1752
 msgid "Credit Karma is a legitimate company owned by Intuit. However, their business model relies on monetizing your financial data through targeted product recommendations. If privacy is a priority, it’s not the best choice. If you just want free credit monitoring and don’t mind targeted ads, it works fine."
-msgstr ""
+msgstr "Credit Karma — це легітимна компанія, що належить Intuit. Однак їхня бізнес-модель залежить від монетизації ваших фінансових даних через таргетовані рекомендації продуктів. Якщо приватність є пріоритетом, це не найкращий вибір. Якщо вам просто потрібен безкоштовний моніторинг кредитів і ви не заперечуєте проти таргетованої реклами, він працює нормально."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:227
 msgid "Credit Karma’s business model is built entirely on monetizing your financial data. They offer free credit monitoring in exchange for showing you targeted financial product recommendations. Every credit card, loan, and insurance offer you see is there because Credit Karma’s algorithms determined you’re a good target based on your financial profile."
-msgstr ""
+msgstr "Бізнес-модель Credit Karma повністю побудована на монетизації ваших фінансових даних. Вони пропонують безкоштовний моніторинг кредитів в обмін на показ вам таргетованих рекомендацій фінансових продуктів. Кожна кредитна картка, позика та страхова пропозиція, які ви бачите, з'являються тому, що алгоритми Credit Karma визначили, що ви — вдала ціль на основі вашого фінансового профілю."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:906
 msgid "Credit researchers in security advisories"
@@ -2975,7 +2975,7 @@ msgstr "Дані лише на вашому пристрої"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:61
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:61
 msgid "data protection"
-msgstr ""
+msgstr "Стек збору даних"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:656
 msgid "Data Retention After Disconnection"
@@ -3062,7 +3062,7 @@ msgstr "Чому розробники обирають Budgie:"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1403
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1493
 msgid "Developer-Friendly Features:"
-msgstr ""
+msgstr "Функції для розробників:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:63
 msgid "developers"
@@ -3148,7 +3148,7 @@ msgstr "Чи обговорюють члени спільноти, орієнт�
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:480
 msgid "Do you really want all of that on someone else’s server?"
-msgstr ""
+msgstr "Чи дійсно ви хочете, щоб усе це було на чужому сервері?"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1031
 msgid "Docker deployment with compose files provided"
@@ -3225,7 +3225,7 @@ msgstr "Emily Johnson"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:150
 msgid "Employees won’t access your data"
-msgstr ""
+msgstr "Співробітники не матимуть доступу до ваших даних"
 
 #: src/app/[lang]/opengraph-image.tsx:91
 msgid "Encrypted"
@@ -3245,7 +3245,7 @@ msgstr "Деталі реалізації шифрування"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:393
 msgid "Encryption that doesn’t rely on hidden algorithms"
-msgstr ""
+msgstr "Шифрування, яке не покладається на приховані алгоритми"
 
 #: src/generic/component/security-section/security-section-visual.tsx:41
 msgid "End-to-End Encrypted"
@@ -3277,7 +3277,7 @@ msgstr "Envestnet Yodlee, ще один великий агрегатор дан
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:332
 msgid "Even if someone intercepts the connection, they can’t decrypt it"
-msgstr ""
+msgstr "Навіть якщо хтось перехопить з'єднання, вони не зможуть його розшифрувати"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:575
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
@@ -3325,7 +3325,7 @@ msgstr "Excalidraw"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:508
 msgid "Excalidraw is an open-source virtual whiteboard that works entirely offline. It stores drawings in your browser’s local storage and can export to files. Live collaboration is available but optional. The core drawing experience requires no server at all."
-msgstr ""
+msgstr "Excalidraw — це віртуальна дошка з відкритим вихідним кодом, яка працює повністю офлайн. Вона зберігає малюнки у локальному сховищі вашого браузера та може експортувати у файли. Спільна робота в реальному часі доступна, але необов'язкова. Основний функціонал малювання не потребує сервера взагалі."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1192
 msgid "Excellent API for custom integrations"
@@ -3413,7 +3413,7 @@ msgstr "Функція"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:778
 msgid "Feature decisions:"
-msgstr ""
+msgstr "Рішення щодо функцій:"
 
 #: src/generic/component/footer/footer.tsx:80
 #: src/generic/component/header/header.tsx:59
@@ -3427,7 +3427,7 @@ msgstr "Figma"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:469
 msgid "Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same file simultaneously because Figma’s data model is designed for concurrent modification. Changes merge automatically without conflicts."
-msgstr ""
+msgstr "Співпраця в реальному часі у Figma працює на CRDT під капотом. Кілька дизайнерів можуть працювати над одним файлом одночасно, тому що модель даних Figma розроблена для одночасної модифікації. Зміни об'єднуються автоматично без конфліктів."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:21
 msgid "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
@@ -3435,7 +3435,7 @@ msgstr "Нарешті бачити криптовалюту, акції та б
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:60
 msgid "financial data"
-msgstr ""
+msgstr "Реальні витоки даних у фінансових додатках"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:669
 msgid "Financial data is among the most sensitive information people possess. Transaction histories reveal where you shop, what you buy, who you pay, and how much you earn. This data in the wrong hands enables identity theft, stalking, discrimination, and manipulation."
@@ -3451,11 +3451,11 @@ msgstr "Управління фінансами є за своєю суттю о
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:60
 msgid "financial privacy"
-msgstr ""
+msgstr "Реальний вплив фінансової конфіденційності"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1112
 msgid "Financial software that respects your privacy shouldn’t require blind faith. When you choose an open-source budget app, you’re choosing verifiable security over marketing promises. You’re choosing community oversight over corporate opacity. You’re choosing to trust evidence rather than assertions."
-msgstr ""
+msgstr "Фінансове програмне забезпечення, яке поважає вашу конфіденційність, не повинно вимагати сліпої віри. Обираючи бюджетний додаток з відкритим кодом, ви обираєте перевірену безпеку замість маркетингових обіцянок. Ви обираєте контроль спільноти замість корпоративної непрозорості. Ви обираєте довіру до доказів, а не до тверджень."
 
 #: src/generic/component/analytics-section/analytics-section-content.tsx:44
 msgid "Find Hidden Patterns"
@@ -3477,11 +3477,11 @@ msgstr "Firefly III — це комплексний менеджер особи�
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:951
 msgid "Firefly III is a comprehensive personal finance manager designed for self-hosting. It offers detailed transaction tracking, budgeting features, and extensive reporting. If you’re comfortable managing your own server infrastructure and want maximum control, Firefly III provides powerful capabilities."
-msgstr ""
+msgstr "Firefly III — це комплексний менеджер особистих фінансів, розроблений для самостійного розгортання. Він пропонує детальне відстеження транзакцій, функції бюджетування та розширену звітність. Якщо ви комфортно управляєте власною серверною інфраструктурою та хочете максимального контролю, Firefly III надає потужні можливості."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1082
 msgid "Firefly III is the Linux of personal finance apps: incredibly powerful, deeply customizable, and requires some investment to set up properly. For developers who want complete control, it’s hard to beat."
-msgstr ""
+msgstr "Firefly III — це Linux серед додатків для особистих фінансів: неймовірно потужний, глибоко налаштовуваний та вимагає певних зусиль для правильного налаштування. Для розробників, які хочуть повний контроль, його важко перевершити."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1072
 msgid "Firefly III: Maximum Customization"
@@ -3501,11 +3501,11 @@ msgstr "Їжа та ресторани"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1572
 msgid "For Actual Budget:"
-msgstr ""
+msgstr "Для Actual Budget:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1553
 msgid "For Budgie:"
-msgstr ""
+msgstr "Для Budgie:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:665
 msgid "For compliance and legal obligations"
@@ -3525,11 +3525,11 @@ msgstr "Для розробників шлях вперед зрозумілий
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:695
 msgid "For developers:"
-msgstr ""
+msgstr "Для розробників:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1588
 msgid "For Firefly III:"
-msgstr ""
+msgstr "Для Firefly III:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:626
 msgid "For indie developers and small teams, this changes the economics of software development. You can build sustainable software without venture capital to fund server infrastructure."
@@ -3553,7 +3553,7 @@ msgstr "Майже два десятиліття хмарні обчисленн
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:714
 msgid "For non-developers:"
-msgstr ""
+msgstr "Для нерозробників:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1710
 msgid "For Other Apps"
@@ -3561,7 +3561,7 @@ msgstr "Для інших додатків:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1692
 msgid "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
-msgstr ""
+msgstr "Для користувачів, які цінують конфіденційність, Actual Budget (self-hosted) та Firefly III є найкращими безкоштовними варіантами з надійною приватністю. Обидва мають відкритий код і можуть працювати повністю на вашому власному обладнанні. Budgie також пропонує безкоштовний рівень з основними функціями бюджетування. Якщо приватність не є вашим основним пріоритетом і ви просто хочете безкоштовно — є багато варіантів, але більшість передбачає обмін ваших даних на доступ."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:202
 msgid "For privacy-conscious users, the idea of a third party having access to their complete financial picture is deeply uncomfortable—regardless of how trustworthy that company might be."
@@ -3574,7 +3574,7 @@ msgstr "Для покращення продуктів та аналітики"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:733
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:876
 msgid "For security researchers:"
-msgstr ""
+msgstr "Для дослідників безпеки:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1768
 msgid "For shared finances, Monarch Money has the best collaborative features. For privacy-conscious couples, each partner could use Budgie independently and share an exported summary periodically. Actual Budget with self-hosting can also work well for couples willing to manage their own server."
@@ -3586,7 +3586,7 @@ msgstr "Для синхронізації Obsidian пропонує необов
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:658
 msgid "For the community:"
-msgstr ""
+msgstr "Для спільноти:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:752
 msgid "For users in certain jurisdictions or professions, storing financial data with third parties raises compliance questions. Local-first architecture simplifies compliance by keeping data under user control."
@@ -3598,11 +3598,11 @@ msgstr "Для користувачів, які ставлять конфіде�
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:832
 msgid "For users who want automatic transaction import, Budgie offers bank synchronization with a zero-knowledge architecture. Your bank credentials are encrypted locally on your device. Sync operations happen directly between your device and your bank. Budgie’s infrastructure never sees your credentials or transaction data."
-msgstr ""
+msgstr "Для користувачів, які хочуть автоматичний імпорт транзакцій, Budgie пропонує банківську синхронізацію з архітектурою нульового знання. Ваші банківські облікові дані зашифровані локально на вашому пристрої. Операції синхронізації відбуваються безпосередньо між вашим пристроєм та вашим банком. Інфраструктура Budgie ніколи не бачить ваших облікових даних чи даних транзакцій."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:639
 msgid "For users:"
-msgstr ""
+msgstr "Для користувачів:"
 
 #: src/generic/component/open-source-section/open-source-visual-stats.tsx:10
 msgid "Forks"
@@ -3664,7 +3664,7 @@ msgstr "GnuCash"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:963
 msgid "GnuCash is a veteran of open-source finance software, offering double-entry accounting suitable for personal and small business use. If you need accounting-grade features like invoicing and business expense tracking, GnuCash’s mature codebase has decades of development behind it."
-msgstr ""
+msgstr "GnuCash — ветеран фінансового програмного забезпечення з відкритим кодом, що пропонує подвійний бухгалтерський облік, придатний для особистого та малого бізнесу. Якщо вам потрібні функції бухгалтерського рівня, такі як виставлення рахунків та відстеження бізнес-витрат, зріла кодова база GnuCash має за собою десятиліття розробки."
 
 #: src/app/[lang]/not-found.tsx:25
 msgid "Go Home"
@@ -3704,7 +3704,7 @@ msgstr "Хороша підтримка багатьох валют"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:159
 msgid "Government agencies won’t request access"
-msgstr ""
+msgstr "Державні органи не запитуватимуть доступ"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:725
 msgid "Help with translations"
@@ -3728,7 +3728,7 @@ msgstr "Високий рівень налаштування"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1619
 msgid "Historical data isn’t critical for your goals"
-msgstr ""
+msgstr "Історичні дані не є критичними для ваших цілей"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:327
 msgid "Hobbyist security researchers and bug hunters"
@@ -3850,7 +3850,7 @@ msgstr "Як керуються ключі локально"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:233
 msgid "How long it’s retained"
-msgstr ""
+msgstr "Як довго вони зберігаються"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1823
 msgid "How much do you value privacy?"
@@ -3886,11 +3886,11 @@ msgstr "Як зробити внесок"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:722
 msgid "How to Evaluate a Budgeting App’s Privacy"
-msgstr ""
+msgstr "Як оцінити конфіденційність бюджетного додатку"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1617
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
-msgstr ""
+msgstr "Як експортувати дані з Mint (поки не пізно)"
 
 #: src/generic/component/ai-section-details/ai-section-details.tsx:34
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
@@ -3910,7 +3910,7 @@ msgstr "Якщо конфіденційність для вас важлива, 
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1033
 msgid "If the code is public, can’t hackers use it to find vulnerabilities?"
-msgstr ""
+msgstr "Якщо код публічний, хіба хакери не можуть використати його для пошуку вразливостей?"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1016
 msgid "If you currently use cloud-based financial apps, here are concrete steps to reduce your exposure."
@@ -3930,7 +3930,7 @@ msgstr "Якщо ви експортували до закриття:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1621
 msgid "If you haven’t exported your Mint data yet, here’s what you need to know:"
-msgstr ""
+msgstr "Якщо ви ще не експортували свої дані з Mint, ось що потрібно знати:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:726
 msgid "If you must use a cloud-based financial app, here is a technical checklist for evaluation."
@@ -3942,11 +3942,11 @@ msgstr "Якщо ви хочете перевірити наші заяви що
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1468
 msgid "If you’ve decided to make the switch, here’s how to move your financial data from YNAB to a privacy-focused alternative."
-msgstr ""
+msgstr "Якщо ви вирішили перейти, ось як перенести ваші фінансові дані з YNAB на альтернативу з фокусом на приватність."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:129
 msgid "If you’ve landed on this article, you’re probably wondering: <0>What are the best YNAB alternatives that actually respect your financial privacy?</0>"
-msgstr ""
+msgstr "Якщо ви потрапили на цю статтю, вас, ймовірно, цікавить: <0>Які найкращі альтернативи YNAB, що дійсно поважають вашу фінансову конфіденційність?</0>"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1022
 msgid "Immediate Actions"
@@ -3982,7 +3982,7 @@ msgstr "Покращуйте покриття тестами"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:195
 msgid "In 2019, a research lab called Ink & Switch published a paper that crystallized the local-first vision. Their essay “Local-First Software: You Own Your Data, in Spite of the Cloud” articulated seven ideals for local-first software:"
-msgstr ""
+msgstr "У 2019 році дослідницька лабораторія Ink & Switch опублікувала статтю, яка кристалізувала бачення local-first. Їхнє есе «Local-First Software: You Own Your Data, in Spite of the Cloud» сформулювало сім ідеалів для local-first програмного забезпечення:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:272
 msgid "In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login credentials through interfaces designed to look like bank login pages, leading users to believe they were logging directly into their banks."
@@ -3990,7 +3990,7 @@ msgstr "У 2022 році Plaid врегулював колективний по�
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:117
 msgid "In an era where data breaches and privacy violations make headlines daily, the way we handle our financial information has never been more critical. When it comes to managing your money, <0>your privacy isn’t just a feature—it’s a fundamental right</0>."
-msgstr ""
+msgstr "У епоху, коли витоки даних та порушення конфіденційності щодня потрапляють у заголовки новин, спосіб обробки нашої фінансової інформації ніколи не був більш критичним. Коли справа стосується управління вашими грошима, <0>ваша конфіденційність — це не просто функція, це фундаментальне право</0>."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:873
 msgid "In an offline-first application:"
@@ -4010,7 +4010,7 @@ msgstr "У цій статті ми детально розглянемо, як 
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:138
 msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
-msgstr ""
+msgstr "У цьому детальному гіді ми розглянемо, чому люди залишають YNAB, на що звертати увагу при виборі альтернативи з фокусом на приватність, а також надамо чесні огляди найкращих варіантів, доступних у 2025 році. Незалежно від того, чи вас турбує хмарне зберігання даних, втома від підписок або ви просто хочете більше контролю над своєю фінансовою інформацією — ми все передбачили."
 
 #: src/generic/component/analytics-section/analytics-section-chart-stats.tsx:11
 msgid "Income"
@@ -4054,7 +4054,7 @@ msgstr "Інтеграції"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:215
 msgid "Intuit’s official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent company, established platform, free to use. But for developers and privacy-conscious users, Credit Karma has fundamental problems."
-msgstr ""
+msgstr "Офіційна рекомендація Intuit полягала у міграції до Credit Karma. На перший погляд, це логічно: та сама материнська компанія, усталена платформа, безкоштовне використання. Але для розробників та користувачів, які цінують конфіденційність, Credit Karma має фундаментальні проблеми."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1098
 msgid "Investment and net worth tracking"
@@ -4149,7 +4149,7 @@ msgstr "Приєднатися до білого списку"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1055
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1155
 msgid "Key features:"
-msgstr ""
+msgstr "Ключові функції:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1669
 msgid "Labels"
@@ -4198,11 +4198,11 @@ msgstr "Юридична оцінка"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:859
 msgid "Let’s dive deeper into each option."
-msgstr ""
+msgstr "Розглянемо кожен варіант детальніше."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:144
 msgid "Let’s find your new financial home."
-msgstr ""
+msgstr "Знайдімо ваш новий фінансовий дім."
 
 #: src/generic/component/footer/footer.tsx:150
 msgid "License"
@@ -4238,7 +4238,7 @@ msgstr "Linear — це інструмент управління проєкта
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:457
 msgid "Linear uses a custom sync engine to propagate changes. When you create an issue, it exists locally immediately and syncs to the server and other team members’ devices in the background. If you are offline, you keep working. Changes merge automatically when you reconnect."
-msgstr ""
+msgstr "Linear використовує власний синхронізаційний рушій для поширення змін. Коли ви створюєте завдання, воно існує локально миттєво і синхронізується із сервером та пристроями інших членів команди у фоновому режимі. Якщо ви офлайн, ви продовжуєте працювати. Зміни об'єднуються автоматично при повторному підключенні."
 
 #: src/generic/component/features-section/features-section-grid.tsx:110
 msgid "Link multiple savings accounts. Watch your emergency fund and goals grow."
@@ -4333,7 +4333,7 @@ msgstr "Lunch Money приваблює розробників та техніч�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1181
 msgid "Lunch Money was built by a solo developer and maintains a developer-friendly ethos. It’s the best cloud-based option for those who want programmatic access to their data."
-msgstr ""
+msgstr "Lunch Money створений одним розробником і зберігає дружню до розробників філософію. Це найкращий хмарний варіант для тих, хто хоче програмний доступ до своїх даних."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1171
 msgid "Lunch Money: Developer-Focused SaaS"
@@ -4382,7 +4382,7 @@ msgstr "Багато додатків, які заявляють про пова
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1692
 msgid "Map the columns to Budgie’s fields"
-msgstr ""
+msgstr "Зіставте стовпці з полями Budgie"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:20
 msgid "Marcus Rodriguez"
@@ -4427,7 +4427,7 @@ msgstr "хв читання"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:381
 msgid "Minimal data collection (only what’s necessary)"
-msgstr ""
+msgstr "Мінімального збору даних (лише необхідне)"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:381
 msgid "Mint (Intuit) - 2023"
@@ -4436,11 +4436,11 @@ msgstr "Mint (Intuit) -- 2023"
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:56
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:57
 msgid "mint alternatives"
-msgstr ""
+msgstr "Яка альтернатива найкраща для пар?"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:77
 msgid "Mint alternatives for developers"
-msgstr ""
+msgstr "Відсутні функції, потрібні розробникам"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:45
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:71
@@ -4462,11 +4462,11 @@ msgstr "Закриття Mint: Куди розробники переносят�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1643
 msgid "Mint’s export format was a CSV file with these columns:"
-msgstr ""
+msgstr "Формат експорту Mint — це CSV-файл з такими стовпцями:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1922
 msgid "Mint’s shutdown was a reminder that free services have hidden costs. Your financial data is valuable, and companies will find ways to monetize it unless the app is designed from the ground up to make that impossible."
-msgstr ""
+msgstr "Закриття Mint стало нагадуванням про те, що безкоштовні сервіси мають приховану ціну. Ваші фінансові дані цінні, і компанії знайдуть способи їх монетизувати, якщо додаток не спроектований з нуля так, щоб зробити це неможливим."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:258
 msgid "Missing Features Developers Need"
@@ -4511,15 +4511,15 @@ msgstr "Monarch Money: Ні"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1720
 msgid "Monarch Money offers some improvements over YNAB, including better household features and investment tracking. However, from a privacy perspective, it’s similar to YNAB—cloud-based with bank sync integration. If privacy is your reason for leaving YNAB, Monarch doesn’t solve that problem. If you’re leaving for other reasons (price, features, UX), Monarch could be a good fit."
-msgstr ""
+msgstr "Monarch Money пропонує деякі покращення порівняно з YNAB, включаючи кращі функції для домогосподарства та відстеження інвестицій. Проте з точки зору приватності, він подібний до YNAB — хмарний з інтеграцією банківської синхронізації. Якщо приватність є вашою причиною залишити YNAB, Monarch цю проблему не вирішує. Якщо ви йдете з інших причин (ціна, функції, UX), Monarch може бути хорошим вибором."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1048
 msgid "Monarch Money positions itself as a modern YNAB alternative with enhanced features. It’s cloud-based and focuses on households and collaborative budgeting."
-msgstr ""
+msgstr "Monarch Money позиціонує себе як сучасну альтернативу YNAB з покращеними функціями. Він хмарний і зосереджений на сімейному та спільному бюджетуванні."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1459
 msgid "Monarch Money was founded by former Mint employees who wanted to build what Mint should have become. It’s the most direct replacement for traditional Mint users who don’t have technical requirements."
-msgstr ""
+msgstr "Monarch Money заснований колишніми працівниками Mint, які хотіли створити те, чим Mint мав стати. Це найбільш пряма заміна для традиційних користувачів Mint, які не мають технічних вимог."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1040
 msgid "Monarch Money: The Direct YNAB Competitor"
@@ -4567,7 +4567,7 @@ msgstr "Більшість додатків для бюджетування та
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1350
 msgid "Most budgeting apps treat your phone as a thin client—a window into data stored on remote servers. Budgie flips this model. Your phone isn’t just displaying your budget; it’s storing it. There’s no Budgie server with a copy of your financial life because we never receive it in the first place."
-msgstr ""
+msgstr "Більшість бюджетних додатків ставляться до вашого телефону як до тонкого клієнта — вікна в дані, що зберігаються на віддалених серверах. Budgie перевертає цю модель. Ваш телефон не просто відображає ваш бюджет — він його зберігає. Не існує сервера Budgie з копією вашого фінансового життя, тому що ми її ніколи не отримуємо."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:519
 msgid "Most expense tracking apps that offer bank synchronization use Plaid, Yodlee, or similar aggregation services. These services work by collecting your bank credentials or OAuth tokens and then accessing your account on your behalf. Your transaction history flows through their servers before reaching your app."
@@ -4789,7 +4789,7 @@ msgstr "Неможливість перевірити заяви про безп
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1082
 msgid "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
-msgstr ""
+msgstr "Ні. Хоча будь-хто може запропонувати зміни до коду, ви контролюєте, яку версію використовуєте. Оновлення встановлюються лише тоді, коли ви вирішите оновити додаток. Якщо вас турбує конкретна версія, ви можете переглянути зміни перед оновленням або навіть зібрати власну версію з вихідного коду. Відкрита природа коду означає, що зміни видимі та доступні для перегляду, що фактично дає вам більше контролю, а не менше."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:190
 msgid "None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It <0>is</0> the product."
@@ -4797,7 +4797,7 @@ msgstr "Жодна з цих моделей доходу не працює бе�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:258
 msgid "Not all “private” budget apps are created equal. Here’s a checklist for evaluating alternatives:"
-msgstr ""
+msgstr "Не всі \"приватні\" бюджетні додатки однакові. Ось контрольний список для оцінки альтернатив:"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:851
 msgid "Not pursuing legal action against good-faith security research"
@@ -4875,12 +4875,12 @@ msgstr "Офлайн-перший означає незалежність:"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:77
 msgid "Offline-first privacy for financial apps"
-msgstr ""
+msgstr "Чому офлайн-перший підхід — єдиний шлях до вашої фінансової конфіденційності"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:45
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:71
 msgid "offline-first privacy, financial app security, private budget app"
-msgstr ""
+msgstr "Офлайн-перший підхід фундаментально переосмислює архітектуру фінансових додатків, повертаючи вам контроль."
 
 #: src/generic/component/ai-section/ai-section.tsx:37
 msgid "On-Device AI"
@@ -4896,7 +4896,7 @@ msgstr "Асистент на пристрої"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1067
 msgid "One of the key benefits of open-source and offline-first architecture is data sovereignty. Your data is stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the open-source code would allow anyone to continue development or create export tools. You’re never locked in."
-msgstr ""
+msgstr "Одна з ключових переваг архітектури з відкритим кодом та offline-first — суверенітет даних. Ваші дані зберігаються локально на вашому пристрої, а не заблоковані в хмарі якоїсь компанії, яка може зникнути. Якщо розробка Budgie зупиниться завтра, ваші дані все ще будуть на вашому телефоні, а відкритий код дозволить будь-кому продовжити розробку або створити інструменти експорту. Ви ніколи не будете заблоковані."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:398
 msgid "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie handles this through device-to-device sync with no cloud intermediary."
@@ -4920,7 +4920,7 @@ msgstr "API відкритого банкінгу значно безпечні�
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:333
 msgid "Open Banking regulations in the EU and UK, along with voluntary API programs from US banks, enable more controlled data sharing. Apps request specific scopes of access, and you authorize through your bank’s interface."
-msgstr ""
+msgstr "Регуляції Відкритого банкінгу в ЄС та Великобританії, а також добровільні API-програми банків США забезпечують більш контрольований обмін даними. Додатки запитують конкретні рівні доступу, і ви авторизуєте їх через інтерфейс вашого банку."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1686
 msgid "Open Budgie and go to Settings, then Import Data"
@@ -4929,7 +4929,7 @@ msgstr "Відкрийте Budgie та перейдіть до Налаштув�
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:61
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:62
 msgid "open source"
-msgstr ""
+msgstr "Відкритого вихідного коду для перевірки"
 
 #: src/app/[lang]/opengraph-image.tsx:92
 #: src/generic/component/hero-section/hero-section-header.tsx:33
@@ -4996,12 +4996,12 @@ msgstr "Бюджетні додатки з відкритим кодом про�
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:77
 msgid "Open-source budgeting transparency"
-msgstr ""
+msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:45
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:71
 msgid "open-source budgeting, financial transparency, budget app security, open-source finance"
-msgstr ""
+msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:55
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:48
@@ -5022,7 +5022,7 @@ msgstr "Програмне забезпечення з відкритим код
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1022
 msgid "Open-source software isn’t automatically more secure, but it enables better security through transparency. When code is public, security flaws can be found and fixed by anyone with the expertise, not just the original developers. This distributed scrutiny typically catches problems faster than relying solely on internal security teams. However, the security benefits only materialize when the community actually reviews the code, so active, well-maintained projects are more likely to be secure than abandoned ones."
-msgstr ""
+msgstr "Програмне забезпечення з відкритим кодом не стає автоматично безпечнішим, але воно забезпечує кращу безпеку через прозорість. Коли код публічний, недоліки безпеки можуть бути знайдені та виправлені будь-ким з відповідною експертизою, а не лише оригінальними розробниками. Цей розподілений нагляд зазвичай виявляє проблеми швидше, ніж покладання виключно на внутрішні команди безпеки. Однак переваги безпеки реалізуються лише тоді, коли спільнота дійсно переглядає код, тому активні, добре підтримувані проєкти з більшою ймовірністю будуть безпечними, ніж покинуті."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:468
 msgid "Operations from both devices are exchanged"
@@ -5034,7 +5034,7 @@ msgstr "Необов'язкова банківська синхронізаці�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1255
 msgid "Options include:"
-msgstr ""
+msgstr "Варіанти включають:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1654
 msgid "Original Description"
@@ -5066,7 +5066,7 @@ msgstr "Наш код є відкритим, що означає:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:895
 msgid "Our commitments:"
-msgstr ""
+msgstr "Наші зобов'язання:"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:655
 msgid "Our complete source code is available on GitHub. You can find it by visiting our open-source section where the repository link is provided."
@@ -5110,7 +5110,7 @@ msgstr "Продуктивність, яку неможливо переверш
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:298
 msgid "Perhaps most importantly, Credit Karma is owned by the same company that just shut down Mint. If Intuit decided Mint wasn’t worth maintaining after 17 years, what guarantees do you have about Credit Karma’s longevity?"
-msgstr ""
+msgstr "Мабуть, найважливіше те, що Credit Karma належить тій самій компанії, яка щойно закрила Mint. Якщо Intuit вирішив, що Mint не варто підтримувати після 17 років, які гарантії у вас є щодо довговічності Credit Karma?"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:711
 msgid "Personal and Private by Nature"
@@ -5134,7 +5134,7 @@ msgstr "Plaid -- поточні проблеми"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:612
 msgid "Plaid deserves focused analysis because of its market dominance. Over 12,000 apps use Plaid, connecting to 12,000+ financial institutions. If you use fintech products, you almost certainly have data in Plaid’s systems."
-msgstr ""
+msgstr "Plaid заслуговує детального аналізу через своє домінування на ринку. Понад 12 000 додатків використовують Plaid, підключаючись до 12 000+ фінансових установ. Якщо ви використовуєте фінтех-продукти, ваші дані майже напевно є в системах Plaid."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:229
 msgid "Plaid dominates the financial data aggregation market. When you see a login screen for your bank inside a budgeting app, Plaid is usually behind it. Here is what Plaid collects:"
@@ -5162,15 +5162,15 @@ msgstr "Plaid починав як інфраструктура для фінте
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:685
 msgid "Plaid’s Business Model Evolution"
-msgstr ""
+msgstr "Еволюція бізнес-моделі Plaid"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:660
 msgid "Plaid’s privacy policy allows data retention even after you disconnect:"
-msgstr ""
+msgstr "Політика конфіденційності Plaid дозволяє зберігання даних навіть після вашого відключення:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:264
 msgid "Plaid’s privacy policy explicitly states they retain this data and may use it for product improvement, analytics, and to develop new services. When you connect your bank through Plaid, you are not just sharing data with the budgeting app. You are sharing it with Plaid, which operates as a separate data controller."
-msgstr ""
+msgstr "Політика конфіденційності Plaid прямо зазначає, що вони зберігають ці дані і можуть використовувати їх для покращення продуктів, аналітики та розробки нових сервісів. Коли ви підключаєте банк через Plaid, ви ділитесь даними не лише з бюджетним додатком. Ви ділитесь ними з Plaid, який функціонує як окремий контролер даних."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:939
 msgid "Planned API for power users to build custom integrations"
@@ -5217,7 +5217,7 @@ msgstr "Прихильник приватності"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1422
 msgid "Privacy advocates can verify we’re not collecting telemetry"
-msgstr ""
+msgstr "Захисники приватності можуть перевірити, що ми не збираємо телеметрію"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:172
 msgid "Privacy and Data Concerns"
@@ -5233,7 +5233,7 @@ msgstr "Заяви про приватність легко робити і ва
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:816
 msgid "Privacy decisions:"
-msgstr ""
+msgstr "Рішення щодо конфіденційності:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:824
 msgid "Privacy implications are discussed openly"
@@ -5245,7 +5245,7 @@ msgstr "Приватність не підлягає компромісу"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:248
 msgid "Privacy isn’t an afterthought—it’s the foundation:"
-msgstr ""
+msgstr "Конфіденційність — це не додаткова думка, це фундамент:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1523
 msgid "Privacy model similar to what made Mint problematic"
@@ -5259,27 +5259,27 @@ msgstr "Політика конфіденційності"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1044
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1144
 msgid "Privacy Rating: Average (cloud-based)"
-msgstr ""
+msgstr "Рейтинг приватності: Середній (хмарний)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:654
 msgid "Privacy Rating: Excellent"
-msgstr ""
+msgstr "Рейтинг приватності: Відмінно"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:847
 msgid "Privacy Rating: Excellent (self-hosted)"
-msgstr ""
+msgstr "Рейтинг приватності: Відмінно (self-hosted)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:753
 msgid "Privacy Rating: Excellent (when self-hosted)"
-msgstr ""
+msgstr "Рейтинг приватності: Відмінно (при self-hosted)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1244
 msgid "Privacy Rating: Excellent (with caveats)"
-msgstr ""
+msgstr "Рейтинг приватності: Відмінно (із застереженнями)"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:944
 msgid "Privacy Rating: Good (Apple ecosystem)"
-msgstr ""
+msgstr "Рейтинг приватності: Добре (екосистема Apple)"
 
 #: src/generic/component/cta-section/cta-section.tsx:56
 msgid "Privacy-first design"
@@ -5307,7 +5307,7 @@ msgstr "Професійних пентестерів та консультан�
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:473
 msgid "Professional security audits are a significant investment that demonstrates a project’s commitment to security. Look for:"
-msgstr ""
+msgstr "Професійні аудити безпеки — це значна інвестиція, яка демонструє відданість проєкту безпеці. Зверніть увагу на:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:702
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:793
@@ -5317,7 +5317,7 @@ msgstr ""
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1187
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1282
 msgid "Pros:"
-msgstr ""
+msgstr "Переваги:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:903
 msgid "Provide regular updates on fix progress"
@@ -5495,7 +5495,7 @@ msgstr "Перегляньте попередній перегляд імпор�
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:591
 msgid "Revoke access through your bank’s connected apps settings"
-msgstr ""
+msgstr "Відкликати доступ через налаштування підключених додатків вашого банку"
 
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:18
 msgid "Revolut"
@@ -5556,7 +5556,7 @@ msgstr "Захист від скріншотів"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1489
 msgid "Scroll down to “Export Budget”"
-msgstr ""
+msgstr "Прокрутіть вниз до \"Export Budget\""
 
 #: src/blog/component/blog-search/blog-search.tsx:55
 msgid "Search articles..."
@@ -5590,7 +5590,7 @@ msgstr "Аудит безпеки вітається"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:797
 msgid "Security decisions:"
-msgstr ""
+msgstr "Рішення щодо безпеки:"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:369
 msgid "Security experts can audit our privacy claims"
@@ -5610,7 +5610,7 @@ msgstr "Дослідники безпеки можуть проводити ау
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:253
 msgid "Security through obscurity is a flawed concept that persists in closed-source software. Companies claim their systems are secure, but security researchers cannot examine the code to verify those claims. Vulnerabilities may exist for years before they’re discovered through a breach rather than through proactive auditing."
-msgstr ""
+msgstr "Безпека через приховування — це хибна концепція, яка продовжує існувати в програмному забезпеченні із закритим кодом. Компанії заявляють, що їхні системи безпечні, але дослідники безпеки не можуть перевірити ці заяви, оскільки не мають доступу до коду. Вразливості можуть існувати роками, поки їх не виявлять через витік даних, а не через проактивний аудит."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:487
 msgid "Security-focused changelog entries showing proactive improvements"
@@ -5650,7 +5650,7 @@ msgstr "Self-hosted у вашій зоні комфорту"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1059
 msgid "Self-hosting means you’re responsible for backups and security"
-msgstr ""
+msgstr "Самохостинг означає, що ви відповідаєте за резервне копіювання та безпеку"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:829
 msgid "Self-hosting requires maintenance"
@@ -5722,7 +5722,7 @@ msgstr "Просто налаштуйте рахунки з поточними �
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1607
 msgid "Single-device focus means no automatic cloud sync between devices. We think this is the right trade-off for privacy, but we understand it’s not for everyone. If you need multi-device sync, Actual Budget with self-hosting might be better for you."
-msgstr ""
+msgstr "Фокус на одному пристрої означає відсутність автоматичної хмарної синхронізації між пристроями. Ми вважаємо, що це правильний компроміс заради приватності, але розуміємо, що це підходить не всім. Якщо вам потрібна синхронізація між пристроями, Actual Budget з самохостингом може бути кращим вибором для вас."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:960
 msgid "Single-device focus means no automatic sync between phone and tablet"
@@ -5742,7 +5742,7 @@ msgstr "SDK соціального входу, що передають дані 
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:61
 msgid "software architecture"
-msgstr ""
+msgstr "Приватність як архітектура"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:735
 msgid "Some advanced features still in development"
@@ -5762,7 +5762,7 @@ msgstr "Іноді найкраща міграція — це відсутніс
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1248
 msgid "Sometimes the simplest solution is the most private. Spreadsheets offer complete control—if you’re willing to put in the work."
-msgstr ""
+msgstr "Іноді найпростіше рішення є найбільш приватним. Електронні таблиці пропонують повний контроль — якщо ви готові докласти зусиль."
 
 #: src/generic/component/footer/footer.tsx:117
 msgid "Source Code"
@@ -5794,7 +5794,7 @@ msgstr "Розповсюджуйте інформацію про альтерн�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:607
 msgid "Spreadsheets"
-msgstr ""
+msgstr "Електронні таблиці: варіант абсолютного контролю"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1240
 msgid "Spreadsheets: The Ultimate Control Option"
@@ -5834,7 +5834,7 @@ msgstr "Крок 1: Експортуйте ваші дані з YNAB"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1516
 msgid "Step 2: Understand What You’re Moving"
-msgstr ""
+msgstr "Крок 2: Зрозумійте, що ви переносите"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1549
 msgid "Step 3: Choose Your Migration Path"
@@ -5871,7 +5871,7 @@ msgstr "Локальне зберігання даних — це перший �
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1375
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1466
 msgid "Strengths:"
-msgstr ""
+msgstr "Переваги:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:807
 msgid "Strong community support"
@@ -5919,7 +5919,7 @@ msgstr "Синхронізаційні рушії"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:350
 msgid "Sync Engines"
-msgstr ""
+msgstr "Синхронізаційні рушії"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:326
 msgid "Sync happens directly between your phone and your bank"
@@ -5977,7 +5977,7 @@ msgstr "Відгуки"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:198
 msgid "That “secure” app you trusted? Its privacy policy can change with a simple update. What’s private today might be sold to advertisers tomorrow."
-msgstr ""
+msgstr "Той \"безпечний\" додаток, якому ви довіряли? Його політика конфіденційності може змінитися простим оновленням. Те, що приватне сьогодні, завтра може бути продано рекламодавцям."
 
 #: src/generic/component/analytics-section/analytics-section-content.tsx:26
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
@@ -5989,11 +5989,11 @@ msgstr "Останній пункт є значущим. Ваші дані в а
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1403
 msgid "That’s a lot of copies of your financial data floating around."
-msgstr ""
+msgstr "Це дуже багато копій ваших фінансових даних, розкиданих по всьому інтернету."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:495
 msgid "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
-msgstr ""
+msgstr "Відсутність професійних аудитів не обов'язково є дискваліфікуючим фактором, особливо для менших проєктів. Але для додатків, що обробляють чутливі фінансові дані, певна форма зовнішньої валідації безпеки дає впевненість."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:571
 msgid "The Aggregator Persistence Problem"
@@ -6009,7 +6009,7 @@ msgstr "Відповідь залежить від компанії, але па
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:241
 msgid "The app might be sending your transaction data to a third-party analytics service for “product improvement.” It might be fingerprinting your device and linking your financial behavior to advertising profiles. You would never know, because you cannot see the code."
-msgstr ""
+msgstr "Додаток може надсилати ваші дані про транзакції до стороннього аналітичного сервісу для «покращення продукту». Він може створювати цифровий відбиток вашого пристрою та пов'язувати вашу фінансову поведінку з рекламними профілями. Ви б ніколи про це не дізналися, оскільки не можете побачити код."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:402
 msgid "The app needs to work:"
@@ -6049,7 +6049,7 @@ msgstr "Проблема залежності від хмари"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:147
 msgid "The company won’t be hacked"
-msgstr ""
+msgstr "Компанія не буде зламана"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:667
 msgid "The complete React Native application source"
@@ -6065,7 +6065,7 @@ msgstr "Модель згоди"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:648
 msgid "The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data, and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in Plaid’s infrastructure."
-msgstr ""
+msgstr "Згода, яку ви надаєте додатку, не обмежує те, що збирає Plaid. Системи Plaid витягують всебічні дані, а додаток запитує підмножини через API. Різниця між тим, що збирає Plaid, і тим, що потрібно додатку, залишається в інфраструктурі Plaid."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:343
 msgid "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
@@ -6089,7 +6089,7 @@ msgstr "Функція обліку боргів допомогла мені п�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:450
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
-msgstr ""
+msgstr "Гід розробника по альтернативах Mint: Повне порівняння"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:183
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
@@ -6121,7 +6121,7 @@ msgstr "Майбутнє Local-First"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:138
 msgid "The Hidden Cost of “Free” Budgeting Apps"
-msgstr ""
+msgstr "Прихована ціна \"безкоштовних\" бюджетних додатків"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:127
 msgid "The Hidden Dangers of Cloud-Based Financial Apps"
@@ -6234,7 +6234,7 @@ msgstr "Проблема із закритим фінансовим програ
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:519
 msgid "The question isn’t whether you should use an offline-first financial app. The question is: why would you trust your financial privacy to anything else?"
-msgstr ""
+msgstr "Питання не в тому, чи варто використовувати офлайн-перший фінансовий додаток. Питання в тому: чому б ви довірили свою фінансову конфіденційність чому-небудь іншому?"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:385
 msgid "The Real-World Impact of Financial Privacy"
@@ -6266,15 +6266,15 @@ msgstr "Сервер не може бути зламаний, тому що се
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:153
 msgid "The service won’t be shut down"
-msgstr ""
+msgstr "Сервіс не буде закритий"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:202
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
-msgstr ""
+msgstr "Закриття стосувалося не лише невдачі продукту. Це був тривожний сигнал про ризики довіри своїх фінансових даних безкоштовному, рекламному сервісу, який належить корпорації, пріоритети якої можуть змінитися за одну ніч."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:243
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
-msgstr ""
+msgstr "Файл бази даних SQLite зберігається в захищеній директорії, доступ до якої має лише Budgie. На iOS це ізольована директорія Documents додатка. На Android це внутрішнє сховище додатка, яке інші програми не можуть прочитати."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1048
 msgid "The terms are often used interchangeably, but there is a distinction. Offline-first typically means an application that caches data for offline access but still treats the server as authoritative. Local-first goes further: the local device is the source of truth, and the server (if present) is just another peer for synchronization. Local-first implies true data ownership, not just offline caching."
@@ -6282,7 +6282,7 @@ msgstr "Ці терміни часто використовуються як в�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:166
 msgid "The Timeline of Mint’s Decline"
-msgstr ""
+msgstr "Хронологія занепаду Mint:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1603
 msgid "The Trade-offs We Accept"
@@ -6294,7 +6294,7 @@ msgstr "Компроміс: зручність синхронізації про
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:223
 msgid "The transaction is written to a SQLite database stored in your device’s secure app storage"
-msgstr ""
+msgstr "Транзакція записується в базу даних SQLite, що зберігається в захищеному сховищі вашого пристрою"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:294
 msgid "The Trust Factor"
@@ -6314,7 +6314,7 @@ msgstr "Потім ситуація почала погіршуватися."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:684
 msgid "There are no private repositories containing the “real” code that handles your data differently. What you see is what runs on your device."
-msgstr ""
+msgstr "Немає приватних репозиторіїв, що містять \"справжній\" код, який обробляє ваші дані інакше. Те, що ви бачите — це те, що працює на вашому пристрої."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:236
 msgid "There is no background sync silently uploading your data. There is no analytics event recording what you spent money on. The operation begins and ends on your device."
@@ -6350,11 +6350,11 @@ msgstr "Сторонні партнери отримують анонімізо�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1660
 msgid "This approach eliminates the fear of “what if I made the wrong choice” and lets you experience the differences firsthand."
-msgstr ""
+msgstr "Цей підхід усуває страх \"а раптом я зробив неправильний вибір\" і дозволяє вам побачити різницю на власному досвіді."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:350
 msgid "This architecture means that even if someone steals your device, they cannot read your financial data without also compromising your device’s security (unlocking it with your biometrics or passcode)."
-msgstr ""
+msgstr "Ця архітектура означає, що навіть якщо хтось вкраде ваш пристрій, він не зможе прочитати ваші фінансові дані, не скомпрометувавши також безпеку вашого пристрою (розблокувавши його за допомогою біометрії або коду доступу)."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:431
 msgid "This breach illustrates insider threat risk. No external hacker was involved. An employee with legitimate access chose to exfiltrate data. Cloud systems with centralized data stores are inherently vulnerable to this attack vector."
@@ -6378,19 +6378,19 @@ msgstr "Це дає вам зручність автоматичного імп�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:136
 msgid "This guide is written by developers, for developers. We’ve tested every major Mint alternative and evaluated them based on what actually matters to technical users: data ownership, API access, export capabilities, privacy practices, and the ability to self-host or run offline."
-msgstr ""
+msgstr "Цей гід написаний розробниками для розробників. Ми протестували кожну основну альтернативу Mint та оцінили їх за критеріями, які дійсно важливі для технічних користувачів: володіння даними, доступ до API, можливості експорту, практики конфіденційності та можливість самохостингу або офлайн-роботи."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1038
 msgid "This is a common concern, but security research consistently shows that obscurity provides weak protection. Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security researchers are blocked from helping. Open source assumes adversaries will study the code and designs security that works anyway. This produces more robust systems than hoping attackers won’t look too closely."
-msgstr ""
+msgstr "Це поширене занепокоєння, але дослідження безпеки послідовно показують, що приховування забезпечує слабкий захист. Рішучі зловмисники можуть провести зворотну інженерію додатків із закритим кодом, знайти вразливості через фазинг та зондування або використати ті ж помилки, які пропустили внутрішні розробники. Тим часом легітимні дослідники безпеки не мають можливості допомогти. Відкритий код передбачає, що супротивники вивчатимуть код, і проєктує безпеку, яка працює попри це. Це створює більш стійкі системи, ніж надія, що зловмисники не придивлятимуться уважно."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1052
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the open-source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
-msgstr ""
+msgstr "Це обґрунтоване занепокоєння, відоме як «верифікація збірки». Budgie використовує відтворювані збірки, де це можливо, дозволяючи будь-кому перевірити, що опублікований додаток відповідає вихідному коду. Для мобільних додатків потрібна додаткова довіра до дистрибуції через магазин додатків, але відкритий код гарантує, що ви можете зібрати додаток самостійно, якщо хочете максимальної перевірки. Ми також надаємо контрольні суми для релізів, щоб ви могли перевірити цілісність завантаження."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:196
 msgid "This is an extraordinarily detailed financial portrait. With closed-source software, you’re trusting that portrait to remain private based solely on corporate promises and legal agreements that can change at any time."
-msgstr ""
+msgstr "Це надзвичайно детальний фінансовий портрет. З програмним забезпеченням із закритим кодом ви довіряєте збереження цього портрету виключно на основі корпоративних обіцянок та юридичних угод, які можуть змінитися в будь-який момент."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:340
 msgid "This is more secure than screen scraping, but privacy concerns remain:"
@@ -6410,7 +6410,7 @@ msgstr "Це не гіпотетична оцінка ризиків. Це ре�
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:607
 msgid "This is not privacy through policy but privacy through architecture. Users do not need to trust the company’s privacy practices because the architecture makes privacy violations technically impossible."
-msgstr ""
+msgstr "Це приватність не через політику, а приватність через архітектуру. Користувачам не потрібно довіряти практикам конфіденційності компанії, тому що архітектура робить порушення приватності технічно неможливими."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:375
 msgid "This is not theoretical. Financial apps have been breached, and user data has been exposed."
@@ -6422,7 +6422,7 @@ msgstr "Це особливо помітно у ресурсомістких о�
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:128
 msgid "This is the black box problem of modern financial software. You input your transactions, and somewhere inside a proprietary system, things happen. What things? You’ll never know. The code is locked away, the data flows are hidden, and the company’s promises are the only thing standing between your financial life and potential misuse."
-msgstr ""
+msgstr "Це проблема «чорної скриньки» сучасного фінансового програмного забезпечення. Ви вводите свої транзакції, і десь усередині закритої системи щось відбувається. Що саме? Ви ніколи не дізнаєтесь. Код заблокований, потоки даних приховані, а обіцянки компанії — єдине, що стоїть між вашим фінансовим життям та потенційним зловживанням."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:176
 msgid "This is the elephant in the room. YNAB is a cloud-first application, meaning:"
@@ -6430,7 +6430,7 @@ msgstr "Це головне питання. YNAB — це хмарний дод�
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:236
 msgid "This isn’t hidden. Credit Karma is upfront that they make money when you accept offers. But the implications are significant:"
-msgstr ""
+msgstr "Це не приховано. Credit Karma відкрито повідомляє, що вони заробляють, коли ви приймаєте пропозиції. Але наслідки значні:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:723
 msgid "This makes the implementation simpler too. Without real-time collaboration requirements, the sync layer can focus on device-to-device synchronization for the same user rather than multi-user conflict resolution."
@@ -6466,7 +6466,7 @@ msgstr "Це суттєво обмежує наш вибір у порівнян
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:858
 msgid "This transparency lets you make informed decisions about whether Budgie is right for you. If a planned feature concerns you, you can raise those concerns before it’s implemented. If a feature you need is missing, you can advocate for it or contribute it yourself."
-msgstr ""
+msgstr "Ця прозорість дозволяє вам приймати обґрунтовані рішення щодо того, чи підходить вам Budgie. Якщо запланована функція вас турбує, ви можете висловити ці занепокоєння до того, як вона буде реалізована. Якщо потрібна функція відсутня, ви можете виступити за її впровадження або зробити внесок самостійно."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1321
 msgid "Time-consuming data entry"
@@ -6494,7 +6494,7 @@ msgstr "Змінити тему"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:528
 msgid "Tools like GitHub’s dependency graph and security advisories make this information visible even to non-technical users. A project with dozens of outdated dependencies and unaddressed security warnings should raise concerns."
-msgstr ""
+msgstr "Такі інструменти, як графік залежностей GitHub та рекомендації з безпеки, роблять цю інформацію видимою навіть для нетехнічних користувачів. Проєкт із десятками застарілих залежностей та необробленими попередженнями безпеки повинен викликати занепокоєння."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:341
 msgid "Track accounts in multiple currencies without compromising privacy:"
@@ -6560,7 +6560,7 @@ msgstr "Відстежує $50 000+ на 8 рахунках"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1419
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1506
 msgid "Trade-offs to Consider:"
-msgstr ""
+msgstr "Компроміси, які варто врахувати:"
 
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:26
 msgid "Traditional Banks"
@@ -6665,11 +6665,11 @@ msgstr "Власність користувача на дані"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1066
 msgid "Users control their own backup strategy. This might include local device backups (iCloud, Google backup), manual exports, or sync to a service of the user’s choice. Some local-first apps offer optional cloud backup services for convenience, but these are additive rather than required. Your data remains accessible through local backups even if any cloud service disappears."
-msgstr ""
+msgstr "Користувачі контролюють власну стратегію резервного копіювання. Це може включати локальні резервні копії пристрою (iCloud, Google backup), ручний експорт або синхронізацію з сервісом за вибором користувача. Деякі local-first застосунки пропонують необов'язкові хмарні сервіси резервного копіювання для зручності, але вони є доповненням, а не обов'язковою вимогою. Ваші дані залишаються доступними через локальні резервні копії, навіть якщо будь-який хмарний сервіс зникне."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:551
 msgid "Users notice the difference immediately. Applications feel “snappy“ or “responsive” in ways that are hard to articulate but immediately apparent. This is not optimization; it is a fundamental architectural advantage."
-msgstr ""
+msgstr "Користувачі помічають різницю одразу. Застосунки відчуваються «швидкими» та «чуйними» у способи, які складно описати словами, але які одразу помітні. Це не оптимізація — це фундаментальна архітектурна перевага."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1342
 msgid "Venture-backed company (monetization pressure)"
@@ -6741,7 +6741,7 @@ msgstr "Ми вважаємо, що цей компроміс вартий дл�
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:871
 msgid "We cannot provide your data to law enforcement or anyone else because we do not have it. There is no server to subpoena, no database to query, and no backup to hand over. Your data is on your device, protected by your device security and Budgie’s encryption."
-msgstr ""
+msgstr "Ми не можемо надати ваші дані правоохоронним органам чи будь-кому іншому, тому що ми їх не маємо. Немає сервера для повістки до суду, немає бази даних для запиту, немає резервної копії для передачі. Ваші дані знаходяться на вашому пристрої, захищені безпекою вашого пристрою та шифруванням Budgie."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:895
 msgid "We collect anonymized crash reports through app store mechanisms (App Store Connect for iOS, Google Play Console for Android). These reports do not contain financial data. We use them to fix bugs that cause crashes. No other data is collected through any channel."
@@ -6761,7 +6761,7 @@ msgstr "Ми буквально не можемо бачити ваші дані
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1376
 msgid "We literally cannot see your transactions because we’re not in the data path"
-msgstr ""
+msgstr "Ми буквально не можемо бачити ваші транзакції, тому що ми не знаходимося на шляху даних"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:329
 msgid "We never see your banking credentials or transaction data"
@@ -6773,7 +6773,7 @@ msgstr "Ми серйозно ставимося до вразливостей �
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1004
 msgid "We think there’s room in the ecosystem for all these tools. Users benefit when they have choices, and competition among open-source projects drives innovation while maintaining the trust benefits of transparency."
-msgstr ""
+msgstr "Ми вважаємо, що в екосистемі є місце для всіх цих інструментів. Користувачі виграють, коли мають вибір, а конкуренція між проєктами з відкритим кодом стимулює інновації, зберігаючи переваги довіри від прозорості."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:33
 msgid "We took the opposite approach to every other budgeting app. Here's why that matters for you."
@@ -6789,15 +6789,15 @@ msgstr "Скажемо прямо про компроміси. Хмарна си
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1433
 msgid "We’re not asking you to trust us. We’re giving you the tools to verify."
-msgstr ""
+msgstr "Ми не просимо вас довіряти нам. Ми даємо вам інструменти для перевірки."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:436
 msgid "We’ve designed Budgie to be just as convenient without the privacy tradeoffs. Import statements, track crypto, manage multiple currencies—all without internet dependency."
-msgstr ""
+msgstr "Ми розробили Budgie таким чином, щоб він був таким же зручним без компромісів щодо конфіденційності. Імпортуйте виписки, відстежуйте криптовалюти, керуйте декількома валютами — все без залежності від інтернету."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:454
 msgid "We’ve tested each of these apps extensively. Here’s how they stack up for technical users:"
-msgstr ""
+msgstr "Ми ретельно протестували кожен із цих додатків. Ось як вони виглядають для технічних користувачів:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:823
 msgid "Web-based (no native mobile apps)"
@@ -6894,7 +6894,7 @@ msgstr "Яка різниця між local-first та offline-first?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:666
 msgid "What makes Budgie different:"
-msgstr ""
+msgstr "Що відрізняє Budgie:"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:25
 msgid "What Makes Us Different"
@@ -6910,7 +6910,7 @@ msgstr "Які платформи ви використовуєте?"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:887
 msgid "What Sets Budgie Apart:"
-msgstr ""
+msgstr "Що вирізняє Budgie:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:254
 msgid "What to Look for in a Privacy-Focused Budget App"
@@ -6918,7 +6918,7 @@ msgstr "На що звертати увагу у бюджетному додат
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:439
 msgid "What to look for:"
-msgstr ""
+msgstr "На що звертати увагу:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:850
 msgid "What trade-offs are being considered"
@@ -6930,23 +6930,23 @@ msgstr "Від чого ви відмовляєтесь"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:847
 msgid "What’s currently being worked on"
-msgstr ""
+msgstr "Над чим ведеться робота зараз"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:582
 msgid "What’s Open Source: Everything"
-msgstr ""
+msgstr "Що має відкритий код: все"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1691
 msgid "What’s the best free YNAB alternative?"
-msgstr ""
+msgstr "Яка найкраща безкоштовна альтернатива YNAB?"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1792
 msgid "What’s the learning curve for these apps?"
-msgstr ""
+msgstr "Яка крива навчання у цих додатків?"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1872
 msgid "What’s your budget?"
-msgstr ""
+msgstr "Який ваш бюджет?"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:412
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
@@ -6982,7 +6982,7 @@ msgstr "Коли ви не можете сховати свою реалізац
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1362
 msgid "When you choose to enable bank synchronization in Budgie, here’s what happens:"
-msgstr ""
+msgstr "Коли ви вирішуєте увімкнути банківську синхронізацію в Budgie, ось що відбувається:"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:201
 msgid "When you connect a bank account to a cloud budgeting app, your single bank connection creates copies of your data across multiple systems, each with different security postures, retention policies, and access controls. Your data flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the aggregator’s data warehouse, and then into the budgeting app’s backend. From there, it may feed into analytics pipelines, ML/AI training data, and third-party analytics services. The attack surface is not your bank. It is every system in this chain."
@@ -6994,7 +6994,7 @@ msgstr "Коли ви підключаєтесь через Plaid, процес 
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:466
 msgid "When you connect through Plaid, you enter into a relationship with Plaid, not just the app. Plaid’s business interests may not align with your privacy preferences."
-msgstr ""
+msgstr "Коли ви підключаєтесь через Plaid, ви вступаєте у відносини з Plaid, а не лише з додатком. Бізнес-інтереси Plaid можуть не збігатися з вашими уподобаннями щодо конфіденційності."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:213
 msgid "When you create a transaction in Budgie, here is what happens at the technical level:"
@@ -7006,7 +7006,7 @@ msgstr "Коли у вас є підключення, Budgie може опціо
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:119
 msgid "When you hand over your financial data to an app, you’re trusting it with some of the most sensitive information about your life. Your spending patterns reveal where you live, where you work, what you eat, your health conditions, your relationships, and countless other intimate details. Yet most people have no idea what happens to this data once it enters their budget app."
-msgstr ""
+msgstr "Коли ви довіряєте свої фінансові дані додатку, ви передаєте йому одну з найчутливіших категорій інформації про своє життя. Ваші витрати розкривають, де ви живете, де працюєте, що їсте, ваш стан здоров'я, ваші стосунки та безліч інших інтимних деталей. Проте більшість людей навіть не уявляють, що відбувається з цими даними після того, як вони потрапляють до бюджетного додатку."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:121
 msgid "When you open most expense tracking apps, something happens in the background that you might not notice: your transaction data, account balances, and spending habits are uploaded to servers you do not control. These servers might be located anywhere in the world, managed by teams you have never met, and protected by security practices you cannot verify."
@@ -7022,7 +7022,7 @@ msgstr "Коли ви хочете перенести дані на новий �
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:188
 msgid "When you’re paid and when you’re broke"
-msgstr ""
+msgstr "Коли вам платять і коли у вас закінчуються гроші"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:303
 msgid "When your database is encrypted, the file on disk appears as random binary data. Without the correct key, it is computationally infeasible to extract any meaningful information."
@@ -7030,7 +7030,7 @@ msgstr "Коли ваша база даних зашифрована, файл �
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:142
 msgid "When your financial information lives on someone else’s server, you’re trusting that:"
-msgstr ""
+msgstr "Коли ваша фінансова інформація зберігається на чужому сервері, ви довіряєте, що:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:227
 msgid "Where that data is transmitted"
@@ -7042,7 +7042,7 @@ msgstr "Де ви живете та працюєте"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:236
 msgid "Whether it’s ever sold or shared"
-msgstr ""
+msgstr "Чи продаються або передаються вони третім особам"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1767
 msgid "Which alternative is best for couples?"
@@ -7081,7 +7081,7 @@ msgstr "Чому хмарні бюджетні додатки -- це кошма
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:211
 msgid "Why Credit Karma Isn’t the Answer"
-msgstr ""
+msgstr "Чому Credit Karma — не відповідь"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:530
 msgid "Why Developers Are Choosing Local-First"
@@ -7089,7 +7089,7 @@ msgstr "Чому розробники обирають Local-First"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1571
 msgid "Why Developers Choose Budgie"
-msgstr ""
+msgstr "Чому розробники обирають Budgie:"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:389
 msgid "Why does this matter? Consider these scenarios:"
@@ -7150,11 +7150,11 @@ msgstr "З додатками із закритим кодом ви не мож�
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:175
 msgid "With cloud-based apps, you don’t truly own your data:"
-msgstr ""
+msgstr "З хмарними додатками ви не володієте своїми даними по-справжньому:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:569
 msgid "With local-first, there is no “offline mode” that limits functionality. There is no anxiety about whether changes will be saved. The application works the same whether you are on a plane, in a basement, or connected to fast WiFi."
-msgstr ""
+msgstr "З local-first немає «офлайн-режиму», який обмежує функціональність. Немає тривоги щодо того, чи будуть збережені зміни. Застосунок працює однаково, незалежно від того, чи ви в літаку, в підвалі, чи підключені до швидкого WiFi."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:922
 msgid "With offline-first, bank data flows directly to your device. No intermediate servers store your transactions. No aggregators retain your history."
@@ -7162,7 +7162,7 @@ msgstr "З Offline-First банківські дані надходять без
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:444
 msgid "With these criteria in mind, let’s evaluate the alternatives."
-msgstr ""
+msgstr "З цими критеріями на увазі, оцінімо альтернативи."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:281
 msgid "Without access to the source code, these claims are marketing copy, not verifiable facts."
@@ -7223,7 +7223,7 @@ msgstr "Так, за наявності згоди. Коли ви погоджу
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1684
 msgid "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
-msgstr ""
+msgstr "Так, YNAB підтримує ручне введення транзакцій. Проте додаток побудований навколо банківської синхронізації, і деякі користувачі вважають досвід без синхронізації менш відшліфованим. Якщо ви використовуєте YNAB без банківської синхронізації з міркувань приватності, варто розглянути додаток, який був розроблений для ручного введення з самого початку."
 
 #: src/generic/util/build-landing-json-ld.util.ts:31
 msgid "Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
@@ -7257,15 +7257,15 @@ msgstr ""
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1674
 msgid "YNAB employs industry-standard security practices and has a good track record. However, “safe“ and “private” are different concepts. YNAB is relatively safe from hackers, but your data is still stored on their servers, accessible to their employees (with proper authorization), and subject to their privacy policy. For users who want true financial privacy, this centralized storage model is the core concern—not necessarily YNAB’s security practices."
-msgstr ""
+msgstr "YNAB застосовує стандартні практики безпеки індустрії та має хорошу репутацію. Однак \"безпечно\" та \"приватно\" — це різні поняття. YNAB відносно захищений від хакерів, але ваші дані все ще зберігаються на їхніх серверах, доступні їхнім працівникам (з відповідним дозволом) та підпорядковані їхній політиці конфіденційності. Для користувачів, які хочуть справжньої фінансової приватності, ця централізована модель зберігання є основною проблемою — а не обов'язково практики безпеки YNAB."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1368
 msgid "YNAB has been around since 2004 and has a devoted following. It’s less about tracking spending and more about intentional money allocation. The methodology works, but the implementation has trade-offs."
-msgstr ""
+msgstr "YNAB існує з 2004 року та має віддану аудиторію. Він менше про відстеження витрат і більше про свідомий розподіл грошей. Методологія працює, але реалізація має свої компроміси."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:213
 msgid "YNAB requires an internet connection for most functionality. While the mobile app has some offline capabilities, it’s fundamentally designed around cloud synchronization. This creates several issues:"
-msgstr ""
+msgstr "YNAB потребує інтернет-з'єднання для більшості функцій. Хоча мобільний додаток має деякі офлайн-можливості, він фундаментально побудований навколо хмарної синхронізації. Це створює кілька проблем:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1792
 msgid "YNAB-like methodology appeals to you"
@@ -7273,11 +7273,11 @@ msgstr "Вам подобається методологія, схожа на YN
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1520
 msgid "YNAB’s export includes several CSV files:"
-msgstr ""
+msgstr "Експорт YNAB включає кілька файлів CSV:"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:163
 msgid "YNAB’s pricing has seen significant increases over the years. What started as a one-time purchase has evolved into a subscription model that now costs $14.99/month or $99/year. For some users, especially those on tight budgets (ironically, the very people who need budgeting tools most), this recurring cost is difficult to justify when free or one-time purchase alternatives exist."
-msgstr ""
+msgstr "Ціноутворення YNAB зазнало суттєвих змін протягом років. Те, що починалося як одноразова покупка, перетворилося на модель підписки, яка зараз коштує $14.99/місяць або $99/рік. Для деяких користувачів, особливо тих, хто має обмежений бюджет (за іронією долі, саме тих людей, яким інструменти бюджетування потрібні найбільше), цю регулярну витрату важко виправдати, коли існують безкоштовні альтернативи або варіанти з одноразовою оплатою."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:473
 msgid "Yodlee Settlement - 2024"
@@ -7285,7 +7285,7 @@ msgstr "Врегулювання Yodlee -- 2024"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:531
 msgid "You agreed to one company’s privacy policy. After acquisition, a different company with different policies controls your data. The legal basis for this is usually buried in the original terms of service."
-msgstr ""
+msgstr "Ви погодились з політикою конфіденційності однієї компанії. Після поглинання інша компанія з іншими політиками контролює ваші дані. Юридична основа для цього зазвичай прихована в початкових умовах використання."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:253
 msgid "You become the product, not the customer"
@@ -7313,19 +7313,19 @@ msgstr "Ви можете перевірити код без будь-яких �
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:189
 msgid "You can’t control who sees your information"
-msgstr ""
+msgstr "Ви не можете контролювати, хто бачить вашу інформацію"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1833
 msgid "You don’t mind bank sync"
-msgstr ""
+msgstr "Вас не турбує синхронізація з банком"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1868
 msgid "You don’t need mobile apps"
-msgstr ""
+msgstr "Вам не потрібні мобільні додатки"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:420
 msgid "You don’t need to be a programmer to evaluate the trustworthiness of an open-source project. While you may not be able to review code line by line, you can assess many important factors that indicate whether a project deserves your trust."
-msgstr ""
+msgstr "Вам не потрібно бути програмістом, щоб оцінити надійність проєкту з відкритим кодом. Хоча ви, можливо, не зможете переглянути код рядок за рядком, ви можете оцінити багато важливих факторів, які вказують на те, чи заслуговує проєкт вашої довіри."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1865
 msgid "You enjoy working with data"
@@ -7401,19 +7401,19 @@ msgstr "Ви #{displayPosition} у списку очікування. Ми по�
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1814
 msgid "You’re a power user"
-msgstr ""
+msgstr "Ви досвідчений користувач"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1824
 msgid "You’re all-in on Apple"
-msgstr ""
+msgstr "Ви повністю в екосистемі Apple"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1786
 msgid "You’re comfortable self-hosting"
-msgstr ""
+msgstr "Вам зручно з self-hosted"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1849
 msgid "You’re comfortable with cloud storage"
-msgstr ""
+msgstr "Вам зручно з хмарним зберіганням"
 
 #: src/generic/component/waitlist-form/waitlist-success.tsx:45
 msgid "You're in!"
@@ -7421,15 +7421,15 @@ msgstr "Ви в списку!"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:128
 msgid "You’re not alone. The shutdown affected over 3.6 million active users, and the transition path Intuit offered (Credit Karma) left most of us deeply unsatisfied. For developers especially, Credit Karma’s approach to data privacy and lack of technical features makes it a non-starter."
-msgstr ""
+msgstr "Ви не самотні. Закриття торкнулося понад 3,6 мільйона активних користувачів, а шлях переходу, запропонований Intuit (Credit Karma), залишив більшість із нас глибоко незадоволеними. Для розробників особливо підхід Credit Karma до конфіденційності даних та відсутність технічних функцій роблять його неприйнятним варіантом."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:653
 msgid "You’re not locked into any ecosystem or vendor"
-msgstr ""
+msgstr "Ви не прив'язані до жодної екосистеми чи постачальника"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1871
 msgid "You’re very patient"
-msgstr ""
+msgstr "Ви дуже терплячі"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:183
 msgid "Your account can be locked or deleted"
@@ -7453,7 +7453,7 @@ msgstr "Ваші банківські облікові дані шифрують
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1451
 msgid "Your data doesn’t disappear if we go out of business"
-msgstr ""
+msgstr "Ваші дані не зникнуть, якщо ми припинимо діяльність"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:863
 msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
@@ -7487,7 +7487,7 @@ msgstr "Ваші дані зберігаються на їхніх сервер�
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:156
 msgid "Your data won’t be sold to third parties"
-msgstr ""
+msgstr "Ваші дані не будуть продані третім особам"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1346
 msgid "Your Device is the Database"
@@ -7535,7 +7535,7 @@ msgstr "Ваші моделі доходів та їх джерела"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:526
 msgid "Your money, your data, your control. That’s the Budgie promise."
-msgstr ""
+msgstr "Ваші гроші, ваші дані, ваш контроль. Це обіцянка Budgie."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1945
 msgid "Your money. Your data. Your control."
