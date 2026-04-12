@@ -7,6 +7,7 @@ appId: ${APP_ID}
     file: subflows/import-database-from-settings.flow.yaml
     env:
       FIXTURE_FILE: 'e2e-08-settings-navigation.db'
+      FIXTURE_ROW_ID_MATCH: 'e2e-08-settings-navigation.db, .*'
 
 - openLink: 'budgie://settings?anchor=general'
 
