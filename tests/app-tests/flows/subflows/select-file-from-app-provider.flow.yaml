@@ -2,10 +2,14 @@ appId: ${APP_ID}
 env:
   FILE_NAME_MATCH: ${FILE_NAME_MATCH}
   FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH || ''}
+  USE_FILE_ROW_ID_MATCH: ${USE_FILE_ROW_ID_MATCH || 'true'}
   FILE_SCROLL_UP: ${FILE_SCROLL_UP || 'false'}
   FILE_SCROLL_FROM_ID: ${FILE_SCROLL_FROM_ID || ''}
+  FILES_GRID_PRIMARY_POINT: ${FILES_GRID_PRIMARY_POINT || '20%,28%'}
   PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
-  PROVIDER_ROW_MATCH: ${PROVIDER_ROW_MATCH || 'budgie( \\(.*\\))?(, .*items)?'}
+  PROVIDER_ROW_MATCH: ${PROVIDER_ROW_MATCH || 'budgie( \\(.*\\))?([,\\n] .*items)?'}
+  FIXTURE_FOLDER_NAME_MATCH: ${FIXTURE_FOLDER_NAME_MATCH || 'E2EFixtures'}
+  FIXTURE_FOLDER_ROW_MATCH: ${FIXTURE_FOLDER_ROW_MATCH || 'E2EFixtures([,\\n] .*items)?'}
   EXPECT_OPEN_AFTER_FILE_TAP: ${EXPECT_OPEN_AFTER_FILE_TAP || 'false'}
 ---
 - runFlow:
@@ -30,20 +34,30 @@ env:
             text: '${PROVIDER_NAME_MATCH}'
           timeout: 15000
       - retry:
-          maxRetries: 2
+          maxRetries: 3
           commands:
-            - tapOn:
-                text: '${PROVIDER_ROW_MATCH}'
+            - runFlow:
+                when:
+                  visible: '${PROVIDER_NAME_MATCH}'
+                commands:
+                  - tapOn:
+                      point: '${FILES_GRID_PRIMARY_POINT}'
             - extendedWaitUntil:
-                visible: 'E2EFixtures'
+                visible: '${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
                 timeout: 5000
 
 - runFlow:
     when:
-      visible: 'E2EFixtures'
+      visible: '${FIXTURE_FOLDER_NAME_MATCH}'
     commands:
-      - tapOn:
-          text: 'E2EFixtures, .*items'
+      - retry:
+          maxRetries: 2
+          commands:
+            - tapOn:
+                point: '${FILES_GRID_PRIMARY_POINT}'
+            - extendedWaitUntil:
+                visible: '${FILE_NAME_MATCH}([,\\n] .*)?'
+                timeout: 5000
 
 - runFlow:
     when:
@@ -76,7 +90,7 @@ env:
 
 - runFlow:
     when:
-      true: ${FILE_ROW_ID_MATCH !== ''}
+      true: ${USE_FILE_ROW_ID_MATCH === 'true' && FILE_ROW_ID_MATCH !== ''}
     commands:
       - scrollUntilVisible:
           element:
@@ -91,18 +105,18 @@ env:
 
 - runFlow:
     when:
-      true: ${FILE_ROW_ID_MATCH === ''}
+      true: ${USE_FILE_ROW_ID_MATCH !== 'true' || FILE_ROW_ID_MATCH === ''}
     commands:
       - scrollUntilVisible:
           element:
-            text: '${FILE_NAME_MATCH}(, .*)?'
+            text: '${FILE_NAME_MATCH}([,\\n] .*)?'
           direction: DOWN
           timeout: 15000
           speed: 20
           visibilityPercentage: 50
           centerElement: true
       - tapOn:
-          text: '${FILE_NAME_MATCH}(, .*)?'
+          text: '${FILE_NAME_MATCH}([,\\n] .*)?'
 
 - runFlow:
     when:
