@@ -5,6 +5,7 @@ env:
   FILE_SCROLL_UP: ${FILE_SCROLL_UP || 'false'}
   FILE_SCROLL_FROM_ID: ${FILE_SCROLL_FROM_ID || ''}
   PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
+  PROVIDER_ROW_MATCH: ${PROVIDER_ROW_MATCH || 'budgie( \\(.*\\))?(, .*items)?'}
   EXPECT_OPEN_AFTER_FILE_TAP: ${EXPECT_OPEN_AFTER_FILE_TAP || 'false'}
 ---
 - runFlow:
@@ -28,8 +29,14 @@ env:
           visible:
             text: '${PROVIDER_NAME_MATCH}'
           timeout: 15000
-      - tapOn:
-          text: '${PROVIDER_NAME_MATCH}'
+      - retry:
+          maxRetries: 2
+          commands:
+            - tapOn:
+                text: '${PROVIDER_ROW_MATCH}'
+            - extendedWaitUntil:
+                visible: 'E2EFixtures'
+                timeout: 5000
 
 - runFlow:
     when:
