@@ -27,6 +27,7 @@ env:
     env:
       FILE_NAME_MATCH: ${FIXTURE_FILE}
       FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
+      USE_FILE_ROW_ID_MATCH: 'false'
       PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH}
 
 - runFlow:
@@ -40,6 +41,12 @@ env:
     commands:
       - runFlow:
           when:
+            visible: '${FIXTURE_FILE}([,\\n] .*)?'
+          commands:
+            - tapOn:
+                text: '${FIXTURE_FILE}([,\\n] .*)?'
+      - runFlow:
+          when:
             true: ${FIXTURE_ROW_ID_MATCH !== ''}
           commands:
             - runFlow:
@@ -49,16 +56,6 @@ env:
                 commands:
                   - tapOn:
                       id: '${FIXTURE_ROW_ID_MATCH}'
-      - runFlow:
-          when:
-            true: ${FIXTURE_ROW_ID_MATCH === ''}
-          commands:
-            - runFlow:
-                when:
-                  visible: '${FIXTURE_FILE}(, .*)?'
-                commands:
-                  - tapOn:
-                      text: '${FIXTURE_FILE}(, .*)?'
 
 - runFlow:
     when:
