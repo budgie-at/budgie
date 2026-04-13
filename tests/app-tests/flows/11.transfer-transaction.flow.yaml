@@ -79,11 +79,7 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Test Transfer'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
+- runFlow: subflows/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -115,11 +111,7 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Edited Transfer'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
+- runFlow: subflows/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
     visible:

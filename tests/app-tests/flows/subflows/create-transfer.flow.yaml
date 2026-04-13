@@ -53,9 +53,4 @@ appId: ${APP_ID}
     env:
       COMMENT: ${COMMENT}
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
+- runFlow: submit-transaction-and-wait.flow.yaml

@@ -42,10 +42,7 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Convert Income'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Transactions'
+- runFlow: subflows/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
     visible:
