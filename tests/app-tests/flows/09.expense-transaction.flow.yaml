@@ -53,12 +53,7 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Test Expense'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
+- runFlow: subflows/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
     visible:
@@ -97,12 +92,7 @@ appId: ${APP_ID}
     env:
       COMMENT: 'E2E Edited Expense'
 
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
-
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 15000
+- runFlow: subflows/submit-transaction-and-wait.flow.yaml
 
 - extendedWaitUntil:
     visible:
