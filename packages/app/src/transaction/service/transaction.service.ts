@@ -106,7 +106,9 @@ class TransactionService {
                         mccCategoryId: fromEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.CREDIT,
                         amount: fromAmountInMicroUnits,
-                        externalId: fromEntry.externalId ?? null
+                        externalId: fromEntry.externalId ?? null,
+                        exchangeRate: fromEntry.exchangeRate ?? 1,
+                        toIban: fromEntry.toIban ?? null
                     },
                     {
                         transactionId: transaction.id,
@@ -115,7 +117,9 @@ class TransactionService {
                         mccCategoryId: toEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: toAmount,
-                        externalId: toEntry.externalId ?? null
+                        externalId: toEntry.externalId ?? null,
+                        exchangeRate: toEntry.exchangeRate ?? 1,
+                        toIban: toEntry.toIban ?? null
                     },
                     ...this.buildAdditionalEntries(input.entries, fromEntry, toEntry, transaction.id)
                 ],
@@ -217,7 +221,9 @@ class TransactionService {
                         amount: fromAmountInMicroUnits,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     },
                     {
                         transactionId: id,
@@ -226,7 +232,9 @@ class TransactionService {
                         amount: toAmount,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     }
                 ],
                 tx
@@ -309,7 +317,9 @@ class TransactionService {
                         amount: fromAmount,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     },
                     {
                         transactionId: id,
@@ -318,7 +328,9 @@ class TransactionService {
                         amount: toAmountInMicroUnits,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     }
                 ],
                 tx
@@ -347,7 +359,9 @@ class TransactionService {
                 mccCategoryId: entry.mccCategoryId,
                 type: entry.type,
                 amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
+                externalId: entry.externalId ?? null,
+                exchangeRate: entry.exchangeRate ?? 1,
+                toIban: entry.toIban ?? null
             }));
     }
     /* jscpd:ignore-end */
