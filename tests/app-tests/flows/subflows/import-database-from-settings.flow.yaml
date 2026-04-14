@@ -14,10 +14,13 @@ env:
             visible: 'Open'
           commands:
             - tapOn: 'Open'
+      - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
             id: 'SettingsPage.ImportDatabaseCard'
           timeout: 15000
+
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
