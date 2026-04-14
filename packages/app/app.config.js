@@ -98,7 +98,6 @@ export default ({ config }) => ({
     extra: {
         appVariant: APP_VARIANT ?? 'production',
         aiEnabled: !IS_AI_DISABLED,
-        e2eHooksEnabled: IS_DEV || IS_E2E,
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
