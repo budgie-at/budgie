@@ -38,7 +38,7 @@
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
         "dotenv": "^17.2.3",
-        "drizzle-orm": "^0.44.7",
+        "drizzle-orm": "^0.45.2",
         "expo": "55.0.4",
         "expo-asset": "~55.0.8",
         "expo-background-task": "~55.0.9",
