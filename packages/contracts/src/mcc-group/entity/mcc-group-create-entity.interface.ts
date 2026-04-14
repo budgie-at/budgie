@@ -1,4 +1,5 @@
-import type { MccGroupCreateEntitySchema } from '../schema/mcc-group-create-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface MccGroupCreateEntityInterface extends infer<typeof MccGroupCreateEntitySchema> {}
+import type { MccGroupCreateEntitySchema } from '../schema/mcc-group-create-entity.schema';
+
+export type MccGroupCreateEntityInterface = z.infer<typeof MccGroupCreateEntitySchema>;
