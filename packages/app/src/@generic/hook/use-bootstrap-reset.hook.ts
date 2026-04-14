@@ -11,10 +11,12 @@ import { appResetService } from '../service/app-reset.service';
 
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 
+// eslint-disable-next-line dot-notation
 const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
+/* eslint-disable dot-notation */
 const getBootstrapParams = async () => {
     const initialUrl = await Linking.parseInitialURLAsync();
     const resetToken = normalizeQueryString(initialUrl.queryParams?.['e2eResetToken']);
@@ -28,6 +30,7 @@ const getBootstrapParams = async () => {
         hasBootstrapAction: shouldReset || isNotEmptyString(fixtureId)
     };
 };
+/* eslint-enable dot-notation */
 
 const runBootstrapAction = async ({
     resetToken,
@@ -72,10 +75,7 @@ export const useBootstrapReset = () => {
 
                 const bootstrapParams = await getBootstrapParams();
 
-                if (
-                    isNotEmptyString(bootstrapParams.resetToken) &&
-                    bootstrapParams.hasBootstrapAction
-                ) {
+                if (isNotEmptyString(bootstrapParams.resetToken) && bootstrapParams.hasBootstrapAction) {
                     await runBootstrapAction(bootstrapParams);
                 } else {
                     await SecureStore.deleteItemAsync(E2E_BOOTSTRAP_TOKEN_KEY);

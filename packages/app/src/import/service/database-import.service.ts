@@ -13,12 +13,7 @@ class DatabaseImportService {
         await expoDb.closeAsync();
         this.clearDatabaseGlobals();
 
-        [
-            destinationPath,
-            `${destinationPath}-wal`,
-            `${destinationPath}-shm`,
-            tempPath
-        ].forEach(path => void this.deleteFileIfExists(path));
+        [destinationPath, `${destinationPath}-wal`, `${destinationPath}-shm`, tempPath].forEach(path => void this.deleteFileIfExists(path));
 
         const tempFile = new File(tempPath);
         new File(sourceUri).copy(tempFile);
