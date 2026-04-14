@@ -22,8 +22,8 @@ export const BlogArticleCta = ({ locale }: Props) => (
                     </p>
 
                     <Button asChild size="lg">
-                        <Link href={`/${locale}#whitelist`}>
-                            <Trans>Join Whitelist</Trans>
+                        <Link href={`/${locale}#waitlist`}>
+                            <Trans>Join Waitlist</Trans>
                         </Link>
                     </Button>
                 </div>
