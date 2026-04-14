@@ -1,28 +1,93 @@
+import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
-import { getArticles } from '../../../blog/util/get-articles.util';
+import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
+import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
+import { BASE_URL, OG_LOCALE_MAP } from '../../../generic/constant/seo.constant';
+import { buildAlternates } from '../../../generic/util/build-alternates.util';
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
+import type { Metadata } from 'next';
+
 interface Props extends PageLangParam {
-    searchParams: Promise<{ query?: string; page?: string }>;
+    searchParams: Promise<{ q?: string; page?: string }>;
+}
+
+// eslint-disable-next-line func-style
+export async function generateMetadata(props: Props): Promise<Metadata> {
+    const { lang } = await props.params;
+    const { q: query, page } = await props.searchParams;
+    const i18n = getI18nInstance(lang);
+
+    const title = i18n._(msg`Financial Privacy Blog & Insights`);
+    const description = i18n._(
+        msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
+    );
+
+    const shouldNoIndex = isNotEmptyString(query) || Number(page) > 1;
+
+    return {
+        title,
+        description,
+        // eslint-disable-next-line lingui/no-unlocalized-strings
+        robots: shouldNoIndex ? 'noindex, follow' : 'index, follow',
+        alternates: buildAlternates(lang, '/blog'),
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `${BASE_URL}/${lang}/blog`,
+            locale: OG_LOCALE_MAP[lang] ?? 'en_US'
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description
+        }
+    };
 }
 
 // eslint-disable-next-line max-lines-per-function
 export default async function BlogPage(props: Props) {
     const { lang } = await props.params;
-    const { query = '', page = '1' } = await props.searchParams;
+    const { q: query = '', page = '1' } = await props.searchParams;
+    const i18n = getI18nInstance(lang);
 
     initLingui(lang);
 
-    const allArticles = getArticles();
+    const allArticles = ARTICLE_REGISTRY.map(entry => ({
+        slug: entry.slug,
+        title: i18n._(entry.title),
+        description: i18n._(entry.description),
+        date: entry.date,
+        author: entry.author,
+        tags: entry.tags,
+        image: `/${lang}/blog/${entry.slug}/opengraph-image`,
+        readingTimeMinutes: entry.readingTimeMinutes
+    })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
     const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;
+
+    /* eslint-disable lingui/no-unlocalized-strings */
+    const breadcrumbData = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: i18n._(msg`Home`), item: `${BASE_URL}/${lang}` },
+            { '@type': 'ListItem', position: 2, name: i18n._(msg`Blog`), item: `${BASE_URL}/${lang}/blog` }
+        ]
+    };
+    /* eslint-enable lingui/no-unlocalized-strings */
 
     const filteredArticles = searchQuery
         ? allArticles.filter(
@@ -39,11 +104,12 @@ export default async function BlogPage(props: Props) {
 
     return (
         <main className="flex-1">
+            <JsonLd data={breadcrumbData} />
             <section className="w-full py-20 md:py-32 overflow-hidden">
                 <div className="container px-4 md:px-6">
                     <Motion className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                            <Trans>Blog & Insights</Trans>
+                            <Trans>Financial Privacy Blog & Insights</Trans>
                         </h1>
 
                         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
@@ -68,6 +134,7 @@ export default async function BlogPage(props: Props) {
                                         image={article.image}
                                         index={index}
                                         locale={lang}
+                                        readingTimeMinutes={article.readingTimeMinutes}
                                         slug={article.slug}
                                         tags={article.tags}
                                         title={article.title}
@@ -86,18 +153,20 @@ export default async function BlogPage(props: Props) {
                                         }
                                         params.set('page', page.toString());
 
+                                        /* eslint-disable lingui/no-unlocalized-strings */
+                                        const isActiveClass = isActive
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-muted hover:bg-muted/80 text-foreground';
+                                        /* eslint-enable lingui/no-unlocalized-strings */
+
                                         return (
-                                            <a
+                                            <Link
                                                 key={page}
-                                                className={`px-4 py-2 rounded-md transition-colors ${
-                                                    isActive
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'bg-muted hover:bg-muted/80 text-foreground'
-                                                }`}
+                                                className={`px-4 py-2 rounded-md transition-colors ${isActiveClass}`}
                                                 href={`/${lang}/blog?${params.toString()}`}
                                             >
                                                 {page}
-                                            </a>
+                                            </Link>
                                         );
                                     })}
                                 </Motion>
