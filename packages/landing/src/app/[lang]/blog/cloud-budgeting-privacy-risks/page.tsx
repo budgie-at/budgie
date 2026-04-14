@@ -10,7 +10,6 @@ import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/bl
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
-import { Badge } from '../../../../ui/badge';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -20,9 +19,11 @@ import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blo
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
+import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
+import { Badge } from '../../../../ui/badge';
 
 import type { Metadata } from 'next';
 
@@ -33,6 +34,8 @@ const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 16;
 
+const RELATED_SLUGS = ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'] as const;
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
@@ -41,12 +44,16 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     return buildBlogArticleMetadata({
         author: AUTHOR,
         date: DATE,
-        description: t(i18n)`Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.`,
+        description: t(
+            i18n
+        )`Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.`,
         image: IMAGE,
-        keywords: t(i18n)`cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker`,
+        keywords: t(
+            i18n
+        )`cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker`,
         locale: lang,
         slug: SLUG,
-        title: t(i18n)`Why Cloud Budgeting Apps Are a Privacy Nightmare`,
+        title: t(i18n)`Why Cloud Budgeting Apps Are a Privacy Nightmare`
     });
 }
 
@@ -59,9 +66,13 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
             <BlogPostingJsonLd
                 author={AUTHOR}
                 date={DATE}
-                description={t(i18n)`Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.`}
+                description={t(
+                    i18n
+                )`Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.`}
                 image={IMAGE}
-                keywords={t(i18n)`cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker`}
+                keywords={t(
+                    i18n
+                )`cloud budgeting privacy, financial data risks, Plaid data collection, offline-first budgeting, private expense tracker`}
                 locale={lang}
                 slug={SLUG}
                 title={t(i18n)`Why Cloud Budgeting Apps Are a Privacy Nightmare`}
@@ -105,11 +116,21 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     readingTimeMinutes={READING_TIME}
                     tags={
                         <>
-                            <Badge variant="secondary"><Trans>privacy</Trans></Badge>
-                            <Badge variant="secondary"><Trans>security</Trans></Badge>
-                            <Badge variant="secondary"><Trans>cloud risks</Trans></Badge>
-                            <Badge variant="secondary"><Trans>financial data</Trans></Badge>
-                            <Badge variant="secondary"><Trans>data protection</Trans></Badge>
+                            <Badge variant="secondary">
+                                <Trans>privacy</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>security</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>cloud risks</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>financial data</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>data protection</Trans>
+                            </Badge>
                         </>
                     }
                 />
@@ -176,8 +197,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Upselling financial products</strong>: The app becomes a distribution channel for insurance, banking,
-                                and investment services
+                                <strong>Upselling financial products</strong>: The app becomes a distribution channel for insurance,
+                                banking, and investment services
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -200,9 +221,9 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            When you connect a bank account to a cloud budgeting app, your single bank connection creates copies of your data
-                            across multiple systems, each with different security postures, retention policies, and access controls. Your data
-                            flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the
+                            When you connect a bank account to a cloud budgeting app, your single bank connection creates copies of your
+                            data across multiple systems, each with different security postures, retention policies, and access controls.
+                            Your data flows from your bank account through a data aggregator like Plaid, Yodlee, MX, or Finicity, into the
                             aggregator’s data warehouse, and then into the budgeting app’s backend. From there, it may feed into analytics
                             pipelines, ML/AI training data, and third-party analytics services. The attack surface is not your bank. It is
                             every system in this chain.
@@ -241,7 +262,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Transaction data</strong>: Every transaction including amount, date, merchant, category, and location
+                                <strong>Transaction data</strong>: Every transaction including amount, date, merchant, category, and
+                                location
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -263,9 +285,9 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Plaid’s privacy policy explicitly states they retain this data and may use it for product improvement, analytics,
-                            and to develop new services. When you connect your bank through Plaid, you are not just sharing data with the
-                            budgeting app. You are sharing it with Plaid, which operates as a separate data controller.
+                            Plaid’s privacy policy explicitly states they retain this data and may use it for product improvement,
+                            analytics, and to develop new services. When you connect your bank through Plaid, you are not just sharing data
+                            with the budgeting app. You are sharing it with Plaid, which operates as a separate data controller.
                         </Trans>
                     </BlogArticleProse>
 
@@ -273,8 +295,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         <Trans>
                             In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than
                             users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login
-                            credentials through interfaces designed to look like bank login pages, leading users to believe they were logging
-                            directly into their banks.
+                            credentials through interfaces designed to look like bank login pages, leading users to believe they were
+                            logging directly into their banks.
                         </Trans>
                     </BlogArticleProse>
 
@@ -313,8 +335,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No consent granularity</strong>: The scraper has full access to your account, including the ability to
-                                initiate transfers
+                                <strong>No consent granularity</strong>: The scraper has full access to your account, including the ability
+                                to initiate transfers
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -332,8 +354,9 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Open Banking regulations in the EU and UK, along with voluntary API programs from US banks, enable more controlled
-                            data sharing. Apps request specific scopes of access, and you authorize through your bank’s interface.
+                            Open Banking regulations in the EU and UK, along with voluntary API programs from US banks, enable more
+                            controlled data sharing. Apps request specific scopes of access, and you authorize through your bank’s
+                            interface.
                         </Trans>
                     </BlogArticleProse>
 
@@ -373,9 +396,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            This is not theoretical. Financial apps have been breached, and user data has been exposed.
-                        </Trans>
+                        <Trans>This is not theoretical. Financial apps have been breached, and user data has been exposed.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -397,8 +418,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Forced migration</strong>: Users pushed to Credit Karma, another Intuit product with different privacy
-                                terms
+                                <strong>Forced migration</strong>: Users pushed to Credit Karma, another Intuit product with different
+                                privacy terms
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -447,8 +468,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Data minimization failures</strong>: Collecting full transaction histories when apps only need current
-                                balances
+                                <strong>Data minimization failures</strong>: Collecting full transaction histories when apps only need
+                                current balances
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -489,9 +510,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            The lifecycle of your financial data extends far beyond your active use of an app.
-                        </Trans>
+                        <Trans>The lifecycle of your financial data extends far beyond your active use of an app.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -563,9 +582,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            Fintech companies operate in a volatile market. The app you trust today may not exist in two years.
-                        </Trans>
+                        <Trans>Fintech companies operate in a volatile market. The app you trust today may not exist in two years.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -648,8 +665,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data,
-                            and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in
-                            Plaid’s infrastructure.
+                            and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits
+                            in Plaid’s infrastructure.
                         </Trans>
                     </BlogArticleProse>
 
@@ -687,9 +704,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            Plaid started as infrastructure for fintech apps. It has evolved into:
-                        </Trans>
+                        <Trans>Plaid started as infrastructure for fintech apps. It has evolved into:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
@@ -712,8 +727,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Your transaction data contributes to products sold to landlords evaluating rental applications, lenders assessing
-                            loan risk, and employers verifying income claims. The infrastructure provider became a data company.
+                            Your transaction data contributes to products sold to landlords evaluating rental applications, lenders
+                            assessing loan risk, and employers verifying income claims. The infrastructure provider became a data company.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -724,9 +739,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            If you must use a cloud-based financial app, here is a technical checklist for evaluation.
-                        </Trans>
+                        <Trans>If you must use a cloud-based financial app, here is a technical checklist for evaluation.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -742,20 +755,20 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>What transaction history is collected?</strong> Red flag: Full history back to account opening. Green
-                                flag: Only recent transactions needed for features
+                                <strong>What transaction history is collected?</strong> Red flag: Full history back to account opening.
+                                Green flag: Only recent transactions needed for features
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Is location data collected?</strong> Red flag: Transaction location stored. Green flag: No geolocation
-                                beyond transaction metadata
+                                <strong>Is location data collected?</strong> Red flag: Transaction location stored. Green flag: No
+                                geolocation beyond transaction metadata
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>What happens to deleted transactions?</strong> Red flag: Soft delete, retained in backups. Green flag:
-                                Hard delete with verifiable removal
+                                <strong>What happens to deleted transactions?</strong> Red flag: Soft delete, retained in backups. Green
+                                flag: Hard delete with verifiable removal
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -767,8 +780,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Where is data stored?</strong> Red flag: Multiple cloud providers, unclear region. Green flag: Single
-                                provider, specific regions, SOC 2 Type II
+                                <strong>Where is data stored?</strong> Red flag: Multiple cloud providers, unclear region. Green flag:
+                                Single provider, specific regions, SOC 2 Type II
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -779,8 +792,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>How are credentials handled?</strong> Red flag: Stored credentials (even encrypted). Green flag: OAuth
-                                only, no credential storage
+                                <strong>How are credentials handled?</strong> Red flag: Stored credentials (even encrypted). Green flag:
+                                OAuth only, no credential storage
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -804,8 +817,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Are financial products promoted?</strong> Red flag: Personalized credit card/loan offers. Green flag:
-                                No affiliate relationships
+                                <strong>Are financial products promoted?</strong> Red flag: Personalized credit card/loan offers. Green
+                                flag: No affiliate relationships
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -829,8 +842,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>What jurisdiction governs disputes?</strong> Red flag: Binding arbitration, class action waiver. Green
-                                flag: Court option, location you can access
+                                <strong>What jurisdiction governs disputes?</strong> Red flag: Binding arbitration, class action waiver.
+                                Green flag: Court option, location you can access
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -959,8 +972,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            For users who prioritize privacy, these tradeoffs are acceptable. Your financial data is too sensitive to trust to
-                            companies whose incentives may not align with your interests.
+                            For users who prioritize privacy, these tradeoffs are acceptable. Your financial data is too sensitive to trust
+                            to companies whose incentives may not align with your interests.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1014,9 +1027,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            If you currently use cloud-based financial apps, here are concrete steps to reduce your exposure.
-                        </Trans>
+                        <Trans>If you currently use cloud-based financial apps, here are concrete steps to reduce your exposure.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -1111,11 +1122,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogFaqSection>
-                        <BlogFaqItem
-                            question={
-                                <Trans>Is it legal for budgeting apps to collect and sell my financial data?</Trans>
-                            }
-                        >
+                        <BlogFaqItem question={<Trans>Is it legal for budgeting apps to collect and sell my financial data?</Trans>}>
                             <Trans>
                                 Yes, with consent. When you agree to terms of service and privacy policies, you typically grant broad data
                                 collection and sharing rights. The legal framework in most jurisdictions allows extensive data use if
@@ -1125,13 +1132,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem
-                            question={
-                                <Trans>
-                                    Can I request deletion of my data from Plaid and other aggregators?
-                                </Trans>
-                            }
-                        >
+                        <BlogFaqItem question={<Trans>Can I request deletion of my data from Plaid and other aggregators?</Trans>}>
                             <Trans>
                                 You can request deletion, and under CCPA (California) and GDPR (Europe), companies must comply. However,
                                 there are exceptions for compliance, fraud prevention, and legitimate business interests that can justify
@@ -1141,54 +1142,41 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem
-                            question={<Trans>Are open banking APIs safer than screen scraping?</Trans>}
-                        >
+                        <BlogFaqItem question={<Trans>Are open banking APIs safer than screen scraping?</Trans>}>
                             <Trans>
-                                Open banking APIs are significantly safer than screen scraping. APIs provide granular consent, limited scopes,
-                                and no credential sharing. However, privacy concerns remain because aggregators still collect and retain data,
-                                and apps often request more access than necessary. Open banking solves security problems (credential theft,
-                                session hijacking) but does not solve privacy problems (data aggregation, retention, secondary use).
+                                Open banking APIs are significantly safer than screen scraping. APIs provide granular consent, limited
+                                scopes, and no credential sharing. However, privacy concerns remain because aggregators still collect and
+                                retain data, and apps often request more access than necessary. Open banking solves security problems
+                                (credential theft, session hijacking) but does not solve privacy problems (data aggregation, retention,
+                                secondary use).
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem
-                            question={
-                                <Trans>What about end-to-end encrypted cloud budgeting apps?</Trans>
-                            }
-                        >
+                        <BlogFaqItem question={<Trans>What about end-to-end encrypted cloud budgeting apps?</Trans>}>
                             <Trans>
-                                True end-to-end encryption would prevent the provider from accessing your data, but most cloud budgeting apps
-                                claiming encryption use encryption in transit and at rest, not end-to-end. They can still access your data
-                                because they hold the keys. Apps with true end-to-end encryption lose functionality (server-side
+                                True end-to-end encryption would prevent the provider from accessing your data, but most cloud budgeting
+                                apps claiming encryption use encryption in transit and at rest, not end-to-end. They can still access your
+                                data because they hold the keys. Apps with true end-to-end encryption lose functionality (server-side
                                 categorization, web access, shared budgets) that most cloud apps offer, which suggests their encryption
                                 claims may not cover all data.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem
-                            question={
-                                <Trans>
-                                    How does Budgie handle bank synchronization without compromising privacy?
-                                </Trans>
-                            }
-                        >
+                        <BlogFaqItem question={<Trans>How does Budgie handle bank synchronization without compromising privacy?</Trans>}>
                             <Trans>
-                                Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators entirely.
-                                Credentials are stored locally on your device with hardware-backed encryption, not on any server. Transaction
-                                data flows directly from your bank to your device without intermediate storage. In regions where direct API
-                                access is not available, manual import from bank exports provides a fully private alternative.
+                                Budgie’s bank sync uses direct connections to bank APIs where available, bypassing data aggregators
+                                entirely. Credentials are stored locally on your device with hardware-backed encryption, not on any server.
+                                Transaction data flows directly from your bank to your device without intermediate storage. In regions where
+                                direct API access is not available, manual import from bank exports provides a fully private alternative.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem
-                            question={<Trans>What happens to my data if Budgie shuts down?</Trans>}
-                        >
+                        <BlogFaqItem question={<Trans>What happens to my data if Budgie shuts down?</Trans>}>
                             <Trans>
                                 Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your
                                 device. If Budgie as a company ceased to exist, your app would continue to function with all your data
-                                intact. You can export data at any time in standard formats. There is no server to shut down, no migration to
-                                worry about, no acquisition that could change data handling. Your data remains yours permanently.
+                                intact. You can export data at any time in standard formats. There is no server to shut down, no migration
+                                to worry about, no acquisition that could change data handling. Your data remains yours permanently.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
@@ -1218,6 +1206,8 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>
+
+            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
 
             <BlogArticleCta locale={lang} />
         </main>

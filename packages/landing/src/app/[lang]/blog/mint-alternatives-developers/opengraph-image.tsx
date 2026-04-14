@@ -12,10 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(
-        t(i18n)`Mint Shutdown: Where Developers Are Moving Their Finances`,
-        [t(i18n)`mint alternatives`, t(i18n)`developer tools`, t(i18n)`privacy`]
-    );
+    return createBlogOgImage(t(i18n)`Mint Shutdown: Where Developers Are Moving Their Finances`, [
+        t(i18n)`mint alternatives`,
+        t(i18n)`developer tools`,
+        t(i18n)`privacy`
+    ]);
 };
 
 export default OgImage;

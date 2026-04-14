@@ -111,7 +111,11 @@ export async function generateMetadata(props: Props) {
             card: 'summary_large_image',
             title: siteTitle,
             description: shortDescription,
-            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`]
+            images: [`${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`],
+
+            site: '@budgie_at',
+
+            creator: '@budgie_at'
         }
     };
 }
@@ -127,7 +131,7 @@ export default async function RootLayout({ params, children }: Props) {
         '@type': 'Organization',
         name: 'Budgie',
         url: BASE_URL,
-        logo: `${BASE_URL}/logo/budgie-logo.svg`,
+        logo: `${BASE_URL}/logo/black-on-white.svg`,
         sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
     };
 
