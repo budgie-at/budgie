@@ -10,7 +10,6 @@ import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/bl
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
-import { Badge } from '../../../../ui/badge';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -20,9 +19,11 @@ import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blo
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
+import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
+import { Badge } from '../../../../ui/badge';
 
 import type { Metadata } from 'next';
 
@@ -33,6 +34,8 @@ const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 15;
 
+const RELATED_SLUGS = ['cloud-budgeting-privacy-risks', 'open-source-budgeting-transparency'] as const;
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
@@ -41,9 +44,13 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     return buildBlogArticleMetadata({
         author: AUTHOR,
         date: DATE,
-        description: t(i18n)`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`,
+        description: t(
+            i18n
+        )`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`,
         image: IMAGE,
-        keywords: t(i18n)`offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app`,
+        keywords: t(
+            i18n
+        )`offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app`,
         locale: lang,
         slug: SLUG,
         title: t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`
@@ -59,9 +66,13 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
             <BlogPostingJsonLd
                 author={AUTHOR}
                 date={DATE}
-                description={t(i18n)`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`}
+                description={t(
+                    i18n
+                )`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`}
                 image={IMAGE}
-                keywords={t(i18n)`offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app`}
+                keywords={t(
+                    i18n
+                )`offline expense tracker, private finance app, local budget app, offline budget app, financial data privacy, SQLite expense tracker, encrypted budget app`}
                 locale={lang}
                 slug={SLUG}
                 title={t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`}
@@ -105,12 +116,24 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     readingTimeMinutes={READING_TIME}
                     tags={
                         <>
-                            <Badge variant="secondary"><Trans>privacy</Trans></Badge>
-                            <Badge variant="secondary"><Trans>security</Trans></Badge>
-                            <Badge variant="secondary"><Trans>architecture</Trans></Badge>
-                            <Badge variant="secondary"><Trans>encryption</Trans></Badge>
-                            <Badge variant="secondary"><Trans>open-source</Trans></Badge>
-                            <Badge variant="secondary"><Trans>offline-first</Trans></Badge>
+                            <Badge variant="secondary">
+                                <Trans>privacy</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>security</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>architecture</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>encryption</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>open-source</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>offline-first</Trans>
+                            </Badge>
                         </>
                     }
                 />
@@ -121,17 +144,17 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             When you open most expense tracking apps, something happens in the background that you might not notice: your
-                            transaction data, account balances, and spending habits are uploaded to servers you do not control. These servers
-                            might be located anywhere in the world, managed by teams you have never met, and protected by security practices
-                            you cannot verify.
+                            transaction data, account balances, and spending habits are uploaded to servers you do not control. These
+                            servers might be located anywhere in the world, managed by teams you have never met, and protected by security
+                            practices you cannot verify.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie takes a fundamentally different approach.{' '}
-                            <strong>Your financial data never leaves your device.</strong> This is not a marketing statement or a simplified
-                            explanation of a more complex reality. It is a literal description of how the app works at the code level.
+                            Budgie takes a fundamentally different approach. <strong>Your financial data never leaves your device.</strong>{' '}
+                            This is not a marketing statement or a simplified explanation of a more complex reality. It is a literal
+                            description of how the app works at the code level.
                         </Trans>
                     </BlogArticleProse>
 
@@ -139,8 +162,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         <Trans>
                             In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover
                             the database architecture, encryption implementation, sync mechanisms, and security practices that make this
-                            possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you the
-                            complete technical picture.
+                            possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you
+                            the complete technical picture.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -152,8 +175,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine in
-                            the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same
+                            At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine
+                            in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same
                             database that powers your browser history, your mobile contacts, and countless other applications that require
                             reliable local storage.
                         </Trans>
@@ -165,9 +188,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote servers.
-                            When you add a transaction, it travels over the internet to a data center, gets processed, and then a confirmation
-                            returns to your device. This architecture creates several problems:
+                            Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote
+                            servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a
+                            confirmation returns to your device. This architecture creates several problems:
                         </Trans>
                     </BlogArticleProse>
 
@@ -211,9 +234,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            When you create a transaction in Budgie, here is what happens at the technical level:
-                        </Trans>
+                        <Trans>When you create a transaction in Budgie, here is what happens at the technical level:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList ordered>
@@ -221,9 +242,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>The app validates the input using Zod schemas to ensure data integrity</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>
-                                The transaction is written to a SQLite database stored in your device’s secure app storage
-                            </Trans>
+                            <Trans>The transaction is written to a SQLite database stored in your device’s secure app storage</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>The database uses Drizzle ORM for type-safe operations</Trans>
@@ -255,8 +274,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Many apps that claim to respect privacy still collect anonymized usage data, crash reports, or analytics events.
-                            These data streams can reveal more than you might expect. Even without your name attached, patterns in your usage
-                            can be identifying.
+                            These data streams can reveal more than you might expect. Even without your name attached, patterns in your
+                            usage can be identifying.
                         </Trans>
                     </BlogArticleProse>
 
@@ -335,8 +354,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Key isolation</strong>: Each device has its own encryption key. There is no master key that could decrypt
-                            all user databases, because such a key does not exist.
+                            <strong>Key isolation</strong>: Each device has its own encryption key. There is no master key that could
+                            decrypt all user databases, because such a key does not exist.
                         </Trans>
                     </BlogArticleProse>
 
@@ -349,8 +368,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            This architecture means that even if someone steals your device, they cannot read your financial data without also
-                            compromising your device’s security (unlocking it with your biometrics or passcode).
+                            This architecture means that even if someone steals your device, they cannot read your financial data without
+                            also compromising your device’s security (unlocking it with your biometrics or passcode).
                         </Trans>
                     </BlogArticleProse>
 
@@ -364,7 +383,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Device theft</strong>: A thief cannot plug your phone into a computer and extract readable financial data.
+                            <strong>Device theft</strong>: A thief cannot plug your phone into a computer and extract readable financial
+                            data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -416,13 +436,14 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleList ordered>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Discovery</strong>: Both devices discover each other on the local network or through a temporary relay
-                                that sees only encrypted blobs
+                                <strong>Discovery</strong>: Both devices discover each other on the local network or through a temporary
+                                relay that sees only encrypted blobs
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Authentication</strong>: You confirm the transfer on both devices, usually by comparing a visual code
+                                <strong>Authentication</strong>: You confirm the transfer on both devices, usually by comparing a visual
+                                code
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -432,17 +453,17 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Local decryption</strong>: The receiving device uses key exchange protocols to establish the ability to
-                                decrypt the transferred data
+                                <strong>Local decryption</strong>: The receiving device uses key exchange protocols to establish the ability
+                                to decrypt the transferred data
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The critical point is that at no point does readable financial data travel through any third-party infrastructure.
-                            Even the temporary relay used for discovery when devices are not on the same network sees only encrypted data that
-                            it cannot interpret.
+                            The critical point is that at no point does readable financial data travel through any third-party
+                            infrastructure. Even the temporary relay used for discovery when devices are not on the same network sees only
+                            encrypted data that it cannot interpret.
                         </Trans>
                     </BlogArticleProse>
 
@@ -459,8 +480,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms.
-                            Each change is recorded as an operation with a timestamp and device identifier. When syncing:
+                            Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational
+                            transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:
                         </Trans>
                     </BlogArticleProse>
 
@@ -504,9 +525,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            We believe this tradeoff is worth it for financial data. The convenience of automatic cloud sync comes at the cost
-                            of your data existing on servers you do not control. For many types of data, that tradeoff is acceptable. For your
-                            complete financial history, we think local control is worth the extra steps.
+                            We believe this tradeoff is worth it for financial data. The convenience of automatic cloud sync comes at the
+                            cost of your data existing on servers you do not control. For many types of data, that tradeoff is acceptable.
+                            For your complete financial history, we think local control is worth the extra steps.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -583,8 +604,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Data retention</strong>: Aggregation services retain your transaction history on their servers, sometimes
-                            indefinitely.
+                            <strong>Data retention</strong>: Aggregation services retain your transaction history on their servers,
+                            sometimes indefinitely.
                         </Trans>
                     </BlogArticleProse>
 
@@ -597,15 +618,15 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Credential exposure</strong>: Some services store your bank credentials, creating a high-value target for
-                            attackers.
+                            <strong>Credential exposure</strong>: Some services store your bank credentials, creating a high-value target
+                            for attackers.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Regulatory risk</strong>: Your data becomes subject to the legal jurisdictions and requests wherever those
-                            servers are located.
+                            <strong>Regulatory risk</strong>: Your data becomes subject to the legal jurisdictions and requests wherever
+                            those servers are located.
                         </Trans>
                     </BlogArticleProse>
 
@@ -622,8 +643,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            We are exploring options for assisted bank import that would maintain privacy guarantees. This might include local
-                            parsing of bank emails, integration with open banking APIs that use OAuth without credential sharing, or
+                            We are exploring options for assisted bank import that would maintain privacy guarantees. This might include
+                            local parsing of bank emails, integration with open banking APIs that use OAuth without credential sharing, or
                             partnerships with privacy-focused financial data providers that operate under strict data handling agreements.
                         </Trans>
                     </BlogArticleProse>
@@ -643,8 +664,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Everything we have described in this article can be verified by examining our source code. Budgie is open source,
-                            and we believe this transparency is essential for any application that handles sensitive financial data.
+                            Everything we have described in this article can be verified by examining our source code. Budgie is open
+                            source, and we believe this transparency is essential for any application that handles sensitive financial data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -706,29 +727,29 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Database layer</strong>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly how
-                            data flows from user input to database storage, all locally.
+                            <strong>Database layer</strong>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly
+                            how data flows from user input to database storage, all locally.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Analytics and tracking</strong>: Search for any analytics SDK initialization. You will not find Firebase,
-                            Amplitude, Mixpanel, or any similar integration.
+                            <strong>Analytics and tracking</strong>: Search for any analytics SDK initialization. You will not find
+                            Firebase, Amplitude, Mixpanel, or any similar integration.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Third-party SDKs</strong>: Review the dependency tree. We minimize external dependencies, and each one is
-                            selected carefully to avoid privacy-invasive libraries.
+                            <strong>Third-party SDKs</strong>: Review the dependency tree. We minimize external dependencies, and each one
+                            is selected carefully to avoid privacy-invasive libraries.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            We welcome security researchers, privacy advocates, and technically curious users to examine our code. If you find
-                            something that contradicts our privacy claims, we want to know about it.
+                            We welcome security researchers, privacy advocates, and technically curious users to examine our code. If you
+                            find something that contradicts our privacy claims, we want to know about it.
                         </Trans>
                     </BlogArticleProse>
 
@@ -751,9 +772,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            Beyond the architecture itself, how we develop and maintain Budgie matters for your security.
-                        </Trans>
+                        <Trans>Beyond the architecture itself, how we develop and maintain Budgie matters for your security.</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -815,8 +834,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Source review for critical paths</strong>: Dependencies that touch encryption, database operations, or any
-                            sensitive data paths are manually reviewed.
+                            <strong>Source review for critical paths</strong>: Dependencies that touch encryption, database operations, or
+                            any sensitive data paths are manually reviewed.
                         </Trans>
                     </BlogArticleProse>
 
@@ -863,16 +882,16 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>What happens to my data if I lose my phone?</Trans>}>
                             <Trans>
                                 Your data exists only on your device. If you lose your phone without having synced to another device or
-                                created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data
-                                because we do not have it. We recommend regular backups to your own storage.
+                                created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover
+                                data because we do not have it. We recommend regular backups to your own storage.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can law enforcement access my data through Budgie?</Trans>}>
                             <Trans>
-                                We cannot provide your data to law enforcement or anyone else because we do not have it. There is no server to
-                                subpoena, no database to query, and no backup to hand over. Your data is on your device, protected by your
-                                device security and Budgie’s encryption.
+                                We cannot provide your data to law enforcement or anyone else because we do not have it. There is no server
+                                to subpoena, no database to query, and no backup to hand over. Your data is on your device, protected by
+                                your device security and Budgie’s encryption.
                             </Trans>
                         </BlogFaqItem>
 
@@ -886,8 +905,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>How do I export my data if I stop using Budgie?</Trans>}>
                             <Trans>
-                                Budgie supports exporting your complete financial history in standard formats (CSV, JSON). You own your data,
-                                and you can take it with you. The export happens locally, producing a file you can use with any other
+                                Budgie supports exporting your complete financial history in standard formats (CSV, JSON). You own your
+                                data, and you can take it with you. The export happens locally, producing a file you can use with any other
                                 application.
                             </Trans>
                         </BlogFaqItem>
@@ -895,8 +914,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>What data do you collect through the app store?</Trans>}>
                             <Trans>
                                 We collect anonymized crash reports through app store mechanisms (App Store Connect for iOS, Google Play
-                                Console for Android). These reports do not contain financial data. We use them to fix bugs that cause crashes.
-                                No other data is collected through any channel.
+                                Console for Android). These reports do not contain financial data. We use them to fix bugs that cause
+                                crashes. No other data is collected through any channel.
                             </Trans>
                         </BlogFaqItem>
 
@@ -932,9 +951,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            We have described our approach in detail not because we think everyone needs to understand database architectures,
-                            but because we believe you deserve to know exactly what an app does with your sensitive data. We invite you to
-                            verify our claims, examine our code, and hold us accountable to the privacy standards we have set.
+                            We have described our approach in detail not because we think everyone needs to understand database
+                            architectures, but because we believe you deserve to know exactly what an app does with your sensitive data. We
+                            invite you to verify our claims, examine our code, and hold us accountable to the privacy standards we have set.
                         </Trans>
                     </BlogArticleProse>
 
@@ -947,12 +966,14 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Ready to try an expense tracker that respects your privacy? Join the waitlist and be among the first to experience
-                            financial management without surveillance.
+                            Ready to try an expense tracker that respects your privacy? Join the waitlist and be among the first to
+                            experience financial management without surveillance.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>
+
+            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
 
             <BlogArticleCta locale={lang} />
         </main>

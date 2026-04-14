@@ -1,10 +1,20 @@
+'use client';
+
 import { Trans } from '@lingui/react/macro';
 import { BookOpen, Home } from 'lucide-react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
+import linguiConfig from '../../../lingui.config.mjs';
 import { Button } from '../../ui/button';
 
+const { locales } = linguiConfig;
+
 export default function NotFound() {
+    const params = useParams();
+    const rawLang = params.lang;
+    const detectedLang = typeof rawLang === 'string' && locales.includes(rawLang) ? rawLang : 'en';
+
     return (
         <main className="flex-1 flex items-center justify-center py-20 md:py-32">
             <div className="container text-center max-w-2xl px-4 md:px-6">
@@ -20,14 +30,14 @@ export default function NotFound() {
 
                 <div className="flex gap-4 justify-center">
                     <Button asChild className="rounded-full" size="lg">
-                        <Link href="/en">
+                        <Link href={`/${detectedLang}`}>
                             <Home className="mr-2 size-4" />
                             <Trans>Go Home</Trans>
                         </Link>
                     </Button>
 
                     <Button asChild className="rounded-full" size="lg" variant="outline">
-                        <Link href="/en/blog">
+                        <Link href={`/${detectedLang}/blog`}>
                             <BookOpen className="mr-2 size-4" />
                             <Trans>Read Blog</Trans>
                         </Link>
