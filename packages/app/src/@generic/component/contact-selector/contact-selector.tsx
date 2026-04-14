@@ -39,8 +39,8 @@ export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDes
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
     const description = isDefined(contact) ? selectedDescription : emptyDescription;
-    
-return (
+
+    return (
         <SimpleHorizontalCell
             title={title}
             description={description}
