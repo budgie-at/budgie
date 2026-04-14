@@ -194,9 +194,9 @@ jobs:
             }
 
 
-  e2e-ios:
+  build-ios-e2e-app:
     needs: [code-quality]
-    name: E2E Tests on iOS
+    name: Build iOS E2E app
     runs-on: self-hosted
     env:
       APP_VARIANT: e2e
@@ -336,6 +336,106 @@ jobs:
             deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
             deriveddata-${{ runner.os }}-xcode26_3-e2e-
 
+      - name: Pre-copy vec.xcframework for ExpoSQLite
+        run: |
+          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
+          mkdir -p "$XCFW_DIR"
+          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
+
+      - name: Build app
+        working-directory: packages/app
+        run: |
+          cd ios
+          WORKSPACE=$(ls -d *.xcworkspace | head -1)
+          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
+          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
+          xcodebuild build \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath "$IOS_DERIVED_DATA" \
+            -destination "generic/platform=iOS Simulator" \
+            -jobs $(sysctl -n hw.ncpu) \
+            CODE_SIGN_IDENTITY="-" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            ARCHS=arm64 \
+            EXCLUDED_ARCHS=x86_64
+
+      - name: Package iOS E2E app
+        run: |
+          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::Built iOS app bundle was not found in $IOS_DERIVED_DATA."
+            find "$IOS_DERIVED_DATA" -maxdepth 6 -name "*.app" || true
+            exit 1
+          fi
+
+          ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
+          APP_BUNDLE_NAME=$(basename "$APP_PATH")
+          mkdir -p "$ARTIFACT_DIR"
+          tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
+
+      - name: Upload iOS E2E app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-e2e-app
+          path: .ci-artifacts/ios-e2e-app/*.tar.gz
+          if-no-files-found: error
+
+      - name: Save CocoaPods cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+      - name: Save ccache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+      - name: Save Xcode DerivedData cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+
+  e2e-ios:
+    needs: [build-ios-e2e-app]
+    name: E2E Tests on iOS
+    runs-on: self-hosted
+    env:
+      APP_VARIANT: e2e
+      EXPO_PUBLIC_AI_DISABLE: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26.3
+        run: |
+          if [ -d /Applications/Xcode_26.3.app ]; then
+            XCODE_APP=/Applications/Xcode_26.3.app
+          elif [ -d /Applications/Xcode.app ]; then
+            XCODE_APP=/Applications/Xcode.app
+          else
+            echo "::error::Xcode 26.3 is not installed on this runner."
+            ls -1 /Applications | grep -i Xcode || true
+            exit 1
+          fi
+
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Using Xcode at $XCODE_APP"
+          xcode-select -p || true
+          xcodebuild -version
+
       - name: Shutdown stale simulators
         run: xcrun simctl shutdown all || true
 
@@ -363,38 +463,36 @@ jobs:
           echo "Using simulator UDID: $SIMULATOR_UDID"
           xcrun simctl list devices booted
 
-      - name: Pre-copy vec.xcframework for ExpoSQLite
-        run: |
-          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
-          mkdir -p "$XCFW_DIR"
-          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
+      - name: Download iOS E2E app artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-e2e-app
+          path: .ci-artifacts/ios-e2e-app
 
-      - name: Build app
-        working-directory: packages/app
+      - name: Extract iOS E2E app artifact
         run: |
-          cd ios
-          WORKSPACE=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
-          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
-          xcodebuild build \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -sdk iphonesimulator \
-            -configuration Release \
-            -derivedDataPath "$IOS_DERIVED_DATA" \
-            -destination "id=$SIMULATOR_UDID" \
-            -jobs $(sysctl -n hw.ncpu) \
-            CODE_SIGN_IDENTITY="-" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            ONLY_ACTIVE_ARCH=YES \
-            ARCHS=arm64 \
-            EXCLUDED_ARCHS=x86_64
+          APP_ARCHIVE=$(find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -name "*.tar.gz" | head -1)
+          if [ -z "$APP_ARCHIVE" ]; then
+            echo "::error::iOS E2E app artifact was not downloaded."
+            find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -maxdepth 3 -type f || true
+            exit 1
+          fi
+
+          APP_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app/extracted"
+          mkdir -p "$APP_DIR"
+          tar -xzf "$APP_ARCHIVE" -C "$APP_DIR"
+          APP_PATH=$(find "$APP_DIR" -maxdepth 2 -name "*.app" | head -1)
+
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::Extracted iOS app bundle was not found."
+            find "$APP_DIR" -maxdepth 4 -type f || true
+            exit 1
+          fi
+
+          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
       - name: Install app on Simulator
         run: |
-          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
           xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
@@ -464,29 +562,6 @@ jobs:
             tests/app-tests/artifacts/simulator/**
             tests/app-tests/artifacts/diagnostics/**
           if-no-files-found: warn
-
-      - name: Save CocoaPods cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save ccache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
 
   e2e-android:
     if: false
