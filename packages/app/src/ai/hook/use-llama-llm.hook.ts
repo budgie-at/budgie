@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Dual model lifecycle with Metal GPU recovery requires extended implementation */
 import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budgie/ai';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
@@ -5,6 +6,8 @@ import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
+import { useForegroundRecovery } from '../../@generic/hook/use-foreground-recovery.hook';
 
 interface RunCompletionParams {
     readonly context: LlamaContext;
@@ -30,6 +33,19 @@ const GPU_LAYERS = 99;
 const GENERATION_CONFIG = { temperature: 0.7, top_k: 20, top_p: 0.8 };
 
 const DEPRECATED_MODEL_FILES = ['qwen2.5-1.5b-instruct-q8_0.gguf'];
+
+const cleanupDeprecatedModels = (): void => {
+    for (const filename of DEPRECATED_MODEL_FILES) {
+        try {
+            const deprecatedFile = new File(`${Paths.document.uri}${filename}`);
+            if (deprecatedFile.exists) {
+                deprecatedFile.delete();
+            }
+        } catch {
+            emptyFn();
+        }
+    }
+};
 
 const CHAT_MODEL_SIZE_MB = 1110;
 const EMBEDDING_MODEL_SIZE_MB = 488;
@@ -90,6 +106,17 @@ export const useLlamaLlm = (): LlmInterface => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
+    const [initGeneration, setInitGeneration] = useState(0);
+
+    useForegroundRecovery(() => {
+        void releaseAllLlama();
+        chatContextRef.current = null;
+        embeddingContextRef.current = null;
+        setIsReady(false);
+        setIsEmbeddingReady(false);
+        isLoadingRef.current = false;
+        setInitGeneration(generation => generation + 1);
+    });
 
     useEffect(() => {
         if (isLoadingRef.current) {
@@ -121,17 +148,7 @@ export const useLlamaLlm = (): LlmInterface => {
         // eslint-disable-next-line max-statements -- Dual model initialization requires sequential context setup with mount checks
         const initializeModels = async (): Promise<void> => {
             try {
-                for (const filename of DEPRECATED_MODEL_FILES) {
-                    try {
-                        const deprecatedFile = new File(`${Paths.document.uri}${filename}`);
-
-                        if (deprecatedFile.exists) {
-                            deprecatedFile.delete();
-                        }
-                    } catch {
-                        emptyFn();
-                    }
-                }
+                cleanupDeprecatedModels();
 
                 const [chatModelPath, embeddingModelPath] = await Promise.all([
                     downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, handleChatDownloadProgress),
@@ -194,7 +211,7 @@ export const useLlamaLlm = (): LlmInterface => {
             isMountedRef.current = false;
             void releaseAllLlama();
         };
-    }, []);
+    }, [initGeneration]);
 
     const generateInternal = async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
         if (!isDefined(chatContextRef.current)) {

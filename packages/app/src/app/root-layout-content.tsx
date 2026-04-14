@@ -39,11 +39,8 @@ import { CreateActionProvider } from '../@generic/provider/create-action.provide
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { isAiEnabled } from '../@generic/utils/is-ai-enabled.util';
 import { isE2EHooksEnabled } from '../@generic/utils/is-e2e-hooks-enabled.util';
-import { AiEmbeddingProgressDisabledProvider } from '../ai/provider/ai-embedding-progress-disabled.provider';
-import { AiEmbeddingProgressProvider } from '../ai/provider/ai-embedding-progress.provider';
-import { AiStatusDisabledProvider } from '../ai/provider/ai-status-disabled.provider';
-import { AiStatusProvider } from '../ai/provider/ai-status.provider';
-import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
+import { ConditionalLlmProvider } from '../ai/provider/conditional-llm.provider';
+import { DisabledAiStackProvider } from '../ai/provider/disabled-ai-stack.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
@@ -60,15 +57,8 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-const aiEnabled = isAiEnabled();
+const AiProviderWrapper = isAiEnabled() ? ConditionalLlmProvider : DisabledAiStackProvider;
 const isE2EEnabled = isE2EHooksEnabled();
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
-const AiProviderWrapper: typeof LlmDisabledProvider = aiEnabled ? require('../ai/provider/llm.provider').LlmProvider : LlmDisabledProvider;
-const AiStatusProviderWrapper: typeof AiStatusProvider = aiEnabled ? AiStatusProvider : AiStatusDisabledProvider;
-const AiEmbeddingProgressProviderWrapper: typeof AiEmbeddingProgressProvider = aiEnabled
-    ? AiEmbeddingProgressProvider
-    : AiEmbeddingProgressDisabledProvider;
-/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const RuntimeProviderWrapper = isE2EEnabled ? E2ERuntimeProvider : Fragment;
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
@@ -99,107 +89,64 @@ export const RootLayoutContent = () => {
                                             <AuthGuard>
                                                 <CreateActionProvider>
                                                     <AiProviderWrapper>
-                                                        <AiEmbeddingProgressProviderWrapper>
-                                                            <AiStatusProviderWrapper>
-                                                                <ModalProvider>
-                                                                    <Stack
-                                                                        screenOptions={DEFAULT_STACK_OPTIONS}
-                                                                        screenLayout={ScreenLayout}
-                                                                    >
-                                                                        <Stack.Screen name="(tabs)" />
-                                                                        <Stack.Screen name="(main)/pin" />
-                                                                        <Stack.Screen name="(main)/create-account" />
-                                                                        <Stack.Screen name="(main)/account/[id]/details" />
-                                                                        <Stack.Screen name="(main)/account/[id]/update" />
-                                                                        <Stack.Screen name="(main)/create-transaction/expense" />
-                                                                        <Stack.Screen name="(main)/create-transaction/income" />
-                                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
-                                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
-                                                                        <Stack.Screen name="(main)/analytics/transactions" />
-                                                                        <Stack.Screen
-                                                                            name="category-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="account-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="currency-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="language-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="contact-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="tags-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="category-form"
-                                                                            options={CATEGORY_EDIT_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="tag-form"
-                                                                            options={CATEGORY_EDIT_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="date-picker"
-                                                                            options={DATE_PICKER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="note-input"
-                                                                            options={NOTE_INPUT_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="convert-to-transfer"
-                                                                            options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="icon-selector"
-                                                                            options={ICON_SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="split-entries"
-                                                                            options={SPLIT_ENTRIES_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="account-type-selector"
-                                                                            options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="import-column-mapper"
-                                                                            options={SEARCHABLE_FILTER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="transaction-type-filter"
-                                                                            options={FILTER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen name="date-filter" options={FILTER_MODAL_OPTIONS} />
-                                                                        <Stack.Screen
-                                                                            name="transaction-category-filter"
-                                                                            options={SEARCHABLE_FILTER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="transaction-account-filter"
-                                                                            options={SEARCHABLE_FILTER_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="transaction-tag-filter"
-                                                                            options={SEARCHABLE_FILTER_MODAL_OPTIONS}
-                                                                        />
-                                                                    </Stack>
-                                                                </ModalProvider>
-                                                                <Toast />
-                                                            </AiStatusProviderWrapper>
-                                                        </AiEmbeddingProgressProviderWrapper>
+                                                        <ModalProvider>
+                                                            <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                                <Stack.Screen name="(tabs)" />
+                                                                <Stack.Screen name="(main)/pin" />
+                                                                <Stack.Screen name="(main)/create-account" />
+                                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                                <Stack.Screen name="(main)/account/[id]/update" />
+                                                                <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                <Stack.Screen name="(main)/create-transaction/income" />
+                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                <Stack.Screen name="(main)/analytics/transactions" />
+                                                                <Stack.Screen name="category-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="account-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="currency-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="language-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="contact-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="category-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="tag-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="date-picker" options={DATE_PICKER_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="note-input" options={NOTE_INPUT_MODAL_OPTIONS} />
+                                                                <Stack.Screen
+                                                                    name="convert-to-transfer"
+                                                                    options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
+                                                                <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
+                                                                <Stack.Screen
+                                                                    name="account-type-selector"
+                                                                    options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen
+                                                                    name="import-column-mapper"
+                                                                    options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen
+                                                                    name="transaction-type-filter"
+                                                                    options={FILTER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen name="date-filter" options={FILTER_MODAL_OPTIONS} />
+                                                                <Stack.Screen
+                                                                    name="transaction-category-filter"
+                                                                    options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen
+                                                                    name="transaction-account-filter"
+                                                                    options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                />
+                                                                <Stack.Screen
+                                                                    name="transaction-tag-filter"
+                                                                    options={SEARCHABLE_FILTER_MODAL_OPTIONS}
+                                                                />
+                                                            </Stack>
+                                                        </ModalProvider>
+                                                        <Toast />
                                                     </AiProviderWrapper>
                                                 </CreateActionProvider>
                                             </AuthGuard>

@@ -19,13 +19,16 @@ const defaultValue: E2ERuntimeOverridesInterface = {
     biometricAuthSuccess: null
 };
 
-const isEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+// eslint-disable-next-line dot-notation
+const isEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
+/* eslint-disable dot-notation */
 const buildOverridesFromQueryParams = (queryParams: Record<string, unknown> | null | undefined): E2ERuntimeOverridesInterface => ({
-    forceProtected: parseE2EBooleanValue(queryParams?.e2eForceProtected),
-    forceFaceId: parseE2EBooleanValue(queryParams?.e2eForceFaceId),
-    biometricAuthSuccess: parseE2ENullableBooleanValue(queryParams?.e2eBiometricAuthSuccess)
+    forceProtected: parseE2EBooleanValue(queryParams?.['e2eForceProtected']),
+    forceFaceId: parseE2EBooleanValue(queryParams?.['e2eForceFaceId']),
+    biometricAuthSuccess: parseE2ENullableBooleanValue(queryParams?.['e2eBiometricAuthSuccess'])
 });
+/* eslint-enable dot-notation */
 
 const getOverridesFromUrl = (url: string) => {
     const parsedUrl = Linking.parse(url);

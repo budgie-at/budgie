@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.1.2](https://github.com/budgie-at/budgie/compare/v5.1.1...v5.1.2) (2026-04-14)
+
+### Bug Fixes
+
+- **app:** prevent AI providers from running when AI is disabled ([220c757](https://github.com/budgie-at/budgie/commit/220c757bc741249c48066cbd868167b85dffd3f3))
+- **app:** prevent Metal GPU crashes from stale contexts in background ([47d7103](https://github.com/budgie-at/budgie/commit/47d710306fffac7155e8b1e6f1eaf183d13bcd23))
+- **app:** use bracket notation for index signature properties ([2937026](https://github.com/budgie-at/budgie/commit/29370266e3799b99be0a6082657f9cec6665595d))
+
 # [5.0.0](https://github.com/budgie-at/budgie/compare/v4.0.0...v5.0.0) (2026-04-07)
 
 ### Bug Fixes
