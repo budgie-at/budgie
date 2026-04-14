@@ -135,7 +135,9 @@ class TransactionService {
                         mccCategoryId: fromEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.CREDIT,
                         amount: fromAmountInMicroUnits,
-                        externalId: fromEntry.externalId ?? null
+                        externalId: fromEntry.externalId ?? null,
+                        exchangeRate: fromEntry.exchangeRate ?? 1,
+                        toIban: fromEntry.toIban ?? null
                     },
                     {
                         transactionId: transaction.id,
@@ -144,7 +146,9 @@ class TransactionService {
                         mccCategoryId: toEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: toAmount,
-                        externalId: toEntry.externalId ?? null
+                        externalId: toEntry.externalId ?? null,
+                        exchangeRate: toEntry.exchangeRate ?? 1,
+                        toIban: toEntry.toIban ?? null
                     },
                     ...this.buildAdditionalEntries(input.entries, fromEntry, toEntry, transaction.id)
                 ],
@@ -246,7 +250,9 @@ class TransactionService {
                         amount: fromAmountInMicroUnits,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     },
                     {
                         transactionId: id,
@@ -255,7 +261,9 @@ class TransactionService {
                         amount: toAmount,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     }
                 ],
                 tx
@@ -338,7 +346,9 @@ class TransactionService {
                         amount: fromAmount,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     },
                     {
                         transactionId: id,
@@ -347,7 +357,9 @@ class TransactionService {
                         amount: toAmountInMicroUnits,
                         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
                         mccCategoryId: null,
-                        externalId: null
+                        externalId: null,
+                        exchangeRate: 1,
+                        toIban: null
                     }
                 ],
                 tx
@@ -360,7 +372,6 @@ class TransactionService {
     }
     /* jscpd:ignore-end */
 
-    /* jscpd:ignore-start */
     private buildAdditionalEntries(
         entries: TransactionEntryCreateInputInterface[],
         fromEntry: TransactionEntryCreateInputInterface,
@@ -369,17 +380,25 @@ class TransactionService {
     ): TransactionEntryCreateEntityInterface[] {
         return entries
             .filter(entry => entry !== fromEntry && entry !== toEntry)
-            .map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            }));
+            .map(entry => this.mapEntryInputToCreateEntity(entry, transactionId));
     }
-    /* jscpd:ignore-end */
+
+    private mapEntryInputToCreateEntity(
+        entry: TransactionEntryCreateInputInterface,
+        transactionId: number
+    ): TransactionEntryCreateEntityInterface {
+        return {
+            transactionId,
+            accountId: entry.accountId,
+            categoryId: entry.categoryId,
+            mccCategoryId: entry.mccCategoryId,
+            type: entry.type,
+            amount: convertToMicroUnits(entry.amount),
+            externalId: entry.externalId ?? null,
+            exchangeRate: entry.exchangeRate ?? 1,
+            toIban: entry.toIban ?? null
+        };
+    }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
         const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
@@ -417,15 +436,7 @@ class TransactionService {
 
         // HINT: This will work if bulkCreate will preserve the order of the inputs.
         const batchEntries = transactions.flatMap((transaction, index) =>
-            batch[index].entries.map(entry => ({
-                transactionId: transaction.id,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            }))
+            batch[index].entries.map(entry => this.mapEntryInputToCreateEntity(entry, transaction.id))
         );
 
         const batchTags = transactions.flatMap((transaction, index) =>
@@ -441,15 +452,7 @@ class TransactionService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            })),
+            input.entries.map(entry => this.mapEntryInputToCreateEntity(entry, transactionId)),
             tx
         );
 
