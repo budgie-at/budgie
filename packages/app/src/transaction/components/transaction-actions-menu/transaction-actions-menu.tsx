@@ -53,14 +53,15 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     };
 
     const handleDeletePress = () => {
-        closeMenu(() =>
-            void confirmAlert({
-                title: t`Are you sure?`,
-                message: t`This action cannot be undone.`,
-                confirmText: t`Delete`,
-                cancelText: t`Cancel`,
-                isDestructive: true
-            }).then(confirmed => confirmed && onDelete())
+        closeMenu(
+            () =>
+                void confirmAlert({
+                    title: t`Are you sure?`,
+                    message: t`This action cannot be undone.`,
+                    confirmText: t`Delete`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                }).then(confirmed => confirmed && onDelete())
         );
     };
 
