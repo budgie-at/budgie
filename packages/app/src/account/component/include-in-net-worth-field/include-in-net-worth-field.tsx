@@ -29,11 +29,7 @@ export const IncludeInNetWorthField = <T extends { includeInNetWorth?: boolean }
                     />
                 }
             >
-                <HapticPressable
-                    className="flex-1"
-                    onPress={handlePress}
-                    testID={AccountFormSelectors.IncludeInNetWorthTitle}
-                >
+                <HapticPressable className="flex-1" onPress={handlePress} testID={AccountFormSelectors.IncludeInNetWorthTitle}>
                     <Text className="text-sm font-medium text-primary">{t`Include in Net Worth`}</Text>
                     <Text className="text-sm font-medium text-secondary-foreground">
                         {t`Count this account in your net worth calculation`}

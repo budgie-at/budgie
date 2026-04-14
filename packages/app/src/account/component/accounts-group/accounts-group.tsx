@@ -56,11 +56,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
             <View className="flex-row items-center py-xl">
-                <HapticPressable
-                    onPress={toggleOpen}
-                    className="p-xl"
-                    testID={TransactionFiltersSelectors.AccountGroupToggle(type)}
-                >
+                <HapticPressable onPress={toggleOpen} className="p-xl" testID={TransactionFiltersSelectors.AccountGroupToggle(type)}>
                     <Icon size={16} icon={arrowIcon} className="text-secondary-foreground" />
                 </HapticPressable>
 
