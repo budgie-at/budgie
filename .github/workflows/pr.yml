@@ -20,13 +20,14 @@ jobs:
     name: Code quality checks
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -53,7 +54,9 @@ jobs:
         run: yarn test:coverage
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
 
   eas-deploy:
     name: EAS Deploy
@@ -76,10 +79,10 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -127,7 +130,7 @@ jobs:
 
       - name: Create deployment environment
         if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
@@ -155,7 +158,7 @@ jobs:
 
       - name: Comment deployment URL on PR
         if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
@@ -209,7 +212,7 @@ jobs:
       CCACHE_MAXSIZE: 2G
       CCACHE_NOHASHDIR: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Runner diagnostics
         run: |
@@ -225,7 +228,7 @@ jobs:
           xcodebuild -version || true
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -281,7 +284,7 @@ jobs:
           xcodebuild -version
 
       - name: Restore CocoaPods cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -302,7 +305,7 @@ jobs:
           ccache --zero-stats || true
 
       - name: Restore ccache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
@@ -328,7 +331,7 @@ jobs:
           fi
 
       - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
           key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
@@ -380,7 +383,7 @@ jobs:
           tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
 
       - name: Upload iOS E2E app artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ios-e2e-app
           path: .ci-artifacts/ios-e2e-app/*.tar.gz
@@ -388,7 +391,7 @@ jobs:
 
       - name: Save CocoaPods cache
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -397,14 +400,14 @@ jobs:
 
       - name: Save ccache
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
 
       - name: Save Xcode DerivedData cache
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
           key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
@@ -417,7 +420,7 @@ jobs:
       APP_VARIANT: e2e
       EXPO_PUBLIC_AI_DISABLE: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Select Xcode 26.3
         run: |
@@ -464,7 +467,7 @@ jobs:
           xcrun simctl list devices booted
 
       - name: Download iOS E2E app artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ios-e2e-app
           path: .ci-artifacts/ios-e2e-app
@@ -543,7 +546,7 @@ jobs:
 
       - name: Upload Maestro artifacts (report, logs, screenshots)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-ios-artifacts
           include-hidden-files: true
@@ -554,7 +557,7 @@ jobs:
 
       - name: Upload iOS simulator crash artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-ios-simulator-failure-artifacts
           include-hidden-files: true
@@ -569,7 +572,7 @@ jobs:
     name: E2E Tests on Android
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Enable KVM group perms
         run: |
@@ -578,7 +581,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -619,7 +622,7 @@ jobs:
         run: npx expo prebuild -p android --clean
 
       - name: Cache Gradle
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.gradle/caches
@@ -628,7 +631,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: avd-cache
         with:
           path: |
@@ -676,7 +679,7 @@ jobs:
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-android-artifacts
           include-hidden-files: true
