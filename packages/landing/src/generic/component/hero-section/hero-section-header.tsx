@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { Code2, Fingerprint, Github, Shield, Smartphone, Star, WifiOff, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
@@ -10,6 +11,7 @@ const initialMotionHeader = { opacity: 0, y: 20 };
 const animatedMotionHeader = { opacity: 1, y: 0 };
 const transitionMotionHeader = { duration: 0.5 };
 
+// eslint-disable-next-line max-lines-per-function -- Landing hero with badges, heading, form, and trust indicators
 export const HeroSectionHeader = () => (
     <Motion
         animate={animatedMotionHeader}
@@ -34,7 +36,7 @@ export const HeroSectionHeader = () => (
             </Badge>
         </div>
 
-        <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
+        <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-4">
             <span className="bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
                 <Trans>Your Financial Data.</Trans>
             </span>
@@ -52,6 +54,10 @@ export const HeroSectionHeader = () => (
             </span>
         </h1>
 
+        <p className="text-base md:text-lg font-medium text-muted-foreground/80 mb-4">
+            <Trans>The privacy-first offline expense tracker — open source budget app for iOS &amp; Android.</Trans>
+        </p>
+
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             <Trans>
                 Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your
@@ -62,9 +68,12 @@ export const HeroSectionHeader = () => (
         <div className="flex flex-col items-center gap-6 mb-8">
             <WaitlistForm initialCount={2847} variant="hero" />
 
-            <Button className="rounded-full h-12 px-8 text-base bg-transparent hidden md:flex" size="lg" variant="outline">
-                <Github className="mr-2 size-4" />
-                <Trans>View Source Code</Trans>
+            <Button asChild className="rounded-full h-12 px-8 text-base bg-transparent hidden md:flex" size="lg" variant="outline">
+                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
+                    <Github className="mr-2 size-4" />
+                    <Trans>View Source Code</Trans>
+                </Link>
             </Button>
         </div>
 
