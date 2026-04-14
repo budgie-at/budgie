@@ -9,7 +9,10 @@ export const mapBankTransactionToCreateInput = (
 ): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === BankTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
+    const operationAmount = Math.abs(bankTransaction.operationAmount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
+
+    const exchangeRate = operationAmount !== 0 && amount !== operationAmount ? amount / operationAmount : 1;
 
     return {
         amount,
@@ -23,6 +26,17 @@ export const mapBankTransactionToCreateInput = (
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],
-        entries: [{ accountId, type: entryType, amount, categoryId: null, mccCategoryId, externalId: bankTransaction.id }]
+        entries: [
+            {
+                accountId,
+                type: entryType,
+                amount,
+                categoryId: null,
+                mccCategoryId,
+                externalId: bankTransaction.id,
+                exchangeRate,
+                toIban: bankTransaction.counterIban ?? null
+            }
+        ]
     };
 };
