@@ -1,4 +1,5 @@
-import type { CategoryCreateEntitySchema } from '../schema/category-create-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface CategoryCreateEntityInterface extends infer<typeof CategoryCreateEntitySchema> {}
+import type { CategoryCreateEntitySchema } from '../schema/category-create-entity.schema';
+
+export type CategoryCreateEntityInterface = z.infer<typeof CategoryCreateEntitySchema>;

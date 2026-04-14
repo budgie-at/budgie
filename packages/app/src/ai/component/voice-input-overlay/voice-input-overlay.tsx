@@ -17,6 +17,7 @@ interface Props {
     readonly onClose: () => void;
 }
 
+// eslint-disable-next-line max-statements -- Voice input overlay coordinates animation, recording, and submit state
 export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const { defaultAccount } = useSettingsContext();
 
@@ -41,6 +42,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     };
 
     const voiceInput = useVoiceInput({ onDone: handleDone });
+    const { isReady, start } = voiceInput;
 
     useAnimatedReaction(
         () => isOpen,
@@ -61,14 +63,14 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     );
 
     useEffect(() => {
-        if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
+        if (isOpen && isReady && !hasAutoStartedRef.current) {
             hasAutoStartedRef.current = true;
-            voiceInput.start();
+            start();
         }
         if (!isOpen) {
             hasAutoStartedRef.current = false;
         }
-    }, [isOpen, voiceInput.isReady, voiceInput.start]);
+    }, [isOpen, isReady, start]);
 
     const handleRecord = () => {
         switch (voiceInput.state) {
