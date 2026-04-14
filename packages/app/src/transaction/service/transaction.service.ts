@@ -380,7 +380,9 @@ class TransactionService {
                 mccCategoryId: entry.mccCategoryId,
                 type: entry.type,
                 amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
+                externalId: entry.externalId ?? null,
+                exchangeRate: entry.exchangeRate ?? 1,
+                toIban: entry.toIban ?? null
             }))
         );
 
@@ -404,7 +406,9 @@ class TransactionService {
                 mccCategoryId: entry.mccCategoryId,
                 type: entry.type,
                 amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
+                externalId: entry.externalId ?? null,
+                exchangeRate: entry.exchangeRate ?? 1,
+                toIban: entry.toIban ?? null
             })),
             tx
         );

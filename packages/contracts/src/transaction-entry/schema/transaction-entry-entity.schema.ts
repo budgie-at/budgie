@@ -14,6 +14,7 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     type: zodEnum(TransactionEntryTypeEnum).describe('Type of the entry'),
     amount: number().positive().describe('Amount of the entry'),
     externalId: schema => schema.nullable().default(null).describe('External id of the entry'),
-    exchangeRate: schema => schema.default(1).describe('Exchange rate for this entry, defaults to 1 for same-currency transactions'),
-    toIban: schema => schema.nullable().default(null).describe('Destination IBAN for transfer entries')
+    exchangeRate: schema =>
+        schema.positive().default(1).describe('Exchange rate for this entry, defaults to 1 for same-currency transactions'),
+    toIban: schema => schema.nullable().default(null).describe('Counter-party IBAN from bank sync data')
 });
