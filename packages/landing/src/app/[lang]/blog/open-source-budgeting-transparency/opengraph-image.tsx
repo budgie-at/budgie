@@ -12,10 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(
-        t(i18n)`Open-Source Budgeting: Why Transparency Matters for Your Money`,
-        [t(i18n)`open-source`, t(i18n)`transparency`, t(i18n)`budgeting`]
-    );
+    return createBlogOgImage(t(i18n)`Open-Source Budgeting: Why Transparency Matters for Your Money`, [
+        t(i18n)`open-source`,
+        t(i18n)`transparency`,
+        t(i18n)`budgeting`
+    ]);
 };
 
 export default OgImage;
