@@ -45,6 +45,10 @@ export const buildBlogArticleMetadata = ({
         card: 'summary_large_image',
         title,
         description,
-        ...(isDefined(image) && { images: [`${BASE_URL}${image}`] })
+        ...(isDefined(image) && { images: [`${BASE_URL}${image}`] }),
+
+        site: '@budgie_at',
+
+        creator: '@budgie_at'
     }
 });

@@ -35,7 +35,7 @@ export const Header = ({ lang }: Props) => {
     const handleMenuToggle = () => void setMobileMenuOpen(prev => !prev);
     const handleMobileMenuClose = () => void setMobileMenuOpen(false);
 
-    const { handleScrollToFeatures, handleScrollToTestimonials, handleScrollToWhitelist, handleScrollToFaq } = useSmoothScroll();
+    const { handleScrollToFeatures, handleScrollToTestimonials, handleScrollToWaitlist, handleScrollToFaq } = useSmoothScroll();
 
     return (
         <header
@@ -76,14 +76,6 @@ export const Header = ({ lang }: Props) => {
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`/${lang}#whitelist`}
-                        onClick={handleScrollToWhitelist}
-                    >
-                        <Trans>Whitelist</Trans>
-                    </Link>
-
-                    <Link
-                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#faq`}
                         onClick={handleScrollToFaq}
                     >
@@ -96,7 +88,7 @@ export const Header = ({ lang }: Props) => {
                     <ThemeSwitcher />
 
                     <Button asChild className="hidden rounded-full md:flex">
-                        <Link href={`/${lang}#whitelist`} onClick={handleScrollToWhitelist}>
+                        <Link href={`/${lang}#waitlist`} onClick={handleScrollToWaitlist}>
                             <Trans>Join Waitlist</Trans>
                             <ChevronRight className="ml-1 size-4" />
                         </Link>

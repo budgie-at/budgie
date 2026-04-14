@@ -12,10 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(
-        t(i18n)`Best YNAB Alternatives for Privacy-Conscious Users (2025)`,
-        [t(i18n)`ynab`, t(i18n)`alternatives`, t(i18n)`privacy`]
-    );
+    return createBlogOgImage(t(i18n)`Best YNAB Alternatives for Privacy-Conscious Users (2025)`, [
+        t(i18n)`ynab`,
+        t(i18n)`alternatives`,
+        t(i18n)`privacy`
+    ]);
 };
 
 export default OgImage;
