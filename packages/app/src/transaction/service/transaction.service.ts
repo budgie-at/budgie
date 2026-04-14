@@ -343,7 +343,6 @@ class TransactionService {
     }
     /* jscpd:ignore-end */
 
-    /* jscpd:ignore-start */
     private buildAdditionalEntries(
         entries: TransactionEntryCreateInputInterface[],
         fromEntry: TransactionEntryCreateInputInterface,
@@ -352,19 +351,25 @@ class TransactionService {
     ): TransactionEntryCreateEntityInterface[] {
         return entries
             .filter(entry => entry !== fromEntry && entry !== toEntry)
-            .map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null,
-                exchangeRate: entry.exchangeRate ?? 1,
-                toIban: entry.toIban ?? null
-            }));
+            .map(entry => this.mapEntryInputToCreateEntity(entry, transactionId));
     }
-    /* jscpd:ignore-end */
+
+    private mapEntryInputToCreateEntity(
+        entry: TransactionEntryCreateInputInterface,
+        transactionId: number
+    ): TransactionEntryCreateEntityInterface {
+        return {
+            transactionId,
+            accountId: entry.accountId,
+            categoryId: entry.categoryId,
+            mccCategoryId: entry.mccCategoryId,
+            type: entry.type,
+            amount: convertToMicroUnits(entry.amount),
+            externalId: entry.externalId ?? null,
+            exchangeRate: entry.exchangeRate ?? 1,
+            toIban: entry.toIban ?? null
+        };
+    }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
         const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
@@ -387,17 +392,7 @@ class TransactionService {
 
         // HINT: This will work if bulkCreate will preserve the order of the inputs.
         const batchEntries = transactions.flatMap((transaction, index) =>
-            batch[index].entries.map(entry => ({
-                transactionId: transaction.id,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null,
-                exchangeRate: entry.exchangeRate ?? 1,
-                toIban: entry.toIban ?? null
-            }))
+            batch[index].entries.map(entry => this.mapEntryInputToCreateEntity(entry, transaction.id))
         );
 
         const batchTags = transactions.flatMap((transaction, index) =>
@@ -413,17 +408,7 @@ class TransactionService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null,
-                exchangeRate: entry.exchangeRate ?? 1,
-                toIban: entry.toIban ?? null
-            })),
+            input.entries.map(entry => this.mapEntryInputToCreateEntity(entry, transactionId)),
             tx
         );
 
