@@ -35,7 +35,10 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
+import { isAiEnabled } from '../@generic/utils/is-ai-enabled.util';
+import { AiEmbeddingProgressDisabledProvider } from '../ai/provider/ai-embedding-progress-disabled.provider';
 import { AiEmbeddingProgressProvider } from '../ai/provider/ai-embedding-progress.provider';
+import { AiStatusDisabledProvider } from '../ai/provider/ai-status-disabled.provider';
 import { AiStatusProvider } from '../ai/provider/ai-status.provider';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
@@ -54,12 +57,13 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-// eslint-disable-next-line dot-notation
-const isAiDisabled = process.env['EXPO_PUBLIC_AI_DISABLE'] === 'true';
+const aiEnabled = isAiEnabled();
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
-const AiProviderWrapper: typeof LlmDisabledProvider = isAiDisabled
-    ? LlmDisabledProvider
-    : require('../ai/provider/llm.provider').LlmProvider;
+const AiProviderWrapper: typeof LlmDisabledProvider = aiEnabled ? require('../ai/provider/llm.provider').LlmProvider : LlmDisabledProvider;
+const AiStatusProviderWrapper: typeof AiStatusProvider = aiEnabled ? AiStatusProvider : AiStatusDisabledProvider;
+const AiEmbeddingProgressProviderWrapper: typeof AiEmbeddingProgressProvider = aiEnabled
+    ? AiEmbeddingProgressProvider
+    : AiEmbeddingProgressDisabledProvider;
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access */
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
@@ -89,8 +93,8 @@ export const RootLayoutContent = () => {
                                         <AuthGuard>
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
-                                                    <AiEmbeddingProgressProvider>
-                                                        <AiStatusProvider>
+                                                    <AiEmbeddingProgressProviderWrapper>
+                                                        <AiStatusProviderWrapper>
                                                             <ModalProvider>
                                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                                     <Stack.Screen name="(tabs)" />
@@ -173,8 +177,8 @@ export const RootLayoutContent = () => {
                                                                 </Stack>
                                                             </ModalProvider>
                                                             <Toast />
-                                                        </AiStatusProvider>
-                                                    </AiEmbeddingProgressProvider>
+                                                        </AiStatusProviderWrapper>
+                                                    </AiEmbeddingProgressProviderWrapper>
                                                 </AiProviderWrapper>
                                             </CreateActionProvider>
                                         </AuthGuard>
