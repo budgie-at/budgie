@@ -68,12 +68,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
 
-- tapOn:
-    id: 'PageHeader.BackButton'
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
+- runFlow: exit-account-details-to-home.flow.yaml
 
 - runFlow:
     file: set-main-currency.flow.yaml
