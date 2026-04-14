@@ -77,6 +77,7 @@ export const RootLayoutContent = () => {
     return (
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+<<<<<<< HEAD
                 <RuntimeProviderWrapper>
                     <SettingsProvider>
                         <DevMenuController />
