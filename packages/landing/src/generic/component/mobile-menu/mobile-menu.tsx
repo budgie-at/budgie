@@ -33,10 +33,6 @@ export const MobileMenu = ({ onClose, lang }: Props) => (
                 <Trans>Blog</Trans>
             </Link>
 
-            <Link className="py-2 text-sm font-medium" href={`/${lang}#whitelist`} onClick={onClose}>
-                <Trans>Whitelist</Trans>
-            </Link>
-
             <Link className="py-2 text-sm font-medium" href={`/${lang}#faq`} onClick={onClose}>
                 <Trans>FAQ</Trans>
             </Link>
@@ -49,9 +45,11 @@ export const MobileMenu = ({ onClose, lang }: Props) => (
                     <LanguageSwitcher />
                 </div>
 
-                <Button className="rounded-full">
-                    <Trans>Join Whitelist</Trans>
-                    <ChevronRight className="ml-1 size-4" />
+                <Button asChild className="rounded-full">
+                    <Link href={`/${lang}#waitlist`} onClick={onClose}>
+                        <Trans>Join Waitlist</Trans>
+                        <ChevronRight className="ml-1 size-4" />
+                    </Link>
                 </Button>
             </div>
         </div>
