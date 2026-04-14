@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/budgie-at/budgie/compare/v5.1.2...v5.2.0) (2026-04-14)
+
+### Bug Fixes
+
+- **app,contracts:** add migration and remove update logic from data PR ([37d7f77](https://github.com/budgie-at/budgie/commit/37d7f776b82eb89ef4be5ccaa106f4c6c820b8bf))
+- **app,contracts:** address review — propagate entry fields and fix migration ([3fa6b0d](https://github.com/budgie-at/budgie/commit/3fa6b0d863597a507cd38804cffbf116e85857e6))
+- **app,contracts:** persist exchangeRate and toIban in entry insert mappings ([a7bd6f8](https://github.com/budgie-at/budgie/commit/a7bd6f8dd0fc5956a2b2f92ed64b33508b5ea4ca))
+- **app:** use bracket notation for e2e index signature properties ([100b6b9](https://github.com/budgie-at/budgie/commit/100b6b9358bdedb40a498fc045204e0d41794a4d))
+
+### Features
+
+- **app,contracts:** enrich bank sync entries with counterIban and exchangeRate ([898e577](https://github.com/budgie-at/budgie/commit/898e57747520dd5b480056900efe6d2fa5f20290))
+
 ## [5.1.2](https://github.com/budgie-at/budgie/compare/v5.1.1...v5.1.2) (2026-04-14)
 
 ### Bug Fixes
