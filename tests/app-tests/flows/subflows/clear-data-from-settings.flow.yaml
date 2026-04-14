@@ -35,28 +35,35 @@ env:
       id: 'SettingsPage.ClearDataCard'
     timeout: 15000
 
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ClearDataCard'
+    direction: DOWN
+    centerElement: true
+    timeout: 10000
+
 - retry:
     maxRetries: 2
     commands:
       - tapOn:
           id: 'SettingsPage.ClearDataCard'
       - waitForAnimationToEnd
-      - runFlow:
-          when:
-            notVisible: 'Delete data|Daten löschen'
-          commands:
-            - tapOn:
-                id: 'SettingsPage.ClearDataCard'
-            - waitForAnimationToEnd
+      - extendedWaitUntil:
+          visible: 'Delete data|Daten löschen'
+          timeout: 5000
 
 - runFlow:
     when:
       visible: 'Delete data|Daten löschen'
     commands:
       - tapOn:
-          point: '68%,58%'
+          text: 'Delete data|Daten löschen'
 
 - runFlow:
     file: relaunch-app.flow.yaml
     env:
       HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}
+
+- extendedWaitUntil:
+    visible: 'No accounts yet|Noch keine Konten'
+    timeout: 15000

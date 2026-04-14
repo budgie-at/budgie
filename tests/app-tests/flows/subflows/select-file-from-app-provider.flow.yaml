@@ -1,8 +1,8 @@
 appId: ${APP_ID}
 env:
   FILE_NAME_MATCH: ${FILE_NAME_MATCH}
+  FILE_SEARCH_QUERY: ${FILE_SEARCH_QUERY || ''}
   FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH || ''}
-  USE_FILE_ROW_ID_MATCH: ${USE_FILE_ROW_ID_MATCH || 'true'}
   FILE_SCROLL_UP: ${FILE_SCROLL_UP || 'false'}
   FILE_SCROLL_FROM_ID: ${FILE_SCROLL_FROM_ID || ''}
   FILES_GRID_PRIMARY_POINT: ${FILES_GRID_PRIMARY_POINT || '20%,28%'}
@@ -11,53 +11,73 @@ env:
   FIXTURE_FOLDER_NAME_MATCH: ${FIXTURE_FOLDER_NAME_MATCH || 'E2EFixtures'}
   FIXTURE_FOLDER_ROW_MATCH: ${FIXTURE_FOLDER_ROW_MATCH || 'E2EFixtures([,\\n] .*items)?'}
   EXPECT_OPEN_AFTER_FILE_TAP: ${EXPECT_OPEN_AFTER_FILE_TAP || 'false'}
+  BROWSE_BUTTON_MATCH: ${BROWSE_BUTTON_MATCH || 'Browse|Durchsuchen'}
+  ON_MY_IPHONE_MATCH: ${ON_MY_IPHONE_MATCH || 'On My iPhone|Auf meinem iPhone'}
+  OPEN_BUTTON_MATCH: ${OPEN_BUTTON_MATCH || 'Open|Öffnen'}
+  SEARCH_INPUT_MATCH: ${SEARCH_INPUT_MATCH || 'Search|Suchen'}
+  SEARCH_RESULT_PRIMARY_POINT: ${SEARCH_RESULT_PRIMARY_POINT || '14%,39%'}
 ---
 - runFlow:
     when:
-      visible: 'No Recents'
+      visible: '${BROWSE_BUTTON_MATCH}'
     commands:
-      - tapOn: 'Browse'
+      - tapOn:
+          text: '${BROWSE_BUTTON_MATCH}'
 
 - runFlow:
     when:
-      visible: 'Browse'
+      visible: '${ON_MY_IPHONE_MATCH}'
     commands:
-      - tapOn: 'Browse'
-
-- runFlow:
-    when:
-      visible: 'On My iPhone'
-    commands:
-      - tapOn: 'On My iPhone'
+      - tapOn:
+          text: '${ON_MY_IPHONE_MATCH}'
       - extendedWaitUntil:
           visible:
-            text: '${PROVIDER_NAME_MATCH}'
+            text: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
+          timeout: 10000
+
+- runFlow:
+    when:
+      notVisible: '${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
+    commands:
+      - scrollUntilVisible:
+          element:
+            text: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
+          direction: DOWN
           timeout: 15000
+          speed: 20
+          visibilityPercentage: 40
+          centerElement: true
       - retry:
-          maxRetries: 3
+          maxRetries: 2
           commands:
             - runFlow:
                 when:
-                  visible: '${PROVIDER_NAME_MATCH}'
+                  visible: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
                 commands:
                   - tapOn:
                       point: '${FILES_GRID_PRIMARY_POINT}'
             - extendedWaitUntil:
-                visible: '${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
+                visible: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
                 timeout: 5000
 
 - runFlow:
     when:
-      visible: '${FIXTURE_FOLDER_NAME_MATCH}'
+      visible: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}'
     commands:
+      - scrollUntilVisible:
+          element:
+            text: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}'
+          direction: DOWN
+          timeout: 15000
+          speed: 20
+          visibilityPercentage: 40
+          centerElement: true
       - retry:
           maxRetries: 2
           commands:
             - tapOn:
                 point: '${FILES_GRID_PRIMARY_POINT}'
-            - extendedWaitUntil:
-                visible: '${FILE_NAME_MATCH}([,\\n] .*)?'
-                timeout: 5000
+            - waitForAnimationToEnd
 
 - runFlow:
     when:
@@ -90,7 +110,21 @@ env:
 
 - runFlow:
     when:
-      true: ${USE_FILE_ROW_ID_MATCH === 'true' && FILE_ROW_ID_MATCH !== ''}
+      true: ${FILE_SEARCH_QUERY !== ''}
+    commands:
+      - retry:
+          maxRetries: 2
+          commands:
+            - tapOn:
+                text: '${SEARCH_INPUT_MATCH}'
+            - inputText: '${FILE_SEARCH_QUERY}'
+            - waitForAnimationToEnd
+      - tapOn:
+          point: '${SEARCH_RESULT_PRIMARY_POINT}'
+
+- runFlow:
+    when:
+      true: ${FILE_SEARCH_QUERY === '' && FILE_ROW_ID_MATCH !== ''}
     commands:
       - scrollUntilVisible:
           element:
@@ -105,7 +139,7 @@ env:
 
 - runFlow:
     when:
-      true: ${USE_FILE_ROW_ID_MATCH !== 'true' || FILE_ROW_ID_MATCH === ''}
+      true: ${FILE_SEARCH_QUERY === '' && FILE_ROW_ID_MATCH === ''}
     commands:
       - scrollUntilVisible:
           element:
@@ -123,12 +157,14 @@ env:
       true: ${EXPECT_OPEN_AFTER_FILE_TAP === 'true'}
     commands:
       - extendedWaitUntil:
-          visible: 'Open'
+          visible: '${OPEN_BUTTON_MATCH}'
           timeout: 5000
-      - tapOn: 'Open'
+      - tapOn:
+          text: '${OPEN_BUTTON_MATCH}'
 
 - runFlow:
     when:
-      visible: 'Open'
+      visible: '${OPEN_BUTTON_MATCH}'
     commands:
-      - tapOn: 'Open'
+      - tapOn:
+          text: '${OPEN_BUTTON_MATCH}'
