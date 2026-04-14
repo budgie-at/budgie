@@ -12,10 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(
-        t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`,
-        [t(i18n)`privacy`, t(i18n)`security`, t(i18n)`architecture`]
-    );
+    return createBlogOgImage(t(i18n)`How Budgie Keeps Your Financial Data Off the Cloud`, [
+        t(i18n)`privacy`,
+        t(i18n)`security`,
+        t(i18n)`architecture`
+    ]);
 };
 
 export default OgImage;

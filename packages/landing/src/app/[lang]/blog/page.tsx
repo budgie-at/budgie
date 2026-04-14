@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -27,7 +28,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const { q: query, page } = await props.searchParams;
     const i18n = getI18nInstance(lang);
 
-    const title = i18n._(msg`Blog & Insights`);
+    const title = i18n._(msg`Financial Privacy Blog & Insights`);
     const description = i18n._(
         msg`Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking.`
     );
@@ -108,7 +109,7 @@ export default async function BlogPage(props: Props) {
                 <div className="container px-4 md:px-6">
                     <Motion className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                            <Trans>Blog & Insights</Trans>
+                            <Trans>Financial Privacy Blog & Insights</Trans>
                         </h1>
 
                         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
@@ -152,18 +153,20 @@ export default async function BlogPage(props: Props) {
                                         }
                                         params.set('page', page.toString());
 
+                                        /* eslint-disable lingui/no-unlocalized-strings */
+                                        const isActiveClass = isActive
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-muted hover:bg-muted/80 text-foreground';
+                                        /* eslint-enable lingui/no-unlocalized-strings */
+
                                         return (
-                                            <a
+                                            <Link
                                                 key={page}
-                                                className={`px-4 py-2 rounded-md transition-colors ${
-                                                    isActive
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'bg-muted hover:bg-muted/80 text-foreground'
-                                                }`}
+                                                className={`px-4 py-2 rounded-md transition-colors ${isActiveClass}`}
                                                 href={`/${lang}/blog?${params.toString()}`}
                                             >
                                                 {page}
-                                            </a>
+                                            </Link>
                                         );
                                     })}
                                 </Motion>

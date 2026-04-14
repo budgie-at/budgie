@@ -8,6 +8,7 @@ interface Props {
     title: string;
     description: string;
     date: string;
+    dateModified?: string;
     author: string;
     image?: string;
     locale: string;
@@ -15,7 +16,7 @@ interface Props {
     keywords: string;
 }
 
-export const BlogPostingJsonLd = ({ title, description, date, author, image, locale, slug, keywords }: Props) => {
+export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords }: Props) => {
     const url = `${BASE_URL}/${locale}/blog/${slug}`;
     const data = {
         '@context': 'https://schema.org',
@@ -23,13 +24,13 @@ export const BlogPostingJsonLd = ({ title, description, date, author, image, loc
         headline: title,
         description,
         datePublished: date,
-        dateModified: date,
+        dateModified: dateModified ?? date,
         author: { '@type': 'Person', name: author },
         publisher: {
             '@type': 'Organization',
             name: 'Budgie',
             url: BASE_URL,
-            logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/budgie-logo.svg` }
+            logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg` }
         },
         url,
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },

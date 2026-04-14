@@ -12,10 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(
-        t(i18n)`Why Cloud Budgeting Apps Are a Privacy Nightmare`,
-        [t(i18n)`privacy`, t(i18n)`security`, t(i18n)`cloud risks`]
-    );
+    return createBlogOgImage(t(i18n)`Why Cloud Budgeting Apps Are a Privacy Nightmare`, [
+        t(i18n)`privacy`,
+        t(i18n)`security`,
+        t(i18n)`cloud risks`
+    ]);
 };
 
 export default OgImage;
