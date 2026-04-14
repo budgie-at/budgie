@@ -16,14 +16,16 @@ import { reloadApp } from '../utils/reload-app.util';
 const E2E_BOOTSTRAP_TOKEN_KEY = 'e2e-bootstrap-token';
 const E2E_BOOTSTRAP_EVENT_TIMEOUT = 1000;
 
-const isTestHooksEnabled = () => Constants.expoConfig?.extra?.e2eHooksEnabled === true;
+// eslint-disable-next-line dot-notation
+const isTestHooksEnabled = () => Constants.expoConfig?.extra?.['e2eHooksEnabled'] === true;
 
+/* eslint-disable dot-notation */
 const getBootstrapParamsFromQueryParams = (queryParams: Record<string, unknown> | null | undefined) => {
-    const resetToken = normalizeE2EStringValue(queryParams?.e2eResetToken);
-    const fixtureId = normalizeE2EStringValue(queryParams?.e2eImportFixture);
-    const shouldReset = parseE2EBooleanValue(queryParams?.e2eReset);
-    const shouldImportExportedCsv = parseE2EBooleanValue(queryParams?.e2eImportExportedCsv);
-    const shouldImportFixtureCsv = parseE2EBooleanValue(queryParams?.e2eImportFixtureCsv);
+    const resetToken = normalizeE2EStringValue(queryParams?.['e2eResetToken']);
+    const fixtureId = normalizeE2EStringValue(queryParams?.['e2eImportFixture']);
+    const shouldReset = parseE2EBooleanValue(queryParams?.['e2eReset']);
+    const shouldImportExportedCsv = parseE2EBooleanValue(queryParams?.['e2eImportExportedCsv']);
+    const shouldImportFixtureCsv = parseE2EBooleanValue(queryParams?.['e2eImportFixtureCsv']);
 
     return {
         resetToken,
@@ -34,6 +36,7 @@ const getBootstrapParamsFromQueryParams = (queryParams: Record<string, unknown> 
         hasBootstrapAction: shouldReset || isNotEmptyString(fixtureId) || shouldImportExportedCsv || shouldImportFixtureCsv
     };
 };
+/* eslint-enable dot-notation */
 
 const getBootstrapParamsFromLaunchArguments = () =>
     getBootstrapParamsFromQueryParams({
