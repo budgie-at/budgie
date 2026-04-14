@@ -10,7 +10,6 @@ import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/bl
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
-import { Badge } from '../../../../ui/badge';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -20,9 +19,11 @@ import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blo
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
+import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
+import { Badge } from '../../../../ui/badge';
 
 import type { Metadata } from 'next';
 
@@ -33,6 +34,8 @@ const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 18;
 
+const RELATED_SLUGS = ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'] as const;
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
@@ -41,7 +44,9 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     return buildBlogArticleMetadata({
         author: AUTHOR,
         date: DATE,
-        description: t(i18n)`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`,
+        description: t(
+            i18n
+        )`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`,
         image: IMAGE,
         keywords: t(i18n)`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`,
         locale: lang,
@@ -59,9 +64,13 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
             <BlogPostingJsonLd
                 author={AUTHOR}
                 date={DATE}
-                description={t(i18n)`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`}
+                description={t(
+                    i18n
+                )`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`}
                 image={IMAGE}
-                keywords={t(i18n)`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`}
+                keywords={t(
+                    i18n
+                )`local-first software, offline-first architecture, CRDTs explained, sync engines, local-first personal finance`}
                 locale={lang}
                 slug={SLUG}
                 title={t(i18n)`The Local-First Movement: Why Developers Are Building Offline Apps`}
@@ -105,13 +114,27 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     readingTimeMinutes={READING_TIME}
                     tags={
                         <>
-                            <Badge variant="secondary"><Trans>local-first</Trans></Badge>
-                            <Badge variant="secondary"><Trans>offline-first</Trans></Badge>
-                            <Badge variant="secondary"><Trans>CRDTs</Trans></Badge>
-                            <Badge variant="secondary"><Trans>sync engines</Trans></Badge>
-                            <Badge variant="secondary"><Trans>software architecture</Trans></Badge>
-                            <Badge variant="secondary"><Trans>privacy</Trans></Badge>
-                            <Badge variant="secondary"><Trans>developers</Trans></Badge>
+                            <Badge variant="secondary">
+                                <Trans>local-first</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>offline-first</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>CRDTs</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>sync engines</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>software architecture</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>privacy</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>developers</Trans>
+                            </Badge>
                         </>
                     }
                 />
@@ -158,8 +181,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             <strong>Cloud-first applications</strong> store your data on remote servers. The local device is merely a
-                            viewport into data that lives elsewhere. When you are offline, functionality is limited or nonexistent.
-                            Examples include Google Docs, Notion, and most SaaS applications.
+                            viewport into data that lives elsewhere. When you are offline, functionality is limited or nonexistent. Examples
+                            include Google Docs, Notion, and most SaaS applications.
                         </Trans>
                     </BlogArticleProse>
 
@@ -233,14 +256,14 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Security and privacy by default.</strong> Since data stays local, there is no central server
-                                holding everyone’s information. Privacy becomes a natural property of the architecture.
+                                <strong>Security and privacy by default.</strong> Since data stays local, there is no central server holding
+                                everyone’s information. Privacy becomes a natural property of the architecture.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>You retain ultimate ownership and control.</strong> No company can lock you out of your data,
-                                delete your account, or change terms of service in ways that affect your existing work.
+                                <strong>You retain ultimate ownership and control.</strong> No company can lock you out of your data, delete
+                                your account, or change terms of service in ways that affect your existing work.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -256,8 +279,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             The Ink & Switch paper did not invent these ideas. Distributed systems researchers had been working on the
-                            underlying problems for decades. But the paper brought academic concepts into the practical software
-                            development conversation and gave the movement a coherent identity.
+                            underlying problems for decades. But the paper brought academic concepts into the practical software development
+                            conversation and gave the movement a coherent identity.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -282,15 +305,15 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             CRDTs are data structures specifically designed for distributed systems where nodes can modify state without
-                            coordination. The key insight is that if you design your data structures carefully, concurrent modifications
-                            can always be merged automatically without conflicts.
+                            coordination. The key insight is that if you design your data structures carefully, concurrent modifications can
+                            always be merged automatically without conflicts.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Consider a simple example: a counter. In a traditional system, if two users both increment a counter from 5 to
-                            6 simultaneously, you have a conflict. Which value is correct?
+                            Consider a simple example: a counter. In a traditional system, if two users both increment a counter from 5 to 6
+                            simultaneously, you have a conflict. Which value is correct?
                         </Trans>
                     </BlogArticleProse>
 
@@ -298,8 +321,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <Trans>
                             A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user
                             separately. User A’s increments are tracked independently from User B’s. The current value is computed by
-                            summing all increments. If A increments once and B increments once, the total is 7, regardless of the order
-                            the operations are received. No conflict, no coordination required.
+                            summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the
+                            operations are received. No conflict, no coordination required.
                         </Trans>
                     </BlogArticleProse>
 
@@ -334,8 +357,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>RGA (Replicated Growable Array)</strong> handles ordered sequences like text, enabling
-                                collaborative text editing.
+                                <strong>RGA (Replicated Growable Array)</strong> handles ordered sequences like text, enabling collaborative
+                                text editing.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -390,8 +413,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Modern sync engines like Replicache, PowerSync, and Electric SQL provide these capabilities as infrastructure
-                            that applications can build upon. They handle the complexity of state synchronization while exposing simple
-                            APIs for reading and writing data.
+                            that applications can build upon. They handle the complexity of state synchronization while exposing simple APIs
+                            for reading and writing data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -457,8 +480,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             Linear uses a custom sync engine to propagate changes. When you create an issue, it exists locally immediately
-                            and syncs to the server and other team members’ devices in the background. If you are offline, you keep
-                            working. Changes merge automatically when you reconnect.
+                            and syncs to the server and other team members’ devices in the background. If you are offline, you keep working.
+                            Changes merge automatically when you reconnect.
                         </Trans>
                     </BlogArticleProse>
 
@@ -468,9 +491,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same
-                            file simultaneously because Figma’s data model is designed for concurrent modification. Changes merge
-                            automatically without conflicts.
+                            Figma’s real-time collaboration is powered by CRDTs under the hood. Multiple designers can work on the same file
+                            simultaneously because Figma’s data model is designed for concurrent modification. Changes merge automatically
+                            without conflicts.
                         </Trans>
                     </BlogArticleProse>
 
@@ -488,8 +511,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Obsidian is a note-taking application that stores notes as plain Markdown files on your local filesystem.
-                            There is no server. Your notes are files on your disk that you can open with any text editor.
+                            Obsidian is a note-taking application that stores notes as plain Markdown files on your local filesystem. There
+                            is no server. Your notes are files on your disk that you can open with any text editor.
                         </Trans>
                     </BlogArticleProse>
 
@@ -519,8 +542,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored
-                            on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes
+                            Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on
+                            device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes
                             propagating when connectivity returns.
                         </Trans>
                     </BlogArticleProse>
@@ -532,9 +555,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            The local-first movement is gaining momentum because developers are recognizing concrete benefits:
-                        </Trans>
+                        <Trans>The local-first movement is gaining momentum because developers are recognizing concrete benefits:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -569,8 +590,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             With local-first, there is no “offline mode” that limits functionality. There is no anxiety about whether
-                            changes will be saved. The application works the same whether you are on a plane, in a basement, or connected
-                            to fast WiFi.
+                            changes will be saved. The application works the same whether you are on a plane, in a basement, or connected to
+                            fast WiFi.
                         </Trans>
                     </BlogArticleProse>
 
@@ -588,8 +609,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            This ownership extends to data longevity. Local data files will remain readable decades from now. SaaS
-                            services regularly shut down, leaving users scrambling to export data before it disappears.
+                            This ownership extends to data longevity. Local data files will remain readable decades from now. SaaS services
+                            regularly shut down, leaving users scrambling to export data before it disappears.
                         </Trans>
                     </BlogArticleProse>
 
@@ -636,9 +657,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Despite the complexity of distributed systems concepts, local-first development can be simpler than
-                            cloud-first. You build an application that works on a single device first. Then you add sync on top. The core
-                            logic is straightforward application development without the complexity of distributed systems.
+                            Despite the complexity of distributed systems concepts, local-first development can be simpler than cloud-first.
+                            You build an application that works on a single device first. Then you add sync on top. The core logic is
+                            straightforward application development without the complexity of distributed systems.
                         </Trans>
                     </BlogArticleProse>
 
@@ -703,8 +724,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Local-first finance apps work anywhere, anytime. Your financial data is on your device, accessible regardless
-                            of network conditions.
+                            Local-first finance apps work anywhere, anytime. Your financial data is on your device, accessible regardless of
+                            network conditions.
                         </Trans>
                     </BlogArticleProse>
 
@@ -714,9 +735,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            Financial management is inherently personal. Unlike collaborative documents or team projects, most people do
-                            not need to share their expense tracking with others in real-time. The single-user optimization of local-first
-                            is a feature, not a limitation.
+                            Financial management is inherently personal. Unlike collaborative documents or team projects, most people do not
+                            need to share their expense tracking with others in real-time. The single-user optimization of local-first is a
+                            feature, not a limitation.
                         </Trans>
                     </BlogArticleProse>
 
@@ -875,9 +896,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleProse>
 
                     <BlogArticleProse>
-                        <Trans>
-                            We believe in earning your continued use through quality, not trapping you through data lock-in.
-                        </Trans>
+                        <Trans>We believe in earning your continued use through quality, not trapping you through data lock-in.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
@@ -887,9 +906,7 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>
-                            For developers interested in building local-first applications, here are practical starting points:
-                        </Trans>
+                        <Trans>For developers interested in building local-first applications, here are practical starting points:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
@@ -995,14 +1012,17 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
-                        <Trans>The local-first movement is accelerating. Several trends suggest this is not a niche concern but a fundamental shift:</Trans>
+                        <Trans>
+                            The local-first movement is accelerating. Several trends suggest this is not a niche concern but a fundamental
+                            shift:
+                        </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Growing privacy awareness</strong> is driving demand for software that respects user data. As
-                                people become more conscious of surveillance capitalism, local-first offers a genuine alternative.
+                                <strong>Growing privacy awareness</strong> is driving demand for software that respects user data. As people
+                                become more conscious of surveillance capitalism, local-first offers a genuine alternative.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1019,8 +1039,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Regulatory pressure</strong> around data protection and sovereignty is making local-first
-                                attractive for compliance reasons.
+                                <strong>Regulatory pressure</strong> around data protection and sovereignty is making local-first attractive
+                                for compliance reasons.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1058,17 +1078,17 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                             <Trans>
                                 Yes. CRDTs were specifically designed to enable real-time collaboration without central coordination.
                                 Applications like Figma and Linear demonstrate that local-first architecture can support sophisticated
-                                collaborative features. The key difference is that collaboration happens through peer synchronization
-                                rather than through a central server.
+                                collaborative features. The key difference is that collaboration happens through peer synchronization rather
+                                than through a central server.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>How do backups work without a cloud server?</Trans>}>
                             <Trans>
                                 Users control their own backup strategy. This might include local device backups (iCloud, Google backup),
-                                manual exports, or sync to a service of the user’s choice. Some local-first apps offer optional cloud
-                                backup services for convenience, but these are additive rather than required. Your data remains accessible
-                                through local backups even if any cloud service disappears.
+                                manual exports, or sync to a service of the user’s choice. Some local-first apps offer optional cloud backup
+                                services for convenience, but these are additive rather than required. Your data remains accessible through
+                                local backups even if any cloud service disappears.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1084,9 +1104,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                         <BlogFaqItem question={<Trans>What about apps that require server-side processing?</Trans>}>
                             <Trans>
                                 Some applications genuinely need server capabilities, like sending emails or processing payments.
-                                Local-first is about where data lives and who owns it, not about eliminating servers entirely. A
-                                local-first application can use servers for specific capabilities while keeping user data local. The key is
-                                that the server handles actions, not storage of personal data.
+                                Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first
+                                application can use servers for specific capabilities while keeping user data local. The key is that the
+                                server handles actions, not storage of personal data.
                             </Trans>
                         </BlogFaqItem>
 
@@ -1105,8 +1125,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     <BlogArticleProse>
                         <Trans>
                             The local-first movement represents a genuine evolution in how we think about software architecture. For
-                            developers building personal tools, productivity software, or applications in sensitive domains like finance
-                            and health, local-first offers a path to better performance, stronger privacy, and genuine user ownership.
+                            developers building personal tools, productivity software, or applications in sensitive domains like finance and
+                            health, local-first offers a path to better performance, stronger privacy, and genuine user ownership.
                         </Trans>
                     </BlogArticleProse>
 
@@ -1124,6 +1144,8 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>
+
+            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
 
             <BlogArticleCta locale={lang} />
         </main>

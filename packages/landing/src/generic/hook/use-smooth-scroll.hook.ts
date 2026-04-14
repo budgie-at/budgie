@@ -11,6 +11,6 @@ const createSmoothScrollHandler = (targetId: string) => (e: React.MouseEvent<HTM
 export const useSmoothScroll = () => ({
     handleScrollToFeatures: createSmoothScrollHandler('features'),
     handleScrollToTestimonials: createSmoothScrollHandler('testimonials'),
-    handleScrollToWhitelist: createSmoothScrollHandler('whitelist'),
+    handleScrollToWaitlist: createSmoothScrollHandler('waitlist'),
     handleScrollToFaq: createSmoothScrollHandler('faq')
 });
