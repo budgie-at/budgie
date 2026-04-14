@@ -415,12 +415,6 @@ jobs:
           xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
-      - name: Start iOS Simulator video recording
-        run: |
-          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl io "$SIMULATOR_UDID" recordVideo "$ARTIFACT_DIR/simulator.mov" > "$ARTIFACT_DIR/record-video.log" 2>&1 &
-          echo $! > "$ARTIFACT_DIR/record-video.pid"
-
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         shell: bash
@@ -441,11 +435,6 @@ jobs:
           DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
           xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
-          if [ -f "$ARTIFACT_DIR/record-video.pid" ]; then
-            kill -INT "$(cat "$ARTIFACT_DIR/record-video.pid")" || true
-            sleep 5
-          fi
-
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
           fi
@@ -454,7 +443,7 @@ jobs:
             \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
             -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
 
-      - name: Upload Maestro artifacts (report, logs, videos, screenshots)
+      - name: Upload Maestro artifacts (report, logs, screenshots)
         if: always()
         uses: actions/upload-artifact@v4
         with:
