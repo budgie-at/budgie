@@ -20,9 +20,7 @@ export const BlogArticleMeta = ({ date, author, locale, readingTimeMinutes, tags
 
     return (
         <div className="border-b pb-6 space-y-4">
-            <div className="flex flex-wrap gap-2">
-                {tags}
-            </div>
+            <div className="flex flex-wrap gap-2">{tags}</div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">

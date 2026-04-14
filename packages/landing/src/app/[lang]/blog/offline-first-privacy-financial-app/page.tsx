@@ -10,7 +10,6 @@ import { BlogArticleHero } from '../../../../blog/component/blog-article-hero/bl
 import { BlogArticleList } from '../../../../blog/component/blog-article-list/blog-article-list';
 import { BlogArticleListItem } from '../../../../blog/component/blog-article-list-item/blog-article-list-item';
 import { BlogArticleMeta } from '../../../../blog/component/blog-article-meta/blog-article-meta';
-import { Badge } from '../../../../ui/badge';
 import { BlogArticleProse } from '../../../../blog/component/blog-article-prose/blog-article-prose';
 import { BlogArticleSection } from '../../../../blog/component/blog-article-section/blog-article-section';
 import { BlogArticleSubheading } from '../../../../blog/component/blog-article-subheading/blog-article-subheading';
@@ -20,9 +19,11 @@ import { BlogBreadcrumbs } from '../../../../blog/component/blog-breadcrumbs/blo
 import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-item';
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
+import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
 import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
+import { Badge } from '../../../../ui/badge';
 
 import type { Metadata } from 'next';
 
@@ -33,6 +34,8 @@ const AUTHOR = 'Budgie Team';
 const IMAGE = '/images/design-mode/ai-budgeting-app-4x.jpg';
 const READING_TIME = 5;
 
+const RELATED_SLUGS = ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'] as const;
+
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
     const { lang } = await props.params;
@@ -41,7 +44,9 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     return buildBlogArticleMetadata({
         author: AUTHOR,
         date: DATE,
-        description: t(i18n)`Discover why offline-first architecture is the only truly private approach for financial apps.`,
+        description: t(
+            i18n
+        )`Discover why offline-first architecture is the only truly private approach for financial apps. Learn how local data storage, zero cloud sync, and on-device encryption keep your finances safe.`,
         image: IMAGE,
         keywords: t(i18n)`offline-first privacy, financial app security, private budget app`,
         locale: lang,
@@ -102,11 +107,21 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     readingTimeMinutes={READING_TIME}
                     tags={
                         <>
-                            <Badge variant="secondary"><Trans>privacy</Trans></Badge>
-                            <Badge variant="secondary"><Trans>security</Trans></Badge>
-                            <Badge variant="secondary"><Trans>offline-first</Trans></Badge>
-                            <Badge variant="secondary"><Trans>financial privacy</Trans></Badge>
-                            <Badge variant="secondary"><Trans>data protection</Trans></Badge>
+                            <Badge variant="secondary">
+                                <Trans>privacy</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>security</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>offline-first</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>financial privacy</Trans>
+                            </Badge>
+                            <Badge variant="secondary">
+                                <Trans>data protection</Trans>
+                            </Badge>
                         </>
                     }
                 />
@@ -513,7 +528,9 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <strong><Trans>All while keeping your data completely private.</Trans></strong>
+                        <strong>
+                            <Trans>All while keeping your data completely private.</Trans>
+                        </strong>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -528,6 +545,8 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                     </BlogArticleProse>
                 </BlogArticleSection>
             </BlogArticleContent>
+
+            <RelatedArticles locale={lang} slugs={RELATED_SLUGS} />
 
             <BlogArticleCta locale={lang} />
         </main>
