@@ -227,12 +227,19 @@ class AppMonobankSyncService {
         await microPause();
 
         const existingIds = await transactionService.findByExternalSource(this.provider);
-        const newTxs = result.transactions.filter(tx => !tx.hold && !existingIds.has(tx.id));
+        const newTransactions = result.transactions.filter(
+            bankTransaction => !bankTransaction.hold && !existingIds.has(bankTransaction.id)
+        );
 
-        if (isNotEmptyArray(newTxs)) {
+        if (isNotEmptyArray(newTransactions)) {
             await transactionService.bulkCreate(
-                newTxs.map(tx =>
-                    mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
+                newTransactions.map(bankTransaction =>
+                    mapBankTransactionToCreateInput(
+                        bankTransaction,
+                        account.id,
+                        this.mccCategoryIdMap.get(String(bankTransaction.mcc)) ?? null,
+                        this.provider
+                    )
                 )
             );
         }

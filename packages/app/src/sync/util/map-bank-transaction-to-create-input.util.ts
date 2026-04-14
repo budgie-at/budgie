@@ -1,6 +1,8 @@
 import { BankTransactionInterface, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
     accountId: number,
@@ -12,14 +14,14 @@ export const mapBankTransactionToCreateInput = (
     const operationAmount = Math.abs(bankTransaction.operationAmount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
-    const exchangeRate = operationAmount !== 0 && amount !== operationAmount ? amount / operationAmount : 1;
+    const exchangeRate = isPositiveNumber(operationAmount) && amount !== operationAmount ? amount / operationAmount : 1;
 
     return {
         amount,
         title: bankTransaction.description,
         comment: bankTransaction.comment ?? '',
         type: isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE,
-        exchangeRate: 1,
+        exchangeRate,
         operatedAt: new Date(bankTransaction.time * 1000),
         externalId: bankTransaction.id,
         externalSource: provider,
