@@ -47,9 +47,11 @@ class TransactionService {
     }
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        const [transaction] = await this.bulkCreate([input]);
+        return transactionAsync(db, async tx => {
+            const [transaction] = await this.bulkCreate([input], tx);
 
-        return transaction;
+            return transaction;
+        });
     }
 
     async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: DB, batchSize = 500): Promise<TransactionEntityInterface[]> {
