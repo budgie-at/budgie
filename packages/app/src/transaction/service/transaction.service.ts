@@ -147,39 +147,6 @@ class TransactionService {
         });
     }
 
-    async updateBankTransaction(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
-            /* eslint-disable no-await-in-loop -- Sequential DB writes within a transaction */
-            for (const entry of input.entries) {
-                if (isDefined(entry.externalId)) {
-                    const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
-                        entry.externalId,
-                        entry.accountId,
-                        {
-                            amount: convertToMicroUnits(entry.amount),
-                            exchangeRate: entry.exchangeRate,
-                            toIban: entry.toIban
-                        },
-                        tx
-                    );
-
-                    if (isDefined(updatedEntry)) {
-                        await transactionRepository.updateById(
-                            updatedEntry.transactionId,
-                            {
-                                title: input.title,
-                                comment: input.comment,
-                                operatedAt: input.operatedAt
-                            },
-                            tx
-                        );
-                    }
-                }
-            }
-            /* eslint-enable no-await-in-loop */
-        });
-    }
-
     /* jscpd:ignore-start */
     async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         const { id, accountId: toAccountId, customExchangeRate } = params;
