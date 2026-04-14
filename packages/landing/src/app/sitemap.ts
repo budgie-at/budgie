@@ -3,7 +3,7 @@ import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
 
 import type { MetadataRoute } from 'next';
 
-const staticPages = ['', '/blog', '/legal/privacy-policy', '/legal/terms-of-service', '/legal/license'];
+const staticPages = ['', '/blog'];
 
 const buildDate = new Date();
 
