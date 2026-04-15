@@ -11,6 +11,7 @@ interface Props {
 export const LlmProvider = ({ children }: Props) => {
     const llm = useLlamaLlm();
     const stt = useSpeechToText({ model: WHISPER_SMALL });
+
     const value = { isAvailable: true, llm, stt };
 
     return <LlmContext value={value}>{children}</LlmContext>;

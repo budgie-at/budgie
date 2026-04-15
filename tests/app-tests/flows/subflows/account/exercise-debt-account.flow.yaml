@@ -95,6 +95,7 @@ appId: ${APP_ID}
       id: 'AccountForm.ActiveTitle'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
 - assertVisible:
     id: 'AccountForm.ActiveTitle'
 - tapOn:

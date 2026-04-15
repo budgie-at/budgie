@@ -44,16 +44,17 @@ src/
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
 2. **No displayName** - Never use `Component.displayName`
 3. **No forwardRef** - React 19 handles ref forwarding natively. Accept `ref` as a regular prop:
-   ```typescript
-   // Good - React 19 native ref
-   interface Props {
-       ref?: React.Ref<HTMLButtonElement>;
-   }
-   export const Button = ({ ref, ...props }: Props) => { ... };
 
-   // Bad - forwardRef (currently in codebase, should be migrated)
-   export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
-   ```
+    ```typescript
+    // Good - React 19 native ref
+    interface Props {
+        ref?: React.Ref<HTMLButtonElement>;
+    }
+    export const Button = ({ ref, ...props }: Props) => { ... };
+
+    // Bad - forwardRef (currently in codebase, should be migrated)
+    export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => { ... });
+    ```
 
 ## Routing
 
@@ -89,7 +90,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
     return {
         title: t`Budgie - Expense Tracker`,
-        description: t`Track your expenses offline`,
+        description: t`Track your expenses offline`
     };
 };
 ```
@@ -127,13 +128,13 @@ Wrap with `LinguiClientProvider`:
 
 ### Supported Locales
 
-| Code | Language |
-|------|----------|
+| Code | Language         |
+| ---- | ---------------- |
 | `en` | English (source) |
-| `uk` | Ukrainian |
-| `fr` | French |
-| `de` | German |
-| `es` | Spanish |
+| `uk` | Ukrainian        |
+| `fr` | French           |
+| `de` | German           |
+| `es` | Spanish          |
 
 ### After Changes
 
@@ -150,31 +151,28 @@ Use `class-variance-authority` for component variants:
 ```typescript
 import { cva } from 'class-variance-authority';
 
-const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors',
-    {
-        variants: {
-            variant: {
-                default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-                destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-                outline: 'border border-input bg-background hover:bg-accent',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-                ghost: 'hover:bg-accent hover:text-accent-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
-            },
-            size: {
-                default: 'h-10 px-4 py-2',
-                sm: 'h-9 rounded-md px-3',
-                lg: 'h-11 rounded-md px-8',
-                icon: 'h-10 w-10',
-            },
+const buttonVariants = cva('inline-flex items-center justify-center rounded-md font-medium transition-colors', {
+    variants: {
+        variant: {
+            default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+            destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+            outline: 'border border-input bg-background hover:bg-accent',
+            secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+            ghost: 'hover:bg-accent hover:text-accent-foreground',
+            link: 'text-primary underline-offset-4 hover:underline'
         },
-        defaultVariants: {
-            variant: 'default',
-            size: 'default',
-        },
+        size: {
+            default: 'h-10 px-4 py-2',
+            sm: 'h-9 rounded-md px-3',
+            lg: 'h-11 rounded-md px-8',
+            icon: 'h-10 w-10'
+        }
+    },
+    defaultVariants: {
+        variant: 'default',
+        size: 'default'
     }
-);
+});
 ```
 
 ### Utility Function
@@ -190,6 +188,7 @@ className={cn('base-classes', isActive && 'active-classes', className)}
 ### Design Tokens
 
 Semantic color tokens in CSS variables:
+
 - `--primary`, `--primary-foreground`
 - `--secondary`, `--secondary-foreground`
 - `--destructive`, `--destructive-foreground`
@@ -260,9 +259,7 @@ export const middleware = (request: NextRequest) => {
     const pathname = request.nextUrl.pathname;
 
     // Check if locale is missing
-    const pathnameIsMissingLocale = locales.every(
-        locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-    );
+    const pathnameIsMissingLocale = locales.every(locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`);
 
     if (pathnameIsMissingLocale) {
         const locale = getLocale(request);
@@ -308,14 +305,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
     return {
         title: {
             default: t`Budgie - Expense Tracker`,
-            template: `%s | Budgie`,
+            template: `%s | Budgie`
         },
         description: t`Track your expenses offline with Budgie`,
         openGraph: {
             title: t`Budgie - Expense Tracker`,
             description: t`Track your expenses offline`,
-            locale: lang,
-        },
+            locale: lang
+        }
     };
 };
 ```
@@ -324,33 +321,63 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
-## Blog (MDX)
+## SOTA Bar — Next.js 15+ / React 19+
 
-### Configuration
+**Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.
 
-MDX support enabled in `next.config.ts`:
+**Composition over configuration.** Prefer compound components, `children`/slots, and explicit JSX composition over giant prop bags.
 
-```typescript
-pageExtensions: ['mdx', 'ts', 'tsx']
+**Plain functions over class wrappers.** Default to `export function` for pure helpers. Classes only when grouping genuinely stateful operations.
+
+**No `.map()` for rendering fixed JSX arrays.** Extract a component and write explicit instances. `.map()` only for: (1) reusable template components receiving variable-length data via props, (2) data transformations (not JSX), (3) truly dynamic data filtered/computed at runtime.
+
+## Blog Article Pattern
+
+Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each article is a server component composing generic blog components.
+
+**No MDX.** Articles are pure TSX with `<Trans>` tags for all visible text. Lingui extracts strings to `.po` catalogs for translation.
+
+**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. All routes are fully SSG at build time.
+
+**Composition pattern:**
+
+```tsx
+<main className="flex-1">
+    <BlogPostingJsonLd ... />
+    <BlogArticleHero image="...">
+        <BlogBreadcrumbs> ... </BlogBreadcrumbs>
+        <h1><Trans>Article Title</Trans></h1>
+        <BlogArticleMeta date="..." author="..." locale={lang} />
+    </BlogArticleHero>
+    <BlogArticleContent>
+        <BlogArticleSection>
+            <BlogArticleHeading><Trans>Section</Trans></BlogArticleHeading>
+            <BlogArticleProse><Trans>Paragraph text...</Trans></BlogArticleProse>
+        </BlogArticleSection>
+    </BlogArticleContent>
+    <BlogArticleCta locale={lang} />
+</main>
 ```
 
-### Blog Posts
+**Article registry:** `src/blog/constant/article-registry.constant.ts` is the single source of truth for listing pages, sitemap, and blog section. Each entry stores slug, date, author, image, and Lingui `msg` descriptors for title/description.
 
-Blog content in `/app/[lang]/blog/[slug]/page.tsx` with dynamic routes.
+**SEO pages can use `/* eslint-disable max-lines-per-function */`** at the top since article pages are content-heavy.
+
+**i18n in articles:** `<Trans>` for all JSX content (headings, paragraphs, list items). `t(i18n)` only for string props (alt, title, placeholder, JSON-LD strings, metadata strings). Never thread `i18n` through props — server components use `setI18n` + React cache.
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `next` | Framework |
-| `react` | UI Library |
-| `@lingui/*` | i18n |
-| `framer-motion` | Animations |
-| `@radix-ui/*` | UI Primitives |
-| `tailwindcss` | Styling |
-| `class-variance-authority` | CVA variants |
-| `next-themes` | Dark mode |
-| `negotiator` | Locale detection |
+| Package                    | Purpose          |
+| -------------------------- | ---------------- |
+| `next`                     | Framework        |
+| `react`                    | UI Library       |
+| `@lingui/*`                | i18n             |
+| `framer-motion`            | Animations       |
+| `@radix-ui/*`              | UI Primitives    |
+| `tailwindcss`              | Styling          |
+| `class-variance-authority` | CVA variants     |
+| `next-themes`              | Dark mode        |
+| `negotiator`               | Locale detection |
 
 ## Experimental Features
 

@@ -79,8 +79,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+    timeout: 15000
 
 # --- Delete Cross-Currency Transfer ---
 

@@ -247,7 +247,8 @@ msgid "Are you sure you want to delete all your data? This action cannot be undo
 msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:29
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:73
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:58
+#: src/transaction/hook/use-delete-transaction.hook.ts:14
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
@@ -307,12 +308,13 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:27
 #: src/account/component/archived-account-card/archived-account-card.tsx:33
 #: src/app/(tabs)/settings/import.tsx:254
-#: src/app/convert-to-transfer.tsx:75
+#: src/app/convert-to-transfer.tsx:76
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:80
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:61
+#: src/transaction/hook/use-delete-transaction.hook.ts:17
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -428,20 +430,21 @@ msgstr "Contacto (opcional)"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/app/convert-to-transfer.tsx:104
+#: src/app/convert-to-transfer.tsx:109
 msgid "Conversion failed"
 msgstr "Error en la conversión"
 
-#: src/app/convert-to-transfer.tsx:74
+#: src/app/convert-to-transfer.tsx:75
 msgid "Convert"
 msgstr "Convertir"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:117
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:25
+#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:108
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
-#: src/app/convert-to-transfer.tsx:72
+#: src/app/convert-to-transfer.tsx:73
 msgid "Convert to Transfer?"
 msgstr "¿Convertir a transferencia?"
 
@@ -473,6 +476,7 @@ msgstr "No se pudo eliminar la categoría"
 msgid "Could not delete tag"
 msgstr "No se pudo eliminar la etiqueta"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts:30
 #: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
@@ -629,7 +633,8 @@ msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:75
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:60
+#: src/transaction/hook/use-delete-transaction.hook.ts:16
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -649,7 +654,8 @@ msgstr "Eliminar datos"
 msgid "Delete Permanently"
 msgstr "Eliminar permanentemente"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:107
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:88
+#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:115
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
 
@@ -705,6 +711,10 @@ msgstr "Editar ingreso"
 #: src/tag/components/tag-form/tag-form.tsx:67
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
+
+#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:101
+msgid "Edit Transaction"
+msgstr "Editar transacción"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:85
 msgid "Edit Transfer"
@@ -1314,7 +1324,7 @@ msgstr "Los PIN no coinciden"
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
-#: src/app/convert-to-transfer.tsx:104
+#: src/app/convert-to-transfer.tsx:109
 msgid "Please try again"
 msgstr "Por favor, inténtelo de nuevo"
 
@@ -1703,7 +1713,8 @@ msgid "This account will be hidden from your main view and won't be included in 
 msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los totales. Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:73
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:59
+#: src/transaction/hook/use-delete-transaction.hook.ts:15
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
@@ -1727,11 +1738,11 @@ msgstr "Esta semana"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
-#: src/app/convert-to-transfer.tsx:62
+#: src/app/convert-to-transfer.tsx:63
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 
-#: src/app/convert-to-transfer.tsx:63
+#: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 

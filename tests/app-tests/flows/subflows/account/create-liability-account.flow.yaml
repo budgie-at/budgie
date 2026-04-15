@@ -29,9 +29,14 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CurrencySelector.SearchInput'
 - inputText: ${CURRENCY_CODE}
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 
+- extendedWaitUntil:
+    visible:
+      id: 'CreateAccount.Amount'
+    timeout: 10000
 - tapOn:
     id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}

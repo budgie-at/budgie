@@ -1,0 +1,13 @@
+appId: ${APP_ID}
+---
+- launchApp
+
+- runFlow:
+    file: handle-dev-client-startup.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 60000
+
+- stopApp

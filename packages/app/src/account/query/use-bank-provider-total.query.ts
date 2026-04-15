@@ -1,5 +1,8 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { useRef } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -11,6 +14,20 @@ export const useBankProviderTotalQuery = (provider: ExternalSourceEnum) => {
         defaultInstrument.id,
         provider
     ]);
+    const previousTotalRef = useRef(0);
+    const previousDependenciesRef = useRef([defaultInstrument.id, provider]);
 
-    return convertFromMicroUnits(data.at(0)?.total ?? 0);
+    const total = data.at(0)?.total;
+    const haveDependenciesChanged =
+        defaultInstrument.id !== previousDependenciesRef.current[0] || provider !== previousDependenciesRef.current[1];
+
+    if (isDefined(total)) {
+        previousTotalRef.current = convertFromMicroUnits(total);
+    } else if (haveDependenciesChanged) {
+        previousTotalRef.current = 0;
+    }
+
+    previousDependenciesRef.current = [defaultInstrument.id, provider];
+
+    return previousTotalRef.current;
 };
