@@ -23,7 +23,7 @@ Local Erste Bank PDF flow:
 
 ```bash
 sh ./scripts/setup-ios-simulator.sh
-maestro test ./flows/22.erste-bank-import.flow.yaml \
+maestro test ./flows/20.erste-bank-import.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e
 ```
 

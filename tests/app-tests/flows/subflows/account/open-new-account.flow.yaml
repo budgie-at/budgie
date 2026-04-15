@@ -24,7 +24,6 @@ appId: ${APP_ID}
           timeout: 10000
       - tapOn:
           id: 'ActionItem.AddAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       text: '.*Monobank.*'

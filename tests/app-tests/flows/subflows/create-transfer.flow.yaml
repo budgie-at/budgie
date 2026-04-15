@@ -7,11 +7,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.Transfer'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'ActionItem.Transfer'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Transfer'
 
@@ -20,7 +18,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransferForm.FromAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
@@ -35,7 +32,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransferForm.ToAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
