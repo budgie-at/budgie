@@ -163,7 +163,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'DeletableRow.DeleteButton'
 - tapOn: 'Delete'
-- waitForAnimationToEnd
-
-- assertNotVisible:
-    id: 'CategoryCard.E2E Category Updated'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryCard.E2E Category Updated'
+    timeout: 10000

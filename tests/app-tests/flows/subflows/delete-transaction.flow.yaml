@@ -2,7 +2,6 @@ appId: ${APP_ID}
 ---
 - tapOn:
     point: '80%,8%'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.DeleteButton'
@@ -18,4 +17,3 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     notVisible: 'Are you sure?'
     timeout: 15000
-- waitForAnimationToEnd

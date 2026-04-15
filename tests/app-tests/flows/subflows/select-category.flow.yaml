@@ -2,7 +2,6 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: 'TransactionForm.CategorySelector'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'CategoryPickerBottomSheet.Input'

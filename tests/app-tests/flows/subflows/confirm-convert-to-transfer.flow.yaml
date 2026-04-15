@@ -8,5 +8,3 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     notVisible: 'Convert to Transfer?'
     timeout: 15000
-- waitForAnimationToEnd
-

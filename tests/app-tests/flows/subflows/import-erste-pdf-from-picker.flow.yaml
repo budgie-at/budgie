@@ -49,5 +49,3 @@ env:
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 30000
-
-- waitForAnimationToEnd

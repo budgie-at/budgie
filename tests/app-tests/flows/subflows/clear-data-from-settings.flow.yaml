@@ -35,8 +35,6 @@ env:
       id: 'SettingsPage.ClearDataCard'
     timeout: 15000
 
-- waitForAnimationToEnd
-
 - retry:
     maxRetries: 2
     commands:

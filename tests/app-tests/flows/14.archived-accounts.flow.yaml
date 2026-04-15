@@ -38,7 +38,6 @@ appId: ${APP_ID}
     element:
       id: 'AccountDetails.ArchiveButton'
     direction: DOWN
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
@@ -58,8 +57,6 @@ appId: ${APP_ID}
     notVisible:
       id: 'AccountCard.E2E Archive Account'
     timeout: 10000
-- assertNotVisible:
-    id: 'AccountCard.E2E Archive Account'
 
 # --- Navigate to Archived Accounts ---
 

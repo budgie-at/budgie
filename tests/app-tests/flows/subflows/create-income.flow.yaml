@@ -7,11 +7,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.Income'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'ActionItem.Income'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Income'
 

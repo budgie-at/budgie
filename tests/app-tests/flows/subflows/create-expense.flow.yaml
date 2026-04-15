@@ -6,7 +6,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionItem.Expense'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'
 

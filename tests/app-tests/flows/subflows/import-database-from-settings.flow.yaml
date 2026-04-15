@@ -18,8 +18,6 @@ env:
             id: 'SettingsPage.ImportDatabaseCard'
           timeout: 15000
 
-- waitForAnimationToEnd
-
 - tapOn:
     id: 'SettingsPage.ImportDatabaseCard'
 

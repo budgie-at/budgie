@@ -129,7 +129,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'DeletableRow.DeleteButton'
 - tapOn: 'Delete'
-- waitForAnimationToEnd
-
-- assertNotVisible:
-    id: 'TagCard.E2E Tag Updated'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TagCard.E2E Tag Updated'
+    timeout: 10000

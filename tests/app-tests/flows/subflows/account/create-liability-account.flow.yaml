@@ -20,7 +20,6 @@ appId: ${APP_ID}
       id: 'AccountForm.CurrencySelector'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencySelector'
 - extendedWaitUntil:
@@ -54,5 +53,3 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-- assertVisible:
-    id: 'AccountCard.${ACCOUNT_NAME}'

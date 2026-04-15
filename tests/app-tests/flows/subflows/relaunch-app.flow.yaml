@@ -14,8 +14,6 @@ env:
             true: ${HANDLE_DEV_CLIENT_STARTUP === 'true'}
           file: handle-dev-client-startup.flow.yaml
 
-      - waitForAnimationToEnd
-
       - extendedWaitUntil:
           visible:
             id: 'HomePage.TotalBalance'

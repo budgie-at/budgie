@@ -22,15 +22,11 @@ appId: ${APP_ID}
       - tapOn:
           text: '.*:8081.*'
 
-- waitForAnimationToEnd
-
 - runFlow:
     when:
       visible: 'Continue'
     commands:
       - tapOn: 'Continue'
-
-- waitForAnimationToEnd
 
 - runFlow:
     when:

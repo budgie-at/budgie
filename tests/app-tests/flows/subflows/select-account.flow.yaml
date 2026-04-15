@@ -6,7 +6,6 @@ appId: ${APP_ID}
     commands:
       - tapOn:
           id: 'TransactionForm.AccountSelector'
-      - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
             id: 'AccountPickerBottomSheet.Input'
@@ -36,4 +35,3 @@ appId: ${APP_ID}
       - extendedWaitUntil:
           notVisible:
             id: 'AccountPickerBottomSheet.Input'
-      - waitForAnimationToEnd

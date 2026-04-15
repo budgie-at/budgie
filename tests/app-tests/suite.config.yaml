@@ -17,13 +17,13 @@ executionOrder:
         - 11.transfer-transaction.flow
         - 12.cross-currency-transfer-transaction.flow
         - 13.balance-verification.flow
-        - 15.archived-accounts.flow
-        - 17.expense-to-transfer.flow
-        - 18.income-to-transfer.flow
-        - 19.transactions-filters.flow
-        - 20.transactions-account-date.flow
-        - 21.transaction-long-press.flow
-        - 22.erste-bank-import.flow
+        - 14.archived-accounts.flow
+        - 15.expense-to-transfer.flow
+        - 16.income-to-transfer.flow
+        - 17.transactions-filters.flow
+        - 18.transactions-account-date.flow
+        - 19.transaction-long-press.flow
+        - 20.erste-bank-import.flow
 
 platform:
     ios:
