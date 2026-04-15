@@ -11,5 +11,5 @@ env:
     file: import-database-from-settings.flow.yaml
     env:
       FIXTURE_FILE: 'e2e-00-empty-state.db'
-      FIXTURE_ROW_ID_MATCH: 'e2e-00-empty-state.db([,\\n] .*)?'
+      FIXTURE_ROW_ID_MATCH: 'e2e-00-empty-state.db, db'
       HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP}

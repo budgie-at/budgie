@@ -1,21 +1,15 @@
 appId: ${APP_ID}
 env:
   FILE_NAME_MATCH: ${FILE_NAME_MATCH}
-  FILE_SEARCH_QUERY: ${FILE_SEARCH_QUERY || ''}
   FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH || ''}
-  FILE_SCROLL_UP: ${FILE_SCROLL_UP || 'false'}
-  FILE_SCROLL_FROM_ID: ${FILE_SCROLL_FROM_ID || ''}
-  FILES_GRID_PRIMARY_POINT: ${FILES_GRID_PRIMARY_POINT || '20%,28%'}
   PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
-  PROVIDER_ROW_MATCH: ${PROVIDER_ROW_MATCH || 'budgie( \\(.*\\))?([,\\n] .*items)?'}
+  PROVIDER_CONTAINER_ID_MATCH: ${PROVIDER_CONTAINER_ID_MATCH || 'budgie( \\(.*\\))?, Container'}
   FIXTURE_FOLDER_NAME_MATCH: ${FIXTURE_FOLDER_NAME_MATCH || 'E2EFixtures'}
   FIXTURE_FOLDER_ROW_MATCH: ${FIXTURE_FOLDER_ROW_MATCH || 'E2EFixtures([,\\n] .*items)?'}
   EXPECT_OPEN_AFTER_FILE_TAP: ${EXPECT_OPEN_AFTER_FILE_TAP || 'false'}
   BROWSE_BUTTON_MATCH: ${BROWSE_BUTTON_MATCH || 'Browse|Durchsuchen'}
   ON_MY_IPHONE_MATCH: ${ON_MY_IPHONE_MATCH || 'On My iPhone|Auf meinem iPhone'}
   OPEN_BUTTON_MATCH: ${OPEN_BUTTON_MATCH || 'Open|Öffnen'}
-  SEARCH_INPUT_MATCH: ${SEARCH_INPUT_MATCH || 'Search|Suchen'}
-  SEARCH_RESULT_PRIMARY_POINT: ${SEARCH_RESULT_PRIMARY_POINT || '14%,39%'}
 ---
 - runFlow:
     when:
@@ -23,108 +17,98 @@ env:
     commands:
       - tapOn:
           text: '${BROWSE_BUTTON_MATCH}'
+      - waitForAnimationToEnd
 
-- runFlow:
-    when:
-      visible: '${ON_MY_IPHONE_MATCH}'
+- retry:
+    maxRetries: 4
     commands:
-      - tapOn:
-          text: '${ON_MY_IPHONE_MATCH}'
+      - runFlow:
+          when:
+            visible:
+              id: 'BackButton'
+          commands:
+            - tapOn:
+                id: 'BackButton'
+            - waitForAnimationToEnd
+      - assertNotVisible:
+          id: 'BackButton'
+
+- extendedWaitUntil:
+    visible: '${ON_MY_IPHONE_MATCH}'
+    timeout: 10000
+
+- tapOn:
+    text: '${ON_MY_IPHONE_MATCH}'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: '${PROVIDER_CONTAINER_ID_MATCH}'
+    timeout: 10000
+
+- waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: '${PROVIDER_CONTAINER_ID_MATCH}'
+    direction: DOWN
+    timeout: 15000
+    speed: 20
+    visibilityPercentage: 40
+    centerElement: true
+
+- tapOn:
+    id: '${PROVIDER_CONTAINER_ID_MATCH}'
+
+- retry:
+    maxRetries: 3
+    commands:
+      - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: '${PROVIDER_CONTAINER_ID_MATCH}'
+          commands:
+            - tapOn:
+                id: '${PROVIDER_CONTAINER_ID_MATCH}'
+            - waitForAnimationToEnd
       - extendedWaitUntil:
-          visible:
-            text: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
-          timeout: 10000
+          visible: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}'
+          timeout: 5000
 
-- runFlow:
-    when:
-      notVisible: '${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
-    commands:
-      - scrollUntilVisible:
-          element:
-            text: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
-          direction: DOWN
-          timeout: 15000
-          speed: 20
-          visibilityPercentage: 40
-          centerElement: true
-      - retry:
-          maxRetries: 2
-          commands:
-            - runFlow:
-                when:
-                  visible: '${PROVIDER_ROW_MATCH}|${PROVIDER_NAME_MATCH}'
-                commands:
-                  - tapOn:
-                      point: '${FILES_GRID_PRIMARY_POINT}'
-            - extendedWaitUntil:
-                visible: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}|${FILE_NAME_MATCH}([,\\n] .*)?'
-                timeout: 5000
+- waitForAnimationToEnd
 
-- runFlow:
-    when:
-      visible: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}'
-    commands:
-      - scrollUntilVisible:
-          element:
-            text: '${FIXTURE_FOLDER_ROW_MATCH}|${FIXTURE_FOLDER_NAME_MATCH}'
-          direction: DOWN
-          timeout: 15000
-          speed: 20
-          visibilityPercentage: 40
-          centerElement: true
-      - retry:
-          maxRetries: 2
-          commands:
-            - tapOn:
-                point: '${FILES_GRID_PRIMARY_POINT}'
-            - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+    direction: DOWN
+    timeout: 15000
+    speed: 20
+    visibilityPercentage: 40
+    centerElement: true
 
-- runFlow:
-    when:
-      true: ${FILE_SCROLL_UP === 'true'}
+- tapOn:
+    id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+
+- retry:
+    maxRetries: 3
     commands:
+      - waitForAnimationToEnd
       - runFlow:
           when:
-            true: ${FILE_SCROLL_FROM_ID !== ''}
-          commands:
-            - swipe:
-                from:
-                  id: '${FILE_SCROLL_FROM_ID}'
-                direction: UP
-            - swipe:
-                from:
-                  id: '${FILE_SCROLL_FROM_ID}'
-                direction: UP
-      - runFlow:
-          when:
-            true: ${FILE_SCROLL_FROM_ID === ''}
-          commands:
-            - swipe:
-                from:
-                  point: '50%,75%'
-                direction: UP
-            - swipe:
-                from:
-                  point: '50%,75%'
-                direction: UP
-
-- runFlow:
-    when:
-      true: ${FILE_SEARCH_QUERY !== ''}
-    commands:
-      - retry:
-          maxRetries: 2
+            visible:
+              id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
           commands:
             - tapOn:
-                text: '${SEARCH_INPUT_MATCH}'
-            - inputText: '${FILE_SEARCH_QUERY}'
+                id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
             - waitForAnimationToEnd
-      - tapOn:
-          point: '${SEARCH_RESULT_PRIMARY_POINT}'
+
+- waitForAnimationToEnd
 
 - runFlow:
     when:
-      true: ${FILE_SEARCH_QUERY === '' && FILE_ROW_ID_MATCH !== ''}
+      true: ${FILE_ROW_ID_MATCH !== ''}
     commands:
       - scrollUntilVisible:
           element:
@@ -132,14 +116,15 @@ env:
           direction: DOWN
           timeout: 15000
           speed: 20
-          visibilityPercentage: 50
-          centerElement: true
+          visibilityPercentage: 10
+          centerElement: false
+          waitToSettleTimeoutMs: 500
       - tapOn:
           id: '${FILE_ROW_ID_MATCH}'
 
 - runFlow:
     when:
-      true: ${FILE_SEARCH_QUERY === '' && FILE_ROW_ID_MATCH === ''}
+      true: ${FILE_ROW_ID_MATCH === ''}
     commands:
       - scrollUntilVisible:
           element:
@@ -147,10 +132,13 @@ env:
           direction: DOWN
           timeout: 15000
           speed: 20
-          visibilityPercentage: 50
-          centerElement: true
+          visibilityPercentage: 10
+          centerElement: false
+          waitToSettleTimeoutMs: 500
       - tapOn:
           text: '${FILE_NAME_MATCH}([,\\n] .*)?'
+
+- waitForAnimationToEnd
 
 - runFlow:
     when:
