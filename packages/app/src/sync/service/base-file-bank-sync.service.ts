@@ -111,7 +111,7 @@ export abstract class BaseFileBankSyncService {
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        await transactionService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx);
+        await transactionService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, false);
     }
 
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
@@ -126,6 +126,8 @@ export abstract class BaseFileBankSyncService {
             for (const bankAccount of bankAccounts) {
                 await this.importAccountTransactions(client, bankAccount, context);
             }
+
+            await transactionService.updateAllBalances(tx);
         });
     }
 

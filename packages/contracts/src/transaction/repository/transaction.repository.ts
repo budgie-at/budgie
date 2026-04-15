@@ -91,8 +91,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getById(id: number) {
-        return this.db.query.TransactionEntityTable.findFirst({
+    getById(id: number, tx?: DB) {
+        return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
