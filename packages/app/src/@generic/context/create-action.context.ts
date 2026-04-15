@@ -2,7 +2,7 @@ import { createContext, use } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { CreateActionInterface } from '../interface/create-action.interface';
+import { CreateActionInterface } from '../interface/create-action-interface.type';
 
 interface CreateActionContextInterface {
     createAction: CreateActionInterface | null;

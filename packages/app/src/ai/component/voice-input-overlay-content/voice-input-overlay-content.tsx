@@ -8,7 +8,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { VOICE_INPUT_STATE_TO_BUTTON } from '../../constant/voice-input-state-mapping.constant';
 import { UseVoiceInputReturn } from '../../hook/use-voice-input.hook';
-import { RecordButtonStateType } from '../../type/record-button-state.type';
+import { RecordButtonStateType } from '../../type/record-button-state-type.type';
 import { AnimatedRecordButton } from '../animated-record-button/animated-record-button';
 import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';

@@ -8,7 +8,7 @@ export type { BankAccountInterface } from './core/interface/bank-account.interfa
 export type { BankClientInfoInterface } from './core/interface/bank-client-info.interface';
 export type { BankProviderClientInterface } from './core/interface/bank-provider-client.interface';
 export type { BankSyncErrorInterface } from './core/interface/bank-sync-error.interface';
-export type { BankSyncResultInterface } from './core/interface/bank-sync-result.interface';
+export type { BankSyncResultInterface } from './core/interface/bank-sync-result.type';
 export type { BankTransactionInterface } from './core/interface/bank-transaction.interface';
 export type { BankTokenStorageInterface } from './core/interface/bank-token-storage.interface';
 export type { BankSyncOptionsInterface } from './core/interface/bank-sync-options.interface';

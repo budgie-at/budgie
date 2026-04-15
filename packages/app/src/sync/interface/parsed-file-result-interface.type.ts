@@ -1,4 +1,4 @@
-import type { FileBasedBankSyncClientInterface } from './file-based-bank-sync-client.interface';
+import type { FileBasedBankSyncClientInterface } from './file-based-bank-sync-client-interface.type';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 
 export interface ParsedFileResultInterface {

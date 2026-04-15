@@ -1,4 +1,4 @@
-import { RecordButtonStateType } from '../type/record-button-state.type';
+import { RecordButtonStateType } from '../type/record-button-state-type.type';
 
 type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
 

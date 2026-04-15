@@ -17,8 +17,8 @@ import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
-import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
-import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
+import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params-interface.type';
+import { TransferConversionResultInterface } from '../interface/transfer-conversion-result-interface.type';
 
 import type { DB } from '@budgie/contracts';
 

@@ -13,7 +13,7 @@ import {
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
-import { IdInterface } from '../../interface/id.interface';
+import { IdInterface } from '../../interface/id-interface.type';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';

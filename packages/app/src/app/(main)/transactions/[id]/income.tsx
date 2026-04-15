@@ -9,7 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { IdParamInterface } from '../../../../@generic/interface/id-param-interface.type';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';

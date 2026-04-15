@@ -5,13 +5,13 @@ import { isDefined } from '@rnw-community/shared';
 import { DB } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
-import { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity.interface';
+import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity-interface.type';
+import { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity-interface.type';
 import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
 import { BankSyncStatusEnum } from '../enum/bank-sync-status.enum';
 import { BankSyncEntityTable } from '../table/bank-sync-entity.table';
 
-import type { BankSyncEntityInterface } from '../entity/bank-sync-entity.interface';
+import type { BankSyncEntityInterface } from '../entity/bank-sync-entity-interface.type';
 
 export class BankSyncRepository {
     constructor(private db: DB) {}

@@ -7,8 +7,8 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { UnembeddedCommentDataInterface } from '../interface/unembedded-comment-data.interface';
-import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
+import { UnembeddedCommentDataInterface } from '../interface/unembedded-comment-data-interface.type';
+import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params-interface.type';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
 import { CommentEmbeddingTagEntityTable } from '../table/comment-embedding-tag-entity.table';
 

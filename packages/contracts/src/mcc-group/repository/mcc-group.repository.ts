@@ -1,11 +1,11 @@
 import { eq } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
-import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
+import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity-interface.type';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
 import type * as schema from '../../schema';
-import type { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
+import type { MccGroupEntityInterface } from '../entity/mcc-group-entity-interface.type';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class MccGroupRepository {

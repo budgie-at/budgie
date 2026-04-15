@@ -1,4 +1,4 @@
-import { RecurringCalendarEntryInterface } from './recurring-calendar-entry.interface';
+import { RecurringCalendarEntryInterface } from './recurring-calendar-entry-interface.type';
 
 export interface RecurringCalendarDataInterface {
     readonly entriesByDay: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]>;

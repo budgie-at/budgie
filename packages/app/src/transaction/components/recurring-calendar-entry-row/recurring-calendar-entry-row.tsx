@@ -11,7 +11,7 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
 import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 
 const ANIMATION_STAGGER = 50;

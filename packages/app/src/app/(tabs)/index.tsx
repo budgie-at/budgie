@@ -15,7 +15,7 @@ import { AccountSectionHeader } from '../../account/component/account-section-he
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { BankProviderSectionHeader } from '../../account/component/bank-provider-section-header/bank-provider-section-header';
 import { DebtSectionHeader } from '../../account/component/debt-section-header/debt-section-header';
-import { AccountRowInterface } from '../../account/interface/account-row.interface';
+import { AccountRowInterface } from '../../account/interface/account-row-interface.type';
 import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
 import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
 import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
