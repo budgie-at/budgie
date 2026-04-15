@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 
-import { PatternRowInterface } from './pattern-row.interface';
+import { PatternRowInterface } from './pattern-row-interface.type';
 
 export interface ValidPatternRowInterface extends Omit<PatternRowInterface, 'categoryId' | 'categoryTitle' | 'categoryIcon'> {
     readonly categoryId: number;

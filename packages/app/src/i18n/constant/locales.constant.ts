@@ -2,7 +2,7 @@
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 
-import { LocaleInfoInterface } from '../interface/locale-info.interface';
+import { LocaleInfoInterface } from '../interface/locale-info-interface.type';
 
 interface LocaleInfoWithDetailsInterface extends LocaleInfoInterface {
     name: MessageDescriptor;

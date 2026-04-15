@@ -11,7 +11,7 @@ import {
     REPEATED_TRANSACTION_DEFAULT_LIMIT,
     REPEATED_TRANSACTION_TIME_WINDOW_MINUTES
 } from '../constant/repeated-transaction.constant';
-import { SuggestionsResultInterface } from '../interface/suggestions-result.interface';
+import { SuggestionsResultInterface } from '../interface/suggestions-result-interface.type';
 
 interface GetSuggestionsParamsInterface {
     readonly currentTime: Date;

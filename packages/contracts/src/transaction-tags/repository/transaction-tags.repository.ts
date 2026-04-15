@@ -3,8 +3,8 @@ import { eq } from 'drizzle-orm';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
-import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity.interface';
-import { TransactionTagsEntityInterface } from '../entity/transaction-tags-entity.interface';
+import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity-interface.type';
+import { TransactionTagsEntityInterface } from '../entity/transaction-tags-entity-interface.type';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
 export class TransactionTagsRepository {

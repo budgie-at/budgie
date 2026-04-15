@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
 import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
 

@@ -14,7 +14,7 @@ import { LoadingScreen } from '../../../../@generic/component/loading-screen/loa
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
-import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { IdParamInterface } from '../../../../@generic/interface/id-param-interface.type';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';

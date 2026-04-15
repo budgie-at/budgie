@@ -4,6 +4,7 @@ import {
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -13,11 +14,11 @@ import { db, transactionEntryRepository, transactionRepository } from '../../@ge
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
-import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
-import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
-import { ImportedUpdateParamInterface } from '../interface/imported-update-param.interface';
-import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result.interface';
-import { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
+import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition-interface.type';
+import { ImportedEntryMatchInterface } from '../interface/imported-entry-match-interface.type';
+import { ImportedUpdateParamInterface } from '../interface/imported-update-param-interface.type';
+import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result-interface.type';
+import { TransactionImportOptionsInterface } from '../interface/transaction-import-options-interface.type';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 
 import { transactionBatchCreateService } from './transaction-batch-create.service';
@@ -59,9 +60,17 @@ class TransactionImportService {
         tx: DB
     ): Promise<TransactionEntityInterface[]> {
         const partition = this.partitionImportedBatch(batch, existingTransactionIdMap);
+        const existingTransactionsMap = await this.getExistingTransactionsMap(partition.updateParams, tx);
         const createdTransactions = await transactionBatchCreateService.create(partition.newInputs, tx);
         const updatedTransactions = await Promise.all(
-            partition.updateParams.map(params => this.updateImportedTransaction(params.transactionId, params.input, tx))
+            partition.updateParams.map(params =>
+                this.updateImportedTransaction(
+                    params.transactionId,
+                    params.input,
+                    existingTransactionsMap.get(params.transactionId) ?? null,
+                    tx
+                )
+            )
         );
 
         return partition.resultsOrder.map(result =>
@@ -114,6 +123,7 @@ class TransactionImportService {
     private async updateImportedTransaction(
         transactionId: number,
         input: TransactionCreateInputInterface,
+        existingTransaction: TransactionWithEntriesEntityInterface | null,
         tx: DB
     ): Promise<TransactionEntityInterface> {
         const updated = await transactionRepository.updateById(
@@ -126,14 +136,17 @@ class TransactionImportService {
             tx
         );
 
-        await this.refreshImportedTransactionEntries(transactionId, input, tx);
+        await this.refreshImportedTransactionEntries(transactionId, input, existingTransaction, tx);
 
         return updated;
     }
 
-    private async refreshImportedTransactionEntries(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        const existingTransaction = await transactionRepository.getById(transactionId, tx);
-
+    private async refreshImportedTransactionEntries(
+        transactionId: number,
+        input: TransactionCreateInputInterface,
+        existingTransaction: TransactionWithEntriesEntityInterface | null,
+        tx: DB
+    ): Promise<void> {
         if (!isDefined(existingTransaction)) {
             return;
         }
@@ -146,6 +159,16 @@ class TransactionImportService {
 
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
         await transactionEntryRepository.bulkCreate([...refreshedEntriesResult.entries], tx);
+    }
+
+    private async getExistingTransactionsMap(
+        updateParams: readonly ImportedUpdateParamInterface[],
+        tx: DB
+    ): Promise<Map<number, TransactionWithEntriesEntityInterface>> {
+        const transactionIds = updateParams.map(({ transactionId }) => transactionId);
+        const existingTransactions = await transactionRepository.findByIds(transactionIds, tx);
+
+        return new Map(existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction]));
     }
 
     private buildRefreshedImportedEntries(

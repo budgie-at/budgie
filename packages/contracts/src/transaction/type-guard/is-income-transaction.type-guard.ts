@@ -1,5 +1,5 @@
-import { TransactionIncomeWithRelationsEntityInterface } from '../entity/transaction-income-with-relations-entity.interface';
-import { TransactionWithRelationsEntityInterface } from '../entity/transaction-with-relations-entity.interface';
+import { TransactionIncomeWithRelationsEntityInterface } from '../entity/transaction-income-with-relations-entity-interface.type';
+import { TransactionWithRelationsEntityInterface } from '../entity/transaction-with-relations-entity-interface.type';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export const isIncomeTransaction = (
