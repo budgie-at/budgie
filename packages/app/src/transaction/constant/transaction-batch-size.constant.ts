@@ -1,0 +1,1 @@
+export const TRANSACTION_BATCH_SIZE = 500;
