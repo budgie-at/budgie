@@ -1,9 +1,7 @@
 appId: ${APP_ID}
 env:
     HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
-    FIRST_PDF_NAME_MATCH: 'erste-statement-008'
     FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
-    SECOND_PDF_NAME_MATCH: 'erste-statement-009'
     SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009, pdf'
 ---
 - runFlow:
@@ -34,7 +32,6 @@ env:
 - runFlow:
       file: subflows/import-erste-pdf-from-picker.flow.yaml
       env:
-          PDF_NAME_MATCH: ${FIRST_PDF_NAME_MATCH}
           PDF_ROW_ID_MATCH: ${FIRST_PDF_ROW_ID_MATCH}
 
 - scrollUntilVisible:
@@ -75,7 +72,6 @@ env:
 - runFlow:
       file: subflows/quick-import-erste-pdf-from-picker.flow.yaml
       env:
-          PDF_NAME_MATCH: ${SECOND_PDF_NAME_MATCH}
           PDF_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
 - assertVisible:
