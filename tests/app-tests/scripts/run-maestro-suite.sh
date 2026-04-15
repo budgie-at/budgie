@@ -13,7 +13,6 @@ WORKSPACE_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 APP_ID="$1"
 shift
 
-CONFIG_PATH="${MAESTRO_CONFIG_PATH:-$WORKSPACE_DIR/config.yaml}"
 SUITE_CONFIG_PATH="${MAESTRO_SUITE_CONFIG_PATH:-$WORKSPACE_DIR/suite.config.yaml}"
 HANDLE_DEV_CLIENT_STARTUP="${HANDLE_DEV_CLIENT_STARTUP:-}"
 E2E_RUN_TOKEN="${E2E_RUN_TOKEN:-$(date +%s)}"
@@ -37,48 +36,10 @@ if [ "$HANDLE_DEV_CLIENT_STARTUP" = "true" ]; then
         "$WORKSPACE_DIR/flows/subflows/warm-up-dev-client.flow.yaml" 2>/dev/null || true
 fi
 
-FLOW_ORDER=$(ruby -e "require 'yaml'; (YAML.load_file(ARGV[0]).dig('executionOrder', 'flowsOrder') || []).each { |flow| puts flow }" "$SUITE_CONFIG_PATH")
-
-if [ -z "$FLOW_ORDER" ]; then
-    echo "Running Maestro suite from $WORKSPACE_DIR"
-    maestro test "$WORKSPACE_DIR" \
-        -e APP_ID="$APP_ID" \
-        -e HANDLE_DEV_CLIENT_STARTUP="$HANDLE_DEV_CLIENT_STARTUP" \
-        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-        --config "$SUITE_CONFIG_PATH" \
-        "$@"
-    exit $?
-fi
-
-echo "Running ordered Maestro suite from $WORKSPACE_DIR with isolated flow sessions"
-
-for FLOW in $FLOW_ORDER; do
-    FLOW_FILE="$FLOW"
-
-    case "$FLOW_FILE" in
-        *.yaml)
-            ;;
-        *)
-            FLOW_FILE="$FLOW_FILE.yaml"
-            ;;
-    esac
-
-    case "$FLOW_FILE" in
-        flows/*)
-            FLOW_PATH="$WORKSPACE_DIR/$FLOW_FILE"
-            ;;
-        *)
-            FLOW_PATH="$WORKSPACE_DIR/flows/$FLOW_FILE"
-            ;;
-    esac
-
-    echo
-    echo "==> $FLOW_FILE"
-
-    maestro test "$FLOW_PATH" \
-        -e APP_ID="$APP_ID" \
-        -e HANDLE_DEV_CLIENT_STARTUP="$HANDLE_DEV_CLIENT_STARTUP" \
-        -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
-        --config "$CONFIG_PATH" \
-        "$@"
-done
+echo "Running Maestro suite from $WORKSPACE_DIR"
+maestro test "$WORKSPACE_DIR" \
+    -e APP_ID="$APP_ID" \
+    -e HANDLE_DEV_CLIENT_STARTUP="$HANDLE_DEV_CLIENT_STARTUP" \
+    -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
+    --config "$SUITE_CONFIG_PATH" \
+    "$@"
