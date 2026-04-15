@@ -163,7 +163,9 @@ export default function SettingsPage() {
                             <ImportDatabase />
                             <ExportDatabase />
                             <RecalculateBalances />
-                            <TruncateData />
+                            <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>
+                                <TruncateData />
+                            </Animated.View>
                         </Animated.View>
                     </SettingsGroup>
                 </View>
