@@ -1,15 +1,18 @@
 appId: ${APP_ID}
 env:
-  PDF_NAME_MATCH: ${PDF_NAME_MATCH}
-  PDF_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH || ''}
-  PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH || 'budgie( \\(.*\\))?'}
+  PDF_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
 ---
 - runFlow:
     file: select-file-from-app-provider.flow.yaml
     env:
-      FILE_NAME_MATCH: ${PDF_NAME_MATCH}
       FILE_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
-      PROVIDER_NAME_MATCH: ${PROVIDER_NAME_MATCH}
+
+- runFlow:
+    when:
+      visible: 'Open|Öffnen'
+    commands:
+      - tapOn:
+          text: 'Open|Öffnen'
 
 - extendedWaitUntil:
     visible:
