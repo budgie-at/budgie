@@ -55,11 +55,15 @@ class TransactionService {
     }
 
     async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: DB, batchSize = 500): Promise<TransactionEntityInterface[]> {
-        const batchProcessor = isDefined(tx)
-            ? (batch: TransactionCreateInputInterface[]) => this.processBatchInner(batch, tx)
-            : this.processBatch.bind(this);
+        if (!isNotEmptyArray(inputs)) {
+            return [];
+        }
 
-        const transactions = await processInputWithBatches(inputs, batchSize, batchProcessor);
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+        }
+
+        const transactions = await processInputWithBatches(inputs, batchSize, batch => this.processBatchInner(batch, tx));
 
         if (isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -77,12 +81,13 @@ class TransactionService {
             return [];
         }
 
-        const processor = isDefined(tx)
-            ? (batch: TransactionCreateInputInterface[]) => this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
-            : (batch: TransactionCreateInputInterface[]) =>
-                  transactionAsync(db, async innerTx => this.processImportedBatchInner(batch, existingTransactionIdMap, innerTx));
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkUpsertImported(inputs, existingTransactionIdMap, innerTx));
+        }
 
-        const transactions = await processInputWithBatches(inputs, 500, processor);
+        const transactions = await processInputWithBatches(inputs, 500, batch =>
+            this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
+        );
 
         if (isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -410,10 +415,6 @@ class TransactionService {
         }
 
         return { fromEntry, toEntry };
-    }
-
-    private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return transactionAsync(db, async tx => this.processBatchInner(batch, tx));
     }
 
     private async processImportedBatchInner(
