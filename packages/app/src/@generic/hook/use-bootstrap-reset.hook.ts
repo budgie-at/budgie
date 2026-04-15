@@ -17,7 +17,6 @@ const isTestHooksEnabled = () => readParam(Constants.expoConfig?.extra, 'e2eHook
 
 const normalizeQueryString = (value: unknown) => (typeof value === 'string' ? value : '');
 
- 
 const getBootstrapParams = async () => {
     const initialUrl = await Linking.parseInitialURLAsync();
     const resetToken = normalizeQueryString(readParam(initialUrl.queryParams, 'e2eResetToken'));
@@ -31,7 +30,6 @@ const getBootstrapParams = async () => {
         hasBootstrapAction: shouldReset || isNotEmptyString(fixtureId)
     };
 };
- 
 
 const runBootstrapAction = async ({
     resetToken,
