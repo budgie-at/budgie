@@ -1,17 +1,17 @@
 {
     "name": "@budgie-at/landing",
-    "version": "4.0.0",
+    "version": "5.1.1",
     "private": true,
     "scripts": {
         "build": "next build",
         "clear": "yarn run -T rimraf dist .next node_modules/.cache .turbo",
-        "release:start": "next start",
-        "start": "next dev",
-        "lint": "run -T eslint --fix .",
-        "ts": "run -T tsc -p .",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
-        "i18n:sync": "yarn i18n:extract && yarn i18n:compile"
+        "i18n:sync": "yarn i18n:extract && yarn i18n:compile",
+        "lint": "run -T eslint --fix .",
+        "release:start": "next start",
+        "start": "next dev",
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@lingui/core": "^5.7.0",
@@ -19,7 +19,7 @@
         "@lingui/react": "^5.7.0",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
-        "@next/mdx": "^16.0.1",
+        "@next/mdx": "16",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-dropdown-menu": "^2.1.16",
         "@radix-ui/react-slot": "^1.2.3",
@@ -33,7 +33,7 @@
         "gray-matter": "^4.0.3",
         "lucide-react": "^0.544.0",
         "negotiator": "^1.0.0",
-        "next": "15.5.9",
+        "next": "16",
         "next-themes": "^0.4.6",
         "react": "19.2.0",
         "react-dom": "19.2.0",
@@ -43,7 +43,7 @@
     },
     "devDependencies": {
         "@lingui/loader": "^5.7.0",
-        "@lingui/swc-plugin": "5.7.0",
+        "@lingui/swc-plugin": "5.11.0",
         "@tailwindcss/postcss": "^4.1.14",
         "@types/mdx": "^2.0.13",
         "@types/negotiator": "^0.6.3",

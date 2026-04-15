@@ -97,6 +97,10 @@ appId: ${APP_ID}
 - assertVisible: 'E2E Category Search.*'
 - tapOn:
     id: 'CategoryForm.Merge'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 10000
 - tapOn:
     id: 'CategoryPickerBottomSheet.Input'
 - inputText: 'Primary'

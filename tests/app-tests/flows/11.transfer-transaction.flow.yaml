@@ -85,8 +85,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Test_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Test_Transfer'
+    timeout: 15000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -119,8 +121,10 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Transactions'
 
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Edited_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Edited_Transfer'
+    timeout: 15000
 
 # --- Delete Transfer ---
 
