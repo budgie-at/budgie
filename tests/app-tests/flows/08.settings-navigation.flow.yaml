@@ -50,9 +50,6 @@ appId: ${APP_ID}
       id: 'SettingsPage.DefaultAccountCard'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'SettingsPage.DefaultAccountCard'
 - tapOn:
     id: 'SettingsPage.DefaultAccountCard'
 - extendedWaitUntil:
@@ -75,10 +72,7 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionItem.Expense'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.SelectedAccount.E2E_Settings_Cash'
     timeout: 10000
-- assertVisible:
-    id: 'TransactionForm.SelectedAccount.E2E_Settings_Cash'

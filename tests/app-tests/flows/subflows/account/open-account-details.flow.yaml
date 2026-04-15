@@ -5,7 +5,6 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'AccountCard.${ACCOUNT_NAME}'

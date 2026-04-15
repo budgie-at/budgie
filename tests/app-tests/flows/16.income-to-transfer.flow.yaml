@@ -15,11 +15,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.Income'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'ActionItem.Income'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Income'
 
@@ -69,7 +67,6 @@ appId: ${APP_ID}
 
 - tapOn:
     point: '80%,8%'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
@@ -82,7 +79,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransferForm.FromAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
@@ -107,7 +103,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 

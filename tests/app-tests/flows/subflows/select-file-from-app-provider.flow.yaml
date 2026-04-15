@@ -35,8 +35,6 @@ env:
 - tapOn:
       text: '${ON_MY_IPHONE_MATCH}'
 
-- waitForAnimationToEnd
-
 - scrollUntilVisible:
       element:
           id: '${PROVIDER_CONTAINER_ID_MATCH}'
@@ -48,8 +46,6 @@ env:
 
 - tapOn:
       id: '${PROVIDER_CONTAINER_ID_MATCH}'
-
-- waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:
@@ -63,8 +59,6 @@ env:
 - tapOn:
       id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
 
-- waitForAnimationToEnd
-
 - scrollUntilVisible:
       element:
           id: '${FILE_ROW_ID_MATCH}'
@@ -77,5 +71,3 @@ env:
 
 - tapOn:
       id: '${FILE_ROW_ID_MATCH}'
-
-- waitForAnimationToEnd

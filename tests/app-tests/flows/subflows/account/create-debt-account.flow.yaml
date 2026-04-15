@@ -57,5 +57,3 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-- assertVisible:
-    id: 'AccountCard.${ACCOUNT_NAME}'
