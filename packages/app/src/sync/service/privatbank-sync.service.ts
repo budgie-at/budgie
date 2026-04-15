@@ -8,8 +8,8 @@ import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.service';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
+import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client-interface.type';
+import type { ParsedFileResultInterface } from '../interface/parsed-file-result-interface.type';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 
 const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] => {

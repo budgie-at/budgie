@@ -7,8 +7,8 @@ import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query
 import { usePatternSuggestionOrchestrator } from '../../hook/use-pattern-suggestion-orchestrator.hook';
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
 import { PatternCategorySuggestion } from '../../interface/pattern-category-suggestion.type';
-import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.interface';
-import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.type';
+import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { repeatedTransactionService } from '../../service/repeated-transaction.service';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { getPatternComments } from '../../utils/get-pattern-comments.util';

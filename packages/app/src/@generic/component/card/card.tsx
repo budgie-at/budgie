@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
-import { CardSizeType } from '../../type/card-size.type';
+import { CardSizeType } from '../../type/card-size-type.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';

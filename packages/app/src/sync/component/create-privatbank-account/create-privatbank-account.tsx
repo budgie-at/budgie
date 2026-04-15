@@ -4,7 +4,7 @@ import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { privatbankSyncService } from '../../service/privatbank-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
-import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
+import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config-interface.type';
 
 export const CreatePrivatbankAccount = () => {
     const { t } = useLingui();

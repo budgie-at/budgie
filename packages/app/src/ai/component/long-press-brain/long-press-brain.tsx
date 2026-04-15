@@ -10,7 +10,7 @@ import {
     LONG_PRESS_RING_TRACK_COLOR,
     LONG_PRESS_RING_TRACK_OPACITY
 } from '../../constant/long-press-brain.constant';
-import { LongPressBrainPropsInterface } from '../../interface/long-press-brain-props.interface';
+import { LongPressBrainPropsInterface } from '../../interface/long-press-brain-props-interface.type';
 import { AiBrainProgress } from '../ai-brain-progress/ai-brain-progress';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

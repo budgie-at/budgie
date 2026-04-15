@@ -4,7 +4,7 @@ import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupReducerActionEnum } from '../enum/pin-setup-reducer-action.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
-import { PinSetupStateInterface } from '../interface/pin-setup-state.interface';
+import { PinSetupStateInterface } from '../interface/pin-setup-state-interface.type';
 import { PinSetupReducerAction } from '../type/pin-setup-reducer-action.type';
 
 const pinSetupReducer = (state: PinSetupStateInterface, action: PinSetupReducerAction): PinSetupStateInterface => {

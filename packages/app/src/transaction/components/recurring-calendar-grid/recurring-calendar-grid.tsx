@@ -10,7 +10,7 @@ import { DatePicker } from '../../../@generic/component/date-picker/date-picker'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
 import { getMonthLabel } from '../../utils/get-month-label.util';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 

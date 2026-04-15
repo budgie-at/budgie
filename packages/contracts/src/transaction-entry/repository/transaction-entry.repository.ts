@@ -3,10 +3,10 @@ import { eq, inArray } from 'drizzle-orm';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
-import { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
+import { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity-interface.type';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
-import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity.interface';
+import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity-interface.type';
 
 export class TransactionEntryRepository {
     constructor(private db: DB) {}

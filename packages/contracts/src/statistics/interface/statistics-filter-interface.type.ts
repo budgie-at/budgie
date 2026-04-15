@@ -1,4 +1,4 @@
-import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
+import { DateRangeInterface } from '../../@generic/interface/date-range-interface.type';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 
 export interface StatisticsFilterInterface {

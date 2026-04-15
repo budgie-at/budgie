@@ -22,12 +22,12 @@ import { categoryRepository, instrumentRepository } from '../../@generic/drizzle
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
-import { EntryParamsInterface } from '../interface/entry-params.interface';
-import { ImportProgressInterface } from '../interface/import-progress.interface';
-import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
-import { ImporterRowInterface } from '../interface/importer-row.interface';
-import { NormalizedRowType } from '../type/normalized-row.type';
+import { CreateEntriesParamsInterface } from '../interface/create-entries-params-interface.type';
+import { EntryParamsInterface } from '../interface/entry-params-interface.type';
+import { ImportProgressInterface } from '../interface/import-progress-interface.type';
+import { ImporterColumnMapInterface } from '../interface/importer-column-map-interface.type';
+import { ImporterRowInterface } from '../interface/importer-row-interface.type';
+import { NormalizedRowType } from '../type/normalized-row-type.type';
 
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};

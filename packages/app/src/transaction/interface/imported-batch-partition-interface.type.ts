@@ -1,4 +1,4 @@
-import { ImportedUpdateParamInterface } from './imported-update-param.interface';
+import { ImportedUpdateParamInterface } from './imported-update-param-interface.type';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 

@@ -26,7 +26,7 @@ import { ImportColumnMapField } from '../../../import/components/import-column-m
 import { ImportPresetSelector } from '../../../import/components/import-preset-selector/import-preset-selector';
 import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
 import { ImportPresetEnum } from '../../../import/enum/import-preset.enum';
-import { ImporterColumnMapInterface } from '../../../import/interface/importer-column-map.interface';
+import { ImporterColumnMapInterface } from '../../../import/interface/importer-column-map-interface.type';
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../import/schema/import-column-map.schema';
 import { ImporterService } from '../../../import/service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';

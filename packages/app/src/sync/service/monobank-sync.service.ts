@@ -13,7 +13,7 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { BankAccountPreviewInterface } from '../interface/bank-account-preview-interface.type';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';

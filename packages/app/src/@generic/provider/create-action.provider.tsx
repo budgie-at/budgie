@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import { CreateActionContext } from '../context/create-action.context';
-import { CreateActionInterface } from '../interface/create-action.interface';
+import { CreateActionInterface } from '../interface/create-action-interface.type';
 
 interface Props {
     readonly children: ReactNode;

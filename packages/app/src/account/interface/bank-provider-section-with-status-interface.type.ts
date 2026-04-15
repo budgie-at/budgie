@@ -2,7 +2,7 @@ import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 
-import { AccountRowInterface } from './account-row.interface';
+import { AccountRowInterface } from './account-row-interface.type';
 
 interface BankProviderSectionInterface {
     readonly kind: HomeSectionKindEnum.BANK_PROVIDER;

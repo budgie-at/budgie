@@ -5,8 +5,8 @@ import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
 import type { DB } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
-import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
-import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
+import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity-interface.type';
+import type { SettingsEntityInterface } from '../entity/settings-entity-interface.type';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class SettingsRepository {

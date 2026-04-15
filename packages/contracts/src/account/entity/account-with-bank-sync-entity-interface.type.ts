@@ -1,8 +1,8 @@
-import { BankSyncEntityInterface } from '../../bank-sync/entity/bank-sync-entity.interface';
-import { InstrumentEntityInterface } from '../../instrument/entity/instrument-entity.interface';
+import { BankSyncEntityInterface } from '../../bank-sync/entity/bank-sync-entity-interface.type';
+import { InstrumentEntityInterface } from '../../instrument/entity/instrument-entity-interface.type';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 
-import { AccountEntityInterface } from './account-entity.interface';
+import { AccountEntityInterface } from './account-entity-interface.type';
 
 export interface AccountWithBankSyncEntityInterface extends AccountEntityInterface {
     [AccountAssociationEnum.INSTRUMENT]: InstrumentEntityInterface;

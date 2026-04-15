@@ -13,12 +13,12 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
-import { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
-import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
-import { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row.interface';
-import { PatternRowInterface } from '../interface/pattern-row.interface';
-import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
-import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
+import { AmountPatternQueryInterface } from '../interface/amount-pattern-query-interface.type';
+import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query-interface.type';
+import { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row-interface.type';
+import { PatternRowInterface } from '../interface/pattern-row-interface.type';
+import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern-interface.type';
+import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query-interface.type';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard';
 

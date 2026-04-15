@@ -12,7 +12,7 @@ import { isDefined } from '@rnw-community/shared';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
+import { CreateActionInterface } from '../../../@generic/interface/create-action-interface.type';
 import { useLlmContext } from '../../../ai/context/llm.context';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { ActionItem } from '../action-item/action-item';

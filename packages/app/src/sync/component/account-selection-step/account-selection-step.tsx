@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { BankAccountPreviewInterface } from '../../interface/bank-account-preview-interface.type';
 import { BankAccountPreviewCard } from '../bank-account-preview-card/bank-account-preview-card';
 
 interface Props {

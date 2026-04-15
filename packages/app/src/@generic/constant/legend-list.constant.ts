@@ -1,6 +1,6 @@
 import { ViewStyle } from 'react-native';
 
-import { IdInterface } from '../interface/id.interface';
+import { IdInterface } from '../interface/id-interface.type';
 
 export const LEGEND_LIST_ESTIMATED_ITEM_SIZE = 60;
 export const LEGEND_LIST_STYLE: ViewStyle = { flex: 1 };

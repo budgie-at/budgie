@@ -10,7 +10,7 @@ import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../i18n/context/language-selector-modal.context';
-import { LanguageInterface } from '../i18n/interface/language.interface';
+import { LanguageInterface } from '../i18n/interface/language-interface.type';
 
 import { LanguageSelectorModalSelector } from './language-selector-modal.selector';
 

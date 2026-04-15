@@ -10,7 +10,7 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
+import { BankAccountPreviewInterface } from '../../interface/bank-account-preview-interface.type';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';

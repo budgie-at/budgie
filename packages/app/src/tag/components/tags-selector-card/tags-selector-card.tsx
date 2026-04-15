@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
-import { TagVariantType } from '../../type/tag-variant.type';
+import { TagVariantType } from '../../type/tag-variant-type.type';
 
 interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly onSelect: (id: number) => void;

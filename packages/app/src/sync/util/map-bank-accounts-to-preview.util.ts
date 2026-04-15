@@ -4,7 +4,7 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
+import { BankAccountPreviewInterface } from '../interface/bank-account-preview-interface.type';
 
 import { generateBankAccountTitle } from './map-bank-account-to-create-input.util';
 

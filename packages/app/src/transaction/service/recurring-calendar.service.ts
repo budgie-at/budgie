@@ -5,8 +5,8 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
-import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
+import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data-interface.type';
+import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry-interface.type';
 
 const MINUTES_TO_SECONDS = -60;
 
