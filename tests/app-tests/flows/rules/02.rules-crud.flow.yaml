@@ -41,6 +41,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -84,6 +89,13 @@ env:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 - waitForAnimationToEnd
 
+- runFlow:
+    when:
+      visible: 'Edit Rule'
+    commands:
+      - tapOn: 'Cancel'
+      - waitForAnimationToEnd
+
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
@@ -94,6 +106,7 @@ env:
       id: 'RulesPage.RuleCard.0'
     direction: LEFT
     duration: 300
+- waitForAnimationToEnd
 
 - tapOn:
     id: DeletableRow.DeleteButton
@@ -157,6 +170,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -245,6 +263,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - waitForAnimationToEnd
 
 - assertVisible:
@@ -534,6 +557,11 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Skip'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -680,6 +708,10 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: '50'
+
+- tapOn:
+    text: 'Conditions'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
@@ -1001,10 +1033,12 @@ env:
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Apply to existing transactions?'
-    timeout: 10000
-- tapOn: 'Apply'
+- runFlow:
+    when:
+      visible: 'Apply to existing transactions?'
+    commands:
+      - tapOn: 'Apply'
+      - waitForAnimationToEnd
 - waitForAnimationToEnd
 
 - assertVisible:
