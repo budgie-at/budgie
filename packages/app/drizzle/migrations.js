@@ -16,8 +16,9 @@ import m0011 from './0011_windy_lyja.sql';
 import m0012 from './0012_smooth_hedge_knight.sql';
 import m0013 from './0013_fat_wild_child.sql';
 import m0014 from './0014_light_calypso.sql';
-import m0015 from './0015_add_rules.sql';
-import m0016 from './0016_add_updated_by.sql';
+import m0015 from './0015_add_entry_exchange_rate_and_to_iban.sql';
+import m0016 from './0016_add_rules.sql';
+import m0017 from './0017_add_updated_by.sql';
 
 export default {
     journal,
@@ -38,6 +39,7 @@ export default {
         m0013,
         m0014,
         m0015,
-        m0016
+        m0016,
+        m0017
     }
 };

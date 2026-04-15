@@ -6,8 +6,11 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
-- assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Badge.Adjustment'
+    timeout: 10000
 - assertVisible:
     id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
 
@@ -26,8 +29,11 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
+    timeout: 10000
 
 - runFlow:
     file: open-account-settings.flow.yaml
@@ -44,8 +50,11 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Badge.Adjustment'
+    timeout: 10000
 - assertVisible:
     id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 
@@ -64,8 +73,11 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Badge.Adjustment'
+    timeout: 10000
 - assertVisible:
     id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
 - assertVisible:
@@ -83,8 +95,10 @@ appId: ${APP_ID}
     env:
       CURRENCY_CODE: ${CURRENCY_CODE}
 
-- assertVisible:
-    id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.${DECREASE_TO}'
+    timeout: 10000
 - assertVisible:
     id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
 
@@ -97,6 +111,7 @@ appId: ${APP_ID}
     element:
       id: 'AccountForm.ActiveTitle'
     direction: DOWN
+- waitForAnimationToEnd
 - assertVisible:
     id: 'AccountForm.ActiveTitle'
 - tapOn:
@@ -115,8 +130,10 @@ appId: ${APP_ID}
 - runFlow:
     file: open-inactive-accounts.flow.yaml
 
-- assertVisible:
-    id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
+- extendedWaitUntil:
+    visible:
+      id: 'InactiveAccountCard.${UPDATED_ACCOUNT_NAME}'
+    timeout: 10000
 - tapOn:
     id: 'InactiveAccountCard.ActivateButton.${UPDATED_ACCOUNT_NAME}'
 - tapOn: 'Activate'
@@ -128,8 +145,11 @@ appId: ${APP_ID}
       id: 'HomePage.NetWorthValue.${DECREASE_TO}'
     timeout: 10000
 
-- assertVisible:
-    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+    direction: DOWN
+    timeout: 15000
 
 - runFlow:
     file: open-account-settings.flow.yaml
@@ -141,6 +161,7 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
 - assertVisible:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
@@ -153,8 +174,11 @@ appId: ${APP_ID}
       id: 'HomePage.NetWorthValue.0'
     timeout: 10000
 
-- assertVisible:
-    id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+    direction: DOWN
+    timeout: 15000
 
 - runFlow:
     file: open-account-settings.flow.yaml
@@ -166,6 +190,7 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
 - assertVisible:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
@@ -183,6 +208,11 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
 - tapOn: 'Archive'
@@ -198,5 +228,7 @@ appId: ${APP_ID}
 - runFlow:
     file: open-archived-accounts.flow.yaml
 
-- assertVisible:
-    id: 'ArchivedAccountCard.${UPDATED_ACCOUNT_NAME}'
+- extendedWaitUntil:
+    visible:
+      id: 'ArchivedAccountCard.${UPDATED_ACCOUNT_NAME}'
+    timeout: 10000

@@ -37,7 +37,7 @@ const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Reco
 );
 
 export const Card = ({ className, onPress, onLongPress, variant = 'primary', size = 'lg', ...rest }: PropsWithChildren<Props>) => {
-    const Component = isDefined(onPress) ? HapticPressable : View;
+    const Component = isDefined(onPress) || isDefined(onLongPress) ? HapticPressable : View;
 
     return <Component className={cn(cardVariants({ size, variant }), className)} onPress={onPress} onLongPress={onLongPress} {...rest} />;
 };
