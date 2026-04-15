@@ -2,7 +2,7 @@ appId: ${APP_ID}
 env:
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
-- openLink: 'budgie://settings?anchor=data'
+- openLink: 'budgie://settings?anchor=clear-data'
 
 - runFlow:
     when:
@@ -35,12 +35,7 @@ env:
       id: 'SettingsPage.ClearDataCard'
     timeout: 15000
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ClearDataCard'
-    direction: DOWN
-    centerElement: true
-    timeout: 10000
+- waitForAnimationToEnd
 
 - retry:
     maxRetries: 2
