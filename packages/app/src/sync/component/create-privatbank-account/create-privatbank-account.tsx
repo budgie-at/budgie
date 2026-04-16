@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
@@ -13,8 +14,10 @@ export const CreatePrivatbankAccount = () => {
         mimeType: XLSX_MIME_TYPE,
         title: t`Import Privatbank`,
         description: t`Import accounts and transactions from Privatbank XLSX export`,
-        instructionText: t`Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel.`,
-        selectFileText: t`Select the exported XLSX file:`,
+        steps: [t`Open the Privatbank24 app`, t`Navigate to Menu → Statements`, t`Export your transactions to Excel`],
+        fileIcon: UserIconNameEnum.FileSpreadsheet,
+        fileTypeLabel: t`XLSX export`,
+        selectFileText: t`Select the exported XLSX file`,
         importPreview: privatbankSyncService.importPreview.bind(privatbankSyncService),
         executeImportForSelectedAccounts: privatbankSyncService.executeImportForSelectedAccounts.bind(privatbankSyncService)
     };

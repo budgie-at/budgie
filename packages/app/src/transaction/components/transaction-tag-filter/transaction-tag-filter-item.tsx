@@ -1,69 +1,46 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { FilterRow } from '../../../@generic/component/filter-sheet/filter-row/filter-row';
+import { FilterRowCheck } from '../../../@generic/component/filter-sheet/filter-row-check/filter-row-check';
+import { FilterRowTitle } from '../../../@generic/component/filter-sheet/filter-row-title/filter-row-title';
 
 interface Props {
-    readonly isLast: boolean;
-    readonly isFirst: boolean;
     readonly isSelected: boolean;
     readonly tag: TagEntityInterface;
     readonly onSelect: (value: number) => void;
 }
 
-const tagVariants = cva('py-xl px-3xl border border-secondary-corner flex-row items-center gap-x-xl', {
+const hashBadgeVariants = cva('h-8 w-8 items-center justify-center rounded-full', {
     variants: {
         isSelected: {
-            true: 'bg-secondary-corner',
-            false: ''
-        },
-        isFirst: {
-            true: 'rounded-t-5xl rounded-tl-5xl'
-        },
-        isLast: {
-            true: 'rounded-b-5xl rounded-br-5xl'
+            true: 'bg-primary',
+            false: 'bg-secondary-background'
         }
-    },
-    compoundVariants: [
-        {
-            isLast: false,
-            isFirst: false,
-            className: 'border-b-0'
-        }
-    ]
+    }
 });
 
-const textVariants = cva('text-sm font-medium', {
+const hashTextVariants = cva('text-sm font-bold', {
     variants: {
         isSelected: {
-            true: 'text-primary',
+            true: 'text-primary-reverse',
             false: 'text-secondary-foreground'
         }
     }
 });
 
-export const TransactionTagFilterItem = ({ onSelect, tag, isFirst, isLast, isSelected }: Props) => {
+export const TransactionTagFilterItem = ({ onSelect, tag, isSelected }: Props) => {
     const handleSelect = () => void onSelect(tag.id);
 
     return (
-        <HapticPressable
-            onPress={handleSelect}
-            className={tagVariants({ isSelected, isFirst, isLast })}
-            testID={TransactionFiltersSelectors.TagOption(tag.title)}
-        >
-            <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>#{tag.title}</Text>
-            {isSelected ? (
-                <Icon
-                    size={16}
-                    icon={UserIconNameEnum.Check}
-                    className="text-primary"
-                    testID={TransactionFiltersSelectors.TagOptionSelected(tag.title)}
-                />
-            ) : null}
-        </HapticPressable>
+        <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelectors.TagOption(tag.title)}>
+            <View className={hashBadgeVariants({ isSelected })}>
+                <Text className={hashTextVariants({ isSelected })}>#</Text>
+            </View>
+            <FilterRowTitle>{tag.title}</FilterRowTitle>
+            <FilterRowCheck isSelected={isSelected} testID={TransactionFiltersSelectors.TagOptionSelected(tag.title)} />
+        </FilterRow>
     );
 };
