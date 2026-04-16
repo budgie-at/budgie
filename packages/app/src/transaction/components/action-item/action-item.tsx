@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 
-import { ActionButtonSelectors } from '../../../@e2e/selectors/action-button.selector';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { CreateTransactionMenuSelector } from '../create-transaction-menu/create-transaction-menu.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { UserIconNameEnum } from '@budgie/contracts';
@@ -75,7 +75,11 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
 
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
-            <Pressable className="flex-row-reverse items-center" onPress={handlePress} testID={testID ?? ActionButtonSelectors.item(index)}>
+            <Pressable
+                className="flex-row-reverse items-center"
+                onPress={handlePress}
+                testID={testID ?? CreateTransactionMenuSelector.item(index)}
+            >
                 <View className={containerVariants({ variant })}>
                     <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>

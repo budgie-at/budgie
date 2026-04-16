@@ -2,9 +2,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import React from 'react';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
-import { DeletableRowSelectors } from '../../../@e2e/selectors/deletable-row.selector';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
+
+import { DeletableRowSelector } from './deletable-row.selector';
 
 interface Props {
     readonly drag: SharedValue<number>;
@@ -19,7 +20,7 @@ export const DeletableRowAction = ({ drag, onPress }: Props) => {
     return (
         <Reanimated.View style={styleAnimation}>
             <HapticPressable
-                testID={DeletableRowSelectors.DeleteButton}
+                testID={DeletableRowSelector.DeleteButton}
                 onPress={onPress}
                 className="justify-center items-center w-17.5 h-full"
             >

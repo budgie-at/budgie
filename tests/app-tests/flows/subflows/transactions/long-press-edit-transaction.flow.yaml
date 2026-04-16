@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: long-press-transaction-action.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+      ACTION_BUTTON_ID: 'TransactionContextMenu.EditButton'

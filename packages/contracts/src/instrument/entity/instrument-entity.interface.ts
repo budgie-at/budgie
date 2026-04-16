@@ -1,5 +1,5 @@
-import { infer } from 'zod';
+import { z } from 'zod';
 
 import { InstrumentEntitySchema } from '../schema/instrument-entity.schema';
 
-export interface InstrumentEntityInterface extends infer<typeof InstrumentEntitySchema> {}
+export type InstrumentEntityInterface = z.infer<typeof InstrumentEntitySchema>;

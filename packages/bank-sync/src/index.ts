@@ -8,7 +8,7 @@ export type { BankAccountInterface } from './core/interface/bank-account.interfa
 export type { BankClientInfoInterface } from './core/interface/bank-client-info.interface';
 export type { BankProviderClientInterface } from './core/interface/bank-provider-client.interface';
 export type { BankSyncErrorInterface } from './core/interface/bank-sync-error.interface';
-export type { BankSyncResultInterface } from './core/interface/bank-sync-result.interface';
+export type { BankSyncResultInterface } from './core/interface/bank-sync-result.type';
 export type { BankTransactionInterface } from './core/interface/bank-transaction.interface';
 export type { BankTokenStorageInterface } from './core/interface/bank-token-storage.interface';
 export type { BankSyncOptionsInterface } from './core/interface/bank-sync-options.interface';
@@ -30,10 +30,8 @@ export { generatePrivatbankExternalId } from './privatbank/util/generate-privatb
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { ErsteFileClient } from './erste/client/erste-file.client';
-export { ErsteFormatEnum } from './erste/enum/erste-format.enum';
 export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
 export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
-export { detectErsteFormat } from './erste/util/detect-erste-format.util';
 export { parseErsteText } from './erste/util/parse-erste-pdf.util';
 export { generateErsteExternalId } from './erste/util/generate-erste-external-id.util';
 
