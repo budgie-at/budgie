@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+
 import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../button/button';
