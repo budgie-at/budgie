@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -7,10 +8,9 @@ import { View } from 'react-native';
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
-import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
+import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
@@ -19,14 +19,14 @@ import { TransactionFilterEmptyState } from '../transaction/components/transacti
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
- 
+
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionAccountFilter, currentParams] = useTransactionAccountFilterModal();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
-    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll, handleClear } = state;
+    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
     const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);
 
@@ -44,11 +44,14 @@ export default function TransactionAccountFilterModal() {
         router.push('/create-account');
     };
 
+    const applyLabel =
+        selectedCount === 0
+            ? t`Show all accounts`
+            : plural(selectedCount, { one: `Show # account`, other: `Show # accounts` });
+
     return (
         <FilterSheet>
-            <FilterSheetHeader title={t`Accounts`} onClear={handleClear} showClear={isPositiveNumber(selectedCount)} />
-
-            <FilterSheetList>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
                 {isNotEmptyArray(accounts) ? (
                     <View className="gap-y-lg">
                         {isNotEmptyArray(accountsGrouped.BANK) ? (
@@ -96,6 +99,7 @@ export default function TransactionAccountFilterModal() {
                 onSelectAll={handleSelectAll}
                 onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
+                applyLabel={applyLabel}
                 selectedCount={selectedCount}
                 searchTestID={TransactionFiltersSelectors.AccountSearchInput}
                 selectAllTestID={TransactionFiltersSelectors.AccountSelectAllButton}

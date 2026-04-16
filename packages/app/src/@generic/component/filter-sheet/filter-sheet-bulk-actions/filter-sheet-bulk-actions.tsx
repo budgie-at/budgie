@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { HapticPressable } from '../../haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly onSelectAll: EmptyFn;
