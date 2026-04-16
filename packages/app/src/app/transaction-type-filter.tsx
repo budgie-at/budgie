@@ -8,7 +8,6 @@ import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filte
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
@@ -53,19 +52,17 @@ export default function TransactionTypeFilterModal() {
 
     return (
         <FilterSheet>
-            <FilterSheetList>
-                <View className="-mx-sm flex-row flex-wrap gap-y-md">
-                    {TRANSACTION_TYPES.map(type => (
-                        <View className="w-1/2 px-sm" key={type}>
-                            <TransactionTypeFilterItem
-                                type={type}
-                                onSelect={handleSelect}
-                                isSelected={localValue?.includes(type) ?? false}
-                            />
-                        </View>
-                    ))}
-                </View>
-            </FilterSheetList>
+            <View className="-mx-sm flex-1 flex-row flex-wrap content-start gap-y-md px-md pt-2xl">
+                {TRANSACTION_TYPES.map(type => (
+                    <View className="w-1/2 px-sm" key={type}>
+                        <TransactionTypeFilterItem
+                            type={type}
+                            onSelect={handleSelect}
+                            isSelected={localValue?.includes(type) ?? false}
+                        />
+                    </View>
+                ))}
+            </View>
 
             <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.TypeApplyButton} />
