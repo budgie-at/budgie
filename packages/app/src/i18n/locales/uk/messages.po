@@ -95,7 +95,7 @@ msgstr "Налаштування рахунку"
 msgid "Account Type"
 msgstr "Тип рахунку"
 
-#: src/app/transaction-account-filter.tsx:63
+#: src/app/transaction-account-filter.tsx:49
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:28
 msgid "Accounts"
 msgstr "Рахунки"
@@ -215,17 +215,11 @@ msgstr "Вигляд"
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/app/date-filter.tsx:64
-#: src/app/transaction-type-filter.tsx:26
-#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:17
+#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
 msgid "Apply Filter"
 msgstr "Застосувати фільтр"
 
-#: src/app/transaction-type-filter.tsx:26
-msgid "Apply Filter ({localSelectedCount})"
-msgstr "Застосувати фільтр ({localSelectedCount})"
-
-#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:17
+#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
 msgid "Apply Filter ({selectedCount})"
 msgstr "Застосувати фільтр ({selectedCount})"
 
@@ -324,7 +318,7 @@ msgstr "Готівка"
 
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:84
-#: src/app/transaction-category-filter.tsx:65
+#: src/app/transaction-category-filter.tsx:49
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "Categories"
@@ -369,7 +363,7 @@ msgstr "Оберіть шаблон для автоматичного запов
 msgid "Choose the type of account you want to add"
 msgstr "Оберіть тип рахунку, який ви хочете додати"
 
-#: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
+#: src/@generic/component/filter-sheet/filter-sheet-header.tsx:26
 msgid "Clear"
 msgstr "Очистити"
 
@@ -525,7 +519,7 @@ msgstr "Створити резервну копію всіх ваших дан�
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
 
-#: src/app/transaction-account-filter.tsx:115
+#: src/app/transaction-account-filter.tsx:84
 msgid "Create Accounts"
 msgstr "Створити рахунки"
 
@@ -537,7 +531,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/app/transaction-category-filter.tsx:108
+#: src/app/transaction-category-filter.tsx:75
 msgid "Create Categories"
 msgstr "Створити категорії"
 
@@ -545,11 +539,11 @@ msgstr "Створити категорії"
 msgid "Create Category"
 msgstr "Створити категорію"
 
-#: src/app/transaction-category-filter.tsx:110
+#: src/app/transaction-category-filter.tsx:77
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Створіть користувацькі категорії в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
-#: src/app/transaction-tag-filter.tsx:113
+#: src/app/transaction-tag-filter.tsx:77
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Створіть користувацькі теги в Налаштуваннях для позначення та фільтрації ваших транзакцій"
 
@@ -562,7 +556,7 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Tag"
 msgstr "Створити тег"
 
-#: src/app/transaction-tag-filter.tsx:111
+#: src/app/transaction-tag-filter.tsx:75
 msgid "Create Tags"
 msgstr "Створити теги"
 
@@ -570,7 +564,7 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створюйте теги для організації транзакцій"
 
-#: src/app/transaction-account-filter.tsx:117
+#: src/app/transaction-account-filter.tsx:86
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
 
@@ -610,7 +604,7 @@ msgstr "Управління даними"
 msgid "Date"
 msgstr "Дата"
 
-#: src/app/date-filter.tsx:40
+#: src/app/date-filter.tsx:36
 msgid "Date Range"
 msgstr "Діапазон дат"
 
@@ -659,7 +653,7 @@ msgstr "Видалити назавжди"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
-#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:56
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:24
 msgid "Deselect All"
 msgstr "Скасувати вибір усіх"
 
@@ -1162,7 +1156,7 @@ msgid "New Transfer"
 msgstr "Новий переказ"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/app/transaction-account-filter.tsx:107
+#: src/app/transaction-account-filter.tsx:76
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
 
@@ -1171,7 +1165,7 @@ msgstr "Рахунків не знайдено"
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
 
-#: src/app/transaction-account-filter.tsx:114
+#: src/app/transaction-account-filter.tsx:83
 msgid "No Accounts Yet"
 msgstr "Ще немає рахунків"
 
@@ -1183,7 +1177,7 @@ msgstr "Немає архівованих рахунків"
 msgid "No archived accounts match your search"
 msgstr "Жоден архівований рахунок не відповідає вашому запиту"
 
-#: src/app/transaction-category-filter.tsx:100
+#: src/app/transaction-category-filter.tsx:67
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -1192,7 +1186,7 @@ msgstr "Категорій не знайдено"
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
-#: src/app/transaction-category-filter.tsx:107
+#: src/app/transaction-category-filter.tsx:74
 msgid "No Categories Yet"
 msgstr "Поки немає категорій"
 
@@ -1248,7 +1242,7 @@ msgstr "Повторювані платежі не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/app/transaction-tag-filter.tsx:103
+#: src/app/transaction-tag-filter.tsx:67
 #: src/tag/components/tags-select-content/tags-select-content.tsx:46
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -1257,7 +1251,7 @@ msgstr "Тегів не знайдено"
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
-#: src/app/transaction-tag-filter.tsx:110
+#: src/app/transaction-tag-filter.tsx:74
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
@@ -1451,7 +1445,7 @@ msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
 #: src/app/account-selector.tsx:38
-#: src/app/transaction-account-filter.tsx:73
+#: src/app/transaction-account-filter.tsx:94
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
@@ -1461,7 +1455,7 @@ msgstr "Шукати архівовані рахунки..."
 
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/app/category-selector.tsx:57
-#: src/app/transaction-category-filter.tsx:75
+#: src/app/transaction-category-filter.tsx:85
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
@@ -1491,7 +1485,7 @@ msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/app/tags-selector.tsx:62
-#: src/app/transaction-tag-filter.tsx:75
+#: src/app/transaction-tag-filter.tsx:85
 msgid "Search tags..."
 msgstr "Пошук тегів..."
 
@@ -1539,7 +1533,7 @@ msgstr "Виберіть рахунок"
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:47
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:19
 msgid "Select All"
 msgstr "Вибрати все"
 
@@ -1714,7 +1708,7 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(tabs)/settings/tags.tsx:85
-#: src/app/transaction-tag-filter.tsx:65
+#: src/app/transaction-tag-filter.tsx:49
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags"
@@ -1728,7 +1722,7 @@ msgstr "Теги ({selectedTagsCount})"
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:65
+#: src/sync/component/file-upload-step/file-upload-step.tsx:67
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
@@ -1820,7 +1814,7 @@ msgstr "Touch ID"
 msgid "Traditional bank accounts"
 msgstr "Традиційні банківські рахунки"
 
-#: src/app/transaction-type-filter.tsx:54
+#: src/app/transaction-type-filter.tsx:51
 msgid "Transaction Type"
 msgstr "Тип транзакції"
 
