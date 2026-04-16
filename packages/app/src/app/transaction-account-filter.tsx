@@ -1,6 +1,5 @@
 /* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -47,7 +46,9 @@ export default function TransactionAccountFilterModal() {
     const applyLabel =
         selectedCount === 0
             ? t`Show all accounts`
-            : plural(selectedCount, { one: `Show # account`, other: `Show # accounts` });
+            : selectedCount === 1
+              ? t`Show 1 account`
+              : t`Show ${selectedCount} accounts`;
 
     return (
         <FilterSheet>

@@ -49,10 +49,6 @@ msgstr "{formattedRemaining} left to assign"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} over budget"
 
-#: src/app/transaction-type-filter.tsx:50
-msgid "{localSelectedCount, plural, one {Show # type} other {Show # types}}"
-msgstr "{localSelectedCount, plural, one {Show # type} other {Show # types}}"
-
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
@@ -62,18 +58,6 @@ msgstr "{percentage}% of expenses"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
-
-#: src/app/transaction-account-filter.tsx:50
-msgid "{selectedCount, plural, one {Show # account} other {Show # accounts}}"
-msgstr "{selectedCount, plural, one {Show # account} other {Show # accounts}}"
-
-#: src/app/transaction-category-filter.tsx:50
-msgid "{selectedCount, plural, one {Show # category} other {Show # categories}}"
-msgstr "{selectedCount, plural, one {Show # category} other {Show # categories}}"
-
-#: src/app/transaction-tag-filter.tsx:50
-msgid "{selectedCount, plural, one {Show # tag} other {Show # tags}}"
-msgstr "{selectedCount, plural, one {Show # tag} other {Show # tags}}"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 msgid "{splitEntryCount} items"
@@ -531,7 +515,7 @@ msgstr "Create a backup of all your data"
 msgid "Create a PIN"
 msgstr "Create a PIN"
 
-#: src/app/transaction-account-filter.tsx:87
+#: src/app/transaction-account-filter.tsx:88
 msgid "Create Accounts"
 msgstr "Create Accounts"
 
@@ -543,7 +527,7 @@ msgstr "Create and copy the personal token"
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/app/transaction-category-filter.tsx:78
+#: src/app/transaction-category-filter.tsx:79
 msgid "Create Categories"
 msgstr "Create Categories"
 
@@ -551,11 +535,11 @@ msgstr "Create Categories"
 msgid "Create Category"
 msgstr "Create Category"
 
-#: src/app/transaction-category-filter.tsx:80
+#: src/app/transaction-category-filter.tsx:81
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Create custom categories in Settings to label and filter your transactions"
 
-#: src/app/transaction-tag-filter.tsx:80
+#: src/app/transaction-tag-filter.tsx:77
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Create custom tags in Settings to label and filter your transactions"
 
@@ -568,7 +552,7 @@ msgstr "Create one to get started."
 msgid "Create Tag"
 msgstr "Create Tag"
 
-#: src/app/transaction-tag-filter.tsx:78
+#: src/app/transaction-tag-filter.tsx:75
 msgid "Create Tags"
 msgstr "Create Tags"
 
@@ -576,7 +560,7 @@ msgstr "Create Tags"
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
 
-#: src/app/transaction-account-filter.tsx:89
+#: src/app/transaction-account-filter.tsx:90
 msgid "Create your first account to start tracking your finances"
 msgstr "Create your first account to start tracking your finances"
 
@@ -1164,7 +1148,7 @@ msgid "New Transfer"
 msgstr "New Transfer"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/app/transaction-account-filter.tsx:79
+#: src/app/transaction-account-filter.tsx:80
 msgid "No accounts found"
 msgstr "No accounts found"
 
@@ -1173,7 +1157,7 @@ msgstr "No accounts found"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/transaction-account-filter.tsx:86
+#: src/app/transaction-account-filter.tsx:87
 msgid "No Accounts Yet"
 msgstr "No Accounts Yet"
 
@@ -1185,7 +1169,7 @@ msgstr "No Archived Accounts"
 msgid "No archived accounts match your search"
 msgstr "No archived accounts match your search"
 
-#: src/app/transaction-category-filter.tsx:70
+#: src/app/transaction-category-filter.tsx:71
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "No categories found"
 msgstr "No categories found"
@@ -1194,7 +1178,7 @@ msgstr "No categories found"
 msgid "No categories match your search"
 msgstr "No categories match your search"
 
-#: src/app/transaction-category-filter.tsx:77
+#: src/app/transaction-category-filter.tsx:78
 msgid "No Categories Yet"
 msgstr "No Categories Yet"
 
@@ -1250,7 +1234,7 @@ msgstr "No recurring payments detected"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/transaction-tag-filter.tsx:70
+#: src/app/transaction-tag-filter.tsx:67
 #: src/tag/components/tags-select-content/tags-select-content.tsx:46
 msgid "No tags found"
 msgstr "No tags found"
@@ -1259,7 +1243,7 @@ msgstr "No tags found"
 msgid "No tags match your search"
 msgstr "No tags match your search"
 
-#: src/app/transaction-tag-filter.tsx:77
+#: src/app/transaction-tag-filter.tsx:74
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
@@ -1453,7 +1437,7 @@ msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
 #: src/app/account-selector.tsx:38
-#: src/app/transaction-account-filter.tsx:97
+#: src/app/transaction-account-filter.tsx:98
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
@@ -1463,7 +1447,7 @@ msgstr "Search archived accounts..."
 
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/app/category-selector.tsx:57
-#: src/app/transaction-category-filter.tsx:88
+#: src/app/transaction-category-filter.tsx:89
 msgid "Search categories..."
 msgstr "Search categories..."
 
@@ -1493,7 +1477,7 @@ msgstr "Search languages..."
 
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/app/tags-selector.tsx:62
-#: src/app/transaction-tag-filter.tsx:88
+#: src/app/transaction-tag-filter.tsx:85
 msgid "Search tags..."
 msgstr "Search tags..."
 
@@ -1593,15 +1577,47 @@ msgstr "Set Return Date"
 msgid "Settings"
 msgstr "Settings"
 
+#: src/app/transaction-type-filter.tsx:51
+msgid "Show {localSelectedCount} types"
+msgstr "Show {localSelectedCount} types"
+
+#: src/app/transaction-account-filter.tsx:51
+msgid "Show {selectedCount} accounts"
+msgstr "Show {selectedCount} accounts"
+
+#: src/app/transaction-category-filter.tsx:51
+msgid "Show {selectedCount} categories"
+msgstr "Show {selectedCount} categories"
+
+#: src/app/transaction-tag-filter.tsx:47
+msgid "Show {selectedCount} tags"
+msgstr "Show {selectedCount} tags"
+
 #: src/app/(tabs)/settings/index.tsx:152
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/transaction-account-filter.tsx:49
+#: src/app/transaction-account-filter.tsx:50
+msgid "Show 1 account"
+msgstr "Show 1 account"
+
+#: src/app/transaction-category-filter.tsx:50
+msgid "Show 1 category"
+msgstr "Show 1 category"
+
+#: src/app/transaction-tag-filter.tsx:47
+msgid "Show 1 tag"
+msgstr "Show 1 tag"
+
+#: src/app/transaction-type-filter.tsx:50
+msgid "Show 1 type"
+msgstr "Show 1 type"
+
+#: src/app/transaction-account-filter.tsx:48
 msgid "Show all accounts"
 msgstr "Show all accounts"
 
-#: src/app/transaction-category-filter.tsx:49
+#: src/app/transaction-category-filter.tsx:48
 msgid "Show all categories"
 msgstr "Show all categories"
 
@@ -1609,11 +1625,11 @@ msgstr "Show all categories"
 msgid "Show all dates"
 msgstr "Show all dates"
 
-#: src/app/transaction-tag-filter.tsx:49
+#: src/app/transaction-tag-filter.tsx:47
 msgid "Show all tags"
 msgstr "Show all tags"
 
-#: src/app/transaction-type-filter.tsx:49
+#: src/app/transaction-type-filter.tsx:48
 msgid "Show all types"
 msgstr "Show all types"
 

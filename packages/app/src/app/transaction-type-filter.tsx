@@ -1,5 +1,4 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -47,7 +46,9 @@ export default function TransactionTypeFilterModal() {
     const applyLabel =
         localSelectedCount === 0
             ? t`Show all types`
-            : plural(localSelectedCount, { one: `Show # type`, other: `Show # types` });
+            : localSelectedCount === 1
+              ? t`Show 1 type`
+              : t`Show ${localSelectedCount} types`;
 
     return (
         <FilterSheet>

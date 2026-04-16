@@ -1,6 +1,5 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -45,9 +44,7 @@ export default function TransactionTagFilterModal() {
     };
 
     const applyLabel =
-        selectedCount === 0
-            ? t`Show all tags`
-            : plural(selectedCount, { one: `Show # tag`, other: `Show # tags` });
+        selectedCount === 0 ? t`Show all tags` : selectedCount === 1 ? t`Show 1 tag` : t`Show ${selectedCount} tags`;
 
     return (
         <FilterSheet>
