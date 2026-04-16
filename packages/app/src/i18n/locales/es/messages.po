@@ -95,7 +95,7 @@ msgstr "Configuración de la cuenta"
 msgid "Account Type"
 msgstr "Tipo de cuenta"
 
-#: src/app/transaction-account-filter.tsx:63
+#: src/app/transaction-account-filter.tsx:49
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:28
 msgid "Accounts"
 msgstr "Cuentas"
@@ -215,17 +215,11 @@ msgstr "Apariencia"
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/app/date-filter.tsx:64
-#: src/app/transaction-type-filter.tsx:26
-#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:17
+#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
 msgid "Apply Filter"
 msgstr "Aplicar filtro"
 
-#: src/app/transaction-type-filter.tsx:26
-msgid "Apply Filter ({localSelectedCount})"
-msgstr "Aplicar filtro ({localSelectedCount})"
-
-#: src/transaction/components/searchable-filter-footer/searchable-filter-footer.tsx:17
+#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
 msgid "Apply Filter ({selectedCount})"
 msgstr "Aplicar filtro ({selectedCount})"
 
@@ -324,7 +318,7 @@ msgstr "Efectivo"
 
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:84
-#: src/app/transaction-category-filter.tsx:65
+#: src/app/transaction-category-filter.tsx:49
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "Categories"
@@ -369,7 +363,7 @@ msgstr "Elige un preset para autocompletar las asignaciones de columnas"
 msgid "Choose the type of account you want to add"
 msgstr "Elige el tipo de cuenta que deseas agregar"
 
-#: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
+#: src/@generic/component/filter-sheet/filter-sheet-header.tsx:26
 msgid "Clear"
 msgstr "Limpiar"
 
@@ -525,7 +519,7 @@ msgstr "Crear una copia de seguridad de todos tus datos"
 msgid "Create a PIN"
 msgstr "Crear un PIN"
 
-#: src/app/transaction-account-filter.tsx:115
+#: src/app/transaction-account-filter.tsx:84
 msgid "Create Accounts"
 msgstr "Crear cuentas"
 
@@ -537,7 +531,7 @@ msgstr "Crear y copiar el token personal"
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
-#: src/app/transaction-category-filter.tsx:108
+#: src/app/transaction-category-filter.tsx:75
 msgid "Create Categories"
 msgstr "Crear categorías"
 
@@ -545,11 +539,11 @@ msgstr "Crear categorías"
 msgid "Create Category"
 msgstr "Crear categoría"
 
-#: src/app/transaction-category-filter.tsx:110
+#: src/app/transaction-category-filter.tsx:77
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Crea categorías personalizadas en Configuración para etiquetar y filtrar tus transacciones"
 
-#: src/app/transaction-tag-filter.tsx:113
+#: src/app/transaction-tag-filter.tsx:77
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar tus transacciones"
 
@@ -562,7 +556,7 @@ msgstr "Crea una para comenzar."
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
-#: src/app/transaction-tag-filter.tsx:111
+#: src/app/transaction-tag-filter.tsx:75
 msgid "Create Tags"
 msgstr "Crear etiquetas"
 
@@ -570,7 +564,7 @@ msgstr "Crear etiquetas"
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
 
-#: src/app/transaction-account-filter.tsx:117
+#: src/app/transaction-account-filter.tsx:86
 msgid "Create your first account to start tracking your finances"
 msgstr "Crea tu primera cuenta para comenzar a rastrear tus finanzas"
 
@@ -610,7 +604,7 @@ msgstr "Gestión de datos"
 msgid "Date"
 msgstr "Fecha"
 
-#: src/app/date-filter.tsx:40
+#: src/app/date-filter.tsx:36
 msgid "Date Range"
 msgstr "Rango de fechas"
 
@@ -659,7 +653,7 @@ msgstr "Eliminar permanentemente"
 msgid "Delete Transaction"
 msgstr "Eliminar transacción"
 
-#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:56
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:24
 msgid "Deselect All"
 msgstr "Deseleccionar todo"
 
@@ -1162,7 +1156,7 @@ msgid "New Transfer"
 msgstr "Nueva transferencia"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/app/transaction-account-filter.tsx:107
+#: src/app/transaction-account-filter.tsx:76
 msgid "No accounts found"
 msgstr "No se encontraron cuentas"
 
@@ -1171,7 +1165,7 @@ msgstr "No se encontraron cuentas"
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
 
-#: src/app/transaction-account-filter.tsx:114
+#: src/app/transaction-account-filter.tsx:83
 msgid "No Accounts Yet"
 msgstr "Aún no hay cuentas"
 
@@ -1183,7 +1177,7 @@ msgstr "No hay cuentas archivadas"
 msgid "No archived accounts match your search"
 msgstr "Ninguna cuenta archivada coincide con tu búsqueda"
 
-#: src/app/transaction-category-filter.tsx:100
+#: src/app/transaction-category-filter.tsx:67
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -1192,7 +1186,7 @@ msgstr "No se encontraron categorías"
 msgid "No categories match your search"
 msgstr "Ninguna categoría coincide con tu búsqueda"
 
-#: src/app/transaction-category-filter.tsx:107
+#: src/app/transaction-category-filter.tsx:74
 msgid "No Categories Yet"
 msgstr "Aún no hay categorías"
 
@@ -1248,7 +1242,7 @@ msgstr "No se detectaron pagos recurrentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/transaction-tag-filter.tsx:103
+#: src/app/transaction-tag-filter.tsx:67
 #: src/tag/components/tags-select-content/tags-select-content.tsx:46
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -1257,7 +1251,7 @@ msgstr "No se encontraron etiquetas"
 msgid "No tags match your search"
 msgstr "Ninguna etiqueta coincide con tu búsqueda"
 
-#: src/app/transaction-tag-filter.tsx:110
+#: src/app/transaction-tag-filter.tsx:74
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
@@ -1451,7 +1445,7 @@ msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
 
 #: src/app/account-selector.tsx:38
-#: src/app/transaction-account-filter.tsx:73
+#: src/app/transaction-account-filter.tsx:94
 msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
@@ -1461,7 +1455,7 @@ msgstr "Buscar cuentas archivadas..."
 
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/app/category-selector.tsx:57
-#: src/app/transaction-category-filter.tsx:75
+#: src/app/transaction-category-filter.tsx:85
 msgid "Search categories..."
 msgstr "Buscar categorías..."
 
@@ -1491,7 +1485,7 @@ msgstr "Buscar idiomas..."
 
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/app/tags-selector.tsx:62
-#: src/app/transaction-tag-filter.tsx:75
+#: src/app/transaction-tag-filter.tsx:85
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
 
@@ -1539,7 +1533,7 @@ msgstr "Seleccionar cuenta"
 msgid "Select accounts to sync:"
 msgstr "Seleccionar cuentas para sincronizar:"
 
-#: src/transaction/components/searchable-filter-controls/searchable-filter-controls.tsx:47
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:19
 msgid "Select All"
 msgstr "Seleccionar todo"
 
@@ -1714,7 +1708,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(tabs)/settings/tags.tsx:85
-#: src/app/transaction-tag-filter.tsx:65
+#: src/app/transaction-tag-filter.tsx:49
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags"
@@ -1728,7 +1722,7 @@ msgstr "Etiquetas ({selectedTagsCount})"
 msgid "Tap to clear"
 msgstr "Toca para limpiar"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:65
+#: src/sync/component/file-upload-step/file-upload-step.tsx:67
 msgid "Tap to select"
 msgstr "Toca para seleccionar"
 
@@ -1820,7 +1814,7 @@ msgstr "Touch ID"
 msgid "Traditional bank accounts"
 msgstr "Cuentas bancarias tradicionales"
 
-#: src/app/transaction-type-filter.tsx:54
+#: src/app/transaction-type-filter.tsx:51
 msgid "Transaction Type"
 msgstr "Tipo de transacción"
 
