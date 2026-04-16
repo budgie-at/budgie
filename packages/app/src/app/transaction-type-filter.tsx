@@ -1,15 +1,15 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
-import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply';
-import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer';
-import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
+import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
@@ -40,16 +40,17 @@ export default function TransactionTypeFilterModal() {
         });
     };
 
-    const handleClear = () => void setLocalValue(null);
-
     const handleApply = () => {
         resolveTransactionTypeFilter({ value: localValueRef.current });
     };
 
+    const applyLabel =
+        localSelectedCount === 0
+            ? t`Show all types`
+            : plural(localSelectedCount, { one: `Show # type`, other: `Show # types` });
+
     return (
         <FilterSheet>
-            <FilterSheetHeader title={t`Transaction Type`} onClear={handleClear} showClear={isPositiveNumber(localSelectedCount)} />
-
             <FilterSheetList>
                 <View className="-mx-sm flex-row flex-wrap gap-y-md">
                     {TRANSACTION_TYPES.map(type => (
@@ -65,11 +66,7 @@ export default function TransactionTypeFilterModal() {
             </FilterSheetList>
 
             <FilterSheetDrawer>
-                <FilterSheetApply
-                    onApply={handleApply}
-                    selectedCount={localSelectedCount}
-                    testID={TransactionFiltersSelectors.TypeApplyButton}
-                />
+                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.TypeApplyButton} />
             </FilterSheetDrawer>
         </FilterSheet>
     );

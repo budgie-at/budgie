@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -7,10 +8,9 @@ import { View } from 'react-native';
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
-import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
+import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
@@ -19,14 +19,14 @@ import { TransactionFilterEmptyState } from '../transaction/components/transacti
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
- 
+
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionCategoryFilter, currentParams] = useTransactionCategoryFilterModal();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
-    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll, handleClear } = state;
+    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
     const { categories, total } = useSearchCategoriesQuery(search, true);
 
@@ -44,11 +44,14 @@ export default function TransactionCategoryFilterModal() {
         router.push('/settings/categories');
     };
 
+    const applyLabel =
+        selectedCount === 0
+            ? t`Show all categories`
+            : plural(selectedCount, { one: `Show # category`, other: `Show # categories` });
+
     return (
         <FilterSheet>
-            <FilterSheetHeader title={t`Categories`} onClear={handleClear} showClear={isPositiveNumber(selectedCount)} />
-
-            <FilterSheetList>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
                 {isNotEmptyArray(items) ? (
                     <View className="gap-y-sm">
                         {items.map(category => (
@@ -87,6 +90,7 @@ export default function TransactionCategoryFilterModal() {
                 onSelectAll={handleSelectAll}
                 onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
+                applyLabel={applyLabel}
                 selectedCount={selectedCount}
                 searchTestID={TransactionFiltersSelectors.CategorySearchInput}
                 selectAllTestID={TransactionFiltersSelectors.CategorySelectAllButton}
