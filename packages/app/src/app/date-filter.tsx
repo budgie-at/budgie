@@ -35,7 +35,7 @@ export default function DateFilterModal() {
         <FilterSheet>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="pb-xl pt-xl"
+                contentContainerClassName="pb-xl pt-4xl"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
@@ -55,7 +55,7 @@ export default function DateFilterModal() {
                     ))}
                 </ScrollView>
 
-                <View className="mx-xl my-lg h-px bg-secondary-corner" />
+                <View className="my-lg h-px bg-secondary-corner" />
 
                 <View className="px-md">
                     <RangeDatePicker range={localValue} onChange={setLocalValue} />
