@@ -6,14 +6,14 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { BankAccountPreviewInterface } from '../interface/bank-account-preview-interface.type';
+import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
-import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client-interface.type';
-import type { ImportContextInterface } from '../interface/import-context-interface.type';
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result-interface.type';
+import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
+import type { ImportContextInterface } from '../interface/import-context.interface';
+import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB } from '@budgie/contracts';
 

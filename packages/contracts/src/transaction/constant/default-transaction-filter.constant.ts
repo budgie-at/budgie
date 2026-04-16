@@ -1,4 +1,4 @@
-import { TransactionFilterInterface } from '../interface/transaction-filter-interface.type';
+import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 
 export const DEFAULT_TRANSACTION_FILTER: TransactionFilterInterface = {
     date: null,

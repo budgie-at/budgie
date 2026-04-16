@@ -11,14 +11,14 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
-import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity-interface.type';
+import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
-import { TransactionFilterInterface } from '../interface/transaction-filter-interface.type';
+import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
-import type { TransactionEntityInterface } from '../entity/transaction-entity-interface.type';
-import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity-interface.type';
+import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
+import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = {

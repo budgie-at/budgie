@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data-interface.type';
+import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { recurringCalendarService } from '../service/recurring-calendar.service';
 
 interface UseRecurringCalendarReturnInterface {

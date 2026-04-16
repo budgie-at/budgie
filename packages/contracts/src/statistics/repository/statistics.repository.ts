@@ -11,14 +11,14 @@ import { CategoryEntityTable } from '../../category/table/category-entity.table'
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
-import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter-interface.type';
+import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { StatisticsFilterInterface } from '../interface/statistics-filter-interface.type';
+import { StatisticsFilterInterface } from '../interface/statistics-filter.interface';
 
 export class StatisticsRepository extends BaseTransactionFilterRepository {
     /* jscpd:ignore-start */

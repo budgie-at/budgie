@@ -4,7 +4,7 @@ import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
 import { ersteSyncService } from '../../service/erste-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
-import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config-interface.type';
+import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 
 export const CreateErsteAccount = () => {
     const { t } = useLingui();

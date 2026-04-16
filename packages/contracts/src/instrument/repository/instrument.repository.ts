@@ -4,7 +4,7 @@ import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
 import type * as schema from '../../schema';
-import type { InstrumentEntityInterface } from '../entity/instrument-entity-interface.type';
+import type { InstrumentEntityInterface } from '../entity/instrument-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class InstrumentRepository {

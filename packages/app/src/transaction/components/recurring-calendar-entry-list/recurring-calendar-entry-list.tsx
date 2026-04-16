@@ -2,7 +2,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarEntryRows } from '../recurring-calendar-entry-rows/recurring-calendar-entry-rows';
 
 import type { ReactNode } from 'react';

@@ -1,4 +1,4 @@
-import { MonthlyPatternRowInterface } from './monthly-pattern-row-interface.type';
+import { MonthlyPatternRowInterface } from './monthly-pattern-row.interface';
 
 export interface MonthlyPatternRawRowInterface extends Omit<
     MonthlyPatternRowInterface,
