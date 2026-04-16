@@ -147,20 +147,24 @@ export default ({ config }) => ({
                 withSQLiteVecExtension: true
             }
         ],
-        [
-            'react-native-audio-api',
-            {
-                iosBackgroundMode: true,
-                iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
-                androidPermissions: [
-                    'android.permission.MODIFY_AUDIO_SETTINGS',
-                    'android.permission.FOREGROUND_SERVICE',
-                    'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
-                ],
-                androidForegroundService: true,
-                androidFSTypes: ['mediaPlayback']
-            }
-        ],
+        ...(!IS_AI_DISABLED
+            ? [
+                  [
+                      'react-native-audio-api',
+                      {
+                          iosBackgroundMode: true,
+                          iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
+                          androidPermissions: [
+                              'android.permission.MODIFY_AUDIO_SETTINGS',
+                              'android.permission.FOREGROUND_SERVICE',
+                              'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
+                          ],
+                          androidForegroundService: true,
+                          androidFSTypes: ['mediaPlayback']
+                      }
+                  ]
+              ]
+            : []),
         [
             'expo-local-authentication',
             {
@@ -187,15 +191,19 @@ export default ({ config }) => ({
             }
         ],
         ['expo-router', { origin: 'https://www.budgie.at/' }],
-        [
-            'llama.rn',
-            {
-                enableEntitlements: true,
-                entitlementsProfile: 'production',
-                forceCxx20: true,
-                enableOpenCLAndHexagon: true
-            }
-        ],
+        ...(!IS_AI_DISABLED
+            ? [
+                  [
+                      'llama.rn',
+                      {
+                          enableEntitlements: true,
+                          entitlementsProfile: 'production',
+                          forceCxx20: true,
+                          enableOpenCLAndHexagon: true
+                      }
+                  ]
+              ]
+            : []),
         [
             'expo-font',
             {

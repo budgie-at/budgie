@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+env:
+  CARD_ID: ${CARD_ID}
+  DESTINATION_ID: ${DESTINATION_ID}
+---
+- scrollUntilVisible:
+    element:
+      id: '${CARD_ID}'
+    direction: DOWN
+    speed: 20
+    centerElement: true
+    waitToSettleTimeoutMs: 500
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: '${CARD_ID}'
+
+- extendedWaitUntil:
+    visible:
+      id: '${DESTINATION_ID}'
+    timeout: 10000
