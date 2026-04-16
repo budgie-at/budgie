@@ -8,15 +8,16 @@ import { isDefined } from '@rnw-community/shared';
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheet, useFilterSheetContext } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { useDateFilterModal } from '../@generic/context/date-filter-modal.context';
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
 
-export default function DateFilterModal() {
+function DateFilterContent() {
     const { t } = useLingui();
+    const { drawerHeight } = useFilterSheetContext();
     const [, resolveDateFilter, currentParams] = useDateFilterModal();
 
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => currentParams?.value ?? null);
@@ -30,9 +31,10 @@ export default function DateFilterModal() {
     };
 
     const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
+    const pickerWrapperStyle = { paddingBottom: drawerHeight };
 
     return (
-        <FilterSheet>
+        <>
             <View className="gap-y-md pt-md">
                 <ScrollView contentContainerClassName="gap-x-sm px-xl" showsHorizontalScrollIndicator={false} horizontal>
                     {Object.values(DatePeriodEnum).map(period => (
@@ -49,13 +51,21 @@ export default function DateFilterModal() {
 
             <View className="mx-xl my-md h-px bg-secondary-corner" />
 
-            <View className="flex-1 px-md">
+            <View className="flex-1 px-md" style={pickerWrapperStyle}>
                 <RangeDatePicker range={localValue} onChange={setLocalValue} />
             </View>
 
             <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.DateApplyButton} />
             </FilterSheetDrawer>
+        </>
+    );
+}
+
+export default function DateFilterModal() {
+    return (
+        <FilterSheet>
+            <DateFilterContent />
         </FilterSheet>
     );
 }
