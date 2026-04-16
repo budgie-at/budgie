@@ -330,6 +330,12 @@ export default defineConfig(
         }
     },
     {
+        files: ['packages/app/**/*.selector.ts'],
+        rules: {
+            'lingui/no-unlocalized-strings': 'off'
+        }
+    },
+    {
         files: ['**/*.tsx', '**/*.hook.ts'],
         extends: [reactPlugin.configs.flat.recommended, reactHooksPlugin.configs.flat.recommended],
         plugins: { '@rnw-community': rnwcPlugin },

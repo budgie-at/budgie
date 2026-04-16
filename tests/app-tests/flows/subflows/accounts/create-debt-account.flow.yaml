@@ -1,0 +1,58 @@
+appId: ${APP_ID}
+---
+
+- runFlow: open-new-account.flow.yaml
+
+- tapOn:
+    id: 'CreateAccount.DEBT'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.TargetBalanceInput'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountForm.TargetBalanceInput'
+- inputText: ${TARGET_BALANCE}
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.NameInput'
+    direction: UP
+
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+
+- tapOn: 'Debt Account'
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.CurrencySelector'
+    direction: DOWN
+
+- tapOn:
+    id: 'AccountForm.CurrencySelector'
+- tapOn: 'Search currencies...'
+- inputText: ${CURRENCY_CODE}
+- tapOn:
+    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+
+- tapOn: 'Debt Account'
+- tapOn:
+    id: 'AccountForm.DebtType.${DEBT_TYPE}'
+
+- tapOn:
+    id: 'AccountForm.SubmitButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 15000
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.${ACCOUNT_NAME}'
+    direction: DOWN

@@ -3,7 +3,7 @@
     "version": "1.18.0",
     "private": true,
     "scripts": {
-        "test:ios": "sh ./scripts/setup-ios-simulator.sh && sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e",
+        "test:ios": "sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e",
         "test:android": "sh ./scripts/run-maestro-suite.sh com.vitaliiyehorov.budgie.e2e"
     }
 }

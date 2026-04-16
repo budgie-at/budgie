@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 
 import { OnEventFn } from '@rnw-community/shared';
 
-import { AccountCardSelectors } from '../../../@e2e/selectors/account-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -18,6 +17,8 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+
+import { AccountCardBaseSelector } from './account-card-base.selector';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
@@ -69,7 +70,7 @@ export const AccountCardBase = (props: Props) => {
 
     return (
         <Card
-            testID={AccountCardSelectors.Card(title)}
+            testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
@@ -91,7 +92,7 @@ export const AccountCardBase = (props: Props) => {
                 </Text>
 
                 {balanceContent ?? (
-                    <ProtectedText className="text-primary font-medium" testID={AccountCardSelectors.Balance(title, balance)}>
+                    <ProtectedText className="text-primary font-medium" testID={AccountCardBaseSelector.Balance(title, balance)}>
                         {accountBalance}
                     </ProtectedText>
                 )}

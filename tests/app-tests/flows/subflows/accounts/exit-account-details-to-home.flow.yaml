@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn:
+          id: 'PageHeader.BackButton'
+      - extendedWaitUntil:
+          visible:
+            id: 'HomePage.TotalBalance'
+          timeout: 10000

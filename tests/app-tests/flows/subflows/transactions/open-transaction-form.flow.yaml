@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+env:
+  ACTION_ITEM_ID: ${ACTION_ITEM_ID}
+  FORM_TITLE: ${FORM_TITLE}
+---
+- runFlow:
+    file: open-action-menu.flow.yaml
+    env:
+      ACTION_ITEM_ID: ${ACTION_ITEM_ID}
+
+- tapOn:
+    id: ${ACTION_ITEM_ID}
+- extendedWaitUntil:
+    visible: ${FORM_TITLE}
+
