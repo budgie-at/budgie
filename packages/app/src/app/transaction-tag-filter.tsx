@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -7,10 +8,9 @@ import { View } from 'react-native';
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
-import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
-import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list';
-import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
+import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
@@ -19,14 +19,14 @@ import { TransactionTagFilterItem } from '../transaction/components/transaction-
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
- 
+
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
-    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll, handleClear } = state;
+    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
     const { tags, total } = useSearchTagsQuery(search);
 
@@ -44,11 +44,14 @@ export default function TransactionTagFilterModal() {
         router.push('/settings/tags');
     };
 
+    const applyLabel =
+        selectedCount === 0
+            ? t`Show all tags`
+            : plural(selectedCount, { one: `Show # tag`, other: `Show # tags` });
+
     return (
         <FilterSheet>
-            <FilterSheetHeader title={t`Tags`} onClear={handleClear} showClear={isPositiveNumber(selectedCount)} />
-
-            <FilterSheetList>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
                 {isNotEmptyArray(items) ? (
                     <View className="gap-y-sm">
                         {items.map(tag => (
@@ -87,6 +90,7 @@ export default function TransactionTagFilterModal() {
                 onSelectAll={handleSelectAll}
                 onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
+                applyLabel={applyLabel}
                 selectedCount={selectedCount}
                 searchTestID={TransactionFiltersSelectors.TagSearchInput}
                 selectAllTestID={TransactionFiltersSelectors.TagSelectAllButton}

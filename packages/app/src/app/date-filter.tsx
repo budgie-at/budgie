@@ -8,10 +8,9 @@ import { isDefined } from '@rnw-community/shared';
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
-import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
-import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply';
-import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer';
-import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
+import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { useDateFilterModal } from '../@generic/context/date-filter-modal.context';
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
@@ -26,15 +25,14 @@ export default function DateFilterModal() {
     const hasSelected = isDefined(localValue);
 
     const handlePeriodSelect = (period: DatePeriodEnum) => void setLocalValue(getDateFilterByPeriod(period));
-    const handleClear = () => void setLocalValue(null);
     const handleApply = () => {
         resolveDateFilter({ value: localValue });
     };
 
+    const applyLabel = hasSelected ? t`Show selected range` : t`Show all dates`;
+
     return (
         <FilterSheet>
-            <FilterSheetHeader title={t`Date Range`} onClear={handleClear} showClear={hasSelected} />
-
             <View className="gap-y-md pt-md">
                 <ScrollView contentContainerClassName="gap-x-sm px-xl" showsHorizontalScrollIndicator={false} horizontal>
                     {Object.values(DatePeriodEnum).map(period => (
@@ -56,7 +54,7 @@ export default function DateFilterModal() {
             </View>
 
             <FilterSheetDrawer>
-                <FilterSheetApply onApply={handleApply} testID={TransactionFiltersSelectors.DateApplyButton} />
+                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.DateApplyButton} />
             </FilterSheetDrawer>
         </FilterSheet>
     );

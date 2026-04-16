@@ -47,6 +47,10 @@ msgstr "{formattedRemaining} à attribuer"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
+#: src/app/transaction-type-filter.tsx:50
+msgid "{localSelectedCount, plural, one {Show # type} other {Show # types}}"
+msgstr "{localSelectedCount, plural, one {Afficher # type} other {Afficher # types}}"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
@@ -56,6 +60,18 @@ msgstr "{percentage}% des dépenses"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
+
+#: src/app/transaction-account-filter.tsx:50
+msgid "{selectedCount, plural, one {Show # account} other {Show # accounts}}"
+msgstr "{selectedCount, plural, one {Afficher # compte} other {Afficher # comptes}}"
+
+#: src/app/transaction-category-filter.tsx:50
+msgid "{selectedCount, plural, one {Show # category} other {Show # categories}}"
+msgstr "{selectedCount, plural, one {Afficher # catégorie} other {Afficher # catégories}}"
+
+#: src/app/transaction-tag-filter.tsx:50
+msgid "{selectedCount, plural, one {Show # tag} other {Show # tags}}"
+msgstr "{selectedCount, plural, one {Afficher # étiquette} other {Afficher # étiquettes}}"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 msgid "{splitEntryCount} items"
@@ -95,7 +111,6 @@ msgstr "Paramètres du compte"
 msgid "Account Type"
 msgstr "Type de compte"
 
-#: src/app/transaction-account-filter.tsx:49
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:28
 msgid "Accounts"
 msgstr "Comptes"
@@ -165,6 +180,10 @@ msgstr "Métadonnées générées par IA"
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "Application de budget alimentée par l'IA avec confidentialité totale. Toutes les données sont traitées localement sur votre appareil."
 
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx:54
+msgid "All"
+msgstr "Tous"
+
 #: src/app/import-column-mapper.tsx:85
 msgid "All columns have been assigned"
 msgstr "Toutes les colonnes ont été assignées"
@@ -214,14 +233,6 @@ msgstr "Apparence"
 #: src/app/note-input.tsx:46
 msgid "Apply"
 msgstr "Appliquer"
-
-#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
-msgid "Apply Filter"
-msgstr "Appliquer le filtre"
-
-#: src/@generic/component/filter-sheet/filter-sheet-apply.tsx:15
-msgid "Apply Filter ({selectedCount})"
-msgstr "Appliquer le filtre ({selectedCount})"
 
 #: src/account/component/archive-account/archive-account.tsx:26
 msgid "Archive"
@@ -318,7 +329,6 @@ msgstr "Espèces"
 
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:84
-#: src/app/transaction-category-filter.tsx:49
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "Categories"
@@ -363,7 +373,7 @@ msgstr "Choisissez un modèle pour remplir automatiquement les correspondances d
 msgid "Choose the type of account you want to add"
 msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 
-#: src/@generic/component/filter-sheet/filter-sheet-header.tsx:26
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx:44
 msgid "Clear"
 msgstr "Effacer"
 
@@ -519,7 +529,7 @@ msgstr "Créer une sauvegarde de toutes vos données"
 msgid "Create a PIN"
 msgstr "Créer un code PIN"
 
-#: src/app/transaction-account-filter.tsx:84
+#: src/app/transaction-account-filter.tsx:87
 msgid "Create Accounts"
 msgstr "Créer des comptes"
 
@@ -531,7 +541,7 @@ msgstr "Créer et copier le jeton personnel"
 msgid "Create and organize transaction tags"
 msgstr "Créer et organiser les étiquettes de transaction"
 
-#: src/app/transaction-category-filter.tsx:75
+#: src/app/transaction-category-filter.tsx:78
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
@@ -539,11 +549,11 @@ msgstr "Créer des catégories"
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
-#: src/app/transaction-category-filter.tsx:77
+#: src/app/transaction-category-filter.tsx:80
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Créez des catégories personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
 
-#: src/app/transaction-tag-filter.tsx:77
+#: src/app/transaction-tag-filter.tsx:80
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
 
@@ -556,7 +566,7 @@ msgstr "Créez-en un pour commencer."
 msgid "Create Tag"
 msgstr "Créer une étiquette"
 
-#: src/app/transaction-tag-filter.tsx:75
+#: src/app/transaction-tag-filter.tsx:78
 msgid "Create Tags"
 msgstr "Créer des étiquettes"
 
@@ -564,7 +574,7 @@ msgstr "Créer des étiquettes"
 msgid "Create tags to organize your transactions"
 msgstr "Créez des étiquettes pour organiser vos transactions"
 
-#: src/app/transaction-account-filter.tsx:86
+#: src/app/transaction-account-filter.tsx:89
 msgid "Create your first account to start tracking your finances"
 msgstr "Créez votre premier compte pour commencer à suivre vos finances"
 
@@ -603,10 +613,6 @@ msgstr "Gestion des données"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:134
 msgid "Date"
 msgstr "Date"
-
-#: src/app/date-filter.tsx:36
-msgid "Date Range"
-msgstr "Plage de dates"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:115
 msgid "Day {selectedDay}"
@@ -653,7 +659,7 @@ msgstr "Supprimer définitivement"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:24
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions/filter-sheet-bulk-actions.tsx:24
 msgid "Deselect All"
 msgstr "Tout désélectionner"
 
@@ -1156,7 +1162,7 @@ msgid "New Transfer"
 msgstr "Nouveau transfert"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/app/transaction-account-filter.tsx:76
+#: src/app/transaction-account-filter.tsx:79
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
 
@@ -1165,7 +1171,7 @@ msgstr "Aucun compte trouvé"
 msgid "No accounts yet"
 msgstr "Aucun compte pour le moment"
 
-#: src/app/transaction-account-filter.tsx:83
+#: src/app/transaction-account-filter.tsx:86
 msgid "No Accounts Yet"
 msgstr "Aucun compte pour le moment"
 
@@ -1177,7 +1183,7 @@ msgstr "Aucun compte archivé"
 msgid "No archived accounts match your search"
 msgstr "Aucun compte archivé ne correspond à votre recherche"
 
-#: src/app/transaction-category-filter.tsx:67
+#: src/app/transaction-category-filter.tsx:70
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -1186,7 +1192,7 @@ msgstr "Aucune catégorie trouvée"
 msgid "No categories match your search"
 msgstr "Aucune catégorie ne correspond à votre recherche"
 
-#: src/app/transaction-category-filter.tsx:74
+#: src/app/transaction-category-filter.tsx:77
 msgid "No Categories Yet"
 msgstr "Aucune catégorie pour le moment"
 
@@ -1242,7 +1248,7 @@ msgstr "Aucun paiement récurrent détecté"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/app/transaction-tag-filter.tsx:67
+#: src/app/transaction-tag-filter.tsx:70
 #: src/tag/components/tags-select-content/tags-select-content.tsx:46
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -1251,7 +1257,7 @@ msgstr "Aucune étiquette trouvée"
 msgid "No tags match your search"
 msgstr "Aucune étiquette ne correspond à votre recherche"
 
-#: src/app/transaction-tag-filter.tsx:74
+#: src/app/transaction-tag-filter.tsx:77
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
@@ -1445,7 +1451,7 @@ msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
 
 #: src/app/account-selector.tsx:38
-#: src/app/transaction-account-filter.tsx:94
+#: src/app/transaction-account-filter.tsx:97
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
@@ -1455,7 +1461,7 @@ msgstr "Rechercher des comptes archivés..."
 
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/app/category-selector.tsx:57
-#: src/app/transaction-category-filter.tsx:85
+#: src/app/transaction-category-filter.tsx:88
 msgid "Search categories..."
 msgstr "Rechercher des catégories..."
 
@@ -1485,7 +1491,7 @@ msgstr "Rechercher des langues..."
 
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/app/tags-selector.tsx:62
-#: src/app/transaction-tag-filter.tsx:85
+#: src/app/transaction-tag-filter.tsx:88
 msgid "Search tags..."
 msgstr "Rechercher des étiquettes..."
 
@@ -1533,7 +1539,7 @@ msgstr "Sélectionner un compte"
 msgid "Select accounts to sync:"
 msgstr "Sélectionner les comptes à synchroniser :"
 
-#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions.tsx:19
+#: src/@generic/component/filter-sheet/filter-sheet-bulk-actions/filter-sheet-bulk-actions.tsx:19
 msgid "Select All"
 msgstr "Tout sélectionner"
 
@@ -1589,9 +1595,33 @@ msgstr "Paramètres"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 
+#: src/app/transaction-account-filter.tsx:49
+msgid "Show all accounts"
+msgstr "Afficher tous les comptes"
+
+#: src/app/transaction-category-filter.tsx:49
+msgid "Show all categories"
+msgstr "Afficher toutes les catégories"
+
+#: src/app/date-filter.tsx:32
+msgid "Show all dates"
+msgstr "Afficher toutes les dates"
+
+#: src/app/transaction-tag-filter.tsx:49
+msgid "Show all tags"
+msgstr "Afficher toutes les étiquettes"
+
+#: src/app/transaction-type-filter.tsx:49
+msgid "Show all types"
+msgstr "Afficher tous les types"
+
 #: src/app/(tabs)/settings/index.tsx:151
 msgid "Show Cents"
 msgstr "Afficher les centimes"
+
+#: src/app/date-filter.tsx:32
+msgid "Show selected range"
+msgstr "Afficher la plage sélectionnée"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:38
 msgid "Show this account on the main page"
@@ -1708,7 +1738,6 @@ msgid "Tag Name"
 msgstr "Nom de l'étiquette"
 
 #: src/app/(tabs)/settings/tags.tsx:85
-#: src/app/transaction-tag-filter.tsx:49
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags"
@@ -1813,10 +1842,6 @@ msgstr "Touch ID"
 #: src/account/constant/account-type-description.constant.ts:6
 msgid "Traditional bank accounts"
 msgstr "Comptes bancaires traditionnels"
-
-#: src/app/transaction-type-filter.tsx:51
-msgid "Transaction Type"
-msgstr "Type de transaction"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:81
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
