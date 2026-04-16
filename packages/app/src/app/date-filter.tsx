@@ -33,8 +33,17 @@ export default function DateFilterModal() {
 
     return (
         <FilterSheet>
-            <View className="gap-y-md pt-md">
-                <ScrollView contentContainerClassName="gap-x-sm px-xl" showsHorizontalScrollIndicator={false} horizontal>
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="pb-xl pt-xl"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <ScrollView
+                    contentContainerClassName="gap-x-sm px-xl"
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                >
                     {Object.values(DatePeriodEnum).map(period => (
                         <DateFilterItem
                             key={period}
@@ -45,13 +54,13 @@ export default function DateFilterModal() {
                         />
                     ))}
                 </ScrollView>
-            </View>
 
-            <View className="mx-xl my-md h-px bg-secondary-corner" />
+                <View className="mx-xl my-lg h-px bg-secondary-corner" />
 
-            <View className="flex-1 px-md">
-                <RangeDatePicker range={localValue} onChange={setLocalValue} />
-            </View>
+                <View className="px-md">
+                    <RangeDatePicker range={localValue} onChange={setLocalValue} />
+                </View>
+            </ScrollView>
 
             <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.DateApplyButton} />
