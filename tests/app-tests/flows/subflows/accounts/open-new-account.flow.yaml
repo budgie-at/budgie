@@ -1,0 +1,26 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Home'
+
+- tapOn:
+    text: 'Add Account'
+    optional: true
+
+- runFlow:
+    when:
+      notVisible:
+        text: '.*Monobank.*'
+    commands:
+      - tapOn:
+          id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: 'ActionItem.AddAccount'
+          timeout: 10000
+      - tapOn:
+          id: 'ActionItem.AddAccount'
+- extendedWaitUntil:
+    visible:
+      text: '.*Monobank.*'

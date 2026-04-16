@@ -15,15 +15,14 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 iOS:
 
 ```bash
-sh ./scripts/setup-ios-simulator.sh
 sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
 Local Erste Bank PDF flow:
 
 ```bash
-sh ./scripts/setup-ios-simulator.sh
-maestro test ./flows/20.erste-bank-import.flow.yaml \
+sh ./scripts/setup-ios-e2e-fixtures.sh
+maestro test ./flows/16.erste-bank-import.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e
 ```
 

@@ -1,0 +1,196 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '17-expense-to-transfer'
+
+# --- Create Expense for Long-Press Delete ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn: '2'
+- tapOn: '5'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Expense Source'
+
+- runFlow:
+    file: subflows/categories/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E LongPress Delete'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E LongPress Delete Txn'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+    timeout: 5000
+
+# --- Long-Press Edit from List ---
+
+- runFlow:
+    file: subflows/transactions/long-press-edit-transaction.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+
+- extendedWaitUntil:
+    visible: 'Edit Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 5000
+
+# --- Long-Press Delete from List ---
+
+- runFlow:
+    file: subflows/transactions/long-press-delete-transaction.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+
+# --- Create Expense for Long-Press Convert to Transfer ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn: '3'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Expense Source'
+
+- runFlow:
+    file: subflows/categories/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E LongPress Convert'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E LongPress Convert Txn'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+    timeout: 5000
+
+# --- Long-Press Convert to Transfer from List ---
+
+- runFlow:
+    file: subflows/transactions/long-press-convert-to-transfer.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ConvertToTransfer.Page'
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Expense Target'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Expense Target'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- runFlow: subflows/transactions/confirm-convert-to-transfer.flow.yaml
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 5000
+
+# --- Verify Transfer Created and Balances ---
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Expense_Source'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Expense_Target'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Source.70'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Target.130'
+
+# --- Clean Up: Delete Transfer ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Source.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Expense_Target.100'

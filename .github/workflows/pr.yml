@@ -238,24 +238,7 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const packageJsonPath = 'package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface'
-          ];
-
-          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
-          console.log('Applied expo.autolinking.exclude for e2e build');
-          NODE
+        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
 
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
@@ -319,6 +302,10 @@ jobs:
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios
+
+      - name: Apply E2E iOS Info.plist cleanup
+        working-directory: packages/app
+        run: sh ./scripts/apply-e2e-ios-plist-cleanup.sh
 
       - name: Sync CocoaPods for E2E excludes
         working-directory: packages/app/ios
@@ -521,7 +508,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sh ./scripts/setup-ios-simulator.sh "$SIMULATOR_UDID" com.vitalyiegorov.budgie.e2e
           sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
             --format junit \
             --output ./artifacts/maestro/report.xml \
@@ -598,24 +584,7 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const packageJsonPath = 'package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface'
-          ];
-
-          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
-          console.log('Applied expo.autolinking.exclude for e2e build');
-          NODE
+        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
 
       - name: Expo Prebuild
         working-directory: packages/app

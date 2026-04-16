@@ -1,0 +1,155 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '00-empty-state'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.ManageCategoriesCard'
+      DESTINATION_ID: 'CategoryPage.SearchInput'
+
+# --- Create Primary Category With Icon ---
+
+- tapOn:
+    id: 'ActionButton'
+- tapOn:
+    text: 'Category'
+
+- tapOn:
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'bike'
+- tapOn:
+    id: 'IconSelector.Icon.Bike'
+
+- tapOn:
+    id: 'CategoryForm.Input'
+- inputText: 'E2E Category Primary'
+- tapOn: 'Create Category'
+- tapOn:
+    id: 'CategoryForm.Submit'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Primary'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Primary.Bike'
+
+# --- Create Second Category For Search ---
+
+- tapOn:
+    id: 'ActionButton'
+- tapOn:
+    text: 'Category'
+
+- tapOn:
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'home'
+- tapOn:
+    id: 'IconSelector.Icon.Home'
+
+- tapOn:
+    id: 'CategoryForm.Input'
+- inputText: 'E2E Category Search'
+- tapOn: 'Create Category'
+- tapOn:
+    id: 'CategoryForm.Submit'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Search'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Search.Home'
+
+# --- Search And Open Result ---
+
+- tapOn:
+    id: 'CategoryPage.SearchInput'
+- inputText: 'Search'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Search'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Primary'
+
+- tapOn:
+    id: 'CategoryCard.E2E Category Search'
+
+- assertVisible: 'E2E Category Search.*'
+- tapOn:
+    id: 'CategoryForm.Merge'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 10000
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
+- inputText: 'Primary'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+    timeout: 10000
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Card.E2E Category Primary'
+
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Search'
+
+- tapOn:
+    id: 'CategoryPage.SearchInput'
+- eraseText: 50
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Primary'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Search'
+
+# --- Edit Primary Category Text + Icon ---
+
+- tapOn:
+    id: 'CategoryCard.E2E Category Primary'
+
+- tapOn:
+    id: 'CategoryForm.IconTrigger'
+- tapOn:
+    id: 'IconSelector.SearchInput'
+- inputText: 'heart'
+- tapOn:
+    id: 'IconSelector.Icon.Heart'
+
+- tapOn:
+    id: 'CategoryForm.Input'
+- eraseText: 80
+- inputText: 'E2E Category Updated'
+- tapOn: 'Edit Category'
+- tapOn:
+    id: 'CategoryForm.Submit'
+
+- assertVisible:
+    id: 'CategoryCard.E2E Category Updated'
+- assertVisible:
+    id: 'CategoryCard.Icon.E2E Category Updated.Heart'
+- assertNotVisible:
+    id: 'CategoryCard.E2E Category Primary'
+
+- swipe:
+    from:
+      id: 'CategoryCard.E2E Category Updated'
+    direction: LEFT
+- extendedWaitUntil:
+    visible:
+      id: 'DeletableRow.DeleteButton'
+    timeout: 10000
+- tapOn:
+    id: 'DeletableRow.DeleteButton'
+- tapOn: 'Delete'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryCard.E2E Category Updated'
+    timeout: 10000

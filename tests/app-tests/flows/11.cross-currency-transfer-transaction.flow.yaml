@@ -1,0 +1,103 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '12-cross-currency-transfer-transaction'
+
+# --- Create Cross-Currency Transfer ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Transfer'
+      FORM_TITLE: 'New Transfer'
+
+- tapOn: '7'
+- tapOn: '5'
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Txn Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Foreign Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Foreign Account'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Foreign Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransferForm.ConversionRow'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Cross Currency Transfer'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.25'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Foreign_Account.163_6'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+# --- Delete Cross-Currency Transfer ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Foreign_Account.100'
