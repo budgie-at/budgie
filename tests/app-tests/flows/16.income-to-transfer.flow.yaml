@@ -10,16 +10,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.Income'
-
-- tapOn:
-    id: 'ActionItem.Income'
-- extendedWaitUntil:
-    visible: 'New Income'
+- runFlow:
+    file: subflows/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Income'
+      FORM_TITLE: 'New Income'
 
 - tapOn: '0'
 - tapOn: '3'
@@ -45,7 +40,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Convert_Income'
-    timeout: 15000
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -63,7 +58,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Convert_Income'
-- waitForAnimationToEnd
 
 - tapOn:
     point: '80%,8%'
@@ -129,7 +123,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Convert_Income'
-- waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml

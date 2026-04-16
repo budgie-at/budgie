@@ -12,21 +12,12 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.Transfer'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Transfer'
+      FORM_TITLE: 'New Transfer'
 
-- tapOn:
-    id: 'ActionItem.Transfer'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible: 'New Transfer'
-
-- assertVisible:
-    id: 'TransactionForm.SubmitButton'
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Transfer'
@@ -40,7 +31,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransferForm.FromAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
@@ -58,7 +48,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransferForm.ToAccount'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'AccountPickerBottomSheet.Input'
@@ -84,7 +73,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Test_Transfer'
-    timeout: 15000
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -104,7 +93,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Transfer'
-- waitForAnimationToEnd
 
 - runFlow:
     file: subflows/edit-comment.flow.yaml
@@ -116,13 +104,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Edited_Transfer'
-    timeout: 15000
+    timeout: 5000
 
 # --- Delete Transfer ---
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Transfer'
-- waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml

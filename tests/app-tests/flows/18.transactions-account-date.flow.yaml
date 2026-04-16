@@ -17,25 +17,25 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.AccountChip'
-    timeout: 15000
+    timeout: 5000
 - tapOn:
     id: 'TransactionFilters.AccountChip'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.AccountGroupToggle.CASH'
-    timeout: 15000
+    timeout: 5000
 - tapOn:
     id: 'TransactionFilters.AccountGroupToggle.CASH'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
-    timeout: 15000
+    timeout: 5000
 - tapOn:
     id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.AccountOptionSelected.E2E Filter Cash A'
-    timeout: 15000
+    timeout: 5000
 - tapOn:
     id: 'TransactionFilters.AccountApplyButton'
 
@@ -51,7 +51,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionFilters.DatePeriod.TODAY'
-    timeout: 15000
+    timeout: 5000
 - tapOn:
     id: 'TransactionFilters.DatePeriod.TODAY'
 - tapOn:

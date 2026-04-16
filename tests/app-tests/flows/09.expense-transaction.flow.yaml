@@ -12,16 +12,12 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- runFlow: subflows/open-action-menu.flow.yaml
+- runFlow:
+    file: subflows/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
 
-- tapOn:
-    id: 'ActionItem.Expense'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible: 'New Expense'
-
-- assertVisible:
-    id: 'TransactionForm.SubmitButton'
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Expense'
@@ -58,7 +54,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Test_Expense'
-    timeout: 15000
+    timeout: 5000
 - assertVisible:
     id: 'TransactionCard.Category.E2E_Txn_Category'
 - assertVisible:
@@ -70,9 +66,7 @@ appId: ${APP_ID}
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
-- assertVisible:
-    id: 'HomePage.NetWorthValue.58'
+      id: 'HomePage.NetWorthValue.58'
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
@@ -80,7 +74,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Expense'
-- waitForAnimationToEnd
 
 - runFlow:
     file: subflows/create-category-from-transaction.flow.yaml
@@ -97,7 +90,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Edited_Expense'
-    timeout: 15000
+    timeout: 5000
 - assertVisible:
     id: 'TransactionCard.Category.E2E_Edited_Category'
 - assertVisible:
@@ -111,18 +104,17 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Expense'
-- waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- assertNotVisible:
-    id: 'TransactionCard.Label.E2E_Edited_Expense'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Edited_Expense'
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
-- assertVisible:
-    id: 'HomePage.NetWorthValue.100'
+      id: 'HomePage.NetWorthValue.100'

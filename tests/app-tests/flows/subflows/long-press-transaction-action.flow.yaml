@@ -1,0 +1,13 @@
+appId: ${APP_ID}
+env:
+  TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+  ACTION_BUTTON_ID: ${ACTION_BUTTON_ID}
+---
+- longPressOn:
+    id: ${TRANSACTION_CARD_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${ACTION_BUTTON_ID}
+- tapOn:
+    id: ${ACTION_BUTTON_ID}
+

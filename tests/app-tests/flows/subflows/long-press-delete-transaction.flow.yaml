@@ -1,19 +1,9 @@
 appId: ${APP_ID}
 ---
-- longPressOn:
-    id: ${TRANSACTION_CARD_ID}
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionContextMenu.DeleteButton'
+- runFlow:
+    file: long-press-transaction-action.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+      ACTION_BUTTON_ID: 'TransactionContextMenu.DeleteButton'
 
-- tapOn:
-    id: 'TransactionContextMenu.DeleteButton'
-
-- extendedWaitUntil:
-    visible: 'Are you sure?'
-    timeout: 10000
-- tapOn:
-    point: '67%,56%'
-- extendedWaitUntil:
-    notVisible: 'Are you sure?'
-    timeout: 15000
+- runFlow: confirm-delete-dialog.flow.yaml

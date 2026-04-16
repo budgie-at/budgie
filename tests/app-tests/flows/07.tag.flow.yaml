@@ -12,8 +12,6 @@ appId: ${APP_ID}
     speed: 20
     centerElement: true
 - waitForAnimationToEnd
-- assertVisible:
-    id: 'SettingsPage.ManageTagsCard'
 - tapOn:
     id: 'SettingsPage.ManageTagsCard'
 - extendedWaitUntil:
@@ -25,10 +23,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionButton'
-- waitForAnimationToEnd
-
-- tapOn: 'Tag'
-- waitForAnimationToEnd
+- tapOn:
+    text: 'Tag'
 
 - tapOn:
     id: 'TagForm.Input'
@@ -44,10 +40,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionButton'
-- waitForAnimationToEnd
-
-- tapOn: 'Tag'
-- waitForAnimationToEnd
+- tapOn:
+    text: 'Tag'
 
 - tapOn:
     id: 'TagForm.Input'
@@ -72,7 +66,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TagCard.E2E Tag Search'
-- waitForAnimationToEnd
 
 - assertVisible: 'E2E Tag Search.*'
 - tapOn:
@@ -103,7 +96,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TagCard.E2E Tag Primary'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'TagForm.Input'

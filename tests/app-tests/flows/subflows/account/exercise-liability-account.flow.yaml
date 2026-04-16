@@ -6,7 +6,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Badge.Adjustment'
@@ -29,7 +28,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.AdjustmentAmount.${INITIAL_AMOUNT}'
@@ -50,7 +48,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Badge.Adjustment'
@@ -73,7 +70,6 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Badge.Adjustment'
@@ -106,9 +102,6 @@ appId: ${APP_ID}
     element:
       id: 'AccountForm.ActiveTitle'
     direction: DOWN
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'AccountForm.ActiveTitle'
 - tapOn:
     id: 'AccountForm.ActiveTitle'
 - tapOn:
@@ -144,7 +137,7 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
     direction: DOWN
-    timeout: 15000
+    timeout: 8000
 
 - runFlow:
     file: open-account-settings.flow.yaml
@@ -156,9 +149,6 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
@@ -173,7 +163,7 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
     direction: DOWN
-    timeout: 15000
+    timeout: 8000
 
 - runFlow:
     file: open-account-settings.flow.yaml
@@ -185,9 +175,6 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
@@ -207,7 +194,6 @@ appId: ${APP_ID}
     element:
       id: 'AccountDetails.ArchiveButton'
     direction: DOWN
-- waitForAnimationToEnd
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
 - tapOn: 'Archive'

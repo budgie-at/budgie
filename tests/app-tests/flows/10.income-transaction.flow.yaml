@@ -12,21 +12,12 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- tapOn:
-    id: 'ActionButton'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.Income'
-- waitForAnimationToEnd
+- runFlow:
+    file: subflows/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Income'
+      FORM_TITLE: 'New Income'
 
-- tapOn:
-    id: 'ActionItem.Income'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible: 'New Income'
-
-- assertVisible:
-    id: 'TransactionForm.SubmitButton'
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Income'
@@ -59,7 +50,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Test_Income'
-    timeout: 15000
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -77,7 +68,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Income'
-- waitForAnimationToEnd
 
 - runFlow:
     file: subflows/edit-comment.flow.yaml
@@ -89,19 +79,20 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Edited_Income'
-    timeout: 15000
+    timeout: 5000
 
 # --- Delete Income ---
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Edited_Income'
-- waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- assertNotVisible:
-    id: 'TransactionCard.Label.E2E_Edited_Income'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Edited_Income'
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
