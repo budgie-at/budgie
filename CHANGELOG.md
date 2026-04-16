@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.3](https://github.com/budgie-at/budgie/compare/v5.2.2...v5.2.3) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** build workspace packages before EAS bundle ([f6a8df1](https://github.com/budgie-at/budgie/commit/f6a8df1251afb8182d143d2dde50d59bc5d43f5b))
+- **app:** list workspace build targets explicitly in EAS hook ([5991fdb](https://github.com/budgie-at/budgie/commit/5991fdb6ef57b572756fcbff5096804cd4f1c6a3))
+- **app:** run full workspace build in EAS hook ([5dc61f0](https://github.com/budgie-at/budgie/commit/5dc61f0b7bef0eb94e754fc3552311ce4527b719))
+
 ## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
 
 ### Bug Fixes
