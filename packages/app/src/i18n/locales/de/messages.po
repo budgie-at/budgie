@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/account/component/accounts-group/accounts-group.tsx:77
+#: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
 
@@ -247,7 +247,7 @@ msgid "Are you sure you want to delete all your data? This action cannot be undo
 msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:29
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:58
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:59
 #: src/transaction/hook/use-delete-transaction.hook.ts:14
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -304,7 +304,7 @@ msgstr "Budgie"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:41
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
-#: src/account/component/account-action-card/account-action-card.tsx:42
+#: src/account/component/account-action-card/account-action-card.tsx:52
 #: src/account/component/archive-account/archive-account.tsx:27
 #: src/account/component/archived-account-card/archived-account-card.tsx:33
 #: src/app/(tabs)/settings/import.tsx:254
@@ -313,7 +313,7 @@ msgstr "Budgie"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:61
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:62
 #: src/transaction/hook/use-delete-transaction.hook.ts:17
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -402,7 +402,7 @@ msgstr "Die Zwischenablage ist leer"
 msgid "Close"
 msgstr "Schließen"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:48
+#: src/@generic/component/popover-menu/popover-menu.tsx:50
 msgid "Close menu"
 msgstr "Menü schließen"
 
@@ -418,7 +418,7 @@ msgstr "PIN bestätigen"
 msgid "Confirm Split"
 msgstr "Aufteilung bestätigen"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:85
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:86
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
 
@@ -440,7 +440,7 @@ msgstr "Umwandeln"
 
 #: src/app/convert-to-transfer.tsx:117
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:25
-#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:108
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:102
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
 
@@ -513,7 +513,7 @@ msgstr "Tag konnte nicht gespeichert werden"
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
 
-#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:39
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:35
 msgid "Count this account in your net worth calculation"
 msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 
@@ -633,7 +633,7 @@ msgid "Default Account"
 msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:60
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:61
 #: src/transaction/hook/use-delete-transaction.hook.ts:16
 msgid "Delete"
 msgstr "Löschen"
@@ -654,8 +654,8 @@ msgstr "Daten löschen"
 msgid "Delete Permanently"
 msgstr "Dauerhaft löschen"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:88
-#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:115
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:89
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:120
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -672,9 +672,9 @@ msgstr "App-Sperre deaktivieren"
 msgid "Done"
 msgstr "Fertig"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:16
-msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
-msgstr "Laden Sie Ihren Kontoauszug als PDF von George (Erste Bank Online-Banking) herunter: Konto → Auszüge → PDF herunterladen."
+#: src/sync/component/create-erste-account/create-erste-account.tsx:17
+msgid "Download your statement as PDF"
+msgstr "Kontoauszug als PDF herunterladen"
 
 #: src/ai/provider/ai-status.provider.tsx:50
 msgid "Downloading AI model..."
@@ -712,7 +712,7 @@ msgstr "Einnahme bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/transaction/components/transaction-context-menu-card/transaction-context-menu-card.tsx:101
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:113
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -850,9 +850,9 @@ msgstr "Datenbank exportieren"
 msgid "Export Failed"
 msgstr "Export fehlgeschlagen"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:16
-msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
-msgstr "Exportieren Sie Ihre Transaktionen als XLSX aus der Privatbank24-App: Menü → Kontoauszüge → Nach Excel exportieren."
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
+msgid "Export your transactions to Excel"
+msgstr "Transaktionen nach Excel exportieren"
 
 #: src/app/(tabs)/settings/import.tsx:211
 msgid "External ID"
@@ -871,7 +871,7 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to clear data"
 msgstr "Daten konnten nicht gelöscht werden"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:50
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:51
 msgid "Failed to fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
@@ -883,7 +883,7 @@ msgstr "Kontakte konnten nicht geladen werden."
 msgid "Failed to save PIN. Please try again."
 msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:66
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:67
 msgid "Failed to setup sync"
 msgstr "Synchronisation konnte nicht eingerichtet werden"
 
@@ -891,7 +891,7 @@ msgstr "Synchronisation konnte nicht eingerichtet werden"
 msgid "Failed to update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:75
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:76
 msgid "Fetch Accounts"
 msgstr "Konten abrufen"
 
@@ -967,13 +967,17 @@ msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 msgid "History synced"
 msgstr "Verlauf synchronisiert"
 
+#: src/sync/component/file-upload-step/file-upload-step.tsx:34
+msgid "How to export"
+msgstr "So exportieren Sie"
+
 #: src/app/(main)/create-account/index.tsx:62
-#: src/sync/component/create-erste-account/create-erste-account.tsx:15
+#: src/sync/component/create-erste-account/create-erste-account.tsx:16
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Konten und Transaktionen aus Erste Bank PDF-Kontoauszug importieren"
 
 #: src/app/(main)/create-account/index.tsx:56
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:15
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:16
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Konten und Transaktionen aus Privatbank XLSX-Export importieren"
 
@@ -987,7 +991,7 @@ msgstr "CSV importieren"
 msgid "Import Database"
 msgstr "Datenbank importieren"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:14
+#: src/sync/component/create-erste-account/create-erste-account.tsx:15
 msgid "Import Erste Bank"
 msgstr "Erste Bank importieren"
 
@@ -999,7 +1003,7 @@ msgstr "Import fehlgeschlagen"
 msgid "Import Failed"
 msgstr "Import fehlgeschlagen"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:14
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:15
 msgid "Import Privatbank"
 msgstr "Privatbank importieren"
 
@@ -1016,7 +1020,7 @@ msgstr "Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt. Di
 msgid "Inactive Accounts"
 msgstr "Inaktive Konten"
 
-#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:37
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:33
 msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
@@ -1104,11 +1108,11 @@ msgstr "CSV-Spalten zuordnen"
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
-#: src/category/components/category-form/category-form.tsx:185
+#: src/category/components/category-form/category-form.tsx:184
 msgid "Merge into another category"
 msgstr "In eine andere Kategorie zusammenführen"
 
-#: src/tag/components/tag-form/tag-form.tsx:174
+#: src/tag/components/tag-form/tag-form.tsx:173
 msgid "Merge into another tag"
 msgstr "In einen anderen Tag zusammenführen"
 
@@ -1132,6 +1136,14 @@ msgstr "Monatliche Kosten"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:96
 msgid "Monthly Total"
 msgstr "Monatssumme"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:17
+msgid "Navigate to Account → Statements"
+msgstr "Zu Konto → Kontoauszüge navigieren"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
+msgid "Navigate to Menu → Statements"
+msgstr "Zu Menü → Kontoauszüge navigieren"
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
@@ -1271,9 +1283,17 @@ msgstr "nicht gesetzt"
 msgid "Note"
 msgstr "Notiz"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:17
+msgid "Open George (Erste Bank online banking)"
+msgstr "George (Erste Bank Online-Banking) öffnen"
+
 #: src/sync/component/get-token-card/get-token-card.tsx:33
 msgid "Open Monobank to get your token"
 msgstr "Öffnen Sie Monobank, um Ihren Token zu erhalten"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
+msgid "Open the Privatbank24 app"
+msgstr "Privatbank24-App öffnen"
 
 #: src/app/(tabs)/settings/index.tsx:108
 msgid "Organization"
@@ -1303,6 +1323,10 @@ msgstr "Fügen Sie Ihren API-Token unten ein:"
 msgid "Payment Progress"
 msgstr "Zahlungsfortschritt"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:19
+msgid "PDF statement"
+msgstr "PDF-Kontoauszug"
+
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
@@ -1320,7 +1344,7 @@ msgstr "PIN muss {PIN_LENGTH} Ziffern haben"
 msgid "PINs do not match"
 msgstr "PINs stimmen nicht überein"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Please enter your Monobank API token"
 msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
@@ -1511,7 +1535,7 @@ msgstr "Wählen Sie eine gültige Spalte"
 msgid "Select account"
 msgstr "Konto auswählen"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx:17
+#: src/sync/component/account-selection-step/account-selection-step.tsx:16
 msgid "Select accounts to sync:"
 msgstr "Konten zum Synchronisieren auswählen:"
 
@@ -1539,13 +1563,13 @@ msgstr "Datei auswählen"
 msgid "Select Import Preset"
 msgstr "Import-Vorlage auswählen"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:17
-msgid "Select the downloaded PDF file:"
-msgstr "Heruntergeladene PDF-Datei auswählen:"
+#: src/sync/component/create-erste-account/create-erste-account.tsx:20
+msgid "Select the downloaded PDF file"
+msgstr "Heruntergeladene PDF-Datei auswählen"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
-msgid "Select the exported XLSX file:"
-msgstr "Exportierte XLSX-Datei auswählen:"
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:20
+msgid "Select the exported XLSX file"
+msgstr "Exportierte XLSX-Datei auswählen"
 
 #: src/app/account-type-selector.tsx:39
 msgid "Select the type of account"
@@ -1589,7 +1613,7 @@ msgstr "Etwas ist schief gelaufen"
 msgid "Something went wrong."
 msgstr "Etwas ist schief gelaufen."
 
-#: src/account/component/account-action-card/account-action-card.tsx:50
+#: src/account/component/account-action-card/account-action-card.tsx:60
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 #: src/app/(tabs)/settings/archived.tsx:43
 msgid "Something went wrong. Please try again later."
@@ -1624,7 +1648,7 @@ msgid "Start Import"
 msgstr "Import starten"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:90
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:77
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
@@ -1669,7 +1693,7 @@ msgstr "Zwischen hellem und dunklem Design wechseln"
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:86
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:87
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 
@@ -1704,6 +1728,10 @@ msgstr "Tags ({selectedTagsCount})"
 msgid "Tap to clear"
 msgstr "Tippen zum Leeren"
 
+#: src/sync/component/file-upload-step/file-upload-step.tsx:65
+msgid "Tap to select"
+msgstr "Zum Auswählen tippen"
+
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:20
 msgid "Target balance"
 msgstr "Zielsaldo"
@@ -1713,7 +1741,7 @@ msgid "This account will be hidden from your main view and won't be included in 
 msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Gesamtsummen berücksichtigt. Sie können es jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:59
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:60
 #: src/transaction/hook/use-delete-transaction.hook.ts:15
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
@@ -1771,12 +1799,12 @@ msgstr "In Währung"
 msgid "Today"
 msgstr "Heute"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Token required"
 msgstr "Token erforderlich"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:94
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:103
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:102
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:115
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
 
@@ -1862,7 +1890,7 @@ msgstr "Ukrainisch"
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -1918,6 +1946,10 @@ msgstr "Wem schuldest du etwas?"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
 msgid "Who owes you?"
 msgstr "Wer schuldet Ihnen Geld?"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:19
+msgid "XLSX export"
+msgstr "XLSX-Export"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:101
 msgid "Yesterday"
