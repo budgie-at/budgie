@@ -10,5 +10,5 @@ interface Props {
 }
 
 export const FilterSheetApply = ({ onApply, label, testID }: Props) => (
-    <Button className="flex-1" variant="cta" onPress={onApply} content={label} rightIcon={UserIconNameEnum.ArrowRight} testID={testID} />
+    <Button className="grow" variant="cta" onPress={onApply} content={label} rightIcon={UserIconNameEnum.ArrowRight} testID={testID} />
 );
