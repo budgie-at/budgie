@@ -1,12 +1,10 @@
-import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { FilterRow } from '../../../@generic/component/filter-sheet/filter-row/filter-row';
+import { FilterRowCheck } from '../../../@generic/component/filter-sheet/filter-row-check/filter-row-check';
+import { FilterRowTitle } from '../../../@generic/component/filter-sheet/filter-row-title/filter-row-title';
 
 interface Props {
     readonly isSelected: boolean;
@@ -14,43 +12,14 @@ interface Props {
     readonly category: CategoryEntityInterface;
 }
 
-const categoryVariants = cva('py-xl px-3xl border border-secondary-corner rounded-5xl flex-row items-center gap-x-xl', {
-    variants: {
-        isSelected: {
-            true: 'bg-secondary-corner',
-            false: ''
-        }
-    }
-});
-
-const textVariants = cva('text-sm font-medium', {
-    variants: {
-        isSelected: {
-            true: 'text-primary',
-            false: 'text-secondary-foreground'
-        }
-    }
-});
-
 export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }: Props) => {
     const handleSelect = () => void onSelect(category.id);
 
     return (
-        <HapticPressable
-            onPress={handleSelect}
-            className={categoryVariants({ isSelected })}
-            testID={TransactionFiltersSelectors.CategoryOption(category.title)}
-        >
-            <CircleIcon icon={category.icon} variant="ghost" size={26} iconSize={12} />
-            <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>{category.title}</Text>
-            {isSelected ? (
-                <Icon
-                    size={16}
-                    icon={UserIconNameEnum.Check}
-                    className="text-primary"
-                    testID={TransactionFiltersSelectors.CategoryOptionSelected(category.title)}
-                />
-            ) : null}
-        </HapticPressable>
+        <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelectors.CategoryOption(category.title)}>
+            <CircleIcon icon={category.icon} variant="ghost" size={32} iconSize={16} />
+            <FilterRowTitle>{category.title}</FilterRowTitle>
+            <FilterRowCheck isSelected={isSelected} testID={TransactionFiltersSelectors.CategoryOptionSelected(category.title)} />
+        </FilterRow>
     );
 };

@@ -13,16 +13,16 @@ interface Props {
     readonly testID?: string;
 }
 
-const chipVariants = cva('rounded-2xl border border-secondary-corner px-4xl py-md', {
+const chipVariants = cva('rounded-full border px-2xl py-md', {
     variants: {
         isSelected: {
-            true: 'bg-primary',
-            false: ''
+            true: 'border-primary bg-primary',
+            false: 'border-secondary-corner bg-transparent'
         }
     }
 });
 
-const chipTextVariants = cva('font-semibold', {
+const chipTextVariants = cva('text-sm font-semibold', {
     variants: {
         isSelected: {
             true: 'text-primary-reverse',
