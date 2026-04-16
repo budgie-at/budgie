@@ -1,4 +1,4 @@
-import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry-interface.type';
+import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
 export const getRecurringEntryKey = (
     entry: Pick<RecurringCalendarEntryInterface, 'categoryId' | 'accountId' | 'latestAmount' | 'isForecast'>

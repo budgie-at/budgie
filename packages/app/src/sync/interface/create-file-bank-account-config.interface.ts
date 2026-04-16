@@ -1,4 +1,4 @@
-import type { BankAccountPreviewInterface } from './bank-account-preview-interface.type';
+import type { BankAccountPreviewInterface } from './bank-account-preview.interface';
 
 export interface CreateFileBankAccountConfigInterface {
     readonly mimeType: string;

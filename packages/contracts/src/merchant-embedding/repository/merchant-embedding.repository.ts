@@ -9,10 +9,10 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { CommentDistanceResultInterface } from '../interface/comment-distance-result-interface.type';
-import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params-interface.type';
-import { UnembeddedMerchantDataInterface } from '../interface/unembedded-merchant-data-interface.type';
-import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params-interface.type';
+import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
+import { UnembeddedMerchantDataInterface } from '../interface/unembedded-merchant-data.interface';
+import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
 

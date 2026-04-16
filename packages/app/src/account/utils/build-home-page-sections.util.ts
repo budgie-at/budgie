@@ -10,8 +10,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
-import { AccountRowInterface } from '../interface/account-row-interface.type';
-import { BankProviderSectionWithStatusInterface } from '../interface/bank-provider-section-with-status-interface.type';
+import { AccountRowInterface } from '../interface/account-row.interface';
+import { BankProviderSectionWithStatusInterface } from '../interface/bank-provider-section-with-status.interface';
 
 interface AccountTypeSectionInterface {
     readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;

@@ -1,8 +1,8 @@
-import { AccountEntityInterface } from '../../account/entity/account-entity-interface.type';
+import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-import { TransactionWithRelationsEntityInterface } from './transaction-with-relations-entity-interface.type';
+import { TransactionWithRelationsEntityInterface } from './transaction-with-relations-entity.interface';
 
 export interface TransactionTransferWithRelationsEntityInterface extends Omit<
     TransactionWithRelationsEntityInterface,

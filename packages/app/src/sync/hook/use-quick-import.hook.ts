@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { QuickImportConfigInterface } from '../interface/quick-import-config-interface.type';
+import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 
 interface QuickImportResult {
     readonly isLoading: boolean;

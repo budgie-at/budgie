@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { TransactionsTabType } from '../../type/transactions-tab-type.type';
+import { TransactionsTabType } from '../../type/transactions-tab.type';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { LayoutChangeEvent } from 'react-native';

@@ -3,8 +3,8 @@ import { EMBEDDING_BATCH_LIMIT, EmbeddingService, LlmInterface, serializeEmbeddi
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { BatchConfigInterface } from '../interface/batch-config-interface.type';
-import { ProgressCallbackInterface } from '../interface/progress-callback-interface.type';
+import { BatchConfigInterface } from '../interface/batch-config.interface';
+import { ProgressCallbackInterface } from '../interface/progress-callback.interface';
 
 interface ContextDataWithEmbedding {
     readonly context: string;

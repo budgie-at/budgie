@@ -4,12 +4,12 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { CategoryCreateEntityInterface } from '../entity/category-create-entity-interface.type';
-import { CategoryUpdateEntityInterface } from '../entity/category-update-entity-interface.type';
+import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
+import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
 import { CategoryEntityTable } from '../table/category-entity.table';
 
 import type * as schema from '../../schema';
-import type { CategoryEntityInterface } from '../entity/category-entity-interface.type';
+import type { CategoryEntityInterface } from '../entity/category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class CategoryRepository {
