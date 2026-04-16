@@ -1,6 +1,5 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -47,7 +46,9 @@ export default function TransactionCategoryFilterModal() {
     const applyLabel =
         selectedCount === 0
             ? t`Show all categories`
-            : plural(selectedCount, { one: `Show # category`, other: `Show # categories` });
+            : selectedCount === 1
+              ? t`Show 1 category`
+              : t`Show ${selectedCount} categories`;
 
     return (
         <FilterSheet>
