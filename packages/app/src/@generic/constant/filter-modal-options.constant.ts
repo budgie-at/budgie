@@ -1,6 +1,6 @@
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 
-const SHEET_DETENT_COMPACT = 0.6;
+const SHEET_DETENT_COMPACT = 0.4;
 const SHEET_CORNER_RADIUS = 24;
 
 export const COMPACT_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
