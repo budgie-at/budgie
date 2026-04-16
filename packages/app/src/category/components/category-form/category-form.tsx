@@ -1,7 +1,7 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -176,22 +176,20 @@ export const CategoryForm = (props: Props) => {
             </KeyboardAwareScrollView>
 
             {/* jscpd:ignore-start */}
-            <KeyboardStickyView>
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    {isEditing ? (
-                        <ModalFormMergeButton
-                            testID={CategoryFormSelectors.Merge}
-                            onPress={handleMerge}
-                            content={t`Merge into another category`}
-                        />
-                    ) : null}
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? (
+                    <ModalFormMergeButton
+                        testID={CategoryFormSelectors.Merge}
+                        onPress={handleMerge}
+                        content={t`Merge into another category`}
+                    />
+                ) : null}
 
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
-                    </View>
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={CategoryFormSelectors.Submit} />
                 </View>
-            </KeyboardStickyView>
+            </View>
             {/* jscpd:ignore-end */}
         </ModalPage>
     );

@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
@@ -13,8 +14,10 @@ export const CreateErsteAccount = () => {
         mimeType: PDF_MIME_TYPE,
         title: t`Import Erste Bank`,
         description: t`Import accounts and transactions from Erste Bank PDF statement`,
-        instructionText: t`Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF.`,
-        selectFileText: t`Select the downloaded PDF file:`,
+        steps: [t`Open George (Erste Bank online banking)`, t`Navigate to Account → Statements`, t`Download your statement as PDF`],
+        fileIcon: UserIconNameEnum.FileText,
+        fileTypeLabel: t`PDF statement`,
+        selectFileText: t`Select the downloaded PDF file`,
         importPreview: ersteSyncService.importPreview.bind(ersteSyncService),
         executeImportForSelectedAccounts: ersteSyncService.executeImportForSelectedAccounts.bind(ersteSyncService)
     };
