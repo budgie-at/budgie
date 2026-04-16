@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** correct Maestro startup env nesting ([7af2cbd](https://github.com/budgie-at/budgie/commit/7af2cbd258f30bd776531e2211104fe4e330c7d0))
+- **app:** make transaction creation atomic ([9ffc4ff](https://github.com/budgie-at/budgie/commit/9ffc4ff5e70e749848285e4c9b645de0d11727bc))
+- **app:** preserve user edits on imported reimport ([7005fc3](https://github.com/budgie-at/budgie/commit/7005fc353fafad1de63e201dd7f41922d9850783))
+- **app:** remove dead e2e hooks config ([6f12f05](https://github.com/budgie-at/budgie/commit/6f12f0574e67ed83b2b604eeb886394bf67a2006))
+- **bank-sync:** avoid unsafe erste inline regex ([05219aa](https://github.com/budgie-at/budgie/commit/05219aa8eb8b9ee0e9a6687427c4afd58f887186))
+- **bank-sync:** parse inline Abschlussbuchung transactions in Erste modern PDF ([bb7b65d](https://github.com/budgie-at/budgie/commit/bb7b65d35e0a072d3bf7f1e9d64892d1668bc8c0))
+- harden account details exit e2e flow ([bf6832c](https://github.com/budgie-at/budgie/commit/bf6832ccf9930176fa3e578c8bc1780540e5cd21))
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+- harden black-box imports and imported transaction updates ([e0c5a20](https://github.com/budgie-at/budgie/commit/e0c5a20c08c991277620915eec073c4a4c799070))
+- harden iOS fixture picker flow ([f4ba670](https://github.com/budgie-at/budgie/commit/f4ba6705094735554a661c46af4969e9e999ebb0))
+- restore stable balance hooks and trim ci setup ([7f8c7a3](https://github.com/budgie-at/budgie/commit/7f8c7a3232f98c6c24412b5d7c5f39ab1312e200))
+- stabilize transaction submit e2e flows ([2b9328e](https://github.com/budgie-at/budgie/commit/2b9328e8f9f25b95caf43ec055e6206cba4b444e))
+
 ## [5.2.1](https://github.com/budgie-at/budgie/compare/v5.2.0...v5.2.1) (2026-04-16)
 
 ### Bug Fixes

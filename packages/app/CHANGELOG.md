@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** make transaction creation atomic ([9ffc4ff](https://github.com/budgie-at/budgie/commit/9ffc4ff5e70e749848285e4c9b645de0d11727bc))
+- **app:** preserve user edits on imported reimport ([7005fc3](https://github.com/budgie-at/budgie/commit/7005fc353fafad1de63e201dd7f41922d9850783))
+- **app:** remove dead e2e hooks config ([6f12f05](https://github.com/budgie-at/budgie/commit/6f12f0574e67ed83b2b604eeb886394bf67a2006))
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+- harden black-box imports and imported transaction updates ([e0c5a20](https://github.com/budgie-at/budgie/commit/e0c5a20c08c991277620915eec073c4a4c799070))
+- restore stable balance hooks and trim ci setup ([7f8c7a3](https://github.com/budgie-at/budgie/commit/7f8c7a3232f98c6c24412b5d7c5f39ab1312e200))
+
 ## [5.2.1](https://github.com/budgie-at/budgie/compare/v5.2.0...v5.2.1) (2026-04-16)
 
 ### Bug Fixes
