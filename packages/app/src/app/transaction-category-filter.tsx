@@ -19,6 +19,7 @@ import { useTransactionCategoryFilterModal } from '../transaction/context/transa
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 
+// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -43,12 +44,13 @@ export default function TransactionCategoryFilterModal() {
         router.push('/settings/categories');
     };
 
-    const applyLabel =
-        selectedCount === 0
-            ? t`Show all categories`
-            : selectedCount === 1
-              ? t`Show 1 category`
-              : t`Show ${selectedCount} categories`;
+    const buildApplyLabel = () => {
+        if (selectedCount === 0) {return t`Show all categories`;}
+        if (selectedCount === 1) {return t`Show 1 category`;}
+
+        return t`Show ${selectedCount} categories`;
+    };
+    const applyLabel = buildApplyLabel();
 
     return (
         <FilterSheet>

@@ -43,12 +43,13 @@ export default function TransactionTypeFilterModal() {
         resolveTransactionTypeFilter({ value: localValueRef.current });
     };
 
-    const applyLabel =
-        localSelectedCount === 0
-            ? t`Show all types`
-            : localSelectedCount === 1
-              ? t`Show 1 type`
-              : t`Show ${localSelectedCount} types`;
+    const buildApplyLabel = () => {
+        if (localSelectedCount === 0) {return t`Show all types`;}
+        if (localSelectedCount === 1) {return t`Show 1 type`;}
+
+        return t`Show ${localSelectedCount} types`;
+    };
+    const applyLabel = buildApplyLabel();
 
     return (
         <FilterSheet>

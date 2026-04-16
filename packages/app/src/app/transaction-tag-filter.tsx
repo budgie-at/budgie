@@ -19,6 +19,7 @@ import { useTransactionTagFilterModal } from '../transaction/context/transaction
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 
+// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -43,8 +44,13 @@ export default function TransactionTagFilterModal() {
         router.push('/settings/tags');
     };
 
-    const applyLabel =
-        selectedCount === 0 ? t`Show all tags` : selectedCount === 1 ? t`Show 1 tag` : t`Show ${selectedCount} tags`;
+    const buildApplyLabel = () => {
+        if (selectedCount === 0) {return t`Show all tags`;}
+        if (selectedCount === 1) {return t`Show 1 tag`;}
+
+        return t`Show ${selectedCount} tags`;
+    };
+    const applyLabel = buildApplyLabel();
 
     return (
         <FilterSheet>
