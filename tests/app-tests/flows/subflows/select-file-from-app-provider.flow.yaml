@@ -12,7 +12,6 @@ env:
       commands:
           - tapOn:
                 id: 'BackButton'
-          - waitForAnimationToEnd
 
 - runFlow:
       when:
@@ -21,7 +20,6 @@ env:
       commands:
           - tapOn:
                 id: 'BackButton'
-          - waitForAnimationToEnd
 
 - runFlow:
       when:
@@ -30,10 +28,10 @@ env:
       commands:
           - tapOn:
                 id: 'BackButton'
-          - waitForAnimationToEnd
 
 - tapOn:
       text: '${ON_MY_IPHONE_MATCH}'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
       element:

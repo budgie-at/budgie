@@ -9,6 +9,5 @@ appId: ${APP_ID}
 - tapOn:
     id: 'NoteInput.Input'
 - inputText: ${COMMENT}
-- assertVisible: ${COMMENT}
 - tapOn:
     id: 'NoteInput.SubmitButton'

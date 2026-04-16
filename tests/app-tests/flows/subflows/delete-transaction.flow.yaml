@@ -8,12 +8,4 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionActionsMenu.DeleteButton'
-
-- extendedWaitUntil:
-    visible: 'Are you sure?'
-    timeout: 10000
-- tapOn:
-    point: '67%,56%'
-- extendedWaitUntil:
-    notVisible: 'Are you sure?'
-    timeout: 15000
+- runFlow: confirm-delete-dialog.flow.yaml
