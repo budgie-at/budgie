@@ -97,7 +97,16 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             safeEdges={FORM_PAGE_SAFE_EDGES}
         >
             <FormLayoutGroup>
-                {step === 'file' && <FileUploadStep instructionText={config.instructionText} selectFileText={config.selectFileText} />}
+                {step === 'file' && (
+                    <FileUploadStep
+                        steps={config.steps}
+                        fileIcon={config.fileIcon}
+                        fileTypeLabel={config.fileTypeLabel}
+                        selectFileText={config.selectFileText}
+                        onSelectFile={handleSelectFile}
+                        isLoading={isLoading}
+                    />
+                )}
 
                 {step === 'accounts' && (
                     <AccountSelectionStep
