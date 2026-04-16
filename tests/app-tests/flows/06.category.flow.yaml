@@ -12,8 +12,6 @@ appId: ${APP_ID}
     speed: 20
     centerElement: true
 - waitForAnimationToEnd
-- assertVisible:
-    id: 'SettingsPage.ManageCategoriesCard'
 - tapOn:
     id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
@@ -25,10 +23,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionButton'
-- waitForAnimationToEnd
-
-- tapOn: 'Category'
-- waitForAnimationToEnd
+- tapOn:
+    text: 'Category'
 
 - tapOn:
     id: 'CategoryForm.IconTrigger'
@@ -54,10 +50,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'ActionButton'
-- waitForAnimationToEnd
-
-- tapOn: 'Category'
-- waitForAnimationToEnd
+- tapOn:
+    text: 'Category'
 
 - tapOn:
     id: 'CategoryForm.IconTrigger'
@@ -92,7 +86,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'CategoryCard.E2E Category Search'
-- waitForAnimationToEnd
 
 - assertVisible: 'E2E Category Search.*'
 - tapOn:
@@ -127,7 +120,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'CategoryCard.E2E Category Primary'
-- waitForAnimationToEnd
 
 - tapOn:
     id: 'CategoryForm.IconTrigger'

@@ -1,21 +1,11 @@
 appId: ${APP_ID}
 ---
-- tapOn:
-    id: 'TransactionForm.TagsSelector'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'TagPickerBottomSheet.Input'
-- tapOn:
-    id: 'TagPickerBottomSheet.Input'
-- inputText: ${TAG_NAME}
-- tapOn:
-    id: 'TagPickerBottomSheet.CreateButton'
-- extendedWaitUntil:
-    visible:
-      id: 'TagForm.Input'
-- tapOn:
-    id: 'TagForm.Submit'
-- extendedWaitUntil:
-    notVisible:
-      id: 'TagForm.Input'
+- runFlow:
+    file: create-entity-from-transaction.flow.yaml
+    env:
+      SELECTOR_ID: 'TransactionForm.TagsSelector'
+      PICKER_INPUT_ID: 'TagPickerBottomSheet.Input'
+      ENTITY_NAME: ${TAG_NAME}
+      CREATE_BUTTON_ID: 'TagPickerBottomSheet.CreateButton'
+      FORM_INPUT_ID: 'TagForm.Input'
+      SUBMIT_BUTTON_ID: 'TagForm.Submit'

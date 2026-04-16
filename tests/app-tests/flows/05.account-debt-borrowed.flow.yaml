@@ -11,7 +11,9 @@ appId: ${APP_ID}
       DEBT_TYPE: 'BORROW'
       TARGET_BALANCE: '800'
 
-- assertVisible: 'You owe'
+- extendedWaitUntil:
+    visible: 'You owe'
+    timeout: 10000
 
 - runFlow:
     file: subflows/account/exercise-debt-account.flow.yaml

@@ -10,10 +10,8 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'AccountForm.NameInput'
-- waitForAnimationToEnd
 - inputText: ${ACCOUNT_NAME}
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
-- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
@@ -28,7 +26,6 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CurrencySelector.SearchInput'
 - inputText: ${CURRENCY_CODE}
-- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 
@@ -41,7 +38,6 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_AMOUNT}
 
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
-- waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.SubmitButton'
 

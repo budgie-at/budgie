@@ -1,10 +1,7 @@
 appId: ${APP_ID}
 ---
-- longPressOn:
-    id: ${TRANSACTION_CARD_ID}
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionContextMenu.EditButton'
-
-- tapOn:
-    id: 'TransactionContextMenu.EditButton'
+- runFlow:
+    file: long-press-transaction-action.flow.yaml
+    env:
+      TRANSACTION_CARD_ID: ${TRANSACTION_CARD_ID}
+      ACTION_BUTTON_ID: 'TransactionContextMenu.EditButton'

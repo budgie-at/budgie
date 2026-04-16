@@ -90,9 +90,6 @@ appId: ${APP_ID}
       id: 'AccountForm.ActiveTitle'
     direction: DOWN
     centerElement: true
-- waitForAnimationToEnd
-- assertVisible:
-    id: 'AccountForm.ActiveTitle'
 - tapOn:
     id: 'AccountForm.ActiveTitle'
 - tapOn:
@@ -135,8 +132,6 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
-- assertVisible:
-    id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
@@ -157,8 +152,6 @@ appId: ${APP_ID}
       id: 'AccountForm.IncludeInNetWorthTitle'
     direction: DOWN
     centerElement: true
-- assertVisible:
-    id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:
     id: 'AccountForm.IncludeInNetWorthTitle'
 - tapOn:

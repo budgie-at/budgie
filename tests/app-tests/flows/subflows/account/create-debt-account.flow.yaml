@@ -16,7 +16,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'AccountForm.TargetBalanceInput'
-- waitForAnimationToEnd
 - inputText: ${TARGET_BALANCE}
 
 - scrollUntilVisible:
@@ -51,7 +50,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
-    timeout: 30000
+    timeout: 15000
 
 - scrollUntilVisible:
     element:

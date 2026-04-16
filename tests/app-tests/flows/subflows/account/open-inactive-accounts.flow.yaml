@@ -10,11 +10,8 @@ appId: ${APP_ID}
     speed: 20
     centerElement: true
 - waitForAnimationToEnd
-- assertVisible:
-    id: 'SettingsPage.InactiveCard'
 - tapOn:
     id: 'SettingsPage.InactiveCard'
-- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'InactiveAccountsPage.Container'

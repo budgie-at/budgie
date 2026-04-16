@@ -4,7 +4,7 @@ env:
   HANDLE_DEV_CLIENT_STARTUP: ${HANDLE_DEV_CLIENT_STARTUP || 'false'}
 ---
 - retry:
-    maxRetries: 2
+    maxRetries: 1
     commands:
       - openLink: 'budgie://settings?anchor=data'
       - runFlow:
@@ -12,7 +12,6 @@ env:
             visible: 'Open'
           commands:
             - tapOn: 'Open'
-      - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
             id: 'SettingsPage.ImportDatabaseCard'
@@ -37,12 +36,11 @@ env:
       visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
     commands:
       - retry:
-          maxRetries: 2
+          maxRetries: 1
           commands:
             - tapOn:
                 text: 'Import Database|Datenbank importieren'
                 index: 1
-            - waitForAnimationToEnd
 
 - runFlow:
     file: relaunch-app.flow.yaml

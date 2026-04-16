@@ -10,12 +10,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigate-to-transactions.flow.yaml
 
-- runFlow: subflows/open-action-menu.flow.yaml
-
-- tapOn:
-    id: 'ActionItem.Expense'
-- extendedWaitUntil:
-    visible: 'New Expense'
+- runFlow:
+    file: subflows/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
 
 - tapOn: '3'
 - tapOn: '0'
@@ -40,7 +39,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.E2E_Convert_Expense'
-    timeout: 15000
+    timeout: 5000
 
 - tapOn:
     id: 'TabBar.Home'
@@ -58,7 +57,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Convert_Expense'
-- waitForAnimationToEnd
 
 - tapOn:
     point: '80%,8%'
@@ -124,7 +122,6 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Convert_Expense'
-- waitForAnimationToEnd
 
 - runFlow: subflows/delete-transaction.flow.yaml
 - runFlow: subflows/navigate-to-transactions.flow.yaml
