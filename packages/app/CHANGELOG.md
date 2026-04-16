@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.1](https://github.com/budgie-at/budgie/compare/v5.2.0...v5.2.1) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** add list footer spacer so last filter items clear the drawer ([4517995](https://github.com/budgie-at/budgie/commit/451799518cffd17347fdab4882146489ef2ea5a6))
+- **app:** avoid plural() macro crash in filter apply label ([4d03181](https://github.com/budgie-at/budgie/commit/4d03181af9be2c1a1718ad86c1d71de304e274ad))
+- **app:** date picker range start/end visible in both themes ([f5b979c](https://github.com/budgie-at/budgie/commit/f5b979c63efb9019a63dec2f1745834a906ace31))
+- **app:** filter apply button height and date picker cell styling ([540bc31](https://github.com/budgie-at/budgie/commit/540bc3169e21e84187455602e5241a7bbdba66dd))
+- **app:** last filter items visible above floating drawer ([efa195d](https://github.com/budgie-at/budgie/commit/efa195d263d2952c8c284f52c2b2edfc1b65e8e2))
+- **app:** menu dismiss, keyboard footer, and SOTA file import redesign ([6463e7e](https://github.com/budgie-at/budgie/commit/6463e7e4cfba761a2df5d6aea5efd48cad9b7256))
+- **app:** replace nested ternaries with local helper, silence max-statements ([6c630fd](https://github.com/budgie-at/budgie/commit/6c630fde4ce9ce39123faddcc93b8f8f61eb4b3f))
+- **app:** revert drawer to flex sibling to keep date picker visible ([6c2d834](https://github.com/budgie-at/budgie/commit/6c2d834fad87ff5bbbc79a52145d02119d19b4b8))
+
 # [5.2.0](https://github.com/budgie-at/budgie/compare/v5.1.2...v5.2.0) (2026-04-14)
 
 ### Bug Fixes
