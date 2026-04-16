@@ -53,6 +53,7 @@ appId: ${APP_ID}
     env:
       COMMENT: ${COMMENT}
 
+- hideKeyboard
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 

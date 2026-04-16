@@ -42,6 +42,7 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_AMOUNT}
 
 - tapOn: ${ACCOUNT_SCREEN_TITLE}
+- hideKeyboard
 - waitForAnimationToEnd
 - tapOn:
     id: 'AccountForm.SubmitButton'

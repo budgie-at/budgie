@@ -45,6 +45,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountForm.DebtType.${DEBT_TYPE}'
 
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 

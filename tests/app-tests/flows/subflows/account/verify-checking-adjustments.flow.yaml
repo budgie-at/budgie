@@ -29,6 +29,7 @@ appId: ${APP_ID}
 - inputText: ${INCREASE_TO}
 
 - tapOn: 'Account Settings'
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
@@ -64,6 +65,7 @@ appId: ${APP_ID}
 - inputText: ${DECREASE_TO}
 
 - tapOn: 'Account Settings'
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 

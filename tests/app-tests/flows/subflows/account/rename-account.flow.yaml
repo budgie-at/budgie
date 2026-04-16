@@ -9,6 +9,7 @@ appId: ${APP_ID}
 - assertVisible: ${UPDATED_ACCOUNT_NAME}
 
 - tapOn: 'Account Settings'
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
