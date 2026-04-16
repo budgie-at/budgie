@@ -8,7 +8,7 @@ interface Props {
 }
 
 const DEFAULT_TOP_PADDING = 16;
-const DEFAULT_BOTTOM_PADDING = 24;
+const DEFAULT_BOTTOM_PADDING = 160;
 const HORIZONTAL_PADDING = 12;
 const ITEM_GAP = 8;
 
