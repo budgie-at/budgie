@@ -16,7 +16,7 @@
         "ts": "run -T tsc -p .",
         "web": "expo start --web",
         "db:generate": "drizzle-kit generate",
-        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true && cd ../.. && yarn build"
+        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true"
     },
     "resolutions": {
         "lightningcss": "1.30.1"

@@ -4,8 +4,7 @@ const skipInAutomation =
     process.env.CI === 'true' ||
     process.env.CI === '1' ||
     Boolean(process.env.GITHUB_ACTIONS) ||
-    Boolean(process.env.VERCEL) ||
-    Boolean(process.env.EAS_BUILD);
+    Boolean(process.env.VERCEL);
 
 if (skipInAutomation) {
     console.log('[after-install] Skipping workspace build in automated environment.');
