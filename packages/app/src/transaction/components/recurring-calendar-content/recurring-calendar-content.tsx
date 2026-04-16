@@ -11,7 +11,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/recurring-calendar-day-detail';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';

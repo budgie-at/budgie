@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result-interface.type';
+import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
 const DEBOUNCE_MS = 300;

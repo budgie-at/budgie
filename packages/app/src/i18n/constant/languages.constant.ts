@@ -1,7 +1,7 @@
 import { LanguageEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
-import { LanguageInterface } from '../interface/language-interface.type';
+import { LanguageInterface } from '../interface/language.interface';
 
 const DEFAULT_LANGUAGE: LanguageInterface = {
     code: LanguageEnum.EN,

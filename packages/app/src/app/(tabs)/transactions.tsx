@@ -11,7 +11,7 @@ import { TransactionList } from '../../transaction/components/transaction-list/t
 
 import { TransactionsPageSelector } from './transactions-page.selector';
 
-import type { TransactionsTabType } from '../../@generic/type/transactions-tab-type.type';
+import type { TransactionsTabType } from '../../@generic/type/transactions-tab.type';
 
 export default function TransactionsPage() {
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');

@@ -1,6 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 
-import { LocaleInfoInterface } from '../interface/locale-info-interface.type';
+import { LocaleInfoInterface } from '../interface/locale-info.interface';
 
 export const DEFAULT_LOCALE = {
     measurementSystem: 'us',

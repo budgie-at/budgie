@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
 
 import { cn } from '../../../@generic/utils/cn.util';
-import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry-interface.type';
+import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 
 const MAX_DOTS = 3;
 

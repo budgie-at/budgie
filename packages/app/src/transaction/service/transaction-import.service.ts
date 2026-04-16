@@ -14,11 +14,11 @@ import { db, transactionEntryRepository, transactionRepository } from '../../@ge
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
-import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition-interface.type';
-import { ImportedEntryMatchInterface } from '../interface/imported-entry-match-interface.type';
-import { ImportedUpdateParamInterface } from '../interface/imported-update-param-interface.type';
-import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result-interface.type';
-import { TransactionImportOptionsInterface } from '../interface/transaction-import-options-interface.type';
+import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
+import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
+import { ImportedUpdateParamInterface } from '../interface/imported-update-param.interface';
+import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result.interface';
+import { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 
 import { transactionBatchCreateService } from './transaction-batch-create.service';
@@ -168,7 +168,9 @@ class TransactionImportService {
         const transactionIds = updateParams.map(({ transactionId }) => transactionId);
         const existingTransactions = await transactionRepository.findByIds(transactionIds, tx);
 
-        return new Map(existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction]));
+        return new Map(
+            existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
+        );
     }
 
     private buildRefreshedImportedEntries(

@@ -4,8 +4,8 @@ import { UnembeddedCommentDataInterface } from '@budgie/contracts';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository } from '../../@generic/drizzle/db/db';
-import { BatchConfigInterface } from '../interface/batch-config-interface.type';
-import { ProgressCallbackInterface } from '../interface/progress-callback-interface.type';
+import { BatchConfigInterface } from '../interface/batch-config.interface';
+import { ProgressCallbackInterface } from '../interface/progress-callback.interface';
 
 import { parseTagIds } from './parse-tag-ids.util';
 import { processEmbeddingBatches } from './process-embedding-batches.util';

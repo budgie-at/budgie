@@ -9,10 +9,10 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity-interface.type';
+import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
-import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity-interface.type';
+import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
 
 export class AccountBalanceRepository {
     constructor(private db: DB) {}

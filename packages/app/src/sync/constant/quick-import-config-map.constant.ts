@@ -1,6 +1,6 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 
-import { QuickImportConfigInterface } from '../interface/quick-import-config-interface.type';
+import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 import { ersteSyncQuickImportFromUri } from '../service/erste-sync.service';
 import { privatbankSyncQuickImportFromUri } from '../service/privatbank-sync.service';
 

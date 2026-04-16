@@ -3,8 +3,8 @@ import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { CardSizeType } from '../../type/card-size-type.type';
-import { HorizontalCellAlignType } from '../../type/horizontal-cell-align-type.type';
+import { CardSizeType } from '../../type/card-size.type';
+import { HorizontalCellAlignType } from '../../type/horizontal-cell-align.type';
 import { cn } from '../../utils/cn.util';
 import { Card } from '../card/card';
 

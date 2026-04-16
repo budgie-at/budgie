@@ -8,13 +8,13 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { AccountCreateEntityInterface } from '../entity/account-create-entity-interface.type';
-import { AccountUpdateEntityInterface } from '../entity/account-update-entity-interface.type';
+import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
+import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
-import { AccountFilterInterface } from '../interface/account-filter-interface.type';
+import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
-import type { AccountEntityInterface } from '../entity/account-entity-interface.type';
+import type { AccountEntityInterface } from '../entity/account-entity.interface';
 
 export class AccountRepository {
     constructor(private db: DB) {}

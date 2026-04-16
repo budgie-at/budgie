@@ -3,7 +3,7 @@ import { extractText } from 'expo-pdf-text-extract';
 
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 
-import type { ParsedFileResultInterface } from '../interface/parsed-file-result-interface.type';
+import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 
 class ErsteSyncService extends BaseFileBankSyncService {
     constructor() {

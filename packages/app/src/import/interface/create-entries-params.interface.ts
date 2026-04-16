@@ -1,6 +1,6 @@
 import { CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { EntryParamsInterface } from './entry-params-interface.type';
+import { EntryParamsInterface } from './entry-params.interface';
 
 export interface CreateEntriesParamsInterface {
     type: TransactionTypeEnum;

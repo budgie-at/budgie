@@ -2,11 +2,11 @@ import { SQL, and, gte, inArray, isNull, lte } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter-interface.type';
+import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { DateRangeInterface } from '../interface/date-range-interface.type';
+import { DateRangeInterface } from '../interface/date-range.interface';
 import { DB } from '../type/db.type';
 
 export abstract class BaseTransactionFilterRepository {

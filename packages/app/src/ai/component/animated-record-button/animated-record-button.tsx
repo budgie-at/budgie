@@ -21,7 +21,7 @@ import {
     RECORDING_COLOR,
     RING_SIZE
 } from '../../constant/animated-record-button.constant';
-import { RecordButtonStateType } from '../../type/record-button-state-type.type';
+import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { LoadingRing } from '../loading-ring/loading-ring';
 import { PulseRing } from '../pulse-ring/pulse-ring';
 import { SpinnerRing } from '../spinner-ring/spinner-ring';

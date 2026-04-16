@@ -16,7 +16,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { accountRepository, categoryRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { ExportRowInterface } from '../interface/export-row-interface.type';
+import { ExportRowInterface } from '../interface/export-row.interface';
 
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;

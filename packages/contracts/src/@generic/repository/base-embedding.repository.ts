@@ -4,11 +4,11 @@ import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
-import { CategoryScoreResultInterface } from '../interface/category-score-result-interface.type';
-import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config-interface.type';
-import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params-interface.type';
-import { SimilarTagsParamsInterface } from '../interface/similar-tags-params-interface.type';
-import { TagScoreResultInterface } from '../interface/tag-score-result-interface.type';
+import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
+import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
+import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
+import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { transactionAsync } from '../util/transaction-async.util';

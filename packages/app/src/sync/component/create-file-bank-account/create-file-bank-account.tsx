@@ -12,12 +12,12 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { BankAccountPreviewInterface } from '../../interface/bank-account-preview-interface.type';
+import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
-import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config-interface.type';
+import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 import type { Edge } from 'react-native-safe-area-context';
 
 type SetupStep = 'file' | 'accounts';

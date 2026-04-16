@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
 import { LOCALES } from '../constant/locales.constant';
-import { LocaleInfoInterface } from '../interface/locale-info-interface.type';
+import { LocaleInfoInterface } from '../interface/locale-info.interface';
 import { languageToLocale } from '../util/language-to-locale.util';
 
 export const useLocaleInfo = (): LocaleInfoInterface => {

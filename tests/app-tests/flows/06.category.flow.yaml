@@ -4,20 +4,11 @@ appId: ${APP_ID}
 - runFlow: subflows/enter-app.flow.yaml
 
 - runFlow: subflows/navigate-to-settings.flow.yaml
-
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.ManageCategoriesCard'
-    direction: DOWN
-    speed: 20
-    centerElement: true
-- waitForAnimationToEnd
-- tapOn:
-    id: 'SettingsPage.ManageCategoriesCard'
-- extendedWaitUntil:
-    visible:
-      id: 'CategoryPage.SearchInput'
-    timeout: 10000
+- runFlow:
+    file: subflows/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.ManageCategoriesCard'
+      DESTINATION_ID: 'CategoryPage.SearchInput'
 
 # --- Create Primary Category With Icon ---
 
