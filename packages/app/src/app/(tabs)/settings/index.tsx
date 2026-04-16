@@ -141,14 +141,25 @@ export default function SettingsPage() {
                 </View>
 
                 <View {...anchorLayout('appearance')}>
-                    <SettingsGroup title={t`Appearance`}>
+                        <SettingsGroup title={t`Appearance`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
-                            <ThemeSwitch />
+                            <ThemeSwitch
+                                cardTestID={SettingsPageSelector.DarkModeCard}
+                                switchTestID={SettingsPageSelector.DarkModeSwitch}
+                            />
                             <SettingsCard
+                                testID={SettingsPageSelector.ShowCentsCard}
                                 title={t`Show Cents`}
                                 description={t`Show $1,234.56 instead of $1,235`}
                                 icon={UserIconNameEnum.DollarSign}
-                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        testID={SettingsPageSelector.ShowCentsSwitch}
+                                        onValueChange={handleToggle('showCents')}
+                                        value={showCents}
+                                    />
+                                }
                                 variant="positive"
                             />
                         </Animated.View>

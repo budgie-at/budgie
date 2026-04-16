@@ -1,0 +1,26 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '00-empty-state'
+
+- runFlow:
+    file: subflows/accounts/create-cash-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Savings Account'
+      CURRENCY_CODE: 'CAD'
+      ACCOUNT_AMOUNT: '250'
+
+- runFlow:
+    file: subflows/accounts/exercise-liability-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Savings Account'
+      CURRENCY_CODE: 'CAD'
+      UPDATED_ACCOUNT_NAME: 'E2E Savings Account CAD'
+      INITIAL_AMOUNT: '250'
+      INCREASE_TO: '325'
+      INCREASE_DELTA: '75'
+      DECREASE_TO: '275'
+      DECREASE_DELTA: '50'

@@ -1,8 +1,0 @@
-appId: ${APP_ID}
-env:
-  FIXTURE_ID: ${FIXTURE_ID}
----
-- runFlow:
-    file: import-database-from-settings.flow.yaml
-    env:
-      FIXTURE_ROW_ID_MATCH: 'e2e-${FIXTURE_ID}.db, db'
