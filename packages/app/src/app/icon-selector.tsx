@@ -5,7 +5,6 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { IconSelectorSelectors } from '../@e2e/selectors/icon-selector.selector';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -13,6 +12,8 @@ import { USER_ICONS_LIST, UserIcon } from '../@generic/constant/user-icons.const
 import { useIconSelectorModal } from '../@generic/context/icon-selector-modal.context';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
+
+import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
 const NUM_COLUMNS = 4;
 const MAX_ICONS = 100;
@@ -103,7 +104,7 @@ export default function IconSelectorModal() {
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search icons (e.g., money, travel, food)...`}
-                testID={IconSelectorSelectors.SearchInput}
+                testID={IconSelectorModalSelector.SearchInput}
             />
 
             <FlatList

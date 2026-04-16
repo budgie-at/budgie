@@ -1,5 +1,5 @@
-import { infer } from 'zod';
+import { z } from 'zod';
 
 import { LiabilityAccountCreateInputSchema } from '../schema/liability-account-create-input.schema';
 
-export interface LiabilityAccountCreateInputInterface extends infer<typeof LiabilityAccountCreateInputSchema> {}
+export type LiabilityAccountCreateInputInterface = z.infer<typeof LiabilityAccountCreateInputSchema>;

@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
+import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly value: number[] | null;
@@ -27,8 +27,8 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
     const selectedAccountsCount = value?.length ?? 0;
     const label = isPositiveNumber(selectedAccountsCount) ? t`Accounts (${selectedAccountsCount})` : t`Accounts`;
     const chipTestID = isPositiveNumber(selectedAccountsCount)
-        ? TransactionFiltersSelectors.AccountChipActive
-        : TransactionFiltersSelectors.AccountChip;
+        ? TransactionFiltersSelector.AccountChipActive
+        : TransactionFiltersSelector.AccountChip;
 
     return (
         <TransactionFilterChip

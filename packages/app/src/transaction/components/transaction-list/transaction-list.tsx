@@ -5,8 +5,8 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionsPageSelectors } from '../../../@e2e/selectors/transactions-page.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
@@ -52,7 +52,7 @@ export const TransactionList = ({
             titleClassName="text-md text-primary font-semibold"
             description={emptyDescription}
             descriptionClassName="text-center max-w-[250px]"
-            testID={TransactionsPageSelectors.EmptyState}
+            testID={TransactionsPageSelector.EmptyState}
         />
     );
 

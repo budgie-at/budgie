@@ -6,7 +6,6 @@ import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { ConvertToTransferSelectors } from '../@e2e/selectors/convert-to-transfer.selector';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
@@ -17,6 +16,8 @@ import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-co
 import { useConvertIncomeToTransferMutation } from '../transaction/hooks/use-convert-income-to-transfer.mutation';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
+
+import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 /* jscpd:ignore-end */
@@ -113,7 +114,7 @@ export default function ConvertToTransferModal() {
     return (
         <FormProvider {...form}>
             <ModalPage
-                testID={ConvertToTransferSelectors.Page}
+                testID={ConvertToTransferModalSelector.Page}
                 header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
             >
                 <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />

@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import { Alert, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { ArchivedAccountCardSelectors } from '../../../@e2e/selectors/archived-account-card.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -14,6 +13,8 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 import { accountService } from '../../service/account.service';
+
+import { ArchivedAccountCardSelector } from './archived-account-card.selector';
 /* jscpd:ignore-end */
 
 interface Props {
@@ -47,14 +48,14 @@ export const ArchivedAccountCard = ({ account }: Props) => {
 
     return (
         <SimpleHorizontalCell
-            testID={ArchivedAccountCardSelectors.Card(accountTitle)}
+            testID={ArchivedAccountCardSelector.Card(accountTitle)}
             right={
                 <View className="flex-row items-center gap-x-xl">
                     <ProtectedText className="text-destructive-foreground text-sm font-semibold">
                         {formatDigits(balance, account.instrument.symbol)}
                     </ProtectedText>
 
-                    <HapticPressable testID={ArchivedAccountCardSelectors.RestoreButton(accountTitle)} onPress={handleRestore}>
+                    <HapticPressable testID={ArchivedAccountCardSelector.RestoreButton(accountTitle)} onPress={handleRestore}>
                         <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
                     </HapticPressable>
                 </View>

@@ -1,5 +1,5 @@
-import { infer } from 'zod';
+import { z } from 'zod';
 
 import { TransactionEntryEntitySchema } from '../schema/transaction-entry-entity.schema';
 
-export interface TransactionEntryEntityInterface extends infer<typeof TransactionEntryEntitySchema> {}
+export type TransactionEntryEntityInterface = z.infer<typeof TransactionEntryEntitySchema>;

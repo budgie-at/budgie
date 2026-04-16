@@ -6,7 +6,6 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { TagPageSelectors } from '../../../@e2e/selectors/tag-page.selector';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -16,6 +15,8 @@ import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 import { tagService } from '../../../tag/service/tag.service';
+
+import { TagPageSelector } from './tag-page.selector';
 
 const handleGoBack = () => void goBackOrReplace('/settings');
 
@@ -89,7 +90,7 @@ export default function Tags() {
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
-            searchInputTestID={TagPageSelectors.SearchInput}
+            searchInputTestID={TagPageSelector.SearchInput}
         />
     );
 }

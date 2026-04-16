@@ -31,7 +31,7 @@ src/
 │   │   ├── bank-account.interface.ts
 │   │   ├── bank-client-info.interface.ts
 │   │   ├── bank-provider-client.interface.ts
-│   │   ├── bank-sync-result.interface.ts
+│   │   ├── bank-sync-result.type.ts
 │   │   └── bank-transaction.interface.ts
 │   └── service/
 │       └── base-bank-sync.service.ts       # Abstract sync service
