@@ -1,15 +1,16 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { Button } from '../@generic/component/button/button';
-import { Footer } from '../@generic/component/footer/footer';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet';
+import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply';
+import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer';
+import { FilterSheetHeader } from '../@generic/component/filter-sheet/filter-sheet-header';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
-import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
 
@@ -18,13 +19,10 @@ const TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCO
 export default function TransactionTypeFilterModal() {
     const { t } = useLingui();
     const [, resolveTransactionTypeFilter, currentParams] = useTransactionTypeFilterModal();
-    const { backgroundColor } = useFormsheetListStyles();
 
     const [localValue, setLocalValue, localValueRef] = useStateRef<TransactionTypeEnum[] | null>(() => currentParams?.value ?? null);
 
     const localSelectedCount = localValue?.length ?? 0;
-    const buttonText = isPositiveNumber(localSelectedCount) ? t`Apply Filter (${localSelectedCount})` : t`Apply Filter`;
-    const containerStyle = { flex: 1, backgroundColor };
 
     const handleSelect = (selected: TransactionTypeEnum) => {
         setLocalValue(prev => {
@@ -49,25 +47,30 @@ export default function TransactionTypeFilterModal() {
     };
 
     return (
-        <View style={containerStyle}>
-            <TransactionFilterHeader
-                title={t`Transaction Type`}
-                icon={UserIconNameEnum.Layers}
-                onClear={handleClear}
-                showClear={isPositiveNumber(localSelectedCount)}
-            />
+        <FilterSheet>
+            <FilterSheetHeader title={t`Transaction Type`} onClear={handleClear} showClear={isPositiveNumber(localSelectedCount)} />
 
-            <View className="flex-row flex-wrap -mx-sm px-7xl py-7xl gap-y-xl">
-                {TRANSACTION_TYPES.map(type => (
-                    <View className="w-1/2 px-sm" key={type}>
-                        <TransactionTypeFilterItem type={type} onSelect={handleSelect} isSelected={localValue?.includes(type) ?? false} />
-                    </View>
-                ))}
-            </View>
+            <FilterSheetList>
+                <View className="-mx-sm flex-row flex-wrap gap-y-md">
+                    {TRANSACTION_TYPES.map(type => (
+                        <View className="w-1/2 px-sm" key={type}>
+                            <TransactionTypeFilterItem
+                                type={type}
+                                onSelect={handleSelect}
+                                isSelected={localValue?.includes(type) ?? false}
+                            />
+                        </View>
+                    ))}
+                </View>
+            </FilterSheetList>
 
-            <Footer>
-                <Button variant="ghost" onPress={handleApply} content={buttonText} testID={TransactionFiltersSelectors.TypeApplyButton} />
-            </Footer>
-        </View>
+            <FilterSheetDrawer>
+                <FilterSheetApply
+                    onApply={handleApply}
+                    selectedCount={localSelectedCount}
+                    testID={TransactionFiltersSelectors.TypeApplyButton}
+                />
+            </FilterSheetDrawer>
+        </FilterSheet>
     );
 }
