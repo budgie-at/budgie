@@ -12,3 +12,12 @@ export const UNIFIED_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     sheetCornerRadius: SHEET_CORNER_RADIUS,
     contentStyle: { backgroundColor: 'transparent' }
 };
+
+export const DATE_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
+    presentation: 'formSheet',
+    headerShown: false,
+    sheetGrabberVisible: true,
+    sheetAllowedDetents: [SHEET_DETENT_LARGE],
+    sheetCornerRadius: SHEET_CORNER_RADIUS,
+    contentStyle: { backgroundColor: 'transparent' }
+};

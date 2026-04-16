@@ -43,7 +43,14 @@ export const FilterSheetSearchableDrawer = (props: Props) => {
     return (
         <FilterSheetDrawer>
             {showControls ? (
-                <Input placeholder={searchPlaceholder} value={searchValue} onChangeText={onSearchChange} testID={searchTestID} />
+                <Input
+                    size="md"
+                    className="bg-secondary-background rounded-5xl placeholder:text-secondary-foreground"
+                    placeholder={searchPlaceholder}
+                    value={searchValue}
+                    onChangeText={onSearchChange}
+                    testID={searchTestID}
+                />
             ) : null}
             <View className="flex-row items-center gap-x-md">
                 {showControls ? (

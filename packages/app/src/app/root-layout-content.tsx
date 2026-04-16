@@ -25,7 +25,7 @@ import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-option
 import { COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
-import { UNIFIED_FILTER_SHEET_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
+import { DATE_FILTER_SHEET_OPTIONS, UNIFIED_FILTER_SHEET_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -125,7 +125,7 @@ export const RootLayoutContent = () => {
                                                                 name="transaction-type-filter"
                                                                 options={COMPACT_FILTER_SHEET_OPTIONS}
                                                             />
-                                                            <Stack.Screen name="date-filter" options={UNIFIED_FILTER_SHEET_OPTIONS} />
+                                                            <Stack.Screen name="date-filter" options={DATE_FILTER_SHEET_OPTIONS} />
                                                             <Stack.Screen
                                                                 name="transaction-category-filter"
                                                                 options={UNIFIED_FILTER_SHEET_OPTIONS}
