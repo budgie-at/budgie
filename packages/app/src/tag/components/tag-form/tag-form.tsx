@@ -1,11 +1,12 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TagFormSelectors } from '../../../@e2e/selectors/tag-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
@@ -23,8 +24,6 @@ import { useTagsSelectorModal } from '../../context/tags-selector-modal.context'
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
-
-import { TagFormSelector } from './tag-form.selector';
 
 type TagFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 
@@ -152,7 +151,7 @@ export const TagForm = (props: Props) => {
                             textContentType="none"
                             spellCheck={false}
                             inputMode="text"
-                            testID={TagFormSelector.Input}
+                            testID={TagFormSelectors.Input}
                         />
                     </FormItem>
                 </Animated.View>
@@ -169,18 +168,16 @@ export const TagForm = (props: Props) => {
                 />
             </KeyboardAwareScrollView>
 
-            <KeyboardStickyView>
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    {isEditing ? (
-                        <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
-                    ) : null}
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? (
+                    <ModalFormMergeButton testID={TagFormSelectors.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
+                ) : null}
 
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelector.Submit} />
-                    </View>
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
                 </View>
-            </KeyboardStickyView>
+            </View>
         </ModalPage>
     );
 };
