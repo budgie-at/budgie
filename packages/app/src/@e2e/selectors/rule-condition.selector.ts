@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const RuleConditionSelectors = {
     Row: (index: number) => `RuleForm.Condition.${index}.Row`,
     FieldSelector: (index: number) => `RuleForm.Condition.${index}.FieldSelector`,

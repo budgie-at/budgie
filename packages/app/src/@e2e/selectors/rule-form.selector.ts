@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const RuleFormSelectors = {
     Page: 'RuleForm.Page',
     Header: 'RuleForm.Header',

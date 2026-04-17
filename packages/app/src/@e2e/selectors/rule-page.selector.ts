@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const RulesPageSelectors = {
     Page: 'RulesPage.Page',
     Header: 'RulesPage.Header',

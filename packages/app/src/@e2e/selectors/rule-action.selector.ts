@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const RuleActionSelectors = {
     Row: (index: number) => `RuleForm.Action.${index}.Row`,
     TypeSelector: (index: number) => `RuleForm.Action.${index}.TypeSelector`,
