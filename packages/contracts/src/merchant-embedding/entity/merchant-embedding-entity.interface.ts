@@ -1,4 +1,5 @@
-import type { MerchantEmbeddingEntitySchema } from '../schema/merchant-embedding-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface MerchantEmbeddingEntityInterface extends infer<typeof MerchantEmbeddingEntitySchema> {}
+import type { MerchantEmbeddingEntitySchema } from '../schema/merchant-embedding-entity.schema';
+
+export type MerchantEmbeddingEntityInterface = z.infer<typeof MerchantEmbeddingEntitySchema>;

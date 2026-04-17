@@ -5,7 +5,7 @@ import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.e
 import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
-import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.interface';
+import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
 
 const getTransactionType = (amount: number): BankTransactionTypeEnum =>
     isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;

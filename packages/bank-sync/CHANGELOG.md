@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- **bank-sync:** avoid unsafe erste inline regex ([05219aa](https://github.com/budgie-at/budgie/commit/05219aa8eb8b9ee0e9a6687427c4afd58f887186))
+- **bank-sync:** parse inline Abschlussbuchung transactions in Erste modern PDF ([bb7b65d](https://github.com/budgie-at/budgie/commit/bb7b65d35e0a072d3bf7f1e9d64892d1668bc8c0))
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+- harden black-box imports and imported transaction updates ([e0c5a20](https://github.com/budgie-at/budgie/commit/e0c5a20c08c991277620915eec073c4a4c799070))
+
 # [5.0.0](https://github.com/budgie-at/budgie/compare/v4.0.0...v5.0.0) (2026-04-07)
 
 **Note:** Version bump only for package @budgie/bank-sync

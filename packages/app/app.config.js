@@ -98,7 +98,6 @@ export default ({ config }) => ({
     extra: {
         appVariant: APP_VARIANT ?? 'production',
         aiEnabled: !IS_AI_DISABLED,
-        e2eHooksEnabled: IS_DEV || IS_E2E,
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
@@ -123,6 +122,13 @@ export default ({ config }) => ({
         './plugins/with-vec-xcframework-fix',
         'expo-asset',
         'expo-image',
+        [
+            'expo-file-system',
+            {
+                enableFileSharing: IS_E2E,
+                supportsOpeningDocumentsInPlace: IS_E2E
+            }
+        ],
         'expo-sharing',
         'expo-localization',
         'expo-secure-store',
@@ -141,20 +147,24 @@ export default ({ config }) => ({
                 withSQLiteVecExtension: true
             }
         ],
-        [
-            'react-native-audio-api',
-            {
-                iosBackgroundMode: true,
-                iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
-                androidPermissions: [
-                    'android.permission.MODIFY_AUDIO_SETTINGS',
-                    'android.permission.FOREGROUND_SERVICE',
-                    'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
-                ],
-                androidForegroundService: true,
-                androidFSTypes: ['mediaPlayback']
-            }
-        ],
+        ...(!IS_AI_DISABLED
+            ? [
+                  [
+                      'react-native-audio-api',
+                      {
+                          iosBackgroundMode: true,
+                          iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
+                          androidPermissions: [
+                              'android.permission.MODIFY_AUDIO_SETTINGS',
+                              'android.permission.FOREGROUND_SERVICE',
+                              'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
+                          ],
+                          androidForegroundService: true,
+                          androidFSTypes: ['mediaPlayback']
+                      }
+                  ]
+              ]
+            : []),
         [
             'expo-local-authentication',
             {
@@ -181,15 +191,19 @@ export default ({ config }) => ({
             }
         ],
         ['expo-router', { origin: 'https://www.budgie.at/' }],
-        [
-            'llama.rn',
-            {
-                enableEntitlements: true,
-                entitlementsProfile: 'production',
-                forceCxx20: true,
-                enableOpenCLAndHexagon: true
-            }
-        ],
+        ...(!IS_AI_DISABLED
+            ? [
+                  [
+                      'llama.rn',
+                      {
+                          enableEntitlements: true,
+                          entitlementsProfile: 'production',
+                          forceCxx20: true,
+                          enableOpenCLAndHexagon: true
+                      }
+                  ]
+              ]
+            : []),
         [
             'expo-font',
             {

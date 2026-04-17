@@ -4,25 +4,22 @@ flows:
 executionOrder:
     continueOnFailure: false
     flowsOrder:
-        - 01.empty-states.flow
-        - 02.account-bank.flow
-        - 03.account-cash.flow
-        - 04.account-debt-lent.flow
-        - 05.account-debt-borrowed.flow
-        - 06.category.flow
-        - 07.tag.flow
-        - 08.settings-navigation.flow
-        - 09.expense-transaction.flow
-        - 10.income-transaction.flow
-        - 11.transfer-transaction.flow
-        - 12.cross-currency-transfer-transaction.flow
-        - 13.balance-verification.flow
-        - 15.archived-accounts.flow
-        - 17.expense-to-transfer.flow
-        - 18.income-to-transfer.flow
-        - 19.transactions-filters.flow
-        - 20.transactions-account-date.flow
-        - 21.transaction-long-press.flow
+        - 01.account-bank.flow
+        - 02.account-cash.flow
+        - 03.account-debt-lent.flow
+        - 04.account-debt-borrowed.flow
+        - 05.category.flow
+        - 06.tag.flow
+        - 07.settings-preferences.flow
+        - 08.expense-transaction.flow
+        - 09.income-transaction.flow
+        - 10.transfer-transaction.flow
+        - 11.cross-currency-transfer-transaction.flow
+        - 12.account-archive-and-expense-to-transfer.flow
+        - 13.income-to-transfer.flow
+        - 14.transactions-filters.flow
+        - 15.transaction-long-press.flow
+        - 16.erste-bank-import.flow
         - 22.security-app-lock.flow
         - 23.security-privacy.flow
         - 24.csv-import-export.flow
