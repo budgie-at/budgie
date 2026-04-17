@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { aiSuggestLog } from '../util/ai-suggest-log.util';
+import { aiLog } from '../utils/ai-log.util';
 
 import { useAiProgress } from './use-ai-progress.hook';
 
@@ -57,9 +57,9 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
-        aiSuggestLog('base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
+        aiLog('hook:suggestion:base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
         if (!isReady) {
-            aiSuggestLog('base:effect:skip:not-ready', {
+            aiLog('hook:suggestion:base:effect:skip:not-ready', {
                 enabled,
                 readyChecks: [...readyChecks],
                 readyCheckFailAt: readyChecks.findIndex(check => !check)
@@ -71,19 +71,19 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         let cancelled = false;
 
         const suggest = async (): Promise<void> => {
-            aiSuggestLog('base:suggest:loading', { requestKey });
+            aiLog('hook:suggestion:base:suggest:loading', { requestKey });
             setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();
 
                 if (!cancelled) {
-                    aiSuggestLog('base:suggest:success', { requestKey, resultCount: results.length });
+                    aiLog('hook:suggestion:base:suggest:success', { requestKey, resultCount: results.length });
                     setResult({ key: requestKey, status: 'success', suggestions: results });
                 }
             } catch (error: unknown) {
                 if (!cancelled) {
-                    aiSuggestLog('base:suggest:error', { requestKey, message: error instanceof Error ? error.message : String(error) });
+                    aiLog('hook:suggestion:base:suggest:error', { requestKey, message: error instanceof Error ? error.message : String(error) });
                     setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }
             }

@@ -17,7 +17,7 @@ import {
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
-import { aiSuggestLog } from '../../@generic/util/ai-suggest-log.util';
+import { aiLog } from '../../@generic/util/ai-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
@@ -39,19 +39,19 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): Promise<CategoryEntityInterface[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        aiSuggestLog('svc:suggestCategories:context', {
+        aiLog('suggest:category:context', {
             context: suggestionContext.context,
             distanceThreshold: suggestionContext.distanceThreshold
         });
         const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
 
         if (!isDefined(resolved)) {
-            aiSuggestLog('svc:suggestCategories:no-embedding', { context: suggestionContext.context });
+            aiLog('suggest:category:no-embedding', { context: suggestionContext.context });
 
             return [];
         }
 
-        aiSuggestLog('svc:suggestCategories:embedded', {
+        aiLog('suggest:category:embedded', {
             serializedBytes: resolved.serialized.length,
             distanceThreshold: resolved.distanceThreshold
         });
@@ -71,7 +71,7 @@ export class EmbeddingSuggestionService {
             )
         ]);
 
-        aiSuggestLog('svc:suggestCategories:repoResults', {
+        aiLog('suggest:category:repoResults', {
             merchantCount: merchantResults.length,
             commentCount: commentResults.length,
             merchantRows: merchantResults.map(row => ({ categoryId: row.categoryId, score: row.score })),
@@ -81,7 +81,7 @@ export class EmbeddingSuggestionService {
         const merged = this.mergeCategoryScores(merchantResults, commentResults);
         const topCategories = merged.slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
         const resolvedCategories = topCategories.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
-        aiSuggestLog('svc:suggestCategories:final', {
+        aiLog('suggest:category:final', {
             topCount: topCategories.length,
             resolvedCount: resolvedCategories.length,
             topCategoryIds: resolvedCategories.map(category => category.id)
@@ -214,17 +214,17 @@ export class EmbeddingSuggestionService {
     }
 
     private async generateSerializedEmbedding(context: string, llm: LlmInterface): Promise<Uint8Array | null> {
-        aiSuggestLog('svc:generateSerializedEmbedding:start', { context, contextLen: context.length });
+        aiLog('suggest:embed:start', { context, contextLen: context.length });
         const service = new EmbeddingService(llm);
         const queryEmbedding = await service.generateEmbedding(context);
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
-            aiSuggestLog('svc:generateSerializedEmbedding:empty', { context });
+            aiLog('suggest:embed:empty', { context });
 
             return null;
         }
 
-        aiSuggestLog('svc:generateSerializedEmbedding:ok', { context, dimensions: queryEmbedding.length });
+        aiLog('suggest:embed:ok', { context, dimensions: queryEmbedding.length });
 
         return serializeEmbedding(queryEmbedding);
     }

@@ -5,7 +5,7 @@ import { useAllCategoriesQuery } from '../../category/query/use-all-categories.q
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { aiSuggestLog } from '../util/ai-suggest-log.util';
+import { aiLog } from '../utils/ai-log.util';
 
 import { useAi } from './use-ai.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -29,7 +29,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        aiSuggestLog('category:fetch:start', {
+        aiLog('hook:suggestion:category:fetch:start', {
             transactionTitle,
             mccCategoryId,
             mccDescription,
@@ -45,13 +45,13 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
             comment,
             aiContext
         );
-        aiSuggestLog('category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
+        aiLog('hook:suggestion:category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
 
         return results;
     };
 
     const modeReady = mode === AiModeEnum.Ready;
-    aiSuggestLog('category:hook:state', {
+    aiLog('hook:suggestion:category:hook:state', {
         enabled,
         modeReady,
         mode,
