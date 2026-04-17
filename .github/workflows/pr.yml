@@ -236,27 +236,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: |
-          node -e "
-          const fs = require('fs');
-          const packageJsonPath = './package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-          const excludedPackages = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface',
-            'llama.rn',
-            'react-native-audio-api'
-          ];
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [...new Set(excludedPackages)];
-          fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4) + '\n');
-          "
-
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
 
@@ -333,15 +312,9 @@ jobs:
           /usr/libexec/PlistBuddy -c "Delete :NSMicrophoneUsageDescription" "$PLIST_PATH" >/dev/null 2>&1 || true
           /usr/libexec/PlistBuddy -c "Delete :UIBackgroundModes" "$PLIST_PATH" >/dev/null 2>&1 || true
 
-      - name: Sync CocoaPods for E2E excludes
+      - name: Sync CocoaPods
         working-directory: packages/app/ios
-        run: |
-          APP_VARIANT=e2e pod install
-
-          if grep -En "expo-dev-client|expo-dev-launcher|expo-dev-menu|expo-dev-menu-interface" Podfile.lock Pods/Manifest.lock; then
-            echo "::error::E2E iOS pod graph still includes Expo dev client pods."
-            exit 1
-          fi
+        run: APP_VARIANT=e2e pod install
 
       - name: Restore Xcode DerivedData cache
         uses: actions/cache/restore@v5
@@ -607,27 +580,6 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
-
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: |
-          node -e "
-          const fs = require('fs');
-          const packageJsonPath = './package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-          const excludedPackages = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface',
-            'llama.rn',
-            'react-native-audio-api'
-          ];
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [...new Set(excludedPackages)];
-          fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4) + '\n');
-          "
 
       - name: Expo Prebuild
         working-directory: packages/app
