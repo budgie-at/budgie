@@ -1,4 +1,4 @@
-import { LlmInterface, buildCommentContext } from '@budgie/ai';
+import { EmbeddingInvokerInterface, buildCommentContext } from '@budgie/ai';
 import { UnembeddedCommentDataInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -38,7 +38,7 @@ const commentBatchConfig: BatchConfigInterface<UnembeddedCommentDataInterface, C
 };
 
 export const processCommentBatches = async (
-    llm: LlmInterface,
+    embedding: EmbeddingInvokerInterface,
     existingKeys: Set<string>,
     callbacks: ProgressCallbackInterface
-): Promise<void> => processEmbeddingBatches(llm, existingKeys, callbacks, commentBatchConfig);
+): Promise<void> => processEmbeddingBatches(embedding, existingKeys, callbacks, commentBatchConfig);
