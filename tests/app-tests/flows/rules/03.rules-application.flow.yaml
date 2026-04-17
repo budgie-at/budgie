@@ -38,7 +38,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -122,7 +122,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
 - runFlow:
-    file: ../shared/select-tag-by-search.flow.yaml
+    file: ../subflows/shared/select-tag-by-search.flow.yaml
     env:
       TAG_NAME: ${TAG_NAME}
 
@@ -197,7 +197,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -312,7 +312,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -397,7 +397,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -413,10 +413,9 @@ env:
 - waitForAnimationToEnd
 
 - runFlow:
-    file: ../subflows/create-expense.flow.yaml
+    file: ../subflows/transactions/create-expense.flow.yaml
     env:
-      DIGIT_1: '2'
-      DIGIT_2: '5'
+      AMOUNT: '25'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
       COMMENT: 'Uber Ride'
@@ -465,7 +464,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -482,10 +481,9 @@ env:
     id: 'RulesPage.RuleCard.0'
 
 - runFlow:
-    file: ../subflows/create-expense.flow.yaml
+    file: ../subflows/transactions/create-expense.flow.yaml
     env:
-      DIGIT_1: '1'
-      DIGIT_2: '0'
+      AMOUNT: '10'
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
       COMMENT: 'Random Purchase'
@@ -546,7 +544,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: Groceries
 
@@ -596,7 +594,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
 - runFlow:
-    file: ../shared/select-tag-by-search.flow.yaml
+    file: ../subflows/shared/select-tag-by-search.flow.yaml
     env:
       TAG_NAME: Subscription
 
@@ -613,7 +611,7 @@ env:
     id: 'RulesPage.RuleCard.1'
 
 - runFlow:
-    file: ../shared/import-test-transactions.flow.yaml
+    file: ../subflows/import/import-test-transactions.flow.yaml
     env:
       CSV_DISPLAY_NAME: test16-rules-import
 
@@ -664,7 +662,7 @@ env:
 # --- Suggested Rule Applies Category (import → categorize → suggest card) ---
 
 - runFlow:
-    file: ../shared/import-test-transactions.flow.yaml
+    file: ../subflows/import/import-test-transactions.flow.yaml
     env:
       CSV_DISPLAY_NAME: test15-suggested-rule
 
@@ -689,7 +687,7 @@ env:
     id: 'TransactionForm.CategorySelector'
 - waitForAnimationToEnd
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: Groceries
 
@@ -736,7 +734,7 @@ env:
 # --- Suggested Rule Creates Directly (import → categorize → suggest card) ---
 
 - runFlow:
-    file: ../shared/import-test-transactions.flow.yaml
+    file: ../subflows/import/import-test-transactions.flow.yaml
     env:
       CSV_DISPLAY_NAME: test17-suggested-rule
 
@@ -761,7 +759,7 @@ env:
     id: 'TransactionForm.CategorySelector'
 - waitForAnimationToEnd
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: Shopping
 
@@ -926,7 +924,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -980,7 +978,7 @@ env:
 # --- Duplicate Rule Alert (import → categorize → create rule from suggestion) ---
 
 - runFlow:
-    file: ../shared/import-test-transactions.flow.yaml
+    file: ../subflows/import/import-test-transactions.flow.yaml
     env:
       CSV_DISPLAY_NAME: test25-duplicate-rule
 
@@ -1005,7 +1003,7 @@ env:
     id: 'TransactionForm.CategorySelector'
 - waitForAnimationToEnd
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: Groceries
 
@@ -1086,7 +1084,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: Groceries
 
@@ -1103,7 +1101,7 @@ env:
     id: 'RulesPage.RuleCard.0'
 
 - runFlow:
-    file: ../shared/import-test-transactions.flow.yaml
+    file: ../subflows/import/import-test-transactions.flow.yaml
     env:
       CSV_DISPLAY_NAME: test27-matching-rules-pill
 

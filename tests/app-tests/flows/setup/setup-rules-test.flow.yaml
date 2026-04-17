@@ -1,8 +1,6 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: ../subflows/enter-app.flow.yaml
-- runFlow:
-    file: ../subflows/import-database-fixture.flow.yaml
+    file: ../subflows/import/import-database-fixture.flow.yaml
     env:
       FIXTURE_ID: 'rules-base'
