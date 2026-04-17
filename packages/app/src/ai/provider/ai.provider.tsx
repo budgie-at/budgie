@@ -5,6 +5,7 @@ import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
+import { WHISPER_SMALL, useSpeechToText } from 'react-native-executorch';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -95,6 +96,8 @@ export const AiProvider = ({ children }: Props) => {
     const [isEmbedding, setIsEmbedding] = useState(false);
     const [initGeneration, setInitGeneration] = useState(0);
     const [progressVersion, setProgressVersion] = useState(0);
+
+    const stt = useSpeechToText({ model: WHISPER_SMALL });
 
     const chatContextRef = useRef<LlamaContext | null>(null);
     const embeddingContextRef = useRef<LlamaContext | null>(null);
@@ -387,7 +390,7 @@ return () => {
         interrupt
     };
 
-    const value = { mode, llm, progress, isEmbedding, downloadProgress, retry, refreshProgress };
+    const value = { mode, llm, stt, progress, isEmbedding, downloadProgress, retry, refreshProgress };
 
     return <AiContext value={value}>{children}</AiContext>;
 };

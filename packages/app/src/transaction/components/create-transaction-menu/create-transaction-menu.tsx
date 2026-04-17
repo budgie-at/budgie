@@ -13,7 +13,6 @@ import { CircularActionButton } from '../../../@generic/component/circular-actio
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
-import { useLlmContext } from '../../../ai/context/llm.context';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
 import { useAi } from '../../../ai/hook/use-ai.hook';
@@ -39,8 +38,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
-    const { mode } = useAi();
-    const { llm, stt } = useLlmContext();
+    const { mode, stt, llm } = useAi();
     const isAiAvailable = mode !== AiModeEnum.Disabled;
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
