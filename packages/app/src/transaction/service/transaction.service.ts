@@ -74,7 +74,9 @@ class TransactionService {
         }
 
         const stampedInputs = inputs.map(input => ({ ...input, needsEmbedding: input.needsEmbedding ?? true }));
-        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch => transactionBatchCreateService.create(batch, tx));
+        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+            transactionBatchCreateService.create(batch, tx)
+        );
 
         if (isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);

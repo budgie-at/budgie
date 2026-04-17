@@ -19,7 +19,8 @@
         "**/selectors.ts",
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
-        "packages/app/src/category/enum/system-category-id.enum.ts"
+        "packages/app/src/category/enum/system-category-id.enum.ts",
+        "packages/app/src/ai/hook/use-ai-debug.hook.ts"
     ],
     "ignoreDependencies": [
         "husky",
@@ -33,7 +34,8 @@
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf"
+        "rimraf",
+        "expo-modules-core"
     ],
     "ignoreBinaries": ["run", "maestro"]
 }
