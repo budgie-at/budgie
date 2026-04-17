@@ -7,10 +7,12 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { useAiEmbeddingProgressContext } from '../context/ai-embedding-progress.context';
-import { useLlmContext } from '../context/llm.context';
+import { AiModeEnum } from '../enum/ai-mode.enum';
+import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
+
+import { useAi } from './use-ai.hook';
 
 interface UseAiDataPreparationReturn {
     readonly start: () => Promise<void>;
@@ -27,14 +29,15 @@ interface UseAiDataPreparationReturn {
 
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
-    const { llm } = useLlmContext();
-    const { refreshProgress, setIsEmbedding } = useAiEmbeddingProgressContext();
+    const { mode, llm, refreshProgress } = useAi();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
     const [embeddedCount, setEmbeddedCount] = useState(0);
     const [totalContexts, setTotalContexts] = useState(0);
     const isRunningRef = useRef(false);
+    const modeRef = useRef(mode);
+    useEffect(() => { modeRef.current = mode; }, [mode]);
 
     useEffect(() => {
         const loadCounts = async (): Promise<void> => {
@@ -50,14 +53,14 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
     // eslint-disable-next-line max-statements, max-lines-per-function -- Multi-phase sequential orchestration
     const run = async (fresh: boolean): Promise<void> => {
-        console.log('[AI-PREP] run called:', { fresh, isRunning: isRunningRef.current, isLlmReady: llm.isReady }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        console.log('[AI-PREP] run called:', { fresh, isRunning: isRunningRef.current, isLlmReady: mode === AiModeEnum.Ready }); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (isRunningRef.current) {
             console.log('[AI-PREP] Already running, skipping'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
             return;
         }
 
-        if (!llm.isReady) {
+        if (mode !== AiModeEnum.Ready) {
             console.log('[AI-PREP] LLM not ready, showing toast'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             Toast.show({ type: 'info', text1: t`AI model is loading, please wait...` });
 
@@ -67,7 +70,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         console.log('[AI-PREP] Starting data preparation...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         isRunningRef.current = true;
         setIsRunning(true);
-        setIsEmbedding(true);
         setProgress(0);
         await microPause();
 
@@ -110,6 +112,9 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setPhaseLabel(t`Translating categories...`);
             await microPause();
             for (const category of categories) {
+                if (!isNativeCallSafe(modeRef.current)) {
+                    break;
+                }
                 console.log('[AI-PREP] Translating category:', category.title); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 const result = await translationService.translate(category.title);
                 console.log('[AI-PREP] Category result:', result); // eslint-disable-line no-console, lingui/no-unlocalized-strings
@@ -122,6 +127,9 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setPhaseLabel(t`Translating tags...`);
             await microPause();
             for (const tag of tags) {
+                if (!isNativeCallSafe(modeRef.current)) {
+                    break;
+                }
                 console.log('[AI-PREP] Translating tag:', tag.title); // eslint-disable-line no-console, lingui/no-unlocalized-strings
                 const result = await translationService.translate(tag.title);
                 console.log('[AI-PREP] Tag result:', result); // eslint-disable-line no-console, lingui/no-unlocalized-strings
@@ -135,6 +143,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();
             await processMerchantBatches(llm, existingMerchantKeys, {
+                getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(count + existingCommentKeys.size);
@@ -145,6 +154,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setPhaseLabel(t`Generating comment embeddings...`);
             await microPause();
             await processCommentBatches(llm, existingCommentKeys, {
+                getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(existingMerchantKeys.size + count);
@@ -152,7 +162,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             });
 
             console.log('[AI-PREP] All phases complete!'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-            setIsEmbedding(false);
             setProgress(100);
             setPhaseLabel(t`Done`);
             setTotalContexts(existingMerchantKeys.size + existingCommentKeys.size);
@@ -166,7 +175,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             });
         } finally {
             isRunningRef.current = false; // eslint-disable-line require-atomic-updates -- Intentional: ref is only written by this function
-            setIsEmbedding(false);
             setIsRunning(false);
         }
     };
@@ -182,8 +190,8 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         phaseLabel,
         embeddedCount,
         totalContexts,
-        isLlmReady: llm.isReady,
-        isLlmInitializing: llm.isInitializing,
+        isLlmReady: mode === AiModeEnum.Ready,
+        isLlmInitializing: mode === AiModeEnum.Initializing,
         llmDownloadProgress: llm.downloadProgress
     };
 };

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Transaction repository naturally large due to filter builders and pending-embedding helpers */
 import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -245,8 +246,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .select({ value: count() })
             .from(TransactionEntityTable)
             .where(isNull(TransactionEntityTable.deletedAt));
-        
-return row?.value ?? 0;
+
+        return row.value;
     }
 
     async countPendingEmbedding(): Promise<number> {
@@ -254,8 +255,8 @@ return row?.value ?? 0;
             .select({ value: count() })
             .from(TransactionEntityTable)
             .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)));
-        
-return row?.value ?? 0;
+
+        return row.value;
     }
 
     async findPendingEmbedding(limit: number, tx?: DB) {
