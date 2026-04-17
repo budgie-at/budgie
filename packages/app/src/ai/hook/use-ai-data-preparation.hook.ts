@@ -8,6 +8,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { AiModeEnum } from '../enum/ai-mode.enum';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
@@ -31,7 +32,7 @@ interface UseAiDataPreparationReturn {
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const { mode, llm } = useAi();
-    const { downloadProgress, refreshProgress } = useAiProgress();
+    const { downloadProgress } = useAiProgress();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
@@ -78,7 +79,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 await microPause();
                 await merchantEmbeddingRepository.truncate();
                 await commentEmbeddingRepository.truncate();
-                refreshProgress();
+                void embeddingProgressStore.refresh();
             }
 
             const categories = fresh ? await categoryRepository.findAllNonSystem() : await categoryRepository.findWithoutTags();
@@ -153,7 +154,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setProgress(100);
             setPhaseLabel(t`Done`);
             setTotalContexts(existingMerchantKeys.size + existingCommentKeys.size);
-            refreshProgress();
+            void embeddingProgressStore.refresh();
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
