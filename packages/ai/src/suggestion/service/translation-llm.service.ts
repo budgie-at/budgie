@@ -1,7 +1,7 @@
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { aiLog } from '../../@generic/util/ai-log.util';
+import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { containsNonLatin } from '../../embedding/util/contains-non-latin.util';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
 import { TranslationResultInterface } from '../interface/translation-result.interface';

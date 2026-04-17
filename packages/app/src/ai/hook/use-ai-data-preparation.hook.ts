@@ -12,9 +12,9 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { chatService } from '../service/chat.service';
 import { embeddingService } from '../service/embedding.service';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
+import { aiLog } from '../utils/ai-log.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
-import { aiLog } from '../utils/ai-log.util';
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
 import { useChat } from './use-chat.hook';
@@ -33,8 +33,7 @@ interface UseAiDataPreparationReturn {
     readonly llmDownloadProgress: number;
 }
 
-const isNativeSafe = (): boolean =>
-    AppState.currentState === 'active' && chatService.isReady && embeddingService.isReady;
+const isNativeSafe = (): boolean => AppState.currentState === 'active' && chatService.isReady && embeddingService.isReady;
 
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {

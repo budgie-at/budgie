@@ -23,6 +23,7 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
         if (!isChatReady) {
             aiLog('translation:regenerate:skip:not-ready', { chatStatus });

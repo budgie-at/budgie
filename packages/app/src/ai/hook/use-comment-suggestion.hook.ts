@@ -34,13 +34,7 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
             comment,
             aiContext
         });
-        const results = await embeddingSuggestionService.suggestComments(
-            categoryId,
-            transactionTitle,
-            mccDescription,
-            comment,
-            aiContext
-        );
+        const results = await embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
         aiLog('hook:suggestion:comment:fetch:done', { count: results.length });
 
         return results;

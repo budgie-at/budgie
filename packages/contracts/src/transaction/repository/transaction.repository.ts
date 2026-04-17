@@ -1,4 +1,4 @@
-/* eslint-disable max-lines -- Transaction repository naturally large due to filter builders */
+ 
 import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -6,13 +6,11 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
 import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
-import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
+import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -23,26 +21,7 @@ import type { TransactionEntityInterface } from '../entity/transaction-entity.in
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
-    private transactionRelations = {
-        [TransactionAssociationEnum.ENTRIES]: {
-            with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: {
-                    with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true
-                    }
-                },
-                [TransactionEntryAssociationEnum.CATEGORY]: true,
-                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-            }
-        },
-        [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-            with: {
-                [TransactionTagsAssociationEnum.TAG]: true
-            }
-        },
-        [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-        [TransactionAssociationEnum.TO_ACCOUNT]: true
-    } as const;
+    private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
     async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));

@@ -1,4 +1,4 @@
-import { WHISPER_SMALL, SpeechToTextModule } from 'react-native-executorch';
+import { SpeechToTextModule, WHISPER_SMALL } from 'react-native-executorch';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -8,33 +8,25 @@ import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.i
 import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
 import { aiLog } from '../utils/ai-log.util';
 
+import { BaseSubsystemService } from './base-subsystem.service';
+
 import type { SttInvokerInterface } from '@budgie/ai';
 
-class SttService implements AiSubsystemServiceInterface<SttSnapshotInterface>, SttInvokerInterface {
-    private snapshot: SttSnapshotInterface = {
-        status: AiSubsystemStatusEnum.Idle,
-        downloadProgress: 0,
-        errorMessage: null,
-        committedTranscription: '',
-        nonCommittedTranscription: ''
-    };
+class SttService
+    extends BaseSubsystemService<SttSnapshotInterface>
+    implements AiSubsystemServiceInterface<SttSnapshotInterface>, SttInvokerInterface
+{
     private instance: SpeechToTextModule | null = null;
     private activeStream: AsyncGenerator<{ committed: string; nonCommitted: string }> | null = null;
-    private listeners = new Set<() => void>();
-    private pendingOperation: Promise<unknown> = Promise.resolve();
 
-    readonly subscribe = (listener: () => void): (() => void) => {
-        this.listeners.add(listener);
-
-        return () => {
-            this.listeners.delete(listener);
-        };
-    };
-
-    readonly getSnapshot = (): SttSnapshotInterface => this.snapshot;
-
-    get isReady(): boolean {
-        return this.snapshot.status === AiSubsystemStatusEnum.Ready;
+    constructor() {
+        super('stt', {
+            status: AiSubsystemStatusEnum.Idle,
+            downloadProgress: 0,
+            errorMessage: null,
+            committedTranscription: '',
+            nonCommittedTranscription: ''
+        });
     }
 
     get committedTranscription(): string {
@@ -45,36 +37,13 @@ class SttService implements AiSubsystemServiceInterface<SttSnapshotInterface>, S
         return this.snapshot.nonCommittedTranscription;
     }
 
-    async start(): Promise<void> {
-        aiLog('stt:start:enter', { priorStatus: this.snapshot.status });
-        if (this.snapshot.status === AiSubsystemStatusEnum.Ready) {
-            return;
-        }
-        if (this.snapshot.status === AiSubsystemStatusEnum.Downloading || this.snapshot.status === AiSubsystemStatusEnum.Initializing) {
-            await this.pendingOperation;
-
-            return;
-        }
-        this.pendingOperation = this.runStart();
-        await this.pendingOperation;
-    }
-
-    async stop(): Promise<void> {
-        aiLog('stt:stop:enter', { priorStatus: this.snapshot.status });
-        await this.pendingOperation;
-        if (this.snapshot.status === AiSubsystemStatusEnum.Suspended || this.snapshot.status === AiSubsystemStatusEnum.Disabled) {
-            return;
-        }
-        this.pendingOperation = this.runStop();
-        await this.pendingOperation;
-    }
-
     async retry(): Promise<void> {
         aiLog('stt:retry', { fromStatus: this.snapshot.status });
         this.setSnapshot({ status: AiSubsystemStatusEnum.Idle, errorMessage: null });
         await this.start();
     }
 
+    // eslint-disable-next-line max-statements -- Async generator consumption with per-chunk snapshot updates
     async stream(options?: { readonly language?: string }): Promise<string> {
         aiLog('stt:stream:start');
         if (!this.isReady || !isDefined(this.instance)) {
@@ -112,7 +81,7 @@ class SttService implements AiSubsystemServiceInterface<SttSnapshotInterface>, S
         this.instance?.streamInsert(waveform);
     }
 
-    private async runStart(): Promise<void> {
+    protected async runStart(): Promise<void> {
         try {
             this.setSnapshot({ status: AiSubsystemStatusEnum.Downloading, downloadProgress: 0 });
             aiLog('stt:download:begin', { model: 'WHISPER_SMALL' });
@@ -130,7 +99,7 @@ class SttService implements AiSubsystemServiceInterface<SttSnapshotInterface>, S
         }
     }
 
-    private async runStop(): Promise<void> {
+    protected async runStop(): Promise<void> {
         try {
             aiLog('stt:stop:release');
             this.instance?.streamStop();
@@ -149,13 +118,6 @@ class SttService implements AiSubsystemServiceInterface<SttSnapshotInterface>, S
             this.activeStream = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.Suspended });
         }
-    }
-
-    private setSnapshot(patch: Partial<SttSnapshotInterface>): void {
-        this.snapshot = { ...this.snapshot, ...patch };
-        this.listeners.forEach(listener => {
-            listener();
-        });
     }
 }
 
