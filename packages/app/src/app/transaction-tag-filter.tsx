@@ -6,7 +6,6 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
@@ -16,6 +15,7 @@ import { SearchableFilterEmptyResult } from '../transaction/components/searchabl
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 

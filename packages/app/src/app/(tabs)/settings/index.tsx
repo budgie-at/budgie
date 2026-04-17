@@ -73,11 +73,11 @@ export default function SettingsPage() {
                                 variant="pink"
                                 title={t`Screenshot Protection`}
                                 description={t`Hide account balances and net worth when taking screenshots`}
-                                testID={SettingsPageSelectors.ScreenshotProtectionCard}
+                                testID={SettingsPageSelector.ScreenshotProtectionCard}
                                 right={
                                     <ThemedSwitch
                                         className="my-auto"
-                                        testID={SettingsPageSelectors.ScreenshotProtectionSwitch}
+                                        testID={SettingsPageSelector.ScreenshotProtectionSwitch}
                                         onValueChange={handleToggle('isScreenshotProtectionEnabled')}
                                         value={isScreenshotProtectionEnabled}
                                     />

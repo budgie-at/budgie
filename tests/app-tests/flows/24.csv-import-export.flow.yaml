@@ -1,33 +1,53 @@
 appId: ${APP_ID}
 ---
 - runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '00-empty-state'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'CsvPage.ImportCard'
+    direction: DOWN
+    centerElement: true
+    waitToSettleTimeoutMs: 500
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'CsvPage.ImportCard'
+
+- runFlow:
+    file: subflows/import/select-file-from-app-provider.flow.yaml
+    env:
+      FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
+
+- runFlow:
+    when:
+      visible: 'Open|Öffnen'
     commands:
-      - launchApp:
-          appId: ${APP_ID}
-          clearState: false
-          permissions:
-            contacts: allow
-            microphone: allow
-          arguments:
-            e2eReset: true
-            e2eImportFixtureCsv: true
-            e2eResetToken: '${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}'
-      - retry:
-          maxRetries: 3
-          commands:
-            - runFlow: subflows/handle-dev-client-startup.flow.yaml
-            - waitForAnimationToEnd
-            - extendedWaitUntil:
-                visible:
-                  id: 'HomePage.TotalBalance'
-                timeout: 30000
+      - tapOn:
+          text: 'Open|Öffnen'
 
-- runFlow: subflows/relaunch-app.flow.yaml
+- extendedWaitUntil:
+    visible:
+      id: 'CsvPage.Preset.Budgie'
+    timeout: 15000
 
-- assertVisible:
-    id: 'HomePage.NetWorthValue.87_5'
+- tapOn:
+    id: 'CsvPage.Preset.Budgie'
 
-- runFlow: subflows/navigate-to-settings.flow.yaml
+- tapOn:
+    id: 'CsvPage.StartImportButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.87_5'
+    timeout: 30000
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
     element:
@@ -39,30 +59,14 @@ appId: ${APP_ID}
     id: 'CsvPage.ExportCard'
 
 - extendedWaitUntil:
-    visible: 'Done'
+    visible: 'Done|Fertig|Hecho|Terminé|Готово'
     timeout: 10000
 
-- launchApp:
-    appId: ${APP_ID}
-    clearState: false
-    permissions:
-      contacts: allow
-      microphone: allow
-    arguments:
-      e2eReset: true
-      e2eResetToken: '${MAESTRO_FILENAME}-${E2E_RUN_TOKEN}-export'
-      e2eImportExportedCsv: true
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 30000
+- tapOn:
+    text: 'Done|Fertig|Hecho|Terminé|Готово'
 
-- runFlow: subflows/relaunch-app.flow.yaml
+- tapOn:
+    id: 'TabBar.Home'
 
 - assertVisible:
     id: 'HomePage.NetWorthValue.87_5'

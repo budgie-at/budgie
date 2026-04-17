@@ -1,5 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-export const PinPageSelectors = {
+export const PinFormSelector = {
     Container: 'PinPage.Container',
     Title: 'PinPage.Title',
     Error: 'PinPage.Error',

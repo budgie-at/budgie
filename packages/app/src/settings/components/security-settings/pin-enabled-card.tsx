@@ -5,11 +5,11 @@ import { Link } from 'expo-router';
 import { styled } from 'nativewind';
 import { Text, View } from 'react-native';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { SettingsPageSelector as SettingsPageSelectors } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';

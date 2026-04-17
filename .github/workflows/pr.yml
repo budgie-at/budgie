@@ -238,7 +238,7 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
+        run: node ../../tests/app-tests/scripts/apply-e2e-autolinking-excludes.cjs ./package.json
 
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
@@ -305,7 +305,7 @@ jobs:
 
       - name: Apply E2E iOS Info.plist cleanup
         working-directory: packages/app
-        run: sh ./scripts/apply-e2e-ios-plist-cleanup.sh
+        run: sh ../../tests/app-tests/scripts/apply-ios-e2e-plist-cleanup.sh ./ios/budgieE2E/Info.plist
 
       - name: Sync CocoaPods for E2E excludes
         working-directory: packages/app/ios
@@ -584,7 +584,7 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
+        run: node ../../tests/app-tests/scripts/apply-e2e-autolinking-excludes.cjs ./package.json
 
       - name: Expo Prebuild
         working-directory: packages/app

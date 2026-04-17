@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native';
 
-import { PinPageSelectors } from '../../../@e2e/selectors/pin-page.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { PinFormSelector as PinPageSelectors } from '../pin-form/pin-form.selector';
 
 interface Props {
     readonly digit: string;

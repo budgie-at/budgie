@@ -3,11 +3,11 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { PinPageSelectors } from '../../../@e2e/selectors/pin-page.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { PinFormSelector as PinPageSelectors } from '../pin-form/pin-form.selector';
 
 interface Props {
     readonly onSubmit: (enableBiometrics: boolean) => void;

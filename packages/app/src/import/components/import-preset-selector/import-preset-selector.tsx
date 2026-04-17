@@ -4,9 +4,9 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
+import { ImportPresetSelectorIds as CsvPageSelectors } from './import-preset-selector.selector';
 
 interface Props {
     readonly selectedPreset: ImportPresetEnum | undefined;

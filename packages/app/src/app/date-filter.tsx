@@ -5,7 +5,6 @@ import { ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { DateFilterItem } from '../@generic/component/date-filter/date-filter-item';
 import { RangeDatePicker } from '../@generic/component/date-picker/range-date-picker';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
@@ -14,6 +13,7 @@ import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-she
 import { useDateFilterModal } from '../@generic/context/date-filter-modal.context';
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
 export default function DateFilterModal() {
     const { t } = useLingui();

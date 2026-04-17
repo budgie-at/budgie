@@ -4,12 +4,12 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { PinPageSelectors } from '../../../@e2e/selectors/pin-page.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
+import { PinFormSelector as PinPageSelectors } from './pin-form.selector';
 
 interface Props {
     readonly title: string;

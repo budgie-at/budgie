@@ -1,10 +1,10 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FilterRow } from '../../../@generic/component/filter-sheet/filter-row/filter-row';
 import { FilterRowCheck } from '../../../@generic/component/filter-sheet/filter-row-check/filter-row-check';
 import { FilterRowTitle } from '../../../@generic/component/filter-sheet/filter-row-title/filter-row-title';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly isSelected: boolean;

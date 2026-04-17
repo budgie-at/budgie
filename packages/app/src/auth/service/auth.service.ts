@@ -4,10 +4,8 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { e2eRuntimeService } from '../../@e2e/service/e2e-runtime.service';
 import { expoDb } from '../../@generic/drizzle/db/db';
-import { isE2EHooksEnabled } from '../../@generic/utils/is-e2e-hooks-enabled.util';
-import { E2E_PIN_KEY, PIN_KEY } from '../constant/pin-key.constant';
+import { PIN_KEY } from '../constant/pin-key.constant';
 
 class AuthService {
     async getBiometricTypes() {
@@ -40,12 +38,6 @@ class AuthService {
     }
 
     async authenticateWithBiometrics(): Promise<boolean> {
-        const { biometricAuthSuccess } = e2eRuntimeService.getOverrides();
-
-        if (biometricAuthSuccess !== null) {
-            return biometricAuthSuccess;
-        }
-
         try {
             const result = await LocalAuthentication.authenticateAsync({
                 promptMessage: 'Authenticate to access the app',
@@ -61,11 +53,7 @@ class AuthService {
 
     async savePin(pin: string): Promise<void> {
         const oldPin = await this.getPin();
-        await SecureStore.setItemAsync(this.getPinStorageKey(), pin);
-
-        if (isE2EHooksEnabled()) {
-            return;
-        }
+        await SecureStore.setItemAsync(PIN_KEY, pin);
 
         if (isNotEmptyString(oldPin)) {
             await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);
@@ -75,25 +63,21 @@ class AuthService {
     }
 
     async verifyPin(pin: string): Promise<boolean> {
-        const savedPin = await SecureStore.getItemAsync(this.getPinStorageKey());
+        const savedPin = await SecureStore.getItemAsync(PIN_KEY);
 
         return savedPin === pin;
     }
 
     async deletePin(): Promise<void> {
-        await SecureStore.deleteItemAsync(this.getPinStorageKey());
+        await SecureStore.deleteItemAsync(PIN_KEY);
     }
 
     async getPin(): Promise<string | null> {
-        return SecureStore.getItemAsync(this.getPinStorageKey());
+        return SecureStore.getItemAsync(PIN_KEY);
     }
 
     async clearAllPins(): Promise<void> {
-        await Promise.all([SecureStore.deleteItemAsync(PIN_KEY), SecureStore.deleteItemAsync(E2E_PIN_KEY)]);
-    }
-
-    private getPinStorageKey() {
-        return isE2EHooksEnabled() ? E2E_PIN_KEY : PIN_KEY;
+        await SecureStore.deleteItemAsync(PIN_KEY);
     }
 }
 

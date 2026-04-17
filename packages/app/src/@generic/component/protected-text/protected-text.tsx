@@ -1,6 +1,5 @@
 import { Text, TextProps } from 'react-native';
 
-import { useE2ERuntimeContext } from '../../../@e2e/context/e2e-runtime.context';
 import { useAppState } from '../../hook/use-app-state.hook';
 import { useScreenshotProtection } from '../../hook/use-screenshot-protection.hook';
 
@@ -10,10 +9,9 @@ interface Props extends TextProps {
 
 export const ProtectedText = ({ children, placeholderText = '***.**', ...rest }: Props) => {
     const { isActive } = useAppState();
-    const { forceProtected } = useE2ERuntimeContext();
 
     const isScreenshotProtectionEnabled = useScreenshotProtection();
-    const shouldProtect = isScreenshotProtectionEnabled && (!isActive || forceProtected);
+    const shouldProtect = isScreenshotProtectionEnabled && !isActive;
 
     return <Text {...rest}>{shouldProtect ? placeholderText : children}</Text>;
 };
