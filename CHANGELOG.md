@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.3](https://github.com/budgie-at/budgie/compare/v5.2.2...v5.2.3) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** build workspace packages before EAS bundle ([f6a8df1](https://github.com/budgie-at/budgie/commit/f6a8df1251afb8182d143d2dde50d59bc5d43f5b))
+- **app:** list workspace build targets explicitly in EAS hook ([5991fdb](https://github.com/budgie-at/budgie/commit/5991fdb6ef57b572756fcbff5096804cd4f1c6a3))
+- **app:** run full workspace build in EAS hook ([5dc61f0](https://github.com/budgie-at/budgie/commit/5dc61f0b7bef0eb94e754fc3552311ce4527b719))
+
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** correct Maestro startup env nesting ([7af2cbd](https://github.com/budgie-at/budgie/commit/7af2cbd258f30bd776531e2211104fe4e330c7d0))
+- **app:** make transaction creation atomic ([9ffc4ff](https://github.com/budgie-at/budgie/commit/9ffc4ff5e70e749848285e4c9b645de0d11727bc))
+- **app:** preserve user edits on imported reimport ([7005fc3](https://github.com/budgie-at/budgie/commit/7005fc353fafad1de63e201dd7f41922d9850783))
+- **app:** remove dead e2e hooks config ([6f12f05](https://github.com/budgie-at/budgie/commit/6f12f0574e67ed83b2b604eeb886394bf67a2006))
+- **bank-sync:** avoid unsafe erste inline regex ([05219aa](https://github.com/budgie-at/budgie/commit/05219aa8eb8b9ee0e9a6687427c4afd58f887186))
+- **bank-sync:** parse inline Abschlussbuchung transactions in Erste modern PDF ([bb7b65d](https://github.com/budgie-at/budgie/commit/bb7b65d35e0a072d3bf7f1e9d64892d1668bc8c0))
+- harden account details exit e2e flow ([bf6832c](https://github.com/budgie-at/budgie/commit/bf6832ccf9930176fa3e578c8bc1780540e5cd21))
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+- harden black-box imports and imported transaction updates ([e0c5a20](https://github.com/budgie-at/budgie/commit/e0c5a20c08c991277620915eec073c4a4c799070))
+- harden iOS fixture picker flow ([f4ba670](https://github.com/budgie-at/budgie/commit/f4ba6705094735554a661c46af4969e9e999ebb0))
+- restore stable balance hooks and trim ci setup ([7f8c7a3](https://github.com/budgie-at/budgie/commit/7f8c7a3232f98c6c24412b5d7c5f39ab1312e200))
+- stabilize transaction submit e2e flows ([2b9328e](https://github.com/budgie-at/budgie/commit/2b9328e8f9f25b95caf43ec055e6206cba4b444e))
+
+## [5.2.1](https://github.com/budgie-at/budgie/compare/v5.2.0...v5.2.1) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** add list footer spacer so last filter items clear the drawer ([4517995](https://github.com/budgie-at/budgie/commit/451799518cffd17347fdab4882146489ef2ea5a6))
+- **app:** avoid plural() macro crash in filter apply label ([4d03181](https://github.com/budgie-at/budgie/commit/4d03181af9be2c1a1718ad86c1d71de304e274ad))
+- **app:** date picker range start/end visible in both themes ([f5b979c](https://github.com/budgie-at/budgie/commit/f5b979c63efb9019a63dec2f1745834a906ace31))
+- **app:** filter apply button height and date picker cell styling ([540bc31](https://github.com/budgie-at/budgie/commit/540bc3169e21e84187455602e5241a7bbdba66dd))
+- **app:** last filter items visible above floating drawer ([efa195d](https://github.com/budgie-at/budgie/commit/efa195d263d2952c8c284f52c2b2edfc1b65e8e2))
+- **app:** menu dismiss, keyboard footer, and SOTA file import redesign ([6463e7e](https://github.com/budgie-at/budgie/commit/6463e7e4cfba761a2df5d6aea5efd48cad9b7256))
+- **app:** replace nested ternaries with local helper, silence max-statements ([6c630fd](https://github.com/budgie-at/budgie/commit/6c630fde4ce9ce39123faddcc93b8f8f61eb4b3f))
+- **app:** revert drawer to flex sibling to keep date picker visible ([6c2d834](https://github.com/budgie-at/budgie/commit/6c2d834fad87ff5bbbc79a52145d02119d19b4b8))
+
 # [5.2.0](https://github.com/budgie-at/budgie/compare/v5.1.2...v5.2.0) (2026-04-14)
 
 ### Bug Fixes

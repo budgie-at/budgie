@@ -1,5 +1,5 @@
-import { infer } from 'zod';
+import { z } from 'zod';
 
 import { ExchangeRateCreateEntitySchema } from '../schema/exchange-rate-create-entity.schema';
 
-export interface ExchangeRateCreateEntityInterface extends infer<typeof ExchangeRateCreateEntitySchema> {}
+export type ExchangeRateCreateEntityInterface = z.infer<typeof ExchangeRateCreateEntitySchema>;

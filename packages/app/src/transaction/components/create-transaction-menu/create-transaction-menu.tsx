@@ -9,7 +9,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ActionButtonSelectors } from '../../../@e2e/selectors/action-button.selector';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -18,6 +17,8 @@ import { useLlmContext } from '../../../ai/context/llm.context';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
+
+import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
 const CLOSE_ANIMATION_DURATION = 250;
 const BUTTON_ROTATION_ACTIVE = 45;
@@ -92,28 +93,28 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         {
             icon: UserIconNameEnum.TrendingDown,
             label: t`Expense`,
-            testID: ActionButtonSelectors.Expense,
+            testID: CreateTransactionMenuSelector.Expense,
             variant: 'destructive',
             onPress: handleCreateExpense
         },
         {
             icon: UserIconNameEnum.TrendingUp,
             label: t`Income`,
-            testID: ActionButtonSelectors.Income,
+            testID: CreateTransactionMenuSelector.Income,
             variant: 'positive',
             onPress: handleCreateIncome
         },
         {
             icon: UserIconNameEnum.ArrowLeftRight,
             label: t`Transfer`,
-            testID: ActionButtonSelectors.Transfer,
+            testID: CreateTransactionMenuSelector.Transfer,
             variant: 'warning',
             onPress: handleCreateTransfer
         },
         {
             icon: UserIconNameEnum.Wallet,
             label: t`Account`,
-            testID: ActionButtonSelectors.AddAccount,
+            testID: CreateTransactionMenuSelector.AddAccount,
             variant: 'secondary',
             onPress: handleCreateAccount
         }

@@ -62,7 +62,7 @@ export const useScrollToRef = () => {
         return () => {
             clearTimeout(timer);
         };
-    }, [anchor]);
+    }, [anchor, highlightProgress]);
 
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,

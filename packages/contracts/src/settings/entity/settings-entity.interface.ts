@@ -1,5 +1,5 @@
-import { infer } from 'zod';
+import { z } from 'zod';
 
 import { SettingsEntitySchema } from '../schema/settings-entity.schema';
 
-export interface SettingsEntityInterface extends infer<typeof SettingsEntitySchema> {}
+export type SettingsEntityInterface = z.infer<typeof SettingsEntitySchema>;

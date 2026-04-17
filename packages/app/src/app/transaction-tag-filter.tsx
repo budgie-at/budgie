@@ -2,55 +2,40 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
-import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
+import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
+import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
-import { SearchableFilterControls } from '../transaction/components/searchable-filter-controls/searchable-filter-controls';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
-import { SearchableFilterFooter } from '../transaction/components/searchable-filter-footer/searchable-filter-footer';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+
+// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionTagFilter, currentParams] = useTransactionTagFilterModal();
-    const { backgroundColor } = useFormsheetListStyles();
 
-    const [localValue, setLocalValue, localValueRef] = useStateRef<number[] | null>(() => currentParams?.value ?? null);
-    const [search, setSearch] = useState('');
+    const state = useSearchableFilterState(currentParams?.value ?? null);
+    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
     const { tags, total } = useSearchTagsQuery(search);
 
-    const localSelectedCount = localValue?.length ?? 0;
-    const containerStyle = { flex: 1, backgroundColor };
     const items = tags ?? [];
     const showControls = !(isEmptyArray(items) && isEmptyString(search));
     const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
-    /* jscpd:ignore-end */
 
-    /* jscpd:ignore-start */
-    const handleSelect = (selected: number) => {
-        setLocalValue(prev => toggleFilterSelection(prev, [selected]));
-    };
-
-    const handleSelectAll = () => void setLocalValue(items.map(item => item.id));
-    const handleDeselectAll = () => void setLocalValue(null);
-    const handleClear = () => void setLocalValue(null);
-
-    const handleApply = () => {
-        resolveTransactionTagFilter({ value: localValueRef.current });
-    };
-    /* jscpd:ignore-end */
+    const handleSelect = (selected: number) => void setLocalValue(prev => toggleFilterSelection(prev, [selected]));
+    const handleSelectAll = () => void setLocalValue(() => items.map(item => item.id));
+    const handleApply = () => void resolveTransactionTagFilter({ value: localValueRef.current });
 
     const handleNavigateToCreate = () => {
         resolveTransactionTagFilter(null, { skipBack: true });
@@ -58,46 +43,34 @@ export default function TransactionTagFilterModal() {
         router.push('/settings/tags');
     };
 
-    /* jscpd:ignore-start */
+    const buildApplyLabel = () => {
+        if (selectedCount === 0) {
+            return t`Show all tags`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 tag`;
+        }
+
+        return t`Show ${selectedCount} tags`;
+    };
+    const applyLabel = buildApplyLabel();
+
     return (
-        <View style={containerStyle}>
-            <TransactionFilterHeader
-                title={t`Tags`}
-                icon={UserIconNameEnum.Hash}
-                onClear={handleClear}
-                showClear={isPositiveNumber(localSelectedCount)}
-            />
-
-            <ScrollView contentContainerClassName="py-[40px] px-7xl gap-y-3xl">
-                <SearchableFilterControls
-                    search={search}
-                    onSearchChange={setSearch}
-                    placeholder={t`Search tags...`}
-                    onSelectAll={handleSelectAll}
-                    onDeselectAll={handleDeselectAll}
-                    isVisible={showControls}
-                    searchInputTestID={TransactionFiltersSelectors.TagSearchInput}
-                    selectAllButtonTestID={TransactionFiltersSelectors.TagSelectAllButton}
-                    deselectAllButtonTestID={TransactionFiltersSelectors.TagDeselectAllButton}
-                />
-                {/* jscpd:ignore-end */}
-
+        <FilterSheet>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
                 {isNotEmptyArray(items) ? (
-                    <View>
-                        {items.map((tag, index) => (
+                    <View className="gap-y-sm">
+                        {items.map(tag => (
                             <TransactionTagFilterItem
                                 tag={tag}
                                 key={tag.id}
                                 onSelect={handleSelect}
-                                isFirst={index === 0}
-                                isLast={index === items.length - 1}
                                 isSelected={localValue?.includes(tag.id) ?? false}
                             />
                         ))}
                     </View>
                 ) : null}
 
-                {/* jscpd:ignore-start */}
                 {isEmptyArray(items) && showEmptySearch ? (
                     <SearchableFilterEmptyResult>
                         <Trans>No tags found</Trans>
@@ -113,14 +86,24 @@ export default function TransactionTagFilterModal() {
                         description={t`Create custom tags in Settings to label and filter your transactions`}
                     />
                 ) : null}
-            </ScrollView>
+            </FilterSheetList>
 
-            <SearchableFilterFooter
-                selectedCount={localSelectedCount}
+            <FilterSheetSearchableDrawer
+                showControls={showControls}
+                searchValue={search}
+                searchPlaceholder={t`Search tags...`}
+                onSearchChange={setSearch}
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
-                applyButtonTestID={TransactionFiltersSelectors.TagApplyButton}
+                applyLabel={applyLabel}
+                selectedCount={selectedCount}
+                searchTestID={TransactionFiltersSelectors.TagSearchInput}
+                selectAllTestID={TransactionFiltersSelectors.TagSelectAllButton}
+                deselectAllTestID={TransactionFiltersSelectors.TagDeselectAllButton}
+                applyTestID={TransactionFiltersSelectors.TagApplyButton}
             />
-        </View>
+        </FilterSheet>
     );
-    /* jscpd:ignore-end */
 }
+/* jscpd:ignore-end */

@@ -10,7 +10,7 @@ import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popo
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
-import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
+import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';

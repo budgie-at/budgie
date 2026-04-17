@@ -7,7 +7,6 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AccountDetailsSelectors } from '../../../../@e2e/selectors/account-details.selector';
 import { AnimatedBackdrop } from '../../../../@generic/component/animated-backdrop/animated-backdrop';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -27,6 +26,8 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { CreateTransactionMenu } from '../../../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
+
+import { AccountDetailsSelector } from './account-details.selector';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
@@ -66,7 +67,7 @@ export default function AccountDetails() {
                         iconVariant={ACCOUNT_COLOR[type]}
                         right={
                             <Link href={`/account/${id}/update`} asChild>
-                                <HapticPressable className="ml-auto" testID={AccountDetailsSelectors.EditButton}>
+                                <HapticPressable className="ml-auto" testID={AccountDetailsSelector.EditButton}>
                                     <CircleIcon
                                         icon={UserIconNameEnum.EllipsisVertical}
                                         variant="ghost"

@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
-import { TransactionsByMonthSection } from '../interface/transactions-by-month-section.interface';
+import { TransactionsByMonthSection } from '../interface/transactions-by-month-section.type';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
 const DEFAULT_LIMIT = 20;

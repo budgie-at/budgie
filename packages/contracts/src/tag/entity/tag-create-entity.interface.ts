@@ -1,4 +1,5 @@
-import type { TagCreateEntitySchema } from '../schema/tag-create-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface TagCreateEntityInterface extends infer<typeof TagCreateEntitySchema> {}
+import type { TagCreateEntitySchema } from '../schema/tag-create-entity.schema';
+
+export type TagCreateEntityInterface = z.infer<typeof TagCreateEntitySchema>;

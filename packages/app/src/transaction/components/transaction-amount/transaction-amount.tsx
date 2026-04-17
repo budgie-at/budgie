@@ -9,7 +9,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -19,6 +18,7 @@ import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
+import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -40,7 +40,7 @@ const getAggregatedEntry = (transaction: TransactionWithRelationsEntityInterface
 };
 
 const getAmountTestID = (isAdjustment: boolean, amount: number, transactionId: number) =>
-    isAdjustment ? TransactionCardSelectors.AdjustmentAmount(amount) : TransactionCardSelectors.Amount(transactionId);
+    isAdjustment ? TransactionCardSelector.AdjustmentAmount(amount) : TransactionCardSelector.Amount(transactionId);
 
 const getDisplayState = (transaction: TransactionWithRelationsEntityInterface) => ({
     type: getTransactionType(transaction),
@@ -57,7 +57,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
-            <View className="gap-y-xxl items-end" testID={TransactionCardSelectors.Amount(transaction.id)}>
+            <View className="gap-y-xxl items-end" testID={TransactionCardSelector.Amount(transaction.id)}>
                 <Text className={amountVariants({ type: 'default' })}>
                     {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
                 </Text>

@@ -5,13 +5,14 @@ import { GestureResponderEvent, View } from 'react-native';
 
 import { EmptyFn, emptyFn } from '@rnw-community/shared';
 
-import { TransactionActionsMenuSelectors } from '../../../@e2e/selectors/transaction-actions-menu.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+
+import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
 
 type CloseMenuFn = (afterClose?: EmptyFn) => void;
 
@@ -72,7 +73,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                     className="mr-lg"
                     onPress={emptyFn}
                     onPressIn={handleToggleMenu}
-                    testID={TransactionActionsMenuSelectors.TriggerButton}
+                    testID={TransactionActionsMenuSelector.TriggerButton}
                     hitSlop={16}
                 >
                     <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
@@ -89,7 +90,7 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                             label={t`Delete Transaction`}
                             onPress={handleDeletePress}
                             variant="destructive"
-                            testID={TransactionActionsMenuSelectors.DeleteButton}
+                            testID={TransactionActionsMenuSelector.DeleteButton}
                         />
                     </View>
                 </TransactionActionsMenuContext.Provider>

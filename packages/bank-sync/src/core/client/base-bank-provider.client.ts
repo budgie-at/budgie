@@ -7,7 +7,7 @@ import type { BankProviderEnum } from '../enum/bank-provider.enum';
 import type { BankAccountInterface } from '../interface/bank-account.interface';
 import type { BankClientInfoInterface } from '../interface/bank-client-info.interface';
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
-import type { BankSyncResultInterface } from '../interface/bank-sync-result.interface';
+import type { BankSyncResultInterface } from '../interface/bank-sync-result.type';
 import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
 const HTTP_STATUS_BAD_REQUEST = 400;

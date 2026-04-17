@@ -5,7 +5,6 @@ import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -31,6 +30,8 @@ import { TruncateData } from '../../../settings/components/truncate-data/truncat
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
+import { SettingsPageSelector } from './settings-page.selector';
+
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
@@ -52,11 +53,7 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page
-            testID={SettingsPageSelectors.Container}
-            header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}
-            withBlur
-        >
+        <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
             <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
@@ -114,7 +111,7 @@ export default function SettingsPage() {
                                 description={t`View and delete custom categories`}
                                 icon={UserIconNameEnum.Folder}
                                 variant="default"
-                                testID={SettingsPageSelectors.ManageCategoriesCard}
+                                testID={SettingsPageSelector.ManageCategoriesCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToTags}
@@ -122,10 +119,10 @@ export default function SettingsPage() {
                                 description={t`Create and organize transaction tags`}
                                 icon={UserIconNameEnum.Tag}
                                 variant="pink"
-                                testID={SettingsPageSelectors.ManageTagsCard}
+                                testID={SettingsPageSelector.ManageTagsCard}
                             />
                             <SettingsCard
-                                testID={SettingsPageSelectors.ManageRulesCard}
+                                testID={SettingsPageSelector.ManageRulesCard}
                                 onPress={handleNavigateToRules}
                                 title={t`Manage Rules`}
                                 description={t`Auto-categorize transactions`}
@@ -138,7 +135,7 @@ export default function SettingsPage() {
                                 description={t`View and restore archived accounts`}
                                 icon={UserIconNameEnum.Archive}
                                 variant="dark-warning"
-                                testID={SettingsPageSelectors.ArchivedCard}
+                                testID={SettingsPageSelector.ArchivedCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToInactive}
@@ -146,7 +143,7 @@ export default function SettingsPage() {
                                 description={t`View and activate hidden accounts`}
                                 icon={UserIconNameEnum.EyeOff}
                                 variant="dark-warning"
-                                testID={SettingsPageSelectors.InactiveCard}
+                                testID={SettingsPageSelector.InactiveCard}
                             />
                         </Animated.View>
                     </SettingsGroup>
@@ -155,12 +152,23 @@ export default function SettingsPage() {
                 <View {...anchorLayout('appearance')}>
                     <SettingsGroup title={t`Appearance`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
-                            <ThemeSwitch />
+                            <ThemeSwitch
+                                cardTestID={SettingsPageSelector.DarkModeCard}
+                                switchTestID={SettingsPageSelector.DarkModeSwitch}
+                            />
                             <SettingsCard
+                                testID={SettingsPageSelector.ShowCentsCard}
                                 title={t`Show Cents`}
                                 description={t`Show $1,234.56 instead of $1,235`}
                                 icon={UserIconNameEnum.DollarSign}
-                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        testID={SettingsPageSelector.ShowCentsSwitch}
+                                        onValueChange={handleToggle('showCents')}
+                                        value={showCents}
+                                    />
+                                }
                                 variant="positive"
                             />
                         </Animated.View>
@@ -175,7 +183,9 @@ export default function SettingsPage() {
                             <ImportDatabase />
                             <ExportDatabase />
                             <RecalculateBalances />
-                            <TruncateData />
+                            <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>
+                                <TruncateData />
+                            </Animated.View>
                         </Animated.View>
                     </SettingsGroup>
                 </View>

@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { CategoryPickerBottomSheetSelectors } from '../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 /* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -16,6 +15,8 @@ import { CategorySelectContent } from '../category/components/category-select-co
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
+
+import { CategorySelectorModalSelector } from './category-selector-modal.selector';
 
 const NUM_COLUMNS = 3;
 
@@ -57,8 +58,8 @@ export default function CategorySelectorModal() {
                 placeholder={t`Search categories...`}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreatePress}
-                rightActionTestID={CategoryPickerBottomSheetSelectors.CreateButton}
-                testID={CategoryPickerBottomSheetSelectors.Input}
+                rightActionTestID={CategorySelectorModalSelector.CreateButton}
+                testID={CategorySelectorModalSelector.Input}
             />
 
             {isNotEmptyString(description) ? (
@@ -72,7 +73,7 @@ export default function CategorySelectorModal() {
                 variant={variant}
                 initialCategoryId={initialCategoryId}
                 onSelect={resolveCategorySelector}
-                cardTestID={CategoryPickerBottomSheetSelectors.Card}
+                cardTestID={CategorySelectorModalSelector.Card}
             />
         </View>
     );

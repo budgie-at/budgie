@@ -8,10 +8,10 @@ import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
 import type { BankClientInfoInterface } from '../../core/interface/bank-client-info.interface';
-import type { BankSyncResultInterface } from '../../core/interface/bank-sync-result.interface';
+import type { BankSyncResultInterface } from '../../core/interface/bank-sync-result.type';
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
 import type { MonobankClientInfoApiInterface } from '../interface/monobank-client-info-api.interface';
-import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.interface';
+import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.type';
 
 export class MonobankClient extends BaseBankProviderClient {
     protected readonly provider = BankProviderEnum.MONOBANK;
