@@ -21,7 +21,7 @@ import { buildIncomeEntry } from '../../../transaction/utils/build-income-entry.
 export default function CreateIncomeTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId } = useLocalSearchParams<{ accountId?: string }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
@@ -29,13 +29,7 @@ export default function CreateIncomeTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternal(data);
-            generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            });
+            markForEmbedding({ transactionId: result.id });
 
             return result;
         },

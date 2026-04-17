@@ -32,7 +32,7 @@ interface UpdateExpenseFormProps {
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -40,14 +40,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: data =>
-            void generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            })
+        onAfterSubmit: () => void markForEmbedding({ transactionId })
     });
 
     const fromAccountId = form.watch('fromAccountId');

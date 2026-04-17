@@ -16,7 +16,7 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useLlmContext } from '../../../ai/context/llm.context';
+import { useAi } from '../../../ai/hook/use-ai.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
@@ -47,7 +47,7 @@ export const CategoryForm = (props: Props) => {
     const [openNoteInput] = useNoteInputModal();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
-    const { llm } = useLlmContext();
+    const { llm } = useAi();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 

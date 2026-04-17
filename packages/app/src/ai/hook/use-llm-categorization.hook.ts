@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
-import { useLlmContext } from '../context/llm.context';
+
+import { useAi } from './use-ai.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -34,7 +35,7 @@ const mapExtractedToTransactions = (
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
-    const { llm } = useLlmContext();
+    const { llm } = useAi();
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);

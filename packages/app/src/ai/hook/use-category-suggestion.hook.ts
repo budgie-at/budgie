@@ -3,9 +3,10 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { useLlmContext } from '../context/llm.context';
+import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
+import { useAi } from './use-ai.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
@@ -19,7 +20,7 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { llm } = useLlmContext();
+    const { mode, llm } = useAi();
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
@@ -33,8 +34,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
-        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady, categories.length],
+        readyChecks: [mode === AiModeEnum.Ready, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, mode === AiModeEnum.Ready, categories.length],
         fetchSuggestions
     });
 

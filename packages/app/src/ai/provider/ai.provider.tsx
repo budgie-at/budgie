@@ -12,8 +12,8 @@ import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
-import { aiDebugBuffer } from '../utils/ai-debug-buffer.util';
 import { embeddingDrainerService } from '../service/embedding-drainer.service';
+import { aiDebugBuffer } from '../utils/ai-debug-buffer.util';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
 interface Props {
@@ -46,7 +46,8 @@ const downloadModel = async (url: string, filename: string, onProgress: (p: numb
 
     if (destFile.exists) {
         onProgress(1);
-        return destPath;
+        
+return destPath;
     }
 
     const download = createDownloadResumable(url, destPath, {}, progress => {
@@ -57,7 +58,8 @@ const downloadModel = async (url: string, filename: string, onProgress: (p: numb
     if (!isDefined(result?.uri)) {
         throw new Error('Model download failed');
     }
-    return result.uri;
+    
+return result.uri;
 };
 
 const runCompletion = async (
@@ -76,7 +78,8 @@ const runCompletion = async (
         ...GENERATION_CONFIG,
         ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
     });
-    return stripThinkingTags(result.text.trim());
+    
+return stripThinkingTags(result.text.trim());
 };
 
 const logTransition = (from: AiModeEnum, to: AiModeEnum, trigger: string, errorMessage: string | null = null): void => {
@@ -103,13 +106,14 @@ export const AiProvider = ({ children }: Props) => {
         modeRef.current = mode;
     }, [mode]);
 
-    const transition = useCallback((next: AiModeEnum, trigger: string, errorMessage: string | null = null): void => {
+    const transition = useCallback((next: AiModeEnum, trigger: string, errorMessage: string | null): void => {
         setMode(prev => {
             if (prev === next) {
                 return prev;
             }
             logTransition(prev, next, trigger, errorMessage);
-            return next;
+            
+return next;
         });
     }, []);
 
@@ -133,7 +137,8 @@ export const AiProvider = ({ children }: Props) => {
             }
         };
         void load();
-        return () => {
+        
+return () => {
             cancelled = true;
         };
     }, [progressVersion]);
@@ -143,8 +148,9 @@ export const AiProvider = ({ children }: Props) => {
             return emptyFn;
         }
         if (AppState.currentState !== 'active') {
-            transition(AiModeEnum.Suspended, 'mount:non-active');
-            return emptyFn;
+            transition(AiModeEnum.Suspended, 'mount:non-active', null);
+            
+return emptyFn;
         }
 
         let cancelled = false;
@@ -184,7 +190,8 @@ export const AiProvider = ({ children }: Props) => {
 
                 if (cancelled) {
                     void releaseAllLlama();
-                    return;
+                    
+return;
                 }
 
                 chatContextRef.current = await initLlama({
@@ -197,10 +204,11 @@ export const AiProvider = ({ children }: Props) => {
 
                 if (cancelled) {
                     void releaseAllLlama();
-                    return;
+                    
+return;
                 }
 
-                transition(AiModeEnum.Ready, 'init:complete');
+                transition(AiModeEnum.Ready, 'init:complete', null);
             } catch (err: unknown) {
                 if (!cancelled) {
                     transition(AiModeEnum.Error, 'init:throw', getErrorMessage(err));
@@ -230,10 +238,11 @@ export const AiProvider = ({ children }: Props) => {
                     releaseTimerRef.current = null;
                 }
                 if (modeRef.current === AiModeEnum.Suspended) {
-                    transition(AiModeEnum.Initializing, 'appstate:active');
+                    transition(AiModeEnum.Initializing, 'appstate:active', null);
                     setInitGeneration(g => g + 1);
                 }
-                return;
+                
+return;
             }
 
             if (releaseTimerRef.current !== null) {
@@ -244,12 +253,13 @@ export const AiProvider = ({ children }: Props) => {
                 void releaseAllLlama();
                 chatContextRef.current = null;
                 embeddingContextRef.current = null;
-                transition(AiModeEnum.Suspended, 'appstate:background-release');
+                transition(AiModeEnum.Suspended, 'appstate:background-release', null);
             }, BACKGROUND_RELEASE_DELAY_MS);
         };
 
         const subscription = AppState.addEventListener('change', handleChange);
-        return () => {
+        
+return () => {
             subscription.remove();
             if (releaseTimerRef.current !== null) {
                 clearTimeout(releaseTimerRef.current);
@@ -259,7 +269,7 @@ export const AiProvider = ({ children }: Props) => {
     }, [enabled, transition]);
 
     const retry = useCallback((): void => {
-        transition(AiModeEnum.Initializing, 'manual:retry');
+        transition(AiModeEnum.Initializing, 'manual:retry', null);
         setInitGeneration(g => g + 1);
     }, [transition]);
 
@@ -278,17 +288,20 @@ export const AiProvider = ({ children }: Props) => {
                     if (!isDefined(chatContextRef.current)) {
                         throw new Error('Model released');
                     }
-                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+                    
+return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
                 },
                 async () => {
                     if (!isDefined(chatContextRef.current)) {
                         throw new Error('Model released');
                     }
-                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+                    
+return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
                 }
             );
-            generateMutexRef.current = current.catch(() => emptyFn());
-            return current;
+            generateMutexRef.current = current.catch(() => void emptyFn());
+            
+return current;
         },
         []
     );
@@ -302,7 +315,8 @@ export const AiProvider = ({ children }: Props) => {
         }
         try {
             const result = await embeddingContextRef.current.embedding(text);
-            return result.embedding;
+            
+return result.embedding;
         } catch {
             return [];
         }
@@ -346,14 +360,16 @@ export const AiProvider = ({ children }: Props) => {
         }
         if (mode !== AiModeEnum.Ready) {
             embeddingDrainerService.stop();
-            return emptyFn;
+            
+return emptyFn;
         }
         embeddingDrainerService.start({
             getMode: () => modeRef.current,
             embed: embedding,
             refreshProgress
         });
-        return () => {
+        
+return () => {
             embeddingDrainerService.stop();
         };
     }, [enabled, mode, embedding, refreshProgress]);

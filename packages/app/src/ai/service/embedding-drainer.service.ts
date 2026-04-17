@@ -119,7 +119,8 @@ export class EmbeddingDrainerService {
 
         if (!isPositiveNumber(categoryId)) {
             await transactionRepository.updateById(row.id, { needsEmbedding: false });
-            return;
+            
+return;
         }
 
         const categoryTitle = await this.lookupCategoryTitle(categoryId);
@@ -167,7 +168,8 @@ export class EmbeddingDrainerService {
 
     private async lookupCategoryTitle(categoryId: number): Promise<string | null> {
         const category = await categoryRepository.findById(categoryId);
-        return category?.titleEn ?? category?.title ?? null;
+        
+return category?.titleEn ?? category?.title ?? null;
     }
 
     private async lookupMccDescription(mccCategoryId: number | null): Promise<string> {
@@ -175,7 +177,8 @@ export class EmbeddingDrainerService {
             return '';
         }
         const mccCategory = await mccCategoryRepository.findById(mccCategoryId);
-        return mccCategory?.fullDescription ?? '';
+        
+return mccCategory?.fullDescription ?? '';
     }
 }
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { useAiEmbeddingProgress } from './use-ai-embedding-progress.hook';
+import { useAi } from './use-ai.hook';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -23,6 +23,8 @@ interface SuggestionResultInterface<T> {
     readonly suggestions: T[];
 }
 
+const EMBEDDING_COMPLETENESS_THRESHOLD = 90;
+
 // eslint-disable-next-line max-statements -- Hook coordinates focus refresh, async suggestion fetch, and state management
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
@@ -37,7 +39,8 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { isIncomplete } = useAiEmbeddingProgress();
+    const { progress } = useAi();
+    const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;

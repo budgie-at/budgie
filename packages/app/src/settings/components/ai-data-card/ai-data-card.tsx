@@ -2,14 +2,22 @@ import { Trans } from '@lingui/react/macro';
 import { Pressable, Text } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
 import { LongPressBrain } from '../../../ai/component/long-press-brain/long-press-brain';
-import { useAiStatusContext } from '../../../ai/context/ai-status.context';
+import { useAiDataPreparation } from '../../../ai/hook/use-ai-data-preparation.hook';
 import { useLongPressHold } from '../../../ai/hook/use-long-press-hold.hook';
 import { AiProgressBar } from '../ai-progress-bar/ai-progress-bar';
 
+const FULL_PROGRESS = 100;
+
 export const AiDataCard = () => {
-    const { statusLabel, brainProgress, isRunning, start, startFresh } = useAiStatusContext();
+    const { isRunning, progress, phaseLabel, embeddedCount, totalContexts, start, startFresh } = useAiDataPreparation();
+
+    const completionRatio = isPositiveNumber(totalContexts) ? Math.round((embeddedCount / totalContexts) * FULL_PROGRESS) : 0;
+    const brainProgress = isRunning ? progress : completionRatio;
+    const statusLabel = isRunning ? phaseLabel : '';
 
     const { holdProgress, pressScale, handlePressIn, handlePressOut } = useLongPressHold({
         onPress: () => void start(),

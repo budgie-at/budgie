@@ -1,9 +1,10 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { useLlmContext } from '../context/llm.context';
+import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
+import { useAi } from './use-ai.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCommentSuggestionParams {
@@ -18,7 +19,7 @@ interface UseCommentSuggestionParams {
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { llm } = useLlmContext();
+    const { mode, llm } = useAi();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const fetchSuggestions = async (): Promise<string[]> => {
@@ -29,8 +30,8 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isEmbeddingReady, !isMccLoading],
-        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, llm.isEmbeddingReady],
+        readyChecks: [mode === AiModeEnum.Ready, !isMccLoading],
+        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, mode === AiModeEnum.Ready],
         fetchSuggestions
     });
 

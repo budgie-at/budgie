@@ -15,6 +15,8 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { useLlmContext } from '../../../ai/context/llm.context';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
+import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
+import { useAi } from '../../../ai/hook/use-ai.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
@@ -37,7 +39,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
-    const { isAvailable: isAiAvailable, llm, stt } = useLlmContext();
+    const { mode } = useAi();
+    const { llm, stt } = useLlmContext();
+    const isAiAvailable = mode !== AiModeEnum.Disabled;
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 

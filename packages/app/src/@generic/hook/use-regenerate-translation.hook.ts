@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { useLlmContext } from '../../ai/context/llm.context';
+import { useAi } from '../../ai/hook/use-ai.hook';
 
 type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
 
@@ -15,7 +15,7 @@ export interface UseRegenerateTranslationReturn {
 }
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
-    const { llm } = useLlmContext();
+    const { llm } = useAi();
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
