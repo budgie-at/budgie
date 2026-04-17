@@ -4,7 +4,10 @@ import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { useAi } from '../../ai/hook/use-ai.hook';
+import { AiSubsystemStatusEnum } from '../../ai/enum/ai-subsystem-status.enum';
+import { useChat } from '../../ai/hook/use-chat.hook';
+import { chatService } from '../../ai/service/chat.service';
+import { aiLog } from '../../ai/utils/ai-log.util';
 
 type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
 
@@ -15,27 +18,32 @@ export interface UseRegenerateTranslationReturn {
 }
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
-    const { llm } = useAi();
+    const { status: chatStatus } = useChat();
+    const isChatReady = chatStatus === AiSubsystemStatusEnum.Ready;
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
-        if (!llm.isReady) {
+        if (!isChatReady) {
+            aiLog('translation:regenerate:skip:not-ready', { chatStatus });
             setError(t`LLM not ready`);
 
             return null;
         }
 
+        aiLog('translation:regenerate:start', { entityId, titleLen: title.length });
         setIsRegenerating(true);
         setError(null);
 
         try {
-            const service = new TranslationLlmService(llm);
+            const service = new TranslationLlmService(chatService);
             const result = await service.translate(title);
             await updateTranslation(entityId, result.titleEn, result.titleTags);
+            aiLog('translation:regenerate:complete', { entityId, titleEnLen: result.titleEn.length });
 
             return result;
         } catch (regenerateError: unknown) {
+            aiLog('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) });
             setError(getErrorMessage(regenerateError));
 
             return null;

@@ -5,9 +5,13 @@ import { useRef, useState } from 'react';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
+import { aiLog } from '../utils/ai-log.util';
 
-import { useAi } from './use-ai.hook';
+import { useStartStopStt } from './use-start-stop-stt.hook';
+import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -23,11 +27,15 @@ interface UseSttReturn {
     readonly cancelStream: () => void;
 }
 
+const INSERT_LOG_INTERVAL = 50;
+
 // eslint-disable-next-line max-statements
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
-    const { stt } = useAi();
+
+    useStartStopStt();
+    const sttSnapshot = useSttSnapshot();
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [transcription, setTranscription] = useState('');
@@ -35,14 +43,16 @@ export const useStt = (): UseSttReturn => {
 
     const streamPromiseRef = useRef<Promise<string> | null>(null);
     const baseTranscriptionRef = useRef('');
+    const insertLogTickRef = useRef(0);
 
     const updateTranscription = () => {
-        const currentCommitted = stt.committedTranscription.startsWith(baseTranscriptionRef.current)
-            ? stt.committedTranscription.slice(baseTranscriptionRef.current.length)
-            : stt.committedTranscription;
+        const committed = sttService.committedTranscription;
+        const currentCommitted = committed.startsWith(baseTranscriptionRef.current)
+            ? committed.slice(baseTranscriptionRef.current.length)
+            : committed;
 
         setTranscription(filterTranscriptionTokens(currentCommitted));
-        setPartialTranscription(filterTranscriptionTokens(stt.nonCommittedTranscription));
+        setPartialTranscription(filterTranscriptionTokens(sttService.nonCommittedTranscription));
     };
 
     const resetState = () => {
@@ -54,7 +64,7 @@ export const useStt = (): UseSttReturn => {
     const cleanupStream = async () => {
         if (isDefined(streamPromiseRef.current)) {
             try {
-                stt.streamStop();
+                sttService.streamStop();
                 await streamPromiseRef.current;
             } catch {
                 emptyFn();
@@ -67,13 +77,14 @@ export const useStt = (): UseSttReturn => {
 
     const initStream = () => {
         resetState();
-        baseTranscriptionRef.current = stt.committedTranscription;
+        baseTranscriptionRef.current = sttService.committedTranscription;
         const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
-        streamPromiseRef.current = stt.stream(streamOptions).catch(() => '');
+        streamPromiseRef.current = sttService.stream(streamOptions).catch(() => '');
         setStatus('streaming');
     };
 
     const startStream = () => {
+        aiLog('hook:stt:startStream');
         cleanupStream().then(initStream).catch(emptyFn);
     };
 
@@ -82,11 +93,16 @@ export const useStt = (): UseSttReturn => {
             return;
         }
 
-        stt.streamInsert(samples);
+        sttService.streamInsert(samples);
         updateTranscription();
+        insertLogTickRef.current += 1;
+        if (insertLogTickRef.current % INSERT_LOG_INTERVAL === 0) {
+            aiLog('hook:stt:insert', { ticks: insertLogTickRef.current, samplesLen: samples.length });
+        }
     };
 
     const stopStream = async (): Promise<string> => {
+        aiLog('hook:stt:stopStream');
         if (!isDefined(streamPromiseRef.current)) {
             return transcription;
         }
@@ -94,7 +110,7 @@ export const useStt = (): UseSttReturn => {
         setStatus('processing');
 
         try {
-            stt.streamStop();
+            sttService.streamStop();
             const streamResult = await streamPromiseRef.current;
             const finalText = filterTranscriptionTokens(streamResult).trim();
             setTranscription(finalText);
@@ -112,6 +128,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cancelStream = () => {
+        aiLog('hook:stt:cancelStream');
         cleanupStream().then(resetState).catch(emptyFn);
     };
 
@@ -119,8 +136,8 @@ export const useStt = (): UseSttReturn => {
         status,
         transcription,
         partialTranscription,
-        isReady: stt.isReady,
-        downloadProgress: stt.downloadProgress,
+        isReady: sttSnapshot.status === AiSubsystemStatusEnum.Ready,
+        downloadProgress: sttSnapshot.downloadProgress,
         startStream,
         insertAudio,
         stopStream,

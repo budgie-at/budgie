@@ -2,7 +2,7 @@ import { buildCommentContext, buildMerchantContext, serializeEmbedding } from '@
 import { PendingEmbeddingRowInterface } from '@budgie/contracts';
 import { AppState, AppStateStatus } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     categoryRepository,
@@ -12,9 +12,11 @@ import {
     transactionEmbeddingRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
-import { AiModeEnum } from '../enum/ai-mode.enum';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
+import { aiLog } from '../utils/ai-log.util';
+
+import { embeddingService } from './embedding.service';
 
 const BATCH_SIZE = 10;
 const DRAIN_INTERVAL_MS = 2_000;
@@ -30,43 +32,69 @@ class EmbeddingDrainerService {
     private running = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
+    private embeddingUnsubscribe: (() => void) | null = null;
     private started = false;
 
-    start(getMode: () => AiModeEnum, embed: (text: string) => Promise<number[]>): void {
-        this.getMode = getMode;
-        this.embed = embed;
+    start(): void {
+        if (this.started) {
+            return;
+        }
+        aiLog('drainer:start');
         this.started = true;
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
-        this.scheduleDrain();
+        this.embeddingUnsubscribe = embeddingService.subscribe(() => {
+            const { status } = embeddingService.getSnapshot();
+            if (status === AiSubsystemStatusEnum.Ready) {
+                this.scheduleDrain();
+            } else {
+                this.haltDrain();
+            }
+        });
+        if (embeddingService.isReady) {
+            this.scheduleDrain();
+        }
     }
 
     stop(): void {
+        if (!this.started) {
+            return;
+        }
+        aiLog('drainer:stop');
         this.started = false;
+        this.haltDrain();
+        this.appStateSubscription?.remove();
+        this.appStateSubscription = null;
+        this.embeddingUnsubscribe?.();
+        this.embeddingUnsubscribe = null;
+    }
+
+    private readonly handleAppState = (state: AppStateStatus): void => {
+        aiLog('drainer:appstate:change', { to: state });
+        if (state === 'active') {
+            this.scheduleDrain();
+        } else {
+            this.haltDrain();
+        }
+    };
+
+    private haltDrain(): void {
+        aiLog('drainer:halt');
         this.running = false;
         if (this.timer !== null) {
             clearTimeout(this.timer);
             this.timer = null;
         }
-        this.appStateSubscription?.remove();
-        this.appStateSubscription = null;
     }
 
-    private getMode: () => AiModeEnum = () => AiModeEnum.Disabled;
-    private embed: (text: string) => Promise<number[]> = async () => [];
-
-    private readonly handleAppState = (state: AppStateStatus): void => {
-        if (state === 'active') {
-            this.scheduleDrain();
-        } else if (this.timer !== null) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-    };
+    private isSafe(): boolean {
+        return embeddingService.isReady && AppState.currentState === 'active';
+    }
 
     private scheduleDrain(): void {
-        if (!this.started || this.running || !isNativeCallSafe(this.getMode())) {
+        if (!this.started || this.running || !this.isSafe()) {
             return;
         }
+        aiLog('drainer:schedule', { delayMs: DRAIN_INTERVAL_MS });
         if (this.timer !== null) {
             clearTimeout(this.timer);
         }
@@ -77,30 +105,40 @@ class EmbeddingDrainerService {
     }
 
     private async drain(): Promise<void> {
-        if (!isNativeCallSafe(this.getMode())) {
+        if (!this.isSafe()) {
+            aiLog('drainer:row:skip:not-safe');
+
             return;
         }
+        const started = Date.now();
+        aiLog('drainer:drain:begin', { batchSize: BATCH_SIZE });
 
         this.running = true;
         try {
             const rows = await transactionEmbeddingRepository.findPending(BATCH_SIZE);
             if (rows.length === 0) {
+                aiLog('drainer:drain:no-rows');
+
                 return;
             }
             await this.processRows(rows);
             await embeddingProgressStore.refresh();
-        } catch {
-            emptyFn();
+            aiLog('drainer:drain:complete', { durationMs: Date.now() - started, rows: rows.length });
+        } catch (error: unknown) {
+            aiLog('drainer:drain:error', { errorMessage: getErrorMessage(error) });
         } finally {
             this.running = false;
-            this.scheduleDrain();
+            if (this.isSafe()) {
+                this.scheduleDrain();
+            }
         }
     }
 
     private async processRows(rows: PendingEmbeddingRowInterface[]): Promise<void> {
         /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
         for (const row of rows) {
-            if (!this.started || !isNativeCallSafe(this.getMode())) {
+            if (!this.started || !this.isSafe()) {
+                aiLog('drainer:row:skip:not-safe', { rowId: row.id });
                 break;
             }
             await this.processRow(row);
@@ -109,16 +147,27 @@ class EmbeddingDrainerService {
     }
 
     private async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
-        const context = await this.buildRowContext(row);
-        if (context === null) {
-            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+        aiLog('drainer:row:begin', { rowId: row.id });
+        try {
+            const context = await this.buildRowContext(row);
+            if (context === null) {
+                await transactionRepository.updateById(row.id, { needsEmbedding: false });
+                aiLog('drainer:row:persisted', { rowId: row.id, skipped: 'no-context' });
 
-            return;
-        }
+                return;
+            }
 
-        const embedded = await this.resolveEmbedded(row, context);
-        if (embedded) {
-            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+            aiLog('drainer:row:context', { rowId: row.id, categoryId: context.categoryId });
+
+            const embedded = await this.resolveEmbedded(row, context);
+            if (embedded) {
+                await transactionRepository.updateById(row.id, { needsEmbedding: false });
+                aiLog('drainer:row:persisted', { rowId: row.id });
+            } else {
+                aiLog('drainer:row:skip:not-safe', { rowId: row.id, reason: 'empty-embedding' });
+            }
+        } catch (error: unknown) {
+            aiLog('drainer:row:throw', { rowId: row.id, errorMessage: getErrorMessage(error) });
         }
     }
 
@@ -155,10 +204,11 @@ class EmbeddingDrainerService {
             mccDescription: context.mccDescription,
             categoryTitle: context.categoryTitle
         });
-        const rawEmbedding = await this.embed(promptContext);
+        const rawEmbedding = await embeddingService.embed(promptContext);
         if (!isNotEmptyArray(rawEmbedding)) {
             return false;
         }
+        aiLog('drainer:row:embedded', { rowId: row.id, source: 'merchant', dimensions: rawEmbedding.length });
 
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
         const embeddingId = await merchantEmbeddingRepository.upsert({
@@ -178,10 +228,11 @@ class EmbeddingDrainerService {
 
     private async embedComment(row: PendingEmbeddingRowInterface, context: RowContextInterface): Promise<boolean> {
         const promptContext = buildCommentContext({ comment: row.comment, categoryTitle: context.categoryTitle });
-        const rawEmbedding = await this.embed(promptContext);
+        const rawEmbedding = await embeddingService.embed(promptContext);
         if (!isNotEmptyArray(rawEmbedding)) {
             return false;
         }
+        aiLog('drainer:row:embedded', { rowId: row.id, source: 'comment', dimensions: rawEmbedding.length });
 
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
         const embeddingId = await commentEmbeddingRepository.upsert({

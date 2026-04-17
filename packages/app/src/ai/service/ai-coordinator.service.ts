@@ -8,6 +8,7 @@ import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 import { aiLog } from '../utils/ai-log.util';
 
 import { chatService } from './chat.service';
+import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 
@@ -102,6 +103,7 @@ class AiCoordinatorService {
         } catch (error: unknown) {
             aiLog('coordinator:subsystems:start:error', { errorMessage: getErrorMessage(error) });
         }
+        embeddingDrainerService.start();
         aiLog('coordinator:subsystems:start:complete', {
             durationMs: Date.now() - started,
             chatStatus: chatService.getSnapshot().status,
@@ -112,6 +114,7 @@ class AiCoordinatorService {
     private async stopSubsystems(): Promise<void> {
         const started = Date.now();
         aiLog('coordinator:subsystems:stop:begin');
+        embeddingDrainerService.stop();
         try {
             await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
         } catch (error: unknown) {
