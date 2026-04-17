@@ -16,9 +16,9 @@ import {
     EMBEDDING_VEC_OVERSAMPLE_LIMIT,
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
-import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { aiLog } from '../../@generic/util/ai-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
+import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
@@ -26,12 +26,13 @@ import { buildTransactionContext } from '../util/build-transaction-context.util'
 import { EmbeddingService } from './embedding.service';
 
 export class EmbeddingSuggestionService {
-    constructor(private readonly repositories: EmbeddingSuggestionRepositoriesInterface) {}
+    constructor(
+        private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
+        private readonly embedding: EmbeddingInvokerInterface
+    ) {}
 
-     
     /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented temporarily */
     async suggestCategories(
-        llm: LlmInterface,
         categories: CategoryEntityInterface[],
         transactionTitle: string,
         mccDescription: string | null,
@@ -43,7 +44,7 @@ export class EmbeddingSuggestionService {
             context: suggestionContext.context,
             distanceThreshold: suggestionContext.distanceThreshold
         });
-        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
+        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
 
         if (!isDefined(resolved)) {
             aiLog('suggest:category:no-embedding', { context: suggestionContext.context });
@@ -90,9 +91,8 @@ export class EmbeddingSuggestionService {
         return resolvedCategories;
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit to avoid extra context-building calls in hooks
+    // eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented with aiLog taxonomy
     async suggestTags(
-        llm: LlmInterface,
         allTags: TagEntityInterface[],
         categoryId: number,
         transactionTitle: string,
@@ -101,11 +101,22 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): Promise<TagEntityInterface[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
+        aiLog('suggest:tag:context', {
+            context: suggestionContext.context,
+            distanceThreshold: suggestionContext.distanceThreshold
+        });
+        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
 
         if (!isDefined(resolved)) {
+            aiLog('suggest:tag:no-embedding', { context: suggestionContext.context });
+
             return [];
         }
+
+        aiLog('suggest:tag:embedded', {
+            serializedBytes: resolved.serialized.length,
+            distanceThreshold: resolved.distanceThreshold
+        });
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -119,15 +130,26 @@ export class EmbeddingSuggestionService {
             this.repositories.comment.findSimilarTags(resolved.serialized, tagParams)
         ]);
 
+        aiLog('suggest:tag:repoResults', {
+            merchantCount: merchantResults.length,
+            commentCount: commentResults.length
+        });
+
         const merged = this.mergeTagScores(merchantResults, commentResults);
         const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
+        const resolvedTags = topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
 
-        return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
+        aiLog('suggest:tag:final', {
+            topCount: topTags.length,
+            resolvedCount: resolvedTags.length,
+            topTagIds: resolvedTags.map(tag => tag.id)
+        });
+
+        return resolvedTags;
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit to avoid extra context-building calls in hooks
+    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit; instrumented with aiLog taxonomy
     async suggestComments(
-        llm: LlmInterface,
         categoryId: number,
         transactionTitle: string,
         mccDescription: string | null,
@@ -135,11 +157,22 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): Promise<string[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
+        aiLog('suggest:comment:context', {
+            context: suggestionContext.context,
+            distanceThreshold: suggestionContext.distanceThreshold
+        });
+        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
 
         if (!isDefined(resolved)) {
+            aiLog('suggest:comment:no-embedding', { context: suggestionContext.context });
+
             return [];
         }
+
+        aiLog('suggest:comment:embedded', {
+            serializedBytes: resolved.serialized.length,
+            distanceThreshold: resolved.distanceThreshold
+        });
 
         const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -148,14 +181,18 @@ export class EmbeddingSuggestionService {
             commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
         });
 
-        return commentResults.map(row => row.comment).filter(isNotEmptyString);
+        aiLog('suggest:comment:repoResults', { count: commentResults.length });
+
+        const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
+        aiLog('suggest:comment:final', { count: finalComments.length });
+
+        return finalComments;
     }
 
     private async resolveSerializedEmbedding(
-        llm: LlmInterface,
         suggestionContext: SuggestionContextInterface
     ): Promise<{ readonly serialized: Uint8Array; readonly distanceThreshold: number } | null> {
-        const serialized = await this.generateSerializedEmbedding(suggestionContext.context, llm);
+        const serialized = await this.generateSerializedEmbedding(suggestionContext.context);
 
         if (!isDefined(serialized)) {
             return null;
@@ -213,9 +250,9 @@ export class EmbeddingSuggestionService {
         return [...scoreMap.entries()].map(([tagId, score]) => ({ tagId, score })).sort((first, second) => second.score - first.score);
     }
 
-    private async generateSerializedEmbedding(context: string, llm: LlmInterface): Promise<Uint8Array | null> {
+    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
         aiLog('suggest:embed:start', { context, contextLen: context.length });
-        const service = new EmbeddingService(llm);
+        const service = new EmbeddingService(this.embedding);
         const queryEmbedding = await service.generateEmbedding(context);
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {

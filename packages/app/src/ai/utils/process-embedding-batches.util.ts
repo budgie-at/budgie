@@ -1,4 +1,4 @@
-import { EMBEDDING_BATCH_LIMIT, EmbeddingService, LlmInterface, serializeEmbedding } from '@budgie/ai';
+import { EMBEDDING_BATCH_LIMIT, EmbeddingInvokerInterface, EmbeddingService, serializeEmbedding } from '@budgie/ai';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -49,12 +49,12 @@ const storeEmbeddings = async <TContextData extends ContextDataWithEmbedding>(
 
 // eslint-disable-next-line max-statements -- Batch processing with error recovery
 export const processEmbeddingBatches = async <TRawData, TContextData extends ContextDataWithEmbedding>(
-    llm: LlmInterface,
+    embedding: EmbeddingInvokerInterface,
     existingKeys: Set<string>,
     callbacks: ProgressCallbackInterface,
     config: BatchConfigInterface<TRawData, TContextData>
 ): Promise<void> => {
-    const embeddingService = new EmbeddingService(llm);
+    const embeddingService = new EmbeddingService(embedding);
     let cursor: number | undefined;
     let hasMore = true;
     let consecutiveFailures = 0;

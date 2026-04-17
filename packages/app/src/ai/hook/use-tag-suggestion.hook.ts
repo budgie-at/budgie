@@ -23,7 +23,7 @@ interface UseTagSuggestionParams {
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { mode, llm } = useAi();
+    const { mode } = useAi();
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
@@ -36,7 +36,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
         const mccDescription = mccCategory?.fullDescription ?? null;
 
-        return embeddingSuggestionService.suggestTags(llm, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
+        return embeddingSuggestionService.suggestTags(allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
     };
 
     const { status, suggestions } = useSuggestionBase({

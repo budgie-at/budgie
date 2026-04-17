@@ -21,7 +21,7 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { mode, llm } = useAi();
+    const { mode } = useAi();
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
@@ -38,7 +38,6 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
             categoriesLength: categories.length
         });
         const results = await embeddingSuggestionService.suggestCategories(
-            llm,
             categories,
             transactionTitle,
             mccDescription,

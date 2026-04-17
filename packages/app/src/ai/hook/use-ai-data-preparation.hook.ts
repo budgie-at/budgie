@@ -8,6 +8,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { AiModeEnum } from '../enum/ai-mode.enum';
+import { embeddingService } from '../service/embedding.service';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
@@ -133,7 +134,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();
-            await processMerchantBatches(llm, existingMerchantKeys, {
+            await processMerchantBatches(embeddingService, existingMerchantKeys, {
                 getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
@@ -143,7 +144,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setPhaseLabel(t`Generating comment embeddings...`);
             await microPause();
-            await processCommentBatches(llm, existingCommentKeys, {
+            await processCommentBatches(embeddingService, existingCommentKeys, {
                 getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {

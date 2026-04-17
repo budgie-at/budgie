@@ -1,4 +1,4 @@
-import { LlmInterface, buildMerchantContext } from '@budgie/ai';
+import { EmbeddingInvokerInterface, buildMerchantContext } from '@budgie/ai';
 import { UnembeddedMerchantDataInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -54,7 +54,7 @@ const merchantBatchConfig: BatchConfigInterface<UnembeddedMerchantDataInterface,
 };
 
 export const processMerchantBatches = async (
-    llm: LlmInterface,
+    embedding: EmbeddingInvokerInterface,
     existingKeys: Set<string>,
     callbacks: ProgressCallbackInterface
-): Promise<void> => processEmbeddingBatches(llm, existingKeys, callbacks, merchantBatchConfig);
+): Promise<void> => processEmbeddingBatches(embedding, existingKeys, callbacks, merchantBatchConfig);
