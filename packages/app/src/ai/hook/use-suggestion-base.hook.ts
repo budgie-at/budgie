@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { useAi } from './use-ai.hook';
+import { useAiProgress } from './use-ai-progress.hook';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -39,7 +39,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { progress } = useAi();
+    const { progress } = useAiProgress();
     const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {

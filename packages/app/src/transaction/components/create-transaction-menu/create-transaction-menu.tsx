@@ -15,6 +15,7 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
+import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
 import { useAi } from '../../../ai/hook/use-ai.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
@@ -39,6 +40,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
     const { mode, stt, llm } = useAi();
+    const { downloadProgress } = useAiProgress();
     const isAiAvailable = mode !== AiModeEnum.Disabled;
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
@@ -49,7 +51,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
     const isAiInitializing = isAiAvailable && llm.isInitializing;
     const aiDownloadProgress = isAiAvailable
-        ? llm.downloadProgress * LLM_PROGRESS_WEIGHT + (stt.downloadProgress / 100) * STT_PROGRESS_WEIGHT
+        ? downloadProgress * LLM_PROGRESS_WEIGHT + (stt.downloadProgress / 100) * STT_PROGRESS_WEIGHT
         : 0;
 
     const rotation = useSharedValue(0);

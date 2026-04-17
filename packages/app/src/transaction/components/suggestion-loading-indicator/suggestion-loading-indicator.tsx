@@ -6,6 +6,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
 import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
+import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
 import { useAi } from '../../../ai/hook/use-ai.hook';
 
 interface Props {
@@ -18,7 +19,8 @@ const BRAIN_ICON_SIZE = 16;
 
 export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
     const router = useRouter();
-    const { mode, progress, isEmbedding } = useAi();
+    const { mode } = useAi();
+    const { progress, isEmbedding } = useAiProgress();
     const statusLabel = mode === AiModeEnum.Initializing ? t`Loading AI model...` : '';
 
     const shouldAnimate = isLoading || isEmbedding;

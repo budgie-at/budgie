@@ -2,7 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { useAi } from '../../../ai/hook/use-ai.hook';
+import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
@@ -18,7 +18,7 @@ const EMBEDDING_COMPLETENESS_THRESHOLD = 90;
 
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, isProcessing = false, children } = props;
-    const { progress } = useAi();
+    const { progress } = useAiProgress();
     const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
     const scrollRef = useRef<ScrollView | null>(null);
 

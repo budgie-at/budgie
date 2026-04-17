@@ -6,6 +6,7 @@ import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 
+import { useAiProgress } from './use-ai-progress.hook';
 import { useAi } from './use-ai.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
@@ -36,6 +37,7 @@ const mapExtractedToTransactions = (
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
     const { llm } = useAi();
+    const { downloadProgress } = useAiProgress();
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
@@ -78,7 +80,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         transactions,
         error,
         isReady: llm.isReady,
-        downloadProgress: llm.downloadProgress,
+        downloadProgress,
         categorize,
         reset
     };

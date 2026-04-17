@@ -1,8 +1,8 @@
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 
-import { useAi } from './use-ai.hook';
+import { useAiProgress } from './use-ai-progress.hook';
 
 interface MarkParamsInterface {
     readonly transactionId: number;
@@ -13,15 +13,11 @@ interface UseEmbeddingGeneratorReturnInterface {
     readonly markManyForEmbedding: (transactionIds: readonly number[]) => void;
 }
 
-const handleMarkError = (): void => {
-    // intentionally empty - best-effort flag update; drainer will rediscover row if this misses
-};
-
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
-    const { refreshProgress } = useAi();
+    const { refreshProgress } = useAiProgress();
 
     const markForEmbedding = (params: MarkParamsInterface): void => {
-        transactionRepository.updateById(params.transactionId, { needsEmbedding: true }).then(refreshProgress).catch(handleMarkError);
+        transactionRepository.updateById(params.transactionId, { needsEmbedding: true }).then(refreshProgress).catch(emptyFn);
     };
 
     const markManyForEmbedding = (transactionIds: readonly number[]): void => {
@@ -33,7 +29,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
 
         Promise.all(ids.map(id => transactionRepository.updateById(id, { needsEmbedding: true })))
             .then(refreshProgress)
-            .catch(handleMarkError);
+            .catch(emptyFn);
     };
 
     return { markForEmbedding, markManyForEmbedding };

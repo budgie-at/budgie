@@ -12,6 +12,7 @@ import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
 
+import { useAiProgress } from './use-ai-progress.hook';
 import { useAi } from './use-ai.hook';
 
 interface UseAiDataPreparationReturn {
@@ -29,7 +30,8 @@ interface UseAiDataPreparationReturn {
 
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
-    const { mode, llm, refreshProgress } = useAi();
+    const { mode, llm } = useAi();
+    const { downloadProgress, refreshProgress } = useAiProgress();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
@@ -194,6 +196,6 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         totalContexts,
         isLlmReady: mode === AiModeEnum.Ready,
         isLlmInitializing: mode === AiModeEnum.Initializing,
-        llmDownloadProgress: llm.downloadProgress
+        llmDownloadProgress: downloadProgress
     };
 };
