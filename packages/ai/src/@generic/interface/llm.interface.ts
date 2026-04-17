@@ -1,7 +1,6 @@
-export interface GenerateOptionsInterface {
-    readonly maxNewTokens?: number;
-    readonly temperature?: number;
-}
+import { GenerateOptionsInterface } from './generate-options.interface';
+
+export type { GenerateOptionsInterface };
 
 export interface LlmInterface {
     readonly isReady: boolean;
