@@ -7,12 +7,12 @@ import { WHISPER_SMALL, useSpeechToText } from 'react-native-executorch';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiProgressContext } from '../context/ai-progress.context';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingDrainerService } from '../service/embedding-drainer.service';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 import {
     BACKGROUND_RELEASE_DELAY_MS,
     CHAT_CONTEXT_SIZE,
@@ -38,10 +38,7 @@ export const AiProvider = ({ children }: Props) => {
 
     const [mode, setMode] = useState<AiModeEnum>(enabled ? AiModeEnum.Initializing : AiModeEnum.Disabled);
     const [downloadProgress, setDownloadProgress] = useState(0);
-    const [progress, setProgress] = useState(0);
-    const [isEmbedding, setIsEmbedding] = useState(false);
     const [initGeneration, setInitGeneration] = useState(0);
-    const [progressVersion, setProgressVersion] = useState(0);
 
     const stt = useSpeechToText({ model: WHISPER_SMALL });
 
@@ -62,32 +59,6 @@ export const AiProvider = ({ children }: Props) => {
             return next;
         });
     };
-
-    const refreshProgress = (): void => {
-        setProgressVersion(version => version + 1);
-    };
-
-    useEffect(() => {
-        let cancelled = false;
-        const load = async (): Promise<void> => {
-            try {
-                const total = await transactionRepository.countAllActive();
-                const pending = await transactionEmbeddingRepository.countPending();
-                if (!cancelled) {
-                    const percent = total === 0 ? 100 : Math.round(((total - pending) / total) * 100);
-                    setProgress(percent);
-                    setIsEmbedding(pending > 0);
-                }
-            } catch {
-                emptyFn();
-            }
-        };
-        void load();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [progressVersion]);
 
     useEffect(() => {
         if (!enabled) {
@@ -323,7 +294,9 @@ export const AiProvider = ({ children }: Props) => {
         embeddingDrainerService.start({
             getMode: () => modeRef.current,
             embed: embedding,
-            refreshProgress
+            refreshProgress: () => {
+                void embeddingProgressStore.refresh();
+            }
         });
 
         return () => {
@@ -345,7 +318,7 @@ export const AiProvider = ({ children }: Props) => {
     };
 
     const value = { mode, llm, stt, retry };
-    const progressValue = { progress, isEmbedding, downloadProgress, refreshProgress };
+    const progressValue = { downloadProgress };
 
     return (
         <AiContext value={value}>

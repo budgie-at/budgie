@@ -12,6 +12,7 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { AiModeEnum } from '../enum/ai-mode.enum';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
 import type { PendingEmbeddingRowInterface } from '@budgie/contracts';
@@ -100,8 +101,7 @@ class EmbeddingDrainerService {
             }
             /* eslint-enable no-await-in-loop */
 
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
-            this.deps?.refreshProgress();
+            void embeddingProgressStore.refresh();
         } catch {
             emptyFn();
         } finally {

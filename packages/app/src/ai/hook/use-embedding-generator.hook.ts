@@ -1,8 +1,7 @@
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
-
-import { useAiProgress } from './use-ai-progress.hook';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 
 interface MarkParamsInterface {
     readonly transactionId: number;
@@ -14,10 +13,11 @@ interface UseEmbeddingGeneratorReturnInterface {
 }
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
-    const { refreshProgress } = useAiProgress();
-
     const markForEmbedding = (params: MarkParamsInterface): void => {
-        transactionRepository.updateById(params.transactionId, { needsEmbedding: true }).then(refreshProgress).catch(emptyFn);
+        transactionRepository
+            .updateById(params.transactionId, { needsEmbedding: true })
+            .then(() => embeddingProgressStore.refresh())
+            .catch(emptyFn);
     };
 
     const markManyForEmbedding = (transactionIds: readonly number[]): void => {
@@ -28,7 +28,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
         }
 
         Promise.all(ids.map(id => transactionRepository.updateById(id, { needsEmbedding: true })))
-            .then(refreshProgress)
+            .then(() => embeddingProgressStore.refresh())
             .catch(emptyFn);
     };
 
