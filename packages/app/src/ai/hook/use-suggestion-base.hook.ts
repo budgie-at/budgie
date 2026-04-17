@@ -6,7 +6,7 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { aiLog } from '../utils/ai-log.util';
 
-import { useAiProgress } from './use-ai-progress.hook';
+import { useEmbeddingProgress } from './use-embedding-progress.hook';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -41,7 +41,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { progress } = useAiProgress();
+    const { progress } = useEmbeddingProgress();
     const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
