@@ -1,4 +1,4 @@
-/* eslint-disable max-lines -- Transaction repository naturally large due to filter builders and pending-embedding helpers */
+/* eslint-disable max-lines -- Transaction repository naturally large due to filter builders */
 import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -245,24 +245,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const [row] = await this.db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt));
 
         return row.value;
-    }
-
-    async countPendingEmbedding(): Promise<number> {
-        const [row] = await this.db
-            .select({ value: count() })
-            .from(TransactionEntityTable)
-            .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)));
-
-        return row.value;
-    }
-
-    async findPendingEmbedding(limit: number, tx?: DB) {
-        return (tx ?? this.db).query.TransactionEntityTable.findMany({
-            where: and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)),
-            orderBy: (transaction, { asc }) => [asc(transaction.id)],
-            limit,
-            with: this.transactionRelations
-        });
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {
