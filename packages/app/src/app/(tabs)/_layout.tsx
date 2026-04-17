@@ -8,7 +8,6 @@ import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradie
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
-import { AiModeEnum } from '../../ai/enum/ai-mode.enum';
 import { useAi } from '../../ai/hook/use-ai.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
@@ -22,8 +21,7 @@ const LazyVoiceInputOverlay = lazy(async () => {
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
-    const { mode } = useAi();
-    const isAiAvailable = mode !== AiModeEnum.Disabled;
+    const { isAvailable: isAiAvailable } = useAi();
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
