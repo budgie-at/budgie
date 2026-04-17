@@ -13,6 +13,7 @@ import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { aiDebugBuffer } from '../utils/ai-debug-buffer.util';
+import { embeddingDrainerService } from '../service/embedding-drainer.service';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
 interface Props {
@@ -338,6 +339,24 @@ export const AiProvider = ({ children }: Props) => {
     const interrupt = useCallback((): void => {
         void chatContextRef.current?.stopCompletion();
     }, []);
+
+    useEffect(() => {
+        if (!enabled) {
+            return emptyFn;
+        }
+        if (mode !== AiModeEnum.Ready) {
+            embeddingDrainerService.stop();
+            return emptyFn;
+        }
+        embeddingDrainerService.start({
+            getMode: () => modeRef.current,
+            embed: embedding,
+            refreshProgress
+        });
+        return () => {
+            embeddingDrainerService.stop();
+        };
+    }, [enabled, mode, embedding, refreshProgress]);
 
     const llm: LlmInterface = {
         isReady: mode === AiModeEnum.Ready,
