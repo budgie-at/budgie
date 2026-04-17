@@ -73,7 +73,7 @@ export const RootLayoutContent = () => {
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                 <SettingsProvider>
-                    <DevMenuController />
+                    {__DEV__ && <DevMenuController />}
                     <ScreenshotProtectionController />
                     <I18nProvider>
                         <KeyboardProvider>
