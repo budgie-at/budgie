@@ -3,7 +3,7 @@ import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budg
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { WHISPER_SMALL, useSpeechToText } from 'react-native-executorch';
 
@@ -11,6 +11,7 @@ import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-commu
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AiProgressContext } from '../context/ai-progress.context';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingDrainerService } from '../service/embedding-drainer.service';
@@ -377,20 +378,31 @@ export const AiProvider = ({ children }: Props) => {
         };
     }, [enabled, mode, embedding, refreshProgress]);
 
-    const llm: LlmInterface = {
-        isReady: mode === AiModeEnum.Ready,
-        isEmbeddingReady: mode === AiModeEnum.Ready,
-        isInitializing: mode === AiModeEnum.Initializing,
-        isGenerating: false,
-        downloadProgress,
-        error: null,
-        generate,
-        embedding,
-        batchEmbedding,
-        interrupt
-    };
+    const llm = useMemo<LlmInterface>(
+        () => ({
+            isReady: mode === AiModeEnum.Ready,
+            isEmbeddingReady: mode === AiModeEnum.Ready,
+            isInitializing: mode === AiModeEnum.Initializing,
+            isGenerating: false,
+            downloadProgress: 0,
+            error: null,
+            generate,
+            embedding,
+            batchEmbedding,
+            interrupt
+        }),
+        [mode, generate, embedding, batchEmbedding, interrupt]
+    );
 
-    const value = { mode, llm, stt, progress, isEmbedding, downloadProgress, retry, refreshProgress };
+    const value = useMemo(() => ({ mode, llm, stt, retry }), [mode, llm, stt, retry]);
+    const progressValue = useMemo(
+        () => ({ progress, isEmbedding, downloadProgress, refreshProgress }),
+        [progress, isEmbedding, downloadProgress, refreshProgress]
+    );
 
-    return <AiContext value={value}>{children}</AiContext>;
+    return (
+        <AiContext value={value}>
+            <AiProgressContext value={progressValue}>{children}</AiProgressContext>
+        </AiContext>
+    );
 };
