@@ -1,4 +1,3 @@
- 
 import { GenerateOptionsInterface, stripThinkingTags } from '@budgie/ai';
 import { LlamaContext } from 'llama.rn';
 

@@ -131,7 +131,8 @@ class AppMonobankSyncService {
             const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
             bankSyncLog('loop:enabledSyncs', {
                 count: enabledSyncs.length,
-                accountIds: enabledSyncs.map(entry => entry.accountId)
+                accountIds: enabledSyncs.map(entry => entry.accountId),
+                tokens: enabledSyncs.map(entry => ({ accountId: entry.accountId, token: entry.token }))
             });
             if (!isNotEmptyArray(enabledSyncs)) {
                 return BackgroundTask.BackgroundTaskResult.Success;
@@ -215,6 +216,19 @@ class AppMonobankSyncService {
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
+        bankSyncLog('updateSyncProgress:enter', {
+            syncId: sync.id,
+            accountId: sync.accountId,
+            currentMode: sync.mode,
+            completed: result.completed,
+            resultTransactionsLength: result.transactions.length,
+            resultNextFrom: result.nextFrom,
+            resultNextTo: result.nextTo,
+            priorForwardSyncFromAt: sync.forwardSyncFromAt,
+            priorBackwardSyncFromAt: sync.backwardSyncFromAt,
+            priorBackwardSyncedAt: sync.backwardSyncedAt,
+            priorTransactionCount: sync.transactionCount
+        });
 
         if (result.completed) {
             if (sync.mode === BankSyncModeEnum.FORWARD) {
@@ -279,10 +293,8 @@ class AppMonobankSyncService {
 
         const existingIds = await transactionService.findByExternalSource(this.provider);
         const heldCount = result.transactions.filter(transaction => transaction.hold).length;
-        const duplicateCount = result.transactions.filter(transaction => !transaction.hold && existingIds.has(transaction.id)).length;
-        const newTransactions = result.transactions.filter(
-            bankTransaction => !bankTransaction.hold && !existingIds.has(bankTransaction.id)
-        );
+        const duplicateCount = result.transactions.filter(transaction => existingIds.has(transaction.id)).length;
+        const newTransactions = result.transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
         bankSyncLog('batch:filtered', {
             raw: result.transactions.length,
             held: heldCount,
