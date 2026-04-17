@@ -9,7 +9,7 @@ import { WHISPER_SMALL, useSpeechToText } from 'react-native-executorch';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiProgressContext } from '../context/ai-progress.context';
 import { AiContext } from '../context/ai.context';
@@ -121,7 +121,7 @@ export const AiProvider = ({ children }: Props) => {
         const load = async (): Promise<void> => {
             try {
                 const total = await transactionRepository.countAllActive();
-                const pending = await transactionRepository.countPendingEmbedding();
+                const pending = await transactionEmbeddingRepository.countPending();
                 if (!cancelled) {
                     const percent = total === 0 ? 100 : Math.round(((total - pending) / total) * 100);
                     setProgress(percent);
