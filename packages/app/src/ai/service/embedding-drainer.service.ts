@@ -8,10 +8,13 @@ import {
     commentEmbeddingRepository,
     mccCategoryRepository,
     merchantEmbeddingRepository,
+    transactionEmbeddingRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
+
+import type { PendingEmbeddingRowInterface } from '@budgie/contracts';
 
 const BATCH_SIZE = 10;
 const DRAIN_INTERVAL_MS = 2_000;
@@ -21,8 +24,6 @@ interface DrainerDepsInterface {
     readonly embed: (text: string) => Promise<number[]>;
     readonly refreshProgress: () => void;
 }
-
-type PendingEmbeddingRow = Awaited<ReturnType<typeof transactionRepository.findPendingEmbedding>>[number];
 
 class EmbeddingDrainerService {
     private running = false;
@@ -80,7 +81,7 @@ class EmbeddingDrainerService {
 
         this.running = true;
         try {
-            const rows = await transactionRepository.findPendingEmbedding(BATCH_SIZE);
+            const rows = await transactionEmbeddingRepository.findPending(BATCH_SIZE);
 
             if (rows.length === 0) {
                 return;
@@ -113,7 +114,7 @@ class EmbeddingDrainerService {
     }
 
     // eslint-disable-next-line max-statements -- Handles merchant and comment embeddings with tag replacement
-    private async processRow(row: PendingEmbeddingRow): Promise<void> {
+    private async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
         if (this.deps === null) {
             return;
         }
