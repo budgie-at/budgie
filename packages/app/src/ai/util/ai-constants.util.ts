@@ -3,7 +3,8 @@ export const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/re
 export const CHAT_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 export const CHAT_CONTEXT_SIZE = 2048;
 
-export const EMBEDDING_MODEL_URL = 'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
+export const EMBEDDING_MODEL_URL =
+    'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
 export const EMBEDDING_MODEL_FILENAME = 'nomic-embed-text-v2-moe.Q8_0.gguf';
 export const EMBEDDING_CONTEXT_SIZE = 512;
 

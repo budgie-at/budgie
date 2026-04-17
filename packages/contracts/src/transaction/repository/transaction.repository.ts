@@ -5,6 +5,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
+import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -55,7 +56,19 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
-            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+            bankSyncLog('repo:transaction:bulkCreate', {
+                count: inputs.length,
+                externalSources: inputs.map(input => input.externalSource),
+                externalIds: inputs.map(input => input.externalId)
+            });
+            const results = await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+            bankSyncLog('repo:transaction:bulkCreate:done', {
+                requested: inputs.length,
+                inserted: results.length,
+                insertedIds: results.map(row => row.id)
+            });
+
+            return results;
         }
 
         return [];
@@ -126,7 +139,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 )
             );
 
-        return results.map(row => row.externalId).filter((id): id is string => id !== null);
+        const ids = results.map(row => row.externalId).filter((id): id is string => id !== null);
+        bankSyncLog('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
+
+        return ids;
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {

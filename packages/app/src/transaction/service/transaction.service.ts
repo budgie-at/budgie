@@ -18,6 +18,7 @@ import { processInputWithBatches } from '../../@generic/utils/process-input-with
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { bankSyncLog } from '../../sync/util/bank-sync-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
@@ -60,29 +61,47 @@ class TransactionService {
         });
     }
 
+    // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
         tx?: DB,
         batchSize = TRANSACTION_BATCH_SIZE
     ): Promise<TransactionEntityInterface[]> {
+        bankSyncLog('service:transaction:bulkCreate:enter', {
+            count: inputs.length,
+            hasTx: isDefined(tx),
+            batchSize,
+            externalSources: inputs.map(input => input.externalSource)
+        });
+
         if (!isNotEmptyArray(inputs)) {
+            bankSyncLog('service:transaction:bulkCreate:empty');
+
             return [];
         }
 
         if (!isDefined(tx)) {
+            bankSyncLog('service:transaction:bulkCreate:wrapTx');
+
             return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
         }
 
         const stampedInputs = inputs.map(input => ({ ...input, needsEmbedding: input.needsEmbedding ?? true }));
-        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-            transactionBatchCreateService.create(batch, tx)
-        );
+        try {
+            const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+                transactionBatchCreateService.create(batch, tx)
+            );
+            bankSyncLog('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
 
-        if (isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            if (isNotEmptyArray(transactions)) {
+                await accountBalanceIncrementalService.updateAllBalances(true, tx);
+            }
+
+            return transactions;
+        } catch (error: unknown) {
+            bankSyncLog('service:transaction:bulkCreate:throw', { message: error instanceof Error ? error.message : String(error) });
+            throw error;
         }
-
-        return transactions;
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
