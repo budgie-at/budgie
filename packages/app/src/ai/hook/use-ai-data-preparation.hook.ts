@@ -37,7 +37,9 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const [totalContexts, setTotalContexts] = useState(0);
     const isRunningRef = useRef(false);
     const modeRef = useRef(mode);
-    useEffect(() => { modeRef.current = mode; }, [mode]);
+    useEffect(() => {
+        modeRef.current = mode;
+    }, [mode]);
 
     useEffect(() => {
         const loadCounts = async (): Promise<void> => {

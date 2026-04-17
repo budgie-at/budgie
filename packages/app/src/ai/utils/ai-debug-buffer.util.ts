@@ -20,8 +20,8 @@ export const aiDebugBuffer = {
     },
     subscribe(listener: () => void): () => void {
         listeners.add(listener);
-        
-return () => {
+
+        return () => {
             listeners.delete(listener);
         };
     }

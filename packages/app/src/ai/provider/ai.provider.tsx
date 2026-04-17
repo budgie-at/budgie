@@ -25,8 +25,7 @@ const CHAT_MODEL_URL = 'https://huggingface.co/unsloth/Qwen3-1.7B-GGUF/resolve/m
 const CHAT_MODEL_FILENAME = 'Qwen3-1.7B-Q4_K_M.gguf';
 const CHAT_CONTEXT_SIZE = 2048;
 
-const EMBEDDING_MODEL_URL =
-    'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
+const EMBEDDING_MODEL_URL = 'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
 const EMBEDDING_MODEL_FILENAME = 'nomic-embed-text-v2-moe.Q8_0.gguf';
 const EMBEDDING_CONTEXT_SIZE = 512;
 
@@ -247,8 +246,8 @@ export const AiProvider = ({ children }: Props) => {
                     transition(AiModeEnum.Initializing, 'appstate:active', null);
                     setInitGeneration(generation => generation + 1);
                 }
-                
-return;
+
+                return;
             }
 
             if (releaseTimerRef.current !== null) {
@@ -279,38 +278,35 @@ return;
         setInitGeneration(generation => generation + 1);
     }, [transition]);
 
-    const generate = useCallback(
-        async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
-            if (!isNativeCallSafe(modeRef.current)) {
-                throw new Error('AI not ready or app not active');
-            }
-            if (!isDefined(chatContextRef.current)) {
-                throw new Error('Model not loaded');
-            }
+    const generate = useCallback(async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
+        if (!isNativeCallSafe(modeRef.current)) {
+            throw new Error('AI not ready or app not active');
+        }
+        if (!isDefined(chatContextRef.current)) {
+            throw new Error('Model not loaded');
+        }
 
-            const previous = generateMutexRef.current;
-            const current = previous.then(
-                async () => {
-                    if (!isDefined(chatContextRef.current)) {
-                        throw new Error('Model released');
-                    }
-
-                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
-                },
-                async () => {
-                    if (!isDefined(chatContextRef.current)) {
-                        throw new Error('Model released');
-                    }
-
-                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+        const previous = generateMutexRef.current;
+        const current = previous.then(
+            async () => {
+                if (!isDefined(chatContextRef.current)) {
+                    throw new Error('Model released');
                 }
-            );
-            generateMutexRef.current = current.catch(() => void emptyFn());
 
-            return current;
-        },
-        []
-    );
+                return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+            },
+            async () => {
+                if (!isDefined(chatContextRef.current)) {
+                    throw new Error('Model released');
+                }
+
+                return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+            }
+        );
+        generateMutexRef.current = current.catch(() => void emptyFn());
+
+        return current;
+    }, []);
 
     const embedding = useCallback(async (text: string): Promise<number[]> => {
         if (!isNativeCallSafe(modeRef.current)) {

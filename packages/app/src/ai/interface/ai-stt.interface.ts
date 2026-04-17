@@ -1,4 +1,3 @@
- 
 import type { DecodingOptions } from 'react-native-executorch';
 
 export interface AiSttInterface {

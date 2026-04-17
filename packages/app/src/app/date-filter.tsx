@@ -39,11 +39,7 @@ export default function DateFilterModal() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <ScrollView
-                    contentContainerClassName="gap-x-sm px-xl"
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                >
+                <ScrollView contentContainerClassName="gap-x-sm px-xl" showsHorizontalScrollIndicator={false} horizontal>
                     {Object.values(DatePeriodEnum).map(period => (
                         <DateFilterItem
                             key={period}
