@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, max-lines-per-function, max-statements -- Unified AI provider owns entire lifecycle */
+/* eslint-disable lingui/no-unlocalized-strings, max-lines-per-function, max-statements, max-lines -- Unified AI provider owns entire lifecycle */
 import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budgie/ai';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
@@ -41,14 +41,14 @@ const TOTAL_MODEL_SIZE_MB = CHAT_MODEL_SIZE_MB + EMBEDDING_MODEL_SIZE_MB;
 const CHAT_DOWNLOAD_WEIGHT = CHAT_MODEL_SIZE_MB / TOTAL_MODEL_SIZE_MB;
 const EMBEDDING_DOWNLOAD_WEIGHT = EMBEDDING_MODEL_SIZE_MB / TOTAL_MODEL_SIZE_MB;
 
-const downloadModel = async (url: string, filename: string, onProgress: (p: number) => void): Promise<string> => {
+const downloadModel = async (url: string, filename: string, onProgress: (downloadProgress: number) => void): Promise<string> => {
     const destPath = `${Paths.document.uri}${filename}`;
     const destFile = new File(destPath);
 
     if (destFile.exists) {
         onProgress(1);
-        
-return destPath;
+
+        return destPath;
     }
 
     const download = createDownloadResumable(url, destPath, {}, progress => {
@@ -59,8 +59,8 @@ return destPath;
     if (!isDefined(result?.uri)) {
         throw new Error('Model download failed');
     }
-    
-return result.uri;
+
+    return result.uri;
 };
 
 const runCompletion = async (
@@ -79,8 +79,8 @@ const runCompletion = async (
         ...GENERATION_CONFIG,
         ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
     });
-    
-return stripThinkingTags(result.text.trim());
+
+    return stripThinkingTags(result.text.trim());
 };
 
 const logTransition = (from: AiModeEnum, to: AiModeEnum, trigger: string, errorMessage: string | null = null): void => {
@@ -115,13 +115,13 @@ export const AiProvider = ({ children }: Props) => {
                 return prev;
             }
             logTransition(prev, next, trigger, errorMessage);
-            
-return next;
+
+            return next;
         });
     }, []);
 
     const refreshProgress = useCallback((): void => {
-        setProgressVersion(v => v + 1);
+        setProgressVersion(version => version + 1);
     }, []);
 
     useEffect(() => {
@@ -140,8 +140,8 @@ return next;
             }
         };
         void load();
-        
-return () => {
+
+        return () => {
             cancelled = true;
         };
     }, [progressVersion]);
@@ -151,16 +151,17 @@ return () => {
             return emptyFn;
         }
         if (AppState.currentState !== 'active') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: synchronous guard on mount before any async work
             transition(AiModeEnum.Suspended, 'mount:non-active', null);
-            
-return emptyFn;
+
+            return emptyFn;
         }
 
-        let cancelled = false;
+        const cancelledRef: { current: boolean } = { current: false };
         let chatDl = 0;
         let embedDl = 0;
         const updateDl = (): void => {
-            if (!cancelled) {
+            if (!cancelledRef.current) {
                 setDownloadProgress(chatDl * CHAT_DOWNLOAD_WEIGHT + embedDl * EMBEDDING_DOWNLOAD_WEIGHT);
             }
         };
@@ -168,17 +169,17 @@ return emptyFn;
         const initialize = async (): Promise<void> => {
             try {
                 const [chatPath, embedPath] = await Promise.all([
-                    downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, p => {
-                        chatDl = p;
+                    downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, progress => {
+                        chatDl = progress;
                         updateDl();
                     }),
-                    downloadModel(EMBEDDING_MODEL_URL, EMBEDDING_MODEL_FILENAME, p => {
-                        embedDl = p;
+                    downloadModel(EMBEDDING_MODEL_URL, EMBEDDING_MODEL_FILENAME, progress => {
+                        embedDl = progress;
                         updateDl();
                     })
                 ]);
 
-                if (cancelled) {
+                if (cancelledRef.current) {
                     return;
                 }
 
@@ -191,10 +192,11 @@ return emptyFn;
                     pooling_type: 'mean'
                 });
 
-                if (cancelled) {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- cancelledRef.current can change between awaits via effect cleanup
+                if (cancelledRef.current) {
                     void releaseAllLlama();
-                    
-return;
+
+                    return;
                 }
 
                 chatContextRef.current = await initLlama({
@@ -205,15 +207,16 @@ return;
                     embedding: false
                 });
 
-                if (cancelled) {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- cancelledRef.current can change between awaits via effect cleanup
+                if (cancelledRef.current) {
                     void releaseAllLlama();
-                    
-return;
+
+                    return;
                 }
 
                 transition(AiModeEnum.Ready, 'init:complete', null);
             } catch (err: unknown) {
-                if (!cancelled) {
+                if (!cancelledRef.current) {
                     transition(AiModeEnum.Error, 'init:throw', getErrorMessage(err));
                 }
             }
@@ -222,7 +225,7 @@ return;
         void initialize();
 
         return () => {
-            cancelled = true;
+            cancelledRef.current = true;
             void releaseAllLlama();
             chatContextRef.current = null;
             embeddingContextRef.current = null;
@@ -242,7 +245,7 @@ return;
                 }
                 if (modeRef.current === AiModeEnum.Suspended) {
                     transition(AiModeEnum.Initializing, 'appstate:active', null);
-                    setInitGeneration(g => g + 1);
+                    setInitGeneration(generation => generation + 1);
                 }
                 
 return;
@@ -261,8 +264,8 @@ return;
         };
 
         const subscription = AppState.addEventListener('change', handleChange);
-        
-return () => {
+
+        return () => {
             subscription.remove();
             if (releaseTimerRef.current !== null) {
                 clearTimeout(releaseTimerRef.current);
@@ -273,7 +276,7 @@ return () => {
 
     const retry = useCallback((): void => {
         transition(AiModeEnum.Initializing, 'manual:retry', null);
-        setInitGeneration(g => g + 1);
+        setInitGeneration(generation => generation + 1);
     }, [transition]);
 
     const generate = useCallback(
@@ -291,20 +294,20 @@ return () => {
                     if (!isDefined(chatContextRef.current)) {
                         throw new Error('Model released');
                     }
-                    
-return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+
+                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
                 },
                 async () => {
                     if (!isDefined(chatContextRef.current)) {
                         throw new Error('Model released');
                     }
-                    
-return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
+
+                    return runCompletion(chatContextRef.current, systemPrompt, userMessage, options);
                 }
             );
             generateMutexRef.current = current.catch(() => void emptyFn());
-            
-return current;
+
+            return current;
         },
         []
     );
@@ -318,8 +321,8 @@ return current;
         }
         try {
             const result = await embeddingContextRef.current.embedding(text);
-            
-return result.embedding;
+
+            return result.embedding;
         } catch {
             return [];
         }
@@ -350,6 +353,7 @@ return result.embedding;
             }
         }
         /* eslint-enable no-await-in-loop */
+
         return results;
     }, []);
 
@@ -363,16 +367,16 @@ return result.embedding;
         }
         if (mode !== AiModeEnum.Ready) {
             embeddingDrainerService.stop();
-            
-return emptyFn;
+
+            return emptyFn;
         }
         embeddingDrainerService.start({
             getMode: () => modeRef.current,
             embed: embedding,
             refreshProgress
         });
-        
-return () => {
+
+        return () => {
             embeddingDrainerService.stop();
         };
     }, [enabled, mode, embedding, refreshProgress]);

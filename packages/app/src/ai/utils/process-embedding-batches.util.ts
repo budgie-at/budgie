@@ -6,6 +6,8 @@ import { microPause } from '../../@generic/utils/micro-pause.util';
 import { BatchConfigInterface } from '../interface/batch-config.interface';
 import { ProgressCallbackInterface } from '../interface/progress-callback.interface';
 
+import { isNativeCallSafe } from './is-native-call-safe.util';
+
 interface ContextDataWithEmbedding {
     readonly context: string;
     readonly tagIds: number[];
@@ -59,6 +61,10 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
 
     /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
+        if (isDefined(callbacks.getMode) && !isNativeCallSafe(callbacks.getMode())) {
+            return;
+        }
+
         try {
             const rawData = await config.fetchBatch(EMBEDDING_BATCH_LIMIT, cursor);
 

@@ -69,6 +69,7 @@ export class EmbeddingDrainerService {
         }, DRAIN_INTERVAL_MS);
     }
 
+    // eslint-disable-next-line max-statements -- Drain loop with guard checks, error recovery, and rescheduling
     private async drain(): Promise<void> {
         if (this.deps === null) {
             return;
@@ -87,6 +88,7 @@ export class EmbeddingDrainerService {
 
             /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
             for (const row of rows) {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
                 if (this.deps === null) {
                     break;
                 }
@@ -97,30 +99,33 @@ export class EmbeddingDrainerService {
             }
             /* eslint-enable no-await-in-loop */
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
             this.deps?.refreshProgress();
         } catch {
             emptyFn();
         } finally {
             this.running = false;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
             if (this.deps !== null && isNativeCallSafe(this.deps.getMode())) {
                 this.scheduleDrain();
             }
         }
     }
 
+    // eslint-disable-next-line max-statements -- Handles merchant and comment embeddings with tag replacement
     private async processRow(row: PendingEmbeddingRow): Promise<void> {
         if (this.deps === null) {
             return;
         }
 
-        const entry = row.entries[0];
-        const categoryId = entry?.categoryId ?? null;
-        const mccCategoryId = entry?.mccCategoryId ?? null;
+        const [entry] = row.entries;
+        const {categoryId} = entry;
+        const {mccCategoryId} = entry;
 
         if (!isPositiveNumber(categoryId)) {
             await transactionRepository.updateById(row.id, { needsEmbedding: false });
-            
-return;
+
+            return;
         }
 
         const categoryTitle = await this.lookupCategoryTitle(categoryId);
@@ -168,8 +173,8 @@ return;
 
     private async lookupCategoryTitle(categoryId: number): Promise<string | null> {
         const category = await categoryRepository.findById(categoryId);
-        
-return category?.titleEn ?? category?.title ?? null;
+
+        return category?.titleEn ?? category?.title ?? null;
     }
 
     private async lookupMccDescription(mccCategoryId: number | null): Promise<string> {
@@ -177,8 +182,8 @@ return category?.titleEn ?? category?.title ?? null;
             return '';
         }
         const mccCategory = await mccCategoryRepository.findById(mccCategoryId);
-        
-return mccCategory?.fullDescription ?? '';
+
+        return mccCategory?.fullDescription ?? '';
     }
 }
 

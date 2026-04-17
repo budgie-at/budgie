@@ -5,8 +5,9 @@ import { useRef, useState } from 'react';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
-import { useLlmContext } from '../context/llm.context';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
+
+import { useAi } from './use-ai.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -26,7 +27,7 @@ interface UseSttReturn {
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
-    const { stt } = useLlmContext();
+    const { stt } = useAi();
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [transcription, setTranscription] = useState('');
