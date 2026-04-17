@@ -150,7 +150,11 @@ class EmbeddingDrainerService {
     }
 
     private async embedMerchant(row: PendingEmbeddingRowInterface, context: RowContextInterface): Promise<boolean> {
-        const promptContext = buildMerchantContext({ title: row.title, mccDescription: context.mccDescription, categoryTitle: context.categoryTitle });
+        const promptContext = buildMerchantContext({
+            title: row.title,
+            mccDescription: context.mccDescription,
+            categoryTitle: context.categoryTitle
+        });
         const rawEmbedding = await this.embed(promptContext);
         if (!isNotEmptyArray(rawEmbedding)) {
             return false;
