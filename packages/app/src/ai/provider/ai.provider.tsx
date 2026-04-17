@@ -1,7 +1,5 @@
 /* eslint-disable lingui/no-unlocalized-strings, max-lines-per-function, max-statements, max-lines -- Unified AI provider owns entire lifecycle */
-import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budgie/ai';
-import { File, Paths } from 'expo-file-system';
-import { createDownloadResumable } from 'expo-file-system/legacy';
+import { GenerateOptionsInterface, LlmInterface } from '@budgie/ai';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
@@ -21,62 +19,19 @@ import {
     CHAT_DOWNLOAD_WEIGHT,
     CHAT_MODEL_FILENAME,
     CHAT_MODEL_URL,
-    DEFAULT_MAX_TOKENS,
     EMBEDDING_CONTEXT_SIZE,
     EMBEDDING_DOWNLOAD_WEIGHT,
     EMBEDDING_MODEL_FILENAME,
     EMBEDDING_MODEL_URL,
-    GENERATION_CONFIG,
-    GPU_LAYERS,
-    STOP_TOKENS
+    GPU_LAYERS
 } from '../util/ai-constants.util';
+import { downloadModel } from '../util/download-model.util';
+import { runCompletion } from '../util/run-completion.util';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
 interface Props {
     readonly children: ReactNode;
 }
-
-const downloadModel = async (url: string, filename: string, onProgress: (downloadProgress: number) => void): Promise<string> => {
-    const destPath = `${Paths.document.uri}${filename}`;
-    const destFile = new File(destPath);
-
-    if (destFile.exists) {
-        onProgress(1);
-
-        return destPath;
-    }
-
-    const download = createDownloadResumable(url, destPath, {}, progress => {
-        onProgress(progress.totalBytesWritten / progress.totalBytesExpectedToWrite);
-    });
-
-    const result = await download.downloadAsync();
-    if (!isDefined(result?.uri)) {
-        throw new Error('Model download failed');
-    }
-
-    return result.uri;
-};
-
-const runCompletion = async (
-    context: LlamaContext,
-    systemPrompt: string,
-    userMessage: string,
-    options?: GenerateOptionsInterface
-): Promise<string> => {
-    const result = await context.completion({
-        messages: [
-            { role: 'system', content: `${systemPrompt}\n/no_think` },
-            { role: 'user', content: userMessage }
-        ],
-        n_predict: options?.maxNewTokens ?? DEFAULT_MAX_TOKENS,
-        stop: STOP_TOKENS,
-        ...GENERATION_CONFIG,
-        ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
-    });
-
-    return stripThinkingTags(result.text.trim());
-};
 
 export const AiProvider = ({ children }: Props) => {
     const enabled = isAiEnabled();
