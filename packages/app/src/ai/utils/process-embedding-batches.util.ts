@@ -1,12 +1,12 @@
 import { EMBEDDING_BATCH_LIMIT, EmbeddingInvokerInterface, EmbeddingService, serializeEmbedding } from '@budgie/ai';
+import { AppState } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { BatchConfigInterface } from '../interface/batch-config.interface';
 import { ProgressCallbackInterface } from '../interface/progress-callback.interface';
-
-import { isNativeCallSafe } from './is-native-call-safe.util';
+import { aiLog } from './ai-log.util';
 
 interface ContextDataWithEmbedding {
     readonly context: string;
@@ -59,9 +59,12 @@ export const processEmbeddingBatches = async <TRawData, TContextData extends Con
     let hasMore = true;
     let consecutiveFailures = 0;
 
+    aiLog('prepare:embedding:begin');
     /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
-        if (isDefined(callbacks.getMode) && !isNativeCallSafe(callbacks.getMode())) {
+        if (!embedding.isReady || AppState.currentState !== 'active') {
+            aiLog('prepare:embedding:skip:unsafe');
+
             return;
         }
 

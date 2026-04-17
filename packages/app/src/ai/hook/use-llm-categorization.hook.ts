@@ -1,13 +1,16 @@
-import { AITransactionInterface, ExtractedVoiceTransactionInterface, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
+import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
 import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { voiceService } from '../service/voice.service';
+import { aiLog } from '../utils/ai-log.util';
 
-import { useAiProgress } from './use-ai-progress.hook';
-import { useAi } from './use-ai.hook';
+import { useAiDownloadProgress } from './use-ai-download-progress.hook';
+import { useChat } from './use-chat.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -36,21 +39,22 @@ const mapExtractedToTransactions = (
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
-    const { llm } = useAi();
-    const { downloadProgress } = useAiProgress();
+    const { status: chatStatus } = useChat();
+    const downloadProgress = useAiDownloadProgress();
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const categorize = async (text: string): Promise<AITransactionInterface[]> => {
+        aiLog('voice:categorize:start', { textLen: text.length });
         setStatus('processing');
         setError(null);
         setTransactions([]);
 
         try {
-            const service = new VoiceLlmService(llm);
-            const extracted = await service.extractTransactions(text);
+            const extracted = await voiceService.extractTransactions(text);
+            aiLog('voice:categorize:extracted', { count: extracted.length });
 
             if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
@@ -58,11 +62,13 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             }
 
             const results = mapExtractedToTransactions(extracted, accounts);
+            aiLog('voice:categorize:mapped', { count: results.length });
             setTransactions(results);
             setStatus('done');
 
             return results;
         } catch (err: unknown) {
+            aiLog('voice:categorize:throw', { errorMessage: getErrorMessage(err) });
             setError(getErrorMessage(err));
             setStatus('error');
             throw err;
@@ -70,6 +76,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     };
 
     const reset = (): void => {
+        aiLog('voice:categorize:reset');
         setStatus('idle');
         setTransactions([]);
         setError(null);
@@ -79,7 +86,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         status,
         transactions,
         error,
-        isReady: llm.isReady,
+        isReady: chatStatus === AiSubsystemStatusEnum.Ready,
         downloadProgress,
         categorize,
         reset

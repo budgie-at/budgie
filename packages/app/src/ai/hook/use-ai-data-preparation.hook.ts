@@ -1,21 +1,24 @@
 import { TranslationLlmService } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, commentEmbeddingRepository, merchantEmbeddingRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { AiModeEnum } from '../enum/ai-mode.enum';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { chatService } from '../service/chat.service';
 import { embeddingService } from '../service/embedding.service';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 import { processCommentBatches } from '../utils/process-comment-batches.util';
 import { processMerchantBatches } from '../utils/process-merchant-batches.util';
+import { aiLog } from '../utils/ai-log.util';
 
-import { useAiProgress } from './use-ai-progress.hook';
-import { useAi } from './use-ai.hook';
+import { useAiDownloadProgress } from './use-ai-download-progress.hook';
+import { useChat } from './use-chat.hook';
+import { useEmbedding } from './use-embedding.hook';
 
 interface UseAiDataPreparationReturn {
     readonly start: () => Promise<void>;
@@ -30,20 +33,20 @@ interface UseAiDataPreparationReturn {
     readonly llmDownloadProgress: number;
 }
 
+const isNativeSafe = (): boolean =>
+    AppState.currentState === 'active' && chatService.isReady && embeddingService.isReady;
+
 // eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
-    const { mode, llm } = useAi();
-    const { downloadProgress } = useAiProgress();
+    const chat = useChat();
+    const embedding = useEmbedding();
+    const downloadProgress = useAiDownloadProgress();
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [phaseLabel, setPhaseLabel] = useState('');
     const [embeddedCount, setEmbeddedCount] = useState(0);
     const [totalContexts, setTotalContexts] = useState(0);
     const isRunningRef = useRef(false);
-    const modeRef = useRef(mode);
-    useEffect(() => {
-        modeRef.current = mode;
-    }, [mode]);
 
     useEffect(() => {
         const loadCounts = async (): Promise<void> => {
@@ -63,7 +66,10 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             return;
         }
 
-        if (mode !== AiModeEnum.Ready) {
+        aiLog('prepare:start', { fresh });
+
+        if (chat.status !== AiSubsystemStatusEnum.Ready || embedding.status !== AiSubsystemStatusEnum.Ready) {
+            aiLog('prepare:skip:not-ready', { chatStatus: chat.status, embeddingStatus: embedding.status });
             Toast.show({ type: 'info', text1: t`AI model is loading, please wait...` });
 
             return;
@@ -72,10 +78,12 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         isRunningRef.current = true;
         setIsRunning(true);
         setProgress(0);
+        const started = Date.now();
         await microPause();
 
         try {
             if (fresh) {
+                aiLog('prepare:phase', { name: 'clear' });
                 setPhaseLabel(t`Clearing old data...`);
                 await microPause();
                 await merchantEmbeddingRepository.truncate();
@@ -104,13 +112,15 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 setProgress(Math.min(100, Math.round((completedSteps / totalSteps) * 100)));
             };
 
-            const translationService = new TranslationLlmService(llm);
+            const translationService = new TranslationLlmService(chatService);
 
             /* eslint-disable no-await-in-loop -- Sequential LLM processing */
+            aiLog('prepare:phase', { name: 'category-translation', count: categories.length });
             setPhaseLabel(t`Translating categories...`);
             await microPause();
             for (const category of categories) {
-                if (!isNativeCallSafe(modeRef.current)) {
+                if (!isNativeSafe()) {
+                    aiLog('prepare:skip:unsafe', { phase: 'category-translation' });
                     break;
                 }
                 const result = await translationService.translate(category.title);
@@ -119,10 +129,12 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 await microPause();
             }
 
+            aiLog('prepare:phase', { name: 'tag-translation', count: tags.length });
             setPhaseLabel(t`Translating tags...`);
             await microPause();
             for (const tag of tags) {
-                if (!isNativeCallSafe(modeRef.current)) {
+                if (!isNativeSafe()) {
+                    aiLog('prepare:skip:unsafe', { phase: 'tag-translation' });
                     break;
                 }
                 const result = await translationService.translate(tag.title);
@@ -132,20 +144,20 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             }
             /* eslint-enable no-await-in-loop */
 
+            aiLog('prepare:phase', { name: 'merchant-embeddings' });
             setPhaseLabel(t`Generating merchant embeddings...`);
             await microPause();
             await processMerchantBatches(embeddingService, existingMerchantKeys, {
-                getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(count + existingCommentKeys.size);
                 }
             });
 
+            aiLog('prepare:phase', { name: 'comment-embeddings' });
             setPhaseLabel(t`Generating comment embeddings...`);
             await microPause();
             await processCommentBatches(embeddingService, existingCommentKeys, {
-                getMode: () => modeRef.current,
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => {
                     setEmbeddedCount(existingMerchantKeys.size + count);
@@ -156,7 +168,12 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             setPhaseLabel(t`Done`);
             setTotalContexts(existingMerchantKeys.size + existingCommentKeys.size);
             void embeddingProgressStore.refresh();
+            aiLog('prepare:complete', {
+                durationMs: Date.now() - started,
+                embeddedCount: existingMerchantKeys.size + existingCommentKeys.size
+            });
         } catch (error: unknown) {
+            aiLog('prepare:throw', { errorMessage: getErrorMessage(error) });
             Toast.show({
                 type: 'error',
                 text1: t`AI data preparation failed`,
@@ -179,8 +196,12 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         phaseLabel,
         embeddedCount,
         totalContexts,
-        isLlmReady: mode === AiModeEnum.Ready,
-        isLlmInitializing: mode === AiModeEnum.Initializing,
+        isLlmReady: chat.status === AiSubsystemStatusEnum.Ready && embedding.status === AiSubsystemStatusEnum.Ready,
+        isLlmInitializing:
+            chat.status === AiSubsystemStatusEnum.Initializing ||
+            chat.status === AiSubsystemStatusEnum.Downloading ||
+            embedding.status === AiSubsystemStatusEnum.Initializing ||
+            embedding.status === AiSubsystemStatusEnum.Downloading,
         llmDownloadProgress: downloadProgress
     };
 };

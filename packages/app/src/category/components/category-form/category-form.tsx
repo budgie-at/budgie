@@ -16,7 +16,9 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useAi } from '../../../ai/hook/use-ai.hook';
+import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
+import { useAiDownloadProgress } from '../../../ai/hook/use-ai-download-progress.hook';
+import { useChat } from '../../../ai/hook/use-chat.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
@@ -47,7 +49,15 @@ export const CategoryForm = (props: Props) => {
     const [openNoteInput] = useNoteInputModal();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
-    const { llm } = useAi();
+    const chat = useChat();
+    const aiDownloadProgress = useAiDownloadProgress();
+    const isChatReady = chat.status === AiSubsystemStatusEnum.Ready;
+    const modelStatus = {
+        isReady: isChatReady,
+        isInitializing: chat.status === AiSubsystemStatusEnum.Initializing || chat.status === AiSubsystemStatusEnum.Downloading,
+        downloadProgress: aiDownloadProgress,
+        error: chat.errorMessage
+    };
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
@@ -59,7 +69,7 @@ export const CategoryForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: llm.isReady
+        isModelReady: isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -170,7 +180,7 @@ export const CategoryForm = (props: Props) => {
                     onRegenerate={handleRegenerate}
                     onTitleEnPress={handleTitleEnPress}
                     onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={llm}
+                    modelStatus={modelStatus}
                 />
                 {/* jscpd:ignore-end */}
             </KeyboardAwareScrollView>
