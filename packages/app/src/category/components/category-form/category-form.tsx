@@ -5,7 +5,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
@@ -24,6 +23,7 @@ import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-cat
 import { categoryService } from '../../service/category.service';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
+import { CategoryFormSelector as CategoryFormSelectors } from './category-form.selector';
 
 type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 

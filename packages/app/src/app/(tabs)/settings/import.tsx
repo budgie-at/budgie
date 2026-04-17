@@ -9,7 +9,6 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { CsvPageSelectors } from '../../../@e2e/selectors/csv-page.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -32,6 +31,7 @@ import { ImporterColumnMapInterface } from '../../../import/interface/importer-c
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../import/schema/import-column-map.schema';
 import { ImporterService } from '../../../import/service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';
+import { ImportScreenSelector as CsvPageSelectors } from './import-screen.selector';
 
 import type { Edge } from 'react-native-safe-area-context';
 

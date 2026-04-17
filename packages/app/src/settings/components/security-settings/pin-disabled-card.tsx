@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { SettingsPageSelector as SettingsPageSelectors } from '../../../app/(tabs)/settings/settings-page.selector';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { SettingsCard } from '../settings-card/settings-card';
 

@@ -1,11 +1,11 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { TransactionFilterCard } from '../transaction-filter-card/transaction-filter-card';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly isSelected: boolean;

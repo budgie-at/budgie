@@ -13,9 +13,7 @@ import Papa from 'papaparse';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { isE2ECsvModeEnabled } from '../../@e2e/util/is-e2e-csv-mode-enabled.util';
 import { accountRepository, categoryRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { appE2ECsvService } from '../../@generic/service/app-e2e-csv.service';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
@@ -65,13 +63,6 @@ class ExporterService {
 
     async saveAndShare(): Promise<void> {
         const csvContent = await this.exportToCsv();
-
-        if (isE2ECsvModeEnabled()) {
-            appE2ECsvService.saveExportedCsv(csvContent);
-
-            return;
-        }
-
         const fileName = `budgie-export-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.csv`;
 
         const file = new File(Paths.cache, fileName);

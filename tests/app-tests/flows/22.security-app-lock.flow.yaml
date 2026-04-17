@@ -1,43 +1,17 @@
 appId: ${APP_ID}
 ---
-- launchApp:
-    appId: ${APP_ID}
-    clearState: false
-    permissions:
-      contacts: allow
-      microphone: allow
-    arguments:
-      e2eReset: true
-      e2eResetToken: 'security-app-lock'
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: 'HomePage.TotalBalance'
-          timeout: 30000
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '08-settings-navigation'
 
-- tapOn:
-    id: 'TabBar.Home'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.AppLockCard'
-    direction: DOWN
-    centerElement: true
-- waitForAnimationToEnd
-- tapOn:
-    id: 'SettingsPage.AppLockCard'
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockCard'
+      DESTINATION_ID: 'PinPage.Container'
 
 - extendedWaitUntil:
     visible:
@@ -72,15 +46,10 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: 'PinPage.Container'
-          timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 30000
 
 - tapOn:
     id: 'PinPage.Digit.1'
@@ -110,25 +79,13 @@ appId: ${APP_ID}
       id: 'HomePage.TotalBalance'
     timeout: 10000
 
-- tapOn:
-    id: 'TabBar.Home'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.AppLockChangePinButton'
-    direction: DOWN
-    centerElement: true
-- waitForAnimationToEnd
-- tapOn:
-    id: 'SettingsPage.AppLockChangePinButton'
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockChangePinButton'
+      DESTINATION_ID: 'PinPage.Container'
 
 - extendedWaitUntil:
     visible:
@@ -177,15 +134,10 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: 'PinPage.Container'
-          timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 30000
 
 - tapOn:
     id: 'PinPage.Digit.1'
@@ -215,25 +167,13 @@ appId: ${APP_ID}
       id: 'HomePage.TotalBalance'
     timeout: 10000
 
-- tapOn:
-    id: 'TabBar.Home'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'TabBar.Settings'
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'SettingsPage.Container'
-    timeout: 15000
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.AppLockDisableButton'
-    direction: DOWN
-    centerElement: true
-- waitForAnimationToEnd
-- tapOn:
-    id: 'SettingsPage.AppLockDisableButton'
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockDisableButton'
+      DESTINATION_ID: 'PinPage.Container'
 
 - extendedWaitUntil:
     visible:
@@ -259,12 +199,7 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
-      - extendedWaitUntil:
-          visible:
-            id: 'HomePage.TotalBalance'
-          timeout: 30000
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 30000
