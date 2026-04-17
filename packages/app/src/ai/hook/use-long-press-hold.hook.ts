@@ -51,7 +51,6 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
     };
 
     const handleComplete = () => {
-        console.log('[LONG-PRESS] handleComplete called, already completed:', completedRef.current); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (completedRef.current) {
             return;
         }
@@ -61,7 +60,6 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
         holdProgress.set(withTiming(0, { duration: LONG_PRESS_RING_SNAP_BACK_DURATION }));
         pressScale.set(withTiming(1, { duration: LONG_PRESS_SCALE_RESTORE_DURATION }));
         hapticNotification(NotificationFeedbackType.Success);
-        console.log('[LONG-PRESS] Calling onLongPressComplete'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         onLongPressComplete();
     };
 
@@ -75,7 +73,6 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
     );
 
     const handlePressIn = () => {
-        console.log('[LONG-PRESS] handlePressIn, disabled:', disabled); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (disabled) {
             return;
         }
@@ -87,7 +84,6 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
     };
 
     const handlePressOut = () => {
-        console.log('[LONG-PRESS] handlePressOut, completed:', completedRef.current); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (disabled) {
             return;
         }
@@ -95,7 +91,6 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
         stopHapticInterval();
 
         if (!completedRef.current) {
-            console.log('[LONG-PRESS] Short press detected, calling onPress'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             onPress?.();
         }
 

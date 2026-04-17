@@ -3,11 +3,11 @@ import { GenerateOptionsInterface, LlmInterface, stripThinkingTags } from '@budg
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import { WHISPER_SMALL, useSpeechToText } from 'react-native-executorch';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
@@ -15,7 +15,6 @@ import { AiProgressContext } from '../context/ai-progress.context';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingDrainerService } from '../service/embedding-drainer.service';
-import { aiDebugBuffer } from '../utils/ai-debug-buffer.util';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
 interface Props {
@@ -83,10 +82,6 @@ const runCompletion = async (
     return stripThinkingTags(result.text.trim());
 };
 
-const logTransition = (from: AiModeEnum, to: AiModeEnum, trigger: string, errorMessage: string | null = null): void => {
-    aiDebugBuffer.push({ timestamp: Date.now(), fromMode: from, toMode: to, trigger, errorMessage });
-};
-
 export const AiProvider = ({ children }: Props) => {
     const enabled = isAiEnabled();
 
@@ -104,25 +99,22 @@ export const AiProvider = ({ children }: Props) => {
     const modeRef = useRef<AiModeEnum>(mode);
     const releaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const generateMutexRef = useRef<Promise<unknown>>(Promise.resolve());
+    const pendingReleaseRef = useRef<Promise<unknown>>(Promise.resolve());
 
-    useEffect(() => {
-        modeRef.current = mode;
-    }, [mode]);
-
-    const transition = useCallback((next: AiModeEnum, trigger: string, errorMessage: string | null): void => {
+    const transition = (next: AiModeEnum): void => {
         setMode(prev => {
             if (prev === next) {
                 return prev;
             }
-            logTransition(prev, next, trigger, errorMessage);
+            modeRef.current = next;
 
             return next;
         });
-    }, []);
+    };
 
-    const refreshProgress = useCallback((): void => {
+    const refreshProgress = (): void => {
         setProgressVersion(version => version + 1);
-    }, []);
+    };
 
     useEffect(() => {
         let cancelled = false;
@@ -151,8 +143,7 @@ export const AiProvider = ({ children }: Props) => {
             return emptyFn;
         }
         if (AppState.currentState !== 'active') {
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: synchronous guard on mount before any async work
-            transition(AiModeEnum.Suspended, 'mount:non-active', null);
+            transition(AiModeEnum.Suspended);
 
             return emptyFn;
         }
@@ -167,6 +158,7 @@ export const AiProvider = ({ children }: Props) => {
         };
 
         const initialize = async (): Promise<void> => {
+            await pendingReleaseRef.current;
             try {
                 const [chatPath, embedPath] = await Promise.all([
                     downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, progress => {
@@ -194,7 +186,8 @@ export const AiProvider = ({ children }: Props) => {
 
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- cancelledRef.current can change between awaits via effect cleanup
                 if (cancelledRef.current) {
-                    void releaseAllLlama();
+                    // eslint-disable-next-line require-atomic-updates -- Guarded cancellation path: cleanup already nulled refs; we only chain a release for the context just created
+                    pendingReleaseRef.current = releaseAllLlama();
 
                     return;
                 }
@@ -209,15 +202,16 @@ export const AiProvider = ({ children }: Props) => {
 
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- cancelledRef.current can change between awaits via effect cleanup
                 if (cancelledRef.current) {
-                    void releaseAllLlama();
+                    // eslint-disable-next-line require-atomic-updates -- Guarded cancellation path: cleanup already nulled refs; we only chain a release for the context just created
+                    pendingReleaseRef.current = releaseAllLlama();
 
                     return;
                 }
 
-                transition(AiModeEnum.Ready, 'init:complete', null);
-            } catch (err: unknown) {
+                transition(AiModeEnum.Ready);
+            } catch {
                 if (!cancelledRef.current) {
-                    transition(AiModeEnum.Error, 'init:throw', getErrorMessage(err));
+                    transition(AiModeEnum.Error);
                 }
             }
         };
@@ -226,11 +220,11 @@ export const AiProvider = ({ children }: Props) => {
 
         return () => {
             cancelledRef.current = true;
-            void releaseAllLlama();
+            pendingReleaseRef.current = releaseAllLlama();
             chatContextRef.current = null;
             embeddingContextRef.current = null;
         };
-    }, [enabled, initGeneration, transition]);
+    }, [enabled, initGeneration]);
 
     useEffect(() => {
         if (!enabled) {
@@ -244,7 +238,7 @@ export const AiProvider = ({ children }: Props) => {
                     releaseTimerRef.current = null;
                 }
                 if (modeRef.current === AiModeEnum.Suspended) {
-                    transition(AiModeEnum.Initializing, 'appstate:active', null);
+                    transition(AiModeEnum.Initializing);
                     setInitGeneration(generation => generation + 1);
                 }
 
@@ -256,10 +250,18 @@ export const AiProvider = ({ children }: Props) => {
             }
             releaseTimerRef.current = setTimeout(() => {
                 releaseTimerRef.current = null;
-                void releaseAllLlama();
+                if (modeRef.current === AiModeEnum.Initializing) {
+                    // Init is in flight — let it finish; it will clean up on cleanup.
+                    transition(AiModeEnum.Suspended);
+                    chatContextRef.current = null;
+                    embeddingContextRef.current = null;
+
+                    return;
+                }
+                pendingReleaseRef.current = releaseAllLlama();
                 chatContextRef.current = null;
                 embeddingContextRef.current = null;
-                transition(AiModeEnum.Suspended, 'appstate:background-release', null);
+                transition(AiModeEnum.Suspended);
             }, BACKGROUND_RELEASE_DELAY_MS);
         };
 
@@ -272,14 +274,14 @@ export const AiProvider = ({ children }: Props) => {
                 releaseTimerRef.current = null;
             }
         };
-    }, [enabled, transition]);
+    }, [enabled]);
 
-    const retry = useCallback((): void => {
-        transition(AiModeEnum.Initializing, 'manual:retry', null);
+    const retry = (): void => {
+        transition(AiModeEnum.Initializing);
         setInitGeneration(generation => generation + 1);
-    }, [transition]);
+    };
 
-    const generate = useCallback(async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
+    const generate = async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
         if (!isNativeCallSafe(modeRef.current)) {
             throw new Error('AI not ready or app not active');
         }
@@ -307,9 +309,9 @@ export const AiProvider = ({ children }: Props) => {
         generateMutexRef.current = current.catch(() => void emptyFn());
 
         return current;
-    }, []);
+    };
 
-    const embedding = useCallback(async (text: string): Promise<number[]> => {
+    const embedding = async (text: string): Promise<number[]> => {
         if (!isNativeCallSafe(modeRef.current)) {
             return [];
         }
@@ -323,9 +325,9 @@ export const AiProvider = ({ children }: Props) => {
         } catch {
             return [];
         }
-    }, []);
+    };
 
-    const batchEmbedding = useCallback(async (texts: string[]): Promise<Map<string, number[]>> => {
+    const batchEmbedding = async (texts: string[]): Promise<Map<string, number[]>> => {
         if (!isNativeCallSafe(modeRef.current)) {
             return new Map();
         }
@@ -352,11 +354,11 @@ export const AiProvider = ({ children }: Props) => {
         /* eslint-enable no-await-in-loop */
 
         return results;
-    }, []);
+    };
 
-    const interrupt = useCallback((): void => {
+    const interrupt = (): void => {
         void chatContextRef.current?.stopCompletion();
-    }, []);
+    };
 
     useEffect(() => {
         if (!enabled) {
@@ -376,29 +378,23 @@ export const AiProvider = ({ children }: Props) => {
         return () => {
             embeddingDrainerService.stop();
         };
-    }, [enabled, mode, embedding, refreshProgress]);
+    }, [enabled, mode]);
 
-    const llm = useMemo<LlmInterface>(
-        () => ({
-            isReady: mode === AiModeEnum.Ready,
-            isEmbeddingReady: mode === AiModeEnum.Ready,
-            isInitializing: mode === AiModeEnum.Initializing,
-            isGenerating: false,
-            downloadProgress: 0,
-            error: null,
-            generate,
-            embedding,
-            batchEmbedding,
-            interrupt
-        }),
-        [mode, generate, embedding, batchEmbedding, interrupt]
-    );
+    const llm: LlmInterface = {
+        isReady: mode === AiModeEnum.Ready,
+        isEmbeddingReady: mode === AiModeEnum.Ready,
+        isInitializing: mode === AiModeEnum.Initializing,
+        isGenerating: false,
+        downloadProgress: 0,
+        error: null,
+        generate,
+        embedding,
+        batchEmbedding,
+        interrupt
+    };
 
-    const value = useMemo(() => ({ mode, llm, stt, retry }), [mode, llm, stt, retry]);
-    const progressValue = useMemo(
-        () => ({ progress, isEmbedding, downloadProgress, refreshProgress }),
-        [progress, isEmbedding, downloadProgress, refreshProgress]
-    );
+    const value = { mode, llm, stt, retry };
+    const progressValue = { progress, isEmbedding, downloadProgress, refreshProgress };
 
     return (
         <AiContext value={value}>

@@ -132,6 +132,8 @@ class EmbeddingDrainerService {
         const mccDescription = await this.lookupMccDescription(mccCategoryId);
         const tagIds = row.transactionTags.map(link => link.tagId);
 
+        let embedded = false;
+
         if (isNotEmptyString(row.title)) {
             const context = buildMerchantContext({ title: row.title, mccDescription, categoryTitle });
             const rawEmbedding = await this.deps.embed(context);
@@ -149,6 +151,7 @@ class EmbeddingDrainerService {
                 if (isDefined(embeddingId)) {
                     await merchantEmbeddingRepository.replaceTags(embeddingId, tagIds);
                 }
+                embedded = true;
             }
         } else if (isNotEmptyString(row.comment)) {
             const context = buildCommentContext({ comment: row.comment, categoryTitle });
@@ -165,10 +168,15 @@ class EmbeddingDrainerService {
                 if (isDefined(embeddingId)) {
                     await commentEmbeddingRepository.replaceTags(embeddingId, tagIds);
                 }
+                embedded = true;
             }
+        } else {
+            embedded = true;
         }
 
-        await transactionRepository.updateById(row.id, { needsEmbedding: false });
+        if (embedded) {
+            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+        }
     }
 
     private async lookupCategoryTitle(categoryId: number): Promise<string | null> {

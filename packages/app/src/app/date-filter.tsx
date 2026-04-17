@@ -35,7 +35,7 @@ export default function DateFilterModal() {
         <FilterSheet>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="pb-md pt-md px-md"
+                contentContainerClassName="pb-sm pt-sm px-md"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
