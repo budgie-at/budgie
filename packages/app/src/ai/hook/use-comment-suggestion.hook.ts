@@ -19,13 +19,13 @@ interface UseCommentSuggestionParams {
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { mode, llm } = useAi();
+    const { mode } = useAi();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const fetchSuggestions = async (): Promise<string[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
 
-        return embeddingSuggestionService.suggestComments(llm, categoryId, transactionTitle, mccDescription, comment, aiContext);
+        return embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
     };
 
     const { status, suggestions } = useSuggestionBase({
