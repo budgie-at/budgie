@@ -238,7 +238,24 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: node ../../tests/app-tests/scripts/apply-e2e-autolinking-excludes.cjs ./package.json
+        run: |
+          node -e "
+          const fs = require('fs');
+          const packageJsonPath = './package.json';
+          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+          const excludedPackages = [
+            'expo-dev-client',
+            'expo-dev-launcher',
+            'expo-dev-menu',
+            'expo-dev-menu-interface',
+            'llama.rn',
+            'react-native-audio-api'
+          ];
+          packageJson.expo ??= {};
+          packageJson.expo.autolinking ??= {};
+          packageJson.expo.autolinking.exclude = [...new Set(excludedPackages)];
+          fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4) + '\n');
+          "
 
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
@@ -305,7 +322,16 @@ jobs:
 
       - name: Apply E2E iOS Info.plist cleanup
         working-directory: packages/app
-        run: sh ../../tests/app-tests/scripts/apply-ios-e2e-plist-cleanup.sh ./ios/budgieE2E/Info.plist
+        run: |
+          PLIST_PATH=./ios/budgieE2E/Info.plist
+
+          if [ ! -f "$PLIST_PATH" ]; then
+            echo "::error::Info.plist not found at $PLIST_PATH"
+            exit 1
+          fi
+
+          /usr/libexec/PlistBuddy -c "Delete :NSMicrophoneUsageDescription" "$PLIST_PATH" >/dev/null 2>&1 || true
+          /usr/libexec/PlistBuddy -c "Delete :UIBackgroundModes" "$PLIST_PATH" >/dev/null 2>&1 || true
 
       - name: Sync CocoaPods for E2E excludes
         working-directory: packages/app/ios
@@ -584,7 +610,24 @@ jobs:
 
       - name: Apply E2E autolinking excludes
         working-directory: packages/app
-        run: node ../../tests/app-tests/scripts/apply-e2e-autolinking-excludes.cjs ./package.json
+        run: |
+          node -e "
+          const fs = require('fs');
+          const packageJsonPath = './package.json';
+          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+          const excludedPackages = [
+            'expo-dev-client',
+            'expo-dev-launcher',
+            'expo-dev-menu',
+            'expo-dev-menu-interface',
+            'llama.rn',
+            'react-native-audio-api'
+          ];
+          packageJson.expo ??= {};
+          packageJson.expo.autolinking ??= {};
+          packageJson.expo.autolinking.exclude = [...new Set(excludedPackages)];
+          fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4) + '\n');
+          "
 
       - name: Expo Prebuild
         working-directory: packages/app
