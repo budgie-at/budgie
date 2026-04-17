@@ -20,6 +20,7 @@ export const TransactionEntityTable = sqliteTable(
         toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         exchangeRate: real('exchange_rate').notNull(),
-        externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
+        externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
+        needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false)
     })
 );
