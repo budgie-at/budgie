@@ -1,11 +1,11 @@
 import { AiModeEnum } from '../enum/ai-mode.enum';
 
-export interface AiStateInterface {
+interface AiStateInterface {
     readonly mode: AiModeEnum;
     readonly initGeneration: number;
 }
 
-export type AiActionType =
+type AiActionType =
     | { readonly type: 'mount-disabled' }
     | { readonly type: 'mount-suspended' }
     | { readonly type: 'init-start' }

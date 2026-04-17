@@ -2,7 +2,7 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
-export interface EmbeddingProgressSnapshotInterface {
+interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;
     readonly isEmbedding: boolean;
 }
