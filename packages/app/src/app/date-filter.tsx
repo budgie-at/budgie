@@ -1,7 +1,7 @@
 import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -35,11 +35,15 @@ export default function DateFilterModal() {
         <FilterSheet>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="pb-xl pt-4xl"
+                contentContainerClassName="pb-md pt-md px-md"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <ScrollView contentContainerClassName="gap-x-sm px-xl" showsHorizontalScrollIndicator={false} horizontal>
+                <RangeDatePicker range={localValue} onChange={setLocalValue} />
+            </ScrollView>
+
+            <FilterSheetDrawer>
+                <ScrollView contentContainerClassName="gap-x-sm" showsHorizontalScrollIndicator={false} horizontal>
                     {Object.values(DatePeriodEnum).map(period => (
                         <DateFilterItem
                             key={period}
@@ -50,15 +54,6 @@ export default function DateFilterModal() {
                         />
                     ))}
                 </ScrollView>
-
-                <View className="my-lg h-px bg-secondary-corner" />
-
-                <View className="px-md">
-                    <RangeDatePicker range={localValue} onChange={setLocalValue} />
-                </View>
-            </ScrollView>
-
-            <FilterSheetDrawer>
                 <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.DateApplyButton} />
             </FilterSheetDrawer>
         </FilterSheet>
