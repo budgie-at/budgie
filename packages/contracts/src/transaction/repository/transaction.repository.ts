@@ -242,10 +242,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     async countAllActive(): Promise<number> {
-        const [row] = await this.db
-            .select({ value: count() })
-            .from(TransactionEntityTable)
-            .where(isNull(TransactionEntityTable.deletedAt));
+        const [row] = await this.db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt));
 
         return row.value;
     }

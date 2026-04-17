@@ -21,10 +21,7 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
     const { refreshProgress } = useAi();
 
     const markForEmbedding = (params: MarkParamsInterface): void => {
-        transactionRepository
-            .updateById(params.transactionId, { needsEmbedding: true })
-            .then(refreshProgress)
-            .catch(handleMarkError);
+        transactionRepository.updateById(params.transactionId, { needsEmbedding: true }).then(refreshProgress).catch(handleMarkError);
     };
 
     const markManyForEmbedding = (transactionIds: readonly number[]): void => {

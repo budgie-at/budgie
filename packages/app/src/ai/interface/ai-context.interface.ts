@@ -1,4 +1,3 @@
-
 import { AiModeEnum } from '../enum/ai-mode.enum';
 
 import { AiSttInterface } from './ai-stt.interface';

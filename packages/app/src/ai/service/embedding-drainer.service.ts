@@ -16,7 +16,7 @@ import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 const BATCH_SIZE = 10;
 const DRAIN_INTERVAL_MS = 2_000;
 
-export interface DrainerDepsInterface {
+interface DrainerDepsInterface {
     readonly getMode: () => AiModeEnum;
     readonly embed: (text: string) => Promise<number[]>;
     readonly refreshProgress: () => void;
@@ -24,7 +24,7 @@ export interface DrainerDepsInterface {
 
 type PendingEmbeddingRow = Awaited<ReturnType<typeof transactionRepository.findPendingEmbedding>>[number];
 
-export class EmbeddingDrainerService {
+class EmbeddingDrainerService {
     private running = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
@@ -119,8 +119,8 @@ export class EmbeddingDrainerService {
         }
 
         const [entry] = row.entries;
-        const {categoryId} = entry;
-        const {mccCategoryId} = entry;
+        const { categoryId } = entry;
+        const { mccCategoryId } = entry;
 
         if (!isPositiveNumber(categoryId)) {
             await transactionRepository.updateById(row.id, { needsEmbedding: false });
