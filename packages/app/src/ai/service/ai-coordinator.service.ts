@@ -7,31 +7,22 @@ import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snap
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 import { aiLog } from '../utils/ai-log.util';
 
+import { SnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 
-class AiCoordinatorService {
+class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
     private started = false;
-    private snapshot: AiCoordinatorSnapshotInterface = {
-        isAvailable: isAiEnabled(),
-        isSuspended: false
-    };
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
-    private listeners = new Set<() => void>();
 
-    readonly subscribe = (listener: () => void): (() => void) => {
-        this.listeners.add(listener);
+    constructor() {
+        super({ isAvailable: isAiEnabled(), isSuspended: false });
+    }
 
-        return () => {
-            this.listeners.delete(listener);
-        };
-    };
-
-    readonly getSnapshot = (): AiCoordinatorSnapshotInterface => this.snapshot;
-
+    // eslint-disable-next-line max-statements -- Multi-branch lifecycle gate: disabled check, subscribe, state probe
     start(): void {
         aiLog('coordinator:start:enter', { isAvailable: this.snapshot.isAvailable, appState: AppState.currentState });
         if (this.started) {
@@ -47,7 +38,7 @@ class AiCoordinatorService {
 
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
 
-        const currentState = AppState.currentState;
+        const { currentState } = AppState;
         if (currentState === 'active' || currentState === 'unknown') {
             this.setSnapshot({ isSuspended: false });
             void this.startSubsystems();
@@ -68,6 +59,7 @@ class AiCoordinatorService {
         void this.stopSubsystems();
     }
 
+    // eslint-disable-next-line max-statements -- AppState handler: foreground/background branches with timer control
     private readonly handleAppStateChange = (state: AppStateStatus): void => {
         aiLog('coordinator:appstate:change', { to: state });
         if (state === 'active') {
@@ -128,13 +120,6 @@ class AiCoordinatorService {
             clearTimeout(this.releaseTimer);
             this.releaseTimer = null;
         }
-    }
-
-    private setSnapshot(patch: Partial<AiCoordinatorSnapshotInterface>): void {
-        this.snapshot = { ...this.snapshot, ...patch };
-        this.listeners.forEach(listener => {
-            listener();
-        });
     }
 }
 

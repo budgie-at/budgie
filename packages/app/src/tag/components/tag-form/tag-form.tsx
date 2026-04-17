@@ -18,9 +18,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
-import { useAiDownloadProgress } from '../../../ai/hook/use-ai-download-progress.hook';
-import { useChat } from '../../../ai/hook/use-chat.hook';
+import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
@@ -50,15 +48,7 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const chat = useChat();
-    const aiDownloadProgress = useAiDownloadProgress();
-    const isChatReady = chat.status === AiSubsystemStatusEnum.Ready;
-    const modelStatus = {
-        isReady: isChatReady,
-        isInitializing: chat.status === AiSubsystemStatusEnum.Initializing || chat.status === AiSubsystemStatusEnum.Downloading,
-        downloadProgress: aiDownloadProgress,
-        error: chat.errorMessage
-    };
+    const { isChatReady, modelStatus } = useChatModelStatus();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 

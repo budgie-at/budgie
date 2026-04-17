@@ -6,8 +6,8 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
 import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
-import { useEmbedding } from '../../../ai/hook/use-embedding.hook';
 import { useEmbeddingProgress } from '../../../ai/hook/use-embedding-progress.hook';
+import { useEmbedding } from '../../../ai/hook/use-embedding.hook';
 
 interface Props {
     readonly isLoading?: boolean;

@@ -3,11 +3,13 @@ import { z } from 'zod';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { aiLog } from '../../@generic/util/ai-log.util';
+import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
+
+const LOG_PREVIEW_LENGTH = 120;
 
 const ExtractedItemSchema = z.object({
     description: z.string(),
@@ -21,7 +23,7 @@ export class VoiceLlmService {
     constructor(private readonly chat: ChatInvokerInterface) {}
 
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
-        aiLog('voice:extract:start', { textLen: text.length, preview: text.slice(0, 120) });
+        aiLog('voice:extract:start', { textLen: text.length, preview: text.slice(0, LOG_PREVIEW_LENGTH) });
         try {
             const translatedText = await this.translateToEnglish(text);
             aiLog('voice:extract:translated', { translatedLen: translatedText.length });

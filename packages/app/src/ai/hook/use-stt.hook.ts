@@ -29,7 +29,7 @@ interface UseSttReturn {
 
 const INSERT_LOG_INTERVAL = 50;
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line max-statements, max-lines-per-function -- Hook manages streaming lifecycle with cleanup and error paths
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();

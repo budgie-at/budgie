@@ -104,6 +104,7 @@ class EmbeddingDrainerService {
         }, DRAIN_INTERVAL_MS);
     }
 
+    // eslint-disable-next-line max-statements -- Drain cycle: guard, fetch, process, refresh, reschedule
     private async drain(): Promise<void> {
         if (!this.isSafe()) {
             aiLog('drainer:row:skip:not-safe');
@@ -146,6 +147,7 @@ class EmbeddingDrainerService {
         /* eslint-enable no-await-in-loop */
     }
 
+    // eslint-disable-next-line max-statements -- Per-row flow: context, embed, persist, with structured logs
     private async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
         aiLog('drainer:row:begin', { rowId: row.id });
         try {

@@ -46,6 +46,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
+    // eslint-disable-next-line max-statements -- Extract, map, and surface extraction errors with structured logs
     const categorize = async (text: string): Promise<AITransactionInterface[]> => {
         aiLog('voice:categorize:start', { textLen: text.length });
         setStatus('processing');

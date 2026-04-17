@@ -1,7 +1,1 @@
-import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-
-export interface ChatSnapshotInterface {
-    readonly status: AiSubsystemStatusEnum;
-    readonly downloadProgress: number;
-    readonly errorMessage: string | null;
-}
+export type { LlamaSubsystemSnapshotInterface as ChatSnapshotInterface } from './llama-subsystem-snapshot.interface';

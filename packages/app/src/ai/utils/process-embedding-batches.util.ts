@@ -6,6 +6,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { BatchConfigInterface } from '../interface/batch-config.interface';
 import { ProgressCallbackInterface } from '../interface/progress-callback.interface';
+
 import { aiLog } from './ai-log.util';
 
 interface ContextDataWithEmbedding {

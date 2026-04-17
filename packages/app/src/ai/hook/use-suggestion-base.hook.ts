@@ -83,7 +83,10 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
                 }
             } catch (error: unknown) {
                 if (!cancelled) {
-                    aiLog('hook:suggestion:base:suggest:error', { requestKey, message: error instanceof Error ? error.message : String(error) });
+                    aiLog('hook:suggestion:base:suggest:error', {
+                        requestKey,
+                        message: error instanceof Error ? error.message : String(error)
+                    });
                     setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }
             }
