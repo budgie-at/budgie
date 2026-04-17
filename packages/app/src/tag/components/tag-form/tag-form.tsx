@@ -18,7 +18,9 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useAi } from '../../../ai/hook/use-ai.hook';
+import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
+import { useAiDownloadProgress } from '../../../ai/hook/use-ai-download-progress.hook';
+import { useChat } from '../../../ai/hook/use-chat.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
@@ -48,7 +50,15 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const { llm } = useAi();
+    const chat = useChat();
+    const aiDownloadProgress = useAiDownloadProgress();
+    const isChatReady = chat.status === AiSubsystemStatusEnum.Ready;
+    const modelStatus = {
+        isReady: isChatReady,
+        isInitializing: chat.status === AiSubsystemStatusEnum.Initializing || chat.status === AiSubsystemStatusEnum.Downloading,
+        downloadProgress: aiDownloadProgress,
+        error: chat.errorMessage
+    };
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -60,7 +70,7 @@ export const TagForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: llm.isReady
+        isModelReady: isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -164,7 +174,7 @@ export const TagForm = (props: Props) => {
                     onRegenerate={handleRegenerate}
                     onTitleEnPress={handleTitleEnPress}
                     onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={llm}
+                    modelStatus={modelStatus}
                 />
             </KeyboardAwareScrollView>
 
