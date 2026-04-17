@@ -3,11 +3,11 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { AiModeEnum } from '../enum/ai-mode.enum';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 import { aiLog } from '../utils/ai-log.util';
 
-import { useAi } from './use-ai.hook';
+import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
@@ -21,10 +21,10 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { mode } = useAi();
+    const { status: embeddingStatus } = useEmbedding();
+    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.Ready;
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
-
     const hasCategoriesLoaded = categories.length > 0;
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
@@ -49,11 +49,10 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
         return results;
     };
 
-    const modeReady = mode === AiModeEnum.Ready;
     aiLog('hook:suggestion:category:hook:state', {
         enabled,
-        modeReady,
-        mode,
+        embeddingStatus,
+        embeddingReady,
         isMccLoading,
         isCategoriesLoading,
         hasCategoriesLoaded,
@@ -62,8 +61,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [modeReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
-        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, modeReady, categories.length],
+        readyChecks: [embeddingReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, embeddingReady, categories.length],
         fetchSuggestions
     });
 
