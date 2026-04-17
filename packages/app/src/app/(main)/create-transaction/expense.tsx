@@ -23,7 +23,7 @@ const normalizeRouteParam = (value: string | string[] | undefined): string | und
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId, categoryId, amount, comment, aiContext } = useLocalSearchParams<{
         accountId?: string | string[];
         categoryId?: string | string[];
@@ -46,13 +46,7 @@ export default function CreateExpenseTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternal(data);
-            generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            });
+            markForEmbedding({ transactionId: result.id });
 
             return result;
         },

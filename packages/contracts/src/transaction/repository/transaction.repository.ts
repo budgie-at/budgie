@@ -245,7 +245,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .select({ value: count() })
             .from(TransactionEntityTable)
             .where(isNull(TransactionEntityTable.deletedAt));
-        return row?.value ?? 0;
+        
+return row?.value ?? 0;
     }
 
     async countPendingEmbedding(): Promise<number> {
@@ -253,7 +254,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .select({ value: count() })
             .from(TransactionEntityTable)
             .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)));
-        return row?.value ?? 0;
+        
+return row?.value ?? 0;
     }
 
     async findPendingEmbedding(limit: number, tx?: DB) {

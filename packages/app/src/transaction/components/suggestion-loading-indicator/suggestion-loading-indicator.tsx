@@ -1,11 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
-import { useAiStatusContext } from '../../../ai/context/ai-status.context';
-import { useAiEmbeddingProgress } from '../../../ai/hook/use-ai-embedding-progress.hook';
+import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
+import { useAi } from '../../../ai/hook/use-ai.hook';
 
 interface Props {
     readonly isLoading?: boolean;
@@ -17,8 +18,8 @@ const BRAIN_ICON_SIZE = 16;
 
 export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
     const router = useRouter();
-    const { progress, isEmbedding } = useAiEmbeddingProgress();
-    const { statusLabel } = useAiStatusContext();
+    const { mode, progress, isEmbedding } = useAi();
+    const statusLabel = mode === AiModeEnum.Initializing ? t`Loading AI model...` : '';
 
     const shouldAnimate = isLoading || isEmbedding;
     const showHint = !showArrow;
