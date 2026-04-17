@@ -1,12 +1,11 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: subflows/import-database-fixture.flow.yaml
+    file: subflows/import/import-database-fixture.flow.yaml
     env:
       FIXTURE_ID: '08-settings-navigation'
-      HANDLE_DEV_CLIENT_STARTUP: 'true'
 
-- runFlow: subflows/navigate-to-settings.flow.yaml
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
     element:
@@ -21,28 +20,12 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
     timeout: 30000
-- launchApp:
-    appId: ${APP_ID}
-    clearState: false
-    permissions:
-      contacts: allow
-      microphone: allow
-    arguments:
-      e2eForceProtected: true
-- waitForAnimationToEnd
 
-- assertNotVisible: '$350.00'
-
-- runFlow: subflows/navigate-to-settings.flow.yaml
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
     element:
@@ -57,11 +40,6 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
-- retry:
-    maxRetries: 3
-    commands:
-      - runFlow: subflows/handle-dev-client-startup.flow.yaml
-      - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'

@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const packageJsonPath = 'package.json';
+const packageJsonPath = process.argv[2] ?? 'package.json';
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const excludedPackages = [
     'expo-dev-client',
@@ -16,4 +16,4 @@ packageJson.expo.autolinking ??= {};
 packageJson.expo.autolinking.exclude = [...new Set(excludedPackages)];
 
 fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
-console.log('Applied E2E autolinking excludes');
+console.log(`Applied E2E autolinking excludes to ${packageJsonPath}`);
