@@ -14,8 +14,11 @@ import { useCreateActionContext } from '../../../@generic/context/create-action.
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
-import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
-import { useAi } from '../../../ai/hook/use-ai.hook';
+import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
+import { useAiAvailable } from '../../../ai/hook/use-ai-available.hook';
+import { useAiDownloadProgress } from '../../../ai/hook/use-ai-download-progress.hook';
+import { useChat } from '../../../ai/hook/use-chat.hook';
+import { useSttSnapshot } from '../../../ai/hook/use-stt-snapshot.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
@@ -38,18 +41,23 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
-    const { isAvailable: isAiAvailable, stt, llm } = useAi();
-    const { downloadProgress } = useAiProgress();
+    const isAiAvailable = useAiAvailable();
+    const chat = useChat();
+    const sttSnapshot = useSttSnapshot();
+    const downloadProgress = useAiDownloadProgress();
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
     const LLM_PROGRESS_WEIGHT = 0.97;
     const STT_PROGRESS_WEIGHT = 0.03;
 
-    const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
-    const isAiInitializing = isAiAvailable && llm.isInitializing;
+    const isChatReady = chat.status === AiSubsystemStatusEnum.Ready;
+    const isSttReady = sttSnapshot.status === AiSubsystemStatusEnum.Ready;
+    const isChatInitializing = chat.status === AiSubsystemStatusEnum.Initializing || chat.status === AiSubsystemStatusEnum.Downloading;
+    const isAiLoading = isAiAvailable && (!isChatReady || !isSttReady);
+    const isAiInitializing = isAiAvailable && isChatInitializing;
     const aiDownloadProgress = isAiAvailable
-        ? downloadProgress * LLM_PROGRESS_WEIGHT + (stt.downloadProgress / 100) * STT_PROGRESS_WEIGHT
+        ? downloadProgress * LLM_PROGRESS_WEIGHT + (sttSnapshot.downloadProgress / 100) * STT_PROGRESS_WEIGHT
         : 0;
 
     const rotation = useSharedValue(0);

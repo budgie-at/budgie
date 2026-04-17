@@ -5,9 +5,9 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
-import { AiModeEnum } from '../../../ai/enum/ai-mode.enum';
-import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
-import { useAi } from '../../../ai/hook/use-ai.hook';
+import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
+import { useEmbedding } from '../../../ai/hook/use-embedding.hook';
+import { useEmbeddingProgress } from '../../../ai/hook/use-embedding-progress.hook';
 
 interface Props {
     readonly isLoading?: boolean;
@@ -19,9 +19,11 @@ const BRAIN_ICON_SIZE = 16;
 
 export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
     const router = useRouter();
-    const { mode } = useAi();
-    const { progress, isEmbedding } = useAiProgress();
-    const statusLabel = mode === AiModeEnum.Initializing ? t`Loading AI model...` : '';
+    const { status: embeddingStatus } = useEmbedding();
+    const { progress, isEmbedding } = useEmbeddingProgress();
+    const isEmbeddingInitializing =
+        embeddingStatus === AiSubsystemStatusEnum.Initializing || embeddingStatus === AiSubsystemStatusEnum.Downloading;
+    const statusLabel = isEmbeddingInitializing ? t`Loading AI model...` : '';
 
     const shouldAnimate = isLoading || isEmbedding;
     const showHint = !showArrow;
