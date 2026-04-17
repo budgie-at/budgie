@@ -1274,6 +1274,7 @@ __metadata:
     expo-linking: "npm:~55.0.13"
     expo-local-authentication: "npm:~55.0.13"
     expo-localization: "npm:~55.0.13"
+    expo-modules-core: "npm:~55.0.22"
     expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~55.0.12"
     expo-screen-capture: "npm:~55.0.13"
