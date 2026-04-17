@@ -35,7 +35,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -164,7 +164,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -224,7 +224,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -257,7 +257,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - runFlow:
-    file: ../shared/select-tag-by-search.flow.yaml
+    file: ../subflows/shared/select-tag-by-search.flow.yaml
     env:
       TAG_NAME: ${TAG_NAME}
 
@@ -360,7 +360,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -453,7 +453,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -551,7 +551,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -614,7 +614,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -665,7 +665,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -721,7 +721,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -824,7 +824,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -894,7 +894,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -939,7 +939,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -1027,7 +1027,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../shared/select-category-by-search.flow.yaml
+    file: ../subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 

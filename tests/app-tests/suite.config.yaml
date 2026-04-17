@@ -20,6 +20,8 @@ executionOrder:
         - 14.transactions-filters.flow
         - 15.transaction-long-press.flow
         - 16.erste-bank-import.flow
+        - rules/02.rules-crud.flow
+        - rules/03.rules-application.flow
 
 platform:
     ios:
