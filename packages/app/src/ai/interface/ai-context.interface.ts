@@ -6,6 +6,7 @@ import type { LlmInterface } from '@budgie/ai';
 
 export interface AiContextInterface {
     readonly mode: AiModeEnum;
+    readonly isAvailable: boolean;
     readonly llm: LlmInterface;
     readonly stt: AiSttInterface;
     readonly retry: () => void;
