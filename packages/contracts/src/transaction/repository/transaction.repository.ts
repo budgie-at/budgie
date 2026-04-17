@@ -91,11 +91,22 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getById(id: number) {
-        return this.db.query.TransactionEntityTable.findFirst({
+    getById(id: number, tx?: DB) {
+        return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
+    }
+
+    async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+        if (isNotEmptyArray(ids)) {
+            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: { [TransactionAssociationEnum.ENTRIES]: true }
+            });
+        }
+
+        return [];
     }
 
     async truncate(tx?: DB): Promise<void> {
@@ -115,6 +126,29 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
 
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
+    }
+
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        const results = await this.db
+            .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return new Map(
+            results.flatMap(({ id, externalId }) => {
+                if (!isDefined(externalId)) {
+                    return [];
+                }
+
+                return [[externalId, id] as const];
+            })
+        );
     }
 
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {

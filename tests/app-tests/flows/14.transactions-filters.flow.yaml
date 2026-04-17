@@ -1,0 +1,131 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '19-transactions-filters'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+- tapOn:
+    id: 'TransactionFilters.TypeChip'
+- tapOn:
+    id: 'TransactionFilters.TypeOption.EXPENSE'
+- tapOn:
+    id: 'TransactionFilters.TypeApplyButton'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+- tapOn:
+    id: 'TransactionFilters.TypeChip'
+- tapOn:
+    id: 'TransactionFilters.TypeOption.EXPENSE'
+- tapOn:
+    id: 'TransactionFilters.TypeApplyButton'
+
+- swipe:
+    from:
+      id: 'TransactionFilters.DateChip'
+    direction: LEFT
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.AccountChip'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.AccountChip'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.AccountGroupToggle.CASH'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.AccountGroupToggle.CASH'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.AccountOption.E2E Filter Cash A'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.AccountOptionSelected.E2E Filter Cash A'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.AccountApplyButton'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+
+- tapOn:
+    id: 'TransactionFilters.ClearAllButton'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+- runFlow:
+    file: subflows/categories/apply-category-filter.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Filter Income Category'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+
+- runFlow:
+    file: subflows/categories/apply-category-filter.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Filter Income Category'
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionFilters.TagChip'
+    direction: RIGHT
+    speed: 20
+- tapOn:
+    id: 'TransactionFilters.TagChip'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.TagSearchInput'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.TagSearchInput'
+- inputText: 'Expense Tag'
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.TagOption.E2E Filter Expense Tag'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.TagOption.E2E Filter Expense Tag'
+- tapOn:
+    id: 'TransactionFilters.TagApplyButton'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'

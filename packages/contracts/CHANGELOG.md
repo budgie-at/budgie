@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+
+# [5.2.0](https://github.com/budgie-at/budgie/compare/v5.1.2...v5.2.0) (2026-04-14)
+
+### Bug Fixes
+
+- **app,contracts:** add migration and remove update logic from data PR ([37d7f77](https://github.com/budgie-at/budgie/commit/37d7f776b82eb89ef4be5ccaa106f4c6c820b8bf))
+- **app,contracts:** persist exchangeRate and toIban in entry insert mappings ([a7bd6f8](https://github.com/budgie-at/budgie/commit/a7bd6f8dd0fc5956a2b2f92ed64b33508b5ea4ca))
+
+### Features
+
+- **app,contracts:** enrich bank sync entries with counterIban and exchangeRate ([898e577](https://github.com/budgie-at/budgie/commit/898e57747520dd5b480056900efe6d2fa5f20290))
+
 # [5.0.0](https://github.com/budgie-at/budgie/compare/v4.0.0...v5.0.0) (2026-04-07)
 
 ### Bug Fixes

@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.2.3](https://github.com/budgie-at/budgie/compare/v5.2.2...v5.2.3) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** build workspace packages before EAS bundle ([f6a8df1](https://github.com/budgie-at/budgie/commit/f6a8df1251afb8182d143d2dde50d59bc5d43f5b))
+- **app:** list workspace build targets explicitly in EAS hook ([5991fdb](https://github.com/budgie-at/budgie/commit/5991fdb6ef57b572756fcbff5096804cd4f1c6a3))
+- **app:** run full workspace build in EAS hook ([5dc61f0](https://github.com/budgie-at/budgie/commit/5dc61f0b7bef0eb94e754fc3552311ce4527b719))
+
+## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** make transaction creation atomic ([9ffc4ff](https://github.com/budgie-at/budgie/commit/9ffc4ff5e70e749848285e4c9b645de0d11727bc))
+- **app:** preserve user edits on imported reimport ([7005fc3](https://github.com/budgie-at/budgie/commit/7005fc353fafad1de63e201dd7f41922d9850783))
+- **app:** remove dead e2e hooks config ([6f12f05](https://github.com/budgie-at/budgie/commit/6f12f0574e67ed83b2b604eeb886394bf67a2006))
+- harden black-box imports and erste sync ([4d48b25](https://github.com/budgie-at/budgie/commit/4d48b250ae7f056cfe3034eef2c74459064ae462))
+- harden black-box imports and imported transaction updates ([e0c5a20](https://github.com/budgie-at/budgie/commit/e0c5a20c08c991277620915eec073c4a4c799070))
+- restore stable balance hooks and trim ci setup ([7f8c7a3](https://github.com/budgie-at/budgie/commit/7f8c7a3232f98c6c24412b5d7c5f39ab1312e200))
+
+## [5.2.1](https://github.com/budgie-at/budgie/compare/v5.2.0...v5.2.1) (2026-04-16)
+
+### Bug Fixes
+
+- **app:** add list footer spacer so last filter items clear the drawer ([4517995](https://github.com/budgie-at/budgie/commit/451799518cffd17347fdab4882146489ef2ea5a6))
+- **app:** avoid plural() macro crash in filter apply label ([4d03181](https://github.com/budgie-at/budgie/commit/4d03181af9be2c1a1718ad86c1d71de304e274ad))
+- **app:** date picker range start/end visible in both themes ([f5b979c](https://github.com/budgie-at/budgie/commit/f5b979c63efb9019a63dec2f1745834a906ace31))
+- **app:** filter apply button height and date picker cell styling ([540bc31](https://github.com/budgie-at/budgie/commit/540bc3169e21e84187455602e5241a7bbdba66dd))
+- **app:** last filter items visible above floating drawer ([efa195d](https://github.com/budgie-at/budgie/commit/efa195d263d2952c8c284f52c2b2edfc1b65e8e2))
+- **app:** menu dismiss, keyboard footer, and SOTA file import redesign ([6463e7e](https://github.com/budgie-at/budgie/commit/6463e7e4cfba761a2df5d6aea5efd48cad9b7256))
+- **app:** replace nested ternaries with local helper, silence max-statements ([6c630fd](https://github.com/budgie-at/budgie/commit/6c630fde4ce9ce39123faddcc93b8f8f61eb4b3f))
+- **app:** revert drawer to flex sibling to keep date picker visible ([6c2d834](https://github.com/budgie-at/budgie/commit/6c2d834fad87ff5bbbc79a52145d02119d19b4b8))
+
+# [5.2.0](https://github.com/budgie-at/budgie/compare/v5.1.2...v5.2.0) (2026-04-14)
+
+### Bug Fixes
+
+- **app,contracts:** add migration and remove update logic from data PR ([37d7f77](https://github.com/budgie-at/budgie/commit/37d7f776b82eb89ef4be5ccaa106f4c6c820b8bf))
+- **app,contracts:** address review — propagate entry fields and fix migration ([3fa6b0d](https://github.com/budgie-at/budgie/commit/3fa6b0d863597a507cd38804cffbf116e85857e6))
+- **app,contracts:** persist exchangeRate and toIban in entry insert mappings ([a7bd6f8](https://github.com/budgie-at/budgie/commit/a7bd6f8dd0fc5956a2b2f92ed64b33508b5ea4ca))
+- **app:** use bracket notation for e2e index signature properties ([100b6b9](https://github.com/budgie-at/budgie/commit/100b6b9358bdedb40a498fc045204e0d41794a4d))
+
+### Features
+
+- **app,contracts:** enrich bank sync entries with counterIban and exchangeRate ([898e577](https://github.com/budgie-at/budgie/commit/898e57747520dd5b480056900efe6d2fa5f20290))
+
 ## [5.1.2](https://github.com/budgie-at/budgie/compare/v5.1.1...v5.1.2) (2026-04-14)
 
 ### Bug Fixes

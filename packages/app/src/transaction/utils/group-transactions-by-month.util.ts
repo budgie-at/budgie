@@ -1,4 +1,4 @@
-import type { TransactionsByMonthSection } from '../interface/transactions-by-month-section.interface';
+import type { TransactionsByMonthSection } from '../interface/transactions-by-month-section.type';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const groupTransactionsByMonth = (

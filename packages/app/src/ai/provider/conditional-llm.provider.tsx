@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, Suspense, lazy, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -10,6 +10,12 @@ import { DisabledAiStackProvider } from './disabled-ai-stack.provider';
 interface Props {
     readonly children: ReactNode;
 }
+
+const LazyLlmProvider = lazy(async () => {
+    const { LlmProvider } = await import('./llm.provider');
+
+    return { default: LlmProvider };
+});
 
 export const ConditionalLlmProvider = ({ children }: Props) => {
     const [isActivated, setIsActivated] = useState(AppState.currentState === 'active');
@@ -33,15 +39,13 @@ export const ConditionalLlmProvider = ({ children }: Props) => {
         return <DisabledAiStackProvider>{children}</DisabledAiStackProvider>;
     }
 
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports -- Dynamic require prevents Metal GPU initialization at module load in background */
-    const { LlmProvider } = require('./llm.provider');
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports */
-
     return (
-        <LlmProvider>
-            <AiEmbeddingProgressProvider>
-                <AiStatusProvider>{children}</AiStatusProvider>
-            </AiEmbeddingProgressProvider>
-        </LlmProvider>
+        <Suspense fallback={<DisabledAiStackProvider>{children}</DisabledAiStackProvider>}>
+            <LazyLlmProvider>
+                <AiEmbeddingProgressProvider>
+                    <AiStatusProvider>{children}</AiStatusProvider>
+                </AiEmbeddingProgressProvider>
+            </LazyLlmProvider>
+        </Suspense>
     );
 };

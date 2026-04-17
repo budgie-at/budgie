@@ -1,0 +1,9 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TabBar.Transactions'
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
