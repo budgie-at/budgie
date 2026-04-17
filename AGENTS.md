@@ -113,6 +113,7 @@ packages/
 23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
+26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
 
 ### Naming Conventions
 

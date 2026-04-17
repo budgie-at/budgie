@@ -74,6 +74,8 @@ export default defineConfig(
             'no-empty-function': ['error', { allow: ['constructors'] }],
             'capitalized-comments': 'off',
             'arrow-body-style': ['error', 'as-needed'],
+            curly: ['error', 'all'],
+            'nonblock-statement-body-position': ['error', 'below'],
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
