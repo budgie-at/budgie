@@ -1,0 +1,121 @@
+appId: ${APP_ID}
+env:
+    FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH}
+    PROVIDER_CONTAINER_ID_MATCH: ${PROVIDER_CONTAINER_ID_MATCH || '[Bb]udgie( \\(.*\\))?, Container'}
+    PROVIDER_CONTAINER_TEXT_MATCH: ${PROVIDER_CONTAINER_TEXT_MATCH || '[Bb]udgie( \\(.*\\))?(, Container)?'}
+    FIXTURE_FOLDER_NAME_MATCH: ${FIXTURE_FOLDER_NAME_MATCH || 'E2EFixtures'}
+    FIXTURE_FOLDER_TEXT_MATCH: ${FIXTURE_FOLDER_TEXT_MATCH || 'E2EFixtures(, Folder)?'}
+    BROWSE_BUTTON_MATCH: ${BROWSE_BUTTON_MATCH || 'Browse|Durchsuchen'}
+    ON_MY_IPHONE_MATCH: ${ON_MY_IPHONE_MATCH || 'On My iPhone|Auf meinem iPhone'}
+---
+- runFlow:
+      when:
+          visible:
+              id: 'BackButton'
+      commands:
+          - tapOn:
+                id: 'BackButton'
+
+- runFlow:
+      when:
+          visible:
+              id: 'BackButton'
+      commands:
+          - tapOn:
+                id: 'BackButton'
+
+- runFlow:
+      when:
+          visible:
+              id: 'BackButton'
+      commands:
+          - tapOn:
+                id: 'BackButton'
+
+- runFlow:
+      when:
+          visible: '${BROWSE_BUTTON_MATCH}'
+      commands:
+          - tapOn:
+                text: '${BROWSE_BUTTON_MATCH}'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          visible: '${ON_MY_IPHONE_MATCH}'
+      commands:
+          - tapOn:
+                text: '${ON_MY_IPHONE_MATCH}'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible:
+              id: '${FILE_ROW_ID_MATCH}'
+      commands:
+          - runFlow:
+                when:
+                    notVisible:
+                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+                commands:
+                    - runFlow:
+                          when:
+                              notVisible:
+                                  id: '${PROVIDER_CONTAINER_ID_MATCH}'
+                          commands:
+                              - scrollUntilVisible:
+                                    element:
+                                        text: '${PROVIDER_CONTAINER_TEXT_MATCH}'
+                                    direction: DOWN
+                                    timeout: 15000
+                                    speed: 20
+                                    visibilityPercentage: 40
+                                    centerElement: true
+                              - tapOn:
+                                    text: '${PROVIDER_CONTAINER_TEXT_MATCH}'
+                              - waitForAnimationToEnd
+                    - runFlow:
+                          when:
+                              visible:
+                                  id: '${PROVIDER_CONTAINER_ID_MATCH}'
+                          commands:
+                              - tapOn:
+                                    id: '${PROVIDER_CONTAINER_ID_MATCH}'
+                              - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    notVisible:
+                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+                commands:
+                    - scrollUntilVisible:
+                          element:
+                              text: '${FIXTURE_FOLDER_TEXT_MATCH}'
+                          direction: DOWN
+                          timeout: 15000
+                          speed: 20
+                          visibilityPercentage: 40
+                          centerElement: true
+                    - tapOn:
+                          text: '${FIXTURE_FOLDER_TEXT_MATCH}'
+                    - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible:
+                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+                commands:
+                    - tapOn:
+                          id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+                    - waitForAnimationToEnd
+
+- scrollUntilVisible:
+      element:
+          id: '${FILE_ROW_ID_MATCH}'
+      direction: DOWN
+      timeout: 15000
+      speed: 20
+      visibilityPercentage: 40
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+
+- tapOn:
+      id: '${FILE_ROW_ID_MATCH}'

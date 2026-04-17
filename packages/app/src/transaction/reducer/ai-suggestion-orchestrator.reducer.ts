@@ -1,4 +1,4 @@
-import { AiSuggestionOrchestratorFacts } from '../interface/ai-suggestion-orchestrator.interface';
+import { AiSuggestionOrchestratorFacts } from '../interface/ai-suggestion-orchestrator-facts.type';
 import { SuggestionOrchestratorStepEnum } from '../type/suggestion-orchestrator-step.enum';
 
 export enum AiSuggestionOrchestratorActionTypeEnum {

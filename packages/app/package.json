@@ -1,11 +1,12 @@
 {
     "name": "@budgie-at/app",
-    "version": "5.2.0",
+    "version": "5.2.3",
     "private": true,
     "scripts": {
         "android": "expo run:android",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
+        "eas-build-post-install": "cd ../.. && yarn build",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
         "i18n:sync": "yarn i18n:extract && yarn i18n:compile",
@@ -107,7 +108,6 @@
         "drizzle-kit": "^0.31.7",
         "eas-build-cache-provider": "^16.4.2",
         "postcss": "^8.5.6",
-        "tailwindcss": "^4.1.14",
-        "tsx": "^4.20.6"
+        "tailwindcss": "^4.1.14"
     }
 }

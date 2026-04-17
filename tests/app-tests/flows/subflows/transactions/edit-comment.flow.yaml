@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: 'TransactionForm.CommentInput'
+- extendedWaitUntil:
+    visible:
+      id: 'NoteInput.Input'
+    timeout: 5000
+- tapOn:
+    id: 'NoteInput.Input'
+- eraseText: 50
+- inputText: ${COMMENT}
+- tapOn:
+    id: 'NoteInput.SubmitButton'
