@@ -1,3 +1,1 @@
-export const DatePickerSelectors = {
-    Day: (day: string | number) => `DatePicker.Day.${day}` as const
-} as const;
+export { DatePickerSelector as DatePickerSelectors } from '../../@generic/component/date-picker/date-picker.selector';

@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -18,6 +17,7 @@ import { AccountBalanceField } from '../account-balance-field/account-balance-fi
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
+import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
@@ -54,7 +54,11 @@ export const CreateDebtAccount = () => {
             <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} nameInputTestID={AccountFormSelectors.NameInput} />
+                <AccountDetailsField
+                    variant={ACCOUNT_COLOR.DEBT}
+                    control={control}
+                    nameInputTestID={CreateAccountScreenSelector.NameInput}
+                />
 
                 <CreateAccountCurrencyField control={control} />
 

@@ -1,4 +1,5 @@
-import type { MccCategoryEntitySchema } from '../schema/mcc-category-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface MccCategoryEntityInterface extends infer<typeof MccCategoryEntitySchema> {}
+import type { MccCategoryEntitySchema } from '../schema/mcc-category-entity.schema';
+
+export type MccCategoryEntityInterface = z.infer<typeof MccCategoryEntitySchema>;

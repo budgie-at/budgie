@@ -9,11 +9,12 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCardContent } from '../transaction-card-content/transaction-card-content';
+
+import { TransactionCardSelector } from './transaction-card.selector';
 
 export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -29,12 +30,12 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel, onP
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
-    let cardTestID: string = TransactionCardSelectors.Card(transaction.id);
+    let cardTestID: string = TransactionCardSelector.Card(transaction.id);
 
     if (isAdjustment) {
-        cardTestID = TransactionCardSelectors.AdjustmentCard(transaction.id);
+        cardTestID = TransactionCardSelector.AdjustmentCard(transaction.id);
     } else if (isNotEmptyString(title)) {
-        cardTestID = TransactionCardSelectors.LabelCard(title);
+        cardTestID = TransactionCardSelector.LabelCard(title);
     }
 
     const handlePress = () => {

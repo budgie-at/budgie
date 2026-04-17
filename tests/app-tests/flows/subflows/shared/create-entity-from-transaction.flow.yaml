@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+env:
+  SELECTOR_ID: ${SELECTOR_ID}
+  PICKER_INPUT_ID: ${PICKER_INPUT_ID}
+  ENTITY_NAME: ${ENTITY_NAME}
+  CREATE_BUTTON_ID: ${CREATE_BUTTON_ID}
+  FORM_INPUT_ID: ${FORM_INPUT_ID}
+  SUBMIT_BUTTON_ID: ${SUBMIT_BUTTON_ID}
+---
+- tapOn:
+    id: ${SELECTOR_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${PICKER_INPUT_ID}
+- tapOn:
+    id: ${PICKER_INPUT_ID}
+- inputText: ${ENTITY_NAME}
+- tapOn:
+    id: ${CREATE_BUTTON_ID}
+- extendedWaitUntil:
+    visible:
+      id: ${FORM_INPUT_ID}
+- tapOn:
+    id: ${SUBMIT_BUTTON_ID}
+- extendedWaitUntil:
+    notVisible:
+      id: ${FORM_INPUT_ID}
+

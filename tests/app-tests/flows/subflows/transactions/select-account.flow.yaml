@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      notVisible: ${ACCOUNT_NAME}
+    commands:
+      - tapOn:
+          id: 'TransactionForm.AccountSelector'
+      - extendedWaitUntil:
+          visible:
+            id: 'AccountPickerBottomSheet.Input'
+      - runFlow:
+          when:
+            visible:
+              id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+          commands:
+            - tapOn:
+                id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+
+      - runFlow:
+          when:
+            notVisible:
+              id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+          commands:
+            - tapOn:
+                id: 'AccountPickerBottomSheet.Input'
+            - inputText: ${ACCOUNT_NAME}
+            - extendedWaitUntil:
+                visible:
+                  id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+                timeout: 15000
+            - tapOn:
+                id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+
+      - extendedWaitUntil:
+          notVisible:
+            id: 'AccountPickerBottomSheet.Input'

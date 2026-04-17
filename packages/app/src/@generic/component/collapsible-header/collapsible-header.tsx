@@ -4,8 +4,8 @@ import { LayoutChangeEvent, Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HomePageSelectors } from '../../../@e2e/selectors/home-page.selector';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
+import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -38,7 +38,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
-    const netWorthValueTestID = HomePageSelectors.NetWorthValue(netWorth);
+    const netWorthValueTestID = HomePageSelector.NetWorthValue(netWorth);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);
@@ -93,7 +93,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
         <View style={containerStyle}>
             <Animated.View className="absolute inset-x-0 bottom-0 top-0 bg-background" style={headerBackgroundStyle} />
 
-            <Animated.View className="relative" style={headerContainerStyle} testID={HomePageSelectors.TotalBalance}>
+            <Animated.View className="relative" style={headerContainerStyle} testID={HomePageSelector.TotalBalance}>
                 <Animated.View
                     className="absolute inset-x-0 top-0 bottom-0 flex-row items-center justify-between px-5xl"
                     style={collapsedHeaderStyle}

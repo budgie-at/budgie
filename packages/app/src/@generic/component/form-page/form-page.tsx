@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Edge, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
@@ -29,11 +29,7 @@ export const FormPage = ({ header, children, footer, testID, onScroll, safeEdges
     } satisfies ViewStyle;
     const scrollContentContainerStyle = [defaultContentContainerStyle, contentContainerStyle];
 
-    const footerContent = isDefined(footer) ? (
-        <KeyboardStickyView>
-            <Footer withBlur>{footer}</Footer>
-        </KeyboardStickyView>
-    ) : null;
+    const footerContent = isDefined(footer) ? <Footer withBlur>{footer}</Footer> : null;
 
     return (
         <Page testID={testID} header={header} footer={footerContent} safeEdges={safeEdges} withBlur>

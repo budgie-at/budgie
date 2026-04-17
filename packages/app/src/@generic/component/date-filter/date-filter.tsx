@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionFilterChip } from '../../../transaction/components/transaction-filter-chip/transaction-filter-chip';
+import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { DATE_PERIOD } from '../../constant/date-period.constant';
 import { useDateFilterModal } from '../../context/date-filter-modal.context';
 import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
@@ -58,7 +58,7 @@ export const DateFilter = ({ value, onChange }: Props) => {
 
     const hasDateFilterSelected = isDefined(value?.from) || isDefined(value?.to);
     const label = getLabel();
-    const chipTestID = hasDateFilterSelected ? TransactionFiltersSelectors.DateChipActive : TransactionFiltersSelectors.DateChip;
+    const chipTestID = hasDateFilterSelected ? TransactionFiltersSelector.DateChipActive : TransactionFiltersSelector.DateChip;
 
     return (
         <TransactionFilterChip

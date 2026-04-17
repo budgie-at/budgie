@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View } from 'react-native';
 
-import { IconSelectorSelectors } from '../../../@e2e/selectors/icon-selector.selector';
+import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
@@ -66,7 +66,7 @@ export const IconSelectorCard = ({ className, isSelected, icon, name, onSelect, 
 
     return (
         <HapticPressable
-            testID={IconSelectorSelectors.IconCard(name)}
+            testID={IconSelectorModalSelector.IconCard(name)}
             className={cn(selectorVariants({ isSelected }), className)}
             onPress={handleSelect}
         >

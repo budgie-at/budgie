@@ -17,7 +17,6 @@ export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props)
     const { t } = useLingui();
 
     const handlePress = () => void onSelect(type);
-    const selectedTestID = isSelected ? TransactionFiltersSelectors.TypeOptionSelected(type) : null;
 
     return (
         <TransactionFilterCard
@@ -27,7 +26,6 @@ export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props)
             variant={TRANSACTION_COLOR[type]}
             label={t(TRANSACTION_TYPE[type])}
             testID={TransactionFiltersSelectors.TypeOption(type)}
-            selectedTestID={selectedTestID ?? ''}
         />
     );
 };

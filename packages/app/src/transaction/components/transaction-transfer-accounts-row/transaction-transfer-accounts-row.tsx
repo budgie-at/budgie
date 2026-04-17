@@ -6,7 +6,6 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransferFormSelectors } from '../../../@e2e/selectors/transfer-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
@@ -14,6 +13,7 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
+import { TransferQuickFormSelector } from '../transfer-quick-form/transfer-quick-form.selector';
 
 const ANIMATION_DELAY = 170;
 
@@ -71,13 +71,13 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 account={fromAccount}
                 variant={variant}
                 animatedStyle={fromAnimatedStyle}
-                testID={TransferFormSelectors.FromAccount}
+                testID={TransferQuickFormSelector.FromAccount}
                 onPress={handleFromPress}
             />
 
             <HapticPressable
                 onPress={handleSwap}
-                testID={TransferFormSelectors.SwapAccounts}
+                testID={TransferQuickFormSelector.SwapAccounts}
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
@@ -89,7 +89,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 account={toAccount}
                 variant={variant}
                 animatedStyle={toAnimatedStyle}
-                testID={TransferFormSelectors.ToAccount}
+                testID={TransferQuickFormSelector.ToAccount}
                 onPress={handleToPress}
             />
         </Animated.View>

@@ -4,10 +4,10 @@ import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { TagPickerBottomSheetSelectors } from '../../../@e2e/selectors/tag-picker-bottom-sheet.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
+import { TagsSelectorModalSelector } from '../../../app/tags-selector-modal.selector';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
 interface Props {
@@ -35,7 +35,7 @@ export const TagsSelectContent = (props: Props) => {
                 variant="static"
                 title={item.title}
                 id={item.id}
-                testID={TagPickerBottomSheetSelectors.Card(item.title)}
+                testID={TagsSelectorModalSelector.Card(item.title)}
             />
         );
 

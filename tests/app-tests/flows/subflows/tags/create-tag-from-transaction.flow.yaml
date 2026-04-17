@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: ../shared/create-entity-from-transaction.flow.yaml
+    env:
+      SELECTOR_ID: 'TransactionForm.TagsSelector'
+      PICKER_INPUT_ID: 'TagPickerBottomSheet.Input'
+      ENTITY_NAME: ${TAG_NAME}
+      CREATE_BUTTON_ID: 'TagPickerBottomSheet.CreateButton'
+      FORM_INPUT_ID: 'TagForm.Input'
+      SUBMIT_BUTTON_ID: 'TagForm.Submit'

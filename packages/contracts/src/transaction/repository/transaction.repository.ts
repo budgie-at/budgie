@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -130,6 +131,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
+    async findByIds(ids: number[], tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
+        if (isNotEmptyArray(ids)) {
+            return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: { [TransactionAssociationEnum.ENTRIES]: true }
+            });
+        }
+
+        return [];
+    }
+
     async truncate(tx?: DBOrTX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
@@ -147,6 +159,29 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
 
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
+    }
+
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        const results = await this.db
+            .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return new Map(
+            results.flatMap(({ id, externalId }) => {
+                if (!isDefined(externalId)) {
+                    return [];
+                }
+
+                return [[externalId, id] as const];
+            })
+        );
     }
 
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
