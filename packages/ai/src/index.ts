@@ -1,4 +1,8 @@
-export type { GenerateOptionsInterface, LlmInterface } from './@generic/interface/llm.interface';
+export type { GenerateOptionsInterface } from './@generic/interface/generate-options.interface';
+export type { LlmInterface } from './@generic/interface/llm.interface';
+export type { ChatInvokerInterface } from './chat/interface/chat-invoker.interface';
+export type { EmbeddingInvokerInterface } from './embedding/interface/embedding-invoker.interface';
+export type { SttInvokerInterface } from './voice/interface/stt-invoker.interface';
 
 export {
     EMBEDDING_BATCH_LIMIT,
