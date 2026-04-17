@@ -17,6 +17,7 @@ import {
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
+import { aiSuggestLog } from '../../@generic/util/ai-suggest-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
@@ -27,7 +28,8 @@ import { EmbeddingService } from './embedding.service';
 export class EmbeddingSuggestionService {
     constructor(private readonly repositories: EmbeddingSuggestionRepositoriesInterface) {}
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit to avoid extra context-building calls in hooks
+     
+    /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented temporarily */
     async suggestCategories(
         llm: LlmInterface,
         categories: CategoryEntityInterface[],
@@ -37,11 +39,22 @@ export class EmbeddingSuggestionService {
         aiContext: string
     ): Promise<CategoryEntityInterface[]> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
+        aiSuggestLog('svc:suggestCategories:context', {
+            context: suggestionContext.context,
+            distanceThreshold: suggestionContext.distanceThreshold
+        });
         const resolved = await this.resolveSerializedEmbedding(llm, suggestionContext);
 
         if (!isDefined(resolved)) {
+            aiSuggestLog('svc:suggestCategories:no-embedding', { context: suggestionContext.context });
+
             return [];
         }
+
+        aiSuggestLog('svc:suggestCategories:embedded', {
+            serializedBytes: resolved.serialized.length,
+            distanceThreshold: resolved.distanceThreshold
+        });
 
         const [merchantResults, commentResults] = await Promise.all([
             this.repositories.merchant.findSimilarCategories(
@@ -58,10 +71,23 @@ export class EmbeddingSuggestionService {
             )
         ]);
 
+        aiSuggestLog('svc:suggestCategories:repoResults', {
+            merchantCount: merchantResults.length,
+            commentCount: commentResults.length,
+            merchantRows: merchantResults.map(row => ({ categoryId: row.categoryId, score: row.score })),
+            commentRows: commentResults.map(row => ({ categoryId: row.categoryId, score: row.score }))
+        });
+
         const merged = this.mergeCategoryScores(merchantResults, commentResults);
         const topCategories = merged.slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
+        const resolvedCategories = topCategories.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
+        aiSuggestLog('svc:suggestCategories:final', {
+            topCount: topCategories.length,
+            resolvedCount: resolvedCategories.length,
+            topCategoryIds: resolvedCategories.map(category => category.id)
+        });
 
-        return topCategories.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
+        return resolvedCategories;
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit to avoid extra context-building calls in hooks
@@ -188,12 +214,17 @@ export class EmbeddingSuggestionService {
     }
 
     private async generateSerializedEmbedding(context: string, llm: LlmInterface): Promise<Uint8Array | null> {
+        aiSuggestLog('svc:generateSerializedEmbedding:start', { context, contextLen: context.length });
         const service = new EmbeddingService(llm);
         const queryEmbedding = await service.generateEmbedding(context);
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
+            aiSuggestLog('svc:generateSerializedEmbedding:empty', { context });
+
             return null;
         }
+
+        aiSuggestLog('svc:generateSerializedEmbedding:ok', { context, dimensions: queryEmbedding.length });
 
         return serializeEmbedding(queryEmbedding);
     }
