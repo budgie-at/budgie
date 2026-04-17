@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const ImportSelectors = {
     CsvCard: 'Settings.ImportCsvCard',
     Page: 'ImportScreen.Page',
