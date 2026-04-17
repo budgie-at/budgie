@@ -190,6 +190,9 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
+export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
+export type { PendingEmbeddingRowInterface } from './transaction-embedding/interface/pending-embedding-row.interface';
+
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
