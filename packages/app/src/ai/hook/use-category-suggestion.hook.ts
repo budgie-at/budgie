@@ -5,6 +5,7 @@ import { useAllCategoriesQuery } from '../../category/query/use-all-categories.q
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
+import { aiSuggestLog } from '../util/ai-suggest-log.util';
 
 import { useAi } from './use-ai.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -28,14 +29,42 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
+        aiSuggestLog('category:fetch:start', {
+            transactionTitle,
+            mccCategoryId,
+            mccDescription,
+            comment,
+            aiContext,
+            categoriesLength: categories.length
+        });
+        const results = await embeddingSuggestionService.suggestCategories(
+            llm,
+            categories,
+            transactionTitle,
+            mccDescription,
+            comment,
+            aiContext
+        );
+        aiSuggestLog('category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
 
-        return embeddingSuggestionService.suggestCategories(llm, categories, transactionTitle, mccDescription, comment, aiContext);
+        return results;
     };
+
+    const modeReady = mode === AiModeEnum.Ready;
+    aiSuggestLog('category:hook:state', {
+        enabled,
+        modeReady,
+        mode,
+        isMccLoading,
+        isCategoriesLoading,
+        hasCategoriesLoaded,
+        categoriesLength: categories.length
+    });
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [mode === AiModeEnum.Ready, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
-        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, mode === AiModeEnum.Ready, categories.length],
+        readyChecks: [modeReady, !isMccLoading, !isCategoriesLoading, hasCategoriesLoaded],
+        requestKeyParts: [transactionTitle, mccCategoryId, comment, aiContext, enabled, modeReady, categories.length],
         fetchSuggestions
     });
 

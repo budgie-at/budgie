@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { aiSuggestLog } from '../util/ai-suggest-log.util';
+
 import { useAiProgress } from './use-ai-progress.hook';
 
 interface UseSuggestionBaseParams<T> {
@@ -55,23 +57,33 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
+        aiSuggestLog('base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
         if (!isReady) {
+            aiSuggestLog('base:effect:skip:not-ready', {
+                enabled,
+                readyChecks: [...readyChecks],
+                readyCheckFailAt: readyChecks.findIndex(check => !check)
+            });
+
             return emptyFn;
         }
 
         let cancelled = false;
 
         const suggest = async (): Promise<void> => {
+            aiSuggestLog('base:suggest:loading', { requestKey });
             setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();
 
                 if (!cancelled) {
+                    aiSuggestLog('base:suggest:success', { requestKey, resultCount: results.length });
                     setResult({ key: requestKey, status: 'success', suggestions: results });
                 }
-            } catch {
+            } catch (error: unknown) {
                 if (!cancelled) {
+                    aiSuggestLog('base:suggest:error', { requestKey, message: error instanceof Error ? error.message : String(error) });
                     setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }
             }

@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useAiProgress } from '../../../ai/hook/use-ai-progress.hook';
+import { aiSuggestLog } from '../../../ai/util/ai-suggest-log.util';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
@@ -25,6 +26,17 @@ export const SuggestionRowLayout = (props: Props) => {
     const showBrain = showContent || isIncomplete || isProcessing;
     const brainIsLoading = showLoading || isProcessing;
     const showPills = showContent && !showLoading;
+
+    aiSuggestLog('layout:render', {
+        showContent,
+        showLoading,
+        isProcessing,
+        progress,
+        isIncomplete,
+        showBrain,
+        showPills,
+        brainIsLoading
+    });
 
     const handleContentSizeChange = () => {
         scrollRef.current?.scrollToEnd({ animated: false });
