@@ -1,4 +1,4 @@
-import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -238,6 +238,31 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
+    }
+
+    async countAllActive(): Promise<number> {
+        const [row] = await this.db
+            .select({ value: count() })
+            .from(TransactionEntityTable)
+            .where(isNull(TransactionEntityTable.deletedAt));
+        return row?.value ?? 0;
+    }
+
+    async countPendingEmbedding(): Promise<number> {
+        const [row] = await this.db
+            .select({ value: count() })
+            .from(TransactionEntityTable)
+            .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)));
+        return row?.value ?? 0;
+    }
+
+    async findPendingEmbedding(limit: number, tx?: DB) {
+        return (tx ?? this.db).query.TransactionEntityTable.findMany({
+            where: and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)),
+            orderBy: (transaction, { asc }) => [asc(transaction.id)],
+            limit,
+            with: this.transactionRelations
+        });
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {
