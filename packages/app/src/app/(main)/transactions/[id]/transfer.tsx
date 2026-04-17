@@ -36,7 +36,7 @@ interface UpdateTransferFormProps {
 /* jscpd:ignore-start */
 const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
     const { t } = useLingui();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -47,14 +47,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: data =>
-            void generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            })
+        onAfterSubmit: () => void markForEmbedding({ transactionId })
     });
 
     const [fromAccountId, amount] = useWatch({

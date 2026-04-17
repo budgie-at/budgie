@@ -18,7 +18,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useLlmContext } from '../../../ai/context/llm.context';
+import { useAi } from '../../../ai/hook/use-ai.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
@@ -48,7 +48,7 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const { llm } = useLlmContext();
+    const { llm } = useAi();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 

@@ -5,9 +5,10 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
-import { useLlmContext } from '../context/llm.context';
+import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
+import { useAi } from './use-ai.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseTagSuggestionParams {
@@ -22,7 +23,7 @@ interface UseTagSuggestionParams {
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { llm } = useLlmContext();
+    const { mode, llm } = useAi();
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
@@ -40,7 +41,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
-        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
+        readyChecks: [mode === AiModeEnum.Ready, !isMccLoading, !isTagsLoading, hasTagsLoaded],
         requestKeyParts: [
             transactionTitle,
             categoryId,
@@ -48,7 +49,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
             comment,
             aiContext,
             enabled,
-            llm.isEmbeddingReady,
+            mode === AiModeEnum.Ready,
             allTags?.length ?? 0
         ],
         fetchSuggestions

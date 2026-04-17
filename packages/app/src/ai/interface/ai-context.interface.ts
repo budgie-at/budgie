@@ -1,6 +1,7 @@
+import { AiModeEnum } from '../enum/ai-mode.enum';
+
 import type { LlmInterface } from '@budgie/ai';
 
-import { AiModeEnum } from '../enum/ai-mode.enum';
 
 export interface AiContextInterface {
     readonly mode: AiModeEnum;
