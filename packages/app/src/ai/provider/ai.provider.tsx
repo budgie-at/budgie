@@ -12,7 +12,6 @@ import { AiProgressContext } from '../context/ai-progress.context';
 import { AiContext } from '../context/ai.context';
 import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingDrainerService } from '../service/embedding-drainer.service';
-import { embeddingProgressStore } from '../store/embedding-progress.store';
 import {
     BACKGROUND_RELEASE_DELAY_MS,
     CHAT_CONTEXT_SIZE,
@@ -291,13 +290,7 @@ export const AiProvider = ({ children }: Props) => {
 
             return emptyFn;
         }
-        embeddingDrainerService.start({
-            getMode: () => modeRef.current,
-            embed: embedding,
-            refreshProgress: () => {
-                void embeddingProgressStore.refresh();
-            }
-        });
+        embeddingDrainerService.start(() => modeRef.current, embedding);
 
         return () => {
             embeddingDrainerService.stop();

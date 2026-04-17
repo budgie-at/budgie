@@ -1,4 +1,5 @@
 import { buildCommentContext, buildMerchantContext, serializeEmbedding } from '@budgie/ai';
+import { PendingEmbeddingRowInterface } from '@budgie/contracts';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -15,30 +16,32 @@ import { AiModeEnum } from '../enum/ai-mode.enum';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { isNativeCallSafe } from '../utils/is-native-call-safe.util';
 
-import type { PendingEmbeddingRowInterface } from '@budgie/contracts';
-
 const BATCH_SIZE = 10;
 const DRAIN_INTERVAL_MS = 2_000;
 
-interface DrainerDepsInterface {
-    readonly getMode: () => AiModeEnum;
-    readonly embed: (text: string) => Promise<number[]>;
-    readonly refreshProgress: () => void;
+interface RowContextInterface {
+    readonly categoryId: number;
+    readonly categoryTitle: string | null;
+    readonly mccDescription: string;
+    readonly tagIds: number[];
 }
 
 class EmbeddingDrainerService {
     private running = false;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
-    private deps: DrainerDepsInterface | null = null;
+    private started = false;
 
-    start(deps: DrainerDepsInterface): void {
-        this.deps = deps;
+    start(getMode: () => AiModeEnum, embed: (text: string) => Promise<number[]>): void {
+        this.getMode = getMode;
+        this.embed = embed;
+        this.started = true;
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
         this.scheduleDrain();
     }
 
     stop(): void {
+        this.started = false;
         this.running = false;
         if (this.timer !== null) {
             clearTimeout(this.timer);
@@ -46,8 +49,10 @@ class EmbeddingDrainerService {
         }
         this.appStateSubscription?.remove();
         this.appStateSubscription = null;
-        this.deps = null;
     }
+
+    private getMode: () => AiModeEnum = () => AiModeEnum.Disabled;
+    private embed: (text: string) => Promise<number[]> = async () => [];
 
     private readonly handleAppState = (state: AppStateStatus): void => {
         if (state === 'active') {
@@ -59,7 +64,7 @@ class EmbeddingDrainerService {
     };
 
     private scheduleDrain(): void {
-        if (this.running) {
+        if (!this.started || this.running || !isNativeCallSafe(this.getMode())) {
             return;
         }
         if (this.timer !== null) {
@@ -71,113 +76,121 @@ class EmbeddingDrainerService {
         }, DRAIN_INTERVAL_MS);
     }
 
-    // eslint-disable-next-line max-statements -- Drain loop with guard checks, error recovery, and rescheduling
     private async drain(): Promise<void> {
-        if (this.deps === null) {
-            return;
-        }
-        if (!isNativeCallSafe(this.deps.getMode())) {
+        if (!isNativeCallSafe(this.getMode())) {
             return;
         }
 
         this.running = true;
         try {
             const rows = await transactionEmbeddingRepository.findPending(BATCH_SIZE);
-
             if (rows.length === 0) {
                 return;
             }
-
-            /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
-            for (const row of rows) {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
-                if (this.deps === null) {
-                    break;
-                }
-                if (!isNativeCallSafe(this.deps.getMode())) {
-                    break;
-                }
-                await this.processRow(row);
-            }
-            /* eslint-enable no-await-in-loop */
-
-            void embeddingProgressStore.refresh();
+            await this.processRows(rows);
+            await embeddingProgressStore.refresh();
         } catch {
             emptyFn();
         } finally {
             this.running = false;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- deps can be cleared between awaits
-            if (this.deps !== null && isNativeCallSafe(this.deps.getMode())) {
-                this.scheduleDrain();
-            }
+            this.scheduleDrain();
         }
     }
 
-    // eslint-disable-next-line max-statements -- Handles merchant and comment embeddings with tag replacement
+    private async processRows(rows: PendingEmbeddingRowInterface[]): Promise<void> {
+        /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
+        for (const row of rows) {
+            if (!this.started || !isNativeCallSafe(this.getMode())) {
+                break;
+            }
+            await this.processRow(row);
+        }
+        /* eslint-enable no-await-in-loop */
+    }
+
     private async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
-        if (this.deps === null) {
+        const context = await this.buildRowContext(row);
+        if (context === null) {
+            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+
             return;
         }
 
+        const embedded = await this.resolveEmbedded(row, context);
+        if (embedded) {
+            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+        }
+    }
+
+    private async resolveEmbedded(row: PendingEmbeddingRowInterface, context: RowContextInterface): Promise<boolean> {
+        if (isNotEmptyString(row.title)) {
+            return this.embedMerchant(row, context);
+        }
+        if (isNotEmptyString(row.comment)) {
+            return this.embedComment(row, context);
+        }
+
+        return true;
+    }
+
+    private async buildRowContext(row: PendingEmbeddingRowInterface): Promise<RowContextInterface | null> {
         const [entry] = row.entries;
         const { categoryId } = entry;
         const { mccCategoryId } = entry;
 
         if (!isPositiveNumber(categoryId)) {
-            await transactionRepository.updateById(row.id, { needsEmbedding: false });
-
-            return;
+            return null;
         }
 
         const categoryTitle = await this.lookupCategoryTitle(categoryId);
         const mccDescription = await this.lookupMccDescription(mccCategoryId);
         const tagIds = row.transactionTags.map(link => link.tagId);
 
-        let embedded = false;
+        return { categoryId, categoryTitle, mccDescription, tagIds };
+    }
 
-        if (isNotEmptyString(row.title)) {
-            const context = buildMerchantContext({ title: row.title, mccDescription, categoryTitle });
-            const rawEmbedding = await this.deps.embed(context);
-            if (isNotEmptyArray(rawEmbedding)) {
-                const float32Embedding = new Float32Array(rawEmbedding);
-                const serialized = serializeEmbedding(float32Embedding);
-                const embeddingId = await merchantEmbeddingRepository.upsert({
-                    title: row.title,
-                    mccDescription,
-                    categoryId,
-                    comment: row.comment,
-                    embedding: serialized,
-                    dimensions: rawEmbedding.length
-                });
-                if (isDefined(embeddingId)) {
-                    await merchantEmbeddingRepository.replaceTags(embeddingId, tagIds);
-                }
-                embedded = true;
-            }
-        } else if (isNotEmptyString(row.comment)) {
-            const context = buildCommentContext({ comment: row.comment, categoryTitle });
-            const rawEmbedding = await this.deps.embed(context);
-            if (isNotEmptyArray(rawEmbedding)) {
-                const float32Embedding = new Float32Array(rawEmbedding);
-                const serialized = serializeEmbedding(float32Embedding);
-                const embeddingId = await commentEmbeddingRepository.upsert({
-                    comment: row.comment,
-                    categoryId,
-                    embedding: serialized,
-                    dimensions: rawEmbedding.length
-                });
-                if (isDefined(embeddingId)) {
-                    await commentEmbeddingRepository.replaceTags(embeddingId, tagIds);
-                }
-                embedded = true;
-            }
-        } else {
-            embedded = true;
+    private async embedMerchant(row: PendingEmbeddingRowInterface, context: RowContextInterface): Promise<boolean> {
+        const promptContext = buildMerchantContext({ title: row.title, mccDescription: context.mccDescription, categoryTitle: context.categoryTitle });
+        const rawEmbedding = await this.embed(promptContext);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return false;
         }
 
-        if (embedded) {
-            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
+        const embeddingId = await merchantEmbeddingRepository.upsert({
+            title: row.title,
+            mccDescription: context.mccDescription,
+            categoryId: context.categoryId,
+            comment: row.comment,
+            embedding: serialized,
+            dimensions: rawEmbedding.length
+        });
+        if (isDefined(embeddingId)) {
+            await merchantEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
         }
+
+        return true;
+    }
+
+    private async embedComment(row: PendingEmbeddingRowInterface, context: RowContextInterface): Promise<boolean> {
+        const promptContext = buildCommentContext({ comment: row.comment, categoryTitle: context.categoryTitle });
+        const rawEmbedding = await this.embed(promptContext);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return false;
+        }
+
+        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
+        const embeddingId = await commentEmbeddingRepository.upsert({
+            comment: row.comment,
+            categoryId: context.categoryId,
+            embedding: serialized,
+            dimensions: rawEmbedding.length
+        });
+        if (isDefined(embeddingId)) {
+            await commentEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
+        }
+
+        return true;
     }
 
     private async lookupCategoryTitle(categoryId: number): Promise<string | null> {
