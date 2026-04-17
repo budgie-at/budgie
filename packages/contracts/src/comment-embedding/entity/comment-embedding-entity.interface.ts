@@ -1,4 +1,5 @@
-import type { CommentEmbeddingEntitySchema } from '../schema/comment-embedding-entity.schema';
-import type { infer } from 'zod';
+import { z } from 'zod';
 
-export interface CommentEmbeddingEntityInterface extends infer<typeof CommentEmbeddingEntitySchema> {}
+import type { CommentEmbeddingEntitySchema } from '../schema/comment-embedding-entity.schema';
+
+export type CommentEmbeddingEntityInterface = z.infer<typeof CommentEmbeddingEntitySchema>;

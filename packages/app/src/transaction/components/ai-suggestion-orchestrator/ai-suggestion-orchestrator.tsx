@@ -1,7 +1,7 @@
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useAiSuggestionOrchestrator } from '../../hook/use-ai-suggestion-orchestrator.hook';
-import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
+import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggestion-row';

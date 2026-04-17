@@ -2,9 +2,10 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { CategoryCardSelectors } from '../../../@e2e/selectors/category-card.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+
+import { CategoryCardSelector } from './category-card.selector';
 
 interface Props {
     category: CategoryEntityInterface;
@@ -16,9 +17,9 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
 
     return (
         <SimpleHorizontalCell
-            testID={CategoryCardSelectors.Card(category.title)}
+            testID={CategoryCardSelector.Card(category.title)}
             left={
-                <View testID={CategoryCardSelectors.Icon(category.title, category.icon)}>
+                <View testID={CategoryCardSelector.Icon(category.title, category.icon)}>
                     <CircleIcon icon={category.icon} variant="default" size={42} iconSize={20} />
                 </View>
             }

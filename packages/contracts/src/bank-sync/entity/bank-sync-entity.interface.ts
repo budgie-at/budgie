@@ -1,5 +1,5 @@
+import { z } from 'zod';
+
 import { BankSyncEntitySchema } from '../schema/bank-sync-entity.schema';
 
-import type { infer } from 'zod';
-
-export interface BankSyncEntityInterface extends infer<typeof BankSyncEntitySchema> {}
+export type BankSyncEntityInterface = z.infer<typeof BankSyncEntitySchema>;

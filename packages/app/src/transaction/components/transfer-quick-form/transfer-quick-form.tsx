@@ -6,7 +6,6 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -18,6 +17,7 @@ import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
+import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -192,7 +192,7 @@ export const TransferQuickForm = (props: Props) => {
                 transactionType={TransactionTypeEnum.TRANSFER}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
-                commentTestID={TransactionFormSelectors.CommentInput}
+                commentTestID={SimpleQuickFormSelector.CommentInput}
             />
 
             <View className="mb-xl">
@@ -221,7 +221,7 @@ export const TransferQuickForm = (props: Props) => {
                 onLongBackspace={activeHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
-                confirmTestID={TransactionFormSelectors.SubmitButton}
+                confirmTestID={SimpleQuickFormSelector.SubmitButton}
                 isConfirmDisabled={isSubmitting}
             />
         </View>

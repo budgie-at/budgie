@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-fixture.flow.yaml
+    env:
+      FIXTURE_ID: '00-empty-state'
+
+- runFlow:
+    file: subflows/accounts/create-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Lent Account'
+      CURRENCY_CODE: 'GBP'
+      DEBT_TYPE: 'LENT'
+      TARGET_BALANCE: '1000'
+
+- extendedWaitUntil:
+    visible: 'Owed to you'
+    timeout: 10000
+
+- runFlow:
+    file: subflows/accounts/exercise-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Lent Account'
+      CURRENCY_CODE: 'GBP'
+      CONTACT_NAME: 'Maestro E2E Contact'
+      CONTACT_NAME_ID: 'Maestro_E2E_Contact'
+      UPDATED_ACCOUNT_NAME: 'E2E Lent GBP'
+      RETURN_DAY: '15'
+      RETURN_DATE_LABEL: '.*15,.*'
+      INCREASE_TO: '400'
+      INCREASE_DELTA: '400'
+      DECREASE_TO: '250'
+      DECREASE_DELTA: '150'

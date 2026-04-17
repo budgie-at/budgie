@@ -1,6 +1,1 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-export const TagFormSelectors = {
-    Input: 'TagForm.Input',
-    Submit: 'TagForm.Submit',
-    Merge: 'TagForm.Merge'
-} as const;
+export { TagFormSelector as TagFormSelectors } from '../../tag/components/tag-form/tag-form.selector';
