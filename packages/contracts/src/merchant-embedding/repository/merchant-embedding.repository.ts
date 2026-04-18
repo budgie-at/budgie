@@ -54,26 +54,28 @@ const SIMILAR_COMMENTS_QUERY = `
     LIMIT ?
 `;
 
+const PENDING_MERCHANT_CONTEXTS_BASE = `
+    SELECT
+        t.title AS title,
+        COALESCE(mcc.full_description, '') AS mccDescription,
+        te.category_id AS categoryId,
+        MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
+        MAX(t.comment) AS comment,
+        GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+        MAX(t.operated_at) AS maxOperatedAt
+    FROM transactions t
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+    LEFT JOIN categories cat ON cat.id = te.category_id
+    WHERE t.deleted_at IS NULL
+      AND t.needs_embedding = 1
+      AND t.title != ''
+      AND te.category_id IS NOT NULL
+    GROUP BY t.title, COALESCE(mcc.full_description, ''), te.category_id
+`;
+
 const PENDING_MERCHANT_CONTEXTS_QUERY = `
-    WITH pending_contexts AS (
-        SELECT
-            t.title AS title,
-            COALESCE(mcc.full_description, '') AS mccDescription,
-            te.category_id AS categoryId,
-            MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
-            MAX(t.comment) AS comment,
-            GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
-            MAX(t.operated_at) AS maxOperatedAt
-        FROM transactions t
-        INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
-        LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-        LEFT JOIN categories cat ON cat.id = te.category_id
-        WHERE t.deleted_at IS NULL
-          AND t.needs_embedding = 1
-          AND t.title != ''
-          AND te.category_id IS NOT NULL
-        GROUP BY t.title, COALESCE(mcc.full_description, ''), te.category_id
-    ),
+    WITH pending_contexts AS (${PENDING_MERCHANT_CONTEXTS_BASE}),
     context_sizes AS (
         SELECT
             pc.title AS title,
@@ -283,7 +285,6 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             transactionIdsCsv: string;
             tagIdsCsv: string | null;
             existingEmbeddingId: number | null;
-            maxOperatedAt: number;
         }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]);
 
         return rows.map(row => ({
@@ -293,23 +294,14 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             categoryTitleEn: row.categoryTitleEn,
             comment: row.comment ?? '',
             transactionIds: row.transactionIdsCsv.split(',').map(Number),
-            tagIds: row.tagIdsCsv === null ? [] : row.tagIdsCsv.split(',').map(Number),
+            tagIds: isDefined(row.tagIdsCsv) ? row.tagIdsCsv.split(',').map(Number) : [],
             existingEmbeddingId: row.existingEmbeddingId
         }));
     }
 
     async countPendingMerchantContexts(): Promise<number> {
         const [row] = await this.db.$client.getAllAsync<{ c: number }>(
-            `SELECT COUNT(*) AS c FROM (
-                SELECT 1
-                FROM transactions t
-                INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
-                WHERE t.deleted_at IS NULL
-                  AND t.needs_embedding = 1
-                  AND t.title != ''
-                  AND te.category_id IS NOT NULL
-                GROUP BY t.title, COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), ''), te.category_id
-            )`,
+            `SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`,
             []
         );
 
