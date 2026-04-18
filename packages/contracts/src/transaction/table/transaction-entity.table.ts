@@ -43,6 +43,13 @@ export const TransactionEntityTable = sqliteTable(
             .on(table.externalSource, table.externalId)
             .where(sql`${table.externalId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
         index('transactions_weekday_type_idx').on(table.operatedWeekday, table.type).where(sql`${table.deletedAt} IS NULL`),
-        index('transactions_minute_of_day_idx').on(table.operatedMinuteOfDay).where(sql`${table.deletedAt} IS NULL`)
+        index('transactions_minute_of_day_idx').on(table.operatedMinuteOfDay).where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_active_idx').on(table.id).where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_pending_merchant_idx')
+            .on(sql`${table.operatedAt} DESC`)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} != ''`),
+        index('transactions_pending_comment_idx')
+            .on(sql`${table.operatedAt} DESC`)
+            .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} = '' AND ${table.comment} != ''`)
     ]
 );
