@@ -84,18 +84,23 @@ class RecurringCalendarService {
             this.addEntryToMap(accumulator.entriesByDay, pattern.dayOfMonth, entry);
             accumulator.totalAmount += pattern.latestAmount;
         } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
-            this.processForecastPattern(pattern, accumulator);
+            this.processForecastPattern(pattern, accumulator, pattern.modeDayOfMonth, pattern.latestOverallTitle);
         }
     }
 
-    private processForecastPattern(pattern: MonthlyPatternRawRowInterface, accumulator: RecurringCalendarAccumulatorInterface): void {
-        const clampedDay = Math.min(pattern.modeDayOfMonth, accumulator.daysInMonth);
+    private processForecastPattern(
+        pattern: MonthlyPatternRawRowInterface,
+        accumulator: RecurringCalendarAccumulatorInterface,
+        modeDayOfMonth: number,
+        latestOverallTitle: string
+    ): void {
+        const clampedDay = Math.min(modeDayOfMonth, accumulator.daysInMonth);
         const isForecastedUpcoming = accumulator.isCurrentMonth && clampedDay > accumulator.today;
 
         if (isForecastedUpcoming) {
             const entry = this.buildEntryFromPattern(pattern, {
                 dayOfMonth: clampedDay,
-                title: pattern.latestOverallTitle,
+                title: latestOverallTitle,
                 latestTransactionId: null,
                 isForecast: true
             });
