@@ -1,4 +1,4 @@
-import { int, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
+import { index, int, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
 
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -13,5 +13,8 @@ export const TransactionTagsEntityTable = sqliteTable(
             .references(() => TagEntityTable.id, { onDelete: 'cascade' })
             .notNull()
     },
-    ({ transactionId, tagId }) => [primaryKey({ columns: [transactionId, tagId] })]
+    ({ transactionId, tagId }) => [
+        primaryKey({ columns: [transactionId, tagId] }),
+        index('transaction_tags_tag_idx').on(tagId)
+    ]
 );
