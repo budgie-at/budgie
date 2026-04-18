@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -45,12 +45,18 @@ export class CategoryRepository extends TranslatableRepositoryBase {
                 .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
         }
 
+        const pattern = `%${trimmed.toLowerCase()}%`;
+        const searchExpr = or(
+            like(CategoryEntityTable.titleSearch, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern)
+        );
+
         return this.db
             .select(getTableColumns(CategoryEntityTable))
             .from(CategoryEntityTable)
-            .innerJoin(sql`categories_fts`, sql`categories_fts.rowid = ${CategoryEntityTable.id}`)
             .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .where(and(sql`categories_fts MATCH ${trimmed}`, baseFilter))
+            .where(and(searchExpr, baseFilter))
             .groupBy(CategoryEntityTable.id)
             .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
     }

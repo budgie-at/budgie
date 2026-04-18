@@ -19,7 +19,6 @@ import Papa, { ParseStepResult } from 'papaparse';
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { toFtsQuery } from '../../@generic/utils/to-fts-query.util';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -41,8 +40,7 @@ export class ImporterService {
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        const fallbackQuery = toFtsQuery('Other') ?? '';
-        [this.fallbackCategory] = await categoryRepository.findBySearchQuery(fallbackQuery, true);
+        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);
         this.instrumentsMap = await this.initializeInstruments();
 
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
