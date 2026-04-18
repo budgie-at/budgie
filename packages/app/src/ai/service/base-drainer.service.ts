@@ -15,6 +15,9 @@ import { drainerMutex } from './drainer-mutex.service';
 const MAX_CONSECUTIVE_FAILURES = 5;
 const PROGRESS_LOG_EVERY = 25;
 const IDLE_INTERVAL_MS = 10_000;
+const MUTEX_BUSY_RESCHEDULE_MS = 1_000;
+const ERROR_AUTO_RETRY_MS = 30_000;
+const SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
 
 export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnapshotInterface> {
     protected abstract readonly kind: DrainerKindEnum;
@@ -192,9 +195,15 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }, delay);
     }
 
-    // eslint-disable-next-line max-statements -- Relaxed tick: fetch, run, refresh, reschedule
+    // eslint-disable-next-line max-statements -- Relaxed tick: mutex guard, fetch, run, refresh, reschedule
     private async runRelaxedTick(): Promise<void> {
         if (!this.isSafe()) {
+            return;
+        }
+        if (!drainerMutex.acquire(this.kind)) {
+            aiLog(`${this.logDomain}:tick:skip`, { reason: 'mutex-busy', holder: drainerMutex.holder });
+            this.scheduleDrainAfter(MUTEX_BUSY_RESCHEDULE_MS);
+
             return;
         }
         aiLog(`${this.logDomain}:tick`);
@@ -216,10 +225,23 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         } catch (error: unknown) {
             aiLog(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
         } finally {
+            drainerMutex.release(this.kind);
             if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.Error) {
                 this.scheduleDrain();
             }
         }
+    }
+
+    private scheduleDrainAfter(ms: number): void {
+        if (!this.canScheduleDrain()) {
+            return;
+        }
+        this.haltTimer();
+        this.timer = setTimeout(() => {
+            this.timer = null;
+            this.pendingBatchPromise = this.runRelaxedTick();
+            void this.pendingBatchPromise;
+        }, ms);
     }
 
     // eslint-disable-next-line max-statements -- Boost loop: fetch, row processing, yield, progress log
@@ -276,17 +298,35 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             await this.processRow(row);
             this.consecutiveFailures = 0;
         } catch (error: unknown) {
-            this.consecutiveFailures += 1;
-            aiLog(`${this.logDomain}:row:throw`, {
-                errorMessage: getErrorMessage(error),
-                consecutiveFailures: this.consecutiveFailures
-            });
-            if (this.consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
-                aiLog(`${this.logDomain}:error:cap-reached`, { consecutiveFailures: this.consecutiveFailures });
-                this.setSnapshot({ state: DrainerStateEnum.Error, errorMessage: getErrorMessage(error) });
-                this.haltTimer();
-            }
+            this.handleRowFailure(error);
         }
+    }
+
+     
+    private handleRowFailure(error: unknown): void {
+        const message = getErrorMessage(error);
+        if (SQLITE_BUSY_PATTERN.test(message)) {
+            aiLog(`${this.logDomain}:row:busy`, { errorMessage: message });
+
+            return;
+        }
+        this.consecutiveFailures += 1;
+        aiLog(`${this.logDomain}:row:throw`, {
+            errorMessage: message,
+            consecutiveFailures: this.consecutiveFailures
+        });
+        if (this.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
+            return;
+        }
+        aiLog(`${this.logDomain}:error:cap-reached`, { consecutiveFailures: this.consecutiveFailures });
+        this.setSnapshot({ state: DrainerStateEnum.Error, errorMessage: message });
+        this.haltTimer();
+        setTimeout(() => {
+            if (this.snapshot.state === DrainerStateEnum.Error) {
+                aiLog(`${this.logDomain}:error:auto-retry`);
+                this.retry();
+            }
+        }, ERROR_AUTO_RETRY_MS);
     }
 
     private async refreshPending(): Promise<void> {
