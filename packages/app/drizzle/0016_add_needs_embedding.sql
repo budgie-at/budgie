@@ -72,3 +72,5 @@ CREATE TRIGGER IF NOT EXISTS `tags_fts_au` AFTER UPDATE OF `title` ON `tags` BEG
 END;
 --> statement-breakpoint
 INSERT INTO `tags_fts`(rowid, title) SELECT `id`, `title` FROM `tags` WHERE NOT EXISTS (SELECT 1 FROM `tags_fts` LIMIT 1);
+--> statement-breakpoint
+ANALYZE;
