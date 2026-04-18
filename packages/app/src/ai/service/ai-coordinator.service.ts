@@ -12,6 +12,7 @@ import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
+import { translationDrainerService } from './translation-drainer.service';
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
     private started = false;
@@ -95,6 +96,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         } catch (error: unknown) {
             aiLog('coordinator:subsystems:start:error', { errorMessage: getErrorMessage(error) });
         }
+        translationDrainerService.start();
         embeddingDrainerService.start();
         aiLog('coordinator:subsystems:start:complete', {
             durationMs: Date.now() - started,
@@ -106,6 +108,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private async stopSubsystems(): Promise<void> {
         const started = Date.now();
         aiLog('coordinator:subsystems:stop:begin');
+        translationDrainerService.stop();
         embeddingDrainerService.stop();
         try {
             await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
