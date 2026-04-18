@@ -15,8 +15,8 @@ export class EmbeddingService {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
             aiLog('embedding:generateEmbedding:cache-hit', { textLen: text.length });
-            
-return cached;
+
+            return cached;
         }
 
         aiLog('embedding:generateEmbedding:enqueue', { textLen: text.length });
@@ -27,7 +27,13 @@ return cached;
 
         void promise.then(
             result => {
-                aiLog('embedding:generateEmbedding:done', { textLen: text.length, dimensions: result?.length ?? 0, durationMs: Date.now() - enqueueStart });
+                aiLog('embedding:generateEmbedding:done', {
+                    textLen: text.length,
+                    dimensions: result === null ? 0 : result.length,
+                    durationMs: Date.now() - enqueueStart
+                });
+
+                return result;
             },
             () => EmbeddingService.embeddingCache.delete(text)
         );
@@ -47,7 +53,7 @@ return cached;
         const start = Date.now();
         aiLog('embedding:llmEmbed:start', { textLen: text.length });
         const rawEmbedding = await this.embedding.embed(text);
-        aiLog('embedding:llmEmbed:done', { textLen: text.length, rawLen: rawEmbedding?.length ?? 0, durationMs: Date.now() - start });
+        aiLog('embedding:llmEmbed:done', { textLen: text.length, rawLen: rawEmbedding.length, durationMs: Date.now() - start });
 
         if (!isNotEmptyArray(rawEmbedding)) {
             return null;

@@ -3,9 +3,9 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import {
     MINUTES_IN_DAY,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
@@ -42,6 +42,7 @@ const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
 };
 
 class RepeatedTransactionService {
+    // eslint-disable-next-line max-statements -- Service method builds time/amount queries, memoizes both pattern fetches, and merges results
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
@@ -58,6 +59,7 @@ class RepeatedTransactionService {
         aiLog('service:repeated:memoize:start', { repeatedCacheKey });
         const timeQuery = patternCacheService.memoize(repeatedCacheKey, () => {
             aiLog('service:repeated:memoize:cache-miss', { repeatedCacheKey });
+
             return transactionPatternRepository.findRepeatedPatterns(repeatedQuery);
         });
 
@@ -118,12 +120,14 @@ class RepeatedTransactionService {
 
         return patternCacheService.memoize(amountCacheKey, () => {
             aiLog('service:repeated:amountCache:cache-miss', { amountCacheKey });
+
             return transactionPatternRepository.findAmountBasedPatterns(amountQuery).then(result => {
                 aiLog('service:repeated:amountCache:done', {
                     amountCacheKey,
                     patternCount: result.length,
                     durationMs: Date.now() - amountStart
                 });
+
                 return result;
             });
         });

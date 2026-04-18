@@ -3,7 +3,7 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -43,7 +43,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         onAfterSubmit: () => void markForEmbedding({ transactionId })
     });
 
-    const fromAccountId = form.watch('fromAccountId');
+    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
