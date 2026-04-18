@@ -300,6 +300,7 @@ export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/m
 export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
 
 export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
+export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
 export type { UnembeddedMerchantDataInterface } from './merchant-embedding/interface/unembedded-merchant-data.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
