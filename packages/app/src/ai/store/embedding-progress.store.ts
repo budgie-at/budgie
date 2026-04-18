@@ -6,9 +6,13 @@ import { aiLog } from '../utils/ai-log.util';
 interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;
     readonly isEmbedding: boolean;
+    readonly pending: number;
+    readonly total: number;
 }
 
-let snapshot: EmbeddingProgressSnapshotInterface = { percent: 0, isEmbedding: false };
+const FULL_PERCENT = 100;
+
+let snapshot: EmbeddingProgressSnapshotInterface = { percent: 0, isEmbedding: false, pending: 0, total: 0 };
 const listeners = new Set<() => void>();
 
 const notify = (): void => {
@@ -32,10 +36,10 @@ export const embeddingProgressStore = {
         try {
             const total = await transactionRepository.countAllActive();
             const pending = await transactionEmbeddingRepository.countPending();
-            const percent = total === 0 ? 100 : Math.round(((total - pending) / total) * 100);
+            const percent = total === 0 ? FULL_PERCENT : Math.round(((total - pending) / total) * FULL_PERCENT);
             const prior = snapshot;
-            snapshot = { percent, isEmbedding: pending > 0 };
-            if (prior.percent !== percent || prior.isEmbedding !== snapshot.isEmbedding) {
+            snapshot = { percent, isEmbedding: pending > 0, pending, total };
+            if (prior.percent !== percent || prior.isEmbedding !== snapshot.isEmbedding || prior.pending !== pending) {
                 aiLog('embed:progress:refresh', { total, pending, percent, isEmbedding: snapshot.isEmbedding });
             }
             notify();
