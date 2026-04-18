@@ -69,12 +69,13 @@ export abstract class BaseEmbeddingRepository {
         );
     }
 
-    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
+    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface, tx?: DB): Promise<void> {
         const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
+        const runner = tx ?? this.db;
 
-        await this.db.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+        await runner.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
         if (isNotEmptyArray(tagIds)) {
-            await this.db.insert(tagTable).values(tagIds.map(createTagRow));
+            await runner.insert(tagTable).values(tagIds.map(createTagRow));
         }
     }
 
