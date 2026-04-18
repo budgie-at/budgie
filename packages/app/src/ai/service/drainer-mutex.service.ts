@@ -15,12 +15,8 @@ class DrainerMutexService {
 
             return true;
         }
-        if (this.heldBy === kind) {
-            return true;
-        }
-        aiLog('drainer:mutex:deny', { held: this.heldBy, requested: kind });
 
-        return false;
+        return this.heldBy === kind;
     }
 
     release(kind: DrainerKindEnum): void {
