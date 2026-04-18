@@ -1,5 +1,6 @@
-import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
+import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
+import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { CommentPendingContextInterface } from '../interface/comment-pending-context.interface';
 import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
@@ -164,11 +165,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
 
         return rows.map(row => ({
             comment: row.comment,
-            categoryId: row.categoryId,
-            categoryTitleEn: row.categoryTitleEn,
-            transactionIds: row.transactionIdsCsv.split(',').map(Number),
-            tagIds: isDefined(row.tagIdsCsv) ? row.tagIdsCsv.split(',').map(Number) : [],
-            existingEmbeddingId: row.existingEmbeddingId
+            ...parsePendingContextBaseFields(row)
         }));
     }
 

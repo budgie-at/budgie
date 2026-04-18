@@ -1,8 +1,5 @@
-export interface CommentPendingContextInterface {
+import { EmbeddingPendingContextBaseInterface } from '../../@generic/interface/embedding-pending-context-base.interface';
+
+export interface CommentPendingContextInterface extends EmbeddingPendingContextBaseInterface {
     readonly comment: string;
-    readonly categoryId: number;
-    readonly categoryTitleEn: string | null;
-    readonly tagIds: number[];
-    readonly transactionIds: number[];
-    readonly existingEmbeddingId: number | null;
 }

@@ -1,10 +1,7 @@
-export interface MerchantPendingContextInterface {
+import { EmbeddingPendingContextBaseInterface } from '../../@generic/interface/embedding-pending-context-base.interface';
+
+export interface MerchantPendingContextInterface extends EmbeddingPendingContextBaseInterface {
     readonly title: string;
     readonly mccDescription: string;
-    readonly categoryId: number;
-    readonly categoryTitleEn: string | null;
     readonly comment: string;
-    readonly tagIds: number[];
-    readonly transactionIds: number[];
-    readonly existingEmbeddingId: number | null;
 }

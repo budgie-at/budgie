@@ -9,6 +9,7 @@ export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
+export type { EmbeddingPendingContextBaseInterface } from './@generic/interface/embedding-pending-context-base.interface';
 export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
 export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
 export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
