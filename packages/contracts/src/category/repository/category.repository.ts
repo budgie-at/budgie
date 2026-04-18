@@ -132,4 +132,37 @@ export class CategoryRepository {
             .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
             .where(eq(CategoryEntityTable.id, id));
     }
+
+    async findUntranslated(limit: number, tx?: DB): Promise<{ id: number; title: string }[]> {
+        return (tx ?? this.db)
+            .select({ id: CategoryEntityTable.id, title: CategoryEntityTable.title })
+            .from(CategoryEntityTable)
+            .where(and(isNull(CategoryEntityTable.titleEn), isNull(CategoryEntityTable.deletedAt)))
+            .limit(limit);
+    }
+
+    async countUntranslated(tx?: DB): Promise<number> {
+        const [row] = await (tx ?? this.db)
+            .select({ value: count() })
+            .from(CategoryEntityTable)
+            .where(and(isNull(CategoryEntityTable.titleEn), isNull(CategoryEntityTable.deletedAt)));
+
+        return row.value;
+    }
+
+    async countAll(tx?: DB): Promise<number> {
+        const [row] = await (tx ?? this.db)
+            .select({ value: count() })
+            .from(CategoryEntityTable)
+            .where(isNull(CategoryEntityTable.deletedAt));
+
+        return row.value;
+    }
+
+    async resetAllTranslations(tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(CategoryEntityTable)
+            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            .where(isNull(CategoryEntityTable.deletedAt));
+    }
 }
