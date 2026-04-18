@@ -170,7 +170,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-     
     private scheduleDrain(): void {
         if (!this.started) {
             return;
@@ -274,7 +273,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         /* eslint-enable no-await-in-loop */
     }
 
-     
     private async runRow(row: TRow): Promise<void> {
         try {
             await this.processRow(row);

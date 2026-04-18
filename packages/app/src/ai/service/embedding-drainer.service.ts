@@ -56,7 +56,6 @@ class EmbeddingDrainerService extends BaseDrainerService<PendingEmbeddingRowInte
         return embeddingProgressStore.getSnapshot().pending;
     }
 
-     
     protected async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
         aiLog('drainer:embedding:row:begin', { rowId: row.id });
         const context = await this.buildRowContext(row);

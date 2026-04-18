@@ -1,7 +1,8 @@
-import { and, count, eq, inArray, isNull, like } from 'drizzle-orm';
+import { count, eq, inArray, isNull, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
@@ -12,8 +13,17 @@ import type * as schema from '../../schema';
 import type { TagEntityInterface } from '../entity/tag-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class TagRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+export class TagRepository extends TranslatableRepositoryBase {
+    constructor(db: ExpoSQLiteDatabase<typeof schema>) {
+        super(db, TagEntityTable, {
+            id: TagEntityTable.id,
+            title: TagEntityTable.title,
+            titleEn: TagEntityTable.titleEn,
+            titleTags: TagEntityTable.titleTags,
+            tagsGeneratedAt: TagEntityTable.tagsGeneratedAt,
+            deletedAt: TagEntityTable.deletedAt
+        });
+    }
 
     findByIds(ids: number[]) {
         return this.db.query.TagEntityTable.findMany({
@@ -114,38 +124,5 @@ export class TagRepository {
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TagEntityTable);
-    }
-
-    async findUntranslated(limit: number, tx?: DB): Promise<{ id: number; title: string }[]> {
-        return (tx ?? this.db)
-            .select({ id: TagEntityTable.id, title: TagEntityTable.title })
-            .from(TagEntityTable)
-            .where(and(isNull(TagEntityTable.titleEn), isNull(TagEntityTable.deletedAt)))
-            .limit(limit);
-    }
-
-    async countUntranslated(tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ value: count() })
-            .from(TagEntityTable)
-            .where(and(isNull(TagEntityTable.titleEn), isNull(TagEntityTable.deletedAt)));
-
-        return row.value;
-    }
-
-    async countAll(tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ value: count() })
-            .from(TagEntityTable)
-            .where(isNull(TagEntityTable.deletedAt));
-
-        return row.value;
-    }
-
-    async resetAllTranslations(tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TagEntityTable)
-            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-            .where(isNull(TagEntityTable.deletedAt));
     }
 }

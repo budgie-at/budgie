@@ -234,7 +234,7 @@ class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
         }
 
         if (translationPending > 0) {
-            const {total} = translationProgressStore.getSnapshot();
+            const { total } = translationProgressStore.getSnapshot();
             const trailer = embeddingPending > 0 ? t` • ${embeddingPending} tx queued` : '';
 
             return {
@@ -275,11 +275,7 @@ class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
         };
     }
 
-    private deriveBoosting(
-        translationBoosting: boolean,
-        translationPending: number,
-        embeddingPending: number
-    ): AiSystemSnapshotInterface {
+    private deriveBoosting(translationBoosting: boolean, translationPending: number, embeddingPending: number): AiSystemSnapshotInterface {
         const translationSnap = translationProgressStore.getSnapshot();
         const embeddingSnap = embeddingProgressStore.getSnapshot();
         const percent = translationBoosting ? translationSnap.percent : embeddingSnap.percent;
@@ -297,11 +293,7 @@ class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
         };
     }
 
-    private describeBoot(
-        chat: AiSubsystemStatusEnum,
-        embedding: AiSubsystemStatusEnum,
-        stt: AiSubsystemStatusEnum
-    ): string | null {
+    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
         const booting = [chat, embedding, stt].some(
             status => status === AiSubsystemStatusEnum.Downloading || status === AiSubsystemStatusEnum.Initializing
         );
