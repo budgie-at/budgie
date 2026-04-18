@@ -29,3 +29,11 @@ ALTER TABLE `transactions` ADD COLUMN `operated_minute_of_day` INTEGER GENERATED
 CREATE INDEX IF NOT EXISTS `transactions_weekday_type_idx` ON `transactions` (`operated_weekday`, `type`) WHERE `deleted_at` IS NULL;
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `transactions_minute_of_day_idx` ON `transactions` (`operated_minute_of_day`) WHERE `deleted_at` IS NULL;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `transactions_active_idx` ON `transactions` (`id`) WHERE `deleted_at` IS NULL;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `transactions_pending_merchant_idx` ON `transactions` (`operated_at` DESC) WHERE `needs_embedding` = 1 AND `deleted_at` IS NULL AND `title` != '';
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `transactions_pending_comment_idx` ON `transactions` (`operated_at` DESC) WHERE `needs_embedding` = 1 AND `deleted_at` IS NULL AND `title` = '' AND `comment` != '';
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `exchange_rates_lookup_idx` ON `exchange_rates` (`base_instrument_id`, `quote_instrument_id`, `created_at` DESC) WHERE `deleted_at` IS NULL;
