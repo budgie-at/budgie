@@ -49,7 +49,7 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
     [AiSystemStateEnum.Boosting]: {
         colorClass: 'text-positive-foreground',
         stripClass: 'bg-positive-foreground',
-        pulsePeriodMs: 400,
+        pulsePeriodMs: 800,
         shakeOnEnter: false,
         glow: true
     },
