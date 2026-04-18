@@ -1,4 +1,4 @@
-import { int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
@@ -22,5 +22,6 @@ export const TransactionEntityTable = sqliteTable(
         exchangeRate: real('exchange_rate').notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false)
-    })
+    }),
+    table => [index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt)]
 );

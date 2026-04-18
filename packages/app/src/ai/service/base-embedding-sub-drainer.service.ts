@@ -3,6 +3,7 @@ import { EmbeddingPendingContextBaseInterface } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { aiLog } from '../utils/ai-log.util';
 
 import { BaseDrainerService } from './base-drainer.service';
@@ -55,6 +56,7 @@ export abstract class BaseEmbeddingSubDrainerService<
     private async persistEmbedding(context: TContext, embeddingId: number, skipped: boolean): Promise<void> {
         await this.replaceEmbeddingTags(embeddingId, context.tagIds);
         await transactionRepository.clearNeedsEmbedding(context.transactionIds);
+        void embeddingProgressStore.refresh();
 
         aiLog(`${this.logDomain}:context:persisted`, {
             embeddingId,
