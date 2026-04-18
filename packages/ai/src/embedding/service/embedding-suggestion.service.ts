@@ -29,10 +29,13 @@ export class EmbeddingSuggestionService {
     constructor(
         private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
         private readonly embedding: EmbeddingInvokerInterface,
-        private readonly getMccCategorySuggestions: (mccCategoryId: number, limit: number) => Promise<{ categoryId: number; count: number }[]>
+        private readonly getMccCategorySuggestions: (
+            mccCategoryId: number,
+            limit: number
+        ) => Promise<{ categoryId: number; count: number }[]>
     ) {}
 
-    /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented temporarily */
+    /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit */
     async suggestCategories(
         categories: CategoryEntityInterface[],
         transactionTitle: string,
@@ -41,25 +44,11 @@ export class EmbeddingSuggestionService {
         aiContext: string,
         mccCategoryId: number | null = null
     ): Promise<CategoryEntityInterface[]> {
-        const methodStart = Date.now();
-        aiLog('suggest:category:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length });
-        const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        aiLog('suggest:category:context', {
-            context: suggestionContext.context,
-            distanceThreshold: suggestionContext.distanceThreshold
-        });
-        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
-
-        if (!isDefined(resolved)) {
-            aiLog('suggest:category:no-embedding', { context: suggestionContext.context });
-
+        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(preparation)) {
             return [];
         }
-
-        aiLog('suggest:category:embedded', {
-            serializedBytes: resolved.serialized.length,
-            distanceThreshold: resolved.distanceThreshold
-        });
+        const { resolved, methodStart } = preparation;
 
         const mccLookup = isDefined(mccCategoryId)
             ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
@@ -81,12 +70,6 @@ export class EmbeddingSuggestionService {
             mccLookup
         ]);
 
-        aiLog('suggest:category:repoResults', {
-            merchantCount: merchantResults.length,
-            commentCount: commentResults.length,
-            merchantRows: merchantResults.map(row => ({ categoryId: row.categoryId, score: row.score })),
-            commentRows: commentResults.map(row => ({ categoryId: row.categoryId, score: row.score }))
-        });
         aiLog('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
 
         const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
@@ -106,7 +89,7 @@ export class EmbeddingSuggestionService {
         return resolvedCategories;
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented with aiLog taxonomy
+    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     async suggestTags(
         allTags: TagEntityInterface[],
         categoryId: number,
@@ -115,25 +98,11 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<TagEntityInterface[]> {
-        const methodStart = Date.now();
-        aiLog('suggest:tag:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length, categoryId });
-        const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        aiLog('suggest:tag:context', {
-            context: suggestionContext.context,
-            distanceThreshold: suggestionContext.distanceThreshold
-        });
-        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
-
-        if (!isDefined(resolved)) {
-            aiLog('suggest:tag:no-embedding', { context: suggestionContext.context });
-
+        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(preparation)) {
             return [];
         }
-
-        aiLog('suggest:tag:embedded', {
-            serializedBytes: resolved.serialized.length,
-            distanceThreshold: resolved.distanceThreshold
-        });
+        const { resolved, methodStart } = preparation;
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -146,11 +115,6 @@ export class EmbeddingSuggestionService {
             this.repositories.merchant.findSimilarTags(resolved.serialized, tagParams),
             this.repositories.comment.findSimilarTags(resolved.serialized, tagParams)
         ]);
-
-        aiLog('suggest:tag:repoResults', {
-            merchantCount: merchantResults.length,
-            commentCount: commentResults.length
-        });
 
         const merged = this.mergeTagScores(merchantResults, commentResults);
         const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
@@ -166,7 +130,7 @@ export class EmbeddingSuggestionService {
         return resolvedTags;
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit; instrumented with aiLog taxonomy
+    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     async suggestComments(
         categoryId: number,
         transactionTitle: string,
@@ -174,25 +138,11 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<string[]> {
-        const methodStart = Date.now();
-        aiLog('suggest:comment:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length, categoryId });
-        const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        aiLog('suggest:comment:context', {
-            context: suggestionContext.context,
-            distanceThreshold: suggestionContext.distanceThreshold
-        });
-        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
-
-        if (!isDefined(resolved)) {
-            aiLog('suggest:comment:no-embedding', { context: suggestionContext.context });
-
+        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(preparation)) {
             return [];
         }
-
-        aiLog('suggest:comment:embedded', {
-            serializedBytes: resolved.serialized.length,
-            distanceThreshold: resolved.distanceThreshold
-        });
+        const { resolved, methodStart } = preparation;
 
         const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -201,12 +151,30 @@ export class EmbeddingSuggestionService {
             commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
         });
 
-        aiLog('suggest:comment:repoResults', { count: commentResults.length });
-
         const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
         aiLog('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
 
         return finalComments;
+    }
+
+    private async prepareSuggestion(
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
+    ): Promise<{
+        readonly resolved: { readonly serialized: Uint8Array; readonly distanceThreshold: number };
+        readonly methodStart: number;
+    } | null> {
+        const methodStart = Date.now();
+        const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
+        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
+
+        if (!isDefined(resolved)) {
+            return null;
+        }
+
+        return { resolved, methodStart };
     }
 
     private async resolveSerializedEmbedding(
@@ -258,7 +226,7 @@ export class EmbeddingSuggestionService {
         const mccBlendWeight = 0.7;
         const mccMaxCount = Math.max(...mccRows.map(row => row.count));
         for (const { categoryId, count } of mccRows) {
-            const mccNormalizedScore = (count / mccMaxCount) * mccBlendWeight * mccMaxCount;
+            const mccNormalizedScore = (count / mccMaxCount) * mccBlendWeight;
             scoreMap.set(categoryId, (scoreMap.get(categoryId) ?? 0) + mccNormalizedScore);
         }
     }
@@ -281,19 +249,14 @@ export class EmbeddingSuggestionService {
     }
 
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
-        const start = Date.now();
-        aiLog('suggest:embed:start', { context, contextLen: context.length });
         const service = new EmbeddingService(this.embedding);
         const queryEmbedding = await service.generateEmbedding(context);
-        aiLog('suggest:embed:inference-done', { contextLen: context.length, durationMs: Date.now() - start });
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
             aiLog('suggest:embed:empty', { context });
 
             return null;
         }
-
-        aiLog('suggest:embed:ok', { context, dimensions: queryEmbedding.length, durationMs: Date.now() - start });
 
         return serializeEmbedding(queryEmbedding);
     }

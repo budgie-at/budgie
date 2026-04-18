@@ -3,8 +3,6 @@ import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, 
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
-
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -52,27 +50,17 @@ export class TransactionPatternRepository {
     }
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = Date.now();
-        bankSyncLog('repo:pattern:findRepeatedPatterns:start', { weekday: query.weekday, accountId: query.accountId, categoryId: query.categoryId });
         const conditions = this.buildPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
-        const result = await this.enrichPatternsWithTags(patternRows);
-        bankSyncLog('repo:pattern:findRepeatedPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
 
-        return result;
+        return this.enrichPatternsWithTags(patternRows);
     }
 
     async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
-        const start = Date.now();
-        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:start', { displayMonth: query.displayMonth, defaultInstrumentId: query.defaultInstrumentId });
-
-        const bankStart = Date.now();
-        const bankPatterns = await this.executeBankSyncedMonthlyQuery(query);
-        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:bankSynced', { count: bankPatterns.length, durationMs: Date.now() - bankStart });
-
-        const manualStart = Date.now();
-        const manualPatterns = await this.executeManualMonthlyQuery(query);
-        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:manual', { count: manualPatterns.length, durationMs: Date.now() - manualStart });
+        const [bankPatterns, manualPatterns] = await Promise.all([
+            this.executeBankSyncedMonthlyQuery(query),
+            this.executeManualMonthlyQuery(query)
+        ]);
 
         const allPatterns = [...bankPatterns, ...manualPatterns];
 
@@ -85,21 +73,14 @@ export class TransactionPatternRepository {
             return second.lastOccurrence - first.lastOccurrence;
         });
 
-        const result = allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
-        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
-
-        return result;
+        return allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
 
     async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = Date.now();
-        bankSyncLog('repo:pattern:findAmountBasedPatterns:start', { accountId: query.accountId, categoryId: query.categoryId, amountMin: query.amountMin, amountMax: query.amountMax });
         const conditions = this.buildAmountPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
-        const result = await this.enrichPatternsWithTags(patternRows);
-        bankSyncLog('repo:pattern:findAmountBasedPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
 
-        return result;
+        return this.enrichPatternsWithTags(patternRows);
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
@@ -311,12 +292,25 @@ filtered AS (
       AND oa.max_amount <= oa.min_amount * ?
       AND m.mode_day_count * ? >= oa.total_tx_count * ?
 ),
+all_time AS (
+    SELECT t.title, a.id AS account_id,
+           te.category_id, cat.title AS cat_title, cat.icon AS cat_icon,
+           mcc.short_description AS mcc_short_description,
+           a.instrument_id, t.id AS tx_id, te.amount, t.operated_at
+    FROM transactions t
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN accounts a ON a.id = te.account_id
+    LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+      AND a.type != 'DEBT' AND t.title != ''
+),
 latest_overall AS (
-    SELECT g.title, g.account_id, g.tx_id, g.operated_at, g.amount,
-           g.category_id, g.cat_title, g.cat_icon, g.mcc_short_description, g.instrument_id,
-           ROW_NUMBER() OVER (PARTITION BY g.title, g.account_id ORDER BY g.operated_at DESC, g.tx_id DESC) AS rk
-    FROM groups g
-    INNER JOIN filtered f ON f.title = g.title AND f.account_id = g.account_id
+    SELECT at.title, at.account_id, at.tx_id, at.operated_at, at.amount,
+           at.category_id, at.cat_title, at.cat_icon, at.mcc_short_description, at.instrument_id,
+           ROW_NUMBER() OVER (PARTITION BY at.title, at.account_id ORDER BY at.operated_at DESC, at.tx_id DESC) AS rk
+    FROM all_time at
+    INNER JOIN filtered f ON f.title = at.title AND f.account_id = at.account_id
 ),
 latest_display AS (
     SELECT g.title, g.account_id, g.tx_id, g.day_of_month,
@@ -359,6 +353,8 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
             AMOUNT_VARIANCE_MULTIPLIER,
             DAY_CONCENTRATION_DENOMINATOR,
             DAY_CONCENTRATION_NUMERATOR,
+            type,
+            entryType,
             displayMonth,
             defaultInstrumentId,
             defaultInstrumentId
@@ -417,12 +413,24 @@ filtered AS (
       AND oa.max_amount <= oa.min_amount * ?
       AND m.mode_day_count * ? >= oa.total_tx_count * ?
 ),
+all_time AS (
+    SELECT t.comment, te.category_id, a.id AS account_id, a.instrument_id,
+           cat.title AS cat_title, cat.icon AS cat_icon,
+           t.id AS tx_id, te.amount, t.operated_at
+    FROM transactions t
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN accounts a ON a.id = te.account_id
+    LEFT JOIN categories cat ON cat.id = te.category_id
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+      AND a.type != 'DEBT'
+      AND t.title = '' AND t.comment != '' AND te.category_id IS NOT NULL
+),
 latest_overall AS (
-    SELECT g.comment, g.category_id, g.account_id, g.tx_id, g.operated_at, g.amount,
-           g.cat_title, g.cat_icon, g.instrument_id,
-           ROW_NUMBER() OVER (PARTITION BY g.comment, g.category_id, g.account_id ORDER BY g.operated_at DESC, g.tx_id DESC) AS rk
-    FROM groups g
-    INNER JOIN filtered f ON f.comment = g.comment AND f.category_id = g.category_id AND f.account_id = g.account_id
+    SELECT at.comment, at.category_id, at.account_id, at.tx_id, at.operated_at, at.amount,
+           at.cat_title, at.cat_icon, at.instrument_id,
+           ROW_NUMBER() OVER (PARTITION BY at.comment, at.category_id, at.account_id ORDER BY at.operated_at DESC, at.tx_id DESC) AS rk
+    FROM all_time at
+    INNER JOIN filtered f ON f.comment = at.comment AND f.category_id = at.category_id AND f.account_id = at.account_id
 ),
 latest_display AS (
     SELECT g.comment, g.category_id, g.account_id, g.tx_id, g.day_of_month,
@@ -465,6 +473,8 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
             AMOUNT_VARIANCE_MULTIPLIER,
             DAY_CONCENTRATION_DENOMINATOR,
             DAY_CONCENTRATION_NUMERATOR,
+            type,
+            entryType,
             displayMonth,
             defaultInstrumentId,
             defaultInstrumentId

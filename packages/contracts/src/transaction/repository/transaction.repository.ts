@@ -119,68 +119,63 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
         const CHUNK = 500;
         const runner = tx ?? this.db;
-        const overallStart = Date.now();
         for (let start = 0; start < ids.length; start += CHUNK) {
             const chunk = ids.slice(start, start + CHUNK);
-            const chunkStart = Date.now();
             // eslint-disable-next-line no-await-in-loop -- sequential chunking to stay under SQLITE_MAX_VARIABLE_NUMBER
             await runner
                 .update(TransactionEntityTable)
                 .set({ needsEmbedding: false })
                 .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
-            bankSyncLog('repo:transaction:clearNeedsEmbedding:chunk', {
-                chunkSize: chunk.length,
-                chunkDurationMs: Date.now() - chunkStart,
-                offset: start,
-                total: ids.length
-            });
         }
-        bankSyncLog('repo:transaction:clearNeedsEmbedding:done', {
-            totalIds: ids.length,
-            totalDurationMs: Date.now() - overallStart
-        });
     }
 
     async clearNonIndexableFlags(tx?: DB): Promise<void> {
         const runner = tx ?? this.db;
 
-        const emptyStart = Date.now();
-        await runner.run(sql`
+        runner.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND title = ''
               AND comment = ''
         `);
-        bankSyncLog('repo:transaction:clearNonIndexableFlags:empty:done', { durationMs: Date.now() - emptyStart });
 
-        const uncategorizedStart = Date.now();
-        await runner.run(sql`
+        runner.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
-              AND id IN (
-                SELECT te.transaction_id FROM transaction_entries te
-                LEFT JOIN accounts acc ON acc.id = te.account_id
-                WHERE te.category_id IS NULL
-                   OR acc.type = ${AccountTypeEnum.DEBT}
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NULL
               )
         `);
-        bankSyncLog('repo:transaction:clearNonIndexableFlags:uncategorized:done', { durationMs: Date.now() - uncategorizedStart });
 
-        const transferStart = Date.now();
-        await runner.run(sql`
+        runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                INNER JOIN accounts acc ON acc.id = te.account_id
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND acc.type = ${AccountTypeEnum.DEBT}
+              )
+        `);
+
+        runner.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
         `);
-        bankSyncLog('repo:transaction:clearNonIndexableFlags:transfer:done', { durationMs: Date.now() - transferStart });
     }
 
     async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
         const start = Date.now();
-        await (tx ?? this.db).run(sql`
+        (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -203,7 +198,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
         const start = Date.now();
-        await (tx ?? this.db).run(sql`
+        (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -249,7 +244,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             [mccCategoryId, mccCategoryId, limit]
         );
 
-        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', { mccCategoryId, resultCount: rows.length, durationMs: Date.now() - start, topCategoryIds: rows.slice(0, 3).map(row => row.categoryId) });
+        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', {
+            mccCategoryId,
+            resultCount: rows.length,
+            durationMs: Date.now() - start,
+            topCategoryIds: rows.slice(0, 3).map(row => row.categoryId)
+        });
 
         return rows;
     }

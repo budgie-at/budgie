@@ -286,7 +286,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             }
             /* eslint-enable no-await-in-loop */
         } finally {
-            await this.afterBatch();
+            try {
+                await this.afterBatch();
+            } catch (flushError: unknown) {
+                aiLog(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
+            }
             await this.refreshPending();
             aiLog(`${this.logDomain}:boost:complete`, {
                 durationMs: Date.now() - startedAt,
