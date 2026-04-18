@@ -1,5 +1,3 @@
-import { AppState, AppStateStatus } from 'react-native';
-
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
@@ -34,7 +32,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
     private startedSubs = false;
     private unsubscribeMerchant: (() => void) | null = null;
     private unsubscribeComment: (() => void) | null = null;
-    private appStateSubscription: { remove: () => void } | null = null;
     private residueCleared = false;
 
     constructor() {
@@ -49,7 +46,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.startedSubs = true;
         this.unsubscribeMerchant = this.merchant.subscribe(this.recompute);
         this.unsubscribeComment = this.comment.subscribe(this.recompute);
-        this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
         this.merchant.start();
         this.comment.start();
         void this.clearResidueOnce();
@@ -66,8 +62,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.unsubscribeComment?.();
         this.unsubscribeMerchant = null;
         this.unsubscribeComment = null;
-        this.appStateSubscription?.remove();
-        this.appStateSubscription = null;
         this.startedSubs = false;
     }
 
@@ -105,10 +99,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.merchant.retry();
         this.comment.retry();
     }
-
-    private readonly handleAppState = (state: AppStateStatus): void => {
-        aiLog('drainer:embedding:orchestrator:appstate', { to: state });
-    };
 
     private readonly recompute = (): void => {
         const merchantSnap = this.merchant.getSnapshot();
