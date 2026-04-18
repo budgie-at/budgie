@@ -1,8 +1,7 @@
 import { buildCommentContext, buildMerchantContext, serializeEmbedding } from '@budgie/ai';
 import { PendingEmbeddingRowInterface } from '@budgie/contracts';
-import { AppState, AppStateStatus } from 'react-native';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     categoryRepository,
@@ -12,14 +11,17 @@ import {
     transactionEmbeddingRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
-import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { aiLog } from '../utils/ai-log.util';
 
+import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
 
-const BATCH_SIZE = 10;
-const DRAIN_INTERVAL_MS = 2_000;
+const RELAXED_INTERVAL_MS = 500;
+const RELAXED_BATCH_SIZE = 10;
+const BOOST_BATCH_SIZE = 20;
+const YIELD_EVERY_ROWS = 5;
 
 interface RowContextInterface {
     readonly categoryId: number;
@@ -28,148 +30,50 @@ interface RowContextInterface {
     readonly tagIds: number[];
 }
 
-class EmbeddingDrainerService {
-    private running = false;
-    private timer: ReturnType<typeof setTimeout> | null = null;
-    private appStateSubscription: { remove: () => void } | null = null;
-    private embeddingUnsubscribe: (() => void) | null = null;
-    private started = false;
+class EmbeddingDrainerService extends BaseDrainerService<PendingEmbeddingRowInterface> {
+    protected readonly kind = DrainerKindEnum.Embedding;
+    protected readonly logDomain = 'drainer:embedding';
+    protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
+    protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;
+    protected readonly boostBatchSize = BOOST_BATCH_SIZE;
+    protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
 
-    start(): void {
-        if (this.started) {
-            return;
-        }
-        aiLog('drainer:start');
-        this.started = true;
-        this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
-        this.embeddingUnsubscribe = embeddingService.subscribe(() => {
-            const { status } = embeddingService.getSnapshot();
-            if (status === AiSubsystemStatusEnum.Ready) {
-                this.scheduleDrain();
-            } else {
-                this.haltDrain();
-            }
-        });
-        if (embeddingService.isReady) {
-            this.scheduleDrain();
-        }
+    protected subscribeToSubsystem(listener: () => void): () => void {
+        return embeddingService.subscribe(listener);
     }
 
-    stop(): void {
-        if (!this.started) {
-            return;
-        }
-        aiLog('drainer:stop');
-        this.started = false;
-        this.haltDrain();
-        this.appStateSubscription?.remove();
-        this.appStateSubscription = null;
-        this.embeddingUnsubscribe?.();
-        this.embeddingUnsubscribe = null;
+    protected isSubsystemReady(): boolean {
+        return embeddingService.isReady;
     }
 
-    private readonly handleAppState = (state: AppStateStatus): void => {
-        aiLog('drainer:appstate:change', { to: state });
-        if (state === 'active') {
-            this.scheduleDrain();
+    protected async fetchPending(limit: number): Promise<readonly PendingEmbeddingRowInterface[]> {
+        return transactionEmbeddingRepository.findPending(limit);
+    }
+
+    protected async countPending(): Promise<number> {
+        await embeddingProgressStore.refresh();
+
+        return embeddingProgressStore.getSnapshot().pending;
+    }
+
+     
+    protected async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
+        aiLog('drainer:embedding:row:begin', { rowId: row.id });
+        const context = await this.buildRowContext(row);
+        if (context === null) {
+            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+            aiLog('drainer:embedding:row:persisted', { rowId: row.id, skipped: 'no-context' });
+
+            return;
+        }
+        aiLog('drainer:embedding:row:context', { rowId: row.id, categoryId: context.categoryId });
+
+        const embedded = await this.resolveEmbedded(row, context);
+        if (embedded) {
+            await transactionRepository.updateById(row.id, { needsEmbedding: false });
+            aiLog('drainer:embedding:row:persisted', { rowId: row.id });
         } else {
-            this.haltDrain();
-        }
-    };
-
-    private haltDrain(): void {
-        aiLog('drainer:halt');
-        this.running = false;
-        if (this.timer !== null) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-    }
-
-    private isSafe(): boolean {
-        return embeddingService.isReady && AppState.currentState === 'active';
-    }
-
-    private scheduleDrain(): void {
-        if (!this.started || this.running || !this.isSafe()) {
-            return;
-        }
-        aiLog('drainer:schedule', { delayMs: DRAIN_INTERVAL_MS });
-        if (this.timer !== null) {
-            clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(() => {
-            this.timer = null;
-            void this.drain();
-        }, DRAIN_INTERVAL_MS);
-    }
-
-    // eslint-disable-next-line max-statements -- Drain cycle: guard, fetch, process, refresh, reschedule
-    private async drain(): Promise<void> {
-        if (!this.isSafe()) {
-            aiLog('drainer:row:skip:not-safe');
-
-            return;
-        }
-        const started = Date.now();
-        aiLog('drainer:drain:begin', { batchSize: BATCH_SIZE });
-
-        this.running = true;
-        try {
-            const rows = await transactionEmbeddingRepository.findPending(BATCH_SIZE);
-            if (rows.length === 0) {
-                aiLog('drainer:drain:no-rows');
-
-                return;
-            }
-            await this.processRows(rows);
-            await embeddingProgressStore.refresh();
-            aiLog('drainer:drain:complete', { durationMs: Date.now() - started, rows: rows.length });
-        } catch (error: unknown) {
-            aiLog('drainer:drain:error', { errorMessage: getErrorMessage(error) });
-        } finally {
-            this.running = false;
-            if (this.isSafe()) {
-                this.scheduleDrain();
-            }
-        }
-    }
-
-    private async processRows(rows: PendingEmbeddingRowInterface[]): Promise<void> {
-        /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
-        for (const row of rows) {
-            if (!this.started || !this.isSafe()) {
-                aiLog('drainer:row:skip:not-safe', { rowId: row.id });
-                break;
-            }
-            await this.processRow(row);
-        }
-        /* eslint-enable no-await-in-loop */
-    }
-
-    // eslint-disable-next-line max-statements -- Per-row flow: context, embed, persist, with structured logs
-    private async processRow(row: PendingEmbeddingRowInterface): Promise<void> {
-        aiLog('drainer:row:begin', { rowId: row.id });
-        try {
-            const context = await this.buildRowContext(row);
-            if (context === null) {
-                await transactionRepository.updateById(row.id, { needsEmbedding: false });
-                aiLog('drainer:row:persisted', { rowId: row.id, skipped: 'no-context' });
-
-                return;
-            }
-
-            aiLog('drainer:row:context', { rowId: row.id, categoryId: context.categoryId });
-
-            const embedded = await this.resolveEmbedded(row, context);
-            if (embedded) {
-                await transactionRepository.updateById(row.id, { needsEmbedding: false });
-                aiLog('drainer:row:persisted', { rowId: row.id });
-            } else {
-                aiLog('drainer:row:skip:not-safe', { rowId: row.id, reason: 'empty-embedding' });
-            }
-        } catch (error: unknown) {
-            aiLog('drainer:row:throw', { rowId: row.id, errorMessage: getErrorMessage(error) });
+            aiLog('drainer:embedding:row:skip', { rowId: row.id, reason: 'empty-embedding' });
         }
     }
 
@@ -210,7 +114,7 @@ class EmbeddingDrainerService {
         if (!isNotEmptyArray(rawEmbedding)) {
             return false;
         }
-        aiLog('drainer:row:embedded', { rowId: row.id, source: 'merchant', dimensions: rawEmbedding.length });
+        aiLog('drainer:embedding:row:embedded', { rowId: row.id, source: 'merchant', dimensions: rawEmbedding.length });
 
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
         const embeddingId = await merchantEmbeddingRepository.upsert({
@@ -234,7 +138,7 @@ class EmbeddingDrainerService {
         if (!isNotEmptyArray(rawEmbedding)) {
             return false;
         }
-        aiLog('drainer:row:embedded', { rowId: row.id, source: 'comment', dimensions: rawEmbedding.length });
+        aiLog('drainer:embedding:row:embedded', { rowId: row.id, source: 'comment', dimensions: rawEmbedding.length });
 
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
         const embeddingId = await commentEmbeddingRepository.upsert({
