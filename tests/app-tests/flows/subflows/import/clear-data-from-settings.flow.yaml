@@ -49,15 +49,15 @@ appId: ${APP_ID}
       - tapOn:
           id: 'SettingsPage.ClearDataCard'
       - extendedWaitUntil:
-          visible: 'Delete data|Daten löschen'
+          visible: 'Delete data'
           timeout: 5000
 
 - runFlow:
     when:
-      visible: 'Delete data|Daten löschen'
+      visible: 'Delete data'
     commands:
       - tapOn:
-          text: 'Delete data|Daten löschen'
+          text: 'Delete data'
 
 - stopApp
 
@@ -72,5 +72,5 @@ appId: ${APP_ID}
           id: 'TabBar.Home'
 
 - extendedWaitUntil:
-    visible: 'No accounts yet|Noch keine Konten'
+    visible: 'No accounts yet'
     timeout: 30000

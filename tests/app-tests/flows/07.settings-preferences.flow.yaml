@@ -28,6 +28,22 @@ appId: ${APP_ID}
     timeout: 10000
 
 - tapOn:
+    id: 'SettingsPage.LanguageCard'
+- extendedWaitUntil:
+    visible:
+      id: 'LanguageSelector.SearchInput'
+    timeout: 10000
+- tapOn:
+    id: 'LanguageSelector.SearchInput'
+- inputText: 'en'
+- tapOn:
+    id: 'LanguageSelector.Option.en'
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.LanguageValue.en'
+    timeout: 10000
+
+- tapOn:
     id: 'SettingsPage.MainCurrencyCard'
 - extendedWaitUntil:
     visible:
