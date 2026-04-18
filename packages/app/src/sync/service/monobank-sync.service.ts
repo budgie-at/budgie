@@ -9,6 +9,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -305,6 +306,11 @@ class AppMonobankSyncService {
 
         if (isNotEmptyArray(newTransactions)) {
             try {
+                aiLog('embed:defer:bank-sync:batch:begin', {
+                    provider: this.provider,
+                    accountId: account.id,
+                    count: newTransactions.length
+                });
                 const created = await transactionService.bulkCreate(
                     newTransactions.map(bankTransaction =>
                         mapBankTransactionToCreateInput(
@@ -316,8 +322,14 @@ class AppMonobankSyncService {
                     )
                 );
                 bankSyncLog('batch:created', { attempted: newTransactions.length, inserted: created.length });
+                aiLog('embed:defer:bank-sync:batch:complete', {
+                    provider: this.provider,
+                    accountId: account.id,
+                    inserted: created.length
+                });
             } catch (error: unknown) {
                 bankSyncLog('batch:bulkCreate:error', { message: getErrorMessage(error) });
+                aiLog('embed:defer:bank-sync:batch:throw', { provider: this.provider, errorMessage: getErrorMessage(error) });
                 throw error;
             }
         } else {
