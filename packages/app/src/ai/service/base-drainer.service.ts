@@ -216,8 +216,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             const rows = await this.fetchPending(this.relaxedBatchSize);
             aiLog(`${this.logDomain}:fetch:done`, { durationMs: Date.now() - fetchStarted, size: rows.length });
             if (rows.length === 0) {
-                await this.refreshPending();
-
                 return;
             }
             for (const row of rows) {
@@ -227,8 +225,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
-            await this.afterBatch();
-            await this.refreshPending();
             aiLog(`${this.logDomain}:batch:complete`, {
                 durationMs: Date.now() - started,
                 processed: rows.length
@@ -236,6 +232,12 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         } catch (error: unknown) {
             aiLog(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
         } finally {
+            try {
+                await this.afterBatch();
+            } catch (flushError: unknown) {
+                aiLog(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
+            }
+            await this.refreshPending();
             drainerMutex.release(this.kind);
             if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.Error) {
                 this.scheduleDrain();
