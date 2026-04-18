@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/member-ordering -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
-import { AppState, AppStateStatus } from 'react-native';
+/* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
+import { AppState, AppStateStatus, InteractionManager } from 'react-native';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -185,8 +185,10 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         const delay = this.snapshot.pending === 0 ? IDLE_INTERVAL_MS : this.relaxedIntervalMs;
         this.timer = setTimeout(() => {
             this.timer = null;
-            this.pendingBatchPromise = this.runRelaxedTick();
-            void this.pendingBatchPromise;
+            void InteractionManager.runAfterInteractions(() => {
+                this.pendingBatchPromise = this.runRelaxedTick();
+                void this.pendingBatchPromise;
+            });
         }, delay);
     }
 
