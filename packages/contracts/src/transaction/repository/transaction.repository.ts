@@ -110,6 +110,36 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt));
     }
 
+    async clearNeedsEmbedding(ids: number[], tx?: DB): Promise<void> {
+        if (ids.length === 0) {
+            return;
+        }
+        const CHUNK = 500;
+        const runner = tx ?? this.db;
+        for (let start = 0; start < ids.length; start += CHUNK) {
+            const chunk = ids.slice(start, start + CHUNK);
+            // eslint-disable-next-line no-await-in-loop -- sequential chunking to stay under SQLITE_MAX_VARIABLE_NUMBER
+            await runner
+                .update(TransactionEntityTable)
+                .set({ needsEmbedding: false })
+                .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
+        }
+    }
+
+    async clearNonIndexableFlags(tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ needsEmbedding: false })
+            .where(
+                and(
+                    eq(TransactionEntityTable.needsEmbedding, true),
+                    isNull(TransactionEntityTable.deletedAt),
+                    eq(TransactionEntityTable.title, ''),
+                    eq(TransactionEntityTable.comment, '')
+                )
+            );
+    }
+
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })
