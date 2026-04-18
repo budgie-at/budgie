@@ -54,6 +54,8 @@ app*.tar.gz
 .ci-cache/
 .ci-artifacts-ios-e2e-app-path.txt
 tests/app-tests/artifacts/
+*.db-shm
+*.db-wal
 
 .env
 .worktrees
