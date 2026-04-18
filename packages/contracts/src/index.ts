@@ -319,6 +319,7 @@ export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/com
 
 export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
 
+export type { CommentPendingContextInterface } from './comment-embedding/interface/comment-pending-context.interface';
 export type { UnembeddedCommentDataInterface } from './comment-embedding/interface/unembedded-comment-data.interface';
 export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
 
