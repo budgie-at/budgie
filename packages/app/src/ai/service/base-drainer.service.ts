@@ -201,7 +201,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             return;
         }
         if (!drainerMutex.acquire(this.kind)) {
-            aiLog(`${this.logDomain}:tick:skip`, { reason: 'mutex-busy', holder: drainerMutex.holder });
             this.scheduleDrainAfter(MUTEX_BUSY_RESCHEDULE_MS);
 
             return;
