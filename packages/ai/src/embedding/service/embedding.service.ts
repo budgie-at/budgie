@@ -1,6 +1,7 @@
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
+import { aiLog } from '../../@generic/util/ai-log.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 
 export class EmbeddingService {
@@ -13,14 +14,22 @@ export class EmbeddingService {
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
+            aiLog('embedding:generateEmbedding:cache-hit', { textLen: text.length });
             return cached;
         }
 
+        aiLog('embedding:generateEmbedding:enqueue', { textLen: text.length });
+        const enqueueStart = Date.now();
         const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
         EmbeddingService.embeddingCache.set(text, promise);
         EmbeddingService.evictOldestCacheEntry();
 
-        void promise.then(emptyFn, () => EmbeddingService.embeddingCache.delete(text));
+        void promise.then(
+            result => {
+                aiLog('embedding:generateEmbedding:done', { textLen: text.length, dimensions: result?.length ?? 0, durationMs: Date.now() - enqueueStart });
+            },
+            () => EmbeddingService.embeddingCache.delete(text)
+        );
 
         return promise;
     }
@@ -34,7 +43,10 @@ export class EmbeddingService {
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {
+        const start = Date.now();
+        aiLog('embedding:llmEmbed:start', { textLen: text.length });
         const rawEmbedding = await this.embedding.embed(text);
+        aiLog('embedding:llmEmbed:done', { textLen: text.length, rawLen: rawEmbedding?.length ?? 0, durationMs: Date.now() - start });
 
         if (!isNotEmptyArray(rawEmbedding)) {
             return null;

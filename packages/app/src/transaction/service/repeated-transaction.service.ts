@@ -3,6 +3,7 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
@@ -53,13 +54,25 @@ class RepeatedTransactionService {
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
         const repeatedCacheKey = `repeated:${JSON.stringify(repeatedQuery)}`;
-        const timeQuery = patternCacheService.memoize(repeatedCacheKey, () =>
-            transactionPatternRepository.findRepeatedPatterns(repeatedQuery)
-        );
+        const repeatedStart = Date.now();
+        aiLog('service:repeated:memoize:start', { repeatedCacheKey });
+        const timeQuery = patternCacheService.memoize(repeatedCacheKey, () => {
+            aiLog('service:repeated:memoize:cache-miss', { repeatedCacheKey });
+            return transactionPatternRepository.findRepeatedPatterns(repeatedQuery);
+        });
 
+        const amountQueryStart = Date.now();
         const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
+        aiLog('service:repeated:amountQuery:start', { hasAmount: isPositiveNumber(amount), amount });
 
         const [timePatterns, amountPatterns] = await Promise.all([timeQuery, amountQuery]);
+        aiLog('service:repeated:memoize:done', {
+            repeatedCacheKey,
+            timePatternCount: timePatterns.length,
+            amountPatternCount: amountPatterns.length,
+            repeatedDurationMs: Date.now() - repeatedStart,
+            amountDurationMs: Date.now() - amountQueryStart
+        });
 
         return { timePatterns, amountPatterns };
     }
@@ -100,8 +113,20 @@ class RepeatedTransactionService {
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
         const amountCacheKey = `amount:${JSON.stringify(amountQuery)}`;
+        const amountStart = Date.now();
+        aiLog('service:repeated:amountCache:start', { amountCacheKey });
 
-        return patternCacheService.memoize(amountCacheKey, () => transactionPatternRepository.findAmountBasedPatterns(amountQuery));
+        return patternCacheService.memoize(amountCacheKey, () => {
+            aiLog('service:repeated:amountCache:cache-miss', { amountCacheKey });
+            return transactionPatternRepository.findAmountBasedPatterns(amountQuery).then(result => {
+                aiLog('service:repeated:amountCache:done', {
+                    amountCacheKey,
+                    patternCount: result.length,
+                    durationMs: Date.now() - amountStart
+                });
+                return result;
+            });
+        });
     }
 }
 
