@@ -2,7 +2,7 @@ import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterfac
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { aiLog } from '../utils/ai-log.util';
 
@@ -85,7 +85,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
                 if (!cancelled) {
                     aiLog('hook:suggestion:base:suggest:error', {
                         requestKey,
-                        message: error instanceof Error ? error.message : String(error)
+                        message: getErrorMessage(error)
                     });
                     setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }

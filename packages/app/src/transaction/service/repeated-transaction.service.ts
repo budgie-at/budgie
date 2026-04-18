@@ -5,7 +5,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import {
     MINUTES_IN_DAY,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
@@ -42,7 +41,6 @@ const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
 };
 
 class RepeatedTransactionService {
-    // eslint-disable-next-line max-statements -- Service method builds time/amount queries, memoizes both pattern fetches, and merges results
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
@@ -55,26 +53,13 @@ class RepeatedTransactionService {
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
         const repeatedCacheKey = `repeated:${JSON.stringify(repeatedQuery)}`;
-        const repeatedStart = Date.now();
-        aiLog('service:repeated:memoize:start', { repeatedCacheKey });
-        const timeQuery = patternCacheService.memoize(repeatedCacheKey, () => {
-            aiLog('service:repeated:memoize:cache-miss', { repeatedCacheKey });
+        const timeQuery = patternCacheService.memoizeRepeated(repeatedCacheKey, () =>
+            transactionPatternRepository.findRepeatedPatterns(repeatedQuery)
+        );
 
-            return transactionPatternRepository.findRepeatedPatterns(repeatedQuery);
-        });
-
-        const amountQueryStart = Date.now();
         const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
-        aiLog('service:repeated:amountQuery:start', { hasAmount: isPositiveNumber(amount), amount });
 
         const [timePatterns, amountPatterns] = await Promise.all([timeQuery, amountQuery]);
-        aiLog('service:repeated:memoize:done', {
-            repeatedCacheKey,
-            timePatternCount: timePatterns.length,
-            amountPatternCount: amountPatterns.length,
-            repeatedDurationMs: Date.now() - repeatedStart,
-            amountDurationMs: Date.now() - amountQueryStart
-        });
 
         return { timePatterns, amountPatterns };
     }
@@ -115,22 +100,8 @@ class RepeatedTransactionService {
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
         const amountCacheKey = `amount:${JSON.stringify(amountQuery)}`;
-        const amountStart = Date.now();
-        aiLog('service:repeated:amountCache:start', { amountCacheKey });
 
-        return patternCacheService.memoize(amountCacheKey, () => {
-            aiLog('service:repeated:amountCache:cache-miss', { amountCacheKey });
-
-            return transactionPatternRepository.findAmountBasedPatterns(amountQuery).then(result => {
-                aiLog('service:repeated:amountCache:done', {
-                    amountCacheKey,
-                    patternCount: result.length,
-                    durationMs: Date.now() - amountStart
-                });
-
-                return result;
-            });
-        });
+        return patternCacheService.memoizeAmount(amountCacheKey, () => transactionPatternRepository.findAmountBasedPatterns(amountQuery));
     }
 }
 

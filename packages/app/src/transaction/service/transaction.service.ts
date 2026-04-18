@@ -10,7 +10,7 @@ import {
     transactionAsync
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -63,7 +63,7 @@ class TransactionService {
         });
     }
 
-    // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)
+    // eslint-disable-next-line max-statements -- Orchestrates batched creation, deferred embedding, balance updates, and error logging
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
         tx?: DB,
@@ -102,8 +102,8 @@ class TransactionService {
 
             return transactions;
         } catch (error: unknown) {
-            bankSyncLog('service:transaction:bulkCreate:throw', { message: error instanceof Error ? error.message : String(error) });
-            aiLog('embed:defer:throw', { errorMessage: error instanceof Error ? error.message : String(error) });
+            bankSyncLog('service:transaction:bulkCreate:throw', { message: getErrorMessage(error) });
+            aiLog('embed:defer:throw', { errorMessage: getErrorMessage(error) });
             throw error;
         }
     }

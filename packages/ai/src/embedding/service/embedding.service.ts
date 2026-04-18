@@ -50,10 +50,7 @@ export class EmbeddingService {
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {
-        const start = Date.now();
-        aiLog('embedding:llmEmbed:start', { textLen: text.length });
         const rawEmbedding = await this.embedding.embed(text);
-        aiLog('embedding:llmEmbed:done', { textLen: text.length, rawLen: rawEmbedding.length, durationMs: Date.now() - start });
 
         if (!isNotEmptyArray(rawEmbedding)) {
             return null;

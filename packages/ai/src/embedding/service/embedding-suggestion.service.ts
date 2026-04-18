@@ -35,7 +35,7 @@ export class EmbeddingSuggestionService {
         ) => Promise<{ categoryId: number; count: number }[]>
     ) {}
 
-    /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit */
+    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     async suggestCategories(
         categories: CategoryEntityInterface[],
         transactionTitle: string,
@@ -72,15 +72,8 @@ export class EmbeddingSuggestionService {
 
         aiLog('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
 
-        const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
-        this.blendMccScores(scoreMap, mccRows);
-        const merged = [...scoreMap.entries()]
-            .map(([categoryId, score]) => ({ categoryId, score }))
-            .sort((first, second) => second.score - first.score);
-        const topCategories = merged.slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
-        const resolvedCategories = topCategories.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
+        const resolvedCategories = this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
         aiLog('suggest:category:final', {
-            topCount: topCategories.length,
             resolvedCount: resolvedCategories.length,
             topCategoryIds: resolvedCategories.map(category => category.id),
             totalDurationMs: Date.now() - methodStart
@@ -217,6 +210,24 @@ export class EmbeddingSuggestionService {
         }
 
         return scoreMap;
+    }
+
+    private resolveTopCategories(
+        categories: CategoryEntityInterface[],
+        merchantResults: CategoryScoreResultInterface[],
+        commentResults: CategoryScoreResultInterface[],
+        mccRows: { categoryId: number; count: number }[]
+    ): CategoryEntityInterface[] {
+        const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
+        this.blendMccScores(scoreMap, mccRows);
+        const sorted = [...scoreMap.entries()]
+            .map(([categoryId, score]) => ({ categoryId, score }))
+            .sort((first, second) => second.score - first.score);
+
+        return sorted
+            .slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
+            .map(row => categories.find(category => category.id === row.categoryId))
+            .filter(isDefined);
     }
 
     private blendMccScores(scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void {

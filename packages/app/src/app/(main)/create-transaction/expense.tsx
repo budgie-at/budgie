@@ -15,9 +15,8 @@ import { SimpleQuickForm } from '../../../transaction/components/simple-quick-fo
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
+import { normalizeRouteParam } from '../../../transaction/utils/normalize-route-param.util';
 /* jscpd:ignore-end */
-
-const normalizeRouteParam = (value: string | string[] | undefined): string | undefined => (Array.isArray(value) ? value[0] : value);
 
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
