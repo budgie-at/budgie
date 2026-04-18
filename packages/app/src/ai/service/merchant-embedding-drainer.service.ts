@@ -10,6 +10,8 @@ import { aiLog } from '../utils/ai-log.util';
 import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
 import { embeddingService } from './embedding.service';
 
+import type { DB } from '@budgie/contracts';
+
 class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<MerchantPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EmbeddingMerchant;
     protected readonly logDomain = 'drainer:embedding:merchant';
@@ -71,8 +73,8 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
         return embeddingId;
     }
 
-    protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        return merchantEmbeddingRepository.replaceTags(embeddingId, tagIds);
+    protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
+        return merchantEmbeddingRepository.replaceTags(embeddingId, tagIds, tx);
     }
 }
 

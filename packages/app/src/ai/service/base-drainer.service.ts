@@ -151,6 +151,10 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     protected abstract processRow(row: TRow): Promise<void>;
     protected abstract countPending(): Promise<number>;
 
+    protected async afterBatch(): Promise<void> {
+        return Promise.resolve();
+    }
+
     protected isSafe(): boolean {
         return this.started && this.isSubsystemReady() && AppState.currentState === 'active';
     }
@@ -223,6 +227,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
+            await this.afterBatch();
             await this.refreshPending();
             aiLog(`${this.logDomain}:batch:complete`, {
                 durationMs: Date.now() - started,
@@ -279,6 +284,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             }
             /* eslint-enable no-await-in-loop */
         } finally {
+            await this.afterBatch();
             await this.refreshPending();
             aiLog(`${this.logDomain}:boost:complete`, {
                 durationMs: Date.now() - startedAt,
@@ -297,7 +303,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-     
     private handleRowFailure(error: unknown): void {
         const message = getErrorMessage(error);
         if (SQLITE_BUSY_PATTERN.test(message)) {

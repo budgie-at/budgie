@@ -1,13 +1,16 @@
-import { EmbeddingPendingContextBaseInterface } from '@budgie/contracts';
+import { EmbeddingPendingContextBaseInterface, transactionAsync } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { db, transactionRepository } from '../../@generic/drizzle/db/db';
+import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { aiLog } from '../utils/ai-log.util';
 
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
+
+import type { DB } from '@budgie/contracts';
 
 const RELAXED_INTERVAL_MS = 2500;
 const RELAXED_BATCH_SIZE = 5;
@@ -22,6 +25,8 @@ export abstract class BaseEmbeddingSubDrainerService<
     protected readonly boostBatchSize = BOOST_BATCH_SIZE;
     protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
 
+    private readonly pendingPersists: Array<PendingPersistInterface<TContext>> = [];
+
     protected subscribeToSubsystem(listener: () => void): () => void {
         return embeddingService.subscribe(listener);
     }
@@ -33,7 +38,12 @@ export abstract class BaseEmbeddingSubDrainerService<
     protected async processRow(context: TContext): Promise<void> {
         this.logBegin(context);
         if (isDefined(context.existingEmbeddingId)) {
-            await this.persistWithSkip(context, context.existingEmbeddingId);
+            aiLog(`${this.logDomain}:context:skip`, {
+                reason: 'preflight-hit',
+                contextSize: context.transactionIds.length,
+                embeddingId: context.existingEmbeddingId
+            });
+            this.pendingPersists.push({ context, embeddingId: context.existingEmbeddingId, skipped: true });
 
             return;
         }
@@ -41,32 +51,37 @@ export abstract class BaseEmbeddingSubDrainerService<
         if (!isDefined(embeddingId)) {
             return;
         }
-        await this.persistEmbedding(context, embeddingId, false);
+        this.pendingPersists.push({ context, embeddingId, skipped: false });
     }
 
-    private async persistWithSkip(context: TContext, embeddingId: number): Promise<void> {
-        aiLog(`${this.logDomain}:context:skip`, {
-            reason: 'preflight-hit',
-            contextSize: context.transactionIds.length,
-            embeddingId
+    protected override async afterBatch(): Promise<void> {
+        if (this.pendingPersists.length === 0) {
+            return;
+        }
+        const batch = this.pendingPersists.splice(0);
+        const allTransactionIds = batch.flatMap(persist => persist.context.transactionIds);
+
+        await transactionAsync(db, async tx => {
+            for (const persist of batch) {
+                // eslint-disable-next-line no-await-in-loop -- Sequential inside transaction to keep lock time bounded
+                await this.replaceEmbeddingTags(persist.embeddingId, persist.context.tagIds, tx);
+            }
+            await transactionRepository.clearNeedsEmbedding(allTransactionIds, tx);
         });
-        await this.persistEmbedding(context, embeddingId, true);
-    }
 
-    private async persistEmbedding(context: TContext, embeddingId: number, skipped: boolean): Promise<void> {
-        await this.replaceEmbeddingTags(embeddingId, context.tagIds);
-        await transactionRepository.clearNeedsEmbedding(context.transactionIds);
         void embeddingProgressStore.refresh();
 
-        aiLog(`${this.logDomain}:context:persisted`, {
-            embeddingId,
-            contextSize: context.transactionIds.length,
-            clearedFlags: context.transactionIds.length,
-            skipped
-        });
+        for (const persist of batch) {
+            aiLog(`${this.logDomain}:context:persisted`, {
+                embeddingId: persist.embeddingId,
+                contextSize: persist.context.transactionIds.length,
+                clearedFlags: persist.context.transactionIds.length,
+                skipped: persist.skipped
+            });
+        }
     }
 
     protected abstract logBegin(context: TContext): void;
     protected abstract runEmbedAndUpsert(context: TContext): Promise<number | null>;
-    protected abstract replaceEmbeddingTags(embeddingId: number, tagIds: number[]): Promise<void>;
+    protected abstract replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void>;
 }
