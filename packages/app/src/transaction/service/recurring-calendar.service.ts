@@ -4,6 +4,7 @@ import { getDaysInMonth } from 'date-fns';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
@@ -30,9 +31,17 @@ class RecurringCalendarService {
             displayMonth: displayMonthString
         };
         const cacheKey = `monthly:${JSON.stringify(monthlyQuery)}`;
-        const patterns = await patternCacheService.memoize(cacheKey, () =>
-            transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery)
-        );
+        const memoizeStart = Date.now();
+        aiLog('service:recurringCalendar:memoize:start', { cacheKey });
+        const patterns = await patternCacheService.memoize(cacheKey, () => {
+            aiLog('service:recurringCalendar:memoize:cache-miss', { cacheKey });
+            return transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery);
+        });
+        aiLog('service:recurringCalendar:memoize:done', {
+            cacheKey,
+            patternCount: patterns.length,
+            durationMs: Date.now() - memoizeStart
+        });
 
         const now = new Date();
         const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();

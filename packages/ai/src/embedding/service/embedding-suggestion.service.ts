@@ -39,6 +39,8 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<CategoryEntityInterface[]> {
+        const methodStart = Date.now();
+        aiLog('suggest:category:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length });
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         aiLog('suggest:category:context', {
             context: suggestionContext.context,
@@ -85,7 +87,8 @@ export class EmbeddingSuggestionService {
         aiLog('suggest:category:final', {
             topCount: topCategories.length,
             resolvedCount: resolvedCategories.length,
-            topCategoryIds: resolvedCategories.map(category => category.id)
+            topCategoryIds: resolvedCategories.map(category => category.id),
+            totalDurationMs: Date.now() - methodStart
         });
 
         return resolvedCategories;
@@ -100,6 +103,8 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<TagEntityInterface[]> {
+        const methodStart = Date.now();
+        aiLog('suggest:tag:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length, categoryId });
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         aiLog('suggest:tag:context', {
             context: suggestionContext.context,
@@ -142,7 +147,8 @@ export class EmbeddingSuggestionService {
         aiLog('suggest:tag:final', {
             topCount: topTags.length,
             resolvedCount: resolvedTags.length,
-            topTagIds: resolvedTags.map(tag => tag.id)
+            topTagIds: resolvedTags.map(tag => tag.id),
+            totalDurationMs: Date.now() - methodStart
         });
 
         return resolvedTags;
@@ -156,6 +162,8 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<string[]> {
+        const methodStart = Date.now();
+        aiLog('suggest:comment:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length, categoryId });
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         aiLog('suggest:comment:context', {
             context: suggestionContext.context,
@@ -184,7 +192,7 @@ export class EmbeddingSuggestionService {
         aiLog('suggest:comment:repoResults', { count: commentResults.length });
 
         const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
-        aiLog('suggest:comment:final', { count: finalComments.length });
+        aiLog('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
 
         return finalComments;
     }
@@ -251,9 +259,11 @@ export class EmbeddingSuggestionService {
     }
 
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
+        const start = Date.now();
         aiLog('suggest:embed:start', { context, contextLen: context.length });
         const service = new EmbeddingService(this.embedding);
         const queryEmbedding = await service.generateEmbedding(context);
+        aiLog('suggest:embed:inference-done', { contextLen: context.length, durationMs: Date.now() - start });
 
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
             aiLog('suggest:embed:empty', { context });
@@ -261,7 +271,7 @@ export class EmbeddingSuggestionService {
             return null;
         }
 
-        aiLog('suggest:embed:ok', { context, dimensions: queryEmbedding.length });
+        aiLog('suggest:embed:ok', { context, dimensions: queryEmbedding.length, durationMs: Date.now() - start });
 
         return serializeEmbedding(queryEmbedding);
     }
