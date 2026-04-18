@@ -15,7 +15,8 @@ export class EmbeddingService {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
             aiLog('embedding:generateEmbedding:cache-hit', { textLen: text.length });
-            return cached;
+            
+return cached;
         }
 
         aiLog('embedding:generateEmbedding:enqueue', { textLen: text.length });

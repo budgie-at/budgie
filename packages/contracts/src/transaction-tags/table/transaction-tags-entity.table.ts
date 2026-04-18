@@ -13,8 +13,5 @@ export const TransactionTagsEntityTable = sqliteTable(
             .references(() => TagEntityTable.id, { onDelete: 'cascade' })
             .notNull()
     },
-    ({ transactionId, tagId }) => [
-        primaryKey({ columns: [transactionId, tagId] }),
-        index('transaction_tags_tag_idx').on(tagId)
-    ]
+    ({ transactionId, tagId }) => [primaryKey({ columns: [transactionId, tagId] }), index('transaction_tags_tag_idx').on(tagId)]
 );
