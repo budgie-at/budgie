@@ -33,6 +33,7 @@ export default defineConfig(
             '**/messages.ts',
             '**/babel.config.js',
             '**/fingerprint.config.js',
+            'packages/app/scripts/**',
 
             'eslint.config.mjs'
         ]
