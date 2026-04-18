@@ -6,11 +6,11 @@ appId: ${APP_ID}
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
 
-- tapOn: 'Account Settings'
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+    timeout: 3000

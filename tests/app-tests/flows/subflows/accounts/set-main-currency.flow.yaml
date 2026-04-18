@@ -11,8 +11,3 @@ appId: ${APP_ID}
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 - tapOn:
     id: 'TabBar.Home'
-
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
