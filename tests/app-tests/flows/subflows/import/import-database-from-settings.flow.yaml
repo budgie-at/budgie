@@ -71,13 +71,13 @@ env:
 
 - runFlow:
     when:
-      visible: 'Importing a database will replace all current data.*|Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt.*'
+      visible: 'Importing a database will replace all current data.*'
     commands:
       - retry:
           maxRetries: 1
           commands:
             - tapOn:
-                text: 'Import Database|Datenbank importieren'
+                text: 'Import Database'
                 index: 1
 
 # Import triggers app reload. When this subflow was entered via deep link, iOS can restore the app back to Settings after restart.

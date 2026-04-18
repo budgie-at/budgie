@@ -26,10 +26,10 @@ appId: ${APP_ID}
 
 - runFlow:
     when:
-      visible: 'Open|Öffnen'
+      visible: 'Open'
     commands:
       - tapOn:
-          text: 'Open|Öffnen'
+          text: 'Open'
 
 - extendedWaitUntil:
     visible:
@@ -59,11 +59,11 @@ appId: ${APP_ID}
     id: 'CsvPage.ExportCard'
 
 - extendedWaitUntil:
-    visible: 'Done|Fertig|Hecho|Terminé|Готово'
+    visible: 'Done'
     timeout: 10000
 
 - tapOn:
-    text: 'Done|Fertig|Hecho|Terminé|Готово'
+    text: 'Done'
 
 - tapOn:
     id: 'TabBar.Home'
