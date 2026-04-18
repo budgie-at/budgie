@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Two-path monthly detection (bank-synced + manual) with correlated subqueries */
-import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
+import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -84,12 +84,8 @@ export class TransactionPatternRepository {
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
-        const weekdayCondition = sql`CAST(strftime('%w', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) = ${query.weekday}`;
-        const timeCondition = sql`
-            CAST(strftime('%H', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) * 60 +
-            CAST(strftime('%M', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)
-            BETWEEN ${query.timeWindowStartMinutes} AND ${query.timeWindowEndMinutes}
-        `;
+        const weekdayCondition = eq(TransactionEntityTable.operatedWeekday, query.weekday);
+        const timeCondition = between(TransactionEntityTable.operatedMinuteOfDay, query.timeWindowStartMinutes, query.timeWindowEndMinutes);
 
         const conditions = this.buildBasePatternConditions(query);
         conditions.push(weekdayCondition, timeCondition, sql`${TransactionEntityTable.title} != ''`);
