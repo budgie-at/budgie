@@ -28,7 +28,6 @@ import { transactionBatchCreateService } from './transaction-batch-create.servic
 import type { DB } from '@budgie/contracts';
 
 class TransactionImportService {
-     
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],
         existingTransactionIdMap: Map<string, number>,
