@@ -1,0 +1,8 @@
+| Bench | p50 (ms) | p95 (ms) |
+|---|---:|---:|
+| transaction_list_first_20 | 20.02 | 20.40 |
+| count_all_active | 2.62 | 2.64 |
+| count_pending_embedding | 0.66 | 0.66 |
+| pending_merchant_contexts_15 | 47.18 | 48.09 |
+| category_search_prefix | 7.62 | 7.65 |
+| monthly_pattern_bank | 384.31 | 390.30 |

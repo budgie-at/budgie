@@ -31,7 +31,9 @@ export const TransactionEntryEntityTable = sqliteTable(
     table => [
         index('transaction_entries_transaction_idx').on(table.transactionId),
         index('transaction_entries_account_idx').on(table.accountId),
-        index('transaction_entries_category_idx').on(table.categoryId).where(sql`${table.categoryId} IS NOT NULL`),
+        index('transaction_entries_category_idx')
+            .on(table.categoryId)
+            .where(sql`${table.categoryId} IS NOT NULL`),
         index('transaction_entries_category_type_idx')
             .on(table.categoryId, table.type)
             .where(sql`${table.categoryId} IS NOT NULL`)

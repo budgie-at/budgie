@@ -87,15 +87,25 @@ export const seed = () => {
         db.prepare('INSERT INTO instruments (id, code, created_at, updated_at) VALUES (?, ?, ?, ?)').run(i, `INST${i}`, now, now);
     }
     for (let i = 1; i <= ACCOUNT_COUNT; i++) {
-        db.prepare(
-            'INSERT INTO accounts (id, type, title, instrument_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
-        ).run(i, 'BANK', `Account ${i}`, randomInt(1, INSTRUMENT_COUNT + 1), now, now);
+        db.prepare('INSERT INTO accounts (id, type, title, instrument_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)').run(
+            i,
+            'BANK',
+            `Account ${i}`,
+            randomInt(1, INSTRUMENT_COUNT + 1),
+            now,
+            now
+        );
     }
     for (let i = 1; i <= CATEGORY_COUNT; i++) {
         const title = `Category ${i}`;
-        db.prepare(
-            'INSERT INTO categories (id, title, title_search, icon, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
-        ).run(i, title, title.toLowerCase(), 'Wallet', now, now);
+        db.prepare('INSERT INTO categories (id, title, title_search, icon, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)').run(
+            i,
+            title,
+            title.toLowerCase(),
+            'Wallet',
+            now,
+            now
+        );
     }
     for (let i = 1; i <= TAG_COUNT; i++) {
         const title = `Tag ${i}`;

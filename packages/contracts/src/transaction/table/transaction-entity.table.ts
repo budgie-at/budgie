@@ -35,16 +35,30 @@ export const TransactionEntityTable = sqliteTable(
     }),
     table => [
         index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt),
-        index('transactions_operated_at_idx').on(table.operatedAt).where(sql`${table.deletedAt} IS NULL`),
-        index('transactions_type_operated_idx').on(table.type, table.operatedAt).where(sql`${table.deletedAt} IS NULL`),
-        index('transactions_from_account_idx').on(table.fromAccountId).where(sql`${table.fromAccountId} IS NOT NULL`),
-        index('transactions_to_account_idx').on(table.toAccountId).where(sql`${table.toAccountId} IS NOT NULL`),
+        index('transactions_operated_at_idx')
+            .on(table.operatedAt)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_type_operated_idx')
+            .on(table.type, table.operatedAt)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_from_account_idx')
+            .on(table.fromAccountId)
+            .where(sql`${table.fromAccountId} IS NOT NULL`),
+        index('transactions_to_account_idx')
+            .on(table.toAccountId)
+            .where(sql`${table.toAccountId} IS NOT NULL`),
         index('transactions_external_idx')
             .on(table.externalSource, table.externalId)
             .where(sql`${table.externalId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
-        index('transactions_weekday_type_idx').on(table.operatedWeekday, table.type).where(sql`${table.deletedAt} IS NULL`),
-        index('transactions_minute_of_day_idx').on(table.operatedMinuteOfDay).where(sql`${table.deletedAt} IS NULL`),
-        index('transactions_active_idx').on(table.id).where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_weekday_type_idx')
+            .on(table.operatedWeekday, table.type)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_minute_of_day_idx')
+            .on(table.operatedMinuteOfDay)
+            .where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_active_idx')
+            .on(table.id)
+            .where(sql`${table.deletedAt} IS NULL`),
         index('transactions_pending_merchant_idx')
             .on(sql`${table.operatedAt} DESC`)
             .where(sql`${table.needsEmbedding} = 1 AND ${table.deletedAt} IS NULL AND ${table.title} != ''`),
