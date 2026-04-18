@@ -2,6 +2,7 @@ import { and, count, eq, getTableColumns, isNull, like, sql } from 'drizzle-orm'
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -12,8 +13,17 @@ import type * as schema from '../../schema';
 import type { CategoryEntityInterface } from '../entity/category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class CategoryRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+export class CategoryRepository extends TranslatableRepositoryBase {
+    constructor(db: ExpoSQLiteDatabase<typeof schema>) {
+        super(db, CategoryEntityTable, {
+            id: CategoryEntityTable.id,
+            title: CategoryEntityTable.title,
+            titleEn: CategoryEntityTable.titleEn,
+            titleTags: CategoryEntityTable.titleTags,
+            tagsGeneratedAt: CategoryEntityTable.tagsGeneratedAt,
+            deletedAt: CategoryEntityTable.deletedAt
+        });
+    }
 
     findAll() {
         return this.db.query.CategoryEntityTable.findMany();
@@ -133,36 +143,4 @@ export class CategoryRepository {
             .where(eq(CategoryEntityTable.id, id));
     }
 
-    async findUntranslated(limit: number, tx?: DB): Promise<{ id: number; title: string }[]> {
-        return (tx ?? this.db)
-            .select({ id: CategoryEntityTable.id, title: CategoryEntityTable.title })
-            .from(CategoryEntityTable)
-            .where(and(isNull(CategoryEntityTable.titleEn), isNull(CategoryEntityTable.deletedAt)))
-            .limit(limit);
-    }
-
-    async countUntranslated(tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ value: count() })
-            .from(CategoryEntityTable)
-            .where(and(isNull(CategoryEntityTable.titleEn), isNull(CategoryEntityTable.deletedAt)));
-
-        return row.value;
-    }
-
-    async countAll(tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ value: count() })
-            .from(CategoryEntityTable)
-            .where(isNull(CategoryEntityTable.deletedAt));
-
-        return row.value;
-    }
-
-    async resetAllTranslations(tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(CategoryEntityTable)
-            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-            .where(isNull(CategoryEntityTable.deletedAt));
-    }
 }

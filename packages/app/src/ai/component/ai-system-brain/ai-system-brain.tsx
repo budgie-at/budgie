@@ -1,4 +1,3 @@
- 
 import { useEffect } from 'react';
 import Animated, {
     Easing,
@@ -31,11 +30,11 @@ const OPACITY_THRESHOLD = 0.01;
 const FULL_OPACITY = 1;
 const DIMMED_OPACITY = 0.6;
 const HALF = 2;
- 
+
 const SVG_FILL_NONE = 'none' as const;
- 
+
 const SVG_STROKE_LINECAP_ROUND = 'round' as const;
- 
+
 const POSITION_ABSOLUTE = 'absolute' as const;
 
 interface Props {
@@ -46,7 +45,6 @@ interface Props {
     readonly iconSize: number;
 }
 
- 
 export const AiSystemBrain = ({ state, percent, holdProgress, size, iconSize }: Props) => {
     const reducedMotion = useReducedMotion();
     const visuals = AI_SYSTEM_STATE_VISUALS[state];

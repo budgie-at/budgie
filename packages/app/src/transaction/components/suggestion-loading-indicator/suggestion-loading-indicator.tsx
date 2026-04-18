@@ -23,8 +23,7 @@ export const SuggestionLoadingIndicator = ({ showArrow = true }: Props) => {
     const snapshot = useAiSystemStatus();
     const holdProgress = useSharedValue(0);
 
-    const isBootingOrTranslating =
-        snapshot.state === AiSystemStateEnum.Booting || snapshot.state === AiSystemStateEnum.Translating;
+    const isBootingOrTranslating = snapshot.state === AiSystemStateEnum.Booting || snapshot.state === AiSystemStateEnum.Translating;
     const statusLabel = isBootingOrTranslating ? t`Loading AI model...` : '';
     const showHint = !showArrow;
 

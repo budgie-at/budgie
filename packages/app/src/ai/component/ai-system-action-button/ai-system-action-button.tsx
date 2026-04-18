@@ -39,12 +39,7 @@ export const AiSystemActionButton = ({ action, onPress }: Props) => {
     };
 
     return (
-        <Pressable
-            onPress={handlePress}
-            hitSlop={HIT_SLOP}
-            accessibilityRole="button"
-            accessibilityHint={visual.accessibilityHint}
-        >
+        <Pressable onPress={handlePress} hitSlop={HIT_SLOP} accessibilityRole="button" accessibilityHint={visual.accessibilityHint}>
             <Icon icon={icon} size={ICON_SIZE} />
         </Pressable>
     );
