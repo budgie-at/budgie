@@ -54,11 +54,13 @@ const PENDING_MERCHANT_CONTEXTS_BASE = `
         MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
         MAX(t.comment) AS comment,
         GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+        GROUP_CONCAT(DISTINCT tt.tag_id) AS tagIdsCsv,
         MAX(t.operated_at) AS maxOperatedAt
     FROM transactions t
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
     LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN transaction_tags tt ON tt.transaction_id = t.id
     WHERE t.deleted_at IS NULL
       AND t.needs_embedding = 1
       AND t.title != ''
@@ -67,50 +69,7 @@ const PENDING_MERCHANT_CONTEXTS_BASE = `
 `;
 
 const PENDING_MERCHANT_CONTEXTS_QUERY = `
-    WITH pending_contexts AS (${PENDING_MERCHANT_CONTEXTS_BASE}),
-    context_sizes AS (
-        SELECT
-            pc.title AS title,
-            pc.mccDescription AS mccDescription,
-            pc.categoryId AS categoryId,
-            COUNT(DISTINCT t.id) AS groupSize
-        FROM pending_contexts pc
-        INNER JOIN transactions t ON t.title = pc.title AND t.deleted_at IS NULL
-        INNER JOIN transaction_entries te ON te.transaction_id = t.id
-            AND te.category_id = pc.categoryId
-            AND te.deleted_at IS NULL
-            AND COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), '') = pc.mccDescription
-        GROUP BY pc.title, pc.mccDescription, pc.categoryId
-    ),
-    majority_tags AS (
-        SELECT
-            pc.title AS title,
-            pc.mccDescription AS mccDescription,
-            pc.categoryId AS categoryId,
-            GROUP_CONCAT(tag_counts.tagId) AS tagIdsCsv
-        FROM pending_contexts pc
-        INNER JOIN context_sizes cs ON cs.title = pc.title
-            AND cs.mccDescription = pc.mccDescription
-            AND cs.categoryId = pc.categoryId
-        INNER JOIN (
-            SELECT
-                t.title AS title,
-                COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), '') AS mccDescription,
-                te.category_id AS categoryId,
-                tt.tag_id AS tagId,
-                COUNT(DISTINCT t.id) AS tagCount
-            FROM transactions t
-            INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
-            INNER JOIN transaction_tags tt ON tt.transaction_id = t.id
-            WHERE t.deleted_at IS NULL
-            GROUP BY t.title, mccDescription, te.category_id, tt.tag_id
-        ) tag_counts
-          ON tag_counts.title = pc.title
-          AND tag_counts.mccDescription = pc.mccDescription
-          AND tag_counts.categoryId = pc.categoryId
-          AND tag_counts.tagCount * 2 > cs.groupSize
-        GROUP BY pc.title, pc.mccDescription, pc.categoryId
-    )
+    WITH pending_contexts AS (${PENDING_MERCHANT_CONTEXTS_BASE})
     SELECT
         pc.title AS title,
         pc.mccDescription AS mccDescription,
@@ -118,13 +77,9 @@ const PENDING_MERCHANT_CONTEXTS_QUERY = `
         pc.categoryTitleEn AS categoryTitleEn,
         pc.comment AS comment,
         pc.transactionIdsCsv AS transactionIdsCsv,
-        mt.tagIdsCsv AS tagIdsCsv,
-        me.id AS existingEmbeddingId,
-        pc.maxOperatedAt AS maxOperatedAt
+        pc.tagIdsCsv AS tagIdsCsv,
+        me.id AS existingEmbeddingId
     FROM pending_contexts pc
-    LEFT JOIN majority_tags mt ON mt.title = pc.title
-        AND mt.mccDescription = pc.mccDescription
-        AND mt.categoryId = pc.categoryId
     LEFT JOIN merchant_embeddings me ON me.title = pc.title
         AND me.mcc_description = pc.mccDescription
         AND me.category_id = pc.categoryId

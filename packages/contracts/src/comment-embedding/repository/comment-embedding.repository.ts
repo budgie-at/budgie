@@ -37,10 +37,12 @@ const PENDING_COMMENT_CONTEXTS_BASE = `
         te.category_id AS categoryId,
         MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
         GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+        GROUP_CONCAT(DISTINCT tt.tag_id) AS tagIdsCsv,
         MAX(t.operated_at) AS maxOperatedAt
     FROM transactions t
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN transaction_tags tt ON tt.transaction_id = t.id
     WHERE t.deleted_at IS NULL
       AND t.needs_embedding = 1
       AND t.title = ''
@@ -50,53 +52,15 @@ const PENDING_COMMENT_CONTEXTS_BASE = `
 `;
 
 const PENDING_COMMENT_CONTEXTS_QUERY = `
-    WITH pending_contexts AS (${PENDING_COMMENT_CONTEXTS_BASE}),
-    context_sizes AS (
-        SELECT
-            pc.comment AS comment,
-            pc.categoryId AS categoryId,
-            COUNT(DISTINCT t.id) AS groupSize
-        FROM pending_contexts pc
-        INNER JOIN transactions t ON t.comment = pc.comment AND t.deleted_at IS NULL AND t.title = ''
-        INNER JOIN transaction_entries te ON te.transaction_id = t.id
-            AND te.category_id = pc.categoryId
-            AND te.deleted_at IS NULL
-        GROUP BY pc.comment, pc.categoryId
-    ),
-    majority_tags AS (
-        SELECT
-            pc.comment AS comment,
-            pc.categoryId AS categoryId,
-            GROUP_CONCAT(tag_counts.tagId) AS tagIdsCsv
-        FROM pending_contexts pc
-        INNER JOIN context_sizes cs ON cs.comment = pc.comment AND cs.categoryId = pc.categoryId
-        INNER JOIN (
-            SELECT
-                t.comment AS comment,
-                te.category_id AS categoryId,
-                tt.tag_id AS tagId,
-                COUNT(DISTINCT t.id) AS tagCount
-            FROM transactions t
-            INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
-            INNER JOIN transaction_tags tt ON tt.transaction_id = t.id
-            WHERE t.deleted_at IS NULL AND t.title = ''
-            GROUP BY t.comment, te.category_id, tt.tag_id
-        ) tag_counts
-          ON tag_counts.comment = pc.comment
-          AND tag_counts.categoryId = pc.categoryId
-          AND tag_counts.tagCount * 2 > cs.groupSize
-        GROUP BY pc.comment, pc.categoryId
-    )
+    WITH pending_contexts AS (${PENDING_COMMENT_CONTEXTS_BASE})
     SELECT
         pc.comment AS comment,
         pc.categoryId AS categoryId,
         pc.categoryTitleEn AS categoryTitleEn,
         pc.transactionIdsCsv AS transactionIdsCsv,
-        mt.tagIdsCsv AS tagIdsCsv,
-        ce.id AS existingEmbeddingId,
-        pc.maxOperatedAt AS maxOperatedAt
+        pc.tagIdsCsv AS tagIdsCsv,
+        ce.id AS existingEmbeddingId
     FROM pending_contexts pc
-    LEFT JOIN majority_tags mt ON mt.comment = pc.comment AND mt.categoryId = pc.categoryId
     LEFT JOIN comment_embeddings ce ON ce.comment = pc.comment
         AND ce.category_id = pc.categoryId
         AND ce.deleted_at IS NULL
