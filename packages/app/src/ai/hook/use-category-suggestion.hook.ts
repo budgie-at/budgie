@@ -42,7 +42,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
             transactionTitle,
             mccDescription,
             comment,
-            aiContext
+            aiContext,
+            mccCategoryId
         );
         aiLog('hook:suggestion:category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
 
