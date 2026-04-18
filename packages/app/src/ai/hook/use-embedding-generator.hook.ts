@@ -2,6 +2,7 @@ import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
+import { aiLog } from '../utils/ai-log.util';
 
 interface MarkParamsInterface {
     readonly transactionId: number;
@@ -14,6 +15,7 @@ interface UseEmbeddingGeneratorReturnInterface {
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
     const markForEmbedding = (params: MarkParamsInterface): void => {
+        aiLog('embed:defer:mark', { transactionId: params.transactionId });
         transactionRepository
             .updateById(params.transactionId, { needsEmbedding: true })
             .then(() => embeddingProgressStore.refresh())
@@ -26,6 +28,8 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
         if (!isNotEmptyArray(ids)) {
             return;
         }
+
+        aiLog('embed:defer:markMany', { count: ids.length, transactionIds: ids });
 
         Promise.all(ids.map(id => transactionRepository.updateById(id, { needsEmbedding: true })))
             .then(() => embeddingProgressStore.refresh())

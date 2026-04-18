@@ -1,6 +1,7 @@
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { aiLog } from '../utils/ai-log.util';
 
 interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;
@@ -32,9 +33,14 @@ export const embeddingProgressStore = {
             const total = await transactionRepository.countAllActive();
             const pending = await transactionEmbeddingRepository.countPending();
             const percent = total === 0 ? 100 : Math.round(((total - pending) / total) * 100);
+            const prior = snapshot;
             snapshot = { percent, isEmbedding: pending > 0 };
+            if (prior.percent !== percent || prior.isEmbedding !== snapshot.isEmbedding) {
+                aiLog('embed:progress:refresh', { total, pending, percent, isEmbedding: snapshot.isEmbedding });
+            }
             notify();
-        } catch {
+        } catch (error: unknown) {
+            aiLog('embed:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
             emptyFn();
         }
     }
