@@ -16,7 +16,7 @@ const DEFAULT_CAPACITY = 20;
 const DEFAULT_TTL_MS = 30_000;
 const TRACKED_TABLES = new Set(['transactions', 'transaction_entries', 'transaction_tags']);
 
-export class PatternCacheService {
+class PatternCacheService {
     private readonly capacity: number;
     private readonly ttlMs: number;
     private readonly entries = new Map<string, CacheEntryInterface>();
@@ -33,7 +33,7 @@ export class PatternCacheService {
             this.entries.delete(key);
             this.entries.set(key, existing);
 
-            return existing.value as T;  
+            return existing.value as T;
         }
 
         const value = await compute();
