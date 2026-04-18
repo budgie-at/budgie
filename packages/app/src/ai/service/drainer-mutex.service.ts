@@ -4,6 +4,10 @@ import { aiLog } from '../utils/ai-log.util';
 class DrainerMutexService {
     private heldBy: DrainerKindEnum | null = null;
 
+    get holder(): DrainerKindEnum | null {
+        return this.heldBy;
+    }
+
     acquire(kind: DrainerKindEnum): boolean {
         if (this.heldBy === null) {
             this.heldBy = kind;
@@ -28,10 +32,6 @@ class DrainerMutexService {
 
     isHeldBy(kind: DrainerKindEnum): boolean {
         return this.heldBy === kind;
-    }
-
-    get holder(): DrainerKindEnum | null {
-        return this.heldBy;
     }
 }
 
