@@ -21,7 +21,8 @@
     "scripts",
     "babel.config.js",
     "metro.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    "**/*.spec.ts"
   ],
   "include": [
     "**/*.ts",
