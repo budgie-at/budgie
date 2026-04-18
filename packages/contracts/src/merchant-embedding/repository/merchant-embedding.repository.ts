@@ -98,8 +98,9 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: MerchantEmbeddingEntityTable.id });
 
+        await this.db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]);
         await this.db.$client.runAsync(
-            'INSERT OR REPLACE INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
             [row.id]
         );
 
