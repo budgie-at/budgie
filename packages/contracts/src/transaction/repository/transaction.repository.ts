@@ -1,7 +1,7 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
@@ -111,7 +111,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     async clearNeedsEmbedding(ids: number[], tx?: DB): Promise<void> {
-        if (ids.length === 0) {
+        if (isEmptyArray(ids)) {
             return;
         }
         const CHUNK = 500;
