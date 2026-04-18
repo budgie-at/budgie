@@ -3,7 +3,7 @@ import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { aiLog } from '../utils/ai-log.util';
 
-interface EmbeddingProgressSnapshotInterface {
+export interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;
     readonly isEmbedding: boolean;
     readonly pending: number;
