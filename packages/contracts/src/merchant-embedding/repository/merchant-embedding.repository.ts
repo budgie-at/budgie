@@ -1,6 +1,7 @@
-import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
+import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
+import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
 import { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
 import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
@@ -215,12 +216,8 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         return rows.map(row => ({
             title: row.title,
             mccDescription: row.mccDescription,
-            categoryId: row.categoryId,
-            categoryTitleEn: row.categoryTitleEn,
             comment: row.comment ?? '',
-            transactionIds: row.transactionIdsCsv.split(',').map(Number),
-            tagIds: isDefined(row.tagIdsCsv) ? row.tagIdsCsv.split(',').map(Number) : [],
-            existingEmbeddingId: row.existingEmbeddingId
+            ...parsePendingContextBaseFields(row)
         }));
     }
 

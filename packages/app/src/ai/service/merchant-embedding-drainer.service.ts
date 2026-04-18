@@ -3,33 +3,16 @@ import { MerchantPendingContextInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { merchantEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { merchantEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { aiLog } from '../utils/ai-log.util';
 
-import { BaseDrainerService } from './base-drainer.service';
+import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
 import { embeddingService } from './embedding.service';
 
-const RELAXED_INTERVAL_MS = 500;
-const RELAXED_BATCH_SIZE = 5;
-const BOOST_BATCH_SIZE = 15;
-const YIELD_EVERY_ROWS = 3;
-
-class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPendingContextInterface> {
+class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<MerchantPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EmbeddingMerchant;
     protected readonly logDomain = 'drainer:embedding:merchant';
-    protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
-    protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;
-    protected readonly boostBatchSize = BOOST_BATCH_SIZE;
-    protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
-
-    protected subscribeToSubsystem(listener: () => void): () => void {
-        return embeddingService.subscribe(listener);
-    }
-
-    protected isSubsystemReady(): boolean {
-        return embeddingService.isReady;
-    }
 
     protected async fetchPending(limit: number): Promise<readonly MerchantPendingContextInterface[]> {
         return merchantEmbeddingRepository.findPendingMerchantContexts(limit);
@@ -39,29 +22,16 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
         return merchantEmbeddingRepository.countPendingMerchantContexts();
     }
 
-    protected async processRow(context: MerchantPendingContextInterface): Promise<void> {
+    protected logBegin(context: MerchantPendingContextInterface): void {
         aiLog('drainer:embedding:merchant:context:begin', {
             title: context.title,
             categoryId: context.categoryId,
             contextSize: context.transactionIds.length,
             hasExisting: isDefined(context.existingEmbeddingId)
         });
-
-        if (isDefined(context.existingEmbeddingId)) {
-            await this.persistWithSkip(context, context.existingEmbeddingId);
-
-            return;
-        }
-
-        const embeddingId = await this.runEmbedAndUpsert(context);
-        if (!isDefined(embeddingId)) {
-            return;
-        }
-
-        await this.persistEmbedding(context, embeddingId, false);
     }
 
-    private async runEmbedAndUpsert(context: MerchantPendingContextInterface): Promise<number | null> {
+    protected async runEmbedAndUpsert(context: MerchantPendingContextInterface): Promise<number | null> {
         const promptContext = buildMerchantContext({
             title: context.title,
             mccDescription: context.mccDescription,
@@ -101,29 +71,8 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
         return embeddingId;
     }
 
-    private async persistWithSkip(context: MerchantPendingContextInterface, embeddingId: number): Promise<void> {
-        aiLog('drainer:embedding:merchant:context:skip', {
-            reason: 'preflight-hit',
-            contextSize: context.transactionIds.length,
-            embeddingId
-        });
-        await this.persistEmbedding(context, embeddingId, true);
-    }
-
-    private async persistEmbedding(
-        context: MerchantPendingContextInterface,
-        embeddingId: number,
-        skipped: boolean
-    ): Promise<void> {
-        await merchantEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
-        await transactionRepository.clearNeedsEmbedding(context.transactionIds);
-
-        aiLog('drainer:embedding:merchant:context:persisted', {
-            embeddingId,
-            contextSize: context.transactionIds.length,
-            clearedFlags: context.transactionIds.length,
-            skipped
-        });
+    protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[]): Promise<void> {
+        return merchantEmbeddingRepository.replaceTags(embeddingId, tagIds);
     }
 }
 
