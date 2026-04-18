@@ -18,7 +18,6 @@ yarn ts                                   # TypeScript check
 yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
-yarn test                                 # Jest tests
 
 # IMPORTANT: After completing any task, ALWAYS run:
 # During debug sessions (when user says "skip lint"), only run: yarn ts
@@ -114,6 +113,7 @@ packages/
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
+27. **No unit tests** - This project does not use Jest or other unit testing frameworks. Do not add `.spec.ts` / `.test.ts` files, jest config files, or `test` scripts. E2E coverage lives in the `tests/` workspace via Maestro; verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`.
 
 ### Naming Conventions
 
