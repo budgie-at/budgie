@@ -20,7 +20,10 @@
         "packages/app/src/ai/hook/use-ai-stt.hook.ts",
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
-        "packages/app/src/category/enum/system-category-id.enum.ts"
+        "packages/app/src/category/enum/system-category-id.enum.ts",
+        "packages/app/scripts/bench-queries.ts",
+        "packages/app/scripts/seed-bench-db.ts",
+        "packages/app/scripts/snapshot-monthly-patterns.ts"
     ],
     "ignoreDependencies": [
         "husky",
