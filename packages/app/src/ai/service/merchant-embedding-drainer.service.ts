@@ -48,11 +48,20 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
         });
 
         if (isDefined(context.existingEmbeddingId)) {
-            await this.skipViaPreflight(context, context.existingEmbeddingId);
+            await this.persistWithSkip(context, context.existingEmbeddingId);
 
             return;
         }
 
+        const embeddingId = await this.runEmbedAndUpsert(context);
+        if (!isDefined(embeddingId)) {
+            return;
+        }
+
+        await this.persistEmbedding(context, embeddingId, false);
+    }
+
+    private async runEmbedAndUpsert(context: MerchantPendingContextInterface): Promise<number | null> {
         const promptContext = buildMerchantContext({
             title: context.title,
             mccDescription: context.mccDescription,
@@ -65,8 +74,9 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
                 contextSize: context.transactionIds.length
             });
 
-            return;
+            return null;
         }
+
         aiLog('drainer:embedding:merchant:context:embedded', {
             dimensions: rawEmbedding.length,
             contextSize: context.transactionIds.length
@@ -86,28 +96,25 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
                 reason: 'upsert-null',
                 contextSize: context.transactionIds.length
             });
-
-            return;
         }
 
-        await merchantEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
-        await transactionRepository.clearNeedsEmbedding(context.transactionIds);
-
-        aiLog('drainer:embedding:merchant:context:persisted', {
-            embeddingId,
-            contextSize: context.transactionIds.length,
-            clearedFlags: context.transactionIds.length,
-            skipped: false
-        });
+        return embeddingId;
     }
 
-    private async skipViaPreflight(context: MerchantPendingContextInterface, embeddingId: number): Promise<void> {
+    private async persistWithSkip(context: MerchantPendingContextInterface, embeddingId: number): Promise<void> {
         aiLog('drainer:embedding:merchant:context:skip', {
             reason: 'preflight-hit',
             contextSize: context.transactionIds.length,
             embeddingId
         });
+        await this.persistEmbedding(context, embeddingId, true);
+    }
 
+    private async persistEmbedding(
+        context: MerchantPendingContextInterface,
+        embeddingId: number,
+        skipped: boolean
+    ): Promise<void> {
         await merchantEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
         await transactionRepository.clearNeedsEmbedding(context.transactionIds);
 
@@ -115,7 +122,7 @@ class MerchantEmbeddingDrainerService extends BaseDrainerService<MerchantPending
             embeddingId,
             contextSize: context.transactionIds.length,
             clearedFlags: context.transactionIds.length,
-            skipped: true
+            skipped
         });
     }
 }
