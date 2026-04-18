@@ -15,13 +15,6 @@ env:
     env:
       FILE_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
 
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn:
-          text: 'Open'
-
 - extendedWaitUntil:
     visible:
         id: 'SyncAccountSelection.Row.Erste_EUR'
@@ -48,4 +41,4 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'HomePage.TotalBalance'
-      timeout: 30000
+      timeout: 3000

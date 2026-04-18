@@ -2,9 +2,9 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: subflows/import/import-database-fixture.flow.yaml
+    file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ID: '17-expense-to-transfer'
+      FIXTURE_ROW_ID_MATCH: 'e2e-17-expense-to-transfer.db(, db)?'
 
 # --- Create Expense for Long-Press Delete ---
 
