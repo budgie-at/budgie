@@ -26,7 +26,11 @@ export abstract class TranslatableRepositoryBase {
 
     async findUntranslated(limit: number, tx?: TranslatableDB): Promise<{ id: number; title: string }[]> {
         const where: SQL | undefined = untranslatedWhere(this.columns.titleEn, this.columns.deletedAt);
-        const rows = await (tx ?? this.db).select({ id: this.columns.id, title: this.columns.title }).from(this.table).where(where).limit(limit);
+        const rows = await (tx ?? this.db)
+            .select({ id: this.columns.id, title: this.columns.title })
+            .from(this.table)
+            .where(where)
+            .limit(limit);
 
         return rows.map(row => ({ id: Number(row.id), title: String(row.title) }));
     }
