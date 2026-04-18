@@ -4,6 +4,8 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
+import { translationProgressStore } from '../store/translation-progress.store';
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 import { aiLog } from '../utils/ai-log.util';
 
@@ -91,6 +93,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         }, BACKGROUND_RELEASE_DELAY_MS);
     };
 
+    // eslint-disable-next-line max-statements -- Start sequence: model boots, drainer starts, status services start, progress refresh
     private async startSubsystems(): Promise<void> {
         const started = Date.now();
         aiLog('coordinator:subsystems:start:begin');
@@ -104,6 +107,8 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         aiUmbrellaStatusService.start();
         aiTranslationStatusService.start();
         aiEmbeddingStatusService.start();
+        void translationProgressStore.refresh();
+        void embeddingProgressStore.refresh(true);
         aiLog('coordinator:subsystems:start:complete', {
             durationMs: Date.now() - started,
             chatStatus: chatService.getSnapshot().status,

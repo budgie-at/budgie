@@ -52,14 +52,14 @@ export const embeddingProgressStore = {
     getSnapshot(): EmbeddingProgressSnapshotInterface {
         return snapshot;
     },
-    async refresh(): Promise<void> {
+    async refresh(force = false): Promise<void> {
         if (pendingRefresh !== null) {
             await pendingRefresh;
 
             return;
         }
         const elapsed = Date.now() - lastRefreshAt;
-        if (elapsed < REFRESH_THROTTLE_MS) {
+        if (!force && elapsed < REFRESH_THROTTLE_MS) {
             return;
         }
         lastRefreshAt = Date.now();
