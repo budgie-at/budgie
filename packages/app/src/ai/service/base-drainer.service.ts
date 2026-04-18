@@ -195,7 +195,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }, delay);
     }
 
-    // eslint-disable-next-line max-statements -- Relaxed tick: mutex guard, fetch, run, refresh, reschedule
+    // eslint-disable-next-line max-statements -- Relaxed tick: mutex, fetch, run, refresh, reschedule
     private async runRelaxedTick(): Promise<void> {
         if (!this.isSafe()) {
             return;
@@ -208,18 +208,25 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         aiLog(`${this.logDomain}:tick`);
         const started = Date.now();
         try {
+            const fetchStarted = Date.now();
             const rows = await this.fetchPending(this.relaxedBatchSize);
+            aiLog(`${this.logDomain}:fetch:done`, { durationMs: Date.now() - fetchStarted, size: rows.length });
             if (rows.length === 0) {
                 await this.refreshPending();
 
                 return;
             }
-            await this.runRows(rows);
+            for (const row of rows) {
+                if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.Error) {
+                    break;
+                }
+                // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
+                await this.runRow(row);
+            }
             await this.refreshPending();
             aiLog(`${this.logDomain}:batch:complete`, {
                 durationMs: Date.now() - started,
-                processed: rows.length,
-                pending: this.snapshot.pending
+                processed: rows.length
             });
         } catch (error: unknown) {
             aiLog(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
@@ -279,17 +286,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 pending: this.snapshot.pending
             });
         }
-    }
-
-    private async runRows(rows: readonly TRow[]): Promise<void> {
-        /* eslint-disable no-await-in-loop -- Sequential to avoid Metal thrash */
-        for (const row of rows) {
-            if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.Error) {
-                return;
-            }
-            await this.runRow(row);
-        }
-        /* eslint-enable no-await-in-loop */
     }
 
     private async runRow(row: TRow): Promise<void> {
