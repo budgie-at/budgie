@@ -28,7 +28,8 @@ import { EmbeddingService } from './embedding.service';
 export class EmbeddingSuggestionService {
     constructor(
         private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
-        private readonly embedding: EmbeddingInvokerInterface
+        private readonly embedding: EmbeddingInvokerInterface,
+        private readonly getMccCategorySuggestions: (mccCategoryId: number, limit: number) => Promise<{ categoryId: number; count: number }[]>
     ) {}
 
     /* eslint-disable-next-line @typescript-eslint/max-params, max-statements -- Keep full context fields explicit; instrumented temporarily */
@@ -37,7 +38,8 @@ export class EmbeddingSuggestionService {
         transactionTitle: string,
         mccDescription: string | null,
         comment: string,
-        aiContext: string
+        aiContext: string,
+        mccCategoryId: number | null = null
     ): Promise<CategoryEntityInterface[]> {
         const methodStart = Date.now();
         aiLog('suggest:category:start', { titleLen: transactionTitle.length, commentLen: comment.length, aiContextLen: aiContext.length });
@@ -59,7 +61,11 @@ export class EmbeddingSuggestionService {
             distanceThreshold: resolved.distanceThreshold
         });
 
-        const [merchantResults, commentResults] = await Promise.all([
+        const mccLookup = isDefined(mccCategoryId)
+            ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
+            : Promise.resolve([]);
+
+        const [merchantResults, commentResults, mccRows] = await Promise.all([
             this.repositories.merchant.findSimilarCategories(
                 resolved.serialized,
                 EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -71,7 +77,8 @@ export class EmbeddingSuggestionService {
                 EMBEDDING_VEC_OVERSAMPLE_LIMIT,
                 resolved.distanceThreshold,
                 EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-            )
+            ),
+            mccLookup
         ]);
 
         aiLog('suggest:category:repoResults', {
@@ -80,8 +87,13 @@ export class EmbeddingSuggestionService {
             merchantRows: merchantResults.map(row => ({ categoryId: row.categoryId, score: row.score })),
             commentRows: commentResults.map(row => ({ categoryId: row.categoryId, score: row.score }))
         });
+        aiLog('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
 
-        const merged = this.mergeCategoryScores(merchantResults, commentResults);
+        const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
+        this.blendMccScores(scoreMap, mccRows);
+        const merged = [...scoreMap.entries()]
+            .map(([categoryId, score]) => ({ categoryId, score }))
+            .sort((first, second) => second.score - first.score);
         const topCategories = merged.slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
         const resolvedCategories = topCategories.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
         aiLog('suggest:category:final', {
@@ -222,10 +234,10 @@ export class EmbeddingSuggestionService {
         return { context, distanceThreshold };
     }
 
-    private mergeCategoryScores(
+    private buildCategoryScoreMap(
         merchantResults: CategoryScoreResultInterface[],
         commentResults: CategoryScoreResultInterface[]
-    ): CategoryScoreResultInterface[] {
+    ): Map<number, number> {
         const scoreMap = new Map<number, number>();
 
         for (const row of merchantResults) {
@@ -236,9 +248,19 @@ export class EmbeddingSuggestionService {
             scoreMap.set(row.categoryId, (scoreMap.get(row.categoryId) ?? 0) + row.score);
         }
 
-        return [...scoreMap.entries()]
-            .map(([categoryId, score]) => ({ categoryId, score }))
-            .sort((first, second) => second.score - first.score);
+        return scoreMap;
+    }
+
+    private blendMccScores(scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void {
+        if (mccRows.length === 0) {
+            return;
+        }
+        const mccBlendWeight = 0.7;
+        const mccMaxCount = Math.max(...mccRows.map(row => row.count));
+        for (const { categoryId, count } of mccRows) {
+            const mccNormalizedScore = (count / mccMaxCount) * mccBlendWeight * mccMaxCount;
+            scoreMap.set(categoryId, (scoreMap.get(categoryId) ?? 0) + mccNormalizedScore);
+        }
     }
 
     private mergeTagScores(

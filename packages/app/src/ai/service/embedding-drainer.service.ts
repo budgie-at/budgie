@@ -118,7 +118,9 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.residueCleared = true;
         try {
             await transactionRepository.clearNonIndexableFlags();
-            aiLog('drainer:embedding:orchestrator:residue:cleared');
+            await transactionRepository.clearAlreadyIndexedMerchantFlags();
+            await transactionRepository.clearAlreadyIndexedCommentFlags();
+            aiLog('orchestrator:pre-clear:done');
         } catch (error: unknown) {
             aiLog('drainer:embedding:orchestrator:residue:throw', {
                 errorMessage: getErrorMessage(error)

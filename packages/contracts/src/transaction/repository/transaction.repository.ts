@@ -1,11 +1,12 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
 import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -118,28 +119,134 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
         const CHUNK = 500;
         const runner = tx ?? this.db;
+        const overallStart = Date.now();
         for (let start = 0; start < ids.length; start += CHUNK) {
             const chunk = ids.slice(start, start + CHUNK);
+            const chunkStart = Date.now();
             // eslint-disable-next-line no-await-in-loop -- sequential chunking to stay under SQLITE_MAX_VARIABLE_NUMBER
             await runner
                 .update(TransactionEntityTable)
                 .set({ needsEmbedding: false })
                 .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
+            bankSyncLog('repo:transaction:clearNeedsEmbedding:chunk', {
+                chunkSize: chunk.length,
+                chunkDurationMs: Date.now() - chunkStart,
+                offset: start,
+                total: ids.length
+            });
         }
+        bankSyncLog('repo:transaction:clearNeedsEmbedding:done', {
+            totalIds: ids.length,
+            totalDurationMs: Date.now() - overallStart
+        });
     }
 
     async clearNonIndexableFlags(tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ needsEmbedding: false })
+        const runner = tx ?? this.db;
+
+        const emptyStart = Date.now();
+        await runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment = ''
+        `);
+        bankSyncLog('repo:transaction:clearNonIndexableFlags:empty:done', { durationMs: Date.now() - emptyStart });
+
+        const uncategorizedStart = Date.now();
+        await runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND id IN (
+                SELECT te.transaction_id FROM transaction_entries te
+                LEFT JOIN accounts acc ON acc.id = te.account_id
+                WHERE te.category_id IS NULL
+                   OR acc.type = ${AccountTypeEnum.DEBT}
+              )
+        `);
+        bankSyncLog('repo:transaction:clearNonIndexableFlags:uncategorized:done', { durationMs: Date.now() - uncategorizedStart });
+
+        const transferStart = Date.now();
+        await runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
+        `);
+        bankSyncLog('repo:transaction:clearNonIndexableFlags:transfer:done', { durationMs: Date.now() - transferStart });
+    }
+
+    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
+        const start = Date.now();
+        await (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                JOIN merchant_embeddings me
+                  ON me.title = transactions.title
+                  AND me.mcc_description = COALESCE(mcc.full_description, '')
+                  AND me.category_id = te.category_id
+                  AND me.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+        bankSyncLog('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
+    }
+
+    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
+        const start = Date.now();
+        await (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                JOIN comment_embeddings ce
+                  ON ce.comment = transactions.comment
+                  AND ce.category_id = te.category_id
+                  AND ce.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+        bankSyncLog('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
+    }
+
+    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
+        const start = Date.now();
+        const rows = await this.db
+            .select({
+                categoryId: TransactionEntryEntityTable.categoryId,
+                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('count')
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
             .where(
                 and(
-                    eq(TransactionEntityTable.needsEmbedding, true),
+                    eq(TransactionEntryEntityTable.mccCategoryId, mccCategoryId),
+                    isNotNull(TransactionEntryEntityTable.categoryId),
                     isNull(TransactionEntityTable.deletedAt),
-                    eq(TransactionEntityTable.title, ''),
-                    eq(TransactionEntityTable.comment, '')
+                    isNull(TransactionEntryEntityTable.deletedAt)
                 )
-            );
+            )
+            .groupBy(TransactionEntryEntityTable.categoryId)
+            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
+            .limit(limit);
+
+        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', { mccCategoryId, resultCount: rows.length, durationMs: Date.now() - start });
+
+        return rows.filter((row): row is { categoryId: number; count: number } => row.categoryId !== null);
     }
 
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
