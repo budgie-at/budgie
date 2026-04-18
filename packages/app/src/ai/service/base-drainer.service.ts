@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
+/* eslint-disable @typescript-eslint/member-ordering -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
 import { AppState, AppStateStatus } from 'react-native';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -14,6 +14,7 @@ import { drainerMutex } from './drainer-mutex.service';
 
 const MAX_CONSECUTIVE_FAILURES = 5;
 const PROGRESS_LOG_EVERY = 25;
+const IDLE_INTERVAL_MS = 10_000;
 
 export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnapshotInterface> {
     protected abstract readonly kind: DrainerKindEnum;
@@ -170,28 +171,23 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
+    private canScheduleDrain(): boolean {
+        const blockedStates = [DrainerStateEnum.Boosting, DrainerStateEnum.Paused, DrainerStateEnum.Error];
+
+        return this.started && !blockedStates.includes(this.snapshot.state) && this.isSafe();
+    }
+
     private scheduleDrain(): void {
-        if (!this.started) {
-            return;
-        }
-        if (this.snapshot.state === DrainerStateEnum.Boosting) {
-            return;
-        }
-        if (this.snapshot.state === DrainerStateEnum.Paused) {
-            return;
-        }
-        if (this.snapshot.state === DrainerStateEnum.Error) {
-            return;
-        }
-        if (!this.isSafe()) {
+        if (!this.canScheduleDrain()) {
             return;
         }
         this.haltTimer();
+        const delay = this.snapshot.pending === 0 ? IDLE_INTERVAL_MS : this.relaxedIntervalMs;
         this.timer = setTimeout(() => {
             this.timer = null;
             this.pendingBatchPromise = this.runRelaxedTick();
             void this.pendingBatchPromise;
-        }, this.relaxedIntervalMs);
+        }, delay);
     }
 
     // eslint-disable-next-line max-statements -- Relaxed tick: fetch, run, refresh, reschedule
