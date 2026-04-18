@@ -24,12 +24,14 @@ export const TransactionEntityTable = sqliteTable(
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false),
         operatedWeekday: int('operated_weekday', { mode: 'number' })
-            .generatedAlwaysAs(sql`CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER)`, { mode: 'virtual' }),
+            .generatedAlwaysAs(sql`CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER)`, { mode: 'virtual' })
+            .notNull(),
         operatedMinuteOfDay: int('operated_minute_of_day', { mode: 'number' })
             .generatedAlwaysAs(
                 sql`CAST(strftime('%H', operated_at, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', operated_at, 'unixepoch') AS INTEGER)`,
                 { mode: 'virtual' }
             )
+            .notNull()
     }),
     table => [
         index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt),
