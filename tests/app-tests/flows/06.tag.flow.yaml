@@ -2,9 +2,9 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: subflows/import/import-database-fixture.flow.yaml
+    file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ID: '00-empty-state'
+      FIXTURE_ROW_ID_MATCH: 'e2e-00-empty-state.db(, db)?'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 - runFlow:

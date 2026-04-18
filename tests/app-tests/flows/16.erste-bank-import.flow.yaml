@@ -73,17 +73,10 @@ env:
       env:
           FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
-- runFlow:
-      when:
-          visible: 'Open'
-      commands:
-          - tapOn:
-                text: 'Open'
-
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.Balance.Erste_EUR._3412_05'
-      timeout: 30000
+      timeout: 3000
 
 - tapOn:
       id: 'AccountCard.Erste EUR'

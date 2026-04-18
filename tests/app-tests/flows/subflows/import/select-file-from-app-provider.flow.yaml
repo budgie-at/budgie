@@ -76,3 +76,10 @@ env:
 - tapOn:
       id: '${FILE_ROW_ID_MATCH}'
       retryTapIfNoChange: true
+
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn:
+                text: 'Open'
