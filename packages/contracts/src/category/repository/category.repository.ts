@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, isNull, like, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, isNull, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -30,17 +30,27 @@ export class CategoryRepository extends TranslatableRepositoryBase {
     }
 
     findBySearchQuery(search: string, includeDefault: boolean) {
-        const searchQuery = like(CategoryEntityTable.titleSearch, `%${search.toLowerCase()}%`);
+        const trimmed = search.trim();
+        const baseFilter = includeDefault
+            ? eq(CategoryEntityTable.isSystemCategory, false)
+            : and(eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
 
-        const whereConditions = includeDefault
-            ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
-            : and(searchQuery, eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
+        if (trimmed === '') {
+            return this.db
+                .select(getTableColumns(CategoryEntityTable))
+                .from(CategoryEntityTable)
+                .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+                .where(baseFilter)
+                .groupBy(CategoryEntityTable.id)
+                .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
+        }
 
         return this.db
             .select(getTableColumns(CategoryEntityTable))
             .from(CategoryEntityTable)
+            .innerJoin(sql`categories_fts`, sql`categories_fts.rowid = ${CategoryEntityTable.id}`)
             .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .where(whereConditions)
+            .where(and(sql`categories_fts MATCH ${trimmed}`, baseFilter))
             .groupBy(CategoryEntityTable.id)
             .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
     }

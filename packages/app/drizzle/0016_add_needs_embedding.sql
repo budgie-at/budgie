@@ -37,3 +37,38 @@ CREATE INDEX IF NOT EXISTS `transactions_pending_merchant_idx` ON `transactions`
 CREATE INDEX IF NOT EXISTS `transactions_pending_comment_idx` ON `transactions` (`operated_at` DESC) WHERE `needs_embedding` = 1 AND `deleted_at` IS NULL AND `title` = '' AND `comment` != '';
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `exchange_rates_lookup_idx` ON `exchange_rates` (`base_instrument_id`, `quote_instrument_id`, `created_at` DESC) WHERE `deleted_at` IS NULL;
+
+--> statement-breakpoint
+CREATE VIRTUAL TABLE IF NOT EXISTS `categories_fts` USING fts5(title, content='categories', content_rowid='id', tokenize='unicode61 remove_diacritics 2');
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `categories_fts_ai` AFTER INSERT ON `categories` BEGIN
+    INSERT INTO `categories_fts`(rowid, title) VALUES (new.id, new.title);
+END;
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `categories_fts_ad` AFTER DELETE ON `categories` BEGIN
+    INSERT INTO `categories_fts`(`categories_fts`, rowid, title) VALUES ('delete', old.id, old.title);
+END;
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `categories_fts_au` AFTER UPDATE OF `title` ON `categories` BEGIN
+    INSERT INTO `categories_fts`(`categories_fts`, rowid, title) VALUES ('delete', old.id, old.title);
+    INSERT INTO `categories_fts`(rowid, title) VALUES (new.id, new.title);
+END;
+--> statement-breakpoint
+INSERT INTO `categories_fts`(rowid, title) SELECT `id`, `title` FROM `categories` WHERE NOT EXISTS (SELECT 1 FROM `categories_fts` LIMIT 1);
+--> statement-breakpoint
+CREATE VIRTUAL TABLE IF NOT EXISTS `tags_fts` USING fts5(title, content='tags', content_rowid='id', tokenize='unicode61 remove_diacritics 2');
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `tags_fts_ai` AFTER INSERT ON `tags` BEGIN
+    INSERT INTO `tags_fts`(rowid, title) VALUES (new.id, new.title);
+END;
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `tags_fts_ad` AFTER DELETE ON `tags` BEGIN
+    INSERT INTO `tags_fts`(`tags_fts`, rowid, title) VALUES ('delete', old.id, old.title);
+END;
+--> statement-breakpoint
+CREATE TRIGGER IF NOT EXISTS `tags_fts_au` AFTER UPDATE OF `title` ON `tags` BEGIN
+    INSERT INTO `tags_fts`(`tags_fts`, rowid, title) VALUES ('delete', old.id, old.title);
+    INSERT INTO `tags_fts`(rowid, title) VALUES (new.id, new.title);
+END;
+--> statement-breakpoint
+INSERT INTO `tags_fts`(rowid, title) SELECT `id`, `title` FROM `tags` WHERE NOT EXISTS (SELECT 1 FROM `tags_fts` LIMIT 1);

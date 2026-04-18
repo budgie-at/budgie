@@ -1,4 +1,4 @@
-import { count, eq, inArray, isNull, like } from 'drizzle-orm';
+import { count, eq, getTableColumns, inArray, isNull, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -32,9 +32,16 @@ export class TagRepository extends TranslatableRepositoryBase {
     }
 
     findBySearchQuery(search: string) {
-        return this.db.query.TagEntityTable.findMany({
-            where: like(TagEntityTable.titleSearch, `%${search.toLowerCase()}%`)
-        });
+        const trimmed = search.trim();
+        if (trimmed === '') {
+            return this.db.query.TagEntityTable.findMany();
+        }
+
+        return this.db
+            .select(getTableColumns(TagEntityTable))
+            .from(TagEntityTable)
+            .innerJoin(sql`tags_fts`, sql`tags_fts.rowid = ${TagEntityTable.id}`)
+            .where(sql`tags_fts MATCH ${trimmed}`);
     }
 
     count() {

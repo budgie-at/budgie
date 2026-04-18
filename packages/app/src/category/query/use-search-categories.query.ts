@@ -3,9 +3,15 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { isDefined } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { toFtsQuery } from '../../@generic/utils/to-fts-query.util';
 
 export const useSearchCategoriesQuery = (query: string, includeDefault: boolean) => {
-    const { data, error, updatedAt } = useLiveQuery(categoryRepository.findBySearchQuery(query, includeDefault), [query, includeDefault]);
+    const ftsQuery = toFtsQuery(query);
+    const searchArg = ftsQuery ?? '';
+    const { data, error, updatedAt } = useLiveQuery(categoryRepository.findBySearchQuery(searchArg, includeDefault), [
+        searchArg,
+        includeDefault
+    ]);
     const { data: countData } = useLiveQuery(categoryRepository.count(includeDefault), [includeDefault]);
 
     if (!isDefined(updatedAt)) {
