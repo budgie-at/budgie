@@ -8,7 +8,7 @@ import { aiLog } from '../utils/ai-log.util';
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
 
-const RELAXED_INTERVAL_MS = 500;
+const RELAXED_INTERVAL_MS = 2500;
 const RELAXED_BATCH_SIZE = 5;
 const BOOST_BATCH_SIZE = 15;
 const YIELD_EVERY_ROWS = 3;
