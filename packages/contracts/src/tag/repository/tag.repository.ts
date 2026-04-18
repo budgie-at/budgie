@@ -1,4 +1,4 @@
-import { count, eq, inArray, isNull, like } from 'drizzle-orm';
+import { and, count, eq, inArray, isNull, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -114,5 +114,38 @@ export class TagRepository {
 
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TagEntityTable);
+    }
+
+    async findUntranslated(limit: number, tx?: DB): Promise<{ id: number; title: string }[]> {
+        return (tx ?? this.db)
+            .select({ id: TagEntityTable.id, title: TagEntityTable.title })
+            .from(TagEntityTable)
+            .where(and(isNull(TagEntityTable.titleEn), isNull(TagEntityTable.deletedAt)))
+            .limit(limit);
+    }
+
+    async countUntranslated(tx?: DB): Promise<number> {
+        const [row] = await (tx ?? this.db)
+            .select({ value: count() })
+            .from(TagEntityTable)
+            .where(and(isNull(TagEntityTable.titleEn), isNull(TagEntityTable.deletedAt)));
+
+        return row.value;
+    }
+
+    async countAll(tx?: DB): Promise<number> {
+        const [row] = await (tx ?? this.db)
+            .select({ value: count() })
+            .from(TagEntityTable)
+            .where(isNull(TagEntityTable.deletedAt));
+
+        return row.value;
+    }
+
+    async resetAllTranslations(tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(TagEntityTable)
+            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            .where(isNull(TagEntityTable.deletedAt));
     }
 }
