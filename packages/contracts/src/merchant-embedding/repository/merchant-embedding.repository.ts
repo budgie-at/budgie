@@ -142,14 +142,17 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         return row.id;
     }
 
-    async replaceTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        return this.replaceEmbeddingTags({
-            tagTable: MerchantEmbeddingTagEntityTable,
-            foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
-            embeddingId,
-            tagIds,
-            createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
-        });
+    async replaceTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
+        return this.replaceEmbeddingTags(
+            {
+                tagTable: MerchantEmbeddingTagEntityTable,
+                foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+                embeddingId,
+                tagIds,
+                createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
+            },
+            tx
+        );
     }
 
     async countAll(): Promise<number> {

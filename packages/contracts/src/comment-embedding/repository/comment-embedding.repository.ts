@@ -103,14 +103,17 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
         return row.id;
     }
 
-    async replaceTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        return this.replaceEmbeddingTags({
-            tagTable: CommentEmbeddingTagEntityTable,
-            foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
-            embeddingId,
-            tagIds,
-            createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
-        });
+    async replaceTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
+        return this.replaceEmbeddingTags(
+            {
+                tagTable: CommentEmbeddingTagEntityTable,
+                foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
+                embeddingId,
+                tagIds,
+                createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
+            },
+            tx
+        );
     }
 
     async countAll(): Promise<number> {
