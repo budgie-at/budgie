@@ -2,8 +2,10 @@ import * as SQLite from 'expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
-interface CacheEntryInterface {
-    readonly value: unknown;
+import type { MonthlyPatternRawRowInterface, RepeatedTransactionPatternInterface } from '@budgie/contracts';
+
+interface CacheEntryInterface<T> {
+    readonly value: T;
     readonly storedAt: number;
 }
 
@@ -19,39 +21,62 @@ const TRACKED_TABLES = new Set(['transactions', 'transaction_entries', 'transact
 class PatternCacheService {
     private readonly capacity: number;
     private readonly ttlMs: number;
-    private readonly entries = new Map<string, CacheEntryInterface>();
+
+    private readonly monthlyEntries = new Map<string, CacheEntryInterface<MonthlyPatternRawRowInterface[]>>();
+    private readonly repeatedEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
+    private readonly amountEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
 
     constructor(options: PatternCacheOptionsInterface = {}) {
         this.capacity = options.capacity ?? DEFAULT_CAPACITY;
         this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
     }
 
-    async memoize<T>(key: string, compute: () => Promise<T>): Promise<T> {
-        const existing = this.entries.get(key);
+    async memoizeMonthly(key: string, compute: () => Promise<MonthlyPatternRawRowInterface[]>): Promise<MonthlyPatternRawRowInterface[]> {
+        return this.recall(this.monthlyEntries, key, compute);
+    }
+
+    async memoizeRepeated(
+        key: string,
+        compute: () => Promise<RepeatedTransactionPatternInterface[]>
+    ): Promise<RepeatedTransactionPatternInterface[]> {
+        return this.recall(this.repeatedEntries, key, compute);
+    }
+
+    async memoizeAmount(
+        key: string,
+        compute: () => Promise<RepeatedTransactionPatternInterface[]>
+    ): Promise<RepeatedTransactionPatternInterface[]> {
+        return this.recall(this.amountEntries, key, compute);
+    }
+
+    invalidate(): void {
+        this.monthlyEntries.clear();
+        this.repeatedEntries.clear();
+        this.amountEntries.clear();
+    }
+
+    private async recall<T>(store: Map<string, CacheEntryInterface<T>>, key: string, compute: () => Promise<T>): Promise<T> {
+        const existing = store.get(key);
         const now = Date.now();
         if (isDefined(existing) && now - existing.storedAt < this.ttlMs) {
-            this.entries.delete(key);
-            this.entries.set(key, existing);
+            store.delete(key);
+            store.set(key, existing);
 
-            return existing.value as T;
+            return existing.value;
         }
 
         const value = await compute();
-        this.entries.set(key, { value, storedAt: now });
-        this.evictOldestIfOverCapacity();
+        store.set(key, { value, storedAt: now });
+        this.evictOldestIfOverCapacity(store);
 
         return value;
     }
 
-    invalidate(): void {
-        this.entries.clear();
-    }
-
-    private evictOldestIfOverCapacity(): void {
-        if (this.entries.size > this.capacity) {
-            const oldest = this.entries.keys().next().value;
+    private evictOldestIfOverCapacity<T>(store: Map<string, CacheEntryInterface<T>>): void {
+        if (store.size > this.capacity) {
+            const oldest = store.keys().next().value;
             if (isDefined(oldest)) {
-                this.entries.delete(oldest);
+                store.delete(oldest);
             }
         }
     }
