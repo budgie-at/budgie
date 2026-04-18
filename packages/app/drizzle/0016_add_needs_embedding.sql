@@ -21,3 +21,11 @@ CREATE INDEX IF NOT EXISTS `transaction_entries_category_idx` ON `transaction_en
 CREATE INDEX IF NOT EXISTS `transaction_entries_category_type_idx` ON `transaction_entries` (`category_id`, `type`) WHERE `category_id` IS NOT NULL;
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS `transaction_tags_tag_idx` ON `transaction_tags` (`tag_id`);
+--> statement-breakpoint
+ALTER TABLE `transactions` ADD COLUMN `operated_weekday` INTEGER GENERATED ALWAYS AS (CAST(strftime('%w', `operated_at`, 'unixepoch') AS INTEGER)) VIRTUAL;
+--> statement-breakpoint
+ALTER TABLE `transactions` ADD COLUMN `operated_minute_of_day` INTEGER GENERATED ALWAYS AS (CAST(strftime('%H', `operated_at`, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', `operated_at`, 'unixepoch') AS INTEGER)) VIRTUAL;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `transactions_weekday_type_idx` ON `transactions` (`operated_weekday`, `type`) WHERE `deleted_at` IS NULL;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `transactions_minute_of_day_idx` ON `transactions` (`operated_minute_of_day`) WHERE `deleted_at` IS NULL;
