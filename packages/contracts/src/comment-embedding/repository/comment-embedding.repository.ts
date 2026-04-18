@@ -1,14 +1,6 @@
-import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
-
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
-import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { TagEntityTable } from '../../tag/table/tag-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { CommentPendingContextInterface } from '../interface/comment-pending-context.interface';
-import { UnembeddedCommentDataInterface } from '../interface/unembedded-comment-data.interface';
 import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
 import { CommentEmbeddingTagEntityTable } from '../table/comment-embedding-tag-entity.table';
@@ -156,67 +148,8 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
         });
     }
 
-    async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedCommentDataInterface[]> {
-        const entryJoinCondition = and(
-            eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
-            isNull(TransactionEntryEntityTable.deletedAt)
-        );
-        const commentWhereCondition = and(
-            isNull(TransactionEntityTable.deletedAt),
-            eq(TransactionEntityTable.title, ''),
-            ne(TransactionEntityTable.comment, ''),
-            isNotNull(TransactionEntryEntityTable.categoryId)
-        );
-
-        let query = this.db
-            .select({
-                comment: TransactionEntityTable.comment,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
-                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, entryJoinCondition)
-            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
-            .where(commentWhereCondition)
-            .groupBy(TransactionEntityTable.comment, TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit)
-            .$dynamic();
-
-        if (isDefined(cursor)) {
-            query = query.having(lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor));
-        }
-
-        const rows = await query;
-        const validRows = rows.filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId));
-
-        return validRows.map(row => ({
-            comment: row.comment,
-            categoryId: row.categoryId,
-            categoryTitleEn: row.categoryTitleEn ?? null,
-            tagIds: row.tagIds ?? null,
-            maxOperatedAt: row.maxOperatedAt
-        }));
-    }
-
     async countAll(): Promise<number> {
         return this.countRows(CommentEmbeddingEntityTable, CommentEmbeddingEntityTable.deletedAt);
-    }
-
-    async findAllContextKeys(): Promise<string[]> {
-        const results = await this.db
-            .select({
-                comment: CommentEmbeddingEntityTable.comment,
-                categoryId: CommentEmbeddingEntityTable.categoryId
-            })
-            .from(CommentEmbeddingEntityTable)
-            .where(isNull(CommentEmbeddingEntityTable.deletedAt));
-
-        return results.map(row => `${row.comment}|${row.categoryId}`);
     }
 
     async findPendingCommentContexts(limit: number): Promise<CommentPendingContextInterface[]> {
