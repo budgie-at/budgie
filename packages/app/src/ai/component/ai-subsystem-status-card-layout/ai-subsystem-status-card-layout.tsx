@@ -66,7 +66,8 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     const visuals = AI_SUBSYSTEM_CARD_VISUALS[snapshot.state];
 
     const leftContent = renderLeftIcon(holdProgress, visuals.colorClass);
-    const rightContent = <Text className={`text-sm font-medium ${visuals.colorClass}`}>{`${snapshot.percent}%`}</Text>;
+    const percentText = `${snapshot.percent}%`;
+    const rightContent = <Text className={`text-sm font-medium text-right w-12 ${visuals.colorClass}`}>{percentText}</Text>;
 
     return (
         <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
