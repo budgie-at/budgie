@@ -10,7 +10,7 @@ env:
 
 - runFlow:
       when:
-          notVisible: 'No accounts yet|Noch keine Konten'
+          notVisible: 'No accounts yet'
       file: subflows/import/clear-data-from-settings.flow.yaml
 
 - evalScript: ${output.phase = 'clear-state-import'}
@@ -75,10 +75,10 @@ env:
 
 - runFlow:
       when:
-          visible: 'Open|Öffnen'
+          visible: 'Open'
       commands:
           - tapOn:
-                text: 'Open|Öffnen'
+                text: 'Open'
 
 - extendedWaitUntil:
       visible:

@@ -4,11 +4,11 @@ env:
 ---
 - extendedWaitUntil:
     visible:
-      text: 'Select File|Datei auswählen'
+      text: 'Select File'
     timeout: 10000
 
 - tapOn:
-    text: 'Select File|Datei auswählen'
+    text: 'Select File'
 
 - runFlow:
     file: select-file-from-app-provider.flow.yaml
@@ -17,10 +17,10 @@ env:
 
 - runFlow:
     when:
-      visible: 'Open|Öffnen'
+      visible: 'Open'
     commands:
       - tapOn:
-          text: 'Open|Öffnen'
+          text: 'Open'
 
 - extendedWaitUntil:
     visible:
@@ -32,15 +32,15 @@ env:
 
 - extendedWaitUntil:
     visible:
-      text: 'Start Sync|Synchronisation starten'
+      text: 'Start Sync'
     timeout: 15000
 
 - tapOn:
-      text: 'Start Sync|Synchronisation starten'
+      text: 'Start Sync'
 
 - runFlow:
       when:
-          visible: 'Already syncing|Synchronisiert bereits'
+          visible: 'Already syncing'
       commands:
           - tapOn:
                 id: 'PageHeader.BackButton'
