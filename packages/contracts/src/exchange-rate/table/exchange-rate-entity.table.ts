@@ -1,5 +1,5 @@
-import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
+import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 
