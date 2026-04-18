@@ -1,5 +1,6 @@
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
+import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
@@ -103,14 +104,18 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         params: SimilarCommentsParamsInterface
     ): Promise<CommentDistanceResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
-
-        return this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+        const start = Date.now();
+        bankSyncLog('repo:merchantEmbedding:findSimilarComments:start', { vecLimit, distanceThreshold, categoryId, commentLimit });
+        const result = await this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryId,
             commentLimit
         ]);
+        bankSyncLog('repo:merchantEmbedding:findSimilarComments:done', { resultCount: result.length, durationMs: Date.now() - start });
+
+        return result;
     }
 
     async upsert(params: UpsertMerchantEmbeddingParamsInterface): Promise<number | null> {

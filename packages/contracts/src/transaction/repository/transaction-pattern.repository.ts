@@ -3,6 +3,8 @@ import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, 
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
+
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -50,15 +52,28 @@ export class TransactionPatternRepository {
     }
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = Date.now();
+        bankSyncLog('repo:pattern:findRepeatedPatterns:start', { weekday: query.weekday, accountId: query.accountId, categoryId: query.categoryId });
         const conditions = this.buildPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
+        const result = await this.enrichPatternsWithTags(patternRows);
+        bankSyncLog('repo:pattern:findRepeatedPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
 
-        return this.enrichPatternsWithTags(patternRows);
+        return result;
     }
 
     async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+        const start = Date.now();
+        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:start', { displayMonth: query.displayMonth, defaultInstrumentId: query.defaultInstrumentId });
+
+        const bankStart = Date.now();
         const bankPatterns = await this.executeBankSyncedMonthlyQuery(query);
+        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:bankSynced', { count: bankPatterns.length, durationMs: Date.now() - bankStart });
+
+        const manualStart = Date.now();
         const manualPatterns = await this.executeManualMonthlyQuery(query);
+        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:manual', { count: manualPatterns.length, durationMs: Date.now() - manualStart });
+
         const allPatterns = [...bankPatterns, ...manualPatterns];
 
         allPatterns.sort((first, second) => {
@@ -70,14 +85,21 @@ export class TransactionPatternRepository {
             return second.lastOccurrence - first.lastOccurrence;
         });
 
-        return allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
+        const result = allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
+        bankSyncLog('repo:pattern:findMonthlyRecurringPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
+
+        return result;
     }
 
     async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = Date.now();
+        bankSyncLog('repo:pattern:findAmountBasedPatterns:start', { accountId: query.accountId, categoryId: query.categoryId, amountMin: query.amountMin, amountMax: query.amountMax });
         const conditions = this.buildAmountPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
+        const result = await this.enrichPatternsWithTags(patternRows);
+        bankSyncLog('repo:pattern:findAmountBasedPatterns:done', { resultCount: result.length, durationMs: Date.now() - start });
 
-        return this.enrichPatternsWithTags(patternRows);
+        return result;
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
