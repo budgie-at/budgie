@@ -13,11 +13,11 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
+import { AiSystemStatusCard } from '../../../ai/component/ai-system-status-card/ai-system-status-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
-import { AiDataCard } from '../../../settings/components/ai-data-card/ai-data-card';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -96,7 +96,7 @@ export default function SettingsPage() {
                 <View {...anchorLayout('ai')}>
                     <SettingsGroup title={t`AI`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiDataCard />
+                            <AiSystemStatusCard />
                         </Animated.View>
                     </SettingsGroup>
                 </View>
