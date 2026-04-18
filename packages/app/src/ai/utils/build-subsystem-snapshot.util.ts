@@ -23,7 +23,12 @@ export const buildSubsystemSnapshot = (
     const base = { percent: progress.percent, pending: progress.pending, total: progress.total };
 
     if (drainer.state === DrainerStateEnum.Error) {
-        return { state: AiSubsystemCardStateEnum.Error, statusText: drainer.errorMessage ?? '', errorMessage: drainer.errorMessage, ...base };
+        return {
+            state: AiSubsystemCardStateEnum.Error,
+            statusText: drainer.errorMessage ?? '',
+            errorMessage: drainer.errorMessage,
+            ...base
+        };
     }
 
     if (drainer.state === DrainerStateEnum.Boosting) {

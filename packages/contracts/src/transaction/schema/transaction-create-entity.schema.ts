@@ -2,4 +2,7 @@ import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-crea
 
 import { TransactionEntitySchema } from './transaction-entity.schema';
 
-export const TransactionCreateEntitySchema = convertToCreateEntitySchema(TransactionEntitySchema);
+export const TransactionCreateEntitySchema = convertToCreateEntitySchema(TransactionEntitySchema).omit({
+    operatedWeekday: true,
+    operatedMinuteOfDay: true
+});

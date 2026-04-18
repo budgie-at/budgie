@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -225,28 +225,33 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
         const start = Date.now();
-        const rows = await this.db
-            .select({
-                categoryId: TransactionEntryEntityTable.categoryId,
-                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('count')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.mccCategoryId, mccCategoryId),
-                    isNotNull(TransactionEntryEntityTable.categoryId),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(TransactionEntryEntityTable.deletedAt)
-                )
+        const rows = await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
+            `WITH signals AS (
+                SELECT me.category_id AS category_id
+                FROM merchant_embeddings me
+                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                WHERE mcc.id = ? AND me.deleted_at IS NULL
+                UNION ALL
+                SELECT te.category_id
+                FROM transaction_entries te
+                INNER JOIN transactions t ON t.id = te.transaction_id
+                WHERE te.mcc_category_id = ?
+                  AND te.category_id IS NOT NULL
+                  AND t.deleted_at IS NULL
+                  AND te.deleted_at IS NULL
             )
-            .groupBy(TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
-            .limit(limit);
+            SELECT category_id AS categoryId, COUNT(*) AS count
+            FROM signals
+            WHERE category_id IS NOT NULL
+            GROUP BY category_id
+            ORDER BY COUNT(*) DESC
+            LIMIT ?`,
+            [mccCategoryId, mccCategoryId, limit]
+        );
 
-        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', { mccCategoryId, resultCount: rows.length, durationMs: Date.now() - start });
+        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', { mccCategoryId, resultCount: rows.length, durationMs: Date.now() - start, topCategoryIds: rows.slice(0, 3).map(row => row.categoryId) });
 
-        return rows.filter((row): row is { categoryId: number; count: number } => row.categoryId !== null);
+        return rows;
     }
 
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
