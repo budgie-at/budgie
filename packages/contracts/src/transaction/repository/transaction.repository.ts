@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -74,13 +74,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getAllWithOffset(limit: number, offset: number) {
+    getAllAfter(cursorId: number | null, limit: number) {
+        const baseFilter = isNull(TransactionEntityTable.deletedAt);
+        const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
+
         return this.db.query.TransactionEntityTable.findMany({
             with: { [TransactionAssociationEnum.ENTRIES]: true },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
-            offset,
-            where: isNull(TransactionEntityTable.deletedAt)
+            where
         });
     }
 
