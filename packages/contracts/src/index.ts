@@ -191,7 +191,6 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
 export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
-export type { PendingEmbeddingRowInterface } from './transaction-embedding/interface/pending-embedding-row.interface';
 
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
@@ -302,7 +301,6 @@ export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/enti
 export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
 export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
-export type { UnembeddedMerchantDataInterface } from './merchant-embedding/interface/unembedded-merchant-data.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
 
 export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
@@ -320,7 +318,6 @@ export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/com
 export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
 
 export type { CommentPendingContextInterface } from './comment-embedding/interface/comment-pending-context.interface';
-export type { UnembeddedCommentDataInterface } from './comment-embedding/interface/unembedded-comment-data.interface';
 export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
 
 export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';
