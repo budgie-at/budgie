@@ -21,7 +21,7 @@ import { translationProgressStore } from '../store/translation-progress.store';
 import { aiLog } from '../utils/ai-log.util';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
-import { SnapshotStore } from './base-subsystem.service';
+import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
@@ -47,42 +47,12 @@ const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
     errorMessage: null
 };
 
-class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
-    private unsubscribers: (() => void)[] = [];
-    private started = false;
-    private dirty = false;
+class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInterface> {
     private lastState: AiSystemStateEnum = AiSystemStateEnum.Disabled;
     private lastStateAt = Date.now();
 
     constructor() {
         super(EMPTY_SNAPSHOT);
-    }
-
-    start(): void {
-        if (this.started) {
-            return;
-        }
-        this.started = true;
-        this.unsubscribers = [
-            chatService.subscribe(this.scheduleRecompute),
-            embeddingService.subscribe(this.scheduleRecompute),
-            sttService.subscribe(this.scheduleRecompute),
-            aiCoordinatorService.subscribe(this.scheduleRecompute),
-            translationDrainerService.subscribe(this.scheduleRecompute),
-            embeddingDrainerService.subscribe(this.scheduleRecompute),
-            embeddingProgressStore.subscribe(this.scheduleRecompute),
-            translationProgressStore.subscribe(this.scheduleRecompute)
-        ];
-        this.recompute();
-    }
-
-    stop(): void {
-        this.unsubscribers.forEach(fn => {
-            fn();
-        });
-        this.unsubscribers = [];
-        this.started = false;
-        this.setSnapshot(EMPTY_SNAPSHOT);
     }
 
     async boost(): Promise<void> {
@@ -157,18 +127,24 @@ class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
         }
     }
 
-    private readonly scheduleRecompute = (): void => {
-        if (this.dirty) {
-            return;
-        }
-        this.dirty = true;
-        queueMicrotask(() => {
-            this.dirty = false;
-            this.recompute();
-        });
-    };
+    protected buildSubscriptions(): (() => void)[] {
+        return [
+            chatService.subscribe(this.scheduleRecompute),
+            embeddingService.subscribe(this.scheduleRecompute),
+            sttService.subscribe(this.scheduleRecompute),
+            aiCoordinatorService.subscribe(this.scheduleRecompute),
+            translationDrainerService.subscribe(this.scheduleRecompute),
+            embeddingDrainerService.subscribe(this.scheduleRecompute),
+            embeddingProgressStore.subscribe(this.scheduleRecompute),
+            translationProgressStore.subscribe(this.scheduleRecompute)
+        ];
+    }
 
-    private recompute(): void {
+    protected emptySnapshot(): AiSystemSnapshotInterface {
+        return EMPTY_SNAPSHOT;
+    }
+
+    protected recompute(): void {
         const next = this.derive();
         if (this.snapshotEquals(next, this.snapshot)) {
             return;
