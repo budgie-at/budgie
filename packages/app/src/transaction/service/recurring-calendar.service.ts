@@ -4,8 +4,8 @@ import { getDaysInMonth } from 'date-fns';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
@@ -14,6 +14,7 @@ import { patternCacheService } from './pattern-cache/pattern-cache.service';
 const MINUTES_TO_SECONDS = -60;
 
 class RecurringCalendarService {
+    // eslint-disable-next-line max-statements -- Service method builds calendar query, memoizes pattern fetch, and constructs result
     async getMonthlyRecurringPayments(
         defaultInstrumentId: number,
         displayYear: number,
@@ -35,6 +36,7 @@ class RecurringCalendarService {
         aiLog('service:recurringCalendar:memoize:start', { cacheKey });
         const patterns = await patternCacheService.memoize(cacheKey, () => {
             aiLog('service:recurringCalendar:memoize:cache-miss', { cacheKey });
+
             return transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery);
         });
         aiLog('service:recurringCalendar:memoize:done', {

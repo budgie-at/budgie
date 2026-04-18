@@ -3,7 +3,7 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { aiLog } from '../../ai/utils/ai-log.util';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
@@ -93,7 +93,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
             } catch (error: unknown) {
                 aiLog('hook:pattern:fetch:throw', {
                     durationMs: Date.now() - startedAt,
-                    errorMessage: error instanceof Error ? error.message : String(error)
+                    errorMessage: getErrorMessage(error)
                 });
                 if (!cancelled) {
                     setInternalStatus('error');

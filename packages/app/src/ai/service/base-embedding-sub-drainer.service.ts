@@ -61,33 +61,12 @@ export abstract class BaseEmbeddingSubDrainerService<
         const batch = this.pendingPersists.splice(0);
         const allTransactionIds = batch.flatMap(persist => persist.context.transactionIds);
 
-        const flushStart = Date.now();
-        aiLog(`${this.logDomain}:afterBatch:begin`, {
-            contexts: batch.length,
-            totalTransactionIds: allTransactionIds.length
-        });
-
-        let tagsDurationMs = 0;
-        let clearDurationMs = 0;
-
         await transactionAsync(db, async tx => {
-            const tagsStart = Date.now();
             for (const persist of batch) {
                 // eslint-disable-next-line no-await-in-loop -- Sequential inside transaction to keep lock time bounded
                 await this.replaceEmbeddingTags(persist.embeddingId, persist.context.tagIds, tx);
             }
-            tagsDurationMs = Date.now() - tagsStart;
-            const clearStart = Date.now();
             await transactionRepository.clearNeedsEmbedding(allTransactionIds, tx);
-            clearDurationMs = Date.now() - clearStart;
-        });
-
-        aiLog(`${this.logDomain}:afterBatch:commit`, {
-            totalDurationMs: Date.now() - flushStart,
-            tagsDurationMs,
-            clearDurationMs,
-            contexts: batch.length,
-            totalTransactionIds: allTransactionIds.length
         });
 
         void embeddingProgressStore.refresh();
