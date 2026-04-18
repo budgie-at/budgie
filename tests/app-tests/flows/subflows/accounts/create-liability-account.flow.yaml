@@ -11,15 +11,18 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
-- tapOn: ${ACCOUNT_SCREEN_TITLE}
+- hideKeyboard
 
 - scrollUntilVisible:
     element:
       id: 'AccountForm.CurrencySelector'
     direction: DOWN
     centerElement: true
+    waitToSettleTimeoutMs: 1000
 - tapOn:
     id: 'AccountForm.CurrencySelector'
+    retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'CurrencySelector.SearchInput'
@@ -32,20 +35,16 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'CreateAccount.Amount'
-    timeout: 10000
+    timeout: 3000
 - tapOn:
     id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
 
-- tapOn: ${ACCOUNT_SCREEN_TITLE}
+- hideKeyboard
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
-
-- scrollUntilVisible:
-    element:
       id: 'AccountCard.${ACCOUNT_NAME}'
-    direction: DOWN
+    timeout: 3000
