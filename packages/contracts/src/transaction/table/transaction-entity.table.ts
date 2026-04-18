@@ -1,4 +1,5 @@
 import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
@@ -23,5 +24,14 @@ export const TransactionEntityTable = sqliteTable(
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false)
     }),
-    table => [index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt)]
+    table => [
+        index('transactions_needs_embedding_idx').on(table.needsEmbedding, table.deletedAt),
+        index('transactions_operated_at_idx').on(table.operatedAt).where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_type_operated_idx').on(table.type, table.operatedAt).where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_from_account_idx').on(table.fromAccountId).where(sql`${table.fromAccountId} IS NOT NULL`),
+        index('transactions_to_account_idx').on(table.toAccountId).where(sql`${table.toAccountId} IS NOT NULL`),
+        index('transactions_external_idx')
+            .on(table.externalSource, table.externalId)
+            .where(sql`${table.externalId} IS NOT NULL AND ${table.deletedAt} IS NULL`)
+    ]
 );
