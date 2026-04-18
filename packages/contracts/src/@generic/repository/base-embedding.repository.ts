@@ -82,10 +82,11 @@ export abstract class BaseEmbeddingRepository {
     }
 
     protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
+        const { vecTableName } = this.queryConfig;
         await transactionAsync(this.db, async txDb => {
             await txDb.delete(tagTable);
             await txDb.delete(embeddingTable);
+            txDb.run(sql.raw(`DELETE FROM ${vecTableName}`));
         });
-        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }
