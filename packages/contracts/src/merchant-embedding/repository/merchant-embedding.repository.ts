@@ -225,10 +225,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async countPendingMerchantContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ c: number }>(
-            `SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`,
-            []
-        );
+        const [row] = await this.db.$client.getAllAsync<{ c: number }>(`SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, []);
 
         return row.c;
     }

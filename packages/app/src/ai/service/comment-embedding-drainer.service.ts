@@ -47,11 +47,20 @@ class CommentEmbeddingDrainerService extends BaseDrainerService<CommentPendingCo
         });
 
         if (isDefined(context.existingEmbeddingId)) {
-            await this.skipViaPreflight(context, context.existingEmbeddingId);
+            await this.persistWithSkip(context, context.existingEmbeddingId);
 
             return;
         }
 
+        const embeddingId = await this.runEmbedAndUpsert(context);
+        if (!isDefined(embeddingId)) {
+            return;
+        }
+
+        await this.persistEmbedding(context, embeddingId, false);
+    }
+
+    private async runEmbedAndUpsert(context: CommentPendingContextInterface): Promise<number | null> {
         const promptContext = buildCommentContext({
             comment: context.comment,
             categoryTitle: context.categoryTitleEn
@@ -63,8 +72,9 @@ class CommentEmbeddingDrainerService extends BaseDrainerService<CommentPendingCo
                 contextSize: context.transactionIds.length
             });
 
-            return;
+            return null;
         }
+
         aiLog('drainer:embedding:comment:context:embedded', {
             dimensions: rawEmbedding.length,
             contextSize: context.transactionIds.length
@@ -82,28 +92,25 @@ class CommentEmbeddingDrainerService extends BaseDrainerService<CommentPendingCo
                 reason: 'upsert-null',
                 contextSize: context.transactionIds.length
             });
-
-            return;
         }
 
-        await commentEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
-        await transactionRepository.clearNeedsEmbedding(context.transactionIds);
-
-        aiLog('drainer:embedding:comment:context:persisted', {
-            embeddingId,
-            contextSize: context.transactionIds.length,
-            clearedFlags: context.transactionIds.length,
-            skipped: false
-        });
+        return embeddingId;
     }
 
-    private async skipViaPreflight(context: CommentPendingContextInterface, embeddingId: number): Promise<void> {
+    private async persistWithSkip(context: CommentPendingContextInterface, embeddingId: number): Promise<void> {
         aiLog('drainer:embedding:comment:context:skip', {
             reason: 'preflight-hit',
             contextSize: context.transactionIds.length,
             embeddingId
         });
+        await this.persistEmbedding(context, embeddingId, true);
+    }
 
+    private async persistEmbedding(
+        context: CommentPendingContextInterface,
+        embeddingId: number,
+        skipped: boolean
+    ): Promise<void> {
         await commentEmbeddingRepository.replaceTags(embeddingId, context.tagIds);
         await transactionRepository.clearNeedsEmbedding(context.transactionIds);
 
@@ -111,7 +118,7 @@ class CommentEmbeddingDrainerService extends BaseDrainerService<CommentPendingCo
             embeddingId,
             contextSize: context.transactionIds.length,
             clearedFlags: context.transactionIds.length,
-            skipped: true
+            skipped
         });
     }
 }

@@ -142,5 +142,4 @@ export class CategoryRepository extends TranslatableRepositoryBase {
             .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
             .where(eq(CategoryEntityTable.id, id));
     }
-
 }

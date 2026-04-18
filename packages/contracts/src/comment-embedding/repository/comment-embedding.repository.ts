@@ -173,10 +173,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async countPendingCommentContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ c: number }>(
-            `SELECT COUNT(*) AS c FROM (${PENDING_COMMENT_CONTEXTS_BASE})`,
-            []
-        );
+        const [row] = await this.db.$client.getAllAsync<{ c: number }>(`SELECT COUNT(*) AS c FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, []);
 
         return row.c;
     }
