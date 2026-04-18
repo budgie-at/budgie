@@ -2,30 +2,30 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
-import { AiSubsystemStatusEnum } from '../../../ai/enum/ai-subsystem-status.enum';
-import { useEmbeddingProgress } from '../../../ai/hook/use-embedding-progress.hook';
-import { useEmbedding } from '../../../ai/hook/use-embedding.hook';
+import { AiSystemBrain } from '../../../ai/component/ai-system-brain/ai-system-brain';
+import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
+import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 
 interface Props {
-    readonly isLoading?: boolean;
     readonly showArrow?: boolean;
 }
 
 const BRAIN_CONTAINER_SIZE = 26;
 const BRAIN_ICON_SIZE = 16;
+const ARROW_SIZE = 12;
+const HIT_SLOP = 8;
 
-export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true }: Props) => {
+export const SuggestionLoadingIndicator = ({ showArrow = true }: Props) => {
     const router = useRouter();
-    const { status: embeddingStatus } = useEmbedding();
-    const { progress, isEmbedding } = useEmbeddingProgress();
-    const isEmbeddingInitializing =
-        embeddingStatus === AiSubsystemStatusEnum.Initializing || embeddingStatus === AiSubsystemStatusEnum.Downloading;
-    const statusLabel = isEmbeddingInitializing ? t`Loading AI model...` : '';
+    const snapshot = useAiSystemStatus();
+    const holdProgress = useSharedValue(0);
 
-    const shouldAnimate = isLoading || isEmbedding;
+    const isBootingOrTranslating =
+        snapshot.state === AiSystemStateEnum.Booting || snapshot.state === AiSystemStateEnum.Translating;
+    const statusLabel = isBootingOrTranslating ? t`Loading AI model...` : '';
     const showHint = !showArrow;
 
     const handleBrainPress = () => void router.push({ pathname: '/settings', params: { anchor: 'ai' } });
@@ -33,25 +33,27 @@ export const SuggestionLoadingIndicator = ({ isLoading = false, showArrow = true
     return (
         <View className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">
             {showHint ? (
-                <Pressable className="flex-row items-center gap-xs" onPress={handleBrainPress} hitSlop={8}>
+                <Pressable className="flex-row items-center gap-xs" onPress={handleBrainPress} hitSlop={HIT_SLOP}>
                     <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
                         {statusLabel}
                     </Text>
-                    <AiBrainProgress
-                        progress={progress}
+                    <AiSystemBrain
+                        state={snapshot.state}
+                        percent={snapshot.percent}
+                        holdProgress={holdProgress}
                         size={BRAIN_CONTAINER_SIZE}
                         iconSize={BRAIN_ICON_SIZE}
-                        isAnimating={shouldAnimate}
                     />
                 </Pressable>
             ) : (
                 <>
-                    <Icon icon={UserIconNameEnum.ArrowLeft} size={12} className="text-secondary-foreground" />
-                    <AiBrainProgress
-                        progress={progress}
+                    <Icon icon={UserIconNameEnum.ArrowLeft} size={ARROW_SIZE} className="text-secondary-foreground" />
+                    <AiSystemBrain
+                        state={snapshot.state}
+                        percent={snapshot.percent}
+                        holdProgress={holdProgress}
                         size={BRAIN_CONTAINER_SIZE}
                         iconSize={BRAIN_ICON_SIZE}
-                        isAnimating={shouldAnimate}
                     />
                 </>
             )}
