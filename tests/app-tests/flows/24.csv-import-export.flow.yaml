@@ -1,9 +1,9 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-    file: subflows/import/import-database-fixture.flow.yaml
+    file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ID: '00-empty-state'
+      FIXTURE_ROW_ID_MATCH: 'e2e-00-empty-state.db(, db)?'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
@@ -24,13 +24,6 @@ appId: ${APP_ID}
     env:
       FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
 
-- runFlow:
-    when:
-      visible: 'Open'
-    commands:
-      - tapOn:
-          text: 'Open'
-
 - extendedWaitUntil:
     visible:
       id: 'CsvPage.Preset.Budgie'
@@ -45,7 +38,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.NetWorthValue.87_5'
-    timeout: 30000
+    timeout: 3000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
