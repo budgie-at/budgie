@@ -7,6 +7,9 @@ import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snap
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 import { aiLog } from '../utils/ai-log.util';
 
+import { aiEmbeddingStatusService } from './ai-embedding-status.service';
+import { aiTranslationStatusService } from './ai-translation-status.service';
+import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { SnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
@@ -98,6 +101,9 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         }
         translationDrainerService.start();
         embeddingDrainerService.start();
+        aiUmbrellaStatusService.start();
+        aiTranslationStatusService.start();
+        aiEmbeddingStatusService.start();
         aiLog('coordinator:subsystems:start:complete', {
             durationMs: Date.now() - started,
             chatStatus: chatService.getSnapshot().status,
@@ -108,6 +114,9 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private async stopSubsystems(): Promise<void> {
         const started = Date.now();
         aiLog('coordinator:subsystems:stop:begin');
+        aiEmbeddingStatusService.stop();
+        aiTranslationStatusService.stop();
+        aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
         try {

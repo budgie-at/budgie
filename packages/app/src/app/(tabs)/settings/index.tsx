@@ -13,7 +13,9 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
-import { AiSystemStatusCard } from '../../../ai/component/ai-system-status-card/ai-system-status-card';
+import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
+import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
+import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -96,7 +98,9 @@ export default function SettingsPage() {
                 <View {...anchorLayout('ai')}>
                     <SettingsGroup title={t`AI`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiSystemStatusCard />
+                            <AiSystemStatusBanner />
+                            <AiTranslationStatusCard />
+                            <AiEmbeddingStatusCard />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

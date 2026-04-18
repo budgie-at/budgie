@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file -- Three tiers of base service class co-located here; separating into three files would hide the inheritance chain */
+/* eslint-disable max-classes-per-file -- Four tiers of base service class co-located here; separating into four files would hide the inheritance chain */
 import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -32,6 +32,45 @@ export abstract class SnapshotStore<TSnapshot> {
             listener();
         });
     }
+}
+
+export abstract class ScheduledSnapshotStore<TSnapshot> extends SnapshotStore<TSnapshot> {
+    private unsubscribers: (() => void)[] = [];
+    private started = false;
+    private dirty = false;
+
+    start(): void {
+        if (this.started) {
+            return;
+        }
+        this.started = true;
+        this.unsubscribers = this.buildSubscriptions();
+        this.recompute();
+    }
+
+    stop(): void {
+        this.unsubscribers.forEach(fn => {
+            fn();
+        });
+        this.unsubscribers = [];
+        this.started = false;
+        this.setSnapshot(this.emptySnapshot());
+    }
+
+    protected readonly scheduleRecompute = (): void => {
+        if (this.dirty) {
+            return;
+        }
+        this.dirty = true;
+        queueMicrotask(() => {
+            this.dirty = false;
+            this.recompute();
+        });
+    };
+
+    protected abstract buildSubscriptions(): (() => void)[];
+    protected abstract emptySnapshot(): TSnapshot;
+    protected abstract recompute(): void;
 }
 
 interface SnapshotWithStatus {
