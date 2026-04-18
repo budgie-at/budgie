@@ -2,7 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { useEmbeddingProgress } from '../../../ai/hook/use-embedding-progress.hook';
+import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { aiLog } from '../../../ai/utils/ai-log.util';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
@@ -19,23 +19,22 @@ const EMBEDDING_COMPLETENESS_THRESHOLD = 90;
 
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, isProcessing = false, children } = props;
-    const { progress } = useEmbeddingProgress();
-    const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
+    const snapshot = useAiSystemStatus();
+    const isIncomplete = snapshot.percent < EMBEDDING_COMPLETENESS_THRESHOLD;
     const scrollRef = useRef<ScrollView | null>(null);
 
     const showBrain = showContent || isIncomplete || isProcessing;
-    const brainIsLoading = showLoading || isProcessing;
     const showPills = showContent && !showLoading;
 
     aiLog('hook:suggestion:layout:render', {
         showContent,
         showLoading,
         isProcessing,
-        progress,
+        percent: snapshot.percent,
+        state: snapshot.state,
         isIncomplete,
         showBrain,
-        showPills,
-        brainIsLoading
+        showPills
     });
 
     const handleContentSizeChange = () => {
@@ -64,7 +63,7 @@ export const SuggestionRowLayout = (props: Props) => {
             ) : null}
             {showBrain ? (
                 <Animated.View entering={FadeIn.duration(ANIMATION_DURATION).delay(ENTER_DELAY)}>
-                    <SuggestionLoadingIndicator isLoading={brainIsLoading} showArrow={showPills} />
+                    <SuggestionLoadingIndicator showArrow={showPills} />
                 </Animated.View>
             ) : null}
         </View>
