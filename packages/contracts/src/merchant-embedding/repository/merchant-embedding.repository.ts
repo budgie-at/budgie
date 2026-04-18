@@ -1,18 +1,9 @@
-import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
-
 import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
-import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
-import { TagEntityTable } from '../../tag/table/tag-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
 import { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
 import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
-import { UnembeddedMerchantDataInterface } from '../interface/unembedded-merchant-data.interface';
 import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
@@ -205,74 +196,8 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         });
     }
 
-    async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedMerchantDataInterface[]> {
-        const cursorCondition = isDefined(cursor) ? lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor) : null;
-
-        let query = this.db
-            .select({
-                title: TransactionEntityTable.title,
-                mccDescription: sql<string>`COALESCE(${MccCategoryEntityTable.fullDescription}, '')`,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
-                comment: sql<string>`MAX(${TransactionEntityTable.comment})`,
-                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(
-                TransactionEntryEntityTable,
-                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
-            )
-            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
-            .where(
-                and(
-                    isNull(TransactionEntityTable.deletedAt),
-                    ne(TransactionEntityTable.title, ''),
-                    isNotNull(TransactionEntryEntityTable.categoryId)
-                )
-            )
-            .groupBy(TransactionEntityTable.title, MccCategoryEntityTable.fullDescription, TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit)
-            .$dynamic();
-
-        if (isDefined(cursorCondition)) {
-            query = query.having(cursorCondition);
-        }
-
-        const results = await query;
-
-        return results
-            .filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId))
-            .map(row => ({
-                title: row.title,
-                mccDescription: row.mccDescription,
-                categoryId: row.categoryId,
-                categoryTitleEn: row.categoryTitleEn ?? null,
-                tagIds: row.tagIds ?? null,
-                comment: row.comment,
-                maxOperatedAt: row.maxOperatedAt
-            }));
-    }
-
     async countAll(): Promise<number> {
         return this.countRows(MerchantEmbeddingEntityTable, MerchantEmbeddingEntityTable.deletedAt);
-    }
-
-    async findAllContextKeys(): Promise<string[]> {
-        const results = await this.db
-            .select({
-                title: MerchantEmbeddingEntityTable.title,
-                mccDescription: MerchantEmbeddingEntityTable.mccDescription,
-                categoryId: MerchantEmbeddingEntityTable.categoryId
-            })
-            .from(MerchantEmbeddingEntityTable)
-            .where(isNull(MerchantEmbeddingEntityTable.deletedAt));
-
-        return results.map(row => `${row.title}|${row.mccDescription}|${row.categoryId}`);
     }
 
     async findPendingMerchantContexts(limit: number): Promise<MerchantPendingContextInterface[]> {
