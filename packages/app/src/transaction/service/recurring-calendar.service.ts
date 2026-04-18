@@ -8,6 +8,8 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
+import { patternCacheService } from './pattern-cache/pattern-cache.service';
+
 const MINUTES_TO_SECONDS = -60;
 
 class RecurringCalendarService {
@@ -21,12 +23,16 @@ class RecurringCalendarService {
         const daysInMonth = getDaysInMonth(monthDate);
         const displayMonthString = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}`;
 
-        const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
+        const monthlyQuery = {
             type: TransactionTypeEnum.EXPENSE,
             defaultInstrumentId,
             timezoneOffsetSeconds,
             displayMonth: displayMonthString
-        });
+        };
+        const cacheKey = `monthly:${JSON.stringify(monthlyQuery)}`;
+        const patterns = await patternCacheService.memoize(cacheKey, () =>
+            transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery)
+        );
 
         const now = new Date();
         const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
