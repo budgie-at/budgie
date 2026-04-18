@@ -10,6 +10,7 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
 import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
 import { UnembeddedMerchantDataInterface } from '../interface/unembedded-merchant-data.interface';
 import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
@@ -50,6 +51,91 @@ const SIMILAR_COMMENTS_QUERY = `
         AND me.comment != '' AND me.category_id = ?
     GROUP BY me.comment
     ORDER BY bestDistance
+    LIMIT ?
+`;
+
+const PENDING_MERCHANT_CONTEXTS_QUERY = `
+    WITH pending_contexts AS (
+        SELECT
+            t.title AS title,
+            COALESCE(mcc.full_description, '') AS mccDescription,
+            te.category_id AS categoryId,
+            MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
+            MAX(t.comment) AS comment,
+            GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+            MAX(t.operated_at) AS maxOperatedAt
+        FROM transactions t
+        INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+        LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+        LEFT JOIN categories cat ON cat.id = te.category_id
+        WHERE t.deleted_at IS NULL
+          AND t.needs_embedding = 1
+          AND t.title != ''
+          AND te.category_id IS NOT NULL
+        GROUP BY t.title, COALESCE(mcc.full_description, ''), te.category_id
+    ),
+    context_sizes AS (
+        SELECT
+            pc.title AS title,
+            pc.mccDescription AS mccDescription,
+            pc.categoryId AS categoryId,
+            COUNT(DISTINCT t.id) AS groupSize
+        FROM pending_contexts pc
+        INNER JOIN transactions t ON t.title = pc.title AND t.deleted_at IS NULL
+        INNER JOIN transaction_entries te ON te.transaction_id = t.id
+            AND te.category_id = pc.categoryId
+            AND te.deleted_at IS NULL
+            AND COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), '') = pc.mccDescription
+        GROUP BY pc.title, pc.mccDescription, pc.categoryId
+    ),
+    majority_tags AS (
+        SELECT
+            pc.title AS title,
+            pc.mccDescription AS mccDescription,
+            pc.categoryId AS categoryId,
+            GROUP_CONCAT(tag_counts.tagId) AS tagIdsCsv
+        FROM pending_contexts pc
+        INNER JOIN context_sizes cs ON cs.title = pc.title
+            AND cs.mccDescription = pc.mccDescription
+            AND cs.categoryId = pc.categoryId
+        INNER JOIN (
+            SELECT
+                t.title AS title,
+                COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), '') AS mccDescription,
+                te.category_id AS categoryId,
+                tt.tag_id AS tagId,
+                COUNT(DISTINCT t.id) AS tagCount
+            FROM transactions t
+            INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+            INNER JOIN transaction_tags tt ON tt.transaction_id = t.id
+            WHERE t.deleted_at IS NULL
+            GROUP BY t.title, mccDescription, te.category_id, tt.tag_id
+        ) tag_counts
+          ON tag_counts.title = pc.title
+          AND tag_counts.mccDescription = pc.mccDescription
+          AND tag_counts.categoryId = pc.categoryId
+          AND tag_counts.tagCount * 2 > cs.groupSize
+        GROUP BY pc.title, pc.mccDescription, pc.categoryId
+    )
+    SELECT
+        pc.title AS title,
+        pc.mccDescription AS mccDescription,
+        pc.categoryId AS categoryId,
+        pc.categoryTitleEn AS categoryTitleEn,
+        pc.comment AS comment,
+        pc.transactionIdsCsv AS transactionIdsCsv,
+        mt.tagIdsCsv AS tagIdsCsv,
+        me.id AS existingEmbeddingId,
+        pc.maxOperatedAt AS maxOperatedAt
+    FROM pending_contexts pc
+    LEFT JOIN majority_tags mt ON mt.title = pc.title
+        AND mt.mccDescription = pc.mccDescription
+        AND mt.categoryId = pc.categoryId
+    LEFT JOIN merchant_embeddings me ON me.title = pc.title
+        AND me.mcc_description = pc.mccDescription
+        AND me.category_id = pc.categoryId
+        AND me.deleted_at IS NULL
+    ORDER BY pc.maxOperatedAt DESC
     LIMIT ?
 `;
 
@@ -185,6 +271,49 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             .where(isNull(MerchantEmbeddingEntityTable.deletedAt));
 
         return results.map(row => `${row.title}|${row.mccDescription}|${row.categoryId}`);
+    }
+
+    async findPendingMerchantContexts(limit: number): Promise<MerchantPendingContextInterface[]> {
+        const rows = await this.db.$client.getAllAsync<{
+            title: string;
+            mccDescription: string;
+            categoryId: number;
+            categoryTitleEn: string | null;
+            comment: string | null;
+            transactionIdsCsv: string;
+            tagIdsCsv: string | null;
+            existingEmbeddingId: number | null;
+            maxOperatedAt: number;
+        }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]);
+
+        return rows.map(row => ({
+            title: row.title,
+            mccDescription: row.mccDescription,
+            categoryId: row.categoryId,
+            categoryTitleEn: row.categoryTitleEn,
+            comment: row.comment ?? '',
+            transactionIds: row.transactionIdsCsv.split(',').map(Number),
+            tagIds: row.tagIdsCsv === null ? [] : row.tagIdsCsv.split(',').map(Number),
+            existingEmbeddingId: row.existingEmbeddingId
+        }));
+    }
+
+    async countPendingMerchantContexts(): Promise<number> {
+        const [row] = await this.db.$client.getAllAsync<{ c: number }>(
+            `SELECT COUNT(*) AS c FROM (
+                SELECT 1
+                FROM transactions t
+                INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+                WHERE t.deleted_at IS NULL
+                  AND t.needs_embedding = 1
+                  AND t.title != ''
+                  AND te.category_id IS NOT NULL
+                GROUP BY t.title, COALESCE((SELECT full_description FROM mcc_categories WHERE id = te.mcc_category_id), ''), te.category_id
+            )`,
+            []
+        );
+
+        return row.c;
     }
 
     async rebuildVecIndex(): Promise<void> {
