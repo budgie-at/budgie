@@ -45,7 +45,6 @@ class ChatService extends BaseLlamaSubsystemService implements AiSubsystemServic
 
             return stripped;
         } catch (error: unknown) {
-             
             aiLog('chat:generate:throw', { errorName: 'runtime', errorMessage: getErrorMessage(error) });
             throw error;
         }

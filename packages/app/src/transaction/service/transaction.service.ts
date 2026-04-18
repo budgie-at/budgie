@@ -17,9 +17,11 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { bankSyncLog } from '../../sync/util/bank-sync-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
+import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
@@ -86,12 +88,13 @@ class TransactionService {
             return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
         }
 
-        const stampedInputs = inputs.map(input => ({ ...input, needsEmbedding: input.needsEmbedding ?? true }));
+        const { stampedInputs, externalSources } = stampForDeferredEmbedding(inputs, 'bulkCreate');
         try {
             const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
                 transactionBatchCreateService.create(batch, tx)
             );
             bankSyncLog('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
+            aiLog('embed:defer:queued', { count: transactions.length, externalSources });
 
             if (isNotEmptyArray(transactions)) {
                 await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -100,6 +103,7 @@ class TransactionService {
             return transactions;
         } catch (error: unknown) {
             bankSyncLog('service:transaction:bulkCreate:throw', { message: error instanceof Error ? error.message : String(error) });
+            aiLog('embed:defer:throw', { errorMessage: error instanceof Error ? error.message : String(error) });
             throw error;
         }
     }

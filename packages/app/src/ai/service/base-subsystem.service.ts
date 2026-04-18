@@ -101,7 +101,6 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
         super(logDomain, { status: AiSubsystemStatusEnum.Idle, downloadProgress: 0, errorMessage: null });
     }
 
-     
     async retry(): Promise<void> {
         aiLog(`${this.logDomain}:retry`, { fromStatus: this.snapshot.status });
         this.setSnapshot({ status: AiSubsystemStatusEnum.Idle, errorMessage: null });
