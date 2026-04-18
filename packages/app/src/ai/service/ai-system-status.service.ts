@@ -138,6 +138,7 @@ class AiSystemStatusService extends SnapshotStore<AiSystemSnapshotInterface> {
                 await tagRepository.resetAllTranslations();
                 aiLog('system:action:rebuild:phase', { phase: 'translations-reset' });
                 await transactionRepository.markAllForEmbedding();
+                await transactionRepository.clearNonIndexableFlags();
                 aiLog('system:action:rebuild:phase', { phase: 'transactions-marked' });
             } finally {
                 translationDrainerService.resume();
