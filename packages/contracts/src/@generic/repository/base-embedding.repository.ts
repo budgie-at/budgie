@@ -72,13 +72,10 @@ export abstract class BaseEmbeddingRepository {
     protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
         const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
 
-        await transactionAsync(this.db, async txDb => {
-            await txDb.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
-
-            if (isNotEmptyArray(tagIds)) {
-                await txDb.insert(tagTable).values(tagIds.map(createTagRow));
-            }
-        });
+        await this.db.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+        if (isNotEmptyArray(tagIds)) {
+            await this.db.insert(tagTable).values(tagIds.map(createTagRow));
+        }
     }
 
     protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
