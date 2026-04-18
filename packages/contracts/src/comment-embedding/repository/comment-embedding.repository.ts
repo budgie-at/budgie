@@ -63,8 +63,9 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: CommentEmbeddingEntityTable.id });
 
+        await this.db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]);
         await this.db.$client.runAsync(
-            'INSERT OR REPLACE INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
+            'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
             [row.id]
         );
 
