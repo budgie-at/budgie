@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 
 import { AiSystemActionEnum } from '../enum/ai-system-action.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
@@ -68,9 +69,9 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
     }
 };
 
-export const AI_SYSTEM_ACTION_VISUALS: Record<AiSystemActionEnum, ActionVisualInterface> = {
+export const getAiSystemActionVisuals = (): Record<AiSystemActionEnum, ActionVisualInterface> => ({
     [AiSystemActionEnum.None]: { icon: null, accessibilityHint: '' },
-    [AiSystemActionEnum.Boost]: { icon: UserIconNameEnum.Bolt, accessibilityHint: 'Double tap to speed up indexing' },
-    [AiSystemActionEnum.Cancel]: { icon: UserIconNameEnum.Pause, accessibilityHint: 'Double tap to cancel boost' },
-    [AiSystemActionEnum.Retry]: { icon: UserIconNameEnum.RotateCw, accessibilityHint: 'Double tap to retry' }
-};
+    [AiSystemActionEnum.Boost]: { icon: UserIconNameEnum.Bolt, accessibilityHint: t`Double tap to speed up indexing` },
+    [AiSystemActionEnum.Cancel]: { icon: UserIconNameEnum.Pause, accessibilityHint: t`Double tap to cancel boost` },
+    [AiSystemActionEnum.Retry]: { icon: UserIconNameEnum.RotateCw, accessibilityHint: t`Double tap to retry` }
+});
