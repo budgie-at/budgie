@@ -297,20 +297,7 @@ jobs:
         env:
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
-        run: npx expo prebuild -p ios
-
-      - name: Apply E2E iOS Info.plist cleanup
-        working-directory: packages/app
-        run: |
-          PLIST_PATH=./ios/budgieE2E/Info.plist
-
-          if [ ! -f "$PLIST_PATH" ]; then
-            echo "::error::Info.plist not found at $PLIST_PATH"
-            exit 1
-          fi
-
-          /usr/libexec/PlistBuddy -c "Delete :NSMicrophoneUsageDescription" "$PLIST_PATH" >/dev/null 2>&1 || true
-          /usr/libexec/PlistBuddy -c "Delete :UIBackgroundModes" "$PLIST_PATH" >/dev/null 2>&1 || true
+        run: npx expo prebuild -p ios --clean
 
       - name: Sync CocoaPods
         working-directory: packages/app/ios
@@ -324,12 +311,6 @@ jobs:
           restore-keys: |
             deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
             deriveddata-${{ runner.os }}-xcode26_3-e2e-
-
-      - name: Pre-copy vec.xcframework for ExpoSQLite
-        run: |
-          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
-          mkdir -p "$XCFW_DIR"
-          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
 
       - name: Build app
         working-directory: packages/app
