@@ -1257,7 +1257,7 @@ __metadata:
     drizzle-kit: "npm:^0.31.10"
     drizzle-orm: "npm:^0.45.2"
     eas-build-cache-provider: "npm:^16.4.2"
-    expo: "npm:^55.0.15"
+    expo: "npm:~55.0.15"
     expo-asset: "npm:~55.0.15"
     expo-background-task: "npm:~55.0.16"
     expo-blur: "npm:~55.0.14"
@@ -10990,7 +10990,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^55.0.15":
+"expo@npm:~55.0.15":
   version: 55.0.15
   resolution: "expo@npm:55.0.15"
   dependencies:
