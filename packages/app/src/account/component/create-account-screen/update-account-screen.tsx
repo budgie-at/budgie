@@ -55,6 +55,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     return (
         <FormPage
+            scrollViewTestID={CreateAccountScreenSelector.ScrollView}
             header={
                 <PageHeader
                     iconVariant={variant}

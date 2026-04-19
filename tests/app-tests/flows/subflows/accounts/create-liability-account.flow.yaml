@@ -1,50 +1,55 @@
 appId: ${APP_ID}
 ---
-
 - runFlow: open-new-account.flow.yaml
 
-- tapOn:
-    id: ${ACCOUNT_TYPE_ID}
 - extendedWaitUntil:
-    visible: 'ACCOUNT NAME & ICON'
-
+      visible:
+          id: ${ACCOUNT_TYPE_ID}
+      timeout: 3000
 - tapOn:
-    id: 'AccountForm.NameInput'
-- inputText: ${ACCOUNT_NAME}
-- hideKeyboard
-
-- scrollUntilVisible:
-    element:
-      id: 'AccountForm.CurrencySelector'
-    direction: DOWN
-    centerElement: true
-    waitToSettleTimeoutMs: 1000
-- tapOn:
-    id: 'AccountForm.CurrencySelector'
-    retryTapIfNoChange: true
+      id: ${ACCOUNT_TYPE_ID}
+      retryTapIfNoChange: true
 - waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'CurrencySelector.SearchInput'
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 3000
+
 - tapOn:
-    id: 'CurrencySelector.SearchInput'
-- inputText: ${CURRENCY_CODE}
+      id: 'AccountForm.NameInput'
+- inputText: ${ACCOUNT_NAME}
+
 - tapOn:
-    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      id: 'AccountForm.CurrencySelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      timeout: 3000
+
+- tapOn:
+      id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+- waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'CreateAccount.Amount'
-    timeout: 3000
+      visible:
+          id: 'CreateAccount.Amount'
+      timeout: 3000
 - tapOn:
-    id: 'CreateAccount.Amount'
+      id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
 
-- hideKeyboard
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.SubmitButton'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+
 - tapOn:
-    id: 'AccountForm.SubmitButton'
+      id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'AccountCard.${ACCOUNT_NAME}'
-    timeout: 3000
+      visible:
+          id: 'AccountCard.${ACCOUNT_NAME}'
+      timeout: 3000

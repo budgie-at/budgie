@@ -5,8 +5,12 @@ appId: ${APP_ID}
     id: 'CreateAccount.Amount'
 - eraseText: 100
 - inputText: ${NEW_BALANCE}
-
-- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
+    centerElement: true
+    waitToSettleTimeoutMs: 1000
 - tapOn:
     id: 'AccountForm.SubmitButton'
 

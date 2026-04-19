@@ -5,9 +5,15 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'SettingsPage.MainCurrencyCard'
+- extendedWaitUntil:
+    visible: 'Search currencies...'
+    timeout: 3000
 - tapOn: 'Search currencies...'
 - inputText: ${CURRENCY_CODE}
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+- extendedWaitUntil:
+    notVisible: 'Search currencies...'
+    timeout: 3000
 - tapOn:
     id: 'TabBar.Home'

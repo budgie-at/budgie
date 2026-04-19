@@ -16,6 +16,8 @@ import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { TokenInputStep } from '../token-input-step/token-input-step';
 
+import { CreateMonobankAccountSelector } from './create-monobank-account.selector';
+
 import type { Edge } from 'react-native-safe-area-context';
 
 type SetupStep = 'token' | 'accounts';
@@ -89,6 +91,7 @@ export const CreateMonobankAccount = () => {
             }
             footer={footer}
             safeEdges={FORM_PAGE_SAFE_EDGES}
+            scrollViewTestID={CreateMonobankAccountSelector.ScrollView}
         >
             <FormLayoutGroup>
                 {step === 'token' && <TokenInputStep token={token} onTokenChange={setToken} />}
