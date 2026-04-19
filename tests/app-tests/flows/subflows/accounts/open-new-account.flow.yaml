@@ -24,3 +24,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       text: '.*Monobank.*'
+    timeout: 3000
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'CreateAccount.BANK'
+    timeout: 3000

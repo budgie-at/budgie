@@ -28,6 +28,7 @@ export const CreateAccountScreen = (props: Props) => {
 
     return (
         <FormPage
+            scrollViewTestID={CreateAccountScreenSelector.ScrollView}
             header={
                 <PageHeader
                     title={title}

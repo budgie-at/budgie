@@ -17,6 +17,8 @@ import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
+import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
+
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
 import type { Edge } from 'react-native-safe-area-context';
 
@@ -95,6 +97,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
             footer={footer}
             safeEdges={FORM_PAGE_SAFE_EDGES}
+            scrollViewTestID={CreateFileBankAccountSelector.ScrollView}
         >
             <FormLayoutGroup>
                 {step === 'file' && (

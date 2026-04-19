@@ -23,6 +23,7 @@ import { useTagsSelectorModal } from '../../context/tags-selector-modal.context'
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
+
 import { TagFormSelector as TagFormSelectors } from './tag-form.selector';
 
 type TagFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
@@ -135,7 +136,12 @@ export const TagForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
+            <KeyboardAwareScrollView
+                testID={TagFormSelectors.ScrollView}
+                keyboardShouldPersistTaps="always"
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+            >
                 <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
                     <FormItem label={t`Tag Name`}>
                         <Input

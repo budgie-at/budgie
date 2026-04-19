@@ -46,18 +46,19 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.MainCurrencyCard'
 - extendedWaitUntil:
-    visible:
-      id: 'CurrencySelector.SearchInput'
-    timeout: 10000
-- tapOn:
-    id: 'CurrencySelector.SearchInput'
+    visible: 'Search currencies...'
+    timeout: 3000
+- tapOn: 'Search currencies...'
 - inputText: 'GBP'
 - tapOn:
     id: 'AccountForm.CurrencyOption.GBP'
 - extendedWaitUntil:
+    notVisible: 'Search currencies...'
+    timeout: 3000
+- extendedWaitUntil:
     visible:
       id: 'SettingsPage.MainCurrencyValue.GBP'
-    timeout: 10000
+    timeout: 3000
 
 - runFlow:
     file: subflows/navigation/open-settings-card.flow.yaml

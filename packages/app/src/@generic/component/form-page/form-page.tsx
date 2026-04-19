@@ -15,12 +15,13 @@ interface Props {
     readonly children: ReactNode;
     readonly footer?: ReactNode;
     readonly testID?: string;
+    readonly scrollViewTestID?: string;
     readonly onScroll?: EmptyFn;
     readonly safeEdges?: Edge[];
     readonly contentContainerStyle?: ViewStyle;
 }
 
-export const FormPage = ({ header, children, footer, testID, onScroll, safeEdges, contentContainerStyle }: Props) => {
+export const FormPage = ({ header, children, footer, testID, scrollViewTestID, onScroll, safeEdges, contentContainerStyle }: Props) => {
     const { bottom } = useSafeAreaInsets();
 
     const defaultContentContainerStyle = {
@@ -34,6 +35,7 @@ export const FormPage = ({ header, children, footer, testID, onScroll, safeEdges
     return (
         <Page testID={testID} header={header} footer={footerContent} safeEdges={safeEdges} withBlur>
             <KeyboardAwareScrollView
+                testID={scrollViewTestID}
                 onScroll={onScroll}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}

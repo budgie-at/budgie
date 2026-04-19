@@ -23,6 +23,7 @@ import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-cat
 import { categoryService } from '../../service/category.service';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
+
 import { CategoryFormSelector as CategoryFormSelectors } from './category-form.selector';
 
 type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
@@ -146,7 +147,12 @@ export const CategoryForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
+            <KeyboardAwareScrollView
+                testID={CategoryFormSelectors.ScrollView}
+                keyboardShouldPersistTaps="always"
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+            >
                 <CategoryIconDisplay
                     icon={icon}
                     onPress={handleIconPress}

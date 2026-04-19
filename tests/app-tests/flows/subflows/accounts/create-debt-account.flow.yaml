@@ -35,15 +35,27 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'AccountForm.CurrencySelector'
+- extendedWaitUntil:
+    visible: 'Search currencies...'
+    timeout: 3000
 - tapOn: 'Search currencies...'
 - inputText: ${CURRENCY_CODE}
 - tapOn:
     id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+- extendedWaitUntil:
+    notVisible: 'Search currencies...'
+    timeout: 3000
 
 - tapOn: 'Debt Account'
 - tapOn:
     id: 'AccountForm.DebtType.${DEBT_TYPE}'
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
+    centerElement: true
+    waitToSettleTimeoutMs: 1000
 - tapOn:
     id: 'AccountForm.SubmitButton'
 

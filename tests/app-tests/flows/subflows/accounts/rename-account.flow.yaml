@@ -5,8 +5,12 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
-
-- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.SubmitButton'
+    direction: DOWN
+    centerElement: true
+    waitToSettleTimeoutMs: 1000
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
