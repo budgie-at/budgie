@@ -23,7 +23,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TagForm.Input'
 - inputText: 'E2E Tag Primary'
-- tapOn: 'Create Tag'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'TagForm.Submit'
 
@@ -40,7 +41,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TagForm.Input'
 - inputText: 'E2E Tag Search'
-- tapOn: 'Create Tag'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'TagForm.Submit'
 
@@ -95,7 +97,8 @@ appId: ${APP_ID}
     id: 'TagForm.Input'
 - eraseText: 80
 - inputText: 'E2E Tag Updated'
-- tapOn: 'Edit Tag'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'TagForm.Submit'
 

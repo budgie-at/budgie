@@ -31,7 +31,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CategoryForm.Input'
 - inputText: 'E2E Category Primary'
-- tapOn: 'Create Category'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'CategoryForm.Submit'
 
@@ -58,7 +59,8 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CategoryForm.Input'
 - inputText: 'E2E Category Search'
-- tapOn: 'Create Category'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'CategoryForm.Submit'
 
@@ -127,7 +129,8 @@ appId: ${APP_ID}
     id: 'CategoryForm.Input'
 - eraseText: 80
 - inputText: 'E2E Category Updated'
-- tapOn: 'Edit Category'
+- pressKey: Enter
+- waitForAnimationToEnd
 - tapOn:
     id: 'CategoryForm.Submit'
 
