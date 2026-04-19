@@ -18,11 +18,7 @@ appId: ${APP_ID}
     id: 'AccountForm.TargetBalanceInput'
 - inputText: ${TARGET_BALANCE}
 - tapOn:
-    id: 'AccountForm.ScrollView'
-- extendedWaitUntil:
-    visible:
-      id: 'AccountForm.NameInput'
-    timeout: 3000
+    text: 'Debt Account'
 
 - scrollUntilVisible:
     element:
@@ -33,7 +29,7 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
-    id: 'AccountForm.ScrollView'
+    text: 'Debt Account'
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.CurrencySelector'
@@ -62,7 +58,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountForm.DebtType.${DEBT_TYPE}'
 - tapOn:
-    id: 'AccountForm.ScrollView'
+    text: 'Debt Account'
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.SubmitButton'
