@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import Database from 'better-sqlite3';
+import { randomInt as cryptoRandomInt } from 'node:crypto';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
@@ -23,7 +24,8 @@ const ensureDir = (file: string) => {
     }
 };
 
-const randomInt = (min: number, maxExclusive: number) => Math.floor(Math.random() * (maxExclusive - min)) + min;
+const randomInt = (min: number, maxExclusive: number) => cryptoRandomInt(min, maxExclusive);
+const randomFloat = () => cryptoRandomInt(0, 2 ** 32) / 2 ** 32;
 const randomPick = <T>(items: T[]): T => items[randomInt(0, items.length)];
 
 const MERCHANTS: string[] = Array.from({ length: MERCHANT_COUNT }, (_, i) => `Merchant ${i}`);
@@ -144,26 +146,26 @@ export const seed = () => {
     const insertTagJoin = db.prepare('INSERT OR IGNORE INTO transaction_tags (transaction_id, tag_id) VALUES (?, ?)');
     const batch = db.transaction(() => {
         for (let i = 1; i <= TX_COUNT; i++) {
-            const hasTitle = Math.random() < 0.9;
+            const hasTitle = randomFloat() < 0.9;
             const title = hasTitle ? randomPick(MERCHANTS) : '';
             const comment = hasTitle ? '' : randomPick(COMMENTS);
             const operatedAt = randomInt(operatedMin, now);
-            const isSoftDeleted = Math.random() < SOFT_DELETE_RATIO;
+            const isSoftDeleted = randomFloat() < SOFT_DELETE_RATIO;
             const deletedAt = isSoftDeleted ? operatedAt + 86400 : null;
-            const needsEmbedding = !isSoftDeleted && Math.random() < NEEDS_EMBEDDING_RATIO ? 1 : 0;
+            const needsEmbedding = !isSoftDeleted && randomFloat() < NEEDS_EMBEDDING_RATIO ? 1 : 0;
             const toAccount = randomInt(1, ACCOUNT_COUNT + 1);
             insertTx.run('EXPENSE', title, operatedAt, comment, toAccount, null, 1.0, needsEmbedding, now, now, deletedAt);
             insertEntry.run(
                 'CREDIT',
                 toAccount,
                 randomInt(1, CATEGORY_COUNT + 1),
-                Math.random() < 0.3 ? randomInt(1, MCC_COUNT + 1) : null,
+                randomFloat() < 0.3 ? randomInt(1, MCC_COUNT + 1) : null,
                 i,
                 randomInt(100_000, 100_000_000),
                 now,
                 now
             );
-            if (Math.random() < 0.3) {
+            if (randomFloat() < 0.3) {
                 insertTagJoin.run(i, randomInt(1, TAG_COUNT + 1));
             }
         }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
+import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 import { aiLog } from '../utils/ai-log.util';
 
 import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
@@ -24,8 +25,6 @@ interface SuggestionResultInterface<T> {
     readonly status: SuggestionInternalStatus;
     readonly suggestions: T[];
 }
-
-const EMBEDDING_COMPLETENESS_THRESHOLD = 90;
 
 // eslint-disable-next-line max-statements -- Hook coordinates focus refresh, async suggestion fetch, and state management
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {

@@ -41,7 +41,7 @@
         "date-fns": "^4.1.0",
         "dotenv": "^17.2.3",
         "drizzle-orm": "^0.45.2",
-        "expo": "^55.0.15",
+        "expo": "~55.0.15",
         "expo-asset": "~55.0.15",
         "expo-background-task": "~55.0.16",
         "expo-blur": "~55.0.14",
