@@ -24,12 +24,23 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
-          id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+          id: 'CurrencySelector.SearchInput'
       timeout: 3000
 
 - tapOn:
+      id: 'CurrencySelector.SearchInput'
+- inputText: ${CURRENCY_CODE}
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      timeout: 3000
+- tapOn:
       id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      notVisible:
+          id: 'CurrencySelector.SearchInput'
+      timeout: 3000
 
 - extendedWaitUntil:
       visible:
@@ -38,6 +49,12 @@ appId: ${APP_ID}
 - tapOn:
       id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
+- tapOn:
+      text: 'ACCOUNT NAME & ICON'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.SubmitButton'
+      timeout: 3000
 
 - scrollUntilVisible:
       element:
@@ -52,4 +69,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'AccountCard.${ACCOUNT_NAME}'
-      timeout: 3000
+      timeout: 10000
