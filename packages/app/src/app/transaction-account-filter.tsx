@@ -14,10 +14,9 @@ import { AccountsGroup } from '../account/component/accounts-group/accounts-grou
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-
 
 // eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionAccountFilterModal() {
@@ -45,8 +44,12 @@ export default function TransactionAccountFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (selectedCount === 0) {return t`Show all accounts`;}
-        if (selectedCount === 1) {return t`Show 1 account`;}
+        if (selectedCount === 0) {
+            return t`Show all accounts`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 account`;
+        }
 
         return t`Show ${selectedCount} accounts`;
     };

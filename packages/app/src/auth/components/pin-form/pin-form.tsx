@@ -9,6 +9,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
+
 import { PinFormSelector as PinPageSelectors } from './pin-form.selector';
 
 interface Props {
