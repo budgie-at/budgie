@@ -14,10 +14,9 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionCategoryFilterItem } from '../transaction/components/transaction-category-filter/transaction-category-filter-item';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-
 
 // eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionCategoryFilterModal() {
@@ -45,8 +44,12 @@ export default function TransactionCategoryFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (selectedCount === 0) {return t`Show all categories`;}
-        if (selectedCount === 1) {return t`Show 1 category`;}
+        if (selectedCount === 0) {
+            return t`Show all categories`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 category`;
+        }
 
         return t`Show ${selectedCount} categories`;
     };

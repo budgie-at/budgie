@@ -13,11 +13,10 @@ import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-
 
 // eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionTagFilterModal() {
@@ -45,8 +44,12 @@ export default function TransactionTagFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (selectedCount === 0) {return t`Show all tags`;}
-        if (selectedCount === 1) {return t`Show 1 tag`;}
+        if (selectedCount === 0) {
+            return t`Show all tags`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 tag`;
+        }
 
         return t`Show ${selectedCount} tags`;
     };

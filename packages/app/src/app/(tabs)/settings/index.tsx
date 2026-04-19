@@ -147,7 +147,7 @@ export default function SettingsPage() {
                 </View>
 
                 <View {...anchorLayout('appearance')}>
-                        <SettingsGroup title={t`Appearance`}>
+                    <SettingsGroup title={t`Appearance`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
                             <ThemeSwitch
                                 cardTestID={SettingsPageSelector.DarkModeCard}
