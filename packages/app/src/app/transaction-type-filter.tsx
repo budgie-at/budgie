@@ -8,9 +8,9 @@ import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/fil
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
+import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
 const TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME, TransactionTypeEnum.TRANSFER, TransactionTypeEnum.DEBT];
 
@@ -43,8 +43,12 @@ export default function TransactionTypeFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (localSelectedCount === 0) {return t`Show all types`;}
-        if (localSelectedCount === 1) {return t`Show 1 type`;}
+        if (localSelectedCount === 0) {
+            return t`Show all types`;
+        }
+        if (localSelectedCount === 1) {
+            return t`Show 1 type`;
+        }
 
         return t`Show ${localSelectedCount} types`;
     };
@@ -55,11 +59,7 @@ export default function TransactionTypeFilterModal() {
             <View className="-mx-sm flex-1 flex-row flex-wrap content-start gap-y-md px-md pt-2xl">
                 {TRANSACTION_TYPES.map(type => (
                     <View className="w-1/2 px-sm" key={type}>
-                        <TransactionTypeFilterItem
-                            type={type}
-                            onSelect={handleSelect}
-                            isSelected={localValue?.includes(type) ?? false}
-                        />
+                        <TransactionTypeFilterItem type={type} onSelect={handleSelect} isSelected={localValue?.includes(type) ?? false} />
                     </View>
                 ))}
             </View>
