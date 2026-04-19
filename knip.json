@@ -39,5 +39,5 @@
         "@types/react-dom",
         "rimraf"
     ],
-    "ignoreBinaries": ["run", "maestro"]
+    "ignoreBinaries": ["run", "build"]
 }
