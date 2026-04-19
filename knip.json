@@ -37,8 +37,7 @@
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf",
-        "expo-modules-core"
+        "rimraf"
     ],
-    "ignoreBinaries": ["run", "maestro"]
+    "ignoreBinaries": ["run", "tsx", "build"]
 }

@@ -2,6 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../../../ai/constant/embedding-completeness-threshold.constant';
 import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { aiLog } from '../../../ai/utils/ai-log.util';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
@@ -15,7 +16,6 @@ interface Props {
 
 const ANIMATION_DURATION = 200;
 const ENTER_DELAY = 400;
-const EMBEDDING_COMPLETENESS_THRESHOLD = 90;
 
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, isProcessing = false, children } = props;
