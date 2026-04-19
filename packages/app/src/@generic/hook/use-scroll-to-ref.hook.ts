@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dimensions, LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
 import { AnimatedStyle, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
@@ -30,29 +30,42 @@ interface AnchorStyleProps {
 export const useScrollToRef = () => {
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const scrollViewInstance = useRef<ScrollView | null>(null);
+    const scrolledAnchor = useRef<string | null>(null);
     const positions = useRef<Map<string, LayoutPosition>>(new Map());
     const highlightProgress = useSharedValue(0);
+    const [layoutVersion, setLayoutVersion] = useState(0);
 
     const scrollViewRef = (node: ScrollView | null): void => {
         scrollViewInstance.current = node;
     };
 
     useEffect(() => {
-        if (!isDefined(anchor)) {
+        scrolledAnchor.current = null;
+    }, [anchor]);
+
+    useEffect(() => {
+        if (!isDefined(anchor) || scrolledAnchor.current === anchor) {
+            return emptyFn;
+        }
+
+        const scrollView = scrollViewInstance.current;
+        const position = positions.current.get(anchor);
+        if (!isDefined(scrollView) || !isDefined(position)) {
             return emptyFn;
         }
 
         const timer = setTimeout(() => {
-            const scrollView = scrollViewInstance.current;
-            const position = positions.current.get(anchor);
-            if (!isDefined(scrollView) || !isDefined(position)) {
+            const currentScrollView = scrollViewInstance.current;
+            const currentPosition = positions.current.get(anchor);
+            if (!isDefined(currentScrollView) || !isDefined(currentPosition)) {
                 return;
             }
 
             const windowHeight = Dimensions.get('window').height;
-            const centeredY = position.y - windowHeight / CENTER_DIVISOR + position.height / CENTER_DIVISOR;
+            const centeredY = currentPosition.y - windowHeight / CENTER_DIVISOR + currentPosition.height / CENTER_DIVISOR;
 
-            scrollView.scrollTo({ y: Math.max(0, centeredY), animated: true });
+            currentScrollView.scrollTo({ y: Math.max(0, centeredY), animated: true });
+            scrolledAnchor.current = anchor;
             highlightProgress.value = withSequence(
                 withTiming(1, { duration: FADE_IN_MS }),
                 withDelay(HOLD_MS, withTiming(0, { duration: FADE_OUT_MS }))
@@ -62,7 +75,7 @@ export const useScrollToRef = () => {
         return () => {
             clearTimeout(timer);
         };
-    }, [anchor, highlightProgress]);
+    }, [anchor, highlightProgress, layoutVersion]);
 
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
@@ -76,6 +89,7 @@ export const useScrollToRef = () => {
         onLayout: (event: LayoutChangeEvent) => {
             const { y, height } = event.nativeEvent.layout;
             positions.current.set(name, { y, height });
+            setLayoutVersion(currentValue => currentValue + 1);
         }
     });
 
