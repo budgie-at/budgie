@@ -5,6 +5,12 @@ appId: ${APP_ID}
     id: 'CreateAccount.Amount'
 - eraseText: 100
 - inputText: ${NEW_BALANCE}
+- tapOn:
+    id: 'AccountForm.ScrollView'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.SubmitButton'
+    timeout: 3000
 - scrollUntilVisible:
     element:
       id: 'AccountForm.SubmitButton'

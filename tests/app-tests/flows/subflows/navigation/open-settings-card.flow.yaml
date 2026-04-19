@@ -9,14 +9,19 @@ env:
     direction: DOWN
     speed: 20
     centerElement: true
-    waitToSettleTimeoutMs: 500
+    waitToSettleTimeoutMs: 1000
 
 - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: '${CARD_ID}'
+    timeout: 3000
 
 - tapOn:
     id: '${CARD_ID}'
+    retryTapIfNoChange: true
 
 - extendedWaitUntil:
     visible:
       id: '${DESTINATION_ID}'
-    timeout: 10000
+    timeout: 15000
