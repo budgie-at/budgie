@@ -1,6 +1,8 @@
 {
     "ignore": [
+        ".agents/**",
         ".claude/**",
+        ".codex/**",
         "packages/landing/**",
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
@@ -39,5 +41,5 @@
         "@types/react-dom",
         "rimraf"
     ],
-    "ignoreBinaries": ["run", "tsx", "build"]
+    "ignoreBinaries": ["run", "build"]
 }
