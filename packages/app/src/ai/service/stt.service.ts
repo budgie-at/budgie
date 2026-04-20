@@ -21,7 +21,7 @@ class SttService
 
     constructor() {
         super('stt', {
-            status: AiSubsystemStatusEnum.Idle,
+            status: AiSubsystemStatusEnum.IDLE,
             downloadProgress: 0,
             errorMessage: null,
             committedTranscription: '',
@@ -39,7 +39,7 @@ class SttService
 
     async retry(): Promise<void> {
         aiLog('stt:retry', { fromStatus: this.snapshot.status });
-        this.setSnapshot({ status: AiSubsystemStatusEnum.Idle, errorMessage: null });
+        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
 
@@ -83,19 +83,19 @@ class SttService
 
     protected async runStart(): Promise<void> {
         try {
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Downloading, downloadProgress: 0 });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
             aiLog('stt:download:begin', { model: 'WHISPER_SMALL' });
             this.instance = new SpeechToTextModule();
             await this.instance.load(WHISPER_SMALL, progress => {
                 this.setSnapshot({ downloadProgress: progress });
             });
             aiLog('stt:init:complete');
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Ready, errorMessage: null });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
             aiLog('stt:ready');
         } catch (error: unknown) {
             const message = getErrorMessage(error);
             aiLog('stt:init:throw', { errorMessage: message });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Error, errorMessage: message });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: message });
         }
     }
 
@@ -107,7 +107,7 @@ class SttService
             this.instance = null;
             this.activeStream = null;
             this.setSnapshot({
-                status: AiSubsystemStatusEnum.Suspended,
+                status: AiSubsystemStatusEnum.SUSPENDED,
                 committedTranscription: '',
                 nonCommittedTranscription: ''
             });
@@ -116,7 +116,7 @@ class SttService
             aiLog('stt:stop:error', { errorMessage: getErrorMessage(error) });
             this.instance = null;
             this.activeStream = null;
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Suspended });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
         }
     }
 }

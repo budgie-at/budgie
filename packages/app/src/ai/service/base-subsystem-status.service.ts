@@ -6,7 +6,7 @@ import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 
 export const EMPTY_SUBSYSTEM_SNAPSHOT: AiSubsystemStatusSnapshotInterface = {
-    state: AiSubsystemCardStateEnum.Hidden,
+    state: AiSubsystemCardStateEnum.HIDDEN,
     statusText: '',
     percent: 0,
     pending: 0,

@@ -87,7 +87,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         status,
         transactions,
         error,
-        isReady: chatStatus === AiSubsystemStatusEnum.Ready,
+        isReady: chatStatus === AiSubsystemStatusEnum.READY,
         downloadProgress,
         categorize,
         reset
