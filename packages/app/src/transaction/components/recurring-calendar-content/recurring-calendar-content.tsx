@@ -119,12 +119,12 @@ export const RecurringCalendarContent = () => {
                 />
             </View>
 
-            {hasSelectedEntries && isDefined(selectedDay) ? (
+            {hasSelectedDay ? (
                 <View className="flex-1 pt-lg">
                     <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
                         <Text
                             className="text-xs uppercase text-secondary-foreground"
-                            {...(selectedDayHeaderTestID !== null && { testID: selectedDayHeaderTestID })}
+                            {...(isDefined(selectedDayHeaderTestID) && { testID: selectedDayHeaderTestID })}
                         >
                             <Trans>Day {selectedDay}</Trans>
                         </Text>
@@ -132,7 +132,18 @@ export const RecurringCalendarContent = () => {
                     </View>
 
                     <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                        <RecurringCalendarDayDetail entries={selectedEntries} />
+                        {hasSelectedEntries ? (
+                            <RecurringCalendarDayDetail entries={selectedEntries} />
+                        ) : (
+                            <View className="items-center py-5xl px-5xl">
+                                <Text
+                                    className="text-secondary-foreground text-sm text-center"
+                                    testID={RecurringCalendarSelector.SelectedDayEmptyState}
+                                >
+                                    <Trans>No recurring payments detected</Trans>
+                                </Text>
+                            </View>
+                        )}
                         <MenuSpacer />
                     </ScrollView>
                 </View>

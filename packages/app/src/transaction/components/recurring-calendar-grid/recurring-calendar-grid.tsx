@@ -25,6 +25,26 @@ interface Props {
     readonly onChangeMonth: (year: number, month: number) => void;
 }
 
+const resolveDateType = (value: DateType): Date | null => {
+    if (!isDefined(value)) {
+        return null;
+    }
+
+    if (value instanceof Date) {
+        return new Date(value.getTime());
+    }
+
+    if (typeof value === 'number' || typeof value === 'string') {
+        return new Date(value);
+    }
+
+    if (typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
+        return value.toDate();
+    }
+
+    return new Date(value.toString());
+};
+
 // eslint-disable-next-line max-statements, max-lines-per-function -- Component with shared date-picker integration and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
     const { entriesByDay, forecastedEntriesByDay, selectedDay, onSelectDay, displayMonth, displayYear, onChangeMonth } = props;
@@ -36,7 +56,8 @@ export const RecurringCalendarGrid = (props: Props) => {
 
     const monthLabel = getMonthLabel(displayYear, displayMonth, languageTag);
     const maxDate = new Date(currentYear, currentMonth + 1, 0);
-    const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay) : null;
+    const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay, 12, 0, 0, 0) : null;
+    const datePickerKey = `${displayYear}-${displayMonth}-${selectedDay ?? 'none'}`;
 
     const isCurrentMonthDisplayed = displayMonth === currentMonth && displayYear === currentYear;
 
@@ -77,11 +98,11 @@ export const RecurringCalendarGrid = (props: Props) => {
     const components: CalendarComponents = { Day: renderDay };
 
     const handleDateChange = (value: { date: DateType }) => {
-        if (!isDefined(value.date)) {
+        const date = resolveDateType(value.date);
+
+        if (!isDefined(date)) {
             return;
         }
-
-        const date = new Date(value.date.toString());
 
         if (date.getFullYear() !== displayYear || date.getMonth() !== displayMonth) {
             return;
@@ -91,11 +112,11 @@ export const RecurringCalendarGrid = (props: Props) => {
     };
 
     const disabledDates = (value: DateType) => {
-        if (!isDefined(value)) {
+        const date = resolveDateType(value);
+
+        if (!isDefined(date)) {
             return false;
         }
-
-        const date = new Date(value.toString());
 
         return date.getFullYear() !== displayYear || date.getMonth() !== displayMonth;
     };
@@ -127,16 +148,17 @@ export const RecurringCalendarGrid = (props: Props) => {
                 </View>
 
                 <DatePicker
+                    key={datePickerKey}
                     mode="single"
                     hideHeader
                     showOutsideDays
-                    date={selectedDate}
                     month={displayMonth}
                     year={displayYear}
                     maxDate={maxDate}
                     onChange={handleDateChange}
                     disabledDates={disabledDates}
                     components={components}
+                    {...(isDefined(selectedDate) && { date: selectedDate })}
                 />
             </View>
         </GestureDetector>
