@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/ai/service/ai-system-status.service.ts:215
+#: src/ai/service/ai-system-status.service.ts:232
 msgid " • {embeddingPending} tx queued"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr "{percentage}% доходів"
 msgid "{source} error · {message}"
 msgstr ""
 
-#: src/ai/service/ai-system-status.service.ts:184
+#: src/ai/service/ai-system-status.service.ts:186
 msgid "{source} failed: {message}"
 msgstr ""
 
@@ -156,11 +156,17 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/service/ai-system-status.service.ts:171
+#: src/ai/service/ai-system-status.service.ts:173
 msgid "AI disabled"
 msgstr ""
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:111
+msgid "AI idle"
+msgstr "ШІ неактивний"
+
 #: src/ai/service/ai-umbrella-status.service.ts:56
+#: src/ai/service/ai-umbrella-status.service.ts:118
 msgid "AI off"
 msgstr "ШІ вимкнено"
 
@@ -184,7 +190,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Recurring"
 msgstr "Усі регулярні"
 
-#: src/ai/service/ai-system-status.service.ts:248
+#: src/ai/service/ai-system-status.service.ts:265
 msgid "All set"
 msgstr ""
 
@@ -664,11 +670,11 @@ msgstr "Готово"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:83
+#: src/ai/service/ai-umbrella-status.service.ts:84
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Downloading models"
 msgstr ""
 
@@ -883,7 +889,7 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Failed to update token"
 msgstr "Не вдалося оновити токен"
 
-#: src/ai/service/ai-system-status.service.ts:266
+#: src/ai/service/ai-system-status.service.ts:283
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr ""
 
@@ -1032,7 +1038,7 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/ai/service/ai-system-status.service.ts:237
+#: src/ai/service/ai-system-status.service.ts:254
 msgid "Indexing {done} of {total}"
 msgstr ""
 
@@ -1088,7 +1094,7 @@ msgstr "Модель ШІ не готова"
 msgid "Loading AI model..."
 msgstr ""
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Loading models"
 msgstr ""
 
@@ -1153,7 +1159,7 @@ msgstr "Перейдіть до Меню → Виписки"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:66
+#: src/app/(main)/create-transaction/expense.tsx:65
 msgid "New Expense"
 msgstr "Нова витрата"
 
@@ -1464,6 +1470,11 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:102
+msgid "Resuming AI…"
+msgstr "Відновлення ШІ…"
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:14
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
@@ -1744,7 +1755,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/ai/service/ai-umbrella-status.service.ts:94
+#: src/ai/service/ai-umbrella-status.service.ts:93
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
@@ -1949,7 +1960,7 @@ msgstr "Помилка транскрипції"
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/ai/service/ai-system-status.service.ts:221
+#: src/ai/service/ai-system-status.service.ts:238
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr ""
 
