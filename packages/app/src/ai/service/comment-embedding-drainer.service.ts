@@ -13,7 +13,7 @@ import { embeddingService } from './embedding.service';
 import type { DB } from '@budgie/contracts';
 
 class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<CommentPendingContextInterface> {
-    protected readonly kind = DrainerKindEnum.EmbeddingComment;
+    protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
     protected readonly logDomain = 'drainer:embedding:comment';
 
     protected async fetchPending(limit: number): Promise<readonly CommentPendingContextInterface[]> {

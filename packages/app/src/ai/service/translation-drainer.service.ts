@@ -15,7 +15,7 @@ const BOOST_BATCH_SIZE = 5;
 const YIELD_EVERY_ROWS = 2;
 
 class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
-    protected readonly kind = DrainerKindEnum.Translation;
+    protected readonly kind = DrainerKindEnum.TRANSLATION;
     protected readonly logDomain = 'drainer:translation';
     protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
     protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;

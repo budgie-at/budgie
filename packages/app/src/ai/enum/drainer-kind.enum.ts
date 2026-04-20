@@ -1,5 +1,5 @@
 export enum DrainerKindEnum {
-    Translation = 'translation',
-    EmbeddingMerchant = 'embedding-merchant',
-    EmbeddingComment = 'embedding-comment'
+    TRANSLATION = 'TRANSLATION',
+    EMBEDDING_MERCHANT = 'EMBEDDING_MERCHANT',
+    EMBEDDING_COMMENT = 'EMBEDDING_COMMENT'
 }
