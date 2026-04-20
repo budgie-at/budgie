@@ -1,7 +1,7 @@
 import { AITransactionInterface, groupVoiceTransactions } from '@budgie/ai';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -10,21 +10,16 @@ import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { buildExpenseUrl } from '../../utils/build-expense-url.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
-const EXIT_DURATION = 100;
-
 interface Props {
-    readonly isOpen: boolean;
     readonly onClose: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Voice input overlay coordinates animation, recording, and submit state
-export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
+export const VoiceInputOverlay = ({ onClose }: Props) => {
     const { defaultAccount } = useSettingsContext();
 
-    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
     const originalTextRef = useRef('');
-    const contentOpacity = useSharedValue(isOpen ? 1 : 0);
+    const contentOpacity = useSharedValue(1);
 
     const handleDone = (transactions: AITransactionInterface[]) => {
         if (!isNotEmptyArray(transactions)) {
@@ -44,33 +39,25 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const voiceInput = useVoiceInput({ onDone: handleDone });
     const { isReady, start } = voiceInput;
 
-    useAnimatedReaction(
-        () => isOpen,
-        (current, previous) => {
-            if (current && !previous) {
-                contentOpacity.value = 1;
-            } else if (!current && previous) {
-                runOnJS(setIsAnimatingOut)(true);
-                runOnJS(voiceInput.cancel)();
-                contentOpacity.value = withTiming(0, { duration: EXIT_DURATION }, finished => {
-                    if (finished) {
-                        runOnJS(setIsAnimatingOut)(false);
-                    }
-                });
-            }
-        },
-        [isOpen]
-    );
+    const voiceInputRef = useRef(voiceInput);
+
+    useLayoutEffect(() => {
+        voiceInputRef.current = voiceInput;
+    });
 
     useEffect(() => {
-        if (isOpen && isReady && !hasAutoStartedRef.current) {
+        if (isReady && !hasAutoStartedRef.current) {
             hasAutoStartedRef.current = true;
             start();
         }
-        if (!isOpen) {
-            hasAutoStartedRef.current = false;
-        }
-    }, [isOpen, isReady, start]);
+    }, [isReady, start]);
+
+    useEffect(
+        () => () => {
+            voiceInputRef.current.cancel();
+        },
+        []
+    );
 
     const handleRecord = () => {
         switch (voiceInput.state) {
@@ -90,17 +77,5 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         }
     };
 
-    const handleCancel = () => {
-        voiceInput.cancel();
-        onClose();
-    };
-
-    const isVisible = isOpen || isAnimatingOut;
-    if (!isVisible) {
-        return null;
-    }
-
-    return (
-        <VoiceInputOverlayContent voiceInput={voiceInput} contentOpacity={contentOpacity} onRecord={handleRecord} onCancel={handleCancel} />
-    );
+    return <VoiceInputOverlayContent voiceInput={voiceInput} contentOpacity={contentOpacity} onRecord={handleRecord} onCancel={onClose} />;
 };

@@ -4,6 +4,7 @@ import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { aiLog } from '../../ai/utils/ai-log.util';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
@@ -112,8 +113,18 @@ export abstract class BaseFileBankSyncService {
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
+        aiLog('embed:defer:bank-sync:batch:begin', {
+            provider: this.provider,
+            accountId: account.id,
+            count: transactionInputs.length
+        });
+        const created = await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
             shouldUpdateBalances: false
+        });
+        aiLog('embed:defer:bank-sync:batch:complete', {
+            provider: this.provider,
+            accountId: account.id,
+            inserted: created.length
         });
     }
 

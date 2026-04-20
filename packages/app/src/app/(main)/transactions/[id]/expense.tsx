@@ -3,7 +3,7 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -32,7 +32,7 @@ interface UpdateExpenseFormProps {
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -40,17 +40,10 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
-        onAfterSubmit: data =>
-            void generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            })
+        onAfterSubmit: () => void markForEmbedding({ transactionId })
     });
 
-    const fromAccountId = form.watch('fromAccountId');
+    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;

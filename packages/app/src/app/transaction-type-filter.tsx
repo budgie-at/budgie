@@ -43,8 +43,12 @@ export default function TransactionTypeFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (localSelectedCount === 0) {return t`Show all types`;}
-        if (localSelectedCount === 1) {return t`Show 1 type`;}
+        if (localSelectedCount === 0) {
+            return t`Show all types`;
+        }
+        if (localSelectedCount === 1) {
+            return t`Show 1 type`;
+        }
 
         return t`Show ${localSelectedCount} types`;
     };
@@ -55,11 +59,7 @@ export default function TransactionTypeFilterModal() {
             <View className="-mx-sm flex-1 flex-row flex-wrap content-start gap-y-md px-md pt-2xl">
                 {TRANSACTION_TYPES.map(type => (
                     <View className="w-1/2 px-sm" key={type}>
-                        <TransactionTypeFilterItem
-                            type={type}
-                            onSelect={handleSelect}
-                            isSelected={localValue?.includes(type) ?? false}
-                        />
+                        <TransactionTypeFilterItem type={type} onSelect={handleSelect} isSelected={localValue?.includes(type) ?? false} />
                     </View>
                 ))}
             </View>
