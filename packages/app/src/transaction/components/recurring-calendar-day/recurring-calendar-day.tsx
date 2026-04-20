@@ -4,6 +4,7 @@ import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
+import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 const MAX_DOTS = 3;
 
@@ -112,11 +113,22 @@ export const RecurringCalendarDay = (props: Props) => {
     const textClassName = textVariants({ hasEntries, isSelected, isToday: day.isToday });
     const hasDots = hasEntries && day.isCurrentMonth;
     const dayTextClassName = cn(textClassName, hasDots && '-mt-1');
+    const isCurrentMonthToday = day.isToday && day.isCurrentMonth;
+    const hasCurrentMonthDaySelector = day.isCurrentMonth && !day.isToday;
+    let testID = null;
+
+    if (isCurrentMonthToday) {
+        testID = RecurringCalendarSelector.Today;
+    } else if (hasCurrentMonthDaySelector) {
+        testID = RecurringCalendarSelector.CurrentMonthDay(dayOfMonth);
+    }
 
     return (
         <View className="items-center py-px">
             <View className={circleClassName}>
-                <Text className={dayTextClassName}>{day.text}</Text>
+                <Text className={dayTextClassName} {...(testID !== null && { testID })}>
+                    {day.text}
+                </Text>
                 {hasDots ? (
                     <View className="flex-row gap-x-0.5 -mt-0.5">
                         {Array.from({ length: actualDots }, (_, index) => (
