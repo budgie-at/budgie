@@ -20,7 +20,7 @@ export abstract class BaseSubsystemStatusService extends ScheduledSnapshotStore<
     }
 
     protected emptySnapshot(): AiSubsystemStatusSnapshotInterface {
-        return EMPTY_SUBSYSTEM_SNAPSHOT;
+        return { ...EMPTY_SUBSYSTEM_SNAPSHOT };
     }
 
     protected recompute(): void {

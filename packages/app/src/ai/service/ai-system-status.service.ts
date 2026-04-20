@@ -143,7 +143,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     }
 
     protected emptySnapshot(): AiSystemSnapshotInterface {
-        return EMPTY_SNAPSHOT;
+        return { ...EMPTY_SNAPSHOT };
     }
 
     protected recompute(): void {
