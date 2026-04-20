@@ -6,7 +6,7 @@ import {
     TagScoreResultInterface
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
@@ -230,7 +230,7 @@ export class EmbeddingSuggestionService {
     }
 
     private blendMccScores(scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void {
-        if (mccRows.length === 0) {
+        if (isEmptyArray(mccRows)) {
             return;
         }
         const mccBlendWeight = 0.7;
