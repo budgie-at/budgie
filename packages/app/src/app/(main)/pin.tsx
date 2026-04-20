@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useEffectEvent, useState } from 'react';
 import { View } from 'react-native';
 
 import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
@@ -18,7 +18,7 @@ interface AuthFormStateInterface {
     hasAttemptedBiometric: boolean;
 }
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line max-statements, max-lines-per-function -- PIN screen orchestrates unlock, biometric retry, and foreground handling
 export default function PinScreen() {
     const { t } = useLingui();
 
@@ -87,21 +87,25 @@ export default function PinScreen() {
         }
     };
 
-    const tryAutomaticBiometric = () => {
-        if (canUseBiometric && !formState.hasAttemptedBiometric) {
-            updateForm({ hasAttemptedBiometric: true });
-            void handleBiometricAuth();
-        }
-    };
+    const runAutomaticBiometricAuth = useEffectEvent(() => {
+        updateForm({ hasAttemptedBiometric: true });
+        void handleBiometricAuth();
+    });
 
     if (formState.input.length === PIN_LENGTH && !formState.isLoading) {
         void handlePinSubmit();
     }
 
-    useEffect(() => tryAutomaticBiometric, []);
+    useEffect(() => {
+        if (canUseBiometric && !formState.hasAttemptedBiometric) {
+            runAutomaticBiometricAuth();
+        }
+    }, [canUseBiometric, formState.hasAttemptedBiometric]);
+
     useAppState(isActive => {
-        if (isActive) {
-            tryAutomaticBiometric();
+        if (isActive && canUseBiometric && !formState.hasAttemptedBiometric) {
+            updateForm({ hasAttemptedBiometric: true });
+            void handleBiometricAuth();
         }
     });
 

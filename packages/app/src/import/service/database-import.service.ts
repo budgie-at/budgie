@@ -10,27 +10,33 @@ class DatabaseImportService {
     async replaceFromUri(sourceUri: string): Promise<void> {
         const destinationPath = this.getDestinationPath();
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
-        const sourceWalPath = `${sourceUri}-wal`;
-        const sourceShmPath = `${sourceUri}-shm`;
-        const destinationWalPath = `${destinationPath}-wal`;
-        const destinationShmPath = `${destinationPath}-shm`;
 
         await expoDb.closeAsync();
         this.clearDatabaseGlobals();
-
-        [destinationPath, destinationWalPath, destinationShmPath, tempPath].forEach(path => void this.deleteFileIfExists(path));
-
-        const tempFile = new File(tempPath);
-        new File(sourceUri).copy(tempFile);
-        tempFile.move(new File(destinationPath));
-        this.copyFileIfExists(sourceWalPath, destinationWalPath);
-        this.copyFileIfExists(sourceShmPath, destinationShmPath);
+        this.deleteDestinationFiles(destinationPath, tempPath);
+        this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
+        this.copyDatabaseSidecars(sourceUri, destinationPath);
     }
 
     async importFromUri(sourceUri: string): Promise<void> {
         await this.replaceFromUri(sourceUri);
         await authService.clearAllPins();
         await reloadApp();
+    }
+
+    private replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): void {
+        const tempFile = new File(tempPath);
+        new File(sourceUri).copy(tempFile);
+        tempFile.move(new File(destinationPath));
+    }
+
+    private copyDatabaseSidecars(sourceUri: string, destinationPath: string): void {
+        this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
+        this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+    }
+
+    private deleteDestinationFiles(destinationPath: string, tempPath: string): void {
+        [destinationPath, `${destinationPath}-wal`, `${destinationPath}-shm`, tempPath].forEach(path => void this.deleteFileIfExists(path));
     }
 
     private clearDatabaseGlobals() {
