@@ -4,7 +4,7 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
-import { ChatSnapshotInterface } from '../interface/chat-snapshot.interface';
+import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { CHAT_CONTEXT_SIZE, CHAT_MODEL_FILENAME, CHAT_MODEL_URL } from '../util/ai-constants.util';
 import { runCompletion } from '../util/run-completion.util';
 import { aiLog } from '../utils/ai-log.util';
@@ -13,7 +13,7 @@ import { BaseLlamaSubsystemService } from './base-subsystem.service';
 
 import type { ChatInvokerInterface } from '@budgie/ai';
 
-class ChatService extends BaseLlamaSubsystemService implements AiSubsystemServiceInterface<ChatSnapshotInterface>, ChatInvokerInterface {
+class ChatService extends BaseLlamaSubsystemService implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, ChatInvokerInterface {
     private mutexChain: Promise<unknown> = Promise.resolve();
 
     constructor() {
