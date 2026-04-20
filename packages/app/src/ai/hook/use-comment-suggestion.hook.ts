@@ -21,7 +21,7 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { status: embeddingStatus } = useEmbedding();
-    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.Ready;
+    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const fetchSuggestions = async (): Promise<string[]> => {

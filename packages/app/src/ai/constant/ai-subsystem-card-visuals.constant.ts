@@ -7,27 +7,27 @@ interface SubsystemCardVisualInterface {
 }
 
 export const AI_SUBSYSTEM_CARD_VISUALS: Record<AiSubsystemCardStateEnum, SubsystemCardVisualInterface> = {
-    [AiSubsystemCardStateEnum.Hidden]: {
+    [AiSubsystemCardStateEnum.HIDDEN]: {
         colorClass: 'text-muted-foreground',
         pulsePeriodMs: null,
         glow: false
     },
-    [AiSubsystemCardStateEnum.Ready]: {
+    [AiSubsystemCardStateEnum.READY]: {
         colorClass: 'text-positive-foreground',
         pulsePeriodMs: null,
         glow: false
     },
-    [AiSubsystemCardStateEnum.Working]: {
+    [AiSubsystemCardStateEnum.WORKING]: {
         colorClass: 'text-warning-foreground',
         pulsePeriodMs: 1000,
         glow: false
     },
-    [AiSubsystemCardStateEnum.Boosting]: {
+    [AiSubsystemCardStateEnum.BOOSTING]: {
         colorClass: 'text-positive-foreground',
         pulsePeriodMs: 800,
         glow: true
     },
-    [AiSubsystemCardStateEnum.Error]: {
+    [AiSubsystemCardStateEnum.ERROR]: {
         colorClass: 'text-destructive-foreground',
         pulsePeriodMs: null,
         glow: false

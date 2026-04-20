@@ -25,7 +25,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { status: embeddingStatus } = useEmbedding();
-    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.Ready;
+    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 

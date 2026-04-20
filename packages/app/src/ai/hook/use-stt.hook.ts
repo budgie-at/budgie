@@ -136,7 +136,7 @@ export const useStt = (): UseSttReturn => {
         status,
         transcription,
         partialTranscription,
-        isReady: sttSnapshot.status === AiSubsystemStatusEnum.Ready,
+        isReady: sttSnapshot.status === AiSubsystemStatusEnum.READY,
         downloadProgress: sttSnapshot.downloadProgress,
         startStream,
         insertAudio,

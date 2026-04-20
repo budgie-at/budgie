@@ -12,7 +12,8 @@ import {
     LONG_PRESS_RING_TRACK_COLOR,
     LONG_PRESS_RING_TRACK_OPACITY
 } from '../../constant/long-press-brain.constant';
-import { useAiSubsystemIconAnimations, useAiSubsystemIconHoldRing } from '../../hook/use-ai-subsystem-icon-animations.hook';
+import { useAiSubsystemIconAnimations } from '../../hook/use-ai-subsystem-icon-animations.hook';
+import { useAiSubsystemIconHoldRing } from '../../hook/use-ai-subsystem-icon-hold-ring.hook';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 

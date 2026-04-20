@@ -24,7 +24,7 @@ export const buildSubsystemSnapshot = (
 
     if (drainer.state === DrainerStateEnum.Error) {
         return {
-            state: AiSubsystemCardStateEnum.Error,
+            state: AiSubsystemCardStateEnum.ERROR,
             statusText: drainer.errorMessage ?? '',
             errorMessage: drainer.errorMessage,
             ...base
@@ -32,12 +32,12 @@ export const buildSubsystemSnapshot = (
     }
 
     if (drainer.state === DrainerStateEnum.Boosting) {
-        return { state: AiSubsystemCardStateEnum.Boosting, statusText: labels.boosting, errorMessage: null, ...base };
+        return { state: AiSubsystemCardStateEnum.BOOSTING, statusText: labels.boosting, errorMessage: null, ...base };
     }
 
     if (progress.pending > 0) {
-        return { state: AiSubsystemCardStateEnum.Working, statusText: labels.working, errorMessage: null, ...base };
+        return { state: AiSubsystemCardStateEnum.WORKING, statusText: labels.working, errorMessage: null, ...base };
     }
 
-    return { state: AiSubsystemCardStateEnum.Ready, statusText: labels.ready, errorMessage: null, ...base };
+    return { state: AiSubsystemCardStateEnum.READY, statusText: labels.ready, errorMessage: null, ...base };
 };

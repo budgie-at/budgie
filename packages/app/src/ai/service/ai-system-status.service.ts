@@ -1,7 +1,7 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
 import { t } from '@lingui/core/macro';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     categoryRepository,
@@ -57,7 +57,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
     async boost(): Promise<void> {
         aiLog('system:action:boost');
-        if (translationDrainerService.getSnapshot().pending > 0) {
+        if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
 
             return;
@@ -75,13 +75,13 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     async retry(): Promise<void> {
         aiLog('system:action:retry');
         const promises: Promise<void>[] = [];
-        if (chatService.getSnapshot().errorMessage !== null) {
+        if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
             promises.push(chatService.retry());
         }
-        if (embeddingService.getSnapshot().errorMessage !== null) {
+        if (isNotEmptyString(embeddingService.getSnapshot().errorMessage)) {
             promises.push(embeddingService.retry());
         }
-        if (sttService.getSnapshot().errorMessage !== null) {
+        if (isNotEmptyString(sttService.getSnapshot().errorMessage)) {
             promises.push(sttService.retry());
         }
         await Promise.allSettled(promises);
@@ -173,7 +173,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         const subsystemError = this.firstSubsystemError();
         const drainerError = this.firstDrainerError();
-        if (subsystemError !== null || drainerError !== null) {
+        if (isDefined(subsystemError) || isDefined(drainerError)) {
             const source = subsystemError?.source ?? drainerError?.source ?? 'unknown';
             const message = (subsystemError?.message ?? drainerError?.message ?? '').slice(0, TRUNCATE_LEN);
 
@@ -192,7 +192,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const embedding = embeddingService.getSnapshot();
         const stt = sttService.getSnapshot();
         const bootText = this.describeBoot(chat.status, embedding.status, stt.status);
-        if (bootText !== null) {
+        if (isNotEmptyString(bootText)) {
             return {
                 state: AiSystemStateEnum.Booting,
                 percent: Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF),
@@ -210,9 +210,9 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return this.deriveBoosting(translationBoosting, translationPending, embeddingPending);
         }
 
-        if (translationPending > 0) {
+        if (isPositiveNumber(translationPending)) {
             const { total } = translationProgressStore.getSnapshot();
-            const trailer = embeddingPending > 0 ? t` • ${embeddingPending} tx queued` : '';
+            const trailer = isPositiveNumber(embeddingPending) ? t` • ${embeddingPending} tx queued` : '';
 
             return {
                 state: AiSystemStateEnum.Translating,
@@ -225,7 +225,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             };
         }
 
-        if (embeddingPending > 0) {
+        if (isPositiveNumber(embeddingPending)) {
             const embeddingSnap = embeddingProgressStore.getSnapshot();
             const done = embeddingSnap.total - embeddingPending;
             const { total } = embeddingSnap;
@@ -272,12 +272,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
     private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
         const booting = [chat, embedding, stt].some(
-            status => status === AiSubsystemStatusEnum.Downloading || status === AiSubsystemStatusEnum.Initializing
+            status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING
         );
         if (!booting) {
             return null;
         }
-        const downloading = [chat, embedding].some(status => status === AiSubsystemStatusEnum.Downloading);
+        const downloading = [chat, embedding].some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
 
         return downloading ? t`Downloading models` : t`Loading models`;
     }
@@ -285,15 +285,15 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     /* eslint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */
     private firstSubsystemError(): ErrorSourceInterface | null {
         const chatError = chatService.getSnapshot().errorMessage;
-        if (chatError !== null) {
+        if (isNotEmptyString(chatError)) {
             return { source: 'chat', message: chatError };
         }
         const embeddingError = embeddingService.getSnapshot().errorMessage;
-        if (embeddingError !== null) {
+        if (isNotEmptyString(embeddingError)) {
             return { source: 'embedding', message: embeddingError };
         }
         const sttError = sttService.getSnapshot().errorMessage;
-        if (sttError !== null) {
+        if (isNotEmptyString(sttError)) {
             return { source: 'stt', message: sttError };
         }
 
@@ -302,11 +302,11 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
     private firstDrainerError(): ErrorSourceInterface | null {
         const translation = translationDrainerService.getSnapshot();
-        if (translation.state === DrainerStateEnum.Error && translation.errorMessage !== null) {
+        if (translation.state === DrainerStateEnum.Error && isNotEmptyString(translation.errorMessage)) {
             return { source: 'translation drainer', message: translation.errorMessage };
         }
         const embedding = embeddingDrainerService.getSnapshot();
-        if (embedding.state === DrainerStateEnum.Error && embedding.errorMessage !== null) {
+        if (embedding.state === DrainerStateEnum.Error && isNotEmptyString(embedding.errorMessage)) {
             return { source: 'embedding drainer', message: embedding.errorMessage };
         }
 

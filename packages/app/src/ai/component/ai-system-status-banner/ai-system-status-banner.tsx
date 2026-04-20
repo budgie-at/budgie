@@ -1,7 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 import { AiSystemUmbrellaStateEnum } from '../../enum/ai-system-umbrella-state.enum';
 import { useAiSystemUmbrella } from '../../hook/use-ai-system-umbrella.hook';
 
@@ -33,15 +36,15 @@ export const AiSystemStatusBanner = () => {
 
     const icon = BANNER_ICON[umbrella.state];
     const colorClass = BANNER_COLOR[umbrella.state];
-    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.Downloading && umbrella.downloadPercent > 0;
+    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.Downloading && isPositiveNumber(umbrella.downloadPercent);
 
     return (
         <View className="flex-row items-center gap-x-sm px-lg py-md bg-secondary-background rounded-xl">
-            {icon !== null && <Icon icon={icon} size={ICON_SIZE} className={colorClass} />}
-            <Text className={`flex-1 text-xs font-medium ${colorClass}`} numberOfLines={1}>
+            {isDefined(icon) && <Icon icon={icon} size={ICON_SIZE} className={colorClass} />}
+            <Text className={cn('flex-1 text-xs font-medium', colorClass)} numberOfLines={1}>
                 {umbrella.statusText}
             </Text>
-            {showPercent && <Text className={`text-xs font-medium ${colorClass}`}>{`${umbrella.downloadPercent}%`}</Text>}
+            {showPercent && <Text className={cn('text-xs font-medium', colorClass)}>{`${umbrella.downloadPercent}%`}</Text>}
         </View>
     );
 };
