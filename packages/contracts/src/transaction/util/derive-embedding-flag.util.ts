@@ -3,7 +3,13 @@ import { isDefined } from '@rnw-community/shared';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-const EMBEDDING_SEMANTIC_FIELDS = ['title', 'comment', 'type', 'fromAccountId', 'toAccountId'] as const satisfies readonly (keyof TransactionCreateEntityInterface)[];
+const EMBEDDING_SEMANTIC_FIELDS = [
+    'title',
+    'comment',
+    'type',
+    'fromAccountId',
+    'toAccountId'
+] as const satisfies readonly (keyof TransactionCreateEntityInterface)[];
 
 const NON_INDEXABLE_TYPES: readonly TransactionTypeEnum[] = [TransactionTypeEnum.TRANSFER, TransactionTypeEnum.ADJUSTMENT];
 
