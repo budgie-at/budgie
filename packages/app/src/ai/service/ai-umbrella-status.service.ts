@@ -33,7 +33,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
     }
 
     protected emptySnapshot(): AiSystemUmbrellaSnapshotInterface {
-        return EMPTY_UMBRELLA_SNAPSHOT;
+        return { ...EMPTY_UMBRELLA_SNAPSHOT };
     }
 
     protected recompute(): void {
