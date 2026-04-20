@@ -2,7 +2,6 @@ import { transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
