@@ -1,6 +1,6 @@
 import { AppState, AppStateStatus } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
@@ -69,7 +69,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private readonly handleAppStateChange = (state: AppStateStatus): void => {
         aiLog('coordinator:appstate:change', { to: state });
         if (state === 'active') {
-            if (this.releaseTimer !== null) {
+            if (isDefined(this.releaseTimer)) {
                 aiLog('coordinator:release:cancel');
                 this.clearReleaseTimer();
             }
@@ -81,7 +81,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             return;
         }
 
-        if (this.releaseTimer !== null) {
+        if (isDefined(this.releaseTimer)) {
             return;
         }
         aiLog('coordinator:release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
@@ -133,7 +133,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     }
 
     private clearReleaseTimer(): void {
-        if (this.releaseTimer !== null) {
+        if (isDefined(this.releaseTimer)) {
             clearTimeout(this.releaseTimer);
             this.releaseTimer = null;
         }
