@@ -17,6 +17,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
+import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
@@ -55,9 +56,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DB): Promise<TransactionEntityInterface> {
+        const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
-            .set(input)
+            .set(finalInput)
             .where(eq(TransactionEntityTable.id, id))
             .returning();
 

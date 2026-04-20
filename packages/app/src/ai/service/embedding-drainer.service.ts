@@ -1,6 +1,9 @@
+import { transactionAsync } from '@budgie/contracts';
+
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
+
+import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
 import { aiLog } from '../utils/ai-log.util';
@@ -117,9 +120,11 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         }
         this.residueCleared = true;
         try {
-            await transactionRepository.clearNonIndexableFlags();
-            await transactionRepository.clearAlreadyIndexedMerchantFlags();
-            await transactionRepository.clearAlreadyIndexedCommentFlags();
+            await transactionAsync(db, async tx => {
+                await transactionRepository.clearNonIndexableFlags(tx);
+                await transactionRepository.clearAlreadyIndexedMerchantFlags(tx);
+                await transactionRepository.clearAlreadyIndexedCommentFlags(tx);
+            });
             aiLog('orchestrator:pre-clear:done');
         } catch (error: unknown) {
             aiLog('drainer:embedding:orchestrator:residue:throw', {
