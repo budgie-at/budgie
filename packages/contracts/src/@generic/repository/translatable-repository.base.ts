@@ -1,7 +1,8 @@
 import { SQL, count } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { activeWhere, untranslatedWhere } from '../util/translatable-where.util';
+import { activeWhere } from '../util/active-where.util';
+import { untranslatedWhere } from '../util/untranslated-where.util';
 
 import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
