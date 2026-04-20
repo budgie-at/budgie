@@ -77,12 +77,7 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
         }
     };
 
-    const handleCancel = () => {
-        voiceInput.cancel();
-        onClose();
-    };
-
     return (
-        <VoiceInputOverlayContent voiceInput={voiceInput} contentOpacity={contentOpacity} onRecord={handleRecord} onCancel={handleCancel} />
+        <VoiceInputOverlayContent voiceInput={voiceInput} contentOpacity={contentOpacity} onRecord={handleRecord} onCancel={onClose} />
     );
 };
