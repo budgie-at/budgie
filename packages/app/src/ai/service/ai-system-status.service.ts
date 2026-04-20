@@ -37,10 +37,10 @@ interface ErrorSourceInterface {
     readonly message: string;
 }
 
-type SuspendedOrIdleState = AiSystemStateEnum.Suspended | AiSystemStateEnum.Idle;
+type SuspendedOrIdleState = AiSystemStateEnum.SUSPENDED | AiSystemStateEnum.IDLE;
 
 const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
-    state: AiSystemStateEnum.Disabled,
+    state: AiSystemStateEnum.DISABLED,
     percent: 0,
     statusText: '',
     action: AiSystemActionEnum.NONE,
@@ -50,7 +50,7 @@ const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
 };
 
 class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInterface> {
-    private lastState: AiSystemStateEnum = AiSystemStateEnum.Disabled;
+    private lastState: AiSystemStateEnum = AiSystemStateEnum.DISABLED;
     private lastStateAt = Date.now();
 
     constructor() {
@@ -180,7 +180,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             const message = (subsystemError?.message ?? drainerError?.message ?? '').slice(0, TRUNCATE_LEN);
 
             return {
-                state: AiSystemStateEnum.Error,
+                state: AiSystemStateEnum.ERROR,
                 percent: 0,
                 action: AiSystemActionEnum.RETRY,
                 statusText: t`${source} failed: ${message}`,
@@ -196,7 +196,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const bootText = this.describeBoot(chat.status, embedding.status, stt.status);
         if (isNotEmptyString(bootText)) {
             return {
-                state: AiSystemStateEnum.Booting,
+                state: AiSystemStateEnum.BOOTING,
                 percent: Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF),
                 action: AiSystemActionEnum.NONE,
                 statusText: bootText,
@@ -208,7 +208,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
         if (suspendedOrIdle !== null) {
-            const statusText = suspendedOrIdle === AiSystemStateEnum.Suspended ? t`Resuming AI…` : t`AI idle`;
+            const statusText = suspendedOrIdle === AiSystemStateEnum.SUSPENDED ? t`Resuming AI…` : t`AI idle`;
 
             return {
                 state: suspendedOrIdle,
@@ -232,7 +232,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             const trailer = isPositiveNumber(embeddingPending) ? t` • ${embeddingPending} tx queued` : '';
 
             return {
-                state: AiSystemStateEnum.Translating,
+                state: AiSystemStateEnum.TRANSLATING,
                 percent: translationProgressStore.getSnapshot().percent,
                 action: AiSystemActionEnum.BOOST,
                 statusText: t`Translating ${translationPending} of ${total}${trailer}`,
@@ -248,7 +248,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             const { total } = embeddingSnap;
 
             return {
-                state: AiSystemStateEnum.Indexing,
+                state: AiSystemStateEnum.INDEXING,
                 percent: embeddingSnap.percent,
                 action: AiSystemActionEnum.BOOST,
                 statusText: t`Indexing ${done} of ${total}`,
@@ -259,7 +259,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
 
         return {
-            state: AiSystemStateEnum.Ready,
+            state: AiSystemStateEnum.READY,
             percent: FULL_PERCENT,
             action: AiSystemActionEnum.NONE,
             statusText: t`All set`,
@@ -277,7 +277,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const done = translationBoosting ? total - translationPending : total - embeddingPending;
 
         return {
-            state: AiSystemStateEnum.Boosting,
+            state: AiSystemStateEnum.BOOSTING,
             percent,
             action: AiSystemActionEnum.CANCEL,
             statusText: t`Fast-indexing ${done} of ${total} • tap to pause`,
@@ -307,10 +307,10 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     ): SuspendedOrIdleState | null {
         const statuses = [chat, embedding, stt] as const;
         if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
-            return AiSystemStateEnum.Suspended;
+            return AiSystemStateEnum.SUSPENDED;
         }
         if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
-            return AiSystemStateEnum.Idle;
+            return AiSystemStateEnum.IDLE;
         }
 
         return null;
