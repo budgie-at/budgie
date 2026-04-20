@@ -10,11 +10,10 @@ import { authService } from '../service/auth.service';
 
 interface Params {
     readonly mode: PinSetupModeEnum;
-    readonly onSuccess: (value: { isPinEnabled: boolean; isBiometricEnabled: boolean }) => void;
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const usePinSetup = ({ mode, onSuccess }: Params) => {
+export const usePinSetup = ({ mode }: Params) => {
     const { isLoading: biometricLoading, isSomeAvailable } = useAuthContext();
 
     const [state, dispatch] = usePinSetupReducer({
@@ -44,9 +43,8 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         return true;
     };
 
-    const removePinAndContinue = () => {
-        void authService.deletePin();
-        onSuccess({ isPinEnabled: false, isBiometricEnabled: false });
+    const removePinAndContinue = async () => {
+        await authService.deletePin();
     };
 
     const handleVerifyOldStep = async () => {
@@ -57,7 +55,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         }
 
         if (mode === PinSetupModeEnum.DISABLE) {
-            removePinAndContinue();
+            await removePinAndContinue();
 
             return;
         }
@@ -71,8 +69,6 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: true });
 
         try {
-            await authService.savePin(state.tempNewPin);
-
             if (isBiometricEnabled && isSomeAvailable) {
                 const success = await authService.authenticateWithBiometrics();
 
@@ -81,7 +77,11 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
                 }
             }
 
-            onSuccess({ isPinEnabled: true, isBiometricEnabled });
+            if (mode === PinSetupModeEnum.CHANGE) {
+                await authService.changePin(state.tempNewPin);
+            } else {
+                await authService.createPin(state.tempNewPin, isBiometricEnabled);
+            }
         } catch {
             dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Failed to save PIN. Please try again.` });
         } finally {

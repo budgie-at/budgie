@@ -15,14 +15,14 @@ executionOrder:
         - 09.income-transaction.flow
         - 10.transfer-transaction.flow
         - 11.cross-currency-transfer-transaction.flow
-        - 12.account-archive-and-expense-to-transfer.flow
-        - 13.income-to-transfer.flow
-        - 14.transactions-filters.flow
-        - 15.transaction-long-press.flow
-        - 16.erste-bank-import.flow
-        - 22.security-app-lock.flow
-        - 23.security-privacy.flow
-        - 24.csv-import-export.flow
+        - 12.account-archive-and-expense-convert-to-transfer.flow
+        - 13.income-convert-to-transfer.flow
+        - 14.transaction-filters.flow
+        - 15.transaction-long-press-actions.flow
+        - 16.erste-pdf-import.flow
+        - 17.security-app-lock.flow
+        - 18.security-screenshot-protection.flow
+        - 19.csv-import-export.flow
 
 platform:
     ios:
