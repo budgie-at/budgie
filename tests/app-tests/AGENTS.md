@@ -19,6 +19,7 @@ Maestro flows for Budgie.
 13. After selecting an option from a native search sheet, wait for that search field to disappear before tapping the underlying form again.
 14. Do not take screenshots or run `maestro hierarchy` during an active Maestro run. Inspect only after failure or outside the run.
 15. Do not use `hideKeyboard` in Maestro flows. It is unreliable here and can break later execution. Prefer flows that continue without explicit keyboard dismissal.
+16. Do not `scrollUntilVisible` to submit controls that live in sticky footers. If the form already exposes the submit button outside scrollable content, wait for it and tap it directly.
 
 ## Flow Design
 
