@@ -5,9 +5,11 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
-import { useLlmContext } from '../context/llm.context';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
+import { aiLog } from '../utils/ai-log.util';
 
+import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseTagSuggestionParams {
@@ -22,7 +24,8 @@ interface UseTagSuggestionParams {
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { llm } = useLlmContext();
+    const { status: embeddingStatus } = useEmbedding();
+    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
@@ -34,23 +37,42 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         }
 
         const mccDescription = mccCategory?.fullDescription ?? null;
-
-        return embeddingSuggestionService.suggestTags(llm, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
-    };
-
-    const { status, suggestions } = useSuggestionBase({
-        enabled,
-        readyChecks: [llm.isEmbeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
-        requestKeyParts: [
+        aiLog('hook:suggestion:tag:fetch:start', {
             transactionTitle,
             categoryId,
             mccCategoryId,
+            mccDescription,
             comment,
             aiContext,
-            enabled,
-            llm.isEmbeddingReady,
-            allTags?.length ?? 0
-        ],
+            tagsLength: allTags.length
+        });
+        const results = await embeddingSuggestionService.suggestTags(
+            allTags,
+            categoryId,
+            transactionTitle,
+            mccDescription,
+            comment,
+            aiContext
+        );
+        aiLog('hook:suggestion:tag:fetch:done', { count: results.length, ids: results.map(tag => tag.id) });
+
+        return results;
+    };
+
+    aiLog('hook:suggestion:tag:hook:state', {
+        enabled,
+        embeddingStatus,
+        embeddingReady,
+        isMccLoading,
+        isTagsLoading,
+        hasTagsLoaded,
+        tagsLength: allTags?.length ?? 0
+    });
+
+    const { status, suggestions } = useSuggestionBase({
+        enabled,
+        readyChecks: [embeddingReady, !isMccLoading, !isTagsLoading, hasTagsLoaded],
+        requestKeyParts: [transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, embeddingReady, allTags?.length ?? 0],
         fetchSuggestions
     });
 

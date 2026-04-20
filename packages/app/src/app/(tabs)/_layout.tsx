@@ -7,8 +7,8 @@ import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/ani
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
-import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
+import { useAiAvailable } from '../../ai/hook/use-ai-available.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
@@ -21,7 +21,7 @@ const LazyVoiceInputOverlay = lazy(async () => {
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
-    const { isAvailable: isAiAvailable } = useLlmContext();
+    const isAiAvailable = useAiAvailable();
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
@@ -77,9 +77,9 @@ export default function TabsLayout() {
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
             <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
-            {isAiAvailable ? (
+            {isAiAvailable && isVoiceInputOpen ? (
                 <Suspense fallback={null}>
-                    <LazyVoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} />
+                    <LazyVoiceInputOverlay onClose={handleCloseVoiceInput} />
                 </Suspense>
             ) : null}
         </VoiceInputContext>

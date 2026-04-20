@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
+
+### Bug Fixes
+
+- **contracts,app,ai:** address round-1 PR review findings ([e67d528](https://github.com/budgie-at/budgie/commit/e67d528af92b0e4e1d9b7267a4cb48777474cbab)), closes [#8](https://github.com/budgie-at/budgie/issues/8)
+- **contracts,app,ai:** MCC suggestion UNION + generated col write guard ([3cbe065](https://github.com/budgie-at/budgie/commit/3cbe0658db9851957117d08b932ef411610b33c9))
+- round-2 review cleanup — type safety, logs, rule compliance ([a00628b](https://github.com/budgie-at/budgie/commit/a00628b1ef25740164f48d4c421b9e2a0fd2c178)), closes [#8](https://github.com/budgie-at/budgie/issues/8) [#2](https://github.com/budgie-at/budgie/issues/2) [#14](https://github.com/budgie-at/budgie/issues/14) [#4](https://github.com/budgie-at/budgie/issues/4)
+
+### Features
+
+- add aiLog utility to app and ai packages ([3fd2fbf](https://github.com/budgie-at/budgie/commit/3fd2fbf07c5ea006f4ede1bfd37378d683e84281))
+- **ai:** add chat, embedding, stt invoker interfaces + extract GenerateOptionsInterface ([b24ebc7](https://github.com/budgie-at/budgie/commit/b24ebc72c4f54d05e0c67bc0216fcb07b91c7b72))
+- **ai:** export invoker interfaces ([35fb4b6](https://github.com/budgie-at/budgie/commit/35fb4b6d7b315a9ae594948804c5ccd773346a37))
+
+### Performance Improvements
+
+- **contracts,app,ai:** bulk pre-clear embed flags + add MCC suggestion signal ([e5e6667](https://github.com/budgie-at/budgie/commit/e5e66673b5181d914cd63eb58de1e6829c88aaf9))
+
 ## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
 
 **Note:** Version bump only for package @budgie/ai

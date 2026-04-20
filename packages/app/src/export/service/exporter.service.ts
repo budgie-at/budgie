@@ -78,10 +78,10 @@ class ExporterService {
     // eslint-disable-next-line max-statements
     private async processTransactionsInBatches(): Promise<ExportRowInterface[]> {
         const rows: ExportRowInterface[] = [];
-        let offset = 0;
+        let cursorId: number | null = null;
 
         do {
-            const transactions = await transactionRepository.getAllWithOffset(this.BATCH_SIZE, offset);
+            const transactions = await transactionRepository.getAllAfter(cursorId, this.BATCH_SIZE);
 
             if (!isNotEmptyArray(transactions)) {
                 break;
@@ -105,7 +105,7 @@ class ExporterService {
                 }
             }
 
-            offset += this.BATCH_SIZE;
+            cursorId = transactions[transactions.length - 1].id;
 
             await microPause();
             // eslint-disable-next-line no-constant-condition,@typescript-eslint/no-unnecessary-condition
