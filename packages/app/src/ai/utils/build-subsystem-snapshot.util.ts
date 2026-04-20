@@ -22,7 +22,7 @@ export const buildSubsystemSnapshot = (
 ): AiSubsystemStatusSnapshotInterface => {
     const base = { percent: progress.percent, pending: progress.pending, total: progress.total };
 
-    if (drainer.state === DrainerStateEnum.Error) {
+    if (drainer.state === DrainerStateEnum.ERROR) {
         return {
             state: AiSubsystemCardStateEnum.ERROR,
             statusText: drainer.errorMessage ?? '',
@@ -31,7 +31,7 @@ export const buildSubsystemSnapshot = (
         };
     }
 
-    if (drainer.state === DrainerStateEnum.Boosting) {
+    if (drainer.state === DrainerStateEnum.BOOSTING) {
         return { state: AiSubsystemCardStateEnum.BOOSTING, statusText: labels.boosting, errorMessage: null, ...base };
     }
 

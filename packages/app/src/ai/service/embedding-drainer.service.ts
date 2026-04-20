@@ -12,20 +12,20 @@ import { commentEmbeddingDrainerService } from './comment-embedding-drainer.serv
 import { merchantEmbeddingDrainerService } from './merchant-embedding-drainer.service';
 
 const deriveState = (merchantState: DrainerStateEnum, commentState: DrainerStateEnum): DrainerStateEnum => {
-    if (merchantState === DrainerStateEnum.Error || commentState === DrainerStateEnum.Error) {
-        return DrainerStateEnum.Error;
+    if (merchantState === DrainerStateEnum.ERROR || commentState === DrainerStateEnum.ERROR) {
+        return DrainerStateEnum.ERROR;
     }
-    if (merchantState === DrainerStateEnum.Boosting || commentState === DrainerStateEnum.Boosting) {
-        return DrainerStateEnum.Boosting;
+    if (merchantState === DrainerStateEnum.BOOSTING || commentState === DrainerStateEnum.BOOSTING) {
+        return DrainerStateEnum.BOOSTING;
     }
-    if (merchantState === DrainerStateEnum.Draining || commentState === DrainerStateEnum.Draining) {
-        return DrainerStateEnum.Draining;
+    if (merchantState === DrainerStateEnum.DRAINING || commentState === DrainerStateEnum.DRAINING) {
+        return DrainerStateEnum.DRAINING;
     }
-    if (merchantState === DrainerStateEnum.Paused && commentState === DrainerStateEnum.Paused) {
-        return DrainerStateEnum.Paused;
+    if (merchantState === DrainerStateEnum.PAUSED && commentState === DrainerStateEnum.PAUSED) {
+        return DrainerStateEnum.PAUSED;
     }
 
-    return DrainerStateEnum.Idle;
+    return DrainerStateEnum.IDLE;
 };
 
 class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
@@ -37,7 +37,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
     private residueCleared = false;
 
     constructor() {
-        super({ state: DrainerStateEnum.Idle, pending: 0, lastDurationMs: 0, errorMessage: null });
+        super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
     start(): void {
@@ -72,7 +72,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         const started = Date.now();
         await this.merchant.boost();
         aiLog('drainer:embedding:orchestrator:merchant:complete', { durationMs: Date.now() - started });
-        if (this.comment.getSnapshot().state === DrainerStateEnum.Paused) {
+        if (this.comment.getSnapshot().state === DrainerStateEnum.PAUSED) {
             aiLog('drainer:embedding:orchestrator:comment:skip', { reason: 'paused' });
 
             return;

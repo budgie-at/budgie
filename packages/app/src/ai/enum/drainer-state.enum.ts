@@ -1,7 +1,7 @@
 export enum DrainerStateEnum {
-    Idle = 'idle',
-    Draining = 'draining',
-    Boosting = 'boosting',
-    Paused = 'paused',
-    Error = 'error'
+    IDLE = 'IDLE',
+    DRAINING = 'DRAINING',
+    BOOSTING = 'BOOSTING',
+    PAUSED = 'PAUSED',
+    ERROR = 'ERROR'
 }
