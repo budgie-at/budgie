@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/ai/service/ai-system-status.service.ts:215
+#: src/ai/service/ai-system-status.service.ts:232
 msgid " • {embeddingPending} tx queued"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr "{percentage}% der Einnahmen"
 msgid "{source} error · {message}"
 msgstr ""
 
-#: src/ai/service/ai-system-status.service.ts:184
+#: src/ai/service/ai-system-status.service.ts:186
 msgid "{source} failed: {message}"
 msgstr ""
 
@@ -156,11 +156,17 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/service/ai-system-status.service.ts:171
+#: src/ai/service/ai-system-status.service.ts:173
 msgid "AI disabled"
 msgstr ""
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:111
+msgid "AI idle"
+msgstr "KI inaktiv"
+
 #: src/ai/service/ai-umbrella-status.service.ts:56
+#: src/ai/service/ai-umbrella-status.service.ts:118
 msgid "AI off"
 msgstr "KI aus"
 
@@ -184,7 +190,7 @@ msgstr "Alle Spalten wurden zugewiesen"
 msgid "All Recurring"
 msgstr "Alle wiederkehrenden"
 
-#: src/ai/service/ai-system-status.service.ts:248
+#: src/ai/service/ai-system-status.service.ts:265
 msgid "All set"
 msgstr ""
 
@@ -664,11 +670,11 @@ msgstr "Fertig"
 msgid "Download your statement as PDF"
 msgstr "Kontoauszug als PDF herunterladen"
 
-#: src/ai/service/ai-umbrella-status.service.ts:83
+#: src/ai/service/ai-umbrella-status.service.ts:84
 msgid "Downloading AI models…"
 msgstr "KI-Modelle werden heruntergeladen…"
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Downloading models"
 msgstr ""
 
@@ -883,7 +889,7 @@ msgstr "Synchronisation konnte nicht eingerichtet werden"
 msgid "Failed to update token"
 msgstr "Token konnte nicht aktualisiert werden"
 
-#: src/ai/service/ai-system-status.service.ts:266
+#: src/ai/service/ai-system-status.service.ts:283
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr ""
 
@@ -1032,7 +1038,7 @@ msgstr "Einnahmen nach Tag"
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
 
-#: src/ai/service/ai-system-status.service.ts:237
+#: src/ai/service/ai-system-status.service.ts:254
 msgid "Indexing {done} of {total}"
 msgstr ""
 
@@ -1088,7 +1094,7 @@ msgstr "KI-Modell nicht bereit"
 msgid "Loading AI model..."
 msgstr ""
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Loading models"
 msgstr ""
 
@@ -1153,7 +1159,7 @@ msgstr "Zu Menü → Kontoauszüge navigieren"
 msgid "New Account"
 msgstr "Neues Konto"
 
-#: src/app/(main)/create-transaction/expense.tsx:66
+#: src/app/(main)/create-transaction/expense.tsx:65
 msgid "New Expense"
 msgstr "Neue Ausgabe"
 
@@ -1464,6 +1470,11 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:102
+msgid "Resuming AI…"
+msgstr "KI wird fortgesetzt…"
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:14
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
@@ -1744,7 +1755,7 @@ msgstr "Synchronisation starten"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
-#: src/ai/service/ai-umbrella-status.service.ts:94
+#: src/ai/service/ai-umbrella-status.service.ts:93
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
 
@@ -1949,7 +1960,7 @@ msgstr "Transkription fehlgeschlagen"
 msgid "Transfer"
 msgstr "Überweisung"
 
-#: src/ai/service/ai-system-status.service.ts:221
+#: src/ai/service/ai-system-status.service.ts:238
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr ""
 
