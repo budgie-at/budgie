@@ -16,6 +16,8 @@ appId: ${APP_ID}
       text: 'Browse'
       optional: true
 
+- waitForAnimationToEnd
+
 - runFlow:
       when:
           notVisible:
@@ -28,6 +30,20 @@ appId: ${APP_ID}
                     - tapOn:
                           text: 'On My iPhone'
                     - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'budgie \(E2E\), Container'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'budgie \(E2E\), Container'
+                direction: DOWN
+                timeout: 10000
+                speed: 20
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
 
 - extendedWaitUntil:
       visible:

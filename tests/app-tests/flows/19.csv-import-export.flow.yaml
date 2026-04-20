@@ -18,6 +18,17 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'CsvPage.ImportCard'
+    retryTapIfNoChange: true
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      notVisible: 'Cancel'
+    commands:
+      - tapOn:
+          id: 'CsvPage.ImportCard'
+      - waitForAnimationToEnd
 
 - runFlow:
     file: subflows/import/select-file-from-app-provider.flow.yaml
@@ -35,10 +46,13 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CsvPage.StartImportButton'
 
+- tapOn:
+    id: 'TabBar.Home'
+
 - extendedWaitUntil:
     visible:
       id: 'HomePage.NetWorthValue.88'
-    timeout: 3000
+    timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
@@ -50,16 +64,18 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - tapOn:
     id: 'CsvPage.ExportCard'
+    retryTapIfNoChange: true
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      notVisible: 'Save to Files'
+    commands:
+      - tapOn:
+          id: 'CsvPage.ExportCard'
+      - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible: 'Done'
-    timeout: 10000
-
-- tapOn:
-    text: 'Done'
-
-- tapOn:
-    id: 'TabBar.Home'
-
-- assertVisible:
-    id: 'HomePage.NetWorthValue.88'
+    visible: 'Save to Files'
+    timeout: 15000

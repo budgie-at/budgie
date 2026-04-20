@@ -2,34 +2,45 @@ appId: ${APP_ID}
 env:
     FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH}
 ---
-- runFlow:
-      when:
-          visible: 'E2EFixtures, Actions Menu'
-      commands: []
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible: 'Cancel'
+      timeout: 15000
 
 - runFlow:
       when:
-          visible: 'budgie \(E2E\), Actions Menu'
-      commands:
-          - extendedWaitUntil:
-                visible:
-                    id: 'E2EFixtures, Folder'
-                timeout: 3000
-          - tapOn:
-                id: 'E2EFixtures, Folder'
-                retryTapIfNoChange: true
-          - waitForAnimationToEnd
-
-- runFlow:
-      when:
-          notVisible: 'E2EFixtures, Actions Menu'
+          notVisible:
+              id: '${FILE_ROW_ID_MATCH}'
       commands:
           - runFlow:
                 when:
-                    notVisible: 'budgie \(E2E\), Actions Menu'
+                    visible: 'E2EFixtures, Actions Menu'
+                commands: []
+
+          - runFlow:
+                when:
+                    visible: 'budgie \(E2E\), Actions Menu'
+                commands:
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'E2EFixtures, Folder'
+                          timeout: 3000
+                    - tapOn:
+                          id: 'E2EFixtures, Folder'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+
+          - runFlow:
+                when:
+                    notVisible: 'E2EFixtures, Actions Menu'
                 commands:
                     - runFlow:
-                          file: open-e2e-fixtures-full-path.flow.yaml
+                          when:
+                              notVisible: 'budgie \(E2E\), Actions Menu'
+                          commands:
+                              - runFlow:
+                                    file: open-e2e-fixtures-full-path.flow.yaml
 
 - runFlow:
       when:

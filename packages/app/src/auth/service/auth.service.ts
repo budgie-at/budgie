@@ -1,10 +1,10 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { SettingsRepository } from '@budgie/contracts';
-import * as LocalAuthentication from 'expo-local-authentication';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { File, Paths } from 'expo-file-system';
+import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import * as SQLite from 'expo-sqlite';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -14,37 +14,46 @@ import * as schema from '../../@generic/drizzle/db/schema';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { PIN_KEY } from '../constant/pin-key.constant';
 
+interface BiometricTypesInterface {
+    readonly isFaceIdAvailable: boolean;
+    readonly isLoading: boolean;
+    readonly isSomeAvailable: boolean;
+    readonly isTouchIdAvailable: boolean;
+}
+
+interface AuthMigrationParamsInterface {
+    readonly nextPin: string | null;
+    readonly nextSettings?: {
+        readonly isBiometricEnabled: boolean;
+        readonly isPinEnabled: boolean;
+    };
+}
+
+interface AuthMigrationPathsInterface {
+    readonly backupPath: string;
+    readonly destinationPath: string;
+    readonly tempDatabaseName: string;
+    readonly tempDatabasePath: string;
+}
+
 class AuthService {
-    async getBiometricTypes() {
+    async getBiometricTypes(): Promise<BiometricTypesInterface> {
         try {
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
 
             if (!hasHardware) {
-                return {
-                    isTouchIdAvailable: false,
-                    isFaceIdAvailable: false,
-                    isSomeAvailable: false,
-                    isLoading: false
-                };
+                return this.getUnavailableBiometricTypes();
             }
 
             const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
             if (!isEnrolled) {
-                return {
-                    isTouchIdAvailable: false,
-                    isFaceIdAvailable: false,
-                    isSomeAvailable: false,
-                    isLoading: false
-                };
+                return this.getUnavailableBiometricTypes();
             }
 
             const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
-
-            const isAvailable = hasHardware && isEnrolled;
-
-            const isFaceIdAvailable = isAvailable && types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
-            const isTouchIdAvailable = isAvailable && types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
+            const isFaceIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+            const isTouchIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
 
             return {
                 isSomeAvailable: isFaceIdAvailable || isTouchIdAvailable,
@@ -53,12 +62,7 @@ class AuthService {
                 isLoading: false
             };
         } catch {
-            return {
-                isTouchIdAvailable: false,
-                isFaceIdAvailable: false,
-                isSomeAvailable: false,
-                isLoading: false
-            };
+            return this.getUnavailableBiometricTypes();
         }
     }
 
@@ -114,66 +118,20 @@ class AuthService {
         await SecureStore.deleteItemAsync(PIN_KEY);
     }
 
-    private async migrateDatabase(params: {
-        readonly nextPin: string | null;
-        readonly nextSettings?: {
-            readonly isBiometricEnabled: boolean;
-            readonly isPinEnabled: boolean;
-        };
-    }): Promise<void> {
+    private async migrateDatabase(params: AuthMigrationParamsInterface): Promise<void> {
         const currentPin = await this.getPin();
-        const tempDatabaseName = 'auth-migration.db';
-        const tempDatabasePath = this.getTempDatabasePath(tempDatabaseName);
-        const destinationPath = this.getDestinationPath();
-        const backupPath = `${destinationPath}.bak`;
-
-        await this.deleteDatabaseFiles(tempDatabasePath);
-        await this.deleteDatabaseFiles(backupPath);
-        await this.exportDatabase(tempDatabasePath, params.nextPin);
+        const migrationPaths = this.getMigrationPaths();
 
         try {
-            if (params.nextSettings) {
-                await this.updateMigratedDatabaseSettings(tempDatabaseName, params.nextPin, params.nextSettings);
-            }
-
-            await expoDb.closeAsync();
-            this.clearDatabaseGlobals();
-            this.deleteFileIfExists(`${destinationPath}-wal`);
-            this.deleteFileIfExists(`${destinationPath}-shm`);
-
-            const destinationFile = new File(destinationPath);
-            if (destinationFile.exists) {
-                destinationFile.move(new File(backupPath));
-            }
-
-            new File(tempDatabasePath).move(new File(destinationPath));
-
-            if (isNotEmptyString(params.nextPin)) {
-                await SecureStore.setItemAsync(PIN_KEY, params.nextPin);
-            } else {
-                await SecureStore.deleteItemAsync(PIN_KEY);
-            }
-
-            this.deleteDatabaseFiles(backupPath);
+            await this.prepareMigrationDatabase(migrationPaths, params);
+            await this.commitMigrationDatabase(migrationPaths, params.nextPin);
             await reloadApp();
         } catch (migrationError) {
-            this.deleteFileIfExists(destinationPath);
-
-            const backupFile = new File(backupPath);
-            if (backupFile.exists) {
-                backupFile.move(new File(destinationPath));
-            }
-
-            if (isNotEmptyString(currentPin)) {
-                await SecureStore.setItemAsync(PIN_KEY, currentPin);
-            } else {
-                await SecureStore.deleteItemAsync(PIN_KEY);
-            }
-
+            await this.rollbackMigrationDatabase(migrationPaths, currentPin);
             throw migrationError;
         } finally {
-            await this.deleteDatabaseFiles(tempDatabasePath);
-            await this.deleteDatabaseFiles(backupPath);
+            this.deleteDatabaseFiles(migrationPaths.tempDatabasePath);
+            this.deleteDatabaseFiles(migrationPaths.backupPath);
         }
     }
 
@@ -213,8 +171,86 @@ class AuthService {
         }
     }
 
+    private getUnavailableBiometricTypes(): BiometricTypesInterface {
+        return {
+            isTouchIdAvailable: false,
+            isFaceIdAvailable: false,
+            isSomeAvailable: false,
+            isLoading: false
+        };
+    }
+
+    private getMigrationPaths(): AuthMigrationPathsInterface {
+        const tempDatabaseName = 'auth-migration.db';
+        const destinationPath = this.getDestinationPath();
+
+        return {
+            tempDatabaseName,
+            tempDatabasePath: this.getTempDatabasePath(tempDatabaseName),
+            destinationPath,
+            backupPath: `${destinationPath}.bak`
+        };
+    }
+
+    private async prepareMigrationDatabase(paths: AuthMigrationPathsInterface, params: AuthMigrationParamsInterface): Promise<void> {
+        this.deleteDatabaseFiles(paths.tempDatabasePath);
+        this.deleteDatabaseFiles(paths.backupPath);
+        await this.exportDatabase(paths.tempDatabasePath, params.nextPin);
+
+        if (params.nextSettings) {
+            await this.updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextPin, params.nextSettings);
+        }
+    }
+
+    private async commitMigrationDatabase(paths: AuthMigrationPathsInterface, nextPin: string | null): Promise<void> {
+        await expoDb.closeAsync();
+        this.clearDatabaseGlobals();
+        this.deleteDestinationSidecars(paths.destinationPath);
+        this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
+        new File(paths.tempDatabasePath).move(new File(paths.destinationPath));
+        await this.persistPin(nextPin);
+        this.deleteDatabaseFiles(paths.backupPath);
+    }
+
+    private async rollbackMigrationDatabase(paths: AuthMigrationPathsInterface, currentPin: string | null): Promise<void> {
+        this.deleteFileIfExists(paths.destinationPath);
+        this.restoreBackupDatabase(paths.backupPath, paths.destinationPath);
+        await this.persistPin(currentPin);
+    }
+
+    private moveExistingDatabaseToBackup(destinationPath: string, backupPath: string): void {
+        const destinationFile = new File(destinationPath);
+
+        if (destinationFile.exists) {
+            destinationFile.move(new File(backupPath));
+        }
+    }
+
+    private restoreBackupDatabase(backupPath: string, destinationPath: string): void {
+        const backupFile = new File(backupPath);
+
+        if (backupFile.exists) {
+            backupFile.move(new File(destinationPath));
+        }
+    }
+
+    private async persistPin(pin: string | null): Promise<void> {
+        if (isNotEmptyString(pin)) {
+            await SecureStore.setItemAsync(PIN_KEY, pin);
+        } else {
+            await SecureStore.deleteItemAsync(PIN_KEY);
+        }
+    }
+
+    private deleteDestinationSidecars(destinationPath: string): void {
+        this.deleteFileIfExists(`${destinationPath}-wal`);
+        this.deleteFileIfExists(`${destinationPath}-shm`);
+    }
+
     private clearDatabaseGlobals() {
+        // eslint-disable-next-line no-underscore-dangle, no-undefined
         global.__expoSqliteDb__ = undefined;
+        // eslint-disable-next-line no-underscore-dangle, no-undefined
         global.__drizzleDb__ = undefined;
     }
 
