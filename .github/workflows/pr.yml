@@ -295,13 +295,18 @@ jobs:
       - name: Expo Prebuild
         working-directory: packages/app
         env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios --clean
 
       - name: Sync CocoaPods
         working-directory: packages/app/ios
-        run: APP_VARIANT=e2e pod install
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
+        run: pod install
 
       - name: Restore Xcode DerivedData cache
         uses: actions/cache/restore@v5
@@ -314,6 +319,9 @@ jobs:
 
       - name: Build app
         working-directory: packages/app
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -1)

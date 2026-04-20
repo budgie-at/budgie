@@ -41,15 +41,10 @@ appId: ${APP_ID}
 - tapOn:
     id: 'PinPage.Digit.4'
 
-- stopApp
-- launchApp:
-    permissions:
-      contacts: allow
-      microphone: allow
 - extendedWaitUntil:
     visible:
-      id: 'PinPage.Container'
-    timeout: 3000
+      text: 'Enter your PIN'
+    timeout: 10000
 
 - tapOn:
     id: 'PinPage.Digit.1'
@@ -129,15 +124,10 @@ appId: ${APP_ID}
 - tapOn:
     id: 'PinPage.Digit.8'
 
-- stopApp
-- launchApp:
-    permissions:
-      contacts: allow
-      microphone: allow
 - extendedWaitUntil:
     visible:
-      id: 'PinPage.Container'
-    timeout: 3000
+      text: 'Enter your PIN'
+    timeout: 10000
 
 - tapOn:
     id: 'PinPage.Digit.1'
@@ -191,15 +181,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.AppLockCard'
+      id: 'HomePage.TotalBalance'
     timeout: 10000
 
 - stopApp
-- launchApp:
-    permissions:
-      contacts: allow
-      microphone: allow
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 3000
+- runFlow:
+    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'HomePage.TotalBalance'

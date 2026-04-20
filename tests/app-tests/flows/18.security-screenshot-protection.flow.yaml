@@ -16,14 +16,17 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ScreenshotProtectionSwitch'
 
-- launchApp:
-    permissions:
-      contacts: allow
-      microphone: allow
+- tapOn:
+    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
-    timeout: 3000
+    timeout: 10000
+
+- runFlow:
+    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'HomePage.TotalBalance'
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
@@ -36,11 +39,14 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'SettingsPage.ScreenshotProtectionSwitch'
 
-- launchApp:
-    permissions:
-      contacts: allow
-      microphone: allow
+- tapOn:
+    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'
-    timeout: 3000
+    timeout: 10000
+
+- runFlow:
+    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'HomePage.TotalBalance'

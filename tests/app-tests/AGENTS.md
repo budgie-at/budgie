@@ -20,6 +20,8 @@ Maestro flows for Budgie.
 14. Do not take screenshots or run `maestro hierarchy` during an active Maestro run. Inspect only after failure or outside the run.
 15. Do not use `hideKeyboard` in Maestro flows. It is unreliable here and can break later execution. Prefer flows that continue without explicit keyboard dismissal.
 16. Do not `scrollUntilVisible` to submit controls that live in sticky footers. If the form already exposes the submit button outside scrollable content, wait for it and tap it directly.
+17. For money assertions, prefer rendered rounded values over raw repository floats. If a balance selector is derived from what the user sees, assert that displayed value or the card accessibility text, not an unrounded internal decimal.
+18. Native relaunch is a valid narrow retry case. If `launchApp` occasionally returns to SpringBoard, recover inside one shared relaunch-and-wait subflow, including tapping the app icon when needed, instead of duplicating ad hoc launch retries through business flows.
 
 ## Flow Design
 
@@ -35,15 +37,15 @@ Maestro flows for Budgie.
 2. In iOS Files, prefer native folder row ids over label text:
    - `budgie \(E2E\), Container`
    - `E2EFixtures, Folder`
-3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text and assert the picker root state separately if needed.
+3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text only when it is actually visible and assert the picker root state separately.
 4. When debugging picker failures, inspect live hierarchy before changing selectors. Labels and tappable container ids are often different nodes.
 5. Use the same rule for native selector sheets: hierarchy often exposes a stable visible placeholder or title text that is more reliable than an internal input id.
 
 ## Import Rules
 
-1. Import fixture flows should deep link straight to the target Settings anchor, not bootstrap app state defensively inside the subflow.
-2. `import-database-from-settings.flow.yaml` owns direct database import only. Callers pass `FIXTURE_ROW_ID_MATCH` directly.
-3. After database import triggered from a deep link, iOS restores the app to Settings. Wait for `SettingsPage.Container`, then tap `TabBar.Home`, then assert Home.
+1. `import-database-from-settings.flow.yaml` owns the full Settings import path. Callers pass `FIXTURE_ROW_ID_MATCH` directly and should not duplicate picker recovery logic.
+2. iOS Files handoff is a valid narrow retry case. If the picker drops out of app state, re-establish Home and Settings, reopen `SettingsPage.ImportDatabaseCard`, and retry the picker once instead of scattering ad hoc retries in callers.
+3. After database import, prefer the current app state if Home is already visible. If not, use the shared relaunch-and-wait subflow to recover to `TabBar.Home`.
 
 ## Build Rules
 
