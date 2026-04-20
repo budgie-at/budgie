@@ -50,7 +50,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         this.setSnapshot(next);
     }
 
-    // eslint-disable-next-line max-statements -- Priority-ordered derivation table: disabled → error → downloading → initializing → healthy
+    // eslint-disable-next-line max-statements -- Priority-ordered derivation table across all subsystem statuses
     private derive(): AiSystemUmbrellaSnapshotInterface {
         if (!isAiEnabled()) {
             return { state: AiSystemUmbrellaStateEnum.Disabled, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
@@ -63,7 +63,6 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         const embeddingError = embedding.errorMessage;
         if (chatError !== null || embeddingError !== null) {
             const source = chatError === null ? 'embedding' : 'chat';
-
             const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
 
             return {
@@ -74,8 +73,9 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             };
         }
 
-        const isDownloading = chat.status === AiSubsystemStatusEnum.DOWNLOADING || embedding.status === AiSubsystemStatusEnum.DOWNLOADING;
-        if (isDownloading) {
+        const statuses = [chat.status, embedding.status] as const;
+
+        if (statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING)) {
             const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF);
 
             return {
@@ -86,15 +86,35 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             };
         }
 
-        const isInitializing =
-            chat.status === AiSubsystemStatusEnum.INITIALIZING || embedding.status === AiSubsystemStatusEnum.INITIALIZING;
-        if (isInitializing) {
+        if (statuses.some(status => status === AiSubsystemStatusEnum.INITIALIZING)) {
             return {
                 state: AiSystemUmbrellaStateEnum.Initializing,
                 statusText: t`Starting up AI…`,
                 downloadPercent: 0,
                 errorMessage: null
             };
+        }
+
+        if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
+            return {
+                state: AiSystemUmbrellaStateEnum.Suspended,
+                statusText: t`Resuming AI…`,
+                downloadPercent: 0,
+                errorMessage: null
+            };
+        }
+
+        if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
+            return {
+                state: AiSystemUmbrellaStateEnum.Idle,
+                statusText: t`AI idle`,
+                downloadPercent: 0,
+                errorMessage: null
+            };
+        }
+
+        if (statuses.every(status => status === AiSubsystemStatusEnum.DISABLED)) {
+            return { state: AiSystemUmbrellaStateEnum.Disabled, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
         }
 
         return { state: AiSystemUmbrellaStateEnum.Healthy, statusText: '', downloadPercent: 0, errorMessage: null };

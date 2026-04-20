@@ -162,7 +162,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         this.setSnapshot(next);
     }
 
-    // eslint-disable-next-line max-statements -- Priority-ordered derivation table
+    // eslint-disable-next-line max-statements, max-lines-per-function -- Priority-ordered derivation table with exhaustive SUSPENDED/IDLE branches
     private derive(): AiSystemSnapshotInterface {
         const translationPending = translationDrainerService.getSnapshot().pending;
         const embeddingPending = embeddingDrainerService.getSnapshot().pending;
@@ -198,6 +198,21 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
                 percent: Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF),
                 action: AiSystemActionEnum.None,
                 statusText: bootText,
+                translationPending,
+                embeddingPending,
+                errorMessage: null
+            };
+        }
+
+        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
+        if (suspendedOrIdle !== null) {
+            const statusText = suspendedOrIdle === AiSystemStateEnum.Suspended ? t`Resuming AI…` : t`AI idle`;
+
+            return {
+                state: suspendedOrIdle,
+                percent: 0,
+                action: AiSystemActionEnum.None,
+                statusText,
                 translationPending,
                 embeddingPending,
                 errorMessage: null
@@ -280,6 +295,21 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const downloading = [chat, embedding].some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
 
         return downloading ? t`Downloading models` : t`Loading models`;
+    }
+
+    private firstSuspendedOrIdle(
+        chat: AiSubsystemStatusEnum,
+        embedding: AiSubsystemStatusEnum,
+        stt: AiSubsystemStatusEnum
+    ): AiSystemStateEnum.Suspended | AiSystemStateEnum.Idle | null {
+        if ([chat, embedding, stt].some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
+            return AiSystemStateEnum.Suspended;
+        }
+        if ([chat, embedding, stt].some(status => status === AiSubsystemStatusEnum.IDLE)) {
+            return AiSystemStateEnum.Idle;
+        }
+
+        return null;
     }
 
     /* eslint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */

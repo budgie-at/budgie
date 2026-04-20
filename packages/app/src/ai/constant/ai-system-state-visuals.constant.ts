@@ -23,6 +23,20 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
         shakeOnEnter: false,
         glow: false
     },
+    [AiSystemStateEnum.Suspended]: {
+        colorClass: 'text-warning-foreground',
+        stripClass: 'bg-warning-foreground',
+        pulsePeriodMs: 1200,
+        shakeOnEnter: false,
+        glow: false
+    },
+    [AiSystemStateEnum.Idle]: {
+        colorClass: 'text-muted-foreground',
+        stripClass: 'bg-muted-foreground',
+        pulsePeriodMs: null,
+        shakeOnEnter: false,
+        glow: false
+    },
     [AiSystemStateEnum.Translating]: {
         colorClass: 'text-warning-foreground',
         stripClass: 'bg-warning-foreground',

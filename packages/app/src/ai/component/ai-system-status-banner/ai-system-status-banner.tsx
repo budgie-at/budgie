@@ -13,17 +13,21 @@ const ICON_SIZE = 14;
 const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = {
     [AiSystemUmbrellaStateEnum.Disabled]: UserIconNameEnum.CircleAlert,
     [AiSystemUmbrellaStateEnum.Downloading]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.Healthy]: null,
+    [AiSystemUmbrellaStateEnum.Idle]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.Initializing]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.ModelError]: UserIconNameEnum.TriangleAlert,
-    [AiSystemUmbrellaStateEnum.Healthy]: null
+    [AiSystemUmbrellaStateEnum.Suspended]: UserIconNameEnum.LoaderCircle
 };
 
 const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
     [AiSystemUmbrellaStateEnum.Disabled]: 'text-muted-foreground',
     [AiSystemUmbrellaStateEnum.Downloading]: 'text-primary-foreground',
+    [AiSystemUmbrellaStateEnum.Healthy]: 'text-muted-foreground',
+    [AiSystemUmbrellaStateEnum.Idle]: 'text-muted-foreground',
     [AiSystemUmbrellaStateEnum.Initializing]: 'text-warning-foreground',
     [AiSystemUmbrellaStateEnum.ModelError]: 'text-destructive-foreground',
-    [AiSystemUmbrellaStateEnum.Healthy]: 'text-muted-foreground'
+    [AiSystemUmbrellaStateEnum.Suspended]: 'text-warning-foreground'
 };
 
 export const AiSystemStatusBanner = () => {
