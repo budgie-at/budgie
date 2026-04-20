@@ -77,9 +77,9 @@ export default function TabsLayout() {
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
             <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
-            {isAiAvailable ? (
+            {isAiAvailable && isVoiceInputOpen ? (
                 <Suspense fallback={null}>
-                    <LazyVoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} />
+                    <LazyVoiceInputOverlay onClose={handleCloseVoiceInput} />
                 </Suspense>
             ) : null}
         </VoiceInputContext>
