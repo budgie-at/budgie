@@ -13,6 +13,8 @@ import {
 } from '../constant/repeated-transaction.constant';
 import { SuggestionsResultInterface } from '../interface/suggestions-result.interface';
 
+import { patternCacheService } from './pattern-cache/pattern-cache.service';
+
 interface GetSuggestionsParamsInterface {
     readonly currentTime: Date;
     readonly type: TransactionTypeEnum;
@@ -43,13 +45,17 @@ class RepeatedTransactionService {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
 
-        const timeQuery = transactionPatternRepository.findRepeatedPatterns({
+        const repeatedQuery = {
             ...timeWindow,
             type,
             ...(isPositiveNumber(accountId) && { accountId }),
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-        });
+        };
+        const repeatedCacheKey = `repeated:${JSON.stringify(repeatedQuery)}`;
+        const timeQuery = patternCacheService.memoizeRepeated(repeatedCacheKey, () =>
+            transactionPatternRepository.findRepeatedPatterns(repeatedQuery)
+        );
 
         const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
 
@@ -85,14 +91,17 @@ class RepeatedTransactionService {
         const amountMicroUnits = convertToMicroUnits(amount);
         const tolerance = amountMicroUnits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
 
-        return transactionPatternRepository.findAmountBasedPatterns({
+        const amountQuery = {
             type,
             amountMin: amountMicroUnits - tolerance,
             amountMax: amountMicroUnits + tolerance,
             ...(isPositiveNumber(accountId) && { accountId }),
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-        });
+        };
+        const amountCacheKey = `amount:${JSON.stringify(amountQuery)}`;
+
+        return patternCacheService.memoizeAmount(amountCacheKey, () => transactionPatternRepository.findAmountBasedPatterns(amountQuery));
     }
 }
 

@@ -6,6 +6,7 @@ import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 import { BankTransactionInterface } from '../interface/bank-transaction.interface';
+import { bankSyncLog } from '../util/bank-sync-log.util';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
@@ -22,8 +23,12 @@ export class BaseBankSyncService {
         const result = await this.client.getAccounts();
 
         if (result.success) {
+            bankSyncLog('syncAccounts:ok', { count: result.data.length });
+
             return result.data;
         }
+
+        bankSyncLog('syncAccounts:error', { code: result.error.code, message: result.error.message });
 
         return [];
     }
@@ -31,7 +36,9 @@ export class BaseBankSyncService {
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
         const to = new Date();
 
+        bankSyncLog('syncForward:start', { accountId, from: from.toISOString(), to: to.toISOString() });
         const transactions = await this.fetchTransactions(accountId, from, to);
+        bankSyncLog('syncForward:fetched', { accountId, count: transactions.length });
 
         const oldestTransaction = transactions.at(-1);
 
@@ -50,7 +57,9 @@ export class BaseBankSyncService {
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
 
+        bankSyncLog('syncBackward:start', { accountId, from: from.toISOString(), to: to.toISOString() });
         const transactions = await this.fetchTransactions(accountId, from, to);
+        bankSyncLog('syncBackward:fetched', { accountId, count: transactions.length });
         const oldestTransaction = transactions.at(-1);
 
         if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
@@ -81,15 +90,24 @@ export class BaseBankSyncService {
     }
 
     private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
-        const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
+        const fromTs = this.toSeconds(from);
+        const toTs = this.toSeconds(to);
+        bankSyncLog('fetchTransactions:request', { accountId, fromTs, toTs });
+        const result = await this.client.getTransactions(accountId, fromTs, toTs);
 
         if (result.success) {
+            bankSyncLog('fetchTransactions:ok', { accountId, count: result.data.length });
+
             return result.data;
         }
 
         if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+            bankSyncLog('fetchTransactions:invalidResponse:swallow', { accountId, message: result.error.message });
+
             return [];
         }
+
+        bankSyncLog('fetchTransactions:throw', { accountId, code: result.error.code, message: result.error.message });
 
         throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
     }

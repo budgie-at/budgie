@@ -26,7 +26,7 @@ const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 /* jscpd:ignore-start */
 export default function CreateTransferTransactionPage() {
     const { t } = useLingui();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId } = useLocalSearchParams<{ accountId?: string }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
@@ -34,13 +34,7 @@ export default function CreateTransferTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternalTransfer(data);
-            generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            });
+            markForEmbedding({ transactionId: result.id });
 
             return result;
         },

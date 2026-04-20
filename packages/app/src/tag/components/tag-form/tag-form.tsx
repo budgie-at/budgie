@@ -17,7 +17,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useLlmContext } from '../../../ai/context/llm.context';
+import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
@@ -49,7 +49,7 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const { llm } = useLlmContext();
+    const { isChatReady, modelStatus } = useChatModelStatus();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -61,7 +61,7 @@ export const TagForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: llm.isReady
+        isModelReady: isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -170,7 +170,7 @@ export const TagForm = (props: Props) => {
                     onRegenerate={handleRegenerate}
                     onTitleEnPress={handleTitleEnPress}
                     onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={llm}
+                    modelStatus={modelStatus}
                 />
             </KeyboardAwareScrollView>
 

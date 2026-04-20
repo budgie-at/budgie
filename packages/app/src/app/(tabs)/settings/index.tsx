@@ -13,12 +13,13 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
-import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
+import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
+import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
+import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
-import { AiDataCard } from '../../../settings/components/ai-data-card/ai-data-card';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -49,9 +50,7 @@ export default function SettingsPage() {
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
-
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
-    const aiEnabled = isAiEnabled();
 
     return (
         <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
@@ -97,15 +96,15 @@ export default function SettingsPage() {
                     </SettingsGroup>
                 </View>
 
-                {aiEnabled ? (
-                    <View {...anchorLayout('ai')}>
-                        <SettingsGroup title={t`AI`}>
-                            <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                                <AiDataCard />
-                            </Animated.View>
-                        </SettingsGroup>
-                    </View>
-                ) : null}
+                <View {...anchorLayout('ai')}>
+                    <SettingsGroup title={t`AI`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
+                            <AiSystemStatusBanner />
+                            <AiTranslationStatusCard />
+                            <AiEmbeddingStatusCard />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
 
                 <View {...anchorLayout('organization')}>
                     <SettingsGroup title={t`Organization`}>

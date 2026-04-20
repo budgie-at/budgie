@@ -3,6 +3,7 @@ import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 import { isDefined } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
+import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
@@ -23,11 +24,19 @@ export class BankSyncRepository {
     }
 
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
+        bankSyncLog('repo:bankSync:update', { id, input });
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({ ...input })
             .where(eq(BankSyncEntityTable.id, id))
             .returning();
+        bankSyncLog('repo:bankSync:update:done', {
+            id,
+            resultForwardSyncFromAt: bankSync.forwardSyncFromAt,
+            resultForwardSyncedAt: bankSync.forwardSyncedAt,
+            resultMode: bankSync.mode,
+            resultTransactionCount: bankSync.transactionCount
+        });
 
         return bankSync;
     }
@@ -82,7 +91,7 @@ export class BankSyncRepository {
     async getPendingForwardSync(provider: ExternalSourceEnum, staleThresholdMs: number): Promise<BankSyncEntityInterface[]> {
         const staleTime = new Date(Date.now() - staleThresholdMs);
 
-        return await this.selectWithActiveAccount()
+        const results = await this.selectWithActiveAccount()
             .where(
                 and(
                     eq(BankSyncEntityTable.provider, provider),
@@ -94,6 +103,22 @@ export class BankSyncRepository {
                 )
             )
             .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
+
+        bankSyncLog('repo:bankSync:getPendingForwardSync', {
+            staleThresholdMs,
+            staleTime,
+            count: results.length,
+            syncs: results.map(entry => ({
+                id: entry.id,
+                accountId: entry.accountId,
+                forwardSyncFromAt: entry.forwardSyncFromAt,
+                forwardSyncedAt: entry.forwardSyncedAt,
+                mode: entry.mode,
+                transactionCount: entry.transactionCount
+            }))
+        });
+
+        return results;
     }
 
     async setStatus(id: number, status: BankSyncStatusEnum, tx?: DB): Promise<void> {
