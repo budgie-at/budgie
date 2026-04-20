@@ -17,6 +17,7 @@ import m0012 from './0012_smooth_hedge_knight.sql';
 import m0013 from './0013_fat_wild_child.sql';
 import m0014 from './0014_light_calypso.sql';
 import m0015 from './0015_add_entry_exchange_rate_and_to_iban.sql';
+import m0016 from './0016_add_needs_embedding.sql';
 
   export default {
     journal,
@@ -36,7 +37,8 @@ m0011,
 m0012,
 m0013,
 m0014,
-m0015
+m0015,
+m0016
     }
   }
   

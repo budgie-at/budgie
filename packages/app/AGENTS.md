@@ -569,3 +569,19 @@ Register tasks in `_layout.tsx` after migrations:
 - Monobank sync
 
 Task files use `.task.ts` suffix and are defined in `[module]/task/` folders.
+
+### `emptySnapshot()` returns fresh objects
+
+Return a spread (`{ ...EMPTY_SNAPSHOT }`), not the module-level constant. The constant is a template; callers must not share a reference.
+
+```ts
+// Good
+protected emptySnapshot(): AiSystemSnapshotInterface {
+    return { ...EMPTY_SNAPSHOT };
+}
+
+// Bad
+protected emptySnapshot(): AiSystemSnapshotInterface {
+    return EMPTY_SNAPSHOT;
+}
+```
