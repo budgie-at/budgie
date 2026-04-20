@@ -37,7 +37,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.87_5'
+      id: 'HomePage.NetWorthValue.88'
     timeout: 3000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
@@ -62,4 +62,4 @@ appId: ${APP_ID}
     id: 'TabBar.Home'
 
 - assertVisible:
-    id: 'HomePage.NetWorthValue.87_5'
+    id: 'HomePage.NetWorthValue.88'

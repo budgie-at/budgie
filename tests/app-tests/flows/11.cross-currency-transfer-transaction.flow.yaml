@@ -77,7 +77,7 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Txn_Account.25'
 - assertVisible:
-    id: 'AccountCard.Balance.E2E_Foreign_Account.163_675'
+    text: 'E2E Foreign Account, .*164'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

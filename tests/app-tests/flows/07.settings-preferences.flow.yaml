@@ -8,15 +8,21 @@ appId: ${APP_ID}
 
 - openLink: 'budgie://settings?anchor=general'
 
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.LanguageCard'
+    timeout: 10000
+
 - assertVisible:
     id: 'SettingsPage.LanguageValue.en'
 
-- tapOn:
-    id: 'SettingsPage.LanguageCard'
-- extendedWaitUntil:
-    visible:
-      id: 'LanguageSelector.SearchInput'
-    timeout: 10000
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.LanguageCard'
+      DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
     id: 'LanguageSelector.SearchInput'
 - inputText: 'de'
@@ -27,12 +33,11 @@ appId: ${APP_ID}
       id: 'SettingsPage.LanguageValue.de'
     timeout: 10000
 
-- tapOn:
-    id: 'SettingsPage.LanguageCard'
-- extendedWaitUntil:
-    visible:
-      id: 'LanguageSelector.SearchInput'
-    timeout: 10000
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.LanguageCard'
+      DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
     id: 'LanguageSelector.SearchInput'
 - inputText: 'en'
@@ -43,11 +48,11 @@ appId: ${APP_ID}
       id: 'SettingsPage.LanguageValue.en'
     timeout: 10000
 
-- tapOn:
-    id: 'SettingsPage.MainCurrencyCard'
-- extendedWaitUntil:
-    visible: 'Search currencies...'
-    timeout: 3000
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.MainCurrencyCard'
+      DESTINATION_ID: 'Search currencies...'
 - tapOn: 'Search currencies...'
 - inputText: 'GBP'
 - tapOn:

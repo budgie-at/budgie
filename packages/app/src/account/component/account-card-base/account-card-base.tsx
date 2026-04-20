@@ -67,6 +67,7 @@ export const AccountCardBase = (props: Props) => {
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
     const accountBalance = formatDigits(balance, instrumentSymbol);
+    const accountBalanceTestValue = formatDigits(balance);
 
     return (
         <Card
@@ -92,7 +93,10 @@ export const AccountCardBase = (props: Props) => {
                 </Text>
 
                 {balanceContent ?? (
-                    <ProtectedText className="text-primary font-medium" testID={AccountCardBaseSelector.Balance(title, balance)}>
+                    <ProtectedText
+                        className="text-primary font-medium"
+                        testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
+                    >
                         {accountBalance}
                     </ProtectedText>
                 )}

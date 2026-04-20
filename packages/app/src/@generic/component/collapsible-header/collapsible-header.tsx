@@ -38,7 +38,8 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
-    const netWorthValueTestID = HomePageSelector.NetWorthValue(netWorth);
+    const formattedNetWorthValue = formatDigits(netWorth);
+    const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);

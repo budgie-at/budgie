@@ -22,7 +22,7 @@ Local Erste Bank PDF flow:
 
 ```bash
 sh ./scripts/setup-ios-e2e-fixtures.sh
-maestro test ./flows/16.erste-bank-import.flow.yaml \
+maestro test ./flows/16.erste-pdf-import.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e
 ```
 

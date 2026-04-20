@@ -16,10 +16,18 @@ appId: ${APP_ID}
       text: 'Browse'
       optional: true
 
-- tapOn:
-      text: 'On My iPhone'
-
-- waitForAnimationToEnd
+- runFlow:
+      when:
+          notVisible:
+              id: 'budgie \(E2E\), Container'
+      commands:
+          - runFlow:
+                when:
+                    visible: 'On My iPhone'
+                commands:
+                    - tapOn:
+                          text: 'On My iPhone'
+                    - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:

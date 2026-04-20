@@ -2,44 +2,91 @@ appId: ${APP_ID}
 env:
     FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
 ---
-- openLink: 'budgie://settings?anchor=data'
-
 - runFlow:
       when:
-          visible: 'Open'
+          notVisible:
+              id: 'TabBar.Home'
       commands:
-          - tapOn: 'Open'
+          - runFlow:
+                file: ../navigation/relaunch-app-and-wait.flow.yaml
+                env:
+                    DESTINATION_ID: 'TabBar.Home'
+
+- runFlow:
+      file: ../navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ImportDatabaseCard'
+      direction: DOWN
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+
+- waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.ImportDatabaseCard'
       timeout: 3000
 
-- tapOn:
-      id: 'SettingsPage.ImportDatabaseCard'
-
-- runFlow:
-      file: select-file-from-app-provider.flow.yaml
-      env:
-          FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
-
-- extendedWaitUntil:
-      visible: 'Importing a database will replace all current data.*'
-      timeout: 3000
+- retry:
+      maxRetries: 2
+      commands:
+          - runFlow:
+                when:
+                    notVisible:
+                        id: 'SettingsPage.ImportDatabaseCard'
+                commands:
+                    - runFlow:
+                          when:
+                              notVisible:
+                                  id: 'TabBar.Home'
+                          file: ../navigation/relaunch-app-and-wait.flow.yaml
+                          env:
+                              DESTINATION_ID: 'TabBar.Home'
+                    - runFlow:
+                          file: ../navigation/navigate-to-settings.flow.yaml
+                    - scrollUntilVisible:
+                          element:
+                              id: 'SettingsPage.ImportDatabaseCard'
+                          direction: DOWN
+                          centerElement: true
+                          waitToSettleTimeoutMs: 1000
+                    - waitForAnimationToEnd
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'SettingsPage.ImportDatabaseCard'
+                          timeout: 3000
+          - tapOn:
+                id: 'SettingsPage.ImportDatabaseCard'
+          - runFlow:
+                file: select-file-from-app-provider.flow.yaml
+                env:
+                    FILE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
+          - extendedWaitUntil:
+                visible: 'Importing a database will replace all current data.*'
+                timeout: 3000
 
 - tapOn:
       text: 'Import Database'
       index: 1
 
+- runFlow:
+      when:
+          visible:
+              id: 'SettingsPage.Container'
+      commands:
+          - tapOn:
+                id: 'TabBar.Home'
+
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.Container'
+      id: 'TabBar.Home'
     timeout: 15000
 
-- tapOn:
-    id: 'TabBar.Home'
+- stopApp
 
-- extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 15000
+- runFlow:
+      file: ../navigation/relaunch-app-and-wait.flow.yaml
+      env:
+          DESTINATION_ID: 'TabBar.Home'

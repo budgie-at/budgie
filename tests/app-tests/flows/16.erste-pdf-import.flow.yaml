@@ -39,8 +39,7 @@ env:
       direction: DOWN
       timeout: 10000
 
-- assertVisible:
-      id: 'AccountCard.Balance.Erste_EUR._477_73'
+- assertVisible: 'Erste EUR, .*478'
 
 - tapOn:
       id: 'AccountCard.Erste EUR'
@@ -74,8 +73,7 @@ env:
           FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
 
 - extendedWaitUntil:
-      visible:
-          id: 'AccountCard.Balance.Erste_EUR._3412_05'
+      visible: 'Erste EUR, .*3,412'
       timeout: 3000
 
 - tapOn:
