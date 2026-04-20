@@ -19,10 +19,6 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     externalSource: zodEnum(ExternalSourceEnum).nullable().describe('The external source of the transaction.'),
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.'),
-    // needsEmbedding: optional by design — callers build CREATE inputs without it and
-    // `stampForDeferredEmbedding` assigns the default (true) before bulkCreate. DB column
-    // is NOT NULL DEFAULT false so SELECT results always carry a boolean at runtime.
-    needsEmbedding: schema => schema.optional(),
     operatedWeekday: schema => schema.optional(),
     operatedMinuteOfDay: schema => schema.optional()
 });
