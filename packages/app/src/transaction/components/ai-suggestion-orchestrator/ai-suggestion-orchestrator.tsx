@@ -1,5 +1,6 @@
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { aiLog } from '../../../ai/utils/ai-log.util';
 import { useAiSuggestionOrchestrator } from '../../hook/use-ai-suggestion-orchestrator.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
@@ -36,6 +37,19 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         hasCategorySelected,
         hasTagsSelected,
         hasComment
+    });
+    aiLog('hook:suggestion:orchestrator:state', {
+        isSplitActive,
+        transactionTitle,
+        categoryId,
+        mccCategoryId,
+        comment,
+        aiContext,
+        hasContext,
+        hasCategorySelected,
+        hasTagsSelected,
+        hasComment,
+        step
     });
 
     if (step === SuggestionOrchestratorStepEnum.CATEGORY) {

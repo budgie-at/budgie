@@ -18,7 +18,6 @@ import { TransactionFilterEmptyState } from '../transaction/components/transacti
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-
 // eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
@@ -45,8 +44,12 @@ export default function TransactionAccountFilterModal() {
     };
 
     const buildApplyLabel = () => {
-        if (selectedCount === 0) {return t`Show all accounts`;}
-        if (selectedCount === 1) {return t`Show 1 account`;}
+        if (selectedCount === 0) {
+            return t`Show all accounts`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 account`;
+        }
 
         return t`Show ${selectedCount} accounts`;
     };

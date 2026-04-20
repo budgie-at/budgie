@@ -35,9 +35,7 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
-import { isAiEnabled } from '../@generic/utils/is-ai-enabled.util';
-import { ConditionalLlmProvider } from '../ai/provider/conditional-llm.provider';
-import { DisabledAiStackProvider } from '../ai/provider/disabled-ai-stack.provider';
+import { AiProvider } from '../ai/provider/ai.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
@@ -54,7 +52,6 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
-const AiProviderWrapper = isAiEnabled() ? ConditionalLlmProvider : DisabledAiStackProvider;
 const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
@@ -73,7 +70,7 @@ export const RootLayoutContent = () => {
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
             <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                 <SettingsProvider>
-                    <DevMenuController />
+                    {__DEV__ && <DevMenuController />}
                     <ScreenshotProtectionController />
                     <I18nProvider>
                         <KeyboardProvider>
@@ -82,7 +79,7 @@ export const RootLayoutContent = () => {
                                     <AuthProvider>
                                         <AuthGuard>
                                             <CreateActionProvider>
-                                                <AiProviderWrapper>
+                                                <AiProvider>
                                                     <ModalProvider>
                                                         <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                             <Stack.Screen name="(tabs)" />
@@ -141,7 +138,7 @@ export const RootLayoutContent = () => {
                                                         </Stack>
                                                     </ModalProvider>
                                                     <Toast />
-                                                </AiProviderWrapper>
+                                                </AiProvider>
                                             </CreateActionProvider>
                                         </AuthGuard>
                                     </AuthProvider>
