@@ -87,10 +87,10 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             promises.push(sttService.retry());
         }
         await Promise.allSettled(promises);
-        if (translationDrainerService.getSnapshot().state === DrainerStateEnum.Error) {
+        if (translationDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
             translationDrainerService.retry();
         }
-        if (embeddingDrainerService.getSnapshot().state === DrainerStateEnum.Error) {
+        if (embeddingDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
             embeddingDrainerService.retry();
         }
     }
@@ -221,8 +221,8 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             };
         }
 
-        const translationBoosting = translationDrainerService.getSnapshot().state === DrainerStateEnum.Boosting;
-        const embeddingBoosting = embeddingDrainerService.getSnapshot().state === DrainerStateEnum.Boosting;
+        const translationBoosting = translationDrainerService.getSnapshot().state === DrainerStateEnum.BOOSTING;
+        const embeddingBoosting = embeddingDrainerService.getSnapshot().state === DrainerStateEnum.BOOSTING;
         if (translationBoosting || embeddingBoosting) {
             return this.deriveBoosting(translationBoosting, translationPending, embeddingPending);
         }
@@ -336,11 +336,11 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
     private firstDrainerError(): ErrorSourceInterface | null {
         const translation = translationDrainerService.getSnapshot();
-        if (translation.state === DrainerStateEnum.Error && isNotEmptyString(translation.errorMessage)) {
+        if (translation.state === DrainerStateEnum.ERROR && isNotEmptyString(translation.errorMessage)) {
             return { source: 'translation drainer', message: translation.errorMessage };
         }
         const embedding = embeddingDrainerService.getSnapshot();
-        if (embedding.state === DrainerStateEnum.Error && isNotEmptyString(embedding.errorMessage)) {
+        if (embedding.state === DrainerStateEnum.ERROR && isNotEmptyString(embedding.errorMessage)) {
             return { source: 'embedding drainer', message: embedding.errorMessage };
         }
 
