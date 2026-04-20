@@ -23,6 +23,7 @@ executionOrder:
         - 17.security-app-lock.flow
         - 18.security-screenshot-protection.flow
         - 19.csv-import-export.flow
+        - 20.recurring-calendar.flow
 
 platform:
     ios:

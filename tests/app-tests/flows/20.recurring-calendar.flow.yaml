@@ -1,0 +1,46 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: 'e2e-20-recurring-calendar.db(, db)?'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionsPage.Tab.Recurring'
+- extendedWaitUntil:
+    visible:
+      id: 'RecurringCalendar.Container'
+    timeout: 5000
+
+- runFlow:
+    when:
+      visible:
+        id: 'RecurringCalendar.UpcomingHeader'
+    commands:
+      - assertVisible:
+          id: 'RecurringCalendar.UpcomingHeader'
+      - assertVisible:
+          id: 'RecurringCalendar.Row.E2E_Recurring_Gym'
+
+- tapOn:
+    id: 'RecurringCalendar.Day.Today'
+- extendedWaitUntil:
+    visible:
+      id: 'RecurringCalendar.SelectedDayHeader.Today'
+    timeout: 5000
+- assertVisible:
+    id: 'RecurringCalendar.Row.E2E_Recurring_Rent'
+
+- tapOn:
+    id: 'RecurringCalendar.PreviousMonthButton'
+- extendedWaitUntil:
+    visible:
+      id: 'RecurringCalendar.AllRecurringHeader'
+    timeout: 5000
+- assertVisible:
+    id: 'RecurringCalendar.Row.E2E_Recurring_Rent'
+- assertVisible:
+    id: 'RecurringCalendar.Row.E2E_Recurring_Gym'

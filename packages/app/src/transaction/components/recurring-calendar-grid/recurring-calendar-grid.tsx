@@ -12,6 +12,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { getMonthLabel } from '../../utils/get-month-label.util';
+import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 
 interface Props {
@@ -103,11 +104,24 @@ export const RecurringCalendarGrid = (props: Props) => {
         <GestureDetector gesture={swipeGesture}>
             <View className="gap-y-sm">
                 <View className="flex-row items-center justify-between">
-                    <HapticPressable onPress={handlePrevMonth} hitSlop={12} className="p-sm">
+                    <HapticPressable
+                        onPress={handlePrevMonth}
+                        hitSlop={12}
+                        className="p-sm"
+                        testID={RecurringCalendarSelector.PreviousMonthButton}
+                    >
                         <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
                     </HapticPressable>
-                    <Text className="text-primary text-sm font-semibold capitalize">{monthLabel}</Text>
-                    <HapticPressable onPress={handleNextMonth} hitSlop={12} className="p-sm" disabled={isCurrentMonthDisplayed}>
+                    <Text className="text-primary text-sm font-semibold capitalize" testID={RecurringCalendarSelector.MonthLabel}>
+                        {monthLabel}
+                    </Text>
+                    <HapticPressable
+                        onPress={handleNextMonth}
+                        hitSlop={12}
+                        className="p-sm"
+                        disabled={isCurrentMonthDisplayed}
+                        testID={RecurringCalendarSelector.NextMonthButton}
+                    >
                         <Icon icon={UserIconNameEnum.ChevronRight} className={nextChevronClassName} size={20} />
                     </HapticPressable>
                 </View>
