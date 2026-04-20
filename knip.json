@@ -41,5 +41,5 @@
         "@types/react-dom",
         "rimraf"
     ],
-    "ignoreBinaries": ["run", "build", "tsx"]
+    "ignoreBinaries": ["run", "build"]
 }
