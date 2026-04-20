@@ -114,6 +114,10 @@ packages/
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
 27. **No unit tests** - This project does not use Jest or other unit testing frameworks. Do not add `.spec.ts` / `.test.ts` files, jest config files, or `test` scripts. E2E coverage lives in the `tests/` workspace via Maestro; verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`.
+28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
+29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
+30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures.
+31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
 
 ### Naming Conventions
 
@@ -253,6 +257,24 @@ transaction/
 └── repository/
     └── transaction-pattern.repository.ts   # Clean repository, imports from above
 ```
+
+### Canonical Mapping (Mandatory)
+
+| Manual pattern | Required guard | Lint |
+|---|---|---|
+| `x === null`, `x === undefined`, `x === null \|\| x === undefined` | `!isDefined(x)` | ✓ |
+| `x !== null`, `x !== undefined`, both combined | `isDefined(x)` | ✓ |
+| `typeof x === 'number'` | `isNumber(x)` | — |
+| `typeof x === 'string'` | `isString(x)` | — |
+| `Array.isArray(x) && x.length > 0` | `isNotEmptyArray(x)` | ✓ (length case) |
+| `x.length === 0` on array | `isEmptyArray(x)` | ✓ |
+| `typeof x === 'string' && x.length > 0`, `x !== ''` | `isNotEmptyString(x)` | ✓ (length case) |
+| `x === ''`, `x.length === 0` on string | `!isNotEmptyString(x)` | ✓ |
+| `typeof x === 'number' && x > 0`, `x > 0` on number | `isPositiveNumber(x)` | — |
+
+The "Lint" column marks rows enforced by `no-restricted-syntax` at `warn` severity in `eslint.config.mjs`. Un-linted rows must be caught at code review.
+
+**Gotcha:** `isEmptyString` in `@rnw-community/shared` has type predicate `value is string` — when used as an early-return guard on a string-typed local, it narrows the else branch to `never` and breaks downstream code. Use `!isNotEmptyString(x)` instead.
 
 ### i18n (Lingui) Usage
 
