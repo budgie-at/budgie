@@ -63,6 +63,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         const embeddingError = embedding.errorMessage;
         if (chatError !== null || embeddingError !== null) {
             const source = chatError === null ? 'embedding' : 'chat';
+
             const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
 
             return {
