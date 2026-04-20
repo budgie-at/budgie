@@ -2,6 +2,8 @@ import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackC
 
 const SHEET_DETENT_MEDIUM = 0.75;
 const SHEET_DETENT_LARGE = 0.95;
+const SHEET_DETENT_DATE = 0.55;
+const SHEET_DETENT_DATE_LARGE = 0.85;
 const SHEET_CORNER_RADIUS = 24;
 
 export const UNIFIED_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
@@ -17,7 +19,7 @@ export const DATE_FILTER_SHEET_OPTIONS: ExtendedStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
     sheetGrabberVisible: true,
-    sheetAllowedDetents: [SHEET_DETENT_MEDIUM, SHEET_DETENT_LARGE],
+    sheetAllowedDetents: [SHEET_DETENT_DATE, SHEET_DETENT_DATE_LARGE],
     sheetCornerRadius: SHEET_CORNER_RADIUS,
     contentStyle: { backgroundColor: 'transparent' }
 };

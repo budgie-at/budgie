@@ -1,46 +1,29 @@
-import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+/* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
+import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
-import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
+import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
+import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
+import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
-    private transactionRelations = {
-        [TransactionAssociationEnum.ENTRIES]: {
-            with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: {
-                    with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true
-                    }
-                },
-                [TransactionEntryAssociationEnum.CATEGORY]: true,
-                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-            }
-        },
-        [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-            with: {
-                [TransactionTagsAssociationEnum.TAG]: true
-            }
-        },
-        [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-        [TransactionAssociationEnum.TO_ACCOUNT]: true
-    } as const;
+    private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
     async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
@@ -54,16 +37,29 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
-            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+            bankSyncLog('repo:transaction:bulkCreate', {
+                count: inputs.length,
+                externalSources: inputs.map(input => input.externalSource),
+                externalIds: inputs.map(input => input.externalId)
+            });
+            const results = await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+            bankSyncLog('repo:transaction:bulkCreate:done', {
+                requested: inputs.length,
+                inserted: results.length,
+                insertedIds: results.map(row => row.id)
+            });
+
+            return results;
         }
 
         return [];
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DB): Promise<TransactionEntityInterface> {
+        const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
-            .set(input)
+            .set(finalInput)
             .where(eq(TransactionEntityTable.id, id))
             .returning();
 
@@ -81,13 +77,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getAllWithOffset(limit: number, offset: number) {
+    getAllAfter(cursorId: number | null, limit: number) {
+        const baseFilter = isNull(TransactionEntityTable.deletedAt);
+        const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
+
         return this.db.query.TransactionEntityTable.findMany({
             with: { [TransactionAssociationEnum.ENTRIES]: true },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
-            offset,
-            where: isNull(TransactionEntityTable.deletedAt)
+            where
         });
     }
 
@@ -113,6 +111,151 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
+    async markAllForEmbedding(tx?: DB): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt));
+    }
+
+    async clearNeedsEmbedding(ids: number[], tx?: DB): Promise<void> {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+        const CHUNK = 500;
+        const runner = tx ?? this.db;
+        for (let start = 0; start < ids.length; start += CHUNK) {
+            const chunk = ids.slice(start, start + CHUNK);
+            // eslint-disable-next-line no-await-in-loop -- sequential chunking to stay under SQLITE_MAX_VARIABLE_NUMBER
+            await runner
+                .update(TransactionEntityTable)
+                .set({ needsEmbedding: false })
+                .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
+        }
+    }
+
+    async clearNonIndexableFlags(tx?: DB): Promise<void> {
+        const runner = tx ?? this.db;
+
+        runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment = ''
+        `);
+
+        runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NULL
+              )
+        `);
+
+        runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                INNER JOIN accounts acc ON acc.id = te.account_id
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND acc.type = ${AccountTypeEnum.DEBT}
+              )
+        `);
+
+        runner.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
+        `);
+    }
+
+    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
+        const start = Date.now();
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                JOIN merchant_embeddings me
+                  ON me.title = transactions.title
+                  AND me.mcc_description = COALESCE(mcc.full_description, '')
+                  AND me.category_id = te.category_id
+                  AND me.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+        bankSyncLog('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
+    }
+
+    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
+        const start = Date.now();
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                JOIN comment_embeddings ce
+                  ON ce.comment = transactions.comment
+                  AND ce.category_id = te.category_id
+                  AND ce.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+        bankSyncLog('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
+    }
+
+    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
+        const start = Date.now();
+        const rows = await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
+            `WITH signals AS (
+                SELECT me.category_id AS category_id
+                FROM merchant_embeddings me
+                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                WHERE mcc.id = ? AND me.deleted_at IS NULL
+                UNION ALL
+                SELECT te.category_id
+                FROM transaction_entries te
+                INNER JOIN transactions t ON t.id = te.transaction_id
+                WHERE te.mcc_category_id = ?
+                  AND te.category_id IS NOT NULL
+                  AND t.deleted_at IS NULL
+                  AND te.deleted_at IS NULL
+            )
+            SELECT category_id AS categoryId, COUNT(*) AS count
+            FROM signals
+            WHERE category_id IS NOT NULL
+            GROUP BY category_id
+            ORDER BY COUNT(*) DESC
+            LIMIT ?`,
+            [mccCategoryId, mccCategoryId, limit]
+        );
+
+        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', {
+            mccCategoryId,
+            resultCount: rows.length,
+            durationMs: Date.now() - start,
+            topCategoryIds: rows.slice(0, 3).map(row => row.categoryId)
+        });
+
+        return rows;
+    }
+
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })
@@ -125,7 +268,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 )
             );
 
-        return results.map(row => row.externalId).filter((id): id is string => id !== null);
+        const ids = results.map(row => row.externalId).filter((id): id is string => id !== null);
+        bankSyncLog('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
+
+        return ids;
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
@@ -238,6 +384,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
+    }
+
+    async countAllActive(): Promise<number> {
+        const [row] = await this.db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt));
+
+        return row.value;
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {

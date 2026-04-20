@@ -8,6 +8,9 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
+import { patternCacheService } from './pattern-cache/pattern-cache.service';
+import { RecurringCalendarAccumulator } from './recurring-calendar-accumulator';
+
 const MINUTES_TO_SECONDS = -60;
 
 class RecurringCalendarService {
@@ -21,12 +24,16 @@ class RecurringCalendarService {
         const daysInMonth = getDaysInMonth(monthDate);
         const displayMonthString = `${displayYear}-${String(displayMonth + 1).padStart(2, '0')}`;
 
-        const patterns = await transactionPatternRepository.findMonthlyRecurringPatterns({
+        const monthlyQuery = {
             type: TransactionTypeEnum.EXPENSE,
             defaultInstrumentId,
             timezoneOffsetSeconds,
             displayMonth: displayMonthString
-        });
+        };
+        const cacheKey = `monthly:${JSON.stringify(monthlyQuery)}`;
+        const patterns = await patternCacheService.memoizeMonthly(cacheKey, () =>
+            transactionPatternRepository.findMonthlyRecurringPatterns(monthlyQuery)
+        );
 
         const now = new Date();
         const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
@@ -35,54 +42,69 @@ class RecurringCalendarService {
         return this.buildCalendarData(patterns, isCurrentMonth, today, daysInMonth);
     }
 
-    // eslint-disable-next-line max-statements -- Splits patterns into actual and forecasted entries with separate maps
     private buildCalendarData(
         patterns: readonly MonthlyPatternRawRowInterface[],
         isCurrentMonth: boolean,
         today: number,
         daysInMonth: number
     ): RecurringCalendarDataInterface {
-        const entriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
-        const forecastedEntriesByDay = new Map<number, RecurringCalendarEntryInterface[]>();
-        let totalAmount = 0;
-        let forecastedTotalAmount = 0;
+        const accumulator = new RecurringCalendarAccumulator({
+            entriesByDay: new Map(),
+            forecastedEntriesByDay: new Map(),
+            isCurrentMonth,
+            today,
+            daysInMonth
+        });
 
         for (const pattern of patterns) {
-            const hasDisplayMonthTransaction =
-                isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
-
-            if (hasDisplayMonthTransaction) {
-                const entry = this.buildEntryFromPattern(pattern, {
-                    dayOfMonth: pattern.dayOfMonth,
-                    title: pattern.title,
-                    latestTransactionId: pattern.latestTransactionId,
-                    isForecast: false
-                });
-                this.addEntryToMap(entriesByDay, pattern.dayOfMonth, entry);
-                totalAmount += pattern.latestAmount;
-            } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
-                const clampedDay = Math.min(pattern.modeDayOfMonth, daysInMonth);
-                const isForecastedUpcoming = isCurrentMonth && clampedDay > today;
-
-                if (isForecastedUpcoming) {
-                    const entry = this.buildEntryFromPattern(pattern, {
-                        dayOfMonth: clampedDay,
-                        title: pattern.latestOverallTitle,
-                        latestTransactionId: null,
-                        isForecast: true
-                    });
-                    this.addEntryToMap(forecastedEntriesByDay, clampedDay, entry);
-                    forecastedTotalAmount += pattern.latestAmount;
-                }
-            }
+            this.processPattern(pattern, accumulator);
         }
 
         return {
-            entriesByDay,
-            forecastedEntriesByDay,
-            totalAmount: convertFromMicroUnits(totalAmount),
-            forecastedTotalAmount: convertFromMicroUnits(forecastedTotalAmount)
+            entriesByDay: accumulator.entriesByDay,
+            forecastedEntriesByDay: accumulator.forecastedEntriesByDay,
+            totalAmount: convertFromMicroUnits(accumulator.totalAmount),
+            forecastedTotalAmount: convertFromMicroUnits(accumulator.forecastedTotalAmount)
         };
+    }
+
+    private processPattern(pattern: MonthlyPatternRawRowInterface, accumulator: RecurringCalendarAccumulator): void {
+        const hasDisplayMonthTransaction =
+            isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
+
+        if (hasDisplayMonthTransaction) {
+            const entry = this.buildEntryFromPattern(pattern, {
+                dayOfMonth: pattern.dayOfMonth,
+                title: pattern.title,
+                latestTransactionId: pattern.latestTransactionId,
+                isForecast: false
+            });
+            this.addEntryToMap(accumulator.entriesByDay, pattern.dayOfMonth, entry);
+            accumulator.addTotal(pattern.latestAmount);
+        } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
+            this.processForecastPattern(pattern, accumulator, pattern.modeDayOfMonth, pattern.latestOverallTitle);
+        }
+    }
+
+    private processForecastPattern(
+        pattern: MonthlyPatternRawRowInterface,
+        accumulator: RecurringCalendarAccumulator,
+        modeDayOfMonth: number,
+        latestOverallTitle: string
+    ): void {
+        const clampedDay = Math.min(modeDayOfMonth, accumulator.daysInMonth);
+        const isForecastedUpcoming = accumulator.isCurrentMonth && clampedDay > accumulator.today;
+
+        if (isForecastedUpcoming) {
+            const entry = this.buildEntryFromPattern(pattern, {
+                dayOfMonth: clampedDay,
+                title: latestOverallTitle,
+                latestTransactionId: null,
+                isForecast: true
+            });
+            this.addEntryToMap(accumulator.forecastedEntriesByDay, clampedDay, entry);
+            accumulator.addForecastedTotal(pattern.latestAmount);
+        }
     }
 
     private buildEntryFromPattern(

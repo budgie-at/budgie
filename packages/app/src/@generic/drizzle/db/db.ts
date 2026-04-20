@@ -13,6 +13,7 @@ import {
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
+    TransactionEmbeddingRepository,
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
@@ -42,6 +43,10 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA foreign_keys = ON;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA synchronous = NORMAL;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA cache_size = -20000;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // eslint-disable-line lingui/no-unlocalized-strings
 
     try {
         console.log('[DB] bundledExtensions:', JSON.stringify(Object.keys(SQLite.bundledExtensions))); // eslint-disable-line no-console, lingui/no-unlocalized-strings
@@ -88,14 +93,15 @@ export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
-export const transactionRepository = new TransactionRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
-export const transactionTagsRepository = new TransactionTagsRepository(db);
-export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
+export const transactionEmbeddingRepository = new TransactionEmbeddingRepository(db);
+export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
+export const transactionRepository = new TransactionRepository(db);
+export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);

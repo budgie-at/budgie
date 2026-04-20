@@ -1,4 +1,5 @@
-import { int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { index, int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
@@ -26,5 +27,15 @@ export const TransactionEntryEntityTable = sqliteTable(
         externalId: text('external_id'),
         exchangeRate: real('exchange_rate').notNull().default(1),
         toIban: text('to_iban')
-    })
+    }),
+    table => [
+        index('transaction_entries_transaction_idx').on(table.transactionId),
+        index('transaction_entries_account_idx').on(table.accountId),
+        index('transaction_entries_category_idx')
+            .on(table.categoryId)
+            .where(sql`${table.categoryId} IS NOT NULL`),
+        index('transaction_entries_category_type_idx')
+            .on(table.categoryId, table.type)
+            .where(sql`${table.categoryId} IS NOT NULL`)
+    ]
 );

@@ -4,8 +4,8 @@ import { Text, TextStyle, ViewStyle } from 'react-native';
 import DateTimePicker, { CalendarComponents, CalendarDay, useDefaultClassNames } from 'react-native-ui-datepicker';
 
 import { DatePickerSelectors } from '../../../@e2e/selectors/date-picker.selector';
-import { useThemeContext } from '../../../theme/context/theme.context';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { useThemeContext } from '../../../theme/context/theme.context';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
@@ -39,8 +39,16 @@ const buildStyles = (isDark: boolean) => {
     const pill: ViewStyle = { backgroundColor: primary, borderRadius: DAY_PILL_RADIUS };
     const todayRing: ViewStyle = { borderRadius: DAY_PILL_RADIUS, borderWidth: TODAY_BORDER_WIDTH, borderColor: primary };
     const rangeFillStyle: ViewStyle = { backgroundColor: rangeFill };
-    const rangeFillStart: ViewStyle = { backgroundColor: rangeFill, borderTopLeftRadius: DAY_PILL_RADIUS, borderBottomLeftRadius: DAY_PILL_RADIUS };
-    const rangeFillEnd: ViewStyle = { backgroundColor: rangeFill, borderTopRightRadius: DAY_PILL_RADIUS, borderBottomRightRadius: DAY_PILL_RADIUS };
+    const rangeFillStart: ViewStyle = {
+        backgroundColor: rangeFill,
+        borderTopLeftRadius: DAY_PILL_RADIUS,
+        borderBottomLeftRadius: DAY_PILL_RADIUS
+    };
+    const rangeFillEnd: ViewStyle = {
+        backgroundColor: rangeFill,
+        borderTopRightRadius: DAY_PILL_RADIUS,
+        borderBottomRightRadius: DAY_PILL_RADIUS
+    };
     const transparentText: TextStyle = { backgroundColor: 'transparent' };
 
     return {
@@ -87,13 +95,5 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return (
-        <DateTimePicker
-            {...props}
-            classNames={classNames}
-            styles={themedStyles}
-            locale={languageTag}
-            components={mergedComponents}
-        />
-    );
+    return <DateTimePicker {...props} classNames={classNames} styles={themedStyles} locale={languageTag} components={mergedComponents} />;
 };
