@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-import { ChatSnapshotInterface } from '../interface/chat-snapshot.interface';
+import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { chatService } from '../service/chat.service';
 
-export const useChat = (): ChatSnapshotInterface => useSyncExternalStore(chatService.subscribe, chatService.getSnapshot);
+export const useChat = (): LlamaSubsystemSnapshotInterface => useSyncExternalStore(chatService.subscribe, chatService.getSnapshot);
