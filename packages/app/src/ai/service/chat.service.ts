@@ -13,7 +13,10 @@ import { BaseLlamaSubsystemService } from './base-subsystem.service';
 
 import type { ChatInvokerInterface } from '@budgie/ai';
 
-class ChatService extends BaseLlamaSubsystemService implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, ChatInvokerInterface {
+class ChatService
+    extends BaseLlamaSubsystemService
+    implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, ChatInvokerInterface
+{
     private mutexChain: Promise<unknown> = Promise.resolve();
 
     constructor() {
