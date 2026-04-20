@@ -1,6 +1,6 @@
 import { and, count, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
@@ -35,7 +35,7 @@ export class CategoryRepository extends TranslatableRepositoryBase {
             ? eq(CategoryEntityTable.isSystemCategory, false)
             : and(eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
 
-        if (trimmed === '') {
+        if (!isNotEmptyString(trimmed)) {
             return this.db
                 .select(getTableColumns(CategoryEntityTable))
                 .from(CategoryEntityTable)

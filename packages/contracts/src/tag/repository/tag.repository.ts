@@ -1,6 +1,6 @@
 import { count, eq, inArray, isNull, like, or, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
@@ -33,7 +33,7 @@ export class TagRepository extends TranslatableRepositoryBase {
 
     findBySearchQuery(search: string) {
         const trimmed = search.trim();
-        if (trimmed === '') {
+        if (!isNotEmptyString(trimmed)) {
             return this.db.query.TagEntityTable.findMany();
         }
 
@@ -117,7 +117,7 @@ export class TagRepository extends TranslatableRepositoryBase {
             .from(TransactionTagsEntityTable)
             .where(eq(TransactionTagsEntityTable.tagId, fromTagId));
 
-        if (transactionsWithFromTag.length > 0) {
+        if (isNotEmptyArray(transactionsWithFromTag)) {
             await this.db
                 .insert(TransactionTagsEntityTable)
                 .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
