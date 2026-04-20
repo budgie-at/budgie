@@ -4,8 +4,6 @@
     "private": true,
     "scripts": {
         "android": "expo run:android",
-        "bench:seed": "node ../../node_modules/.bin/tsx scripts/seed-bench-db.ts",
-        "bench:run": "node ../../node_modules/.bin/tsx scripts/bench-queries.ts",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
