@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
+
+### Bug Fixes
+
+- address PR [#374](https://github.com/budgie-at/budgie/issues/374) bot comments + CI blockers ([2e129a0](https://github.com/budgie-at/budgie/commit/2e129a0ddb7236bc5394af8d89a47a2859ebfa5b))
+- **app:** sync monobank hold transactions and instrument full pipeline ([c6b3105](https://github.com/budgie-at/budgie/commit/c6b310564809db441a0fe6a620ca6d274ea20586))
+- atomic vec truncate + suggestion fetches use embedding-only progress ([8df01db](https://github.com/budgie-at/budgie/commit/8df01dbe3d1d4da9a2ed3e5df04891c092ab8602))
+- **contracts,app,ai:** address round-1 PR review findings ([e67d528](https://github.com/budgie-at/budgie/commit/e67d528af92b0e4e1d9b7267a4cb48777474cbab)), closes [#8](https://github.com/budgie-at/budgie/issues/8)
+- **contracts,app,ai:** MCC suggestion UNION + generated col write guard ([3cbe065](https://github.com/budgie-at/budgie/commit/3cbe0658db9851957117d08b932ef411610b33c9))
+- **contracts,app:** own embedding invariant at repository, await residue cleanup ([19f1421](https://github.com/budgie-at/budgie/commit/19f14215ea0465708601bdca7c76b469eb82f394))
+- **contracts,app:** restore localization-aware LIKE search for categories + tags ([cb900b0](https://github.com/budgie-at/budgie/commit/cb900b06b39b7192555d3ccb93c85dff790da9af))
+- **contracts:** make needsEmbedding non-optional on select schema ([eb742a1](https://github.com/budgie-at/budgie/commit/eb742a11d3245aa144b16e4015b91659c6fd4e3e))
+- **contracts:** mark operated_weekday/minute_of_day as notNull ([9f1d63f](https://github.com/budgie-at/budgie/commit/9f1d63f81c60a27dd2cf02ea2dfae8e6432a9fe1))
+- **contracts:** use DELETE+INSERT for sqlite-vec upsert (not INSERT OR REPLACE) ([61685c6](https://github.com/budgie-at/budgie/commit/61685c665d427af758c3012af22df5c8db657e1e))
+- **contracts:** use isEmptyArray helper in clearNeedsEmbedding ([7b9475b](https://github.com/budgie-at/budgie/commit/7b9475b2656c6dc5598c6c30577b0360b97ae572))
+
+### Features
+
+- **app,contracts:** add operated_weekday + operated_minute_of_day generated columns ([0f2e032](https://github.com/budgie-at/budgie/commit/0f2e0321007cfb33a045e5fdfc02bcedc355aef5))
+- **app:** instrument bank-sync deferred embedding pipeline + fix file-import gap ([e35a0a4](https://github.com/budgie-at/budgie/commit/e35a0a4774a041fa68d0b8e852757794e561054f))
+- **contracts:** add comment pending-context query with majority-tag aggregation ([16bc2ab](https://github.com/budgie-at/budgie/commit/16bc2ab42720421e997a6d5beed9fc63217876e4))
+- **contracts:** add findUntranslated/countUntranslated/countAll/resetAllTranslations on CategoryRepository ([3c14121](https://github.com/budgie-at/budgie/commit/3c1412194550223fcf567bfd8e6042a81203de28))
+- **contracts:** add findUntranslated/countUntranslated/countAll/resetAllTranslations on TagRepository ([3642585](https://github.com/budgie-at/budgie/commit/364258537adcb5e5ccc6b767e11bb6b121ba5b6a))
+- **contracts:** add markAllForEmbedding on TransactionRepository ([3839cb8](https://github.com/budgie-at/budgie/commit/3839cb86e200b9e3caad9f5f620ae276b24d16e4))
+- **contracts:** add merchant pending-context query with majority-tag aggregation ([ab7df98](https://github.com/budgie-at/budgie/commit/ab7df989181bd0c4d942d7f5ff651366850e5eb3))
+- **contracts:** add needsEmbedding column and repo helpers ([e23d844](https://github.com/budgie-at/budgie/commit/e23d8441239b66c7fc78d26a0eb7c6ecda6fbd25))
+- **contracts:** add PendingEmbeddingRowInterface ([f3897ba](https://github.com/budgie-at/budgie/commit/f3897ba9ca12a6c6253646d89131fc2a17163ced))
+- **contracts:** add transaction batch flag-clear helpers ([2faf0cc](https://github.com/budgie-at/budgie/commit/2faf0ccaafb3fe815d44910f8106da5400236afe))
+- **contracts:** declare FK and sort indexes in Drizzle schema ([9c978b7](https://github.com/budgie-at/budgie/commit/9c978b7e4605c3d04f4697d04b2de1ceed469036))
+- **contracts:** extract TransactionEmbeddingRepository ([22ac5f7](https://github.com/budgie-at/budgie/commit/22ac5f7edc85c0571aa4b36472323d5b183de0db))
+
+### Performance Improvements
+
+- **app,contracts:** add needs_embedding index + defer drainer tick to UI-idle ([d23dbe0](https://github.com/budgie-at/budgie/commit/d23dbe05448064edd23fe6d47701bbce4b4d5042))
+- **app,contracts:** batch embedding drainer persists in one transaction ([1a1a061](https://github.com/budgie-at/budgie/commit/1a1a06147eb1f0ff2b3b98064ebef7a02d619b33))
+- **app,contracts:** eliminate per-persist exclusive transactions + throttle progress refresh ([72a117b](https://github.com/budgie-at/budgie/commit/72a117bfcbd1a812ccef667d79054318364bbdb1))
+- **contracts,app,ai:** bulk pre-clear embed flags + add MCC suggestion signal ([e5e6667](https://github.com/budgie-at/budgie/commit/e5e66673b5181d914cd63eb58de1e6829c88aaf9))
+- **contracts,app:** replace getAllWithOffset with getAllAfter keyset cursor ([d89eeb6](https://github.com/budgie-at/budgie/commit/d89eeb6a3cb5f981b19417756d4292c19596ceb6))
+- **contracts,app:** switch category/tag search to FTS5 MATCH ([1db17f3](https://github.com/budgie-at/budgie/commit/1db17f3bd7795efb324c3533398c0e8b691d9fe9))
+- **contracts:** add partial active/pending indexes + exchange rate composite ([00323aa](https://github.com/budgie-at/budgie/commit/00323aaefddabdc1c76ae9e8a4aa1f65c5c9237b))
+- **contracts:** drop expensive context_sizes + majority_tags CTEs ([6d99f1a](https://github.com/budgie-at/budgie/commit/6d99f1aa7c9a147b183ae5bc4d76110146ae5519))
+- **contracts:** rewrite monthly pattern queries with window-function CTEs ([c05f158](https://github.com/budgie-at/budgie/commit/c05f15873c31319872edeb88b59d9b9c51cc63e4))
+- **contracts:** use generated columns in pattern weekday/time filters ([6423bca](https://github.com/budgie-at/budgie/commit/6423bcae637da164f515b02ed5364f50afcd3268))
+
 ## [5.2.2](https://github.com/budgie-at/budgie/compare/v5.2.1...v5.2.2) (2026-04-16)
 
 ### Bug Fixes
