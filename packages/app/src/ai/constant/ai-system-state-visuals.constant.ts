@@ -9,63 +9,63 @@ interface StateVisualInterface {
 }
 
 export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInterface> = {
-    [AiSystemStateEnum.Disabled]: {
+    [AiSystemStateEnum.DISABLED]: {
         colorClass: 'text-muted-foreground',
         stripClass: 'bg-muted-foreground',
         pulsePeriodMs: null,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Booting]: {
+    [AiSystemStateEnum.BOOTING]: {
         colorClass: 'text-primary-foreground',
         stripClass: 'bg-primary-foreground',
         pulsePeriodMs: 1200,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Suspended]: {
+    [AiSystemStateEnum.SUSPENDED]: {
         colorClass: 'text-warning-foreground',
         stripClass: 'bg-warning-foreground',
         pulsePeriodMs: 1200,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Idle]: {
+    [AiSystemStateEnum.IDLE]: {
         colorClass: 'text-muted-foreground',
         stripClass: 'bg-muted-foreground',
         pulsePeriodMs: null,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Translating]: {
+    [AiSystemStateEnum.TRANSLATING]: {
         colorClass: 'text-warning-foreground',
         stripClass: 'bg-warning-foreground',
         pulsePeriodMs: 1000,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Indexing]: {
+    [AiSystemStateEnum.INDEXING]: {
         colorClass: 'text-primary-foreground',
         stripClass: 'bg-primary-foreground',
         pulsePeriodMs: 700,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Boosting]: {
+    [AiSystemStateEnum.BOOSTING]: {
         colorClass: 'text-positive-foreground',
         stripClass: 'bg-positive-foreground',
         pulsePeriodMs: 800,
         shakeOnEnter: false,
         glow: true
     },
-    [AiSystemStateEnum.Ready]: {
+    [AiSystemStateEnum.READY]: {
         colorClass: 'text-positive-foreground',
         stripClass: 'bg-positive-foreground',
         pulsePeriodMs: null,
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.Error]: {
+    [AiSystemStateEnum.ERROR]: {
         colorClass: 'text-destructive-foreground',
         stripClass: 'bg-destructive-foreground',
         pulsePeriodMs: null,

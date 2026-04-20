@@ -42,9 +42,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
-    const isAiAvailable = snapshot.state !== AiSystemStateEnum.Disabled;
-    const isAiLoading = isAiAvailable && snapshot.state !== AiSystemStateEnum.Ready;
-    const isAiInitializing = snapshot.state === AiSystemStateEnum.Booting;
+    const isAiAvailable = snapshot.state !== AiSystemStateEnum.DISABLED;
+    const isAiLoading = isAiAvailable && snapshot.state !== AiSystemStateEnum.READY;
+    const isAiInitializing = snapshot.state === AiSystemStateEnum.BOOTING;
     const PERCENT_TO_RATIO = 100;
     const aiDownloadProgress = isAiAvailable ? snapshot.percent / PERCENT_TO_RATIO : 0;
 
