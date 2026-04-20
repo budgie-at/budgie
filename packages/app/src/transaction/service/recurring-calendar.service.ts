@@ -5,11 +5,11 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { RecurringCalendarAccumulatorInterface } from '../interface/recurring-calendar-accumulator.interface';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { RecurringCalendarEntryInterface } from '../interface/recurring-calendar-entry.interface';
 
 import { patternCacheService } from './pattern-cache/pattern-cache.service';
+import { RecurringCalendarAccumulator } from './recurring-calendar-accumulator';
 
 const MINUTES_TO_SECONDS = -60;
 
@@ -48,15 +48,13 @@ class RecurringCalendarService {
         today: number,
         daysInMonth: number
     ): RecurringCalendarDataInterface {
-        const accumulator: RecurringCalendarAccumulatorInterface = {
+        const accumulator = new RecurringCalendarAccumulator({
             entriesByDay: new Map(),
             forecastedEntriesByDay: new Map(),
             isCurrentMonth,
             today,
-            daysInMonth,
-            totalAmount: 0,
-            forecastedTotalAmount: 0
-        };
+            daysInMonth
+        });
 
         for (const pattern of patterns) {
             this.processPattern(pattern, accumulator);
@@ -70,7 +68,7 @@ class RecurringCalendarService {
         };
     }
 
-    private processPattern(pattern: MonthlyPatternRawRowInterface, accumulator: RecurringCalendarAccumulatorInterface): void {
+    private processPattern(pattern: MonthlyPatternRawRowInterface, accumulator: RecurringCalendarAccumulator): void {
         const hasDisplayMonthTransaction =
             isPositiveNumber(pattern.dayOfMonth) && isPositiveNumber(pattern.latestTransactionId) && isDefined(pattern.title);
 
@@ -82,7 +80,7 @@ class RecurringCalendarService {
                 isForecast: false
             });
             this.addEntryToMap(accumulator.entriesByDay, pattern.dayOfMonth, entry);
-            accumulator.totalAmount += pattern.latestAmount;
+            accumulator.addTotal(pattern.latestAmount);
         } else if (isPositiveNumber(pattern.modeDayOfMonth) && isDefined(pattern.latestOverallTitle)) {
             this.processForecastPattern(pattern, accumulator, pattern.modeDayOfMonth, pattern.latestOverallTitle);
         }
@@ -90,7 +88,7 @@ class RecurringCalendarService {
 
     private processForecastPattern(
         pattern: MonthlyPatternRawRowInterface,
-        accumulator: RecurringCalendarAccumulatorInterface,
+        accumulator: RecurringCalendarAccumulator,
         modeDayOfMonth: number,
         latestOverallTitle: string
     ): void {
@@ -105,7 +103,7 @@ class RecurringCalendarService {
                 isForecast: true
             });
             this.addEntryToMap(accumulator.forecastedEntriesByDay, clampedDay, entry);
-            accumulator.forecastedTotalAmount += pattern.latestAmount;
+            accumulator.addForecastedTotal(pattern.latestAmount);
         }
     }
 
