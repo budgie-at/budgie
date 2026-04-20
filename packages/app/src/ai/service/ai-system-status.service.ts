@@ -43,7 +43,7 @@ const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
     state: AiSystemStateEnum.Disabled,
     percent: 0,
     statusText: '',
-    action: AiSystemActionEnum.None,
+    action: AiSystemActionEnum.NONE,
     translationPending: 0,
     embeddingPending: 0,
     errorMessage: null
@@ -182,7 +182,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return {
                 state: AiSystemStateEnum.Error,
                 percent: 0,
-                action: AiSystemActionEnum.Retry,
+                action: AiSystemActionEnum.RETRY,
                 statusText: t`${source} failed: ${message}`,
                 translationPending,
                 embeddingPending,
@@ -198,7 +198,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return {
                 state: AiSystemStateEnum.Booting,
                 percent: Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF),
-                action: AiSystemActionEnum.None,
+                action: AiSystemActionEnum.NONE,
                 statusText: bootText,
                 translationPending,
                 embeddingPending,
@@ -213,7 +213,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return {
                 state: suspendedOrIdle,
                 percent: 0,
-                action: AiSystemActionEnum.None,
+                action: AiSystemActionEnum.NONE,
                 statusText,
                 translationPending,
                 embeddingPending,
@@ -234,7 +234,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return {
                 state: AiSystemStateEnum.Translating,
                 percent: translationProgressStore.getSnapshot().percent,
-                action: AiSystemActionEnum.Boost,
+                action: AiSystemActionEnum.BOOST,
                 statusText: t`Translating ${translationPending} of ${total}${trailer}`,
                 translationPending,
                 embeddingPending,
@@ -250,7 +250,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return {
                 state: AiSystemStateEnum.Indexing,
                 percent: embeddingSnap.percent,
-                action: AiSystemActionEnum.Boost,
+                action: AiSystemActionEnum.BOOST,
                 statusText: t`Indexing ${done} of ${total}`,
                 translationPending,
                 embeddingPending,
@@ -261,7 +261,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         return {
             state: AiSystemStateEnum.Ready,
             percent: FULL_PERCENT,
-            action: AiSystemActionEnum.None,
+            action: AiSystemActionEnum.NONE,
             statusText: t`All set`,
             translationPending,
             embeddingPending,
@@ -279,7 +279,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         return {
             state: AiSystemStateEnum.Boosting,
             percent,
-            action: AiSystemActionEnum.Cancel,
+            action: AiSystemActionEnum.CANCEL,
             statusText: t`Fast-indexing ${done} of ${total} • tap to pause`,
             translationPending,
             embeddingPending,
