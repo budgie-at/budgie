@@ -1,6 +1,6 @@
 export enum AiSystemActionEnum {
-    None = 'none',
-    Boost = 'boost',
-    Cancel = 'cancel',
-    Retry = 'retry'
+    NONE = 'NONE',
+    BOOST = 'BOOST',
+    CANCEL = 'CANCEL',
+    RETRY = 'RETRY'
 }
