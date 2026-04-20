@@ -37,6 +37,8 @@ interface ErrorSourceInterface {
     readonly message: string;
 }
 
+type SuspendedOrIdleState = AiSystemStateEnum.Suspended | AiSystemStateEnum.Idle;
+
 const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
     state: AiSystemStateEnum.Disabled,
     percent: 0,
@@ -286,7 +288,8 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     }
 
     private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
-        const booting = [chat, embedding, stt].some(
+        const statuses = [chat, embedding, stt] as const;
+        const booting = statuses.some(
             status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING
         );
         if (!booting) {
@@ -301,11 +304,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         chat: AiSubsystemStatusEnum,
         embedding: AiSubsystemStatusEnum,
         stt: AiSubsystemStatusEnum
-    ): AiSystemStateEnum.Suspended | AiSystemStateEnum.Idle | null {
-        if ([chat, embedding, stt].some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
+    ): SuspendedOrIdleState | null {
+        const statuses = [chat, embedding, stt] as const;
+        if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
             return AiSystemStateEnum.Suspended;
         }
-        if ([chat, embedding, stt].some(status => status === AiSubsystemStatusEnum.IDLE)) {
+        if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
             return AiSystemStateEnum.Idle;
         }
 
