@@ -74,7 +74,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             };
         }
 
-        const isDownloading = chat.status === AiSubsystemStatusEnum.Downloading || embedding.status === AiSubsystemStatusEnum.Downloading;
+        const isDownloading = chat.status === AiSubsystemStatusEnum.DOWNLOADING || embedding.status === AiSubsystemStatusEnum.DOWNLOADING;
         if (isDownloading) {
             const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF);
 
@@ -87,7 +87,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         }
 
         const isInitializing =
-            chat.status === AiSubsystemStatusEnum.Initializing || embedding.status === AiSubsystemStatusEnum.Initializing;
+            chat.status === AiSubsystemStatusEnum.INITIALIZING || embedding.status === AiSubsystemStatusEnum.INITIALIZING;
         if (isInitializing) {
             return {
                 state: AiSystemUmbrellaStateEnum.Initializing,

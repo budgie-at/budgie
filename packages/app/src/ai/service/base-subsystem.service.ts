@@ -88,17 +88,17 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
     }
 
     get isReady(): boolean {
-        return this.snapshot.status === AiSubsystemStatusEnum.Ready;
+        return this.snapshot.status === AiSubsystemStatusEnum.READY;
     }
 
     async start(): Promise<void> {
         aiLog(`${this.logDomain}:start:enter`, { priorStatus: this.snapshot.status });
-        if (this.snapshot.status === AiSubsystemStatusEnum.Ready) {
+        if (this.snapshot.status === AiSubsystemStatusEnum.READY) {
             aiLog(`${this.logDomain}:start:skip:ready`);
 
             return;
         }
-        if (this.snapshot.status === AiSubsystemStatusEnum.Downloading || this.snapshot.status === AiSubsystemStatusEnum.Initializing) {
+        if (this.snapshot.status === AiSubsystemStatusEnum.DOWNLOADING || this.snapshot.status === AiSubsystemStatusEnum.INITIALIZING) {
             aiLog(`${this.logDomain}:start:skip:in-flight`);
             await this.pendingOperation;
 
@@ -112,7 +112,7 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
     async stop(): Promise<void> {
         aiLog(`${this.logDomain}:stop:enter`, { priorStatus: this.snapshot.status });
         await this.pendingOperation;
-        if (this.snapshot.status === AiSubsystemStatusEnum.Suspended || this.snapshot.status === AiSubsystemStatusEnum.Disabled) {
+        if (this.snapshot.status === AiSubsystemStatusEnum.SUSPENDED || this.snapshot.status === AiSubsystemStatusEnum.DISABLED) {
             return;
         }
         this.pendingOperation = this.runStop();
@@ -137,12 +137,12 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
     protected context: LlamaContext | null = null;
 
     constructor(logDomain: string) {
-        super(logDomain, { status: AiSubsystemStatusEnum.Idle, downloadProgress: 0, errorMessage: null });
+        super(logDomain, { status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null });
     }
 
     async retry(): Promise<void> {
         aiLog(`${this.logDomain}:retry`, { fromStatus: this.snapshot.status });
-        this.setSnapshot({ status: AiSubsystemStatusEnum.Idle, errorMessage: null });
+        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
 
@@ -161,16 +161,16 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
             this.context = await loadLlamaContext({
                 domain: this.logDomain,
                 ...this.getLlamaConfig(),
-                onDownloadBegin: () => void this.setSnapshot({ status: AiSubsystemStatusEnum.Downloading, downloadProgress: 0 }),
+                onDownloadBegin: () => void this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 }),
                 onDownloadProgress: downloadProgress => void this.setSnapshot({ downloadProgress }),
-                onInitBegin: () => void this.setSnapshot({ status: AiSubsystemStatusEnum.Initializing })
+                onInitBegin: () => void this.setSnapshot({ status: AiSubsystemStatusEnum.INITIALIZING })
             });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Ready, errorMessage: null });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
             aiLog(`${this.logDomain}:ready`, { totalBootMs: Date.now() - started });
         } catch (error: unknown) {
             const message = getErrorMessage(error);
             aiLog(`${this.logDomain}:init:throw`, { errorMessage: message });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Error, errorMessage: message });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: message });
         }
     }
 
@@ -181,12 +181,12 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
                 await this.context.release();
             }
             this.context = null;
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Suspended, downloadProgress: 0 });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED, downloadProgress: 0 });
             aiLog(`${this.logDomain}:stop:complete`);
         } catch (error: unknown) {
             aiLog(`${this.logDomain}:stop:error`, { errorMessage: getErrorMessage(error) });
             this.context = null;
-            this.setSnapshot({ status: AiSubsystemStatusEnum.Suspended });
+            this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
         }
     }
 

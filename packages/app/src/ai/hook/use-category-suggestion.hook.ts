@@ -22,7 +22,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { status: embeddingStatus } = useEmbedding();
-    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.Ready;
+    const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
     const hasCategoriesLoaded = categories.length > 0;

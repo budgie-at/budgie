@@ -19,7 +19,7 @@ export interface UseRegenerateTranslationReturn {
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
     const { status: chatStatus } = useChat();
-    const isChatReady = chatStatus === AiSubsystemStatusEnum.Ready;
+    const isChatReady = chatStatus === AiSubsystemStatusEnum.READY;
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 

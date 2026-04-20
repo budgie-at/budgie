@@ -20,6 +20,8 @@ import { aiLog } from '../../@generic/util/ai-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
+import { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
+import { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
 import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
@@ -155,10 +157,7 @@ export class EmbeddingSuggestionService {
         mccDescription: string | null,
         comment: string,
         aiContext: string
-    ): Promise<{
-        readonly resolved: { readonly serialized: Uint8Array; readonly distanceThreshold: number };
-        readonly methodStart: number;
-    } | null> {
+    ): Promise<PrepareSuggestionResultInterface | null> {
         const methodStart = Date.now();
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         const resolved = await this.resolveSerializedEmbedding(suggestionContext);
@@ -172,7 +171,7 @@ export class EmbeddingSuggestionService {
 
     private async resolveSerializedEmbedding(
         suggestionContext: SuggestionContextInterface
-    ): Promise<{ readonly serialized: Uint8Array; readonly distanceThreshold: number } | null> {
+    ): Promise<SerializedEmbeddingResultInterface | null> {
         const serialized = await this.generateSerializedEmbedding(suggestionContext.context);
 
         if (!isDefined(serialized)) {

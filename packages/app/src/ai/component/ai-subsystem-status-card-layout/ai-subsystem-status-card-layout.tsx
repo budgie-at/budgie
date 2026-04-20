@@ -29,7 +29,7 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
     const { t } = useLingui();
     const [isRebuilding, setIsRebuilding] = useState(false);
 
-    const isHidden = snapshot.state === AiSubsystemCardStateEnum.Hidden;
+    const isHidden = snapshot.state === AiSubsystemCardStateEnum.HIDDEN;
 
     const handleRebuildConfirm = async (): Promise<void> => {
         setIsRebuilding(true);

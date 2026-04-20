@@ -18,13 +18,13 @@ interface UseChatModelStatusReturn {
 export const useChatModelStatus = (): UseChatModelStatusReturn => {
     const chat = useChat();
     const downloadProgress = useAiDownloadProgress();
-    const isChatReady = chat.status === AiSubsystemStatusEnum.Ready;
+    const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
 
     return {
         isChatReady,
         modelStatus: {
             isReady: isChatReady,
-            isInitializing: chat.status === AiSubsystemStatusEnum.Initializing || chat.status === AiSubsystemStatusEnum.Downloading,
+            isInitializing: chat.status === AiSubsystemStatusEnum.INITIALIZING || chat.status === AiSubsystemStatusEnum.DOWNLOADING,
             downloadProgress,
             error: chat.errorMessage
         }

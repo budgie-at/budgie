@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import {
     Easing,
-    SharedValue,
     cancelAnimation,
     useAnimatedStyle,
     useReducedMotion,
@@ -9,6 +8,8 @@ import {
     withRepeat,
     withTiming
 } from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
 
 const FULL_OPACITY = 1;
 const DIMMED_OPACITY = 0.6;
@@ -31,7 +32,7 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
 
     useEffect(() => {
         cancelAnimation(pulseValue);
-        if (reducedMotion || pulsePeriodMs === null) {
+        if (reducedMotion || !isDefined(pulsePeriodMs)) {
             pulseValue.value = FULL_OPACITY;
 
             return;
@@ -59,23 +60,4 @@ export const useAiSubsystemIconAnimations = ({ percent, iconSize, pulsePeriodMs 
     }));
 
     return { pulseStyle, clipStyle };
-};
-
-const OPACITY_THRESHOLD = 0.01;
-
-interface HoldRingParams {
-    readonly holdProgress: SharedValue<number>;
-    readonly ringCircumference: number;
-    readonly ringOffset: number;
-}
-
-export const useAiSubsystemIconHoldRing = ({ holdProgress, ringCircumference, ringOffset }: HoldRingParams) => {
-    const holdRingStyle = useAnimatedStyle(() => ({
-        opacity: holdProgress.get() > OPACITY_THRESHOLD ? FULL_OPACITY : 0,
-        position: POSITION_ABSOLUTE,
-        top: -ringOffset,
-        left: -ringOffset
-    }));
-
-    return { holdRingStyle, strokeDashoffset: (progress: number) => ringCircumference * (1 - progress) };
 };

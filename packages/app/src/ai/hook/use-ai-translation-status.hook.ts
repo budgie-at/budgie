@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 
-import { AiTranslationStatusSnapshotInterface } from '../interface/ai-translation-status-snapshot.interface';
+import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
 import { aiTranslationStatusService } from '../service/ai-translation-status.service';
 
-export const useAiTranslationStatus = (): AiTranslationStatusSnapshotInterface =>
+export const useAiTranslationStatus = (): AiSubsystemStatusSnapshotInterface =>
     useSyncExternalStore(aiTranslationStatusService.subscribe, aiTranslationStatusService.getSnapshot);

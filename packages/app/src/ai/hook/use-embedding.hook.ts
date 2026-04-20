@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 
-import { EmbeddingSnapshotInterface } from '../interface/embedding-snapshot.interface';
+import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { embeddingService } from '../service/embedding.service';
 
-export const useEmbedding = (): EmbeddingSnapshotInterface =>
+export const useEmbedding = (): LlamaSubsystemSnapshotInterface =>
     useSyncExternalStore(embeddingService.subscribe, embeddingService.getSnapshot);

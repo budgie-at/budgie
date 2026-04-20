@@ -1,7 +1,7 @@
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
-import { EmbeddingSnapshotInterface } from '../interface/embedding-snapshot.interface';
+import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '../util/ai-constants.util';
 import { aiLog } from '../utils/ai-log.util';
 
@@ -11,7 +11,7 @@ import type { EmbeddingInvokerInterface } from '@budgie/ai';
 
 class LocalEmbeddingService
     extends BaseLlamaSubsystemService
-    implements AiSubsystemServiceInterface<EmbeddingSnapshotInterface>, EmbeddingInvokerInterface
+    implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, EmbeddingInvokerInterface
 {
     constructor() {
         super('embedding');

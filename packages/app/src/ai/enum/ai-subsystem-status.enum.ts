@@ -1,9 +1,9 @@
 export enum AiSubsystemStatusEnum {
-    Disabled = 'disabled',
-    Idle = 'idle',
-    Downloading = 'downloading',
-    Initializing = 'initializing',
-    Ready = 'ready',
-    Suspended = 'suspended',
-    Error = 'error'
+    DISABLED = 'DISABLED',
+    IDLE = 'IDLE',
+    DOWNLOADING = 'DOWNLOADING',
+    INITIALIZING = 'INITIALIZING',
+    READY = 'READY',
+    SUSPENDED = 'SUSPENDED',
+    ERROR = 'ERROR'
 }
