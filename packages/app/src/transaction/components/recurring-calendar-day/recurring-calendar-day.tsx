@@ -2,6 +2,8 @@ import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { cn } from '../../../@generic/utils/cn.util';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
@@ -33,8 +35,7 @@ const circleVariants = cva('w-10 h-10 items-center justify-center rounded-full',
     },
     compoundVariants: [
         { hasEntries: true, isSelected: false, hasOnlyForecasted: false, className: 'bg-warning-background' },
-        { hasOnlyForecasted: true, isSelected: false, className: 'bg-warning-background opacity-50' },
-        { isToday: true, isSelected: false, className: 'border-2 border-primary' }
+        { hasOnlyForecasted: true, isSelected: false, className: 'bg-warning-background opacity-50' }
     ]
 });
 
@@ -125,10 +126,8 @@ export const RecurringCalendarDay = (props: Props) => {
 
     return (
         <View className="items-center py-px">
-            <View className={circleClassName}>
-                <Text className={dayTextClassName} {...(testID !== null && { testID })}>
-                    {day.text}
-                </Text>
+            <View className={circleClassName} accessible={isDefined(testID)} {...(isDefined(testID) && { testID })}>
+                <Text className={dayTextClassName}>{day.text}</Text>
                 {hasDots ? (
                     <View className="flex-row gap-x-0.5 -mt-0.5">
                         {Array.from({ length: actualDots }, (_, index) => (
