@@ -36,7 +36,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private started = false;
 
     constructor() {
-        super({ state: DrainerStateEnum.Idle, pending: 0, lastDurationMs: 0, errorMessage: null });
+        super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
     start(): void {
@@ -70,28 +70,28 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.appStateSubscription = null;
         this.subsystemUnsubscribe?.();
         this.subsystemUnsubscribe = null;
-        this.setSnapshot({ state: DrainerStateEnum.Idle });
+        this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
     async pause(): Promise<void> {
-        if (this.snapshot.state === DrainerStateEnum.Paused) {
+        if (this.snapshot.state === DrainerStateEnum.PAUSED) {
             return;
         }
         aiLog(`${this.logDomain}:pause`);
-        if (this.snapshot.state === DrainerStateEnum.Boosting) {
+        if (this.snapshot.state === DrainerStateEnum.BOOSTING) {
             this.cancelBoost();
         }
         this.haltTimer();
         await this.pendingBatchPromise;
-        this.setSnapshot({ state: DrainerStateEnum.Paused });
+        this.setSnapshot({ state: DrainerStateEnum.PAUSED });
     }
 
     resume(): void {
-        if (this.snapshot.state !== DrainerStateEnum.Paused) {
+        if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
             return;
         }
         aiLog(`${this.logDomain}:resume`);
-        this.setSnapshot({ state: DrainerStateEnum.Idle });
+        this.setSnapshot({ state: DrainerStateEnum.IDLE });
         if (this.isSafe()) {
             this.scheduleDrain();
         }
@@ -100,7 +100,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
     // eslint-disable-next-line max-statements -- Boost entry: guard, mutex, timer halt, snapshot, loop, finally
     async boost(): Promise<void> {
-        if (this.getState() === DrainerStateEnum.Boosting) {
+        if (this.getState() === DrainerStateEnum.BOOSTING) {
             return;
         }
         if (!drainerMutex.acquire(this.kind)) {
@@ -108,15 +108,15 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
         aiLog(`${this.logDomain}:boost:begin`);
         this.haltTimer();
-        this.setSnapshot({ state: DrainerStateEnum.Boosting, errorMessage: null });
+        this.setSnapshot({ state: DrainerStateEnum.BOOSTING, errorMessage: null });
         const started = Date.now();
         this.pendingBatchPromise = this.runBoostLoop(started);
         try {
             await this.pendingBatchPromise;
         } finally {
             drainerMutex.release(this.kind);
-            if (this.getState() === DrainerStateEnum.Boosting) {
-                this.setSnapshot({ state: DrainerStateEnum.Idle });
+            if (this.getState() === DrainerStateEnum.BOOSTING) {
+                this.setSnapshot({ state: DrainerStateEnum.IDLE });
             }
             if (this.started && this.isSafe()) {
                 this.scheduleDrain();
@@ -129,17 +129,17 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     cancelBoost(): void {
-        if (this.snapshot.state !== DrainerStateEnum.Boosting) {
+        if (this.snapshot.state !== DrainerStateEnum.BOOSTING) {
             return;
         }
         aiLog(`${this.logDomain}:boost:cancel`);
-        this.setSnapshot({ state: DrainerStateEnum.Idle });
+        this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
     retry(): void {
         aiLog(`${this.logDomain}:retry`, { fromState: this.snapshot.state });
         this.consecutiveFailures = 0;
-        this.setSnapshot({ state: DrainerStateEnum.Idle, errorMessage: null });
+        this.setSnapshot({ state: DrainerStateEnum.IDLE, errorMessage: null });
         if (this.started && this.isSafe()) {
             this.scheduleDrain();
         }
@@ -165,7 +165,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             this.scheduleDrain();
         } else {
             this.haltTimer();
-            if (this.snapshot.state === DrainerStateEnum.Boosting) {
+            if (this.snapshot.state === DrainerStateEnum.BOOSTING) {
                 this.cancelBoost();
             }
         }
@@ -179,7 +179,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     private canScheduleDrain(): boolean {
-        const blockedStates = [DrainerStateEnum.Boosting, DrainerStateEnum.Paused, DrainerStateEnum.Error];
+        const blockedStates = [DrainerStateEnum.BOOSTING, DrainerStateEnum.PAUSED, DrainerStateEnum.ERROR];
 
         return this.started && !blockedStates.includes(this.snapshot.state) && this.isSafe();
     }
@@ -219,7 +219,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 return;
             }
             for (const row of rows) {
-                if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.Error) {
+                if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.ERROR) {
                     break;
                 }
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
@@ -239,7 +239,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             }
             await this.refreshPending();
             drainerMutex.release(this.kind);
-            if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.Error) {
+            if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
                 this.scheduleDrain();
             }
         }
@@ -263,13 +263,13 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         let rowIndex = 0;
         try {
             /* eslint-disable no-await-in-loop -- Sequential row processing is the whole point of boost */
-            while (this.isSafe() && this.getState() === DrainerStateEnum.Boosting) {
+            while (this.isSafe() && this.getState() === DrainerStateEnum.BOOSTING) {
                 const rows = await this.fetchPending(this.boostBatchSize);
                 if (rows.length === 0) {
                     break;
                 }
                 for (const row of rows) {
-                    if (!this.isSafe() || this.getState() !== DrainerStateEnum.Boosting) {
+                    if (!this.isSafe() || this.getState() !== DrainerStateEnum.BOOSTING) {
                         break;
                     }
                     await this.runRow(row);
@@ -325,10 +325,10 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             return;
         }
         aiLog(`${this.logDomain}:error:cap-reached`, { consecutiveFailures: this.consecutiveFailures });
-        this.setSnapshot({ state: DrainerStateEnum.Error, errorMessage: message });
+        this.setSnapshot({ state: DrainerStateEnum.ERROR, errorMessage: message });
         this.haltTimer();
         setTimeout(() => {
-            if (this.snapshot.state === DrainerStateEnum.Error) {
+            if (this.snapshot.state === DrainerStateEnum.ERROR) {
                 aiLog(`${this.logDomain}:error:auto-retry`);
                 this.retry();
             }
