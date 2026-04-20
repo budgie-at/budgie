@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/ai/service/ai-system-status.service.ts:215
+#: src/ai/service/ai-system-status.service.ts:232
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx queued"
 
@@ -63,7 +63,7 @@ msgstr "{percentage}% of income"
 msgid "{source} error · {message}"
 msgstr "{source} error · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:184
+#: src/ai/service/ai-system-status.service.ts:186
 msgid "{source} failed: {message}"
 msgstr "{source} failed: {message}"
 
@@ -158,11 +158,17 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/service/ai-system-status.service.ts:171
+#: src/ai/service/ai-system-status.service.ts:173
 msgid "AI disabled"
 msgstr "AI disabled"
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:111
+msgid "AI idle"
+msgstr "AI idle"
+
 #: src/ai/service/ai-umbrella-status.service.ts:56
+#: src/ai/service/ai-umbrella-status.service.ts:118
 msgid "AI off"
 msgstr "AI off"
 
@@ -186,7 +192,7 @@ msgstr "All columns have been assigned"
 msgid "All Recurring"
 msgstr "All Recurring"
 
-#: src/ai/service/ai-system-status.service.ts:248
+#: src/ai/service/ai-system-status.service.ts:265
 msgid "All set"
 msgstr "All set"
 
@@ -666,11 +672,11 @@ msgstr "Done"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:83
+#: src/ai/service/ai-umbrella-status.service.ts:84
 msgid "Downloading AI models…"
 msgstr "Downloading AI models…"
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Downloading models"
 msgstr "Downloading models"
 
@@ -885,7 +891,7 @@ msgstr "Failed to setup sync"
 msgid "Failed to update token"
 msgstr "Failed to update token"
 
-#: src/ai/service/ai-system-status.service.ts:266
+#: src/ai/service/ai-system-status.service.ts:283
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
 
@@ -1034,7 +1040,7 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/ai/service/ai-system-status.service.ts:237
+#: src/ai/service/ai-system-status.service.ts:254
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
@@ -1090,7 +1096,7 @@ msgstr "LLM not ready"
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
 
-#: src/ai/service/ai-system-status.service.ts:282
+#: src/ai/service/ai-system-status.service.ts:300
 msgid "Loading models"
 msgstr "Loading models"
 
@@ -1155,7 +1161,7 @@ msgstr "Navigate to Menu → Statements"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/app/(main)/create-transaction/expense.tsx:66
+#: src/app/(main)/create-transaction/expense.tsx:65
 msgid "New Expense"
 msgstr "New Expense"
 
@@ -1466,6 +1472,11 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:102
+msgid "Resuming AI…"
+msgstr "Resuming AI…"
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:14
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
@@ -1746,7 +1757,7 @@ msgstr "Start Sync"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
-#: src/ai/service/ai-umbrella-status.service.ts:94
+#: src/ai/service/ai-umbrella-status.service.ts:93
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
 
@@ -1951,7 +1962,7 @@ msgstr "Transcription failed"
 msgid "Transfer"
 msgstr "Transfer"
 
-#: src/ai/service/ai-system-status.service.ts:221
+#: src/ai/service/ai-system-status.service.ts:238
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Translating {translationPending} of {total}{trailer}"
 
