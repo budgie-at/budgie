@@ -11,28 +11,28 @@ import { useAiSystemUmbrella } from '../../hook/use-ai-system-umbrella.hook';
 const ICON_SIZE = 14;
 
 const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = {
-    [AiSystemUmbrellaStateEnum.Disabled]: UserIconNameEnum.CircleAlert,
-    [AiSystemUmbrellaStateEnum.Downloading]: UserIconNameEnum.LoaderCircle,
-    [AiSystemUmbrellaStateEnum.Healthy]: null,
-    [AiSystemUmbrellaStateEnum.Idle]: UserIconNameEnum.LoaderCircle,
-    [AiSystemUmbrellaStateEnum.Initializing]: UserIconNameEnum.LoaderCircle,
-    [AiSystemUmbrellaStateEnum.ModelError]: UserIconNameEnum.TriangleAlert,
-    [AiSystemUmbrellaStateEnum.Suspended]: UserIconNameEnum.LoaderCircle
+    [AiSystemUmbrellaStateEnum.DISABLED]: UserIconNameEnum.CircleAlert,
+    [AiSystemUmbrellaStateEnum.DOWNLOADING]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.HEALTHY]: null,
+    [AiSystemUmbrellaStateEnum.IDLE]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.INITIALIZING]: UserIconNameEnum.LoaderCircle,
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert,
+    [AiSystemUmbrellaStateEnum.SUSPENDED]: UserIconNameEnum.LoaderCircle
 };
 
 const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
-    [AiSystemUmbrellaStateEnum.Disabled]: 'text-muted-foreground',
-    [AiSystemUmbrellaStateEnum.Downloading]: 'text-primary-foreground',
-    [AiSystemUmbrellaStateEnum.Healthy]: 'text-muted-foreground',
-    [AiSystemUmbrellaStateEnum.Idle]: 'text-muted-foreground',
-    [AiSystemUmbrellaStateEnum.Initializing]: 'text-warning-foreground',
-    [AiSystemUmbrellaStateEnum.ModelError]: 'text-destructive-foreground',
-    [AiSystemUmbrellaStateEnum.Suspended]: 'text-warning-foreground'
+    [AiSystemUmbrellaStateEnum.DISABLED]: 'text-muted-foreground',
+    [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary-foreground',
+    [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-muted-foreground',
+    [AiSystemUmbrellaStateEnum.IDLE]: 'text-muted-foreground',
+    [AiSystemUmbrellaStateEnum.INITIALIZING]: 'text-warning-foreground',
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground',
+    [AiSystemUmbrellaStateEnum.SUSPENDED]: 'text-warning-foreground'
 };
 
 export const AiSystemStatusBanner = () => {
     const umbrella = useAiSystemUmbrella();
-    const isHealthy = umbrella.state === AiSystemUmbrellaStateEnum.Healthy;
+    const isHealthy = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY;
 
     if (isHealthy) {
         return null;
@@ -40,7 +40,7 @@ export const AiSystemStatusBanner = () => {
 
     const icon = BANNER_ICON[umbrella.state];
     const colorClass = BANNER_COLOR[umbrella.state];
-    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.Downloading && isPositiveNumber(umbrella.downloadPercent);
+    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.DOWNLOADING && isPositiveNumber(umbrella.downloadPercent);
 
     return (
         <View className="flex-row items-center gap-x-sm px-lg py-md bg-secondary-background rounded-xl">

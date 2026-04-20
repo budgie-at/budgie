@@ -36,7 +36,7 @@ export abstract class BaseSubsystemStatusService extends ScheduledSnapshotStore<
     }
 
     protected isUmbrellaHealthy(): boolean {
-        return aiUmbrellaStatusService.getSnapshot().state === AiSystemUmbrellaStateEnum.Healthy;
+        return aiUmbrellaStatusService.getSnapshot().state === AiSystemUmbrellaStateEnum.HEALTHY;
     }
 
     private snapshotEquals(next: AiSubsystemStatusSnapshotInterface): boolean {
