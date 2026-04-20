@@ -1,9 +1,9 @@
 export enum AiSystemUmbrellaStateEnum {
-    Disabled = 'disabled',
-    Downloading = 'downloading',
-    Healthy = 'healthy',
-    Idle = 'idle',
-    Initializing = 'initializing',
-    ModelError = 'model-error',
-    Suspended = 'suspended'
+    DISABLED = 'DISABLED',
+    DOWNLOADING = 'DOWNLOADING',
+    HEALTHY = 'HEALTHY',
+    IDLE = 'IDLE',
+    INITIALIZING = 'INITIALIZING',
+    MODEL_ERROR = 'MODEL_ERROR',
+    SUSPENDED = 'SUSPENDED'
 }

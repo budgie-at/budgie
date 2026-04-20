@@ -14,14 +14,14 @@ const TRUNCATE_LEN = 80;
 const HALF = 2;
 
 const EMPTY_UMBRELLA_SNAPSHOT: AiSystemUmbrellaSnapshotInterface = {
-    state: AiSystemUmbrellaStateEnum.Disabled,
+    state: AiSystemUmbrellaStateEnum.DISABLED,
     statusText: '',
     downloadPercent: 0,
     errorMessage: null
 };
 
 class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSnapshotInterface> {
-    private lastState: AiSystemUmbrellaStateEnum = AiSystemUmbrellaStateEnum.Disabled;
+    private lastState: AiSystemUmbrellaStateEnum = AiSystemUmbrellaStateEnum.DISABLED;
     private lastStateAt = Date.now();
 
     constructor() {
@@ -53,7 +53,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
     // eslint-disable-next-line max-statements -- Priority-ordered derivation table across all subsystem statuses
     private derive(): AiSystemUmbrellaSnapshotInterface {
         if (!isAiEnabled()) {
-            return { state: AiSystemUmbrellaStateEnum.Disabled, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
+            return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
         }
 
         const chat = chatService.getSnapshot();
@@ -67,7 +67,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
 
             return {
-                state: AiSystemUmbrellaStateEnum.ModelError,
+                state: AiSystemUmbrellaStateEnum.MODEL_ERROR,
                 statusText: t`${source} error · ${message}`,
                 downloadPercent: 0,
                 errorMessage: message
@@ -80,7 +80,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF);
 
             return {
-                state: AiSystemUmbrellaStateEnum.Downloading,
+                state: AiSystemUmbrellaStateEnum.DOWNLOADING,
                 statusText: t`Downloading AI models…`,
                 downloadPercent,
                 errorMessage: null
@@ -89,7 +89,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         if (statuses.some(status => status === AiSubsystemStatusEnum.INITIALIZING)) {
             return {
-                state: AiSystemUmbrellaStateEnum.Initializing,
+                state: AiSystemUmbrellaStateEnum.INITIALIZING,
                 statusText: t`Starting up AI…`,
                 downloadPercent: 0,
                 errorMessage: null
@@ -98,7 +98,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
             return {
-                state: AiSystemUmbrellaStateEnum.Suspended,
+                state: AiSystemUmbrellaStateEnum.SUSPENDED,
                 statusText: t`Resuming AI…`,
                 downloadPercent: 0,
                 errorMessage: null
@@ -107,7 +107,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
             return {
-                state: AiSystemUmbrellaStateEnum.Idle,
+                state: AiSystemUmbrellaStateEnum.IDLE,
                 statusText: t`AI idle`,
                 downloadPercent: 0,
                 errorMessage: null
@@ -115,10 +115,10 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         }
 
         if (statuses.every(status => status === AiSubsystemStatusEnum.DISABLED)) {
-            return { state: AiSystemUmbrellaStateEnum.Disabled, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
+            return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
         }
 
-        return { state: AiSystemUmbrellaStateEnum.Healthy, statusText: '', downloadPercent: 0, errorMessage: null };
+        return { state: AiSystemUmbrellaStateEnum.HEALTHY, statusText: '', downloadPercent: 0, errorMessage: null };
     }
 
     private snapshotEquals(next: AiSystemUmbrellaSnapshotInterface): boolean {
