@@ -83,10 +83,3 @@ env:
     visible:
       id: 'TabBar.Home'
     timeout: 15000
-
-- stopApp
-
-- runFlow:
-      file: ../navigation/relaunch-app-and-wait.flow.yaml
-      env:
-          DESTINATION_ID: 'TabBar.Home'
