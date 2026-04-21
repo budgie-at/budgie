@@ -1,3 +1,30 @@
+flows:
+    - flows/*.flow.yaml
+
+executionOrder:
+    continueOnFailure: false
+    flowsOrder:
+        - 01.account-bank.flow
+        - 02.account-cash.flow
+        - 03.account-debt-lent.flow
+        - 04.account-debt-borrowed.flow
+        - 05.category.flow
+        - 06.tag.flow
+        - 07.settings-preferences.flow
+        - 08.expense-transaction.flow
+        - 09.income-transaction.flow
+        - 10.transfer-transaction.flow
+        - 11.cross-currency-transfer-transaction.flow
+        - 12.account-archive-and-expense-convert-to-transfer.flow
+        - 13.income-convert-to-transfer.flow
+        - 14.transaction-filters.flow
+        - 15.transaction-long-press-actions.flow
+        - 16.erste-pdf-import.flow
+        - 17.security-app-lock.flow
+        - 18.security-screenshot-protection.flow
+        - 19.csv-import-export.flow
+        - 20.recurring-calendar.flow
+
 platform:
     ios:
         snapshotKeyHonorModalViews: false
