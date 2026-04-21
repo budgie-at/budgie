@@ -6,7 +6,7 @@ End-to-end tests for the Budgie expense tracking app using [Maestro](https://mae
 
 ### Prerequisites
 
-- Install Maestro CLI: `curl -fsSL "https://get.maestro.mobile.dev" | bash`
+- Install Maestro CLI 2.4.0: `export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash`
 - iOS Simulator or Android Emulator running
 - App installed on the simulator/emulator
 
