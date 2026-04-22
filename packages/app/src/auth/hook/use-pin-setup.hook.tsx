@@ -43,10 +43,6 @@ export const usePinSetup = ({ mode }: Params) => {
         return true;
     };
 
-    const removePinAndContinue = async () => {
-        await authService.deletePin();
-    };
-
     const handleVerifyOldStep = async () => {
         const success = await verifyOldPin();
 
@@ -55,7 +51,7 @@ export const usePinSetup = ({ mode }: Params) => {
         }
 
         if (mode === PinSetupModeEnum.DISABLE) {
-            await removePinAndContinue();
+            await authService.deletePin();
 
             return;
         }
@@ -142,6 +138,6 @@ export const usePinSetup = ({ mode }: Params) => {
         addDigit,
         deleteDigit,
         handleSubmit,
-        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? removePinAndContinue : savePinAndContinue
+        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => authService.deletePin() : savePinAndContinue
     };
 };
