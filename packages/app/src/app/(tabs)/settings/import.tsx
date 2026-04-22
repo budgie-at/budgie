@@ -32,7 +32,7 @@ import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../impor
 import { ImporterService } from '../../../import/service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';
 
-import { ImportScreenSelector as CsvPageSelectors } from './import-screen.selector';
+import { ImportScreenSelector } from './import-screen.selector';
 
 import type { Edge } from 'react-native-safe-area-context';
 
@@ -264,7 +264,7 @@ export default function ImportScreen() {
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
                                 leftIcon={UserIconNameEnum.Database}
-                                testID={CsvPageSelectors.StartImportButton}
+                                testID={ImportScreenSelector.StartImportButton}
                             />
                         )}
                     </View>

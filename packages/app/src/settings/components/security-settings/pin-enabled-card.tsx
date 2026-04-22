@@ -9,7 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { SettingsPageSelector as SettingsPageSelectors } from '../../../app/(tabs)/settings/settings-page.selector';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -32,7 +32,7 @@ export const PinEnabledCard = () => {
     };
 
     return (
-        <View className="rounded-5xl bg-secondary-background p-4xl gap-10" testID={SettingsPageSelectors.AppLockCard}>
+        <View className="rounded-5xl bg-secondary-background p-4xl gap-10" testID={SettingsPageSelector.AppLockCard}>
             <Gradient
                 className="w-24 h-24 absolute right-0 top-0 rounded-bl-[100%]"
                 locations={locations}
@@ -70,7 +70,7 @@ export const PinEnabledCard = () => {
                         </Text>
 
                         <ThemedSwitch
-                            testID={SettingsPageSelectors.AppLockBiometricSwitch}
+                            testID={SettingsPageSelector.AppLockBiometricSwitch}
                             onValueChange={handleToggleBiometric}
                             value={isBiometricEnabled}
                         />
@@ -78,7 +78,7 @@ export const PinEnabledCard = () => {
                 ) : null}
 
                 <Link href={`/settings/pin?mode=${PinSetupModeEnum.CHANGE}`} asChild>
-                    <HapticPressable className="flex-row items-center gap-x-md " testID={SettingsPageSelectors.AppLockChangePinButton}>
+                    <HapticPressable className="flex-row items-center gap-x-md " testID={SettingsPageSelector.AppLockChangePinButton}>
                         <Icon icon={UserIconNameEnum.KeyRound} size={16} className="text-secondary-foreground" />
 
                         <Text className="mr-auto text-primary text-sm">
@@ -90,7 +90,7 @@ export const PinEnabledCard = () => {
                 </Link>
 
                 <Link href={`/settings/pin?mode=${PinSetupModeEnum.DISABLE}`} asChild>
-                    <HapticPressable className="py-md px-xl" testID={SettingsPageSelectors.AppLockDisableButton}>
+                    <HapticPressable className="py-md px-xl" testID={SettingsPageSelector.AppLockDisableButton}>
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>Disable App Lock</Trans>
                         </Text>

@@ -8,11 +8,11 @@ import { useThemeContext } from '../../../theme/context/theme.context';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
-import { DatePickerSelector as DatePickerSelectors } from './date-picker.selector';
+import { DatePickerSelector } from './date-picker.selector';
 
 const renderDay = (day: CalendarDay) => (
     <Text
-        testID={DatePickerSelectors.Day(day.number)}
+        testID={DatePickerSelector.Day(day.number)}
         className={cn(
             'text-primary font-medium',
             !day.isCurrentMonth && 'text-secondary-foreground/40',

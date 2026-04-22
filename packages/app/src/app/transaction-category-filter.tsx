@@ -14,7 +14,7 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionCategoryFilterItem } from '../transaction/components/transaction-category-filter/transaction-category-filter-item';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -98,10 +98,10 @@ export default function TransactionCategoryFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
-                searchTestID={TransactionFiltersSelectors.CategorySearchInput}
-                selectAllTestID={TransactionFiltersSelectors.CategorySelectAllButton}
-                deselectAllTestID={TransactionFiltersSelectors.CategoryDeselectAllButton}
-                applyTestID={TransactionFiltersSelectors.CategoryApplyButton}
+                searchTestID={TransactionFiltersSelector.CategorySearchInput}
+                selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.CategoryApplyButton}
             />
         </FilterSheet>
     );

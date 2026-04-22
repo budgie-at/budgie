@@ -13,7 +13,7 @@ import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTagFilterItem } from '../transaction/components/transaction-tag-filter/transaction-tag-filter-item';
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
@@ -98,10 +98,10 @@ export default function TransactionTagFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
-                searchTestID={TransactionFiltersSelectors.TagSearchInput}
-                selectAllTestID={TransactionFiltersSelectors.TagSelectAllButton}
-                deselectAllTestID={TransactionFiltersSelectors.TagDeselectAllButton}
-                applyTestID={TransactionFiltersSelectors.TagApplyButton}
+                searchTestID={TransactionFiltersSelector.TagSearchInput}
+                selectAllTestID={TransactionFiltersSelector.TagSelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.TagDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.TagApplyButton}
             />
         </FilterSheet>
     );
