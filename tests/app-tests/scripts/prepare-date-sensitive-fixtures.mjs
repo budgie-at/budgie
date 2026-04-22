@@ -25,8 +25,8 @@ const backupFixture = (sourcePath, targetPath) => {
 };
 
 const shiftTransactionsFixtureToNow = () => {
-    const sourcePath = path.join(fixturesDirectoryPath, '19-transactions-filters.db');
-    const targetPath = path.join(outputDirectoryPath, '19-transactions-filters.db');
+    const sourcePath = path.join(fixturesDirectoryPath, '14.db');
+    const targetPath = path.join(outputDirectoryPath, '14.db');
 
     backupFixture(sourcePath, targetPath);
     runSqlite(
@@ -80,7 +80,7 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
 };
 
 const generateRecurringFixture = () => {
-    const sourcePath = path.join(fixturesDirectoryPath, '08-settings-navigation.db');
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
     const targetPath = path.join(outputDirectoryPath, '20-recurring-calendar.db');
 
     const now = new Date();
@@ -123,7 +123,7 @@ const generateRecurringFixture = () => {
         SET default_account_id = 1,
             default_instrument_id = 1,
             language = 'en',
-            show_cents = 1,
+            show_cents = 0,
             updated_at = CAST(strftime('%s', 'now') AS INTEGER);
 
         INSERT INTO transactions (
