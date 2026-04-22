@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: 'e2e-10-income-transaction.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '09.db(, db)?'
 
 # --- Create Income ---
 

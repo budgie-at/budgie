@@ -365,6 +365,7 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 9. If a flow appears fundamentally broken, stop and ask the user before adding test-side workaround logic.
 10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
 11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
+12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
 
 ### Commit Format
 
