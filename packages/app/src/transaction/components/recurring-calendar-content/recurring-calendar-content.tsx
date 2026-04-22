@@ -95,11 +95,7 @@ export const RecurringCalendarContent = () => {
         <View className="flex-1" testID={RecurringCalendarSelector.Container}>
             <View className="gap-y-xl pt-md">
                 <View className="items-center gap-y-lg">
-                    <ProtectedMoney
-                        minFontSize={10}
-                        maxFontSize={32}
-                        instrumentSymbol={defaultInstrument.symbol}
-                    >
+                    <ProtectedMoney minFontSize={10} maxFontSize={32} instrumentSymbol={defaultInstrument.symbol}>
                         {totalAmount}
                     </ProtectedMoney>
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
