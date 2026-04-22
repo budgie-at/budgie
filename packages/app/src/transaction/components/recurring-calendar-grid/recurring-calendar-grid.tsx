@@ -9,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { DatePicker } from '../../../@generic/component/date-picker/date-picker';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { getMonthLabel } from '../../utils/get-month-label.util';
@@ -24,26 +25,6 @@ interface Props {
     readonly displayYear: number;
     readonly onChangeMonth: (year: number, month: number) => void;
 }
-
-const resolveDateType = (value: DateType): Date | null => {
-    if (!isDefined(value)) {
-        return null;
-    }
-
-    if (value instanceof Date) {
-        return new Date(value.getTime());
-    }
-
-    if (typeof value === 'number' || typeof value === 'string') {
-        return new Date(value);
-    }
-
-    if (typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
-        return value.toDate();
-    }
-
-    return new Date(value.toString());
-};
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Component with shared date-picker integration and month navigation logic
 export const RecurringCalendarGrid = (props: Props) => {
@@ -98,7 +79,7 @@ export const RecurringCalendarGrid = (props: Props) => {
     const components: CalendarComponents = { Day: renderDay };
 
     const handleDateChange = (value: { date: DateType }) => {
-        const date = resolveDateType(value.date);
+        const date = dateTypeToDate(value.date);
 
         if (!isDefined(date)) {
             return;
@@ -112,7 +93,7 @@ export const RecurringCalendarGrid = (props: Props) => {
     };
 
     const disabledDates = (value: DateType) => {
-        const date = resolveDateType(value);
+        const date = dateTypeToDate(value);
 
         if (!isDefined(date)) {
             return false;

@@ -1,7 +1,7 @@
 import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -12,7 +12,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
+import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
 import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
 import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
 import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
@@ -37,7 +37,8 @@ import { SettingsPageSelector } from './settings-page.selector';
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { scrollViewRef, anchorLayout, anchorHighlight } = useScrollToRef();
+    const { anchor } = useLocalSearchParams<{ anchor?: string }>();
+    const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -54,7 +55,12 @@ export default function SettingsPage() {
 
     return (
         <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
-            <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView
+                ref={scrollViewRef}
+                onLayout={onScrollViewLayout}
+                contentContainerClassName="gap-y-7xl pt-16 pb-5xl"
+                showsVerticalScrollIndicator={false}
+            >
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
