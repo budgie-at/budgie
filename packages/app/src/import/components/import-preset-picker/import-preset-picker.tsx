@@ -7,14 +7,14 @@ import { isDefined } from '@rnw-community/shared';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
-import { ImportPresetSelectorIds as CsvPageSelectors } from './import-preset-selector.selector';
+import { ImportPresetSelector } from './import-preset-picker.selector';
 
 interface Props {
     readonly selectedPreset: ImportPresetEnum | undefined;
     readonly onPresetSelect: (preset: ImportPresetEnum) => void;
 }
 
-export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) => {
+export const ImportPresetPicker = ({ selectedPreset, onPresetSelect }: Props) => {
     const { t } = useLingui();
 
     const handleBudgieSelect = () => void onPresetSelect(ImportPresetEnum.Budgie);
@@ -36,7 +36,7 @@ export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) 
                     title="Budgie"
                     isSelected={selectedPreset === ImportPresetEnum.Budgie}
                     onSelect={handleBudgieSelect}
-                    testID={CsvPageSelectors.PresetBudgie}
+                    testID={ImportPresetSelector.PresetBudgie}
                 />
                 <ImportPresetChip
                     title="SmartBudget"
