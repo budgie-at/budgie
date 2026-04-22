@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { FilterRow } from '../../../@generic/component/filter-sheet/filter-row/filter-row';
 import { FilterRowCheck } from '../../../@generic/component/filter-sheet/filter-row-check/filter-row-check';
 import { FilterRowTitle } from '../../../@generic/component/filter-sheet/filter-row-title/filter-row-title';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly isSelected: boolean;
@@ -35,12 +35,12 @@ export const TransactionTagFilterItem = ({ onSelect, tag, isSelected }: Props) =
     const handleSelect = () => void onSelect(tag.id);
 
     return (
-        <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelectors.TagOption(tag.title)}>
+        <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelector.TagOption(tag.title)}>
             <View className={hashBadgeVariants({ isSelected })}>
                 <Text className={hashTextVariants({ isSelected })}>#</Text>
             </View>
             <FilterRowTitle>{tag.title}</FilterRowTitle>
-            <FilterRowCheck isSelected={isSelected} testID={TransactionFiltersSelectors.TagOptionSelected(tag.title)} />
+            <FilterRowCheck isSelected={isSelected} testID={TransactionFiltersSelector.TagOptionSelected(tag.title)} />
         </FilterRow>
     );
 };
