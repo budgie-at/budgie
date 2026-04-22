@@ -8,21 +8,14 @@ interface Props {
     readonly instrumentSymbol: string;
 }
 
-export const AccountBalance = ({ balance, instrumentSymbol }: Props) => {
-    return (
-        <View className="p-5xl border border-default-corner bg-default-background gap-y-md rounded-3xl">
-            <Text className="font-medium text-xs uppercase text-secondary-foreground text-center">
-                <Trans>Current Balance</Trans>
-            </Text>
+export const AccountBalance = ({ balance, instrumentSymbol }: Props) => (
+    <View className="p-5xl border border-default-corner bg-default-background gap-y-md rounded-3xl">
+        <Text className="font-medium text-xs uppercase text-secondary-foreground text-center">
+            <Trans>Current Balance</Trans>
+        </Text>
 
-            <ProtectedMoney
-                className="justify-start"
-                minFontSize={10}
-                maxFontSize={36}
-                instrumentSymbol={instrumentSymbol}
-            >
-                {balance}
-            </ProtectedMoney>
-        </View>
-    );
-};
+        <ProtectedMoney className="justify-start" minFontSize={10} maxFontSize={36} instrumentSymbol={instrumentSymbol}>
+            {balance}
+        </ProtectedMoney>
+    </View>
+);
