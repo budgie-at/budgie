@@ -31,7 +31,6 @@ export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: 
                 className="justify-start"
                 minFontSize={10}
                 maxFontSize={36}
-                decimalPlaces={decimalPlaces}
                 instrumentSymbol={instrumentSymbol}
             >
                 {balance}
