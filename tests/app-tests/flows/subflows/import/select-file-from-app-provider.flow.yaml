@@ -55,11 +55,13 @@ env:
                 speed: 20
                 visibilityPercentage: 40
                 centerElement: true
-                waitToSettleTimeoutMs: 1000
+                waitToSettleTimeoutMs: 2000
+          - waitForAnimationToEnd
 
 - tapOn:
-      id: '${FILE_ROW_ID_MATCH}'
-      retryTapIfNoChange: true
+    id: '${FILE_ROW_ID_MATCH}'
+    point: '50%,24%'
+    retryTapIfNoChange: true
 
 - runFlow:
       when:

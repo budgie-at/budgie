@@ -4,7 +4,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ROW_ID_MATCH: 'e2e-17-expense-to-transfer.db(, db)?'
+      FIXTURE_ROW_ID_MATCH: '12.db(, db)?'
 
 - extendedWaitUntil:
     visible:
