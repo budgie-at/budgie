@@ -24,7 +24,7 @@ import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-tran
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
 
-import { TagFormSelector as TagFormSelectors } from './tag-form.selector';
+import { TagFormSelector } from './tag-form.selector';
 
 type TagFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 
@@ -137,7 +137,7 @@ export const TagForm = (props: Props) => {
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
             <KeyboardAwareScrollView
-                testID={TagFormSelectors.ScrollView}
+                testID={TagFormSelector.ScrollView}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 bounces={false}
@@ -157,7 +157,7 @@ export const TagForm = (props: Props) => {
                             textContentType="none"
                             spellCheck={false}
                             inputMode="text"
-                            testID={TagFormSelectors.Input}
+                            testID={TagFormSelector.Input}
                         />
                     </FormItem>
                 </Animated.View>
@@ -176,12 +176,12 @@ export const TagForm = (props: Props) => {
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
                 {isEditing ? (
-                    <ModalFormMergeButton testID={TagFormSelectors.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
+                    <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
                 ) : null}
 
                 <View className="flex-row gap-x-md">
                     <ModalFormCancelButton onPress={onCancel} />
-                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelector.Submit} />
                 </View>
             </View>
         </ModalPage>

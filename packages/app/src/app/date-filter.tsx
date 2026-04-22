@@ -13,7 +13,7 @@ import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-she
 import { useDateFilterModal } from '../@generic/context/date-filter-modal.context';
 import { getDateFilterByPeriod } from '../@generic/utils/date/get-date-filter-by-period.util';
 import { getPeriodByDateRange } from '../@generic/utils/date/get-period-by-date-range.util';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 
 export default function DateFilterModal() {
     const { t } = useLingui();
@@ -50,11 +50,11 @@ export default function DateFilterModal() {
                             period={period}
                             onSelect={handlePeriodSelect}
                             isSelected={period === selectedPeriod}
-                            testID={TransactionFiltersSelectors.DatePeriod(period)}
+                            testID={TransactionFiltersSelector.DatePeriod(period)}
                         />
                     ))}
                 </ScrollView>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.DateApplyButton} />
+                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.DateApplyButton} />
             </FilterSheetDrawer>
         </FilterSheet>
     );

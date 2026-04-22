@@ -14,7 +14,7 @@ import { AccountsGroup } from '../account/component/accounts-group/accounts-grou
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -107,10 +107,10 @@ export default function TransactionAccountFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
-                searchTestID={TransactionFiltersSelectors.AccountSearchInput}
-                selectAllTestID={TransactionFiltersSelectors.AccountSelectAllButton}
-                deselectAllTestID={TransactionFiltersSelectors.AccountDeselectAllButton}
-                applyTestID={TransactionFiltersSelectors.AccountApplyButton}
+                searchTestID={TransactionFiltersSelector.AccountSearchInput}
+                selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.AccountApplyButton}
             />
         </FilterSheet>
     );

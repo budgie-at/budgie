@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { SettingsPageSelector as SettingsPageSelectors } from '../../../app/(tabs)/settings/settings-page.selector';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { SettingsCard } from '../settings-card/settings-card';
 
@@ -18,7 +18,7 @@ export const PinDisabledCard = () => {
             title={t`App Lock`}
             icon={UserIconNameEnum.Lock}
             variant="ghost"
-            testID={SettingsPageSelectors.AppLockCard}
+            testID={SettingsPageSelector.AppLockCard}
             description={t`Secure your app with PIN & Face ID`}
             right={
                 <Text className="text-xs bg-secondary-corner text-primary font-semibold py-md px-xl rounded-3xl">

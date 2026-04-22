@@ -8,7 +8,7 @@ import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/fil
 import { FilterSheetApply } from '../@generic/component/filter-sheet/filter-sheet-apply/filter-sheet-apply';
 import { FilterSheetDrawer } from '../@generic/component/filter-sheet/filter-sheet-drawer/filter-sheet-drawer';
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
-import { TransactionFiltersSelector as TransactionFiltersSelectors } from '../transaction/components/transaction-filters/transaction-filters.selector';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { TransactionTypeFilterItem } from '../transaction/components/transaction-type-filter/transaction-type-filter-item';
 import { useTransactionTypeFilterModal } from '../transaction/context/transaction-type-filter-modal.context';
 
@@ -65,7 +65,7 @@ export default function TransactionTypeFilterModal() {
             </View>
 
             <FilterSheetDrawer>
-                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelectors.TypeApplyButton} />
+                <FilterSheetApply onApply={handleApply} label={applyLabel} testID={TransactionFiltersSelector.TypeApplyButton} />
             </FilterSheetDrawer>
         </FilterSheet>
     );

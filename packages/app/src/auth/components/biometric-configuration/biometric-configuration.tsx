@@ -7,7 +7,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
-import { PinFormSelector as PinPageSelectors } from '../pin-form/pin-form.selector';
+import { PinFormSelector } from '../pin-form/pin-form.selector';
 
 interface Props {
     readonly onSubmit: (enableBiometrics: boolean) => void;
@@ -43,14 +43,14 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
                 right={
                     <ThemedSwitch
                         className="my-auto"
-                        testID={PinPageSelectors.BiometricSetupSwitch}
+                        testID={PinFormSelector.BiometricSetupSwitch}
                         onValueChange={setEnableBiometrics}
                         value={enableBiometrics}
                     />
                 }
             />
 
-            <Button testID={PinPageSelectors.ContinueButton} onPress={handleContinue} content={t`Continue`} />
+            <Button testID={PinFormSelector.ContinueButton} onPress={handleContinue} content={t`Continue`} />
         </View>
     );
 };

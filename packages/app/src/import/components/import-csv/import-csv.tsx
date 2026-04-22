@@ -9,7 +9,7 @@ import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
-import { ImportCsvSelector as CsvPageSelectors } from './import-csv.selector';
+import { ImportCsvSelector } from './import-csv.selector';
 
 export const ImportCsv = () => {
     const { t } = useLingui();
@@ -43,7 +43,7 @@ export const ImportCsv = () => {
             icon={UserIconNameEnum.Upload}
             variant="warning"
             isLoading={isLoading}
-            testID={CsvPageSelectors.ImportCard}
+            testID={ImportCsvSelector.ImportCard}
         />
     );
 };
