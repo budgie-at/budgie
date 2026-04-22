@@ -52,13 +52,15 @@ appId: ${APP_ID}
     file: subflows/navigation/open-settings-card.flow.yaml
     env:
       CARD_ID: 'SettingsPage.MainCurrencyCard'
-      DESTINATION_ID: 'Search currencies...'
-- tapOn: 'Search currencies...'
+      DESTINATION_ID: 'CurrencySelector.SearchInput'
+- tapOn:
+    id: 'CurrencySelector.SearchInput'
 - inputText: 'GBP'
 - tapOn:
     id: 'AccountForm.CurrencyOption.GBP'
 - extendedWaitUntil:
-    notVisible: 'Search currencies...'
+    notVisible:
+      id: 'CurrencySelector.SearchInput'
     timeout: 3000
 - extendedWaitUntil:
     visible:
@@ -99,6 +101,27 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ShowCentsSwitch'
 - waitForAnimationToEnd
+- tapOn:
+    id: 'SettingsPage.ShowCentsSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.259_00'
+    timeout: 10000
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible: '.*\$100\.00.*'
+- assertVisible: '.*\$250\.00.*'
+
+- openLink: 'budgie://settings?anchor=appearance'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.ShowCentsSwitch'
+    timeout: 10000
 - tapOn:
     id: 'SettingsPage.ShowCentsSwitch'
 - waitForAnimationToEnd

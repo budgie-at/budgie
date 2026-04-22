@@ -98,7 +98,6 @@ export const RecurringCalendarContent = () => {
                     <ProtectedMoney
                         minFontSize={10}
                         maxFontSize={32}
-                        decimalPlaces={decimalPlaces}
                         instrumentSymbol={defaultInstrument.symbol}
                     >
                         {totalAmount}

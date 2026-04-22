@@ -13,9 +13,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
@@ -58,9 +56,7 @@ export const AccountCardBase = (props: Props) => {
         onLongPress
     } = props;
 
-    const showCents = useSetting('showCents');
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const { balance } = useAccountBalanceQuery(id);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
