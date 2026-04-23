@@ -1,0 +1,11 @@
+export enum AiSystemStateEnum {
+    DISABLED = 'DISABLED',
+    BOOTING = 'BOOTING',
+    SUSPENDED = 'SUSPENDED',
+    IDLE = 'IDLE',
+    TRANSLATING = 'TRANSLATING',
+    INDEXING = 'INDEXING',
+    BOOSTING = 'BOOSTING',
+    READY = 'READY',
+    ERROR = 'ERROR'
+}

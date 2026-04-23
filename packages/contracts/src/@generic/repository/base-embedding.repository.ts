@@ -10,10 +10,9 @@ import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedd
 import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB } from '../type/db.type';
+import { bankSyncLog } from '../util/bank-sync-log.util';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { transactionAsync } from '../util/transaction-async.util';
-
-export { isDefined } from '@rnw-community/shared';
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -27,24 +26,39 @@ export abstract class BaseEmbeddingRepository {
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        return this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+        const start = Date.now();
+        const result = await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
+        bankSyncLog('repo:embedding:findSimilarCategories:done', {
+            vecTable: this.queryConfig.vecTableName,
+            resultCount: result.length,
+            durationMs: Date.now() - start
+        });
+
+        return result;
     }
 
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
-
-        return this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
+        const start = Date.now();
+        const result = await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryId,
             tagLimit
         ]);
+        bankSyncLog('repo:embedding:findSimilarTags:done', {
+            vecTable: this.queryConfig.vecTableName,
+            resultCount: result.length,
+            durationMs: Date.now() - start
+        });
+
+        return result;
     }
 
     protected isValidDimensions(dimensions: number): boolean {
@@ -69,23 +83,22 @@ export abstract class BaseEmbeddingRepository {
         );
     }
 
-    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
+    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface, tx?: DB): Promise<void> {
         const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
+        const runner = tx ?? this.db;
 
-        await transactionAsync(this.db, async txDb => {
-            await txDb.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
-
-            if (isNotEmptyArray(tagIds)) {
-                await txDb.insert(tagTable).values(tagIds.map(createTagRow));
-            }
-        });
+        await runner.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+        if (isNotEmptyArray(tagIds)) {
+            await runner.insert(tagTable).values(tagIds.map(createTagRow));
+        }
     }
 
     protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
+        const { vecTableName } = this.queryConfig;
         await transactionAsync(this.db, async txDb => {
             await txDb.delete(tagTable);
             await txDb.delete(embeddingTable);
+            txDb.run(sql.raw(`DELETE FROM ${vecTableName}`));
         });
-        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }
