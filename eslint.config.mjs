@@ -18,6 +18,7 @@ export default defineConfig(
             '**/.expo/**',
             '**/.android/**',
             '**/.ios/**',
+            '.agents/**',
 
             '**/node_modules/**',
             '**/dist/**',
@@ -33,6 +34,7 @@ export default defineConfig(
             '**/messages.ts',
             '**/babel.config.js',
             '**/fingerprint.config.js',
+            'packages/app/scripts/**',
 
             'eslint.config.mjs'
         ]
@@ -74,6 +76,8 @@ export default defineConfig(
             'no-empty-function': ['error', { allow: ['constructors'] }],
             'capitalized-comments': 'off',
             'arrow-body-style': ['error', 'as-needed'],
+            curly: ['error', 'all'],
+            'nonblock-statement-body-position': ['error', 'below'],
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
@@ -397,6 +401,51 @@ export default defineConfig(
             'func-names': 'off',
             'promise/no-nesting': 'off',
             '@typescript-eslint/no-magic-numbers': 'warn'
+        }
+    },
+    {
+        files: [
+            'packages/app/src/**/*.{ts,tsx}',
+            'packages/contracts/src/**/*.ts',
+            'packages/ai/src/**/*.ts',
+            'packages/bank-sync/src/**/*.ts'
+        ],
+        rules: {
+            'no-restricted-syntax': [
+                'warn',
+                {
+                    selector: "TSInterfaceDeclaration TSPropertySignature[readonly!=true]",
+                    message: 'Interface fields must be marked readonly (CLAUDE.md rule 29).'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][right.raw='null']",
+                    message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
+                    message: 'Use !isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='!=='][right.raw='null']",
+                    message: 'Use isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
+                    message: 'Use isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+                    message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+                    message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][right.value='']",
+                    message: 'Use isEmptyString(x) from @rnw-community/shared.'
+                }
+            ]
         }
     }
 );

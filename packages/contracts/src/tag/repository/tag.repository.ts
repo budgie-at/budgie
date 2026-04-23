@@ -1,7 +1,8 @@
-import { count, eq, inArray, isNull, like } from 'drizzle-orm';
+import { count, eq, inArray, isNull, like, or, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
@@ -12,8 +13,17 @@ import type * as schema from '../../schema';
 import type { TagEntityInterface } from '../entity/tag-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class TagRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+export class TagRepository extends TranslatableRepositoryBase {
+    constructor(db: ExpoSQLiteDatabase<typeof schema>) {
+        super(db, TagEntityTable, {
+            id: TagEntityTable.id,
+            title: TagEntityTable.title,
+            titleEn: TagEntityTable.titleEn,
+            titleTags: TagEntityTable.titleTags,
+            tagsGeneratedAt: TagEntityTable.tagsGeneratedAt,
+            deletedAt: TagEntityTable.deletedAt
+        });
+    }
 
     findByIds(ids: number[]) {
         return this.db.query.TagEntityTable.findMany({
@@ -22,8 +32,19 @@ export class TagRepository {
     }
 
     findBySearchQuery(search: string) {
+        const trimmed = search.trim();
+        if (!isNotEmptyString(trimmed)) {
+            return this.db.query.TagEntityTable.findMany();
+        }
+
+        const pattern = `%${trimmed.toLowerCase()}%`;
+
         return this.db.query.TagEntityTable.findMany({
-            where: like(TagEntityTable.titleSearch, `%${search.toLowerCase()}%`)
+            where: or(
+                like(TagEntityTable.titleSearch, pattern),
+                like(sql<string>`LOWER(COALESCE(${TagEntityTable.titleEn}, ''))`, pattern),
+                like(sql<string>`LOWER(COALESCE(${TagEntityTable.titleTags}, ''))`, pattern)
+            )
         });
     }
 
@@ -96,7 +117,7 @@ export class TagRepository {
             .from(TransactionTagsEntityTable)
             .where(eq(TransactionTagsEntityTable.tagId, fromTagId));
 
-        if (transactionsWithFromTag.length > 0) {
+        if (isNotEmptyArray(transactionsWithFromTag)) {
             await this.db
                 .insert(TransactionTagsEntityTable)
                 .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
