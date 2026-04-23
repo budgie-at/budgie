@@ -1,0 +1,56 @@
+{
+    "bank": [
+        {
+            "categoryId": 1,
+            "categoryTitle": "Category 1",
+            "categoryIcon": "Wallet",
+            "latestTransactionId": null,
+            "occurrenceCount": 3,
+            "lastOccurrence": 1775595609,
+            "dayOfMonth": null,
+            "latestOverallTransactionId": 167606,
+            "accountId": 4,
+            "instrumentId": 2,
+            "mccCategoryTitle": "MCC 83",
+            "title": null,
+            "latestAmount": 93646993000000,
+            "modeDayOfMonth": 7,
+            "latestOverallTitle": "Merchant 4323"
+        },
+        {
+            "categoryId": 146,
+            "categoryTitle": "Category 146",
+            "categoryIcon": "Wallet",
+            "latestTransactionId": null,
+            "occurrenceCount": 3,
+            "lastOccurrence": 1771403194,
+            "dayOfMonth": null,
+            "latestOverallTransactionId": 199050,
+            "accountId": 3,
+            "instrumentId": 1,
+            "mccCategoryTitle": null,
+            "title": null,
+            "latestAmount": 77974839,
+            "modeDayOfMonth": 10,
+            "latestOverallTitle": "Merchant 8626"
+        },
+        {
+            "categoryId": 203,
+            "categoryTitle": "Category 203",
+            "categoryIcon": "Wallet",
+            "latestTransactionId": null,
+            "occurrenceCount": 3,
+            "lastOccurrence": 1767583081,
+            "dayOfMonth": null,
+            "latestOverallTransactionId": 34708,
+            "accountId": 8,
+            "instrumentId": 3,
+            "mccCategoryTitle": null,
+            "title": null,
+            "latestAmount": 93307997000000,
+            "modeDayOfMonth": 5,
+            "latestOverallTitle": "Merchant 23462"
+        }
+    ],
+    "manual": []
+}

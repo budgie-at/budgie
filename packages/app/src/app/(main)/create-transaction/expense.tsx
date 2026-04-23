@@ -15,15 +15,14 @@ import { SimpleQuickForm } from '../../../transaction/components/simple-quick-fo
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
+import { normalizeRouteParam } from '../../../transaction/utils/normalize-route-param.util';
 /* jscpd:ignore-end */
-
-const normalizeRouteParam = (value: string | string[] | undefined): string | undefined => (Array.isArray(value) ? value[0] : value);
 
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const { generateForTransaction } = useEmbeddingGenerator();
+    const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId, categoryId, amount, comment, aiContext } = useLocalSearchParams<{
         accountId?: string | string[];
         categoryId?: string | string[];
@@ -46,13 +45,7 @@ export default function CreateExpenseTransactionPage() {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
             const result = await transactionService.createInternal(data);
-            generateForTransaction({
-                title: data.title,
-                comment: data.comment,
-                mccCategoryId: data.entries[0]?.mccCategoryId ?? null,
-                categoryId: data.entries[0]?.categoryId ?? null,
-                tagIds: data.tagIds
-            });
+            markForEmbedding({ transactionId: result.id });
 
             return result;
         },

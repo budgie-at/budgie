@@ -1,12 +1,15 @@
 import { CurrencyEnum } from '@budgie/contracts';
 import { z } from 'zod';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { LlmInterface } from '../../@generic/interface/llm.interface';
+import { aiLog } from '../../@generic/util/ai-log.util';
+import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
+
+const LOG_PREVIEW_LENGTH = 120;
 
 const ExtractedItemSchema = z.object({
     description: z.string(),
@@ -17,17 +20,26 @@ const ExtractedItemSchema = z.object({
 type ExtractedItemType = z.infer<typeof ExtractedItemSchema>;
 
 export class VoiceLlmService {
-    constructor(private readonly llm: LlmInterface) {}
+    constructor(private readonly chat: ChatInvokerInterface) {}
 
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
-        const translatedText = await this.translateToEnglish(text);
-        const response = await this.llm.generate(ITEM_EXTRACTION_PROMPT, translatedText);
+        aiLog('voice:extract:start', { textLen: text.length, preview: text.slice(0, LOG_PREVIEW_LENGTH) });
+        try {
+            const translatedText = await this.translateToEnglish(text);
+            aiLog('voice:extract:translated', { translatedLen: translatedText.length });
+            const response = await this.chat.generate(ITEM_EXTRACTION_PROMPT, translatedText);
+            const parsed = this.parseExtractionResponse(response);
+            aiLog('voice:extract:parsed', { count: parsed.length });
 
-        return this.parseExtractionResponse(response);
+            return parsed;
+        } catch (error: unknown) {
+            aiLog('voice:extract:throw', { errorMessage: getErrorMessage(error) });
+            throw error;
+        }
     }
 
     private async translateToEnglish(text: string): Promise<string> {
-        const translated = await this.llm.generate(VOICE_TRANSLATION_PROMPT, text);
+        const translated = await this.chat.generate(VOICE_TRANSLATION_PROMPT, text);
 
         return translated.trim();
     }

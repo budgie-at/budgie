@@ -1,7 +1,8 @@
-import { and, count, eq, getTableColumns, isNull, like, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -12,25 +13,50 @@ import type * as schema from '../../schema';
 import type { CategoryEntityInterface } from '../entity/category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class CategoryRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+export class CategoryRepository extends TranslatableRepositoryBase {
+    constructor(db: ExpoSQLiteDatabase<typeof schema>) {
+        super(db, CategoryEntityTable, {
+            id: CategoryEntityTable.id,
+            title: CategoryEntityTable.title,
+            titleEn: CategoryEntityTable.titleEn,
+            titleTags: CategoryEntityTable.titleTags,
+            tagsGeneratedAt: CategoryEntityTable.tagsGeneratedAt,
+            deletedAt: CategoryEntityTable.deletedAt
+        });
+    }
 
     findAll() {
         return this.db.query.CategoryEntityTable.findMany();
     }
 
     findBySearchQuery(search: string, includeDefault: boolean) {
-        const searchQuery = like(CategoryEntityTable.titleSearch, `%${search.toLowerCase()}%`);
+        const trimmed = search.trim();
+        const baseFilter = includeDefault
+            ? eq(CategoryEntityTable.isSystemCategory, false)
+            : and(eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
 
-        const whereConditions = includeDefault
-            ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
-            : and(searchQuery, eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
+        if (!isNotEmptyString(trimmed)) {
+            return this.db
+                .select(getTableColumns(CategoryEntityTable))
+                .from(CategoryEntityTable)
+                .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+                .where(baseFilter)
+                .groupBy(CategoryEntityTable.id)
+                .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
+        }
+
+        const pattern = `%${trimmed.toLowerCase()}%`;
+        const searchExpr = or(
+            like(CategoryEntityTable.titleSearch, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern)
+        );
 
         return this.db
             .select(getTableColumns(CategoryEntityTable))
             .from(CategoryEntityTable)
             .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .where(whereConditions)
+            .where(and(searchExpr, baseFilter))
             .groupBy(CategoryEntityTable.id)
             .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
     }

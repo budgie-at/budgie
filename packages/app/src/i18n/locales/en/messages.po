@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/ai/service/ai-system-status.service.ts:232
+msgid " • {embeddingPending} tx queued"
+msgstr " • {embeddingPending} tx queued"
+
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -36,10 +40,6 @@ msgstr "{applied} updated, {failed} failed"
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
-
-#: src/ai/provider/ai-status.provider.tsx:39
-msgid "{completionRatio}% learned"
-msgstr "{completionRatio}% learned"
 
 #: src/rule/hooks/use-rule-form.hook.ts:98
 msgid "{count} existing transactions match this rule."
@@ -75,6 +75,14 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
+#: src/ai/service/ai-umbrella-status.service.ts:71
+msgid "{source} error · {message}"
+msgstr "{source} error · {message}"
+
+#: src/ai/service/ai-system-status.service.ts:186
+msgid "{source} failed: {message}"
+msgstr "{source} failed: {message}"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 msgid "{splitEntryCount} items"
 msgstr "{splitEntryCount} items"
@@ -95,7 +103,7 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:63
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
@@ -103,13 +111,13 @@ msgstr "100% Offline & Private"
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
-#: src/app/(tabs)/settings/index.tsx:193
+#: src/app/(tabs)/settings/index.tsx:197
 msgid "About"
 msgstr "About"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:9
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:116
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:114
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
 msgid "Account"
 msgstr "Account"
@@ -196,23 +204,29 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/app/(tabs)/settings/index.tsx:98
+#: src/app/(tabs)/settings/index.tsx:100
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:164
-msgid "AI data preparation failed"
-msgstr "AI data preparation failed"
+#: src/ai/service/ai-system-status.service.ts:173
+msgid "AI disabled"
+msgstr "AI disabled"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:62
-msgid "AI model is loading, please wait..."
-msgstr "AI model is loading, please wait..."
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:111
+msgid "AI idle"
+msgstr "AI idle"
+
+#: src/ai/service/ai-umbrella-status.service.ts:56
+#: src/ai/service/ai-umbrella-status.service.ts:118
+msgid "AI off"
+msgstr "AI off"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
-#: src/app/(tabs)/settings/index.tsx:197
+#: src/app/(tabs)/settings/index.tsx:201
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 
@@ -228,11 +242,15 @@ msgstr "All columns have been assigned"
 msgid "All Recurring"
 msgstr "All Recurring"
 
+#: src/ai/service/ai-system-status.service.ts:265
+msgid "All set"
+msgstr "All set"
+
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(tabs)/settings/index.tsx:62
+#: src/app/(tabs)/settings/index.tsx:64
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -246,8 +264,8 @@ msgstr "Already syncing"
 msgid "Amount"
 msgstr "Amount"
 
-#: src/app/(main)/create-transaction/transfer.tsx:66
-#: src/app/(main)/transactions/[id]/transfer.tsx:72
+#: src/app/(main)/create-transaction/transfer.tsx:60
+#: src/app/(main)/transactions/[id]/transfer.tsx:65
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -264,11 +282,11 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(tabs)/settings/index.tsx:201
+#: src/app/(tabs)/settings/index.tsx:205
 msgid "App Version"
 msgstr "App Version"
 
-#: src/app/(tabs)/settings/index.tsx:153
+#: src/app/(tabs)/settings/index.tsx:157
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -290,7 +308,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:134
+#: src/app/(tabs)/settings/index.tsx:138
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -308,7 +326,7 @@ msgstr "Are you sure you want to delete this rule?"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: src/app/(tabs)/settings/index.tsx:128
+#: src/app/(tabs)/settings/index.tsx:132
 msgid "Auto-categorize transactions"
 msgstr "Auto-categorize transactions"
 
@@ -370,7 +388,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(tabs)/settings/index.tsx:195
+#: src/app/(tabs)/settings/index.tsx:199
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -379,6 +397,7 @@ msgstr "Budgie"
 #: src/account/component/account-action-card/account-action-card.tsx:52
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:49
 #: src/app/(tabs)/settings/import.tsx:264
 #: src/app/convert-to-transfer.tsx:77
 #: src/import/components/import-database/import-database.tsx:39
@@ -463,10 +482,6 @@ msgstr "Clear All Data"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Clear cached balances and recalculate from transactions"
-
-#: src/ai/hook/use-ai-data-preparation.hook.ts:77
-msgid "Clearing old data..."
-msgstr "Clearing old data..."
 
 #: src/sync/component/paste-token-button/paste-token-button.tsx:30
 msgid "Clipboard doesn't contain a valid Monobank token"
@@ -557,7 +572,7 @@ msgstr "Could not activate account."
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:101
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:99
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not create rule"
 msgstr "Could not create rule"
@@ -620,7 +635,7 @@ msgid "Could not save tag"
 msgstr "Could not save tag"
 
 #: src/rule/components/rule-card/rule-card.tsx:31
-#: src/rule/components/rule-update-card/rule-update-card.tsx:70
+#: src/rule/components/rule-update-card/rule-update-card.tsx:68
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not update rule"
 msgstr "Could not update rule"
@@ -649,7 +664,7 @@ msgstr "Create Accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:123
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -731,7 +746,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(tabs)/settings/index.tsx:179
+#: src/app/(tabs)/settings/index.tsx:183
 msgid "Data management"
 msgstr "Data management"
 
@@ -796,7 +811,6 @@ msgstr "Delete Transaction"
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:157
 #: src/app/import-column-mapper.tsx:91
 msgid "Done"
 msgstr "Done"
@@ -805,9 +819,13 @@ msgstr "Done"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
-#: src/ai/provider/ai-status.provider.tsx:50
-msgid "Downloading AI model..."
-msgstr "Downloading AI model..."
+#: src/ai/service/ai-umbrella-status.service.ts:84
+msgid "Downloading AI models…"
+msgstr "Downloading AI models…"
+
+#: src/ai/service/ai-system-status.service.ts:300
+msgid "Downloading models"
+msgstr "Downloading models"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:81
 msgid "Duplicate rule"
@@ -837,11 +855,11 @@ msgstr "Edit Category"
 msgid "Edit existing"
 msgstr "Edit existing"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:90
+#: src/app/(main)/transactions/[id]/expense.tsx:83
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:90
+#: src/app/(main)/transactions/[id]/income.tsx:83
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -857,7 +875,7 @@ msgstr "Edit Tag"
 msgid "Edit Transaction"
 msgstr "Edit Transaction"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:85
+#: src/app/(main)/transactions/[id]/transfer.tsx:78
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -987,7 +1005,7 @@ msgstr "Expected return date"
 msgid "Expected Return Date (Optional)"
 msgstr "Expected Return Date (Optional)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Expense"
@@ -1053,6 +1071,10 @@ msgstr "Failed to setup sync"
 msgid "Failed to update token"
 msgstr "Failed to update token"
 
+#: src/ai/service/ai-system-status.service.ts:283
+msgid "Fast-indexing {done} of {total} • tap to pause"
+msgstr "Fast-indexing {done} of {total} • tap to pause"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:76
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
@@ -1101,17 +1123,9 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(tabs)/settings/index.tsx:88
+#: src/app/(tabs)/settings/index.tsx:90
 msgid "General"
 msgstr "General"
-
-#: src/ai/hook/use-ai-data-preparation.hook.ts:145
-msgid "Generating comment embeddings..."
-msgstr "Generating comment embeddings..."
-
-#: src/ai/hook/use-ai-data-preparation.hook.ts:135
-msgid "Generating merchant embeddings..."
-msgstr "Generating merchant embeddings..."
 
 #: src/i18n/constant/languages.constant.ts:26
 msgid "German"
@@ -1129,7 +1143,7 @@ msgstr "Get API Token"
 msgid "Greater Than"
 msgstr "Greater Than"
 
-#: src/app/(tabs)/settings/index.tsx:74
+#: src/app/(tabs)/settings/index.tsx:76
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -1194,7 +1208,7 @@ msgid "In List"
 msgstr "In List"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:142
+#: src/app/(tabs)/settings/index.tsx:146
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -1202,7 +1216,7 @@ msgstr "Inactive Accounts"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:102
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/components/statistics-content/statistics-content.tsx:62
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1222,9 +1236,9 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/ai/provider/ai-status.provider.tsx:47
-msgid "Initializing AI model..."
-msgstr "Initializing AI model..."
+#: src/ai/service/ai-system-status.service.ts:254
+msgid "Indexing {done} of {total}"
+msgstr "Indexing {done} of {total}"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:59
 msgid "Invalid file"
@@ -1250,6 +1264,18 @@ msgstr "Last error"
 msgid "Last sync"
 msgstr "Last sync"
 
+#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
+msgid "Learning"
+msgstr "Learning"
+
+#: src/ai/service/ai-embedding-status.service.ts:53
+msgid "Learning transactions"
+msgstr "Learning transactions"
+
+#: src/ai/service/ai-embedding-status.service.ts:54
+msgid "Learning up to date"
+msgstr "Learning up to date"
+
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
 msgstr "Lent"
@@ -1262,31 +1288,35 @@ msgstr "Less Than"
 msgid "Listening..."
 msgstr "Listening..."
 
-#: src/@generic/hook/use-regenerate-translation.hook.ts:24
+#: src/@generic/hook/use-regenerate-translation.hook.ts:30
 msgid "LLM not ready"
 msgstr "LLM not ready"
+
+#: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:27
+msgid "Loading AI model..."
+msgstr "Loading AI model..."
+
+#: src/ai/service/ai-system-status.service.ts:300
+msgid "Loading models"
+msgstr "Loading models"
 
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:34
 msgid "Loading..."
 msgstr "Loading..."
 
-#: src/ai/provider/ai-status.provider.tsx:43
-msgid "Long press to learn"
-msgstr "Long press to learn"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:26
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings/index.tsx:110
+#: src/app/(tabs)/settings/index.tsx:114
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(tabs)/settings/index.tsx:127
+#: src/app/(tabs)/settings/index.tsx:131
 msgid "Manage Rules"
 msgstr "Manage Rules"
 
-#: src/app/(tabs)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:122
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1372,15 +1402,15 @@ msgstr "Navigate to Menu → Statements"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/app/(main)/create-transaction/expense.tsx:72
+#: src/app/(main)/create-transaction/expense.tsx:65
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/app/(main)/create-transaction/income.tsx:52
+#: src/app/(main)/create-transaction/income.tsx:46
 msgid "New Income"
 msgstr "New Income"
 
-#: src/app/(main)/create-transaction/transfer.tsx:76
+#: src/app/(main)/create-transaction/transfer.tsx:70
 msgid "New Transfer"
 msgstr "New Transfer"
 
@@ -1570,7 +1600,7 @@ msgstr "Operator"
 msgid "or"
 msgstr "or"
 
-#: src/app/(tabs)/settings/index.tsx:106
+#: src/app/(tabs)/settings/index.tsx:110
 msgid "Organization"
 msgstr "Organization"
 
@@ -1646,15 +1676,11 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:42
-msgid "Prepare AI Data"
-msgstr "Prepare AI Data"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:29
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
 
-#: src/app/(tabs)/settings/index.tsx:58
+#: src/app/(tabs)/settings/index.tsx:60
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1667,13 +1693,33 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:99
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:97
 msgid "Quick rule"
 msgstr "Quick rule"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
+
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:50
+msgid "Rebuild"
+msgstr "Rebuild"
+
+#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:19
+msgid "Rebuild learning"
+msgstr "Rebuild learning"
+
+#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:19
+msgid "Rebuild translations"
+msgstr "Rebuild translations"
+
+#: src/ai/service/ai-embedding-status.service.ts:52
+msgid "Rebuilding learning"
+msgstr "Rebuilding learning"
+
+#: src/ai/service/ai-translation-status.service.ts:49
+msgid "Rebuilding translations"
+msgstr "Rebuilding translations"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
@@ -1708,6 +1754,11 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
+#: src/ai/service/ai-system-status.service.ts:211
+#: src/ai/service/ai-umbrella-status.service.ts:102
+msgid "Resuming AI…"
+msgstr "Resuming AI…"
+
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
 msgstr "Revolut"
@@ -1720,11 +1771,11 @@ msgstr "Rule"
 msgid "Rule applied to {applied} transactions"
 msgstr "Rule applied to {applied} transactions"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:94
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:93
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Rule created · Applied to {appliedCount} transactions"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:63
+#: src/rule/components/rule-update-card/rule-update-card.tsx:62
 msgid "Rule updated · Applied to {appliedCount} transactions"
 msgstr "Rule updated · Applied to {appliedCount} transactions"
 
@@ -1750,7 +1801,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(tabs)/settings/index.tsx:73
+#: src/app/(tabs)/settings/index.tsx:75
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1815,7 +1866,7 @@ msgstr "Secondary Value"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:69
 msgid "Security"
 msgstr "Security"
 
@@ -1950,7 +2001,7 @@ msgstr "Set Category"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(tabs)/settings/index.tsx:56
+#: src/app/(tabs)/settings/index.tsx:58
 msgid "Settings"
 msgstr "Settings"
 
@@ -1970,7 +2021,7 @@ msgstr "Show {selectedCount} categories"
 msgid "Show {selectedCount} tags"
 msgstr "Show {selectedCount} tags"
 
-#: src/app/(tabs)/settings/index.tsx:162
+#: src/app/(tabs)/settings/index.tsx:166
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
@@ -2010,7 +2061,7 @@ msgstr "Show all tags"
 msgid "Show all types"
 msgstr "Show all types"
 
-#: src/app/(tabs)/settings/index.tsx:161
+#: src/app/(tabs)/settings/index.tsx:165
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -2087,6 +2138,10 @@ msgstr "Start Sync"
 #: src/transaction/components/transaction-list/transaction-list.tsx:44
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
+
+#: src/ai/service/ai-umbrella-status.service.ts:93
+msgid "Starting up AI…"
+msgstr "Starting up AI…"
 
 #: src/app/(tabs)/analytics.tsx:13
 msgid "Statistics"
@@ -2191,6 +2246,14 @@ msgstr "This category has transactions. Select another category to reassign them
 msgid "This Month"
 msgstr "This Month"
 
+#: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:20
+msgid "This re-indexes every transaction. Continue?"
+msgstr "This re-indexes every transaction. Continue?"
+
+#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:20
+msgid "This re-translates every category and tag. Continue?"
+msgstr "This re-translates every category and tag. Continue?"
+
 #: src/app/(tabs)/settings/tags.tsx:43
 msgid "This tag has transactions. Select another tag to reassign them to."
 msgstr "This tag has transactions. Select another tag to reassign them to."
@@ -2283,12 +2346,12 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/ai/hook/use-stt.hook.ts:106
+#: src/ai/hook/use-stt.hook.ts:123
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx:38
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:109
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:107
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transfer"
@@ -2301,13 +2364,21 @@ msgstr "Transfer From Account"
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:110
-msgid "Translating categories..."
-msgstr "Translating categories..."
+#: src/ai/service/ai-system-status.service.ts:238
+msgid "Translating {translationPending} of {total}{trailer}"
+msgstr "Translating {translationPending} of {total}{trailer}"
 
-#: src/ai/hook/use-ai-data-preparation.hook.ts:122
-msgid "Translating tags..."
-msgstr "Translating tags..."
+#: src/ai/service/ai-translation-status.service.ts:50
+msgid "Translating categories and tags"
+msgstr "Translating categories and tags"
+
+#: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:18
+msgid "Translation"
+msgstr "Translation"
+
+#: src/ai/service/ai-translation-status.service.ts:51
+msgid "Translations ready"
+msgstr "Translations ready"
 
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40
@@ -2368,7 +2439,7 @@ msgstr "Upcoming"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:68
+#: src/rule/components/rule-update-card/rule-update-card.tsx:66
 msgid "Update rule?"
 msgstr "Update rule?"
 
@@ -2393,15 +2464,15 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 msgid "Value"
 msgstr "Value"
 
-#: src/app/(tabs)/settings/index.tsx:143
+#: src/app/(tabs)/settings/index.tsx:147
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(tabs)/settings/index.tsx:111
+#: src/app/(tabs)/settings/index.tsx:115
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(tabs)/settings/index.tsx:135
+#: src/app/(tabs)/settings/index.tsx:139
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
