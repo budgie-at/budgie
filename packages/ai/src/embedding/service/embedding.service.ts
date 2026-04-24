@@ -1,8 +1,11 @@
+import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
-import { aiLog } from '../../@generic/util/ai-log.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
+
+const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
 
 export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
@@ -11,15 +14,15 @@ export class EmbeddingService {
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:generateEmbedding:enqueue')
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
-            aiLog('embedding:generateEmbedding:cache-hit', { textLen: text.length });
+            logger.log('embedding:generateEmbedding:cache-hit', { textLen: text.length });
 
             return cached;
         }
 
-        aiLog('embedding:generateEmbedding:enqueue', { textLen: text.length });
         const enqueueStart = Date.now();
         const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
         EmbeddingService.embeddingCache.set(text, promise);
@@ -27,7 +30,7 @@ export class EmbeddingService {
 
         void promise.then(
             result => {
-                aiLog('embedding:generateEmbedding:done', {
+                logger.log('embedding:generateEmbedding:done', {
                     textLen: text.length,
                     dimensions: isDefined(result) ? result.length : 0,
                     durationMs: Date.now() - enqueueStart
@@ -41,10 +44,12 @@ export class EmbeddingService {
         return promise;
     }
 
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:generateEmbeddings:start')
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:isAvailable')
     isAvailable(): boolean {
         return this.embedding.isReady;
     }
