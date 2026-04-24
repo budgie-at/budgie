@@ -1,9 +1,12 @@
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
+    Log,
+    LoggerNamespaceEnum,
     SimilarTagsParamsInterface,
     TagEntityInterface,
-    TagScoreResultInterface
+    TagScoreResultInterface,
+    getLogger
 } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -16,7 +19,6 @@ import {
     EMBEDDING_VEC_OVERSAMPLE_LIMIT,
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
-import { aiLog } from '../../@generic/util/ai-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
@@ -26,6 +28,8 @@ import { SuggestionContextInterface } from '../interface/suggestion-context.inte
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
+
+const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
 
 export class EmbeddingSuggestionService {
     constructor(
@@ -38,6 +42,7 @@ export class EmbeddingSuggestionService {
     ) {}
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:category:start')
     async suggestCategories(
         categories: CategoryEntityInterface[],
         transactionTitle: string,
@@ -72,10 +77,10 @@ export class EmbeddingSuggestionService {
             mccLookup
         ]);
 
-        aiLog('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
+        logger.log('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
 
         const resolvedCategories = this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
-        aiLog('suggest:category:final', {
+        logger.log('suggest:category:final', {
             resolvedCount: resolvedCategories.length,
             topCategoryIds: resolvedCategories.map(category => category.id),
             totalDurationMs: Date.now() - methodStart
@@ -85,6 +90,7 @@ export class EmbeddingSuggestionService {
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:tag:start')
     async suggestTags(
         allTags: TagEntityInterface[],
         categoryId: number,
@@ -115,7 +121,7 @@ export class EmbeddingSuggestionService {
         const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
         const resolvedTags = topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
 
-        aiLog('suggest:tag:final', {
+        logger.log('suggest:tag:final', {
             topCount: topTags.length,
             resolvedCount: resolvedTags.length,
             topTagIds: resolvedTags.map(tag => tag.id),
@@ -126,6 +132,7 @@ export class EmbeddingSuggestionService {
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:comment:start')
     async suggestComments(
         categoryId: number,
         transactionTitle: string,
@@ -147,7 +154,7 @@ export class EmbeddingSuggestionService {
         });
 
         const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
-        aiLog('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
+        logger.log('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
 
         return finalComments;
     }
@@ -264,7 +271,7 @@ export class EmbeddingSuggestionService {
 
         // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
-            aiLog('suggest:embed:empty', { context });
+            logger.log('suggest:embed:empty', { context });
 
             return null;
         }
