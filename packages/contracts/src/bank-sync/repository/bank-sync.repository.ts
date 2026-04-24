@@ -2,41 +2,46 @@ import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { DB } from '../../@generic/type/db.type';
-import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
+import { LoggerNamespaceEnum } from '../../@generic/enum/logger-namespace.enum';
+import { getLogger } from '../../@generic/util/logger/get-logger.util';
+import { Log } from '../../@generic/util/logger/log-decorator.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
-import { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity.interface';
 import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
 import { BankSyncStatusEnum } from '../enum/bank-sync-status.enum';
 import { BankSyncEntityTable } from '../table/bank-sync-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
+import type { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
 import type { BankSyncEntityInterface } from '../entity/bank-sync-entity.interface';
+import type { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity.interface';
+
+const logger = getLogger(LoggerNamespaceEnum.REPO);
 
 export class BankSyncRepository {
     constructor(private db: DB) {}
 
-    async create(input: BankSyncCreateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
-        const [bankSync] = await (tx ?? this.db).insert(BankSyncEntityTable).values([input]).returning();
-
-        return bankSync;
-    }
-
+    @Log(LoggerNamespaceEnum.REPO, 'repo:bankSync:update')
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
-        bankSyncLog('repo:bankSync:update', { id, input });
+        logger.log('repo:bankSync:update', { id, input });
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({ ...input })
             .where(eq(BankSyncEntityTable.id, id))
             .returning();
-        bankSyncLog('repo:bankSync:update:done', {
+        logger.log('repo:bankSync:update:done', {
             id,
             resultForwardSyncFromAt: bankSync.forwardSyncFromAt,
             resultForwardSyncedAt: bankSync.forwardSyncedAt,
             resultMode: bankSync.mode,
             resultTransactionCount: bankSync.transactionCount
         });
+
+        return bankSync;
+    }
+
+    async create(input: BankSyncCreateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
+        const [bankSync] = await (tx ?? this.db).insert(BankSyncEntityTable).values([input]).returning();
 
         return bankSync;
     }
@@ -104,7 +109,7 @@ export class BankSyncRepository {
             )
             .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
 
-        bankSyncLog('repo:bankSync:getPendingForwardSync', {
+        logger.log('repo:bankSync:getPendingForwardSync', {
             staleThresholdMs,
             staleTime,
             count: results.length,

@@ -4,15 +4,20 @@ import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
-import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import { LoggerNamespaceEnum } from '../enum/logger-namespace.enum';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
-import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
-import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
-import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB } from '../type/db.type';
-import { bankSyncLog } from '../util/bank-sync-log.util';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
+import { getLogger } from '../util/logger/get-logger.util';
+import { Log } from '../util/logger/log-decorator.util';
 import { transactionAsync } from '../util/transaction-async.util';
+
+import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import type { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
+import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
+import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
+
+const logger = getLogger(LoggerNamespaceEnum.REPO);
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -20,6 +25,7 @@ export abstract class BaseEmbeddingRepository {
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
+    @Log(LoggerNamespaceEnum.REPO, 'repo:embedding:findSimilarCategories')
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
         vecLimit: number,
@@ -33,7 +39,7 @@ export abstract class BaseEmbeddingRepository {
             distanceThreshold,
             categoryLimit
         ]);
-        bankSyncLog('repo:embedding:findSimilarCategories:done', {
+        logger.log('repo:embedding:findSimilarCategories:done', {
             vecTable: this.queryConfig.vecTableName,
             resultCount: result.length,
             durationMs: Date.now() - start
@@ -42,6 +48,7 @@ export abstract class BaseEmbeddingRepository {
         return result;
     }
 
+    @Log(LoggerNamespaceEnum.REPO, 'repo:embedding:findSimilarTags')
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
         const start = Date.now();
@@ -52,7 +59,7 @@ export abstract class BaseEmbeddingRepository {
             categoryId,
             tagLimit
         ]);
-        bankSyncLog('repo:embedding:findSimilarTags:done', {
+        logger.log('repo:embedding:findSimilarTags:done', {
             vecTable: this.queryConfig.vecTableName,
             resultCount: result.length,
             durationMs: Date.now() - start
