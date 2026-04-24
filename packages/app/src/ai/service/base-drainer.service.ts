@@ -234,17 +234,21 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         } catch (error: unknown) {
             logger.log(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
         } finally {
-            try {
-                await this.afterBatch();
-            } catch (flushError: unknown) {
-                logger.log(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
-            }
-            await this.refreshPending();
+            await this.finalizeBatch();
             drainerMutex.release(this.kind);
             if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
                 this.scheduleDrain();
             }
         }
+    }
+
+    private async finalizeBatch(): Promise<void> {
+        try {
+            await this.afterBatch();
+        } catch (flushError: unknown) {
+            logger.log(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
+        }
+        await this.refreshPending();
     }
 
     private scheduleDrainAfter(ms: number): void {
@@ -288,12 +292,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             }
             /* eslint-enable no-await-in-loop */
         } finally {
-            try {
-                await this.afterBatch();
-            } catch (flushError: unknown) {
-                logger.log(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
-            }
-            await this.refreshPending();
+            await this.finalizeBatch();
             logger.log(`${this.logDomain}:boost:complete`, {
                 durationMs: Date.now() - startedAt,
                 processed,
