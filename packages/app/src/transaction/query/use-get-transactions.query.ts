@@ -20,10 +20,7 @@ export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
         setLoadedCount(DEFAULT_LIMIT);
     }, [filters]);
 
-    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [
-        loadedCount,
-        filters
-    ]);
+    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filters]);
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;

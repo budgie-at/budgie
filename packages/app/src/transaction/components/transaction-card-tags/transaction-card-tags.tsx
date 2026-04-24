@@ -60,7 +60,11 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <Animated.View className="flex-row items-center gap-x-xs" layout={LinearTransition.springify()} testID={TransactionCardSelector.Tag(primaryTag.title)}>
+        <Animated.View
+            className="flex-row items-center gap-x-xs"
+            layout={LinearTransition.springify()}
+            testID={TransactionCardSelector.Tag(primaryTag.title)}
+        >
             <TransactionCardTagChip title={primaryTag.title} isPrimary={hasMultipleTags} onLongPress={handleLongPress} />
             {hasMultipleTags ? (
                 <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
