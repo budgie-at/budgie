@@ -19,12 +19,7 @@ interface Props {
     readonly footerSpacerMultiplier?: number;
 }
 
-export const TransactionList = ({
-    accountId = null,
-    filters: externalFilters,
-    showFilters = true,
-    footerSpacerMultiplier
-}: Props) => {
+export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true, footerSpacerMultiplier }: Props) => {
     const { t } = useLingui();
 
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);

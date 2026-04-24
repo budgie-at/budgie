@@ -113,11 +113,7 @@ export default function TagsSelectorModal() {
             <TagsSelectContent data={data} selectedTagIds={selected} onSelect={handleSelectTag} />
 
             {dirty && !singleSelect ? (
-                <TagsSelectorDoneButton
-                    count={selected.length}
-                    onPress={handleDone}
-                    testID={TagsSelectorModalSelector.DoneButton}
-                />
+                <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
             ) : null}
         </View>
     );
