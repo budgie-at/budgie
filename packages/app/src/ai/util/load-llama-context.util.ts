@@ -1,7 +1,6 @@
 import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 import { LlamaContext, initLlama } from 'llama.rn';
 
-
 import { isDefined } from '@rnw-community/shared';
 
 import { GPU_LAYERS } from './ai-constants.util';
