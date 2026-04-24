@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { BankAccountInterface, BankSyncBatchResultInterface, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
-import { BankSyncEntityInterface, BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import {
+    BankSyncEntityInterface,
+    BankSyncModeEnum,
+    BankSyncStatusEnum,
+    ExternalSourceEnum,
+    Log,
+    LoggerNamespaceEnum,
+    getLogger
+} from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -9,7 +17,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -22,6 +29,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 const logger = getLogger(LoggerNamespaceEnum.SYNC);
+const aiLogger = getLogger(LoggerNamespaceEnum.AI);
 const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
 class AppMonobankSyncService {
@@ -30,7 +38,6 @@ class AppMonobankSyncService {
     private mccCategoryIdMap = new Map<string, number>();
 
     @Log(LoggerNamespaceEnum.SYNC, 'sync:start', 'sync:end')
-     
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
         if (this.isRunning) {
             logger.log('sync:skip:already-running', {});
@@ -303,7 +310,7 @@ class AppMonobankSyncService {
 
         if (isNotEmptyArray(newTransactions)) {
             try {
-                aiLog('embed:defer:bank-sync:batch:begin', {
+                aiLogger.log('embed:defer:bank-sync:batch:begin', {
                     provider: this.provider,
                     accountId: account.id,
                     count: newTransactions.length
@@ -319,14 +326,14 @@ class AppMonobankSyncService {
                     )
                 );
                 logger.log('batch:created', { attempted: newTransactions.length, inserted: created.length });
-                aiLog('embed:defer:bank-sync:batch:complete', {
+                aiLogger.log('embed:defer:bank-sync:batch:complete', {
                     provider: this.provider,
                     accountId: account.id,
                     inserted: created.length
                 });
             } catch (error: unknown) {
                 logger.error('batch:bulkCreate:error', { message: getErrorMessage(error) });
-                aiLog('embed:defer:bank-sync:batch:throw', { provider: this.provider, errorMessage: getErrorMessage(error) });
+                aiLogger.error('embed:defer:bank-sync:batch:throw', { provider: this.provider, errorMessage: getErrorMessage(error) });
                 throw error;
             }
         } else {

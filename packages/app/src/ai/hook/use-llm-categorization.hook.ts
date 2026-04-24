@@ -1,5 +1,5 @@
 import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
-import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, LoggerNamespaceEnum, TransactionTypeEnum, getLogger } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
@@ -7,7 +7,8 @@ import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { voiceService } from '../service/voice.service';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
 import { useChat } from './use-chat.hook';
@@ -48,14 +49,14 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
 
     // eslint-disable-next-line max-statements -- Extract, map, and surface extraction errors with structured logs
     const categorize = async (text: string): Promise<AITransactionInterface[]> => {
-        aiLog('voice:categorize:start', { textLen: text.length });
+        logger.log('voice:categorize:start', { textLen: text.length });
         setStatus('processing');
         setError(null);
         setTransactions([]);
 
         try {
             const extracted = await voiceService.extractTransactions(text);
-            aiLog('voice:categorize:extracted', { count: extracted.length });
+            logger.log('voice:categorize:extracted', { count: extracted.length });
 
             if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
@@ -63,13 +64,13 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             }
 
             const results = mapExtractedToTransactions(extracted, accounts);
-            aiLog('voice:categorize:mapped', { count: results.length });
+            logger.log('voice:categorize:mapped', { count: results.length });
             setTransactions(results);
             setStatus('done');
 
             return results;
         } catch (err: unknown) {
-            aiLog('voice:categorize:throw', { errorMessage: getErrorMessage(err) });
+            logger.error('voice:categorize:throw', { errorMessage: getErrorMessage(err) });
             setError(getErrorMessage(err));
             setStatus('error');
             throw err;
@@ -77,7 +78,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     };
 
     const reset = (): void => {
-        aiLog('voice:categorize:reset');
+        logger.log('voice:categorize:reset');
         setStatus('idle');
         setTransactions([]);
         setError(null);
