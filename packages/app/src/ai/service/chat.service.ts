@@ -25,7 +25,6 @@ class ChatService
         super('chat');
     }
 
-     
     @Log(LoggerNamespaceEnum.CHAT, 'chat:generate:start')
     // eslint-disable-next-line max-statements -- Mutex-chained generation with error/success logging
     async generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {

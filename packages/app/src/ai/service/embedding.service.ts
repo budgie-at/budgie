@@ -40,7 +40,6 @@ class LocalEmbeddingService
         }
     }
 
-     
     @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:batchEmbed:start')
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
         // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]

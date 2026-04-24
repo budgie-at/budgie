@@ -1,7 +1,6 @@
 import { createLogDecorator } from '@rnw-community/log-decorator';
 import { isDefined } from '@rnw-community/shared';
 
-
 import { LoggerNamespaceEnum } from '../../enum/logger-namespace.enum';
 
 import { buildLogTag, consoleTransport } from './console-transport.util';
@@ -56,8 +55,4 @@ export const Log = <TArgs extends readonly unknown[], TResult extends GetResultT
     postTag?: PostLogInputType<TArgs, TResult>,
     errorTag?: ErrorLogInputType<TArgs>
 ): ReturnType<ReturnType<typeof createLogDecorator>> =>
-    BaseLog(
-        prefixPreTag(namespace, preTag),
-        prefixPostTag(namespace, postTag),
-        prefixErrorTag(namespace, errorTag)
-    );
+    BaseLog(prefixPreTag(namespace, preTag), prefixPostTag(namespace, postTag), prefixErrorTag(namespace, errorTag));
