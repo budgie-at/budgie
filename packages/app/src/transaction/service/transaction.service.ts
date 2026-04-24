@@ -1,12 +1,14 @@
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
+    LoggerNamespaceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    getLogger,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -17,9 +19,7 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { bankSyncLog } from '../../sync/util/bank-sync-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
@@ -28,6 +28,8 @@ import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-t
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
 import type { DB } from '@budgie/contracts';
+
+const logger = getLogger(LoggerNamespaceEnum.TRANSACTION);
 
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
@@ -69,7 +71,7 @@ class TransactionService {
         tx?: DB,
         batchSize = TRANSACTION_BATCH_SIZE
     ): Promise<TransactionEntityInterface[]> {
-        bankSyncLog('service:transaction:bulkCreate:enter', {
+        logger.log('service:transaction:bulkCreate:enter', {
             count: inputs.length,
             hasTx: isDefined(tx),
             batchSize,
@@ -77,13 +79,13 @@ class TransactionService {
         });
 
         if (!isNotEmptyArray(inputs)) {
-            bankSyncLog('service:transaction:bulkCreate:empty');
+            logger.log('service:transaction:bulkCreate:empty');
 
             return [];
         }
 
         if (!isDefined(tx)) {
-            bankSyncLog('service:transaction:bulkCreate:wrapTx');
+            logger.log('service:transaction:bulkCreate:wrapTx');
 
             return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
         }
@@ -93,8 +95,8 @@ class TransactionService {
             const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
                 transactionBatchCreateService.create(batch, tx)
             );
-            bankSyncLog('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
-            aiLog('embed:defer:queued', { count: transactions.length, externalSources });
+            logger.log('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
+            logger.log('embed:defer:queued', { count: transactions.length, externalSources });
 
             if (isNotEmptyArray(transactions)) {
                 await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -102,8 +104,8 @@ class TransactionService {
 
             return transactions;
         } catch (error: unknown) {
-            bankSyncLog('service:transaction:bulkCreate:throw', { message: getErrorMessage(error) });
-            aiLog('embed:defer:throw', { errorMessage: getErrorMessage(error) });
+            logger.log('service:transaction:bulkCreate:throw', { message: getErrorMessage(error) });
+            logger.log('embed:defer:throw', { errorMessage: getErrorMessage(error) });
             throw error;
         }
     }

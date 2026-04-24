@@ -1,10 +1,12 @@
 import {
+    LoggerNamespaceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface,
+    getLogger,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -13,7 +15,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
@@ -26,6 +27,8 @@ import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
 import type { DB } from '@budgie/contracts';
+
+const logger = getLogger(LoggerNamespaceEnum.TRANSACTION);
 
 class TransactionImportService {
     async bulkUpsertImported(
@@ -51,7 +54,7 @@ class TransactionImportService {
             this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
         );
 
-        aiLog('embed:defer:queued', { source: 'import', count: transactions.length, externalSources });
+        logger.log('embed:defer:queued', { source: 'import', count: transactions.length, externalSources });
 
         if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
