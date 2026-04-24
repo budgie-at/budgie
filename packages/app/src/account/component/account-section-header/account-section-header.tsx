@@ -2,9 +2,8 @@ import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountTypeTotalQuery } from '../../query/use-account-type-total.query';
 
@@ -14,9 +13,8 @@ interface Props {
 
 export const AccountSectionHeader = ({ type }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument, decimalPlaces } = useSettingsContext();
-    const showCents = useSetting('showCents');
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useDisplayFormatDigits();
     const total = useAccountTypeTotalQuery(type);
 
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);

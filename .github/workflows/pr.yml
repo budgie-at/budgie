@@ -236,10 +236,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
-
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
 
@@ -299,23 +295,18 @@ jobs:
       - name: Expo Prebuild
         working-directory: packages/app
         env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
-        run: npx expo prebuild -p ios
+        run: npx expo prebuild -p ios --clean
 
-      - name: Apply E2E iOS Info.plist cleanup
-        working-directory: packages/app
-        run: sh ./scripts/apply-e2e-ios-plist-cleanup.sh
-
-      - name: Sync CocoaPods for E2E excludes
+      - name: Sync CocoaPods
         working-directory: packages/app/ios
-        run: |
-          APP_VARIANT=e2e pod install
-
-          if grep -En "expo-dev-client|expo-dev-launcher|expo-dev-menu|expo-dev-menu-interface" Podfile.lock Pods/Manifest.lock; then
-            echo "::error::E2E iOS pod graph still includes Expo dev client pods."
-            exit 1
-          fi
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
+        run: pod install
 
       - name: Restore Xcode DerivedData cache
         uses: actions/cache/restore@v5
@@ -326,14 +317,11 @@ jobs:
             deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
             deriveddata-${{ runner.os }}-xcode26_3-e2e-
 
-      - name: Pre-copy vec.xcframework for ExpoSQLite
-        run: |
-          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
-          mkdir -p "$XCFW_DIR"
-          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
-
       - name: Build app
         working-directory: packages/app
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -1)
@@ -488,7 +476,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -582,10 +570,6 @@ jobs:
         run: |
           yarn install
 
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: node ./scripts/apply-e2e-autolinking-excludes.cjs
-
       - name: Expo Prebuild
         working-directory: packages/app
         run: npx expo prebuild -p android --clean
@@ -615,7 +599,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching

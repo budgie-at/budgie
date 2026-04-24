@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { TransactionsTabType } from '../../type/transactions-tab.type';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
@@ -71,12 +72,14 @@ export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
         transform: [{ translateX: indicatorX.value }],
         width: indicatorWidth.value
     }));
+    const getTabTestID = (tab: TransactionsTabType) =>
+        tab === 'transactions' ? TransactionsPageSelector.TransactionsTab : TransactionsPageSelector.RecurringTab;
 
     return (
         <View className="px-5xl pb-md gap-y-sm">
             <View className="flex-row items-center gap-x-xl">
                 {tabs.map(tab => (
-                    <HapticPressable key={tab} onPress={handleTabPress(tab)} onLayout={handleTabLayout(tab)}>
+                    <HapticPressable key={tab} onPress={handleTabPress(tab)} onLayout={handleTabLayout(tab)} testID={getTabTestID(tab)}>
                         <Text className={titleVariants({ isActive: activeTab === tab })}>
                             {tab === 'transactions' ? <Trans>Transactions</Trans> : <Trans>Recurring</Trans>}
                         </Text>

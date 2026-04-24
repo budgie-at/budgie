@@ -4,19 +4,25 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: 'e2e-08-settings-navigation.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '07.db(, db)?'
 
 - openLink: 'budgie://settings?anchor=general'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.LanguageCard'
+    timeout: 10000
 
 - assertVisible:
     id: 'SettingsPage.LanguageValue.en'
 
-- tapOn:
-    id: 'SettingsPage.LanguageCard'
-- extendedWaitUntil:
-    visible:
-      id: 'LanguageSelector.SearchInput'
-    timeout: 10000
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.LanguageCard'
+      DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
     id: 'LanguageSelector.SearchInput'
 - inputText: 'de'
@@ -27,21 +33,39 @@ appId: ${APP_ID}
       id: 'SettingsPage.LanguageValue.de'
     timeout: 10000
 
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.LanguageCard'
+      DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
-    id: 'SettingsPage.MainCurrencyCard'
+    id: 'LanguageSelector.SearchInput'
+- inputText: 'en'
+- tapOn:
+    id: 'LanguageSelector.Option.en'
 - extendedWaitUntil:
     visible:
-      id: 'CurrencySelector.SearchInput'
+      id: 'SettingsPage.LanguageValue.en'
     timeout: 10000
+
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.MainCurrencyCard'
+      DESTINATION_ID: 'CurrencySelector.SearchInput'
 - tapOn:
     id: 'CurrencySelector.SearchInput'
 - inputText: 'GBP'
 - tapOn:
     id: 'AccountForm.CurrencyOption.GBP'
 - extendedWaitUntil:
+    notVisible:
+      id: 'CurrencySelector.SearchInput'
+    timeout: 3000
+- extendedWaitUntil:
     visible:
       id: 'SettingsPage.MainCurrencyValue.GBP'
-    timeout: 10000
+    timeout: 3000
 
 - runFlow:
     file: subflows/navigation/open-settings-card.flow.yaml
@@ -77,9 +101,38 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ShowCentsSwitch'
 - waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountCard.Balance.E2E_Settings_Bank.100_00'
+    timeout: 10000
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Settings_Cash.250_00'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible: '.*\$100\.00.*'
+- assertVisible: '.*\$250\.00.*'
+
+- openLink: 'budgie://settings?anchor=appearance'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.ShowCentsSwitch'
+    timeout: 10000
 - tapOn:
     id: 'SettingsPage.ShowCentsSwitch'
 - waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountCard.Balance.E2E_Settings_Bank.100'
+    timeout: 10000
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Settings_Cash.250'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 

@@ -1,0 +1,68 @@
+appId: ${APP_ID}
+---
+- tapOn:
+      id: 'BackButton'
+      optional: true
+
+- tapOn:
+      id: 'BackButton'
+      optional: true
+
+- tapOn:
+      id: 'BackButton'
+      optional: true
+
+- tapOn:
+      text: 'Browse'
+      optional: true
+
+- waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'budgie \(E2E\), Container'
+      commands:
+          - runFlow:
+                when:
+                    visible: 'On My iPhone'
+                commands:
+                    - tapOn:
+                          text: 'On My iPhone'
+                    - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          notVisible:
+              id: 'budgie \(E2E\), Container'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: 'budgie \(E2E\), Container'
+                direction: DOWN
+                timeout: 10000
+                speed: 20
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
+
+- extendedWaitUntil:
+      visible:
+          id: 'budgie \(E2E\), Container'
+      timeout: 3000
+
+- tapOn:
+      id: 'budgie \(E2E\), Container'
+      retryTapIfNoChange: true
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'E2EFixtures, Folder'
+      timeout: 3000
+
+- tapOn:
+      id: 'E2EFixtures, Folder'
+      retryTapIfNoChange: true
+
+- waitForAnimationToEnd

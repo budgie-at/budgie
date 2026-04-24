@@ -5,9 +5,8 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
 import { useBankProviderTotalQuery } from '../../query/use-bank-provider-total.query';
 
@@ -17,9 +16,8 @@ interface Props {
 
 export const BankProviderSectionHeader = ({ provider }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument, decimalPlaces } = useSettingsContext();
-    const showCents = useSetting('showCents');
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useDisplayFormatDigits();
     const total = useBankProviderTotalQuery(provider);
 
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);

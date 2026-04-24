@@ -6,7 +6,6 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
@@ -15,6 +14,7 @@ import { AccountsGroup } from '../account/component/accounts-group/accounts-grou
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -107,10 +107,10 @@ export default function TransactionAccountFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
-                searchTestID={TransactionFiltersSelectors.AccountSearchInput}
-                selectAllTestID={TransactionFiltersSelectors.AccountSelectAllButton}
-                deselectAllTestID={TransactionFiltersSelectors.AccountDeselectAllButton}
-                applyTestID={TransactionFiltersSelectors.AccountApplyButton}
+                searchTestID={TransactionFiltersSelector.AccountSearchInput}
+                selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.AccountApplyButton}
             />
         </FilterSheet>
     );

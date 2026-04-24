@@ -2,9 +2,9 @@ appId: ${APP_ID}
 ---
 
 - runFlow:
-    file: subflows/import/import-database-fixture.flow.yaml
+    file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      FIXTURE_ID: '11-transfer-transaction'
+      FIXTURE_ROW_ID_MATCH: '10.db(, db)?'
 
 # --- Create Transfer ---
 
