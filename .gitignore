@@ -1,6 +1,11 @@
 node_modules/
 packages/app/.expo/
 dist/
+
+# Skill scaffolding (Claude / Agents / Codex) — local-only, not project code
+.agents/
+.claude/
+.codex/
 npm-debug.*
 *.jks
 *.p8
