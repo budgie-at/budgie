@@ -29,22 +29,33 @@ Non-goals: Tag ordering beyond primary/non-primary. "Select all" on AI tag sugge
 
 - The selector owns local selection state.
 - Chip taps update local state with haptic `Selection` + a 150ms chip scale pulse (1 → 0.96 → 1).
-- A `Done` action in the search header resolves with the final selection.
+- A `Done` floating pill at the bottom of the sheet resolves with the final selection.
 - Sheet dismiss (swipe down / backdrop) also resolves with the current local selection (i.e. dismissing *commits*, not cancels — matches existing modal conventions for other pickers).
 - `singleSelect` mode keeps its current one-tap-resolves behaviour.
+
+### Done button placement — explicit decision
+
+`SelectorModalSearchHeader` has exactly one `rightActionIcon` / `rightActionOnPress` slot, which the tag selector already uses for the `+` (create tag) action. We do **not** extend the shared header — adding a second action to a component used by many selectors would force a pattern change we don't need elsewhere.
+
+Instead we render a new `TagsSelectorDoneButton` component as a floating, bottom-anchored pill inside `tags-selector.tsx` (below the `TagsSelectContent` grid, positioned with `position: 'absolute'` + `bottom: insets.bottom + md`, centred). The pill follows the `bg-primary` active-chip palette and uses `HapticPressable`. The pill is **only mounted** when the selection is dirty (i.e. differs from `initialTagIds` by identity or length). When clean, it unmounts with `FadeOutDown.duration(160)`; when it becomes dirty it mounts with `FadeInUp.springify()`.
+
+This turns the button's visibility itself into the disabled-state indicator, avoiding a `disabled` prop on a new or existing component.
 
 ### Component changes
 
 - `tags-selector.tsx`:
   - Replace the derived selection from `initialTagIds` with `useState<number[]>(initialTagIds)`.
   - `handleSelectTag` updates local state only.
-  - New `handleDone` resolves once with `selected`.
-  - Add `Done (N)` right-action button (inactive if selection unchanged from `initialTagIds`).
-  - On unmount/dismiss — resolve with current `selected`.
+  - New `handleDone` resolves once with `selected` (called by the floating pill and by the dismiss lifecycle).
+  - On dismiss — resolve with current `selected`. The tag selector modal is mounted via the formsheet modal provider; we hook into the sheet's `onDismiss` callback (the same path that resolves modals today when the user swipes). The spec's companion implementation plan must verify the exact prop name in the modal provider and route the dismiss through `handleDone`.
+- `tags-selector-done-button/tags-selector-done-button.tsx` (new):
+  - Props: `count: number`, `onPress: EmptyFn`.
+  - Renders `Done (N)` via `` t`Done (${count})` ``.
+  - Wrapped in `Animated.View` with `FadeInUp.springify()` / `FadeOutDown.duration(160)`.
 
 ### Accessibility
 
-- The `Done` button gets `accessibilityLabel={t\`Confirm tag selection\`}` and an `accessibilityState={{ disabled: !isDirty }}`.
+- The floating Done pill gets `accessibilityRole="button"` and `accessibilityLabel={t\`Confirm tag selection\`}`. Visibility-based disabled state — VoiceOver users only encounter the button when it is interactive.
 
 ---
 
@@ -81,30 +92,30 @@ export const TransactionTagsEntityTable = sqliteTable(
 
 ### 3.2 Repository
 
-`packages/contracts/src/transaction-tags/repository/transaction-tags.repository.ts` (new file — currently the join is managed inline by the transaction repository):
+`packages/contracts/src/transaction-tags/repository/transaction-tags.repository.ts` already exists. We add a `setPrimary` method matching the codebase's repository conventions: parameter type is `DB` (not `TX` — this codebase only exports `DB`), and the method does **not** call `.transaction(...)` itself because `expo-sqlite` forbids nested transactions (documented in `packages/contracts/CLAUDE.md`). The caller owns the outer transaction; `setPrimary` executes two sequential `UPDATE`s on whichever connection it's given.
 
 ```ts
-class TransactionTagsRepository {
-    constructor(private db: DB) {}
+async setPrimary(transactionId: number, tagId: number, tx?: DB): Promise<void> {
+    const connection = tx ?? this.db;
 
-    async setPrimary(transactionId: number, tagId: number, tx?: TX): Promise<void> {
-        const connection = tx ?? this.db;
-        await connection.transaction(async innerTx => {
-            await innerTx.update(TransactionTagsEntityTable)
-                .set({ isPrimary: false })
-                .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
-            await innerTx.update(TransactionTagsEntityTable)
-                .set({ isPrimary: true })
-                .where(and(
-                    eq(TransactionTagsEntityTable.transactionId, transactionId),
-                    eq(TransactionTagsEntityTable.tagId, tagId)
-                ));
-        });
-    }
+    await connection.update(TransactionTagsEntityTable)
+        .set({ isPrimary: false })
+        .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
+
+    await connection.update(TransactionTagsEntityTable)
+        .set({ isPrimary: true })
+        .where(and(
+            eq(TransactionTagsEntityTable.transactionId, transactionId),
+            eq(TransactionTagsEntityTable.tagId, tagId)
+        ));
 }
 ```
 
-Inserts of new tags at transaction-create time keep existing semantics; the transaction service sets `isPrimary = true` on the first row in a fresh batch and `false` on the rest. When editing an existing transaction and adding tags to a row that already has a primary, new rows insert with `isPrimary = false`.
+Callers must wrap `setPrimary` in `db.transaction(async tx => repo.setPrimary(transactionId, tagId, tx))` for atomicity. The promote hook (Section 3.4) does this at the app layer.
+
+**Insert-time semantics.** Adding `isPrimary` to the create schema changes what the transaction service writes at creation time. See Section 3.8 for the schema + util chain. Summary: the service sets `isPrimary = true` on the first element of a fresh tag batch, `false` on the rest. When adding tags to a transaction that already has a primary, new rows insert with `isPrimary = false` — the existing primary is preserved.
+
+**Primary removal.** When the current primary tag is removed from a transaction via the selector flow (the existing delete + re-insert path), the transaction service must promote the first surviving row to primary within the same `db.transaction(...)`. If all tags are removed, no primary exists (normal empty state).
 
 ### 3.3 Card display
 
@@ -145,7 +156,7 @@ The interaction happens *on the card itself* — no modal, no sheet. When the us
 | after commit, +150ms | — | Siblings `FadeOutLeft` (stagger reversed). `+N` badge springs back in. Card background fades back. |
 | any time | Tap outside / swipe / 3s idle | Same collapse animation. |
 
-**Error path:** if the repository write fails, `Haptics.Warning`, toast `t\`Couldn't update primary tag\``, revert optimistic state with `LinearTransition.springify()` (chips swap back).
+**Error path and rollback:** `usePromotePrimaryTag` owns the optimistic state. The hook keeps a local ref to the previous primary `tagId` captured immediately before the write (closure over the row array at call time). On write failure, the hook writes the previous primary back to its local Reanimated shared values + triggers a Toast with `Haptics.Warning` and `t\`Couldn't update primary tag\``. The `LinearTransition.springify()` reflow handles the visual swap-back automatically because the sorted array returns to its prior state. The `useLiveQuery` subscription is the source of truth; the hook only holds the rollback snapshot for the duration of the write.
 
 **When `tags.length === 1`:**
 
@@ -165,7 +176,22 @@ The interaction happens *on the card itself* — no modal, no sheet. When the us
 
 ### 3.7 Data flow
 
-- The transaction list query already pulls `transactionTags: true`. Extend the repository to sort tags with `orderBy: [desc(TransactionTagsEntityTable.isPrimary), asc(TransactionTagsEntityTable.tagId)]` so consumers can trust `transactionTags[0]` is primary.
+- The transaction list query already pulls `transactionTags: true` via `TRANSACTION_FULL_RELATIONS`. Drizzle's nested `with:` API does not support `orderBy` on a relation, so we do **not** attempt to sort at the query level.
+- Instead we introduce a helper `sortTransactionTagsByPrimary(transactionTags)` in `packages/app/src/transaction/utils/sort-transaction-tags-by-primary.util.ts` that sorts `[desc(isPrimary), asc(tagId)]`. `TransactionCardTags` and any consumer that needs primary-first ordering calls this helper on its input.
+- Keeping the sort in app code is consistent with other utility-first patterns in the codebase (see `transaction/utils/*`) and avoids a hand-rolled SQL query.
+
+### 3.8 Create-schema and insert utility chain
+
+The schema and util chain around `TransactionTagsCreateEntitySchema` must be updated so `isPrimary` is actually set at insert time. Without this, the DB column's `DEFAULT 0` means no new tag ever becomes primary on create.
+
+**Files to update:**
+
+- `packages/contracts/src/transaction-tags/schema/transaction-tags-create-entity.schema.ts` — the `.pick({ transactionId: true, tagId: true })` must become `.pick({ transactionId: true, tagId: true, isPrimary: true })`. The inferred `TransactionTagsCreateEntityInterface` gains `isPrimary: boolean`.
+- `packages/app/src/transaction/utils/transaction-map-tag-ids-to-create-entities.util.ts` — currently maps to `{ transactionId, tagId }`. New signature takes an optional `existingPrimaryTagId: number | null` parameter. Semantics:
+  - If `existingPrimaryTagId` is `null` (no existing primary), the first element of the output gets `isPrimary: true`, rest get `false`.
+  - If `existingPrimaryTagId` is set, every new row gets `isPrimary: false` (existing primary is preserved).
+- Callers of the util: update the transaction create-service and the tag-add flow in the edit-service to pass the correct `existingPrimaryTagId`.
+- Tag-removal flow in the edit-service: detect if the removed tag was primary; if so and at least one tag survives, call `transactionTagsRepository.setPrimary(transactionId, survivingTagIds[0], tx)` inside the same `db.transaction(...)`.
 
 ---
 
@@ -177,11 +203,15 @@ The interaction happens *on the card itself* — no modal, no sheet. When the us
 
 ### Fix
 
-Drop the `key` prop on `LegendList` (it's a `LegendList`, so native-side state survives across focus events). Replace the `useFocusKey`-driven remount with a `useFocusEffect` that calls the live query's refetch (if needed) or relies on `useLiveQuery` reactivity — which already re-fires when the underlying Drizzle query changes. Remove `useFocusKey` usage from transaction list screens.
+Drop the `key={focusKey}` prop on `LegendList` at `packages/app/src/transaction/components/transaction-sections-list/transaction-sections-list.tsx:109`. The list's internal scroll state survives across focus events once it stops being remounted. `useLiveQuery` already reacts to Drizzle changes, so no refetch-on-focus is needed.
 
-**Scope of audit:** grep for `useFocusKey` + `focusKey` across the app. Any other screen doing this for the same "reset on return" reason gets migrated to `useFocusEffect` + `refetch`. Screens that intentionally want a hard reset (e.g. an onboarding modal) keep it — each removal reviewed case by case.
+**Scope of audit (explicit):** `useFocusKey` is used in more than one place. Each usage is scoped individually:
 
-**Verification:** Maestro E2E flow — load list, scroll to row 50, tap a transaction, edit amount, submit, confirm we return to row 50 visible.
+- `transaction-sections-list.tsx` — **remove**. This is the source of the bug.
+- `packages/app/src/transaction/hook/use-recurring-calendar.hook.ts` — **leave untouched**. This hook uses `focusKey` as a `useEffect` dependency to re-run a service call when the recurring calendar screen regains focus. Its purpose is refetch, not remount, and replacing it with `useFocusEffect` + `refetch` is a separate refactor outside this spec's scope. Do not modify.
+- The `useFocusKey` hook file itself is **kept** (still used by the recurring calendar hook).
+
+**Verification:** Maestro E2E flow — load list, scroll to row 50, tap a transaction, edit amount, submit, confirm we return to row 50 visible. Separately, verify the recurring calendar screen still refreshes on focus as a regression check.
 
 ---
 
@@ -213,8 +243,9 @@ interface Props {
 }
 
 export const TransactionUncategorizedFilter = ({ value, onChange }: Props) => {
+    const { t } = useLingui();
     const { data: count = 0 } = useUncategorizedCountQuery();
-    const isActive = Array.isArray(value) && value.length === 0;
+    const isActive = isDefined(value) && isEmptyArray(value);
 
     if (count === 0 && !isActive) { return null; }
 
@@ -282,18 +313,17 @@ Use `UserIconNameEnum.CircleDashed` if it exists in the enum; fall back to `Tag`
 
 ## 6. Data migrations
 
-One Drizzle migration in `packages/app/drizzle`:
+One Drizzle migration in `packages/app/drizzle`. The file name is produced by `yarn db:generate` (e.g. `0023_...sql`); the content is the Drizzle-generated `ALTER TABLE` + partial unique index, followed by a **manually-appended backfill** (Drizzle does not emit backfill SQL):
 
 ```sql
--- NNNN_add_is_primary_to_transaction_tags.sql
-
+-- generated by yarn db:generate
 ALTER TABLE transaction_tags ADD COLUMN is_primary INTEGER NOT NULL DEFAULT 0;
 
 CREATE UNIQUE INDEX transaction_tags_primary_idx
   ON transaction_tags(transaction_id)
   WHERE is_primary = 1;
 
--- Backfill: mark the lowest tag_id per transaction as primary.
+-- manually appended: backfill lowest tag_id per transaction as primary.
 UPDATE transaction_tags
 SET is_primary = 1
 WHERE (transaction_id, tag_id) IN (
@@ -303,7 +333,7 @@ WHERE (transaction_id, tag_id) IN (
 );
 ```
 
-Run order: `cd packages/contracts && yarn build` → `cd packages/app && yarn db:generate` → verify generated migration against the SQL above → commit.
+Run order: `cd packages/contracts && yarn build` → `cd packages/app && yarn db:generate` → open the newly-created migration file, verify the `ALTER`/`CREATE INDEX` match the spec, append the backfill `UPDATE` — → rebuild the app bundle → commit migration + snapshot JSON.
 
 ---
 
@@ -311,12 +341,15 @@ Run order: `cd packages/contracts && yarn build` → `cd packages/app && yarn db
 
 - **Types:** `yarn ts` across `app` and `contracts`.
 - **Lint:** `yarn lint`, `yarn deadcode`, `yarn cpd`.
+- **i18n:** `yarn i18n:sync` after any user-facing string change. Commit both `.po` and `.ts` updates.
+- **Build order:** `cd packages/contracts && yarn build` → `cd packages/app && yarn db:generate` → verify migration SQL, add backfill `UPDATE`, rebuild, run app.
 - **Maestro E2E (manual run):**
-  - Create transaction, add 3 tags in one sheet open (A.2).
-  - Long-press a non-primary tag on the list card, verify the morph + promotion (A.3).
-  - Scroll list to ~row 50, tap a transaction, edit, submit, confirm scroll preserved (B.4).
-  - Create an uncategorized transaction, confirm chip appears; tap it, confirm filter applied; tap again, confirm cleared (B.5).
-- **Manual visual QA:** dark mode + light mode for the new chip + the inline morph.
+  - Create transaction, add 3 tags in one sheet open, confirm sheet stays open until Done (A.2).
+  - Long-press a non-primary tag on the list card, verify the morph + promotion + card reflow (A.3).
+  - Scroll list to ~row 50, tap a transaction, edit amount, submit, confirm scroll preserved (B.4).
+  - Open recurring calendar screen, leave and return, confirm it still refreshes (B.4 regression check).
+  - Create an uncategorized transaction, confirm chip appears; tap it, confirm filter applied; tap again, confirm cleared; categorise the transaction, confirm chip disappears (B.5).
+- **Manual visual QA:** dark mode + light mode for the new chip, the inline morph, and the floating Done pill.
 
 ---
 
@@ -328,26 +361,41 @@ Single PR titled `feat(app): transaction ux improvements — tag primary, scroll
 
 ## 9. File manifest
 
-**Contracts:**
+**Contracts (edits):**
 - `src/transaction-tags/table/transaction-tags-entity.table.ts` — add `isPrimary`, partial unique index.
-- `src/transaction-tags/repository/transaction-tags.repository.ts` — new file with `setPrimary`.
-- `src/index.ts` — export new repository.
+- `src/transaction-tags/repository/transaction-tags.repository.ts` — add `setPrimary(transactionId, tagId, tx?: DB)` (no inner `db.transaction`). File already exists.
+- `src/transaction-tags/schema/transaction-tags-create-entity.schema.ts` — add `isPrimary` to the `.pick(...)`.
+- `src/transaction-tags/entity/transaction-tags-create-entity.interface.ts` — regenerated from schema (no manual edit needed, but verify).
 
-**App:**
-- `drizzle/NNNN_add_is_primary_to_transaction_tags.sql` — new migration.
-- `src/app/tags-selector.tsx` — rework to local state + Done action.
-- `src/transaction/components/transaction-card-tag/*` — delete (replaced).
-- `src/transaction/components/transaction-card-tags/transaction-card-tags.tsx` — new.
-- `src/transaction/components/transaction-card-tags-inline-picker/transaction-card-tags-inline-picker.tsx` — new.
-- `src/transaction/components/transaction-card-tag-chip/transaction-card-tag-chip.tsx` — new.
-- `src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx` — new.
+**App — new files:**
+- `drizzle/<generated>_add_is_primary_to_transaction_tags.sql` — migration produced by `yarn db:generate`; manually add the backfill `UPDATE` below the Drizzle-generated `ALTER TABLE` + index statements (Drizzle does not generate backfill SQL).
+- `src/transaction/components/transaction-card-tags/transaction-card-tags.tsx` — orchestrator.
+- `src/transaction/components/transaction-card-tags-inline-picker/transaction-card-tags-inline-picker.tsx` — expanded row.
+- `src/transaction/components/transaction-card-tag-chip/transaction-card-tag-chip.tsx` — individual chip.
+- `src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx` — new chip.
 - `src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.selector.ts` — test IDs.
-- `src/transaction/components/transaction-filters/transaction-filters.tsx` — insert new chip first.
-- `src/transaction/query/use-uncategorized-count.query.ts` — new.
-- `src/transaction/hook/use-promote-primary-tag.hook.ts` — new.
-- `src/transaction/components/transaction-card/transaction-card.tsx` — swap `TransactionCardTag` → `TransactionCardTags`.
-- `src/@generic/hook/use-focus-key.hook.ts` — audit usage; remove from transaction list screens.
-- `src/transaction/components/transaction-sections-list/transaction-sections-list.tsx` — drop `key={focusKey}`.
+- `src/transaction/components/tags-selector-done-button/tags-selector-done-button.tsx` — floating Done pill.
+- `src/transaction/query/use-uncategorized-count.query.ts` — live count query.
+- `src/transaction/hook/use-promote-primary-tag.hook.ts` — promote handler with optimistic rollback.
+- `src/transaction/utils/sort-transaction-tags-by-primary.util.ts` — `[desc(isPrimary), asc(tagId)]` sort helper.
+
+**App — edits:**
+- `src/app/tags-selector.tsx` — rework to local state + Done pill + dismiss-resolves pathway.
+- `src/transaction/components/transaction-filters/transaction-filters.tsx` — insert `TransactionUncategorizedFilter` as the first child of the ScrollView.
+- `src/transaction/components/transaction-card-content/transaction-card-content.tsx` — swap `TransactionCardTag` → `TransactionCardTags`.
+- `src/transaction/components/transaction-sections-list/transaction-sections-list.tsx` — drop `key={focusKey}` on the `LegendList`.
+- `src/transaction/utils/transaction-map-tag-ids-to-create-entities.util.ts` — accept `existingPrimaryTagId: number | null`, set `isPrimary` accordingly.
+- Transaction create-service and edit-service (file paths TBD during plan-writing) — pass `existingPrimaryTagId` through; on primary-tag removal promote the first survivor inside the same `db.transaction(...)`.
+
+**App — delete:**
+- `src/transaction/components/transaction-card-tag/*` — replaced by `TransactionCardTags` + `TransactionCardTagChip`.
+
+**Unchanged (explicitly noted):**
+- `src/@generic/hook/use-focus-key.hook.ts` — kept. Still used by the recurring calendar hook.
+- `src/transaction/hook/use-recurring-calendar.hook.ts` — kept. Its `useFocusKey` usage is out of scope.
+
+**i18n:**
+- New strings: `` t`Uncategorized (${count})` ``, `` t`Done (${count})` ``, `` t`Confirm tag selection` ``, `` t`Change primary tag` ``, `` t`Couldn't update primary tag` ``. Run `yarn i18n:sync` after wiring. Commit both `.po` and `.ts` changes.
 
 Any changes outside this manifest that emerge during implementation must be called out in the PR description.
 
@@ -355,4 +403,13 @@ Any changes outside this manifest that emerge during implementation must be call
 
 ## 10. Open questions
 
-None blocking. Noted for the writing-plans step: confirm `UserIconNameEnum.CircleDashed` exists (fallback identified above).
+None blocking.
+
+**Confirmed during spec review (no follow-up required):**
+- `UserIconNameEnum.CircleDashed` exists — no fallback needed.
+- `TRANSACTION_FULL_RELATIONS` already pulls `transactionTags` with tag details.
+- The `buildCategoryCondition` empty-array branch produces the correct `IS NULL` filter for B.5.
+
+**For writing-plans to nail down (not blockers):**
+- The exact `onDismiss` / lifecycle hook on the formsheet modal provider for the tag selector. Walk `packages/app/src/@generic/provider/modal-provider.tsx` (or equivalent) to pick the right integration point.
+- File paths of the transaction create-service and edit-service that call `transactionMapTagIdsToCreateEntities` and delete tags — captured while producing the step-by-step plan.
