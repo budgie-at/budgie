@@ -203,7 +203,7 @@ The schema and util chain around `TransactionTagsCreateEntitySchema` must be upd
 
 ### Root cause (fuller picture)
 
-`focusKey` flows through three consumers in the transactions list, not just the `LegendList` key:
+`focusKey` flows through four touch-points in the transactions list, not just the `LegendList` key:
 
 1. `packages/app/src/app/(tabs)/transactions.tsx` — calls `useFocusKey()` and forwards the resulting `focusKey` to `TransactionList`.
 2. `packages/app/src/transaction/components/transaction-list/transaction-list.tsx` — passes `focusKey` to `useGetTransactionsQuery(activeFilters, focusKey)` as the `refreshKey` parameter AND forwards it to `TransactionSectionsList`.
