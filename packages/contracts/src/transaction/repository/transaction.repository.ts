@@ -3,47 +3,42 @@ import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { LoggerNamespaceEnum } from '../../@generic/enum/logger-namespace.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { DB } from '../../@generic/type/db.type';
-import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
+import { getLogger } from '../../@generic/util/logger/get-logger.util';
+import { Log } from '../../@generic/util/logger/log-decorator.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
-import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
+import type { DB } from '../../@generic/type/db.type';
+import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
+
+const logger = getLogger(LoggerNamespaceEnum.REPO);
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
-    async deleteById(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
-    }
-
-    async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
-        const [transaction] = await this.bulkCreate([input], tx);
-
-        return transaction;
-    }
-
+    @Log(LoggerNamespaceEnum.REPO, 'repo:transaction:bulkCreate')
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
-            bankSyncLog('repo:transaction:bulkCreate', {
+            logger.log('repo:transaction:bulkCreate', {
                 count: inputs.length,
                 externalSources: inputs.map(input => input.externalSource),
                 externalIds: inputs.map(input => input.externalId)
             });
             const results = await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
-            bankSyncLog('repo:transaction:bulkCreate:done', {
+            logger.log('repo:transaction:bulkCreate:done', {
                 requested: inputs.length,
                 inserted: results.length,
                 insertedIds: results.map(row => row.id)
@@ -53,6 +48,16 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
 
         return [];
+    }
+
+    async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
+        const [transaction] = await this.bulkCreate([input], tx);
+
+        return transaction;
+    }
+
+    async deleteById(id: number, tx?: DB): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DB): Promise<TransactionEntityInterface> {
@@ -195,7 +200,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.category_id IS NOT NULL
               )
         `);
-        bankSyncLog('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
+        logger.log('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
     }
 
     async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
@@ -217,7 +222,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.category_id IS NOT NULL
               )
         `);
-        bankSyncLog('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
+        logger.log('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
     }
 
     async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
@@ -246,7 +251,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             [mccCategoryId, mccCategoryId, limit]
         );
 
-        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', {
+        logger.log('repo:transaction:findMccCategorySuggestions:done', {
             mccCategoryId,
             resultCount: rows.length,
             durationMs: Date.now() - start,
@@ -269,7 +274,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
 
         const ids = results.map(row => row.externalId).filter(isDefined);
-        bankSyncLog('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
+        logger.log('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
 
         return ids;
     }
