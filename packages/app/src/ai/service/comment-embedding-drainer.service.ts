@@ -1,16 +1,17 @@
 import { buildCommentContext, serializeEmbedding } from '@budgie/ai';
-import { CommentPendingContextInterface } from '@budgie/contracts';
+import { CommentPendingContextInterface, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
-import { aiLog } from '../utils/ai-log.util';
 
 import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
 import { embeddingService } from './embedding.service';
 
 import type { DB } from '@budgie/contracts';
+
+const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<CommentPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
@@ -25,7 +26,7 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
     }
 
     protected logBegin(context: CommentPendingContextInterface): void {
-        aiLog('drainer:embedding:comment:context:begin', {
+        logger.log('embedding:comment:context:begin', {
             categoryId: context.categoryId,
             contextSize: context.transactionIds.length,
             hasExisting: isDefined(context.existingEmbeddingId)
@@ -39,7 +40,7 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
         });
         const rawEmbedding = await embeddingService.embed(promptContext);
         if (!isNotEmptyArray(rawEmbedding)) {
-            aiLog('drainer:embedding:comment:context:skip', {
+            logger.log('embedding:comment:context:skip', {
                 reason: 'empty-embedding',
                 contextSize: context.transactionIds.length
             });
@@ -47,7 +48,7 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
             return null;
         }
 
-        aiLog('drainer:embedding:comment:context:embedded', {
+        logger.log('embedding:comment:context:embedded', {
             dimensions: rawEmbedding.length,
             contextSize: context.transactionIds.length
         });
@@ -60,7 +61,7 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
             dimensions: rawEmbedding.length
         });
         if (!isDefined(embeddingId)) {
-            aiLog('drainer:embedding:comment:context:skip', {
+            logger.log('embedding:comment:context:skip', {
                 reason: 'upsert-null',
                 contextSize: context.transactionIds.length
             });

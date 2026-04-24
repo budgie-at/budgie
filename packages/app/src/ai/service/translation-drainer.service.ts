@@ -1,10 +1,10 @@
 import { TranslationLlmService } from '@budgie/ai';
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
 import { translationProgressStore } from '../store/translation-progress.store';
-import { aiLog } from '../utils/ai-log.util';
 
 import { BaseDrainerService } from './base-drainer.service';
 import { chatService } from './chat.service';
@@ -13,6 +13,8 @@ const RELAXED_INTERVAL_MS = 5000;
 const RELAXED_BATCH_SIZE = 3;
 const BOOST_BATCH_SIZE = 5;
 const YIELD_EVERY_ROWS = 2;
+
+const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
     protected readonly kind = DrainerKindEnum.TRANSLATION;
@@ -50,7 +52,7 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     }
 
     protected async processRow(row: CategoryOrTagRowInterface): Promise<void> {
-        aiLog('drainer:translation:row:begin', { kind: row.kind, id: row.id, title: row.title });
+        logger.log('translation:row:begin', { kind: row.kind, id: row.id, title: row.title });
         const service = new TranslationLlmService(chatService);
         const result = await service.translate(row.title);
         if (row.kind === 'category') {
@@ -58,7 +60,7 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
         } else {
             await tagRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
         }
-        aiLog('drainer:translation:row:persisted', {
+        logger.log('translation:row:persisted', {
             kind: row.kind,
             id: row.id,
             titleEnLen: result.titleEn.length

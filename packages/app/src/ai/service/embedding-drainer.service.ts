@@ -1,15 +1,16 @@
-import { Log, LoggerNamespaceEnum, transactionAsync } from '@budgie/contracts';
+import { Log, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
-import { aiLog } from '../utils/ai-log.util';
 
 import { SnapshotStore } from './base-subsystem.service';
 import { commentEmbeddingDrainerService } from './comment-embedding-drainer.service';
 import { merchantEmbeddingDrainerService } from './merchant-embedding-drainer.service';
+
+const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 const deriveState = (merchantState: DrainerStateEnum, commentState: DrainerStateEnum): DrainerStateEnum => {
     if (merchantState === DrainerStateEnum.ERROR || commentState === DrainerStateEnum.ERROR) {
@@ -57,7 +58,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         if (!this.startedSubs) {
             return;
         }
-        aiLog('drainer:embedding:orchestrator:stop');
+        logger.log('embedding:orchestrator:stop');
         this.merchant.stop();
         this.comment.stop();
         this.unsubscribeMerchant?.();
@@ -68,19 +69,19 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
     }
 
     async boost(): Promise<void> {
-        aiLog('drainer:embedding:orchestrator:boost:begin');
+        logger.log('embedding:orchestrator:boost:begin');
         const started = Date.now();
         await this.merchant.boost();
-        aiLog('drainer:embedding:orchestrator:merchant:complete', { durationMs: Date.now() - started });
+        logger.log('embedding:orchestrator:merchant:complete', { durationMs: Date.now() - started });
         if (this.comment.getSnapshot().state === DrainerStateEnum.PAUSED) {
-            aiLog('drainer:embedding:orchestrator:comment:skip', { reason: 'paused' });
+            logger.log('embedding:orchestrator:comment:skip', { reason: 'paused' });
 
             return;
         }
         const commentStart = Date.now();
         await this.comment.boost();
-        aiLog('drainer:embedding:orchestrator:comment:complete', { durationMs: Date.now() - commentStart });
-        aiLog('drainer:embedding:orchestrator:boost:done', { totalDurationMs: Date.now() - started });
+        logger.log('embedding:orchestrator:comment:complete', { durationMs: Date.now() - commentStart });
+        logger.log('embedding:orchestrator:boost:done', { totalDurationMs: Date.now() - started });
     }
 
     cancelBoost(): void {
@@ -124,9 +125,9 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
                 await transactionRepository.clearAlreadyIndexedMerchantFlags(tx);
                 await transactionRepository.clearAlreadyIndexedCommentFlags(tx);
             });
-            aiLog('orchestrator:pre-clear:done');
+            logger.log('embedding:orchestrator:pre-clear:done');
         } catch (error: unknown) {
-            aiLog('drainer:embedding:orchestrator:residue:throw', {
+            logger.log('embedding:orchestrator:residue:throw', {
                 errorMessage: getErrorMessage(error)
             });
         }
