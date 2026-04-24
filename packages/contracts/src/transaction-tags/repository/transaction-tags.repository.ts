@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -20,6 +20,30 @@ export class TransactionTagsRepository {
 
     async deleteByTransactionId(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id));
+    }
+
+    async findPrimaryByTransactionId(transactionId: number, tx?: DB): Promise<TransactionTagsEntityInterface | undefined> {
+        const [row] = await (tx ?? this.db)
+            .select()
+            .from(TransactionTagsEntityTable)
+            .where(and(eq(TransactionTagsEntityTable.transactionId, transactionId), eq(TransactionTagsEntityTable.isPrimary, true)))
+            .limit(1);
+
+        return row;
+    }
+
+    async setPrimary(transactionId: number, tagId: number, tx?: DB): Promise<void> {
+        const connection = tx ?? this.db;
+
+        await connection
+            .update(TransactionTagsEntityTable)
+            .set({ isPrimary: false })
+            .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
+
+        await connection
+            .update(TransactionTagsEntityTable)
+            .set({ isPrimary: true })
+            .where(and(eq(TransactionTagsEntityTable.transactionId, transactionId), eq(TransactionTagsEntityTable.tagId, tagId)));
     }
 
     async truncate(): Promise<void> {
