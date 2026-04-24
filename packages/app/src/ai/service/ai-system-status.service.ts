@@ -1,4 +1,5 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
+import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -18,7 +19,6 @@ import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
-import { aiLog } from '../utils/ai-log.util';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
@@ -27,6 +27,8 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 const FULL_PERCENT = 100;
 const TRUNCATE_LEN = 80;
@@ -57,8 +59,8 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         super(EMPTY_SNAPSHOT);
     }
 
+    @Log(LoggerNamespaceEnum.AI, 'system:action:boost')
     async boost(): Promise<void> {
-        aiLog('system:action:boost');
         if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
 
@@ -67,15 +69,15 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         await embeddingDrainerService.boost();
     }
 
+    @Log(LoggerNamespaceEnum.AI, 'system:action:cancel')
     cancelBoost(): void {
-        aiLog('system:action:cancel');
         translationDrainerService.cancelBoost();
         embeddingDrainerService.cancelBoost();
     }
 
-    // eslint-disable-next-line max-statements -- Cascading retry across subsystems + drainers
+
+    @Log(LoggerNamespaceEnum.AI, 'system:action:retry')
     async retry(): Promise<void> {
-        aiLog('system:action:retry');
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
             promises.push(chatService.retry());
@@ -95,23 +97,23 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
     }
 
+    @Log(LoggerNamespaceEnum.AI, 'system:action:rebuild:start')
     // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
     async freshRebuild(): Promise<void> {
-        aiLog('system:action:rebuild:start');
         const started = Date.now();
         try {
             await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
-            aiLog('system:action:rebuild:phase', { phase: 'paused' });
+            logger.log('system:action:rebuild:phase', { phase: 'paused' });
             try {
                 await merchantEmbeddingRepository.truncate();
                 await commentEmbeddingRepository.truncate();
-                aiLog('system:action:rebuild:phase', { phase: 'embeddings-truncated' });
+                logger.log('system:action:rebuild:phase', { phase: 'embeddings-truncated' });
                 await categoryRepository.resetAllTranslations();
                 await tagRepository.resetAllTranslations();
-                aiLog('system:action:rebuild:phase', { phase: 'translations-reset' });
+                logger.log('system:action:rebuild:phase', { phase: 'translations-reset' });
                 await transactionRepository.markAllForEmbedding();
                 await transactionRepository.clearNonIndexableFlags();
-                aiLog('system:action:rebuild:phase', { phase: 'transactions-marked' });
+                logger.log('system:action:rebuild:phase', { phase: 'transactions-marked' });
             } finally {
                 translationDrainerService.resume();
                 embeddingDrainerService.resume();
@@ -120,9 +122,9 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             void embeddingProgressStore.refresh();
             await translationDrainerService.boost();
             await embeddingDrainerService.boost();
-            aiLog('system:action:rebuild:complete', { durationMs: Date.now() - started });
+            logger.log('system:action:rebuild:complete', { durationMs: Date.now() - started });
         } catch (error: unknown) {
-            aiLog('system:action:rebuild:throw', { errorMessage: getErrorMessage(error) });
+            logger.log('system:action:rebuild:throw', { errorMessage: getErrorMessage(error) });
             translationDrainerService.resume();
             embeddingDrainerService.resume();
             throw error;
@@ -153,7 +155,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
         if (next.state !== this.lastState) {
             const now = Date.now();
-            aiLog('system:state:transition', {
+            logger.log('system:state:transition', {
                 from: this.lastState,
                 to: next.state,
                 durationMs: now - this.lastStateAt
