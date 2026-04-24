@@ -24,7 +24,6 @@ interface Props {
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
     readonly footerSpacerMultiplier?: number;
-    readonly focusKey?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -40,8 +39,7 @@ export const TransactionSectionsList = ({
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
-    footerSpacerMultiplier,
-    focusKey
+    footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
     const [, hapticImpact] = useVibration();
@@ -106,7 +104,6 @@ export const TransactionSectionsList = ({
     return (
         <>
             <LegendList
-                key={focusKey}
                 data={flatData}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
