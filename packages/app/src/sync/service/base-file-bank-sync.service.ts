@@ -1,10 +1,9 @@
 /* eslint-disable no-await-in-loop */
-import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
+import { BankSyncModeEnum, ExternalSourceEnum, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
@@ -17,6 +16,8 @@ import type { ImportContextInterface } from '../interface/import-context.interfa
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB } from '@budgie/contracts';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
@@ -113,7 +114,7 @@ export abstract class BaseFileBankSyncService {
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        aiLog('embed:defer:bank-sync:batch:begin', {
+        logger.log('embed:defer:bank-sync:batch:begin', {
             provider: this.provider,
             accountId: account.id,
             count: transactionInputs.length
@@ -121,7 +122,7 @@ export abstract class BaseFileBankSyncService {
         const created = await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
             shouldUpdateBalances: false
         });
-        aiLog('embed:defer:bank-sync:batch:complete', {
+        logger.log('embed:defer:bank-sync:batch:complete', {
             provider: this.provider,
             accountId: account.id,
             inserted: created.length

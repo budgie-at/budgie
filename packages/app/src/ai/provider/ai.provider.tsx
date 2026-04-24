@@ -1,3 +1,4 @@
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 import { ReactNode, useEffect } from 'react';
 
 import { aiCoordinatorService } from '../service/ai-coordinator.service';
@@ -5,7 +6,8 @@ import { aiEmbeddingStatusService } from '../service/ai-embedding-status.service
 import { aiSystemStatusService } from '../service/ai-system-status.service';
 import { aiTranslationStatusService } from '../service/ai-translation-status.service';
 import { aiUmbrellaStatusService } from '../service/ai-umbrella-status.service';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 interface Props {
     readonly children: ReactNode;
@@ -13,7 +15,7 @@ interface Props {
 
 export const AiProvider = ({ children }: Props) => {
     useEffect(() => {
-        aiLog('provider:mount');
+        logger.log('provider:mount');
         aiCoordinatorService.start();
         aiSystemStatusService.start();
         aiUmbrellaStatusService.start();
@@ -21,7 +23,7 @@ export const AiProvider = ({ children }: Props) => {
         aiEmbeddingStatusService.start();
 
         return () => {
-            aiLog('provider:unmount');
+            logger.log('provider:unmount');
             aiEmbeddingStatusService.stop();
             aiTranslationStatusService.stop();
             aiUmbrellaStatusService.stop();

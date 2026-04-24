@@ -1,4 +1,5 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
@@ -8,7 +9,8 @@ import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 import { useStartStopStt } from './use-start-stop-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
@@ -84,7 +86,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const startStream = () => {
-        aiLog('hook:stt:startStream');
+        logger.log('hook:stt:startStream');
         cleanupStream().then(initStream).catch(emptyFn);
     };
 
@@ -97,12 +99,12 @@ export const useStt = (): UseSttReturn => {
         updateTranscription();
         insertLogTickRef.current += 1;
         if (insertLogTickRef.current % INSERT_LOG_INTERVAL === 0) {
-            aiLog('hook:stt:insert', { ticks: insertLogTickRef.current, samplesLen: samples.length });
+            logger.log('hook:stt:insert', { ticks: insertLogTickRef.current, samplesLen: samples.length });
         }
     };
 
     const stopStream = async (): Promise<string> => {
-        aiLog('hook:stt:stopStream');
+        logger.log('hook:stt:stopStream');
         if (!isDefined(streamPromiseRef.current)) {
             return transcription;
         }
@@ -128,7 +130,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cancelStream = () => {
-        aiLog('hook:stt:cancelStream');
+        logger.log('hook:stt:cancelStream');
         cleanupStream().then(resetState).catch(emptyFn);
     };
 

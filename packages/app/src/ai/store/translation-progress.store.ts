@@ -1,7 +1,10 @@
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 interface TranslationProgressSnapshotInterface {
     readonly percent: number;
@@ -56,11 +59,11 @@ export const translationProgressStore = {
                 next.isTranslating !== snapshot.isTranslating
             ) {
                 snapshot = next;
-                aiLog('translation:progress:refresh', { total, pending, percent, isTranslating: next.isTranslating });
+                logger.log('translation:progress:refresh', { total, pending, percent, isTranslating: next.isTranslating });
                 notify();
             }
         } catch (error: unknown) {
-            aiLog('translation:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
+            logger.error('translation:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
             emptyFn();
         }
     }

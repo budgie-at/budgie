@@ -1,9 +1,11 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -26,7 +28,7 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
 
     const fetchSuggestions = async (): Promise<string[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        aiLog('hook:suggestion:comment:fetch:start', {
+        logger.log('hook:suggestion:comment:fetch:start', {
             transactionTitle,
             categoryId,
             mccCategoryId,
@@ -35,12 +37,12 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
             aiContext
         });
         const results = await embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
-        aiLog('hook:suggestion:comment:fetch:done', { count: results.length });
+        logger.log('hook:suggestion:comment:fetch:done', { count: results.length });
 
         return results;
     };
 
-    aiLog('hook:suggestion:comment:hook:state', {
+    logger.log('hook:suggestion:comment:hook:state', {
         enabled,
         embeddingStatus,
         embeddingReady,
