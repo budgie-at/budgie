@@ -16,7 +16,7 @@ class TransactionBatchCreateService {
             batch[index].entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transaction.id))
         );
         const batchTags = transactions.flatMap((transaction, index) =>
-            transactionMapTagIdsToCreateEntities(batch[index].tagIds, transaction.id)
+            transactionMapTagIdsToCreateEntities(batch[index].tagIds, transaction.id, null)
         );
         bankSyncLog('service:batchCreate:entriesAndTagsPrepared', {
             entryCount: batchEntries.length,
