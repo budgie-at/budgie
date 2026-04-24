@@ -173,7 +173,7 @@ class TransactionService {
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
+                await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id, null), tx);
             }
 
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -218,16 +218,18 @@ class TransactionService {
     }
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
-
         await transactionEntryRepository.bulkCreate(
             input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId)),
             tx
         );
 
+        const existingPrimary = await transactionTagsRepository.findPrimaryByTransactionId(transactionId, tx);
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
-
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
+            await transactionTagsRepository.bulkCreate(
+                transactionMapTagIdsToCreateEntities(input.tagIds, transactionId, existingPrimary?.tagId ?? null),
+                tx
+            );
         }
     }
 }
