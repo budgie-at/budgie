@@ -3,15 +3,16 @@ import { ComponentProps, useMemo } from 'react';
 import { Text, TextStyle, ViewStyle } from 'react-native';
 import DateTimePicker, { CalendarComponents, CalendarDay, useDefaultClassNames } from 'react-native-ui-datepicker';
 
-import { DatePickerSelectors } from '../../../@e2e/selectors/date-picker.selector';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
+import { DatePickerSelector } from './date-picker.selector';
+
 const renderDay = (day: CalendarDay) => (
     <Text
-        testID={DatePickerSelectors.Day(day.number)}
+        testID={DatePickerSelector.Day(day.number)}
         className={cn(
             'text-primary font-medium',
             !day.isCurrentMonth && 'text-secondary-foreground/40',

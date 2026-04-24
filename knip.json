@@ -9,6 +9,7 @@
         "packages/app/fingerprint.config.js",
         "packages/app/plugins/with-vec-xcframework-fix.js",
         "scripts/after-install.cjs",
+        "tests/app-tests/scripts/prepare-date-sensitive-fixtures.mjs",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",

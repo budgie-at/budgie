@@ -1,52 +1,12 @@
 appId: ${APP_ID}
 env:
     FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH}
-    PROVIDER_CONTAINER_ID_MATCH: ${PROVIDER_CONTAINER_ID_MATCH || '[Bb]udgie( \\(.*\\))?, Container'}
-    PROVIDER_CONTAINER_TEXT_MATCH: ${PROVIDER_CONTAINER_TEXT_MATCH || '[Bb]udgie( \\(.*\\))?(, Container)?'}
-    FIXTURE_FOLDER_NAME_MATCH: ${FIXTURE_FOLDER_NAME_MATCH || 'E2EFixtures'}
-    FIXTURE_FOLDER_TEXT_MATCH: ${FIXTURE_FOLDER_TEXT_MATCH || 'E2EFixtures(, Folder)?'}
-    BROWSE_BUTTON_MATCH: ${BROWSE_BUTTON_MATCH || 'Browse|Durchsuchen'}
-    ON_MY_IPHONE_MATCH: ${ON_MY_IPHONE_MATCH || 'On My iPhone|Auf meinem iPhone'}
 ---
-- runFlow:
-      when:
-          visible:
-              id: 'BackButton'
-      commands:
-          - tapOn:
-                id: 'BackButton'
+- waitForAnimationToEnd
 
-- runFlow:
-      when:
-          visible:
-              id: 'BackButton'
-      commands:
-          - tapOn:
-                id: 'BackButton'
-
-- runFlow:
-      when:
-          visible:
-              id: 'BackButton'
-      commands:
-          - tapOn:
-                id: 'BackButton'
-
-- runFlow:
-      when:
-          visible: '${BROWSE_BUTTON_MATCH}'
-      commands:
-          - tapOn:
-                text: '${BROWSE_BUTTON_MATCH}'
-          - waitForAnimationToEnd
-
-- runFlow:
-      when:
-          visible: '${ON_MY_IPHONE_MATCH}'
-      commands:
-          - tapOn:
-                text: '${ON_MY_IPHONE_MATCH}'
-          - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible: 'Cancel'
+      timeout: 15000
 
 - runFlow:
       when:
@@ -55,57 +15,32 @@ env:
       commands:
           - runFlow:
                 when:
-                    notVisible:
-                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
+                    visible: 'E2EFixtures, Actions Menu'
+                commands: []
+
+          - runFlow:
+                when:
+                    visible: 'budgie \(E2E\), Actions Menu'
+                commands:
+                    - extendedWaitUntil:
+                          visible:
+                              id: 'E2EFixtures, Folder'
+                          timeout: 3000
+                    - tapOn:
+                          id: 'E2EFixtures, Folder'
+                          retryTapIfNoChange: true
+                    - waitForAnimationToEnd
+
+          - runFlow:
+                when:
+                    notVisible: 'E2EFixtures, Actions Menu'
                 commands:
                     - runFlow:
                           when:
-                              notVisible:
-                                  id: '${PROVIDER_CONTAINER_ID_MATCH}'
+                              notVisible: 'budgie \(E2E\), Actions Menu'
                           commands:
-                              - scrollUntilVisible:
-                                    element:
-                                        text: '${PROVIDER_CONTAINER_TEXT_MATCH}'
-                                    direction: DOWN
-                                    timeout: 15000
-                                    speed: 20
-                                    visibilityPercentage: 40
-                                    centerElement: true
-                              - tapOn:
-                                    text: '${PROVIDER_CONTAINER_TEXT_MATCH}'
-                              - waitForAnimationToEnd
-                    - runFlow:
-                          when:
-                              visible:
-                                  id: '${PROVIDER_CONTAINER_ID_MATCH}'
-                          commands:
-                              - tapOn:
-                                    id: '${PROVIDER_CONTAINER_ID_MATCH}'
-                              - waitForAnimationToEnd
-          - runFlow:
-                when:
-                    notVisible:
-                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
-                commands:
-                    - scrollUntilVisible:
-                          element:
-                              text: '${FIXTURE_FOLDER_TEXT_MATCH}'
-                          direction: DOWN
-                          timeout: 15000
-                          speed: 20
-                          visibilityPercentage: 40
-                          centerElement: true
-                    - tapOn:
-                          text: '${FIXTURE_FOLDER_TEXT_MATCH}'
-                    - waitForAnimationToEnd
-          - runFlow:
-                when:
-                    visible:
-                        id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
-                commands:
-                    - tapOn:
-                          id: '${FIXTURE_FOLDER_NAME_MATCH}, Folder'
-                    - waitForAnimationToEnd
+                              - runFlow:
+                                    file: open-e2e-fixtures-full-path.flow.yaml
 
 - scrollUntilVisible:
       element:
@@ -113,9 +48,18 @@ env:
       direction: DOWN
       timeout: 15000
       speed: 20
-      visibilityPercentage: 40
-      centerElement: true
-      waitToSettleTimeoutMs: 1000
+      waitToSettleTimeoutMs: 2000
+
+- waitForAnimationToEnd
 
 - tapOn:
       id: '${FILE_ROW_ID_MATCH}'
+      point: '50%,25%'
+      retryTapIfNoChange: true
+
+- runFlow:
+      when:
+          visible: 'Open'
+      commands:
+          - tapOn:
+                text: 'Open'

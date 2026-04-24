@@ -1,5 +1,7 @@
 import { ScrollView, Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
@@ -13,12 +15,15 @@ interface Props {
     readonly entries: readonly RecurringCalendarEntryInterface[];
     readonly displayMonth: number;
     readonly displayYear: number;
+    readonly headerTestID?: string;
 }
 
-export const RecurringCalendarEntryList = ({ title, formattedTotal, entries, displayMonth, displayYear }: Props) => (
+export const RecurringCalendarEntryList = ({ title, formattedTotal, entries, displayMonth, displayYear, headerTestID }: Props) => (
     <View className="flex-1 pt-lg">
         <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
-            <Text className="text-xs uppercase text-secondary-foreground">{title}</Text>
+            <Text className="text-xs uppercase text-secondary-foreground" {...(isDefined(headerTestID) && { testID: headerTestID })}>
+                {title}
+            </Text>
             <ProtectedText className="text-xs text-secondary-foreground">{formattedTotal}</ProtectedText>
         </View>
 
