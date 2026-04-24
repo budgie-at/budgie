@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.3.1](https://github.com/budgie-at/budgie/compare/v5.3.0...v5.3.1) (2026-04-24)
+
+### Bug Fixes
+
+- **app:** avoid redundant expense embedding mark ([c31ccde](https://github.com/budgie-at/budgie/commit/c31ccdec67deda4b582dd8f8ade936c683fdcff4))
+- **app:** drop unused fts tables ([edacec3](https://github.com/budgie-at/budgie/commit/edacec36b18756d2ff52c42a348209dad2600b79))
+- **app:** pause ai runtime before database import reset ([21a61ee](https://github.com/budgie-at/budgie/commit/21a61eebdb8020d2de1db7eac0107bcaa43db686))
+- **app:** resolve e2e runtime typescript checks ([ee7ae40](https://github.com/budgie-at/budgie/commit/ee7ae4087ab951fca97490501dd63366d6c507af))
+- **app:** retry settings anchor scroll after layout ([5cb61b2](https://github.com/budgie-at/budgie/commit/5cb61b2482a9c6c4f6219fd71d4f868637ced4df))
+- **app:** stabilize maestro iOS bootstrap and csv flows ([ee3b26d](https://github.com/budgie-at/budgie/commit/ee3b26db11b2f2cdee14198ea1a3b5aa14368ff5))
+- centralize display cents formatting ([7ac96b4](https://github.com/budgie-at/budgie/commit/7ac96b420f94292bcd812b385ee42ff4bc271689))
+- resolve e2e runtime ci regressions ([35ae8a1](https://github.com/budgie-at/budgie/commit/35ae8a15bbd6500b0225196bc528d955b2749342))
+- resolve security CI lint and stabilize csv flow ([1e50d4c](https://github.com/budgie-at/budgie/commit/1e50d4c7761ffb107f75e4fd8a1c0bd9ceb25822))
+- stabilize maestro suite and security flows ([7bf2e9c](https://github.com/budgie-at/budgie/commit/7bf2e9c01026b521ae7a19eb8f610ec14d1ec39c))
+- stabilize recurring calendar selection states ([5115f84](https://github.com/budgie-at/budgie/commit/5115f8425fd34a023ae81d418588c59f628f34b4))
+
 # [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
 
 ### Bug Fixes
