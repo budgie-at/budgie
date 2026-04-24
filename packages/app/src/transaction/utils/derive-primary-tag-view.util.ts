@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { sortTransactionTagsByPrimary } from './sort-transaction-tags-by-primary.util';
 
@@ -18,7 +18,7 @@ interface PrimaryTagView<T extends TransactionTagRow> {
 
 export const derivePrimaryTagView = <T extends TransactionTagRow>(transactionTags: readonly T[]): PrimaryTagView<T> => {
     const sorted = sortTransactionTagsByPrimary(transactionTags);
-    const primaryRow = sorted.length > 0 ? sorted[0] : null;
+    const primaryRow = isNotEmptyArray(sorted) ? sorted[0] : null;
 
     return {
         sorted,
