@@ -1,5 +1,5 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -7,7 +7,8 @@ import { useAllCategoriesQuery } from '../../category/query/use-all-categories.q
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -31,7 +32,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        aiLog('hook:suggestion:category:fetch:start', {
+        logger.log('hook:suggestion:category:fetch:start', {
             transactionTitle,
             mccCategoryId,
             mccDescription,
@@ -47,12 +48,12 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
             aiContext,
             mccCategoryId
         );
-        aiLog('hook:suggestion:category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
+        logger.log('hook:suggestion:category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
 
         return results;
     };
 
-    aiLog('hook:suggestion:category:hook:state', {
+    logger.log('hook:suggestion:category:hook:state', {
         enabled,
         embeddingStatus,
         embeddingReady,

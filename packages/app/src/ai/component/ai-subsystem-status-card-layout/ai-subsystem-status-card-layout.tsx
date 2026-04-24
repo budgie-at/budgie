@@ -1,3 +1,4 @@
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Haptics from 'expo-haptics';
 import { ReactNode, useState } from 'react';
@@ -12,7 +13,8 @@ import { AI_SUBSYSTEM_CARD_VISUALS } from '../../constant/ai-subsystem-card-visu
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
-import { aiLog } from '../../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 interface Props {
     readonly snapshot: AiSubsystemStatusSnapshotInterface;
@@ -37,7 +39,7 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
         try {
             await onRebuild();
         } catch (error: unknown) {
-            aiLog(rebuildLogKey, { errorMessage: getErrorMessage(error) });
+            logger.error(rebuildLogKey, { errorMessage: getErrorMessage(error) });
         } finally {
             setIsRebuilding(false);
         }

@@ -1,7 +1,10 @@
+import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 class DrainerMutexService {
     private heldBy: DrainerKindEnum | null = null;
@@ -13,7 +16,7 @@ class DrainerMutexService {
     acquire(kind: DrainerKindEnum): boolean {
         if (!isDefined(this.heldBy)) {
             this.heldBy = kind;
-            aiLog('drainer:mutex:acquire', { kind });
+            logger.log('drainer:mutex:acquire', { kind });
 
             return true;
         }
@@ -24,7 +27,7 @@ class DrainerMutexService {
     release(kind: DrainerKindEnum): void {
         if (this.heldBy === kind) {
             this.heldBy = null;
-            aiLog('drainer:mutex:release', { kind });
+            logger.log('drainer:mutex:release', { kind });
         }
     }
 

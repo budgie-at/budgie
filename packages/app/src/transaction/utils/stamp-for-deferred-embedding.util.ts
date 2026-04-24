@@ -1,6 +1,6 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { LoggerNamespaceEnum, TransactionCreateInputInterface, getLogger } from '@budgie/contracts';
 
-import { aiLog } from '../../ai/utils/ai-log.util';
+const logger = getLogger(LoggerNamespaceEnum.AI);
 
 interface StampForDeferredEmbeddingResultInterface {
     readonly stampedInputs: TransactionCreateInputInterface[];
@@ -14,7 +14,7 @@ export const stampForDeferredEmbedding = (
     const stampedInputs = inputs.map(input => ({ ...input, needsEmbedding: input.needsEmbedding ?? true }));
     const markedForEmbedding = stampedInputs.filter(input => input.needsEmbedding).length;
     const externalSources = [...new Set(stampedInputs.map(input => input.externalSource ?? 'internal'))];
-    aiLog('embed:defer:stamp', {
+    logger.log('embed:defer:stamp', {
         source,
         total: stampedInputs.length,
         markedForEmbedding,
