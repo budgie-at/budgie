@@ -585,3 +585,84 @@ protected emptySnapshot(): AiSystemSnapshotInterface {
     return EMPTY_SNAPSHOT;
 }
 ```
+
+## Logging
+
+### Class methods — `@Log` decorator
+
+```ts
+import { Log, LoggerNamespaceEnum } from '@budgie/contracts';
+
+class SomeService {
+    @Log(LoggerNamespaceEnum.AI, 'someService:doThing:enter', 'someService:doThing:done', 'someService:doThing:error')
+    async doThing(input: string): Promise<number> {
+        // ...
+    }
+}
+```
+
+For dynamic function hooks:
+
+```ts
+@Log(
+    LoggerNamespaceEnum.AI,
+    input => `someService:doThing:enter:${input}`,
+    (result, input) => `someService:doThing:done:${input}:${result}`
+)
+async doThing(input: string): Promise<number> { ... }
+```
+
+Decorate only PUBLIC methods. Private methods, arrow-function class fields, and abstract methods use `getLogger(ns).log(tag, payload)` instead.
+
+### Free-function / hook / component — `getLogger`
+
+```ts
+import { getLogger, LoggerNamespaceEnum } from '@budgie/contracts';
+
+const logger = getLogger(LoggerNamespaceEnum.AI);
+
+export const useSomething = () => {
+    // ...
+    logger.log('useSomething:fired', { foo, bar });
+    logger.error('useSomething:failed', { errorMessage });
+    // ...
+};
+```
+
+Instantiate `logger` once at module-top; reuse for every call in the file. Use `logger.error(...)` inside `catch` blocks for failure semantics.
+
+### Dynamic payloads in decorated methods
+
+`@Log`'s tag hooks return strings, not objects. For methods that need to log a dynamic payload object, decorate with a static entry tag and emit the post-log inline via `getLogger`:
+
+```ts
+const logger = getLogger(LoggerNamespaceEnum.TRANSACTION);
+
+class TransactionService {
+    @Log(LoggerNamespaceEnum.TRANSACTION, 'bulkCreate:enter')
+    async bulkCreate(inputs: TransactionInput[]): Promise<Transaction[]> {
+        const started = Date.now();
+        const result = await this.repo.bulkCreate(inputs);
+        logger.log('bulkCreate:done', { requested: inputs.length, inserted: result.length, durationMs: Date.now() - started });
+
+        return result;
+    }
+}
+```
+
+### Namespaces
+
+| Namespace | Typical users |
+|---|---|
+| `AI` | AI coordinator, generic AI hooks / providers |
+| `CHAT` | LLM chat subsystem |
+| `STT` | Speech-to-text subsystem |
+| `EMBEDDING` | Embedding service + status + suggestion |
+| `DRAINER` | Embedding + translation drainers |
+| `SYNC` | Monobank + bank-sync base |
+| `TRANSACTION` | Transaction domain services |
+| `REPO` | Any repository class |
+
+### `packages/bank-sync` exception
+
+`packages/bank-sync` cannot depend on `@budgie/contracts`. It uses its own local `SyncLog` decorator and `syncLogger` instance from `packages/bank-sync/src/core/util/sync-logger.util.ts`. Same `[SYNC]` namespace prefix; same transport shape.

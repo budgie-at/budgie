@@ -118,6 +118,7 @@ packages/
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
+32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/contracts`.** Free-function / component / hook logs use `getLogger(namespace)` from the same package. Do not import `console.log` / `console.debug` / `console.error` directly in service code — route through the transport so `__DEV__` gating and namespacing stay consistent. Exception: `packages/bank-sync` cannot depend on `@budgie/contracts`; it uses its own `SyncLog` / `syncLogger` from `packages/bank-sync/src/core/util/sync-logger.util.ts` (same transport, same namespace `[SYNC]`).
 
 ### Naming Conventions
 
