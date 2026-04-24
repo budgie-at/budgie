@@ -1,6 +1,6 @@
 import { EmbeddingPendingContextBaseInterface, transactionAsync } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
@@ -55,7 +55,7 @@ export abstract class BaseEmbeddingSubDrainerService<
     }
 
     protected override async afterBatch(): Promise<void> {
-        if (this.pendingPersists.length === 0) {
+        if (isEmptyArray(this.pendingPersists)) {
             return;
         }
         const batch = this.pendingPersists.splice(0);

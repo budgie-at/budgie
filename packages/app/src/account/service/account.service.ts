@@ -170,7 +170,7 @@ class AccountService {
 
         await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
 
-        if (entriesToCreate.length > 0) {
+        if (isNotEmptyArray(entriesToCreate)) {
             await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
         }
     }

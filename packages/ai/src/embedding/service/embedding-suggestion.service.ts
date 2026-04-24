@@ -262,6 +262,7 @@ export class EmbeddingSuggestionService {
         const service = new EmbeddingService(this.embedding);
         const queryEmbedding = await service.generateEmbedding(context);
 
+        // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
         if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
             aiLog('suggest:embed:empty', { context });
 

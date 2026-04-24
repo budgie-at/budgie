@@ -207,7 +207,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
 
         const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
-        if (suspendedOrIdle !== null) {
+        if (isDefined(suspendedOrIdle)) {
             const statusText = suspendedOrIdle === AiSystemStateEnum.SUSPENDED ? t`Resuming AI…` : t`AI idle`;
 
             return {

@@ -1,5 +1,7 @@
 import { t } from '@lingui/core/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
@@ -61,8 +63,8 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         const chatError = chat.errorMessage;
         const embeddingError = embedding.errorMessage;
-        if (chatError !== null || embeddingError !== null) {
-            const source = chatError === null ? 'embedding' : 'chat';
+        if (isDefined(chatError) || isDefined(embeddingError)) {
+            const source = isDefined(chatError) ? 'chat' : 'embedding';
 
             const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
 

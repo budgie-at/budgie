@@ -1,7 +1,7 @@
 /* eslint-disable max-lines -- Two-path monthly detection (bank-synced + manual) with window-function CTEs */
 import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -174,7 +174,7 @@ export class TransactionPatternRepository {
             ...row,
             tagIds: tagMap.get(`${row.categoryId}-${row.title}`) ?? [],
             lastOccurrence: new Date(row.lastOccurrence * 1000),
-            accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
+            accountDeletedAt: isDefined(row.accountDeletedAt) ? new Date(row.accountDeletedAt * 1000) : null
         }));
     }
 

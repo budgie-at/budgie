@@ -1,6 +1,6 @@
 import { SQL, and, gte, inArray, isNull, lte } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -27,7 +27,7 @@ export abstract class BaseTransactionFilterRepository {
     /* jscpd:ignore-end */
 
     protected buildCategoryCondition(categoryIds: number[]) {
-        if (categoryIds.length === 0) {
+        if (isEmptyArray(categoryIds)) {
             return inArray(
                 TransactionEntityTable.id,
                 this.db

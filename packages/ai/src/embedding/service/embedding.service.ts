@@ -29,7 +29,7 @@ export class EmbeddingService {
             result => {
                 aiLog('embedding:generateEmbedding:done', {
                     textLen: text.length,
-                    dimensions: result === null ? 0 : result.length,
+                    dimensions: isDefined(result) ? result.length : 0,
                     durationMs: Date.now() - enqueueStart
                 });
 

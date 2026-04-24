@@ -40,6 +40,7 @@ class LocalEmbeddingService
     // eslint-disable-next-line max-statements -- Sequential batch embedding with start/complete log markers
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
         aiLog('embedding:batchEmbed:start', { textsCount: texts.length });
+        // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]
         if (!this.isReady || !isDefined(this.context) || texts.length === 0) {
             return new Map();
         }

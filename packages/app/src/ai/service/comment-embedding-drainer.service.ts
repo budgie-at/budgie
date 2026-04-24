@@ -16,7 +16,7 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
     protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
     protected readonly logDomain = 'drainer:embedding:comment';
 
-    protected async fetchPending(limit: number): Promise<readonly CommentPendingContextInterface[]> {
+    protected async fetchPending(limit: number): Promise<CommentPendingContextInterface[]> {
         return commentEmbeddingRepository.findPendingCommentContexts(limit);
     }
 

@@ -268,7 +268,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 )
             );
 
-        const ids = results.map(row => row.externalId).filter((id): id is string => id !== null);
+        const ids = results.map(row => row.externalId).filter(isDefined);
         bankSyncLog('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
 
         return ids;

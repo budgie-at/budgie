@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
@@ -21,7 +21,7 @@ const MAX_ICONS = 100;
 const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
 
 const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] => {
-    if (keywords.length === 0) {
+    if (isEmptyArray(keywords)) {
         return icons;
     }
 
@@ -44,7 +44,7 @@ const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] 
 };
 
 const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserIcon>[] => {
-    if (search.length === 0) {
+    if (!isNotEmptyString(search)) {
         const sorted = sortIconsByKeywords(USER_ICONS_LIST, keywords);
 
         return padFlatListData(sorted.slice(0, MAX_ICONS), NUM_COLUMNS);
