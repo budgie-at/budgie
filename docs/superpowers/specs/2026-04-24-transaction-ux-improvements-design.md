@@ -266,7 +266,7 @@ interface Props {
 export const TransactionUncategorizedFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
     const { data: count = 0 } = useUncategorizedCountQuery();
-    const isActive = isDefined(value) && isEmptyArray(value);
+    const isActive = isEmptyArray(value);
 
     if (count === 0 && !isActive) { return null; }
 
