@@ -12,18 +12,17 @@ import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const DEFAULT_LIMIT = 20;
 
-export const useGetTransactionsQuery = (filters?: TransactionFilterInterface, refreshKey?: number) => {
+export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) => {
     const { formatMonthAndYear } = useFormatDate();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
     useEffect(() => {
         setLoadedCount(DEFAULT_LIMIT);
-    }, [refreshKey]);
+    }, [filters]);
 
     const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [
         loadedCount,
-        filters,
-        refreshKey
+        filters
     ]);
 
     const hasMore = data.length > loadedCount;
