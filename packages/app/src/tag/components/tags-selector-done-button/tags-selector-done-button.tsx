@@ -29,7 +29,12 @@ export const TagsSelectorDoneButton = ({ count, onPress, testID }: Props) => {
     };
 
     return (
-        <Animated.View entering={FadeInUp.springify()} exiting={FadeOutDown.duration(EXIT_DURATION_MS)} style={containerStyle} pointerEvents="box-none">
+        <Animated.View
+            entering={FadeInUp.springify()}
+            exiting={FadeOutDown.duration(EXIT_DURATION_MS)}
+            style={containerStyle}
+            pointerEvents="box-none"
+        >
             <HapticPressable
                 onPress={onPress}
                 testID={testID}
