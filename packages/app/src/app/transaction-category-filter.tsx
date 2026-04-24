@@ -6,7 +6,6 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
@@ -15,6 +14,7 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
 import { TransactionCategoryFilterItem } from '../transaction/components/transaction-category-filter/transaction-category-filter-item';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
@@ -98,10 +98,10 @@ export default function TransactionCategoryFilterModal() {
                 onApply={handleApply}
                 applyLabel={applyLabel}
                 selectedCount={selectedCount}
-                searchTestID={TransactionFiltersSelectors.CategorySearchInput}
-                selectAllTestID={TransactionFiltersSelectors.CategorySelectAllButton}
-                deselectAllTestID={TransactionFiltersSelectors.CategoryDeselectAllButton}
-                applyTestID={TransactionFiltersSelectors.CategoryApplyButton}
+                searchTestID={TransactionFiltersSelector.CategorySearchInput}
+                selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.CategoryApplyButton}
             />
         </FilterSheet>
     );

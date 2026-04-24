@@ -4,22 +4,30 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { expoDb } from '../../@generic/drizzle/db/db';
+import { databaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
+import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
+import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { PIN_KEY } from '../constant/pin-key.constant';
+import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 class AuthService {
-    async getBiometricTypes() {
+    async getBiometricTypes(): Promise<BiometricTypesInterface> {
         try {
-            const [hasHardware, isEnrolled, types] = await Promise.all([
-                LocalAuthentication.hasHardwareAsync(),
-                LocalAuthentication.isEnrolledAsync(),
-                LocalAuthentication.supportedAuthenticationTypesAsync()
-            ]);
+            const hasHardware = await LocalAuthentication.hasHardwareAsync();
 
-            const isAvailable = hasHardware && isEnrolled;
+            if (!hasHardware) {
+                return this.getUnavailableBiometricTypes();
+            }
 
-            const isFaceIdAvailable = isAvailable && types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
-            const isTouchIdAvailable = isAvailable && types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
+            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+            if (!isEnrolled) {
+                return this.getUnavailableBiometricTypes();
+            }
+
+            const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+            const isFaceIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
+            const isTouchIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
 
             return {
                 isSomeAvailable: isFaceIdAvailable || isTouchIdAvailable,
@@ -28,12 +36,7 @@ class AuthService {
                 isLoading: false
             };
         } catch {
-            return {
-                isTouchIdAvailable: false,
-                isFaceIdAvailable: false,
-                isSomeAvailable: false,
-                isLoading: false
-            };
+            return this.getUnavailableBiometricTypes();
         }
     }
 
@@ -51,15 +54,18 @@ class AuthService {
         }
     }
 
-    async savePin(pin: string): Promise<void> {
-        const oldPin = await this.getPin();
-        await SecureStore.setItemAsync(PIN_KEY, pin);
+    async createPin(pin: string, isBiometricEnabled: boolean): Promise<void> {
+        await this.rekeyDatabase({
+            nextKey: pin,
+            nextSettings: {
+                isBiometricEnabled,
+                isPinEnabled: true
+            }
+        });
+    }
 
-        if (isNotEmptyString(oldPin)) {
-            await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);
-        } else {
-            await expoDb.execAsync(`PRAGMA key = '${pin}';`);
-        }
+    async changePin(pin: string): Promise<void> {
+        await this.rekeyDatabase({ nextKey: pin });
     }
 
     async verifyPin(pin: string): Promise<boolean> {
@@ -69,11 +75,50 @@ class AuthService {
     }
 
     async deletePin(): Promise<void> {
-        await SecureStore.deleteItemAsync(PIN_KEY);
+        await this.rekeyDatabase({
+            nextKey: null,
+            nextSettings: {
+                isBiometricEnabled: false,
+                isPinEnabled: false
+            }
+        });
     }
 
     async getPin(): Promise<string | null> {
         return SecureStore.getItemAsync(PIN_KEY);
+    }
+
+    async clearAllPins(): Promise<void> {
+        await SecureStore.deleteItemAsync(PIN_KEY);
+    }
+
+    private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {
+        const previousPin = await this.getPin();
+
+        try {
+            await databaseRekeyService.rekey(params, () => this.persistPin(params.nextKey));
+            await reloadApp();
+        } catch (error) {
+            await this.persistPin(previousPin);
+            throw error;
+        }
+    }
+
+    private async persistPin(pin: string | null): Promise<void> {
+        if (isNotEmptyString(pin)) {
+            await SecureStore.setItemAsync(PIN_KEY, pin);
+        } else {
+            await SecureStore.deleteItemAsync(PIN_KEY);
+        }
+    }
+
+    private getUnavailableBiometricTypes(): BiometricTypesInterface {
+        return {
+            isTouchIdAvailable: false,
+            isFaceIdAvailable: false,
+            isSomeAvailable: false,
+            isLoading: false
+        };
     }
 }
 
