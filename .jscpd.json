@@ -20,7 +20,9 @@
         "**/.worktrees/**",
         "**/.claude/**",
         "**/.agents/**",
-        "**/.codex/**"
+        "**/.codex/**",
+        "**/logger/**",
+        "**/sync-logger.util.ts"
     ],
     "absolute": false,
     "gitignore": true,
