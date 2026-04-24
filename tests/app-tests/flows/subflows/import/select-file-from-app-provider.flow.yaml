@@ -48,8 +48,6 @@ env:
       direction: DOWN
       timeout: 15000
       speed: 20
-      visibilityPercentage: 90
-      centerElement: false
       waitToSettleTimeoutMs: 2000
 
 - waitForAnimationToEnd
