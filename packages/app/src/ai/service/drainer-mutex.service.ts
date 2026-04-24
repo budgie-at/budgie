@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { aiLog } from '../utils/ai-log.util';
 
@@ -9,7 +11,7 @@ class DrainerMutexService {
     }
 
     acquire(kind: DrainerKindEnum): boolean {
-        if (this.heldBy === null) {
+        if (!isDefined(this.heldBy)) {
             this.heldBy = kind;
             aiLog('drainer:mutex:acquire', { kind });
 

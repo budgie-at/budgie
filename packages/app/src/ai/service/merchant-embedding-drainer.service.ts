@@ -16,7 +16,7 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
     protected readonly kind = DrainerKindEnum.EMBEDDING_MERCHANT;
     protected readonly logDomain = 'drainer:embedding:merchant';
 
-    protected async fetchPending(limit: number): Promise<readonly MerchantPendingContextInterface[]> {
+    protected async fetchPending(limit: number): Promise<MerchantPendingContextInterface[]> {
         return merchantEmbeddingRepository.findPendingMerchantContexts(limit);
     }
 

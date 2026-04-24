@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
 import { AppState, AppStateStatus, InteractionManager } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
@@ -147,7 +147,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
     protected abstract subscribeToSubsystem(listener: () => void): () => void;
     protected abstract isSubsystemReady(): boolean;
-    protected abstract fetchPending(limit: number): Promise<readonly TRow[]>;
+    protected abstract fetchPending(limit: number): Promise<TRow[]>;
     protected abstract processRow(row: TRow): Promise<void>;
     protected abstract countPending(): Promise<number>;
 
@@ -172,7 +172,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     };
 
     private haltTimer(): void {
-        if (this.timer !== null) {
+        if (isDefined(this.timer)) {
             clearTimeout(this.timer);
             this.timer = null;
         }
@@ -215,7 +215,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             const fetchStarted = Date.now();
             const rows = await this.fetchPending(this.relaxedBatchSize);
             aiLog(`${this.logDomain}:fetch:done`, { durationMs: Date.now() - fetchStarted, size: rows.length });
-            if (rows.length === 0) {
+            if (isEmptyArray(rows)) {
                 return;
             }
             for (const row of rows) {
@@ -265,7 +265,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             /* eslint-disable no-await-in-loop -- Sequential row processing is the whole point of boost */
             while (this.isSafe() && this.getState() === DrainerStateEnum.BOOSTING) {
                 const rows = await this.fetchPending(this.boostBatchSize);
-                if (rows.length === 0) {
+                if (isEmptyArray(rows)) {
                     break;
                 }
                 for (const row of rows) {

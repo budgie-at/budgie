@@ -1,4 +1,4 @@
-import { emptyFn, getErrorMessage } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { aiLog } from '../utils/ai-log.util';
@@ -53,7 +53,7 @@ export const embeddingProgressStore = {
         return snapshot;
     },
     async refresh(force = false): Promise<void> {
-        if (pendingRefresh !== null) {
+        if (isDefined(pendingRefresh)) {
             await pendingRefresh;
 
             return;
