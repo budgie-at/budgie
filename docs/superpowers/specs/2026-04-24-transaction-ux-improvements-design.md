@@ -191,7 +191,7 @@ The schema and util chain around `TransactionTagsCreateEntitySchema` must be upd
   - If `existingPrimaryTagId` is `null` (no existing primary), the first element of the output gets `isPrimary: true`, rest get `false`.
   - If `existingPrimaryTagId` is set, every new row gets `isPrimary: false` (existing primary is preserved).
 - Callers of the util: update the transaction create-service and the tag-add flow in the edit-service to pass the correct `existingPrimaryTagId`.
-- Tag-removal flow in the edit-service: detect if the removed tag was primary; if so and at least one tag survives, call `transactionTagsRepository.setPrimary(transactionId, survivingTagIds[0], tx)` inside the same `db.transaction(...)`.
+- Tag-removal flow in the edit-service: detect if the removed tag was primary; if so and at least one tag survives, sort the surviving `tagId`s ascending and call `transactionTagsRepository.setPrimary(transactionId, sortedSurvivingTagIds[0], tx)` inside the same `db.transaction(...)`. The "lowest `tagId` wins" rule matches the migration backfill in Section 6, so the promotion is deterministic and consistent across creation, migration, and removal paths.
 
 ---
 
@@ -201,17 +201,38 @@ The schema and util chain around `TransactionTagsCreateEntitySchema` must be upd
 
 `packages/app/src/@generic/hook/use-focus-key.hook.ts` increments a key on every `useFocusEffect`, and that key is applied to the `LegendList` inside `transaction-sections-list.tsx`. Remounting unlocks reliable data refresh but destroys scroll position.
 
+### Root cause (fuller picture)
+
+`focusKey` flows through three consumers in the transactions list, not just the `LegendList` key:
+
+1. `packages/app/src/app/(tabs)/transactions.tsx` — calls `useFocusKey()` and forwards the resulting `focusKey` to `TransactionList`.
+2. `packages/app/src/transaction/components/transaction-list/transaction-list.tsx` — passes `focusKey` to `useGetTransactionsQuery(activeFilters, focusKey)` as the `refreshKey` parameter AND forwards it to `TransactionSectionsList`.
+3. `packages/app/src/transaction/query/use-get-transactions.query.ts` — uses `refreshKey` both as a `useLiveQuery` dependency AND inside a `useEffect` that resets `loadedCount` to `DEFAULT_LIMIT` (20).
+4. `packages/app/src/transaction/components/transaction-sections-list/transaction-sections-list.tsx` — applies `key={focusKey}` to `LegendList`.
+
+Dropping only the `LegendList` key preserves scroll position visually, but the `refreshKey`-driven `useEffect` inside `useGetTransactionsQuery` still resets `loadedCount` to 20 on every focus event. The user would return to their previous scroll position in a list whose data has been truncated, producing a broken view.
+
 ### Fix
 
-Drop the `key={focusKey}` prop on `LegendList` at `packages/app/src/transaction/components/transaction-sections-list/transaction-sections-list.tsx:109`. The list's internal scroll state survives across focus events once it stops being remounted. `useLiveQuery` already reacts to Drizzle changes, so no refetch-on-focus is needed.
+Remove `focusKey` from the transactions list pipeline entirely. Pagination reset must remain tied to *filter changes* (which is what the user intends — start at page 1 when filters change), not to focus events.
 
-**Scope of audit (explicit):** `useFocusKey` is used in more than one place. Each usage is scoped individually:
+**Concrete edits:**
 
-- `transaction-sections-list.tsx` — **remove**. This is the source of the bug.
-- `packages/app/src/transaction/hook/use-recurring-calendar.hook.ts` — **leave untouched**. This hook uses `focusKey` as a `useEffect` dependency to re-run a service call when the recurring calendar screen regains focus. Its purpose is refetch, not remount, and replacing it with `useFocusEffect` + `refetch` is a separate refactor outside this spec's scope. Do not modify.
-- The `useFocusKey` hook file itself is **kept** (still used by the recurring calendar hook).
+- `packages/app/src/transaction/query/use-get-transactions.query.ts` — drop the `refreshKey` parameter from the function signature. The `useEffect` that resets `loadedCount` should depend only on `activeFilters` (already the correct semantic trigger). The `useLiveQuery` dependency list drops `refreshKey` as well — `useLiveQuery` already re-runs when the underlying Drizzle query changes.
+- `packages/app/src/transaction/components/transaction-list/transaction-list.tsx` — drop the `focusKey` prop and stop forwarding it. Drop the argument from the `useGetTransactionsQuery` call.
+- `packages/app/src/transaction/components/transaction-sections-list/transaction-sections-list.tsx` — drop the `focusKey` prop and the `key={focusKey}` on `LegendList`.
+- `packages/app/src/app/(tabs)/transactions.tsx` — drop the `useFocusKey()` call and the `focusKey` prop on `TransactionList`.
 
-**Verification:** Maestro E2E flow — load list, scroll to row 50, tap a transaction, edit amount, submit, confirm we return to row 50 visible. Separately, verify the recurring calendar screen still refreshes on focus as a regression check.
+**Scope of audit (explicit):** `useFocusKey` still has a legitimate consumer:
+
+- `packages/app/src/transaction/hook/use-recurring-calendar.hook.ts` — **leave untouched**. Uses `focusKey` as a `useEffect` dependency to re-run a service call when the recurring calendar screen regains focus. Its purpose is refetch, not remount. Replacing it with `useFocusEffect` + `refetch` is a separate refactor outside this spec.
+- `src/@generic/hook/use-focus-key.hook.ts` — **keep**. Still used by the recurring calendar hook.
+
+**Verification:**
+
+- Maestro E2E: load transactions list, scroll to ~row 50, tap a transaction, edit amount, submit; confirm scroll position lands back at row 50 and the list still has ≥50 rows loaded.
+- Separately: apply a filter → confirm pagination resets to the first page (this is the intended behaviour of the `useEffect` on `activeFilters`).
+- Regression check: open recurring calendar screen, navigate away, return; confirm it still refreshes.
 
 ---
 
@@ -374,7 +395,7 @@ Single PR titled `feat(app): transaction ux improvements — tag primary, scroll
 - `src/transaction/components/transaction-card-tag-chip/transaction-card-tag-chip.tsx` — individual chip.
 - `src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx` — new chip.
 - `src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.selector.ts` — test IDs.
-- `src/transaction/components/tags-selector-done-button/tags-selector-done-button.tsx` — floating Done pill.
+- `src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx` — floating Done pill. Filed under the `tag` entity module (consistent with `tags-select-content` at `src/tag/components/tags-select-content/`), not the `transaction` module, since the Done button belongs to the tag-selector surface.
 - `src/transaction/query/use-uncategorized-count.query.ts` — live count query.
 - `src/transaction/hook/use-promote-primary-tag.hook.ts` — promote handler with optimistic rollback.
 - `src/transaction/utils/sort-transaction-tags-by-primary.util.ts` — `[desc(isPrimary), asc(tagId)]` sort helper.
