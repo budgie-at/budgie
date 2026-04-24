@@ -41,12 +41,12 @@ const textVariants = cva('text-xs', {
 });
 
 export const TransactionCardTagChip = ({ title, isPrimary = false, isDimmed = false, onPress, onLongPress, testID }: Props) => {
-    const iconClassName = textVariants({ isPrimary });
+    const labelClassName = textVariants({ isPrimary });
 
     const body = (
         <View className={chipVariants({ isPrimary, isDimmed })}>
-            <Icon icon={UserIconNameEnum.Tag} size={12} className={iconClassName} />
-            <Text className={textVariants({ isPrimary })} numberOfLines={1} ellipsizeMode="tail">
+            <Icon icon={UserIconNameEnum.Tag} size={12} className={labelClassName} />
+            <Text className={labelClassName} numberOfLines={1} ellipsizeMode="tail">
                 {title}
             </Text>
         </View>
