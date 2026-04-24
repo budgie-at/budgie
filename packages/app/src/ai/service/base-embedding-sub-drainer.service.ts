@@ -1,11 +1,12 @@
-import { EmbeddingPendingContextBaseInterface, transactionAsync } from '@budgie/contracts';
+import { EmbeddingPendingContextBaseInterface, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
@@ -38,7 +39,7 @@ export abstract class BaseEmbeddingSubDrainerService<
     protected async processRow(context: TContext): Promise<void> {
         this.logBegin(context);
         if (isDefined(context.existingEmbeddingId)) {
-            aiLog(`${this.logDomain}:context:skip`, {
+            logger.log(`${this.logDomain}:context:skip`, {
                 reason: 'preflight-hit',
                 contextSize: context.transactionIds.length,
                 embeddingId: context.existingEmbeddingId
@@ -72,7 +73,7 @@ export abstract class BaseEmbeddingSubDrainerService<
         void embeddingProgressStore.refresh();
 
         for (const persist of batch) {
-            aiLog(`${this.logDomain}:context:persisted`, {
+            logger.log(`${this.logDomain}:context:persisted`, {
                 embeddingId: persist.embeddingId,
                 contextSize: persist.context.transactionIds.length,
                 clearedFlags: persist.context.transactionIds.length,
