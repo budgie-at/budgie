@@ -1,14 +1,17 @@
+import { LoggerNamespaceEnum } from '../../@generic/enum/logger-namespace.enum';
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
-import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
+import { getLogger } from '../../@generic/util/logger/get-logger.util';
+import { Log } from '../../@generic/util/logger/log-decorator.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
-import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
-import { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
-import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
-import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
+
+import type { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import type { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
+import type { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
+import type { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 
 const SIMILAR_CATEGORIES_QUERY = `
     SELECT me.category_id as categoryId,
@@ -89,6 +92,8 @@ const PENDING_MERCHANT_CONTEXTS_QUERY = `
     LIMIT ?
 `;
 
+const logger = getLogger(LoggerNamespaceEnum.REPO);
+
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     constructor(db: DB) {
         super(db, {
@@ -99,13 +104,14 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         });
     }
 
+    @Log(LoggerNamespaceEnum.REPO, 'repo:merchantEmbedding:findSimilarComments:start')
     async findSimilarComments(
         queryEmbedding: Uint8Array,
         params: SimilarCommentsParamsInterface
     ): Promise<CommentDistanceResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
         const start = Date.now();
-        bankSyncLog('repo:merchantEmbedding:findSimilarComments:start', { vecLimit, distanceThreshold, categoryId, commentLimit });
+        logger.log('repo:merchantEmbedding:findSimilarComments:start', { vecLimit, distanceThreshold, categoryId, commentLimit });
         const result = await this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
@@ -113,7 +119,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             categoryId,
             commentLimit
         ]);
-        bankSyncLog('repo:merchantEmbedding:findSimilarComments:done', { resultCount: result.length, durationMs: Date.now() - start });
+        logger.log('repo:merchantEmbedding:findSimilarComments:done', { resultCount: result.length, durationMs: Date.now() - start });
 
         return result;
     }
