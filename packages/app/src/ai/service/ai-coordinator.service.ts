@@ -30,7 +30,6 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
 
-     
     @Log(LoggerNamespaceEnum.AI, 'coordinator:start:enter')
     start(): void {
         if (this.started) {

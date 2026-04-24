@@ -4,7 +4,6 @@ import { AppState, AppStateStatus, InteractionManager } from 'react-native';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
-
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
