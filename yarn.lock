@@ -1241,6 +1241,7 @@ __metadata:
     "@lingui/core": "npm:^5.7.0"
     "@lingui/react": "npm:^5.7.0"
     "@react-native-masked-view/masked-view": "npm:^0.3.2"
+    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^1.8.2"
     "@tailwindcss/postcss": "npm:^4.1.14"
     "@types/babel__core": "npm:^7"
@@ -1402,6 +1403,7 @@ __metadata:
   resolution: "@budgie/ai@workspace:packages/ai"
   dependencies:
     "@budgie/contracts": "workspace:^"
+    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^1.8.2"
     zod: "npm:^4.1.12"
   languageName: unknown
@@ -1411,6 +1413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
+    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^1.8.2"
     date-fns: "npm:^4.1.0"
     ky: "npm:^1.14.1"
@@ -1422,6 +1425,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
+    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^1.8.2"
     date-fns: "npm:^4.1.0"
     drizzle-orm: "npm:^0.45.2"
@@ -5712,6 +5716,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rnw-community/decorators-core@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@rnw-community/decorators-core@npm:2.0.3"
+  dependencies:
+    "@rnw-community/shared": "npm:^2.0.0"
+  peerDependencies:
+    rxjs: ^7.8.0
+    typescript: ">=5.2.0"
+  peerDependenciesMeta:
+    rxjs:
+      optional: true
+    typescript:
+      optional: true
+  checksum: 10/d873be9c19f0e125068a129f23917dcc3fd04f5167da1972d7f28180d318f16a31903a773dbf72ccad975e6122e08505efe4dcaf96eea3cd4bef2cbb16f23123
+  languageName: node
+  linkType: hard
+
 "@rnw-community/eslint-plugin@npm:^1.8.2":
   version: 1.8.2
   resolution: "@rnw-community/eslint-plugin@npm:1.8.2"
@@ -5725,10 +5746,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rnw-community/log-decorator@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@rnw-community/log-decorator@npm:2.0.3"
+  dependencies:
+    "@rnw-community/decorators-core": "npm:^2.0.3"
+    "@rnw-community/shared": "npm:^2.0.0"
+  peerDependencies:
+    rxjs: ^7.8.0
+    typescript: ">=5.2.0"
+  peerDependenciesMeta:
+    rxjs:
+      optional: true
+    typescript:
+      optional: true
+  checksum: 10/69ce316dc138e956c56ef0199251ef3337dcf323f2dcd3a068739cd45cf27bad4cab65856fe30bb244a6e028cf4df7565ccaf1d93d00aff7d636d813e23a4352
+  languageName: node
+  linkType: hard
+
 "@rnw-community/shared@npm:^1.8.2":
   version: 1.8.2
   resolution: "@rnw-community/shared@npm:1.8.2"
   checksum: 10/a6006bbebddcec9756b25e646a0ffc28e88413328e0efc4a1ecb43fcb3100958e601ae265b246d0e5557d29fe81cc9425a9fa35191174a8cff008a4362381394
+  languageName: node
+  linkType: hard
+
+"@rnw-community/shared@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@rnw-community/shared@npm:2.0.0"
+  checksum: 10/7e1f2f8372e53700c2f5130dee8643414f67c6b96e196689e53f2bf37f8da43cc427bdf7bab96f8fc39d92c61711769688d8f40c90036ad8b41913bb7d5e0125
   languageName: node
   linkType: hard
 
