@@ -1,4 +1,4 @@
-import { transactionAsync } from '@budgie/contracts';
+import { Log, LoggerNamespaceEnum, transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -40,11 +40,12 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- Developer log tag, not user-facing
+    @Log(`[${LoggerNamespaceEnum.DRAINER}] embedding:orchestrator:start`)
     start(): void {
         if (this.startedSubs) {
             return;
         }
-        aiLog('drainer:embedding:orchestrator:start');
         this.startedSubs = true;
         this.unsubscribeMerchant = this.merchant.subscribe(this.recompute);
         this.unsubscribeComment = this.comment.subscribe(this.recompute);
