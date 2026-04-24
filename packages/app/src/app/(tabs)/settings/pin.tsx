@@ -17,20 +17,13 @@ import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
 import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
 import { getPinSetupMeta } from '../../../auth/util/get-pin-setup-meta.util';
-import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
 export default function PinSetupScreen() {
     const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();
     const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
     const { t } = useLingui();
 
-    const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({
-        mode,
-        onSuccess: ({ isBiometricEnabled, isPinEnabled }) => {
-            void updateSettingsMutation({ isPinEnabled, isBiometricEnabled });
-            void goBackOrReplace('/settings');
-        }
-    });
+    const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({ mode });
     const { title, description } = getPinSetupMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
 
     if (!isEnumValue(mode, PinSetupModeEnum)) {

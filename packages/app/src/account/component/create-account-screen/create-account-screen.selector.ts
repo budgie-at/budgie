@@ -3,6 +3,7 @@ import { AccountDebtTypeEnum } from '@budgie/contracts';
 const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const CreateAccountScreenSelector = {
+    ScrollView: 'AccountForm.ScrollView',
     NameInput: 'AccountForm.NameInput',
     CurrencySelector: 'AccountForm.CurrencySelector',
     CurrencyOption: (code: string) => `AccountForm.CurrencyOption.${normalizePart(code)}` as const,

@@ -21,15 +21,18 @@ import {
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
+import { readTextFileFromUri } from '../../../@generic/utils/read-text-file-from-uri.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
-import { ImportPresetSelector } from '../../../import/components/import-preset-selector/import-preset-selector';
+import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
 import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
 import { ImportPresetEnum } from '../../../import/enum/import-preset.enum';
 import { ImporterColumnMapInterface } from '../../../import/interface/importer-column-map.interface';
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../import/schema/import-column-map.schema';
 import { ImporterService } from '../../../import/service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';
+
+import { ImportScreenSelector } from './import-screen.selector';
 
 import type { Edge } from 'react-native-safe-area-context';
 
@@ -98,8 +101,7 @@ export default function ImportScreen() {
             setIsLoading(true);
 
             try {
-                const response = await fetch(fileUri);
-                const text = await response.text();
+                const text = await readTextFileFromUri(fileUri);
                 const [parsedHeaders, count] = await Promise.all([parseCsvHeaders(text), countCsvRows(text)]);
 
                 setCsvText(text);
@@ -164,7 +166,7 @@ export default function ImportScreen() {
                 safeEdges={SAFE_EDGES}
             >
                 <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerClassName="gap-y-xl pb-5xl pt-3xl">
-                    <ImportPresetSelector selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
+                    <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
                     <ImportColumnMapField
                         control={control}
                         name="toAccount"
@@ -262,6 +264,7 @@ export default function ImportScreen() {
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
                                 leftIcon={UserIconNameEnum.Database}
+                                testID={ImportScreenSelector.StartImportButton}
                             />
                         )}
                     </View>

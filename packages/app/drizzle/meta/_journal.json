@@ -120,6 +120,13 @@
       "when": 1776556800000,
       "tag": "0016_add_needs_embedding",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1776775019000,
+      "tag": "0017_drop_unused_fts_tables",
+      "breakpoints": true
     }
   ]
 }
