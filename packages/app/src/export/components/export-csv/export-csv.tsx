@@ -5,6 +5,8 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { useExportAction } from '../../hook/use-export-action.hook';
 import { exporterService } from '../../service/exporter.service';
 
+import { ExportCsvSelector } from './export-csv.selector';
+
 export const ExportCsv = () => {
     const { t } = useLingui();
     const { isLoading, handleExport } = useExportAction(() => exporterService.saveAndShare());
@@ -17,6 +19,7 @@ export const ExportCsv = () => {
             icon={UserIconNameEnum.Download}
             variant="default"
             isLoading={isLoading}
+            testID={ExportCsvSelector.ExportCard}
         />
     );
 };

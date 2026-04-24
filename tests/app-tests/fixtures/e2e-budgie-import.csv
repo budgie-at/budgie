@@ -1,0 +1,4 @@
+title,externalId,toAccount,toAmount,toCurrency,fromAccount,fromAmount,fromCurrency,category,operatedAt,comment
+,csv-expense,e2e csv wallet,-12.50,USD,,,,food,2026-04-01,E2E CSV Expense
+,csv-income,e2e csv wallet,100.00,USD,,,,salary,2026-04-02,E2E CSV Income
+,csv-transfer,e2e csv savings,25.00,USD,e2e csv wallet,25.00,USD,transfer,2026-04-03,E2E CSV Transfer

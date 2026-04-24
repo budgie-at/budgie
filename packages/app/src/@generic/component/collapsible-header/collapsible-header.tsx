@@ -6,9 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ProtectedMoney } from '../protected-money/protected-money';
 import { ProtectedText } from '../protected-text/protected-text';
 
@@ -31,14 +30,14 @@ const COLLAPSED_TRANSLATE_Y = 10;
 // eslint-disable-next-line max-statements, max-lines-per-function -- Animated header with multiple interpolated styles
 export const CollapsibleHeader = ({ scrollY }: Props) => {
     const { top } = useSafeAreaInsets();
-    const { defaultInstrument, decimalPlaces } = useSettingsContext();
+    const { defaultInstrument } = useSettingsContext();
     const netWorth = useNetWorthQuery();
-    const showCents = useSetting('showCents');
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
-    const netWorthValueTestID = HomePageSelector.NetWorthValue(netWorth);
+    const formattedNetWorthValue = formatDigits(netWorth);
+    const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
 
     const expandedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, SCROLL_THRESHOLD * EXPANDED_OPACITY_THRESHOLD], [1, 0], Extrapolation.CLAMP);
@@ -117,7 +116,6 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
 
                     <View testID={netWorthValueTestID}>
                         <ProtectedMoney
-                            decimalPlaces={decimalPlaces}
                             minFontSize={24}
                             maxFontSize={60}
                             instrumentSymbol={defaultInstrument.symbol}
