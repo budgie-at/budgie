@@ -19,7 +19,7 @@ const serializePayload = (payload: unknown): string => {
     return JSON.stringify(payload);
 };
 
-export interface SyncLoggerInterface {
+interface SyncLoggerInterface {
     readonly error: (tag: string, error?: unknown) => void;
     readonly log: (tag: string, payload?: unknown) => void;
 }

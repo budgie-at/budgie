@@ -75,7 +75,6 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         embeddingDrainerService.cancelBoost();
     }
 
-
     @Log(LoggerNamespaceEnum.AI, 'system:action:retry')
     async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
