@@ -7,7 +7,7 @@ import { db } from '../../@generic/drizzle/db/db';
 export const useUncategorizedCountQuery = () => {
     const { data } = useLiveQuery(
         db
-            .select({ count: sql<number>`COUNT(*)` })
+            .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntryEntityTable.transactionId})` })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .where(and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntryEntityTable.categoryId)))
