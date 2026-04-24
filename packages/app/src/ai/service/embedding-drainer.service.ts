@@ -40,8 +40,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
-    // eslint-disable-next-line lingui/no-unlocalized-strings -- Developer log tag, not user-facing
-    @Log(`[${LoggerNamespaceEnum.DRAINER}] embedding:orchestrator:start`)
+    @Log(LoggerNamespaceEnum.DRAINER, 'embedding:orchestrator:start')
     start(): void {
         if (this.startedSubs) {
             return;
