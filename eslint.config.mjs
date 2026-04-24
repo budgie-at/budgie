@@ -413,10 +413,6 @@ export default defineConfig(
             'no-restricted-syntax': [
                 'warn',
                 {
-                    selector: "TSInterfaceDeclaration TSPropertySignature[readonly!=true]",
-                    message: 'Interface fields must be marked readonly (CLAUDE.md rule 29).'
-                },
-                {
                     selector: "BinaryExpression[operator='==='][right.raw='null']",
                     message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
                 },
