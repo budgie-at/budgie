@@ -106,8 +106,10 @@ appId: ${APP_ID}
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.259_00'
+      id: 'AccountCard.Balance.E2E_Settings_Bank.100_00'
     timeout: 10000
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Settings_Cash.250_00'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 - assertVisible: '.*\$100\.00.*'
@@ -122,6 +124,15 @@ appId: ${APP_ID}
 - tapOn:
     id: 'SettingsPage.ShowCentsSwitch'
 - waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountCard.Balance.E2E_Settings_Bank.100'
+    timeout: 10000
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Settings_Cash.250'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
