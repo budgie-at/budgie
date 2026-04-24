@@ -1,13 +1,14 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import * as Haptics from 'expo-haptics';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { useAutoCollapse } from '../../hook/use-auto-collapse.hook';
 import { usePromotePrimaryTag } from '../../hook/use-promote-primary-tag.hook';
-import { sortTransactionTagsByPrimary } from '../../utils/sort-transaction-tags-by-primary.util';
+import { derivePrimaryTagView } from '../../utils/derive-primary-tag-view.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionCardTagChip } from '../transaction-card-tag-chip/transaction-card-tag-chip';
 import { TransactionCardTagsInlinePicker } from '../transaction-card-tags-inline-picker/transaction-card-tags-inline-picker';
@@ -18,16 +19,11 @@ interface Props {
 
 const COLLAPSE_DELAY_MS = 3000;
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionCardTags = ({ transaction }: Props) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { promote } = usePromotePrimaryTag(transaction.id);
 
-    const sorted = sortTransactionTagsByPrimary(transaction.transactionTags);
-    const [primaryRow] = sorted;
-    const primaryTag = isDefined(primaryRow) ? primaryRow.tag : null;
-    const hasMultipleTags = sorted.length > 1;
-    const siblingsCount = sorted.length - 1;
+    const { sorted, primaryRow, primaryTag, hasMultipleTags, siblingsCount } = derivePrimaryTagView(transaction.transactionTags);
 
     const handleLongPress = async () => {
         if (!hasMultipleTags) {
@@ -47,15 +43,7 @@ export const TransactionCardTags = ({ transaction }: Props) => {
         await promote(tagId);
     };
 
-    useEffect(() => {
-        if (!isExpanded) {
-            return undefined; // eslint-disable-line no-undefined -- consistent-return: early exit before cleanup registration
-        }
-
-        const timeoutId = setTimeout(() => void setIsExpanded(false), COLLAPSE_DELAY_MS);
-
-        return () => void clearTimeout(timeoutId);
-    }, [isExpanded]);
+    useAutoCollapse(isExpanded, () => void setIsExpanded(false), COLLAPSE_DELAY_MS);
 
     if (!isNotEmptyArray(sorted) || !isDefined(primaryTag)) {
         return null;
