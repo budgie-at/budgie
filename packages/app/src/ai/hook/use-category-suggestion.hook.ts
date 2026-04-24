@@ -1,6 +1,8 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { CategoryEntityInterface } from '@budgie/contracts';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
@@ -25,7 +27,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
-    const hasCategoriesLoaded = categories.length > 0;
+    const hasCategoriesLoaded = isNotEmptyArray(categories);
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;

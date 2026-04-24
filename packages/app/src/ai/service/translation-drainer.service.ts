@@ -30,7 +30,7 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
         return chatService.isReady;
     }
 
-    protected async fetchPending(limit: number): Promise<readonly CategoryOrTagRowInterface[]> {
+    protected async fetchPending(limit: number): Promise<CategoryOrTagRowInterface[]> {
         const half = Math.ceil(limit / 2);
         const [categories, tags] = await Promise.all([
             categoryRepository.findUntranslated(half),
