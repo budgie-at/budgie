@@ -17,6 +17,8 @@ import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/r
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
 
+import { RecurringCalendarSelector } from './recurring-calendar.selector';
+
 const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryInterface[]> = new Map();
 
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
@@ -36,6 +38,15 @@ export const RecurringCalendarContent = () => {
     const forecastedTotalAmount = data?.forecastedTotalAmount ?? 0;
 
     const isCurrentMonth = displayYear === now.getFullYear() && displayMonth === now.getMonth();
+    const hasSelectedDay = isDefined(selectedDay);
+    const isSelectedToday = isCurrentMonth && selectedDay === now.getDate();
+    let selectedDayHeaderTestID = null;
+
+    if (isSelectedToday) {
+        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedTodayHeader;
+    } else if (hasSelectedDay) {
+        selectedDayHeaderTestID = RecurringCalendarSelector.SelectedDayHeader(selectedDay);
+    }
 
     const selectedEntries = isDefined(selectedDay)
         ? [...(entriesByDay.get(selectedDay) ?? []), ...(forecastedEntriesByDay.get(selectedDay) ?? [])]
@@ -81,15 +92,10 @@ export const RecurringCalendarContent = () => {
     }
 
     return (
-        <View className="flex-1">
+        <View className="flex-1" testID={RecurringCalendarSelector.Container}>
             <View className="gap-y-xl pt-md">
                 <View className="items-center gap-y-lg">
-                    <ProtectedMoney
-                        minFontSize={10}
-                        maxFontSize={32}
-                        decimalPlaces={decimalPlaces}
-                        instrumentSymbol={defaultInstrument.symbol}
-                    >
+                    <ProtectedMoney minFontSize={10} maxFontSize={32} instrumentSymbol={defaultInstrument.symbol}>
                         {totalAmount}
                     </ProtectedMoney>
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
@@ -108,17 +114,31 @@ export const RecurringCalendarContent = () => {
                 />
             </View>
 
-            {hasSelectedEntries && isDefined(selectedDay) ? (
+            {hasSelectedDay ? (
                 <View className="flex-1 pt-lg">
                     <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
-                        <Text className="text-xs uppercase text-secondary-foreground">
+                        <Text
+                            className="text-xs uppercase text-secondary-foreground"
+                            {...(isDefined(selectedDayHeaderTestID) && { testID: selectedDayHeaderTestID })}
+                        >
                             <Trans>Day {selectedDay}</Trans>
                         </Text>
                         <ProtectedText className="text-xs text-secondary-foreground">{formattedDayTotal}</ProtectedText>
                     </View>
 
                     <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
-                        <RecurringCalendarDayDetail entries={selectedEntries} />
+                        {hasSelectedEntries ? (
+                            <RecurringCalendarDayDetail entries={selectedEntries} />
+                        ) : (
+                            <View className="items-center py-5xl px-5xl">
+                                <Text
+                                    className="text-secondary-foreground text-sm text-center"
+                                    testID={RecurringCalendarSelector.SelectedDayEmptyState}
+                                >
+                                    <Trans>No recurring payments detected</Trans>
+                                </Text>
+                            </View>
+                        )}
                         <MenuSpacer />
                     </ScrollView>
                 </View>
@@ -126,6 +146,7 @@ export const RecurringCalendarContent = () => {
 
             {showUpcomingList ? (
                 <RecurringCalendarEntryList
+                    headerTestID={RecurringCalendarSelector.UpcomingHeader}
                     title={<Trans>Upcoming</Trans>}
                     formattedTotal={formattedForecastedTotal}
                     entries={allForecastedEntries}
@@ -136,6 +157,7 @@ export const RecurringCalendarContent = () => {
 
             {showMonthlyList ? (
                 <RecurringCalendarEntryList
+                    headerTestID={RecurringCalendarSelector.AllRecurringHeader}
                     title={<Trans>All Recurring</Trans>}
                     formattedTotal={formattedTotalAmount}
                     entries={allActualEntries}
