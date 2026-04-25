@@ -173,7 +173,7 @@ class TransactionService {
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id, null), tx);
+                await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
             }
 
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -191,12 +191,6 @@ class TransactionService {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
             return transaction;
-        });
-    }
-
-    async promotePrimaryTag(transactionId: number, tagId: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await transactionTagsRepository.setPrimary(transactionId, tagId, tx);
         });
     }
 
@@ -229,13 +223,9 @@ class TransactionService {
             tx
         );
 
-        const existingPrimary = await transactionTagsRepository.findPrimaryByTransactionId(transactionId, tx);
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(
-                transactionMapTagIdsToCreateEntities(input.tagIds, transactionId, existingPrimary?.tagId ?? null),
-                tx
-            );
+            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
         }
     }
 }

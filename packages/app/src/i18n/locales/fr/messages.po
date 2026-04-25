@@ -520,10 +520,6 @@ msgstr "Impossible d'enregistrer l'étiquette"
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
-msgid "Couldn't update primary tag"
-msgstr "Impossible de mettre à jour le tag principal"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:35
 msgid "Count this account in your net worth calculation"
 msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
@@ -1116,6 +1112,10 @@ msgstr ""
 msgid "Main Currency"
 msgstr "Devise principale"
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:31
+msgid "Make primary tag"
+msgstr "Définir comme étiquette principale"
+
 #: src/app/(tabs)/settings/index.tsx:120
 msgid "Manage Categories"
 msgstr "Gérer les catégories"
@@ -1274,7 +1274,7 @@ msgid "No Results"
 msgstr "Aucun résultat"
 
 #: src/app/transaction-tag-filter.tsx:76
-#: src/tag/components/tags-select-content/tags-select-content.tsx:46
+#: src/tag/components/tags-select-content/tags-select-content.tsx:56
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
 
@@ -1416,6 +1416,10 @@ msgstr "Portugais (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:30
+msgid "Primary tag"
+msgstr "Étiquette principale"
+
 #: src/app/(tabs)/settings/index.tsx:64
 msgid "Privacy"
 msgstr "Confidentialité"
@@ -1552,7 +1556,7 @@ msgid "Search languages..."
 msgstr "Rechercher des langues..."
 
 #: src/app/(tabs)/settings/tags.tsx:87
-#: src/app/tags-selector.tsx:100
+#: src/app/tags-selector.tsx:138
 #: src/app/transaction-tag-filter.tsx:94
 msgid "Search tags..."
 msgstr "Rechercher des étiquettes..."
@@ -2000,7 +2004,7 @@ msgstr ""
 msgid "Try a different search term"
 msgstr "Essayez un autre terme de recherche"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:47
+#: src/tag/components/tags-select-content/tags-select-content.tsx:57
 msgid "Try a different search term or create a new tag"
 msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
