@@ -1,5 +1,6 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -7,7 +8,8 @@ import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger('useTagSuggestion');
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -37,7 +39,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         }
 
         const mccDescription = mccCategory?.fullDescription ?? null;
-        aiLog('hook:suggestion:tag:fetch:start', {
+        logger.log('hook:suggestion:tag:fetch:start', {
             transactionTitle,
             categoryId,
             mccCategoryId,
@@ -54,12 +56,12 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
             comment,
             aiContext
         );
-        aiLog('hook:suggestion:tag:fetch:done', { count: results.length, ids: results.map(tag => tag.id) });
+        logger.log('hook:suggestion:tag:fetch:done', { count: results.length, ids: results.map(tag => tag.id) });
 
         return results;
     };
 
-    aiLog('hook:suggestion:tag:hook:state', {
+    logger.log('hook:suggestion:tag:hook:state', {
         enabled,
         embeddingStatus,
         embeddingReady,

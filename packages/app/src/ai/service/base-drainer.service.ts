@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
-import { AppState, AppStateStatus, InteractionManager } from 'react-native';
+import { Log } from '@budgie/logger';
+import { AppState, InteractionManager } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
-import { aiLog } from '../utils/ai-log.util';
 
 import { SnapshotStore } from './base-subsystem.service';
 import { drainerMutex } from './drainer-mutex.service';
+
+import type { AppStateStatus } from 'react-native';
 
 const MAX_CONSECUTIVE_FAILURES = 5;
 const PROGRESS_LOG_EVERY = 25;
@@ -21,7 +23,6 @@ const SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
 
 export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnapshotInterface> {
     protected abstract readonly kind: DrainerKindEnum;
-    protected abstract readonly logDomain: string;
     protected abstract readonly relaxedIntervalMs: number;
     protected abstract readonly relaxedBatchSize: number;
     protected abstract readonly boostBatchSize: number;
@@ -39,11 +40,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     start(): void {
         if (this.started) {
             return;
         }
-        aiLog(`${this.logDomain}:start`);
         this.started = true;
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
         this.subsystemUnsubscribe = this.subscribeToSubsystem(() => {
@@ -59,11 +60,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         void this.refreshPending();
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     stop(): void {
         if (!this.started) {
             return;
         }
-        aiLog(`${this.logDomain}:stop`);
         this.started = false;
         this.haltTimer();
         this.appStateSubscription?.remove();
@@ -73,11 +74,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async pause(): Promise<void> {
         if (this.snapshot.state === DrainerStateEnum.PAUSED) {
             return;
         }
-        aiLog(`${this.logDomain}:pause`);
         if (this.snapshot.state === DrainerStateEnum.BOOSTING) {
             this.cancelBoost();
         }
@@ -86,11 +87,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.PAUSED });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
             return;
         }
-        aiLog(`${this.logDomain}:resume`);
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
         if (this.isSafe()) {
             this.scheduleDrain();
@@ -98,6 +99,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         void this.refreshPending();
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Boost entry: guard, mutex, timer halt, snapshot, loop, finally
     async boost(): Promise<void> {
         if (this.getState() === DrainerStateEnum.BOOSTING) {
@@ -106,11 +108,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (!drainerMutex.acquire(this.kind)) {
             return;
         }
-        aiLog(`${this.logDomain}:boost:begin`);
         this.haltTimer();
         this.setSnapshot({ state: DrainerStateEnum.BOOSTING, errorMessage: null });
-        const started = Date.now();
-        this.pendingBatchPromise = this.runBoostLoop(started);
+        this.pendingBatchPromise = this.runBoostLoop();
         try {
             await this.pendingBatchPromise;
         } finally {
@@ -124,20 +124,16 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-    private getState(): DrainerStateEnum {
-        return this.snapshot.state;
-    }
-
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     cancelBoost(): void {
         if (this.snapshot.state !== DrainerStateEnum.BOOSTING) {
             return;
         }
-        aiLog(`${this.logDomain}:boost:cancel`);
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     retry(): void {
-        aiLog(`${this.logDomain}:retry`, { fromState: this.snapshot.state });
         this.consecutiveFailures = 0;
         this.setSnapshot({ state: DrainerStateEnum.IDLE, errorMessage: null });
         if (this.started && this.isSafe()) {
@@ -147,7 +143,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
     protected abstract subscribeToSubsystem(listener: () => void): () => void;
     protected abstract isSubsystemReady(): boolean;
-    protected abstract fetchPending(limit: number): Promise<readonly TRow[]>;
+    protected abstract fetchPending(limit: number): Promise<TRow[]>;
     protected abstract processRow(row: TRow): Promise<void>;
     protected abstract countPending(): Promise<number>;
 
@@ -160,7 +156,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     private readonly handleAppState = (state: AppStateStatus): void => {
-        aiLog(`${this.logDomain}:appstate:change`, { to: state });
+        this.onAppStateChange(state);
+    };
+
+    @Log(state => `enter state=${state}`, 'done', error => `throw error=${getErrorMessage(error)}`)
+    private onAppStateChange(state: AppStateStatus): void {
         if (state === 'active') {
             this.scheduleDrain();
         } else {
@@ -169,10 +169,14 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 this.cancelBoost();
             }
         }
-    };
+    }
+
+    private getState(): DrainerStateEnum {
+        return this.snapshot.state;
+    }
 
     private haltTimer(): void {
-        if (this.timer !== null) {
+        if (isDefined(this.timer)) {
             clearTimeout(this.timer);
             this.timer = null;
         }
@@ -193,12 +197,18 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.timer = setTimeout(() => {
             this.timer = null;
             void InteractionManager.runAfterInteractions(() => {
-                this.pendingBatchPromise = this.runRelaxedTick();
-                void this.pendingBatchPromise;
+                this.queueRelaxedTick();
             });
         }, delay);
     }
 
+    private queueRelaxedTick(): void {
+        const pendingBatchPromise = this.runRelaxedTick();
+        this.pendingBatchPromise = pendingBatchPromise;
+        void pendingBatchPromise.catch(emptyFn);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Relaxed tick: mutex, fetch, run, refresh, reschedule
     private async runRelaxedTick(): Promise<void> {
         if (!this.isSafe()) {
@@ -209,13 +219,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
             return;
         }
-        aiLog(`${this.logDomain}:tick`);
-        const started = Date.now();
         try {
-            const fetchStarted = Date.now();
             const rows = await this.fetchPending(this.relaxedBatchSize);
-            aiLog(`${this.logDomain}:fetch:done`, { durationMs: Date.now() - fetchStarted, size: rows.length });
-            if (rows.length === 0) {
+            if (isEmptyArray(rows)) {
                 return;
             }
             for (const row of rows) {
@@ -225,24 +231,23 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
-            aiLog(`${this.logDomain}:batch:complete`, {
-                durationMs: Date.now() - started,
-                processed: rows.length
-            });
-        } catch (error: unknown) {
-            aiLog(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
         } finally {
-            try {
-                await this.afterBatch();
-            } catch (flushError: unknown) {
-                aiLog(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
-            }
-            await this.refreshPending();
+            await this.finalizeBatch();
             drainerMutex.release(this.kind);
             if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
                 this.scheduleDrain();
             }
         }
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async finalizeBatch(): Promise<void> {
+        try {
+            await this.afterBatch();
+        } catch {
+            emptyFn();
+        }
+        await this.refreshPending();
     }
 
     private scheduleDrainAfter(ms: number): void {
@@ -252,20 +257,20 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.haltTimer();
         this.timer = setTimeout(() => {
             this.timer = null;
-            this.pendingBatchPromise = this.runRelaxedTick();
-            void this.pendingBatchPromise;
+            this.queueRelaxedTick();
         }, ms);
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Boost loop: fetch, row processing, yield, progress log
-    private async runBoostLoop(startedAt: number): Promise<void> {
+    private async runBoostLoop(): Promise<void> {
         let processed = 0;
         let rowIndex = 0;
         try {
             /* eslint-disable no-await-in-loop -- Sequential row processing is the whole point of boost */
             while (this.isSafe() && this.getState() === DrainerStateEnum.BOOSTING) {
                 const rows = await this.fetchPending(this.boostBatchSize);
-                if (rows.length === 0) {
+                if (isEmptyArray(rows)) {
                     break;
                 }
                 for (const row of rows) {
@@ -279,24 +284,13 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                         await microPause();
                     }
                     if (processed % PROGRESS_LOG_EVERY === 0) {
-                        aiLog(`${this.logDomain}:boost:progress`, { processed });
                         await this.refreshPending();
                     }
                 }
             }
             /* eslint-enable no-await-in-loop */
         } finally {
-            try {
-                await this.afterBatch();
-            } catch (flushError: unknown) {
-                aiLog(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
-            }
-            await this.refreshPending();
-            aiLog(`${this.logDomain}:boost:complete`, {
-                durationMs: Date.now() - startedAt,
-                processed,
-                pending: this.snapshot.pending
-            });
+            await this.finalizeBatch();
         }
     }
 
@@ -309,40 +303,44 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
+    @Log(error => `enter errorMessage=${getErrorMessage(error)}`, 'done', error => `throw error=${getErrorMessage(error)}`)
     private handleRowFailure(error: unknown): void {
         const message = getErrorMessage(error);
         if (SQLITE_BUSY_PATTERN.test(message)) {
-            aiLog(`${this.logDomain}:row:busy`, { errorMessage: message });
-
             return;
         }
         this.consecutiveFailures += 1;
-        aiLog(`${this.logDomain}:row:throw`, {
-            errorMessage: message,
-            consecutiveFailures: this.consecutiveFailures
-        });
         if (this.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
             return;
         }
-        aiLog(`${this.logDomain}:error:cap-reached`, { consecutiveFailures: this.consecutiveFailures });
+        this.enterErrorState(message);
+    }
+
+    @Log(message => `enter message=${message}`, 'done', error => `throw error=${getErrorMessage(error)}`)
+    private enterErrorState(message: string): void {
         this.setSnapshot({ state: DrainerStateEnum.ERROR, errorMessage: message });
         this.haltTimer();
         setTimeout(() => {
-            if (this.snapshot.state === DrainerStateEnum.ERROR) {
-                aiLog(`${this.logDomain}:error:auto-retry`);
-                this.retry();
-            }
+            this.onAutoRetry();
         }, ERROR_AUTO_RETRY_MS);
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private onAutoRetry(): void {
+        if (this.snapshot.state === DrainerStateEnum.ERROR) {
+            this.retry();
+        }
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async refreshPending(): Promise<void> {
         try {
             const pending = await this.countPending();
             if (pending !== this.snapshot.pending) {
                 this.setSnapshot({ pending });
             }
-        } catch (error: unknown) {
-            aiLog(`${this.logDomain}:refresh-pending:throw`, { errorMessage: getErrorMessage(error) });
+        } catch {
+            emptyFn();
         }
     }
 }

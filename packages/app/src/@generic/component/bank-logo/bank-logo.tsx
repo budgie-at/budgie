@@ -2,6 +2,8 @@ import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ReactElement } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -36,7 +38,7 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
 export const BankLogo = ({ bankProvider, size = 32, variant = 'default' }: Props) => {
     const icon = getBankIcon(bankProvider, size);
 
-    if (icon !== null) {
+    if (isDefined(icon)) {
         return icon;
     }
 
