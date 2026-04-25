@@ -20,15 +20,14 @@ interface Props {
 }
 
 const NUM_COLUMNS = 3;
+const FLOATING_DONE_BUTTON_BOTTOM_SPACE = 96;
 
 const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.id.toString());
 
 export const TagsSelectContent = (props: Props) => {
     const { data, selectedTagIds, primaryTagId = null, enablePrimarySelection = false, onSelect, onPrimarySelect } = props;
     const { t } = useLingui();
-    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
-    const primaryLabel = t`Primary tag`;
-    const makePrimaryLabel = t`Make primary tag`;
+    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles(FLOATING_DONE_BUTTON_BOTTOM_SPACE);
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) => {
         const handlePrimarySelect = enablePrimarySelection ? onPrimarySelect : void 0;
@@ -45,9 +44,6 @@ export const TagsSelectContent = (props: Props) => {
                 title={item.title}
                 id={item.id}
                 testID={TagsSelectorModalSelector.Card(item.title)}
-                primaryTestID={TagsSelectorModalSelector.PrimaryButton(item.title)}
-                primaryLabel={primaryLabel}
-                makePrimaryLabel={makePrimaryLabel}
             />
         );
     };

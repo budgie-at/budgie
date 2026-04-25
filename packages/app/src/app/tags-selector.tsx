@@ -98,7 +98,11 @@ export default function TagsSelectorModal() {
 
     const handlePrimarySelect = (tagId: number) => {
         setPrimaryTagId(tagId);
-        setSelected(previous => reorderTagIdsByPrimary(previous, tagId));
+        setSelected(previous => {
+            const selectedTagIds = previous.includes(tagId) ? previous : [...previous, tagId];
+
+            return reorderTagIdsByPrimary(selectedTagIds, tagId);
+        });
     };
 
     const handleCreatePress = async () => {

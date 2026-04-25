@@ -1112,10 +1112,6 @@ msgstr ""
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:31
-msgid "Make primary tag"
-msgstr "Зробити основним тегом"
-
 #: src/app/(tabs)/settings/index.tsx:120
 msgid "Manage Categories"
 msgstr "Керування категоріями"
@@ -1274,7 +1270,7 @@ msgid "No Results"
 msgstr "Немає результатів"
 
 #: src/app/transaction-tag-filter.tsx:76
-#: src/tag/components/tags-select-content/tags-select-content.tsx:56
+#: src/tag/components/tags-select-content/tags-select-content.tsx:55
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
@@ -1416,10 +1412,6 @@ msgstr "Португальська (Португалія)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:30
-msgid "Primary tag"
-msgstr "Основний тег"
-
 #: src/app/(tabs)/settings/index.tsx:64
 msgid "Privacy"
 msgstr "Конфіденційність"
@@ -1556,7 +1548,7 @@ msgid "Search languages..."
 msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:87
-#: src/app/tags-selector.tsx:138
+#: src/app/tags-selector.tsx:142
 #: src/app/transaction-tag-filter.tsx:94
 msgid "Search tags..."
 msgstr "Пошук тегів..."
@@ -2004,7 +1996,7 @@ msgstr "Переклади готові"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:57
+#: src/tag/components/tags-select-content/tags-select-content.tsx:56
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 

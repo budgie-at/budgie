@@ -1112,10 +1112,6 @@ msgstr ""
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:31
-msgid "Make primary tag"
-msgstr "Marcar como etiqueta principal"
-
 #: src/app/(tabs)/settings/index.tsx:120
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
@@ -1274,7 +1270,7 @@ msgid "No Results"
 msgstr "Sin resultados"
 
 #: src/app/transaction-tag-filter.tsx:76
-#: src/tag/components/tags-select-content/tags-select-content.tsx:56
+#: src/tag/components/tags-select-content/tags-select-content.tsx:55
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
 
@@ -1416,10 +1412,6 @@ msgstr "Portugués (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:30
-msgid "Primary tag"
-msgstr "Etiqueta principal"
-
 #: src/app/(tabs)/settings/index.tsx:64
 msgid "Privacy"
 msgstr "Privacidad"
@@ -1556,7 +1548,7 @@ msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
 #: src/app/(tabs)/settings/tags.tsx:87
-#: src/app/tags-selector.tsx:138
+#: src/app/tags-selector.tsx:142
 #: src/app/transaction-tag-filter.tsx:94
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
@@ -2004,7 +1996,7 @@ msgstr "Traducciones listas"
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:57
+#: src/tag/components/tags-select-content/tags-select-content.tsx:56
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
