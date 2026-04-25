@@ -520,10 +520,6 @@ msgstr "Не вдалося зберегти тег"
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
-msgid "Couldn't update primary tag"
-msgstr "Не вдалося оновити основний тег"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:35
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
@@ -1116,6 +1112,10 @@ msgstr ""
 msgid "Main Currency"
 msgstr "Основна валюта"
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:31
+msgid "Make primary tag"
+msgstr "Зробити основним тегом"
+
 #: src/app/(tabs)/settings/index.tsx:120
 msgid "Manage Categories"
 msgstr "Керування категоріями"
@@ -1274,7 +1274,7 @@ msgid "No Results"
 msgstr "Немає результатів"
 
 #: src/app/transaction-tag-filter.tsx:76
-#: src/tag/components/tags-select-content/tags-select-content.tsx:46
+#: src/tag/components/tags-select-content/tags-select-content.tsx:56
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
@@ -1416,6 +1416,10 @@ msgstr "Португальська (Португалія)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:30
+msgid "Primary tag"
+msgstr "Основний тег"
+
 #: src/app/(tabs)/settings/index.tsx:64
 msgid "Privacy"
 msgstr "Конфіденційність"
@@ -1552,7 +1556,7 @@ msgid "Search languages..."
 msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:87
-#: src/app/tags-selector.tsx:100
+#: src/app/tags-selector.tsx:138
 #: src/app/transaction-tag-filter.tsx:94
 msgid "Search tags..."
 msgstr "Пошук тегів..."
@@ -2000,7 +2004,7 @@ msgstr "Переклади готові"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:47
+#: src/tag/components/tags-select-content/tags-select-content.tsx:57
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
