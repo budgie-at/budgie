@@ -41,11 +41,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
-    @Log(
-        () => 'embedding:orchestrator:start',
-        () => 'embedding:orchestrator:start:done',
-        error => `embedding:orchestrator:start:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     start(): void {
         if (this.startedSubs) {
             return;
@@ -58,11 +54,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         void this.clearResidueOnce();
     }
 
-    @Log(
-        () => 'embedding:orchestrator:stop',
-        () => 'embedding:orchestrator:stop:done',
-        error => `embedding:orchestrator:stop:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     stop(): void {
         if (!this.startedSubs) {
             return;
@@ -76,11 +68,7 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.startedSubs = false;
     }
 
-    @Log(
-        () => 'embedding:orchestrator:boost:begin',
-        () => 'embedding:orchestrator:boost:done',
-        error => `embedding:orchestrator:boost:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     async boost(): Promise<void> {
         const started = Date.now();
         await this.merchant.boost();

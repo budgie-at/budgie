@@ -7,7 +7,7 @@ import {
     transactionAsync
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -23,14 +23,44 @@ import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-t
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
 import type {
+    DB,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
-import type { DB } from '@budgie/contracts';
 
 class TransactionService {
+    @Log(
+        inputs => `enter count=${inputs.length}`,
+        (result, inputs) => `done requested=${inputs.length} inserted=${result.length}`,
+        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(
+        inputs: TransactionCreateInputInterface[],
+        tx?: DB,
+        batchSize = TRANSACTION_BATCH_SIZE
+    ): Promise<TransactionEntityInterface[]> {
+        if (!isNotEmptyArray(inputs)) {
+            return [];
+        }
+
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+        }
+
+        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+            transactionBatchCreateService.create(batch, tx)
+        );
+
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        }
+
+        return transactions;
+    }
+
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
         return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
@@ -62,36 +92,6 @@ class TransactionService {
 
             return transaction;
         });
-    }
-
-    @Log(
-        inputs => `bulkCreate:enter count=${inputs.length}`,
-        (result, inputs) => `bulkCreate:done requested=${inputs.length} inserted=${result.length}`,
-        (error, inputs) => `bulkCreate:throw count=${inputs.length} error=${String(error)}`
-    )
-    async bulkCreate(
-        inputs: TransactionCreateInputInterface[],
-        tx?: DB,
-        batchSize = TRANSACTION_BATCH_SIZE
-    ): Promise<TransactionEntityInterface[]> {
-        if (!isNotEmptyArray(inputs)) {
-            return [];
-        }
-
-        if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
-        }
-
-        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
-        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-            transactionBatchCreateService.create(batch, tx)
-        );
-
-        if (isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-        }
-
-        return transactions;
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {

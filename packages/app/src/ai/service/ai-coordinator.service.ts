@@ -28,7 +28,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
-    @Log(() => 'start:enter', () => 'start:done', error => `start:throw error=${String(error)}`) start(): void {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) start(): void {
         if (this.started) {
             return;
         }
@@ -48,7 +48,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             this.setSnapshot({ isSuspended: true });
         }
     }
-    @Log(() => 'stop:enter', () => 'stop:done', error => `stop:throw error=${String(error)}`) stop(): void {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) stop(): void {
         if (!this.started) {
             return;
         }
@@ -58,7 +58,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         this.appStateSubscription = null;
         void this.stopSubsystems();
     }
-    @Log(() => 'bootModels:enter', () => 'bootModels:done', error => `bootModels:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async bootModels(): Promise<void> {
         try {
             await Promise.all([chatService.start(), embeddingService.start()]);
@@ -66,7 +66,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             logger.log('bootModels:error', { errorMessage: getErrorMessage(error) });
         }
     }
-    @Log(() => 'releaseModels:enter', () => 'releaseModels:done', error => `releaseModels:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseModels(): Promise<void> {
         try {
             await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
@@ -103,7 +103,6 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         }, BACKGROUND_RELEASE_DELAY_MS);
     };
 
-    // eslint-disable-next-line max-statements -- Start sequence: model boots, drainer starts, status services start, progress refresh
     private async startSubsystems(): Promise<void> {
         await this.bootModels();
         translationDrainerService.start();

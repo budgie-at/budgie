@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { BankSyncModeEnum, ExternalSourceEnum, Log, transactionAsync } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
@@ -19,6 +19,37 @@ import type { DB } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
+
+    @Log(
+        (_client, bankAccount) => `enter accountId=${bankAccount.id}`,
+        (_result, _client, bankAccount) => `done accountId=${bankAccount.id}`,
+        (error, _client, bankAccount) => `throw accountId=${bankAccount.id} error=${getErrorMessage(error)}`
+    )
+    private async importAccountTransactions(
+        client: FileBasedBankSyncClientInterface,
+        bankAccount: BankAccountInterface,
+        context: ImportContextInterface
+    ): Promise<void> {
+        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        await this.createBankSyncRecord(account.id, context.tx);
+
+        const transactions = client.getTransactions(bankAccount.id);
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
+
+        const transactionInputs = transactions.map(transaction => {
+            const mccCategoryId = isNotEmptyString(transaction.category)
+                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
+                : null;
+
+            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
+        });
+
+        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
+            shouldUpdateBalances: false
+        });
+    }
 
     async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
         const { bankAccounts } = await this.parseFile(uri);
@@ -89,37 +120,6 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
-    }
-
-    @Log(
-        (_client, bankAccount) => `importAccountTransactions:enter accountId=${bankAccount.id}`,
-        (_result, _client, bankAccount) => `importAccountTransactions:done accountId=${bankAccount.id}`,
-        (error, _client, bankAccount) => `importAccountTransactions:throw accountId=${bankAccount.id} error=${String(error)}`
-    )
-    private async importAccountTransactions(
-        client: FileBasedBankSyncClientInterface,
-        bankAccount: BankAccountInterface,
-        context: ImportContextInterface
-    ): Promise<void> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
-        await this.createBankSyncRecord(account.id, context.tx);
-
-        const transactions = client.getTransactions(bankAccount.id);
-        if (!isNotEmptyArray(transactions)) {
-            return;
-        }
-
-        const transactionInputs = transactions.map(transaction => {
-            const mccCategoryId = isNotEmptyString(transaction.category)
-                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
-                : null;
-
-            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
-        });
-
-        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
-            shouldUpdateBalances: false
-        });
     }
 
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {

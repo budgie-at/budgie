@@ -57,7 +57,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     constructor() {
         super(EMPTY_SNAPSHOT);
     }
-    @Log(() => 'boost:enter', () => 'boost:done', error => `boost:throw error=${String(error)}`) async boost(): Promise<void> {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async boost(): Promise<void> {
         if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
 
@@ -65,11 +65,11 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
         await embeddingDrainerService.boost();
     }
-    @Log(() => 'cancelBoost:enter', () => 'cancelBoost:done', error => `cancelBoost:throw error=${String(error)}`) cancelBoost(): void {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) cancelBoost(): void {
         translationDrainerService.cancelBoost();
         embeddingDrainerService.cancelBoost();
     }
-    @Log(() => 'retry:enter', () => 'retry:done', error => `retry:throw error=${String(error)}`) async retry(): Promise<void> {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
             promises.push(chatService.retry());
@@ -88,7 +88,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             embeddingDrainerService.retry();
         }
     }
-    @Log(() => 'freshRebuild:enter', () => 'freshRebuild:done', error => `freshRebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
     async freshRebuild(): Promise<void> {
         try {
             await this.pauseDrainers();
@@ -110,33 +110,21 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             throw error;
         }
     }
-    @Log(() => 'pauseDrainers:enter', () => 'pauseDrainers:done', error => `pauseDrainers:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainers(): Promise<void> {
         await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
     }
-    @Log(
-        () => 'truncateEmbeddings:enter',
-        () => 'truncateEmbeddings:done',
-        error => `truncateEmbeddings:throw error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
-    @Log(
-        () => 'resetTranslations:enter',
-        () => 'resetTranslations:done',
-        error => `resetTranslations:throw error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();
         await tagRepository.resetAllTranslations();
     }
-    @Log(
-        () => 'markTransactionsForRebuild:enter',
-        () => 'markTransactionsForRebuild:done',
-        error => `markTransactionsForRebuild:throw error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async markTransactionsForRebuild(): Promise<void> {
         await transactionRepository.markAllForEmbedding();
         await transactionRepository.clearNonIndexableFlags();

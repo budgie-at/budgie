@@ -1,6 +1,6 @@
 import { Log, transactionAsync } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -28,9 +28,9 @@ import type {
 
 class TransactionImportService {
     @Log(
-        inputs => `bulkUpsertImported:enter count=${inputs.length}`,
-        (result, inputs) => `bulkUpsertImported:done requested=${inputs.length} upserted=${result.length}`,
-        (error, inputs) => `bulkUpsertImported:throw count=${inputs.length} error=${String(error)}`
+        inputs => `enter count=${inputs.length}`,
+        (result, inputs) => `done requested=${inputs.length} upserted=${result.length}`,
+        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
     )
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],

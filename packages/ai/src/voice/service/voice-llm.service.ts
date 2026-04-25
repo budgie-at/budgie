@@ -1,7 +1,7 @@
 import { CurrencyEnum, Log } from '@budgie/contracts';
 import { z } from 'zod';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
@@ -22,9 +22,9 @@ export class VoiceLlmService {
     constructor(private readonly chat: ChatInvokerInterface) {}
 
     @Log(
-        (text: string) => `extractTransactions:enter textLen=${text.length} preview=${text.slice(0, LOG_PREVIEW_LENGTH)}`,
-        (result, text: string) => `extractTransactions:done textLen=${text.length} count=${result.length}`,
-        (error, text: string) => `extractTransactions:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length} preview=${text.slice(0, LOG_PREVIEW_LENGTH)}`,
+        (result, text) => `done textLen=${text.length} count=${result.length}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
         const translatedText = await this.performTranslation(text);
@@ -34,9 +34,9 @@ export class VoiceLlmService {
     }
 
     @Log(
-        (text: string) => `performTranslation:enter textLen=${text.length}`,
-        (result, text: string) => `performTranslation:done textLen=${text.length} translatedLen=${result.length}`,
-        (error, text: string) => `performTranslation:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length}`,
+        (result, text) => `done textLen=${text.length} translatedLen=${result.length}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     private async performTranslation(text: string): Promise<string> {
         const translated = await this.chat.generate(VOICE_TRANSLATION_PROMPT, text);

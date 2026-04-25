@@ -1,9 +1,8 @@
 import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { Log } from '../../@generic/util/logger/console-transport.util';
-import { getLogger } from '../../@generic/util/logger/get-logger.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
@@ -15,26 +14,21 @@ import type { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-e
 import type { BankSyncEntityInterface } from '../entity/bank-sync-entity.interface';
 import type { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity.interface';
 
-const logger = getLogger('BankSyncRepository');
-
 export class BankSyncRepository {
     constructor(private db: DB) {}
 
-    @Log('repo:bankSync:update')
+    @Log(
+        (id, input) => `enter id=${id} mode=${input.mode ?? 'unchanged'}`,
+        (result, id) =>
+            `done id=${id} mode=${result.mode} forwardSyncFromAt=${result.forwardSyncFromAt} forwardSyncedAt=${result.forwardSyncedAt} transactionCount=${result.transactionCount}`,
+        (error, id) => `throw id=${id} error=${getErrorMessage(error)}`
+    )
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
-        logger.log('repo:bankSync:update', { id, input });
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({ ...input })
             .where(eq(BankSyncEntityTable.id, id))
             .returning();
-        logger.log('repo:bankSync:update:done', {
-            id,
-            resultForwardSyncFromAt: bankSync.forwardSyncFromAt,
-            resultForwardSyncedAt: bankSync.forwardSyncedAt,
-            resultMode: bankSync.mode,
-            resultTransactionCount: bankSync.transactionCount
-        });
 
         return bankSync;
     }
@@ -92,10 +86,17 @@ export class BankSyncRepository {
         );
     }
 
+    @Log(
+        (provider, staleThresholdMs) => `enter provider=${provider} staleThresholdMs=${staleThresholdMs}`,
+        (result, provider, staleThresholdMs) =>
+            `done provider=${provider} staleThresholdMs=${staleThresholdMs} resultCount=${result.length}`,
+        (error, provider, staleThresholdMs) =>
+            `throw provider=${provider} staleThresholdMs=${staleThresholdMs} error=${getErrorMessage(error)}`
+    )
     async getPendingForwardSync(provider: ExternalSourceEnum, staleThresholdMs: number): Promise<BankSyncEntityInterface[]> {
         const staleTime = new Date(Date.now() - staleThresholdMs);
 
-        const results = await this.selectWithActiveAccount()
+        return await this.selectWithActiveAccount()
             .where(
                 and(
                     eq(BankSyncEntityTable.provider, provider),
@@ -107,22 +108,6 @@ export class BankSyncRepository {
                 )
             )
             .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
-
-        logger.log('repo:bankSync:getPendingForwardSync', {
-            staleThresholdMs,
-            staleTime,
-            count: results.length,
-            syncs: results.map(entry => ({
-                id: entry.id,
-                accountId: entry.accountId,
-                forwardSyncFromAt: entry.forwardSyncFromAt,
-                forwardSyncedAt: entry.forwardSyncedAt,
-                mode: entry.mode,
-                transactionCount: entry.transactionCount
-            }))
-        });
-
-        return results;
     }
 
     async setStatus(id: number, status: BankSyncStatusEnum, tx?: DB): Promise<void> {
