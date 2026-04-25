@@ -1,5 +1,6 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { CategoryEntityInterface, getLogger } from '@budgie/contracts';
+import { CategoryEntityInterface } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 

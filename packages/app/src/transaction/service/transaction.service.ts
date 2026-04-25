@@ -1,11 +1,6 @@
-import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
-    Log,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
-} from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+
+import { AccountTypeEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 

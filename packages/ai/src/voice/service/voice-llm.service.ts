@@ -1,4 +1,5 @@
-import { CurrencyEnum, Log } from '@budgie/contracts';
+import { CurrencyEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { z } from 'zod';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';

@@ -1,4 +1,4 @@
-import { Log, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';

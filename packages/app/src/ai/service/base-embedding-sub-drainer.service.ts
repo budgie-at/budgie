@@ -1,4 +1,5 @@
-import { EmbeddingPendingContextBaseInterface, Log, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+import { EmbeddingPendingContextBaseInterface, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 

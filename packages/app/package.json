@@ -26,6 +26,7 @@
         "@budgie/ai": "workspace:^",
         "@budgie/bank-sync": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/logger": "workspace:*",
         "@expo/fingerprint": "~0.16.6",
         "@formatjs/intl": "^3.1.8",
         "@hookform/resolvers": "^5.2.2",

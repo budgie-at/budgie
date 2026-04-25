@@ -1,4 +1,4 @@
-import { Log, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 import { SpeechToTextModule, WHISPER_SMALL } from 'react-native-executorch';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
