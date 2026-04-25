@@ -1415,7 +1415,6 @@ __metadata:
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
     "@budgie/logger": "workspace:*"
-    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^2.0.0"
     date-fns: "npm:^4.1.0"
     ky: "npm:^1.14.1"
@@ -1428,7 +1427,6 @@ __metadata:
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
     "@budgie/logger": "workspace:*"
-    "@rnw-community/log-decorator": "npm:^2.0.3"
     "@rnw-community/shared": "npm:^2.0.0"
     date-fns: "npm:^4.1.0"
     drizzle-orm: "npm:^0.45.2"

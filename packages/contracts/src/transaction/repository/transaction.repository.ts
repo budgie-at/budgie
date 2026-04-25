@@ -40,6 +40,109 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                JOIN merchant_embeddings me
+                  ON me.title = transactions.title
+                  AND me.mcc_description = COALESCE(mcc.full_description, '')
+                  AND me.category_id = te.category_id
+                  AND me.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+    }
+
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                JOIN comment_embeddings ce
+                  ON ce.comment = transactions.comment
+                  AND ce.category_id = te.category_id
+                  AND ce.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+    }
+
+    @Log(
+        (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
+        (result, mccCategoryId, limit) =>
+            `done mccCategoryId=${mccCategoryId} limit=${limit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
+        (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
+    )
+    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
+        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
+            `WITH signals AS (
+                SELECT me.category_id AS category_id
+                FROM merchant_embeddings me
+                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                WHERE mcc.id = ? AND me.deleted_at IS NULL
+                UNION ALL
+                SELECT te.category_id
+                FROM transaction_entries te
+                INNER JOIN transactions t ON t.id = te.transaction_id
+                WHERE te.mcc_category_id = ?
+                  AND te.category_id IS NOT NULL
+                  AND t.deleted_at IS NULL
+                  AND te.deleted_at IS NULL
+            )
+            SELECT category_id AS categoryId, COUNT(*) AS count
+            FROM signals
+            WHERE category_id IS NOT NULL
+            GROUP BY category_id
+            ORDER BY COUNT(*) DESC
+            LIMIT ?`,
+            [mccCategoryId, mccCategoryId, limit]
+        );
+    }
+
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} externalIds=${result.join(',')}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
+    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
+        const results = await this.db
+            .select({ externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return results.map(row => row.externalId).filter(isDefined);
+    }
+
     async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
@@ -168,109 +271,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
               AND deleted_at IS NULL
               AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
         `);
-    }
-
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-                JOIN merchant_embeddings me
-                  ON me.title = transactions.title
-                  AND me.mcc_description = COALESCE(mcc.full_description, '')
-                  AND me.category_id = te.category_id
-                  AND me.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
-    }
-
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                JOIN comment_embeddings ce
-                  ON ce.comment = transactions.comment
-                  AND ce.category_id = te.category_id
-                  AND ce.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
-    }
-
-    @Log(
-        (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
-        (result, mccCategoryId, limit) =>
-            `done mccCategoryId=${mccCategoryId} limit=${limit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
-        (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
-    )
-    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
-        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
-            `WITH signals AS (
-                SELECT me.category_id AS category_id
-                FROM merchant_embeddings me
-                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
-                WHERE mcc.id = ? AND me.deleted_at IS NULL
-                UNION ALL
-                SELECT te.category_id
-                FROM transaction_entries te
-                INNER JOIN transactions t ON t.id = te.transaction_id
-                WHERE te.mcc_category_id = ?
-                  AND te.category_id IS NOT NULL
-                  AND t.deleted_at IS NULL
-                  AND te.deleted_at IS NULL
-            )
-            SELECT category_id AS categoryId, COUNT(*) AS count
-            FROM signals
-            WHERE category_id IS NOT NULL
-            GROUP BY category_id
-            ORDER BY COUNT(*) DESC
-            LIMIT ?`,
-            [mccCategoryId, mccCategoryId, limit]
-        );
-    }
-
-    @Log(
-        externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} externalIds=${result.join(',')}`,
-        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
-    )
-    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
-        const results = await this.db
-            .select({ externalId: TransactionEntityTable.externalId })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    isNotNull(TransactionEntityTable.externalId),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
-
-        return results.map(row => row.externalId).filter(isDefined);
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {

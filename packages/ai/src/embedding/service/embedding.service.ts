@@ -5,6 +5,12 @@ import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-commu
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 
+const buildEmbeddingEnterLog = (text: string): string => `enter textLen=${text.length}`;
+
+const buildEmbeddingDoneLog = (result: Float32Array | null): string => `done dimensions=${isDefined(result) ? result.length : 0}`;
+
+const buildEmbeddingErrorLog = (error: unknown, text: string): string => `throw textLen=${text.length} error=${getErrorMessage(error)}`;
+
 export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
     private static embeddingCache = new Map<string, Promise<Float32Array | null>>();
@@ -12,11 +18,7 @@ export class EmbeddingService {
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
-    @Log(
-        text => `enter textLen=${text.length}`,
-        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
-    )
+    @Log(buildEmbeddingEnterLog, buildEmbeddingDoneLog, buildEmbeddingErrorLog)
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
@@ -50,11 +52,7 @@ export class EmbeddingService {
         return cached;
     }
 
-    @Log(
-        text => `enter textLen=${text.length}`,
-        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
-    )
+    @Log(buildEmbeddingEnterLog, buildEmbeddingDoneLog, buildEmbeddingErrorLog)
     private async enqueueEmbedding(text: string): Promise<Float32Array | null> {
         const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
         EmbeddingService.embeddingCache.set(text, promise);

@@ -24,9 +24,9 @@ export abstract class BaseEmbeddingRepository {
     @Log(
         (queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
             `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
-        (result, queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+        (result, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
             `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
-        (error, queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+        (error, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
             `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
     )
     async findSimilarCategories(

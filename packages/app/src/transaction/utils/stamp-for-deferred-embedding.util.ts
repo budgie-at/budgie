@@ -1,6 +1,5 @@
-import { getLogger } from '@budgie/logger';
-
 import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 const logger = getLogger('stampForDeferredEmbedding');
 

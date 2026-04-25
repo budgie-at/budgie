@@ -1,6 +1,5 @@
-import { Log } from '@budgie/logger';
-
 import { transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -32,9 +31,9 @@ class TransactionImportService {
     @Log(
         (inputs, existingTransactionIdMap, tx, options) =>
             `enter externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
-        (result, inputs, existingTransactionIdMap, tx, options) =>
+        (result, ...[inputs, existingTransactionIdMap, tx, options]) =>
             `done externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
-        (error, inputs, existingTransactionIdMap, tx, options) =>
+        (error, ...[inputs, existingTransactionIdMap, tx, options]) =>
             `throw externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
     )
     async bulkUpsertImported(

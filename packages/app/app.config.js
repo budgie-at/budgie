@@ -6,6 +6,7 @@ const IS_E2E = APP_VARIANT === 'e2e';
 const IS_PREVIEW = APP_VARIANT === 'preview';
 const IS_AI_DISABLED = process.env.EXPO_PUBLIC_AI_DISABLE === 'true';
 const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
+const IS_LOGGING_ENABLED = IS_DEV && !IS_LOGGING_DISABLED;
 // Fingerprint inputs must be identical locally and on EAS workers.
 // Drive ccache from an explicit env var that can be set in eas.json instead of CI.
 const IS_CCACHE_ENABLED = process.env.USE_CCACHE === '1';
@@ -99,7 +100,7 @@ export default ({ config }) => ({
     extra: {
         appVariant: APP_VARIANT ?? 'production',
         aiEnabled: !IS_AI_DISABLED,
-        loggingEnabled: !IS_LOGGING_DISABLED,
+        loggingEnabled: IS_LOGGING_ENABLED,
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
