@@ -267,7 +267,7 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 msgid "Available Columns"
 msgstr "Columnas disponibles"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:63
+#: src/transaction/components/statistics-content/statistics-content.tsx:68
 msgid "Balance"
 msgstr "Saldo"
 
@@ -330,6 +330,7 @@ msgstr "Cancelar"
 msgid "Cash"
 msgstr "Efectivo"
 
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:84
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
@@ -1029,17 +1030,17 @@ msgid "Include in Net Worth"
 msgstr "Incluir en patrimonio neto"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
-#: src/transaction/components/statistics-content/statistics-content.tsx:62
+#: src/transaction/components/statistics-content/statistics-content.tsx:67
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:70
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:30
 msgid "Income by category"
 msgstr "Ingresos por categoría"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:92
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:46
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
@@ -1274,6 +1275,10 @@ msgstr "Sin resultados"
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
 
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:35
+msgid "No tags in this period"
+msgstr "Sin etiquetas en este período"
+
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "No tags match your search"
 msgstr "Ninguna etiqueta coincide con tu búsqueda"
@@ -1336,7 +1341,7 @@ msgstr "Abre la aplicación Privatbank24"
 msgid "Organization"
 msgstr "Organización"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:52
+#: src/transaction/components/statistics-content/statistics-content.tsx:57
 msgid "Overview"
 msgstr "Resumen"
 
@@ -1737,15 +1742,15 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:81
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:41
 msgid "Spending by Category"
 msgstr "Gastos por categoría"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:103
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:57
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:58
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Spent"
 msgstr "Gastado"
 
@@ -1769,10 +1774,6 @@ msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregand
 #: src/ai/service/ai-umbrella-status.service.ts:96
 msgid "Starting up AI…"
 msgstr "Iniciando IA…"
-
-#: src/app/(tabs)/analytics.tsx:13
-msgid "Statistics"
-msgstr "Estadísticas"
 
 #: src/account/constant/account-type-description.constant.ts:10
 msgid "Stock investments"
@@ -1827,6 +1828,11 @@ msgstr "Etiqueta"
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:36
+msgid "Tag transactions to see how your spending breaks down by context."
+msgstr "Etiqueta tus transacciones para ver cómo se desglosan tus gastos por contexto."
+
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:84
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
