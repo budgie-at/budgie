@@ -11,6 +11,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -34,7 +35,6 @@ const getItemType = (item: TransactionListItemType | undefined) => item?.type ??
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-const ESTIMATED_ITEM_SIZE = 130;
 const LIST_STYLE = { flex: 1 };
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
@@ -114,7 +114,7 @@ export const TransactionSectionsList = ({
                     data={flatData}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
-                    estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                    estimatedItemSize={TRANSACTION_LIST_ESTIMATED_ITEM_SIZE}
                     stickyIndices={getStickyIndices(flatData)}
                     recycleItems
                     onEndReached={onEndReached}

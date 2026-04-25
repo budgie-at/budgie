@@ -1,4 +1,4 @@
-import { TagEntityInterface, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -6,19 +6,15 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
+import { TagStatInterface } from '../../interface/tag-stat.interface';
 import { StatsByTags } from '../stats-by-tags/stats-by-tags';
-
-interface TagStat {
-    readonly amount: number;
-    readonly tag: TagEntityInterface;
-}
 
 interface Props {
     readonly filters: TransactionFilterInterface;
     readonly income: number;
     readonly expense: number;
-    readonly incomeByTag: TagStat[];
-    readonly expenseByTag: TagStat[];
+    readonly incomeByTag: TagStatInterface[];
+    readonly expenseByTag: TagStatInterface[];
 }
 
 export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expenseByTag }: Props) => {
