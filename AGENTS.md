@@ -119,6 +119,9 @@ packages/
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
 32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Free-function / component / hook logs use `getLogger(context)` from the same package. Do not import `console.log` / `console.debug` / `console.error` directly in service code — route through the transport so app builds can gate logging consistently.
+33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
+34. **No log-only abstractions.** Do not add helpers, wrapper decorators, or shared constants whose only purpose is to build or reuse lifecycle log strings. Keep `@Log` usage directly on the method so argument usage stays obvious.
+35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
 
 ### Naming Conventions
 
@@ -373,8 +376,8 @@ Mix freely: any of the three hooks can independently be a string or a function.
 2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
 3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
 4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
-5. **Strings (short)** → output directly: `title=${transactionTitle}`. No quotes.
-6. **Strings (long, e.g. prompts)** → `lenName=${arg.length}`. The arg still appears, just summarized.
+5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
+6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
 7. **Numbers / IDs** → output directly: `id=${row.id}`.
 8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
 9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
@@ -492,6 +495,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 |------|-----------------|----------------------|
 | `max-statements` | Form orchestration components with multiple hooks/handlers | `-- Form orchestration component with multiple hooks and handlers` |
 | `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
+| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape | `-- Existing public API and Log hooks intentionally keep positional arguments` |
 
 Example:
 ```typescript

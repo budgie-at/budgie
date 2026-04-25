@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/max-params -- Existing suggestion APIs and Log hooks intentionally keep positional arguments */
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
@@ -28,9 +29,6 @@ import type { PrepareSuggestionResultInterface } from '../interface/prepare-sugg
 import type { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
 import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 
-const buildSuggestionContextLog = (transactionTitle: string, mccDescription: string | null, comment: string, aiContext: string): string =>
-    `title=${transactionTitle} mcc=${mccDescription ?? 'none'} commentLen=${comment.length} aiContextLen=${aiContext.length}`;
-
 export class EmbeddingSuggestionService {
     constructor(
         private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
@@ -42,32 +40,29 @@ export class EmbeddingSuggestionService {
     ) {}
 
     @Log(
-        (...[categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId]) =>
-            `enter ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} mccCategoryId=${String(mccCategoryId ?? null)} categoryIds=${categories.map(category => category.id).join(',')}`,
-        (result, ...[categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId]) =>
-            `done ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} mccCategoryId=${String(mccCategoryId ?? null)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
-        (error, ...[categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId]) =>
-            `throw ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} mccCategoryId=${String(mccCategoryId ?? null)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
+        (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryIds=${categories.map(category => category.id).join(',')}`,
+        (result, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
+        (error, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
     )
     async suggestCategories(
-        ...[categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId]: [
-            categories: CategoryEntityInterface[],
-            transactionTitle: string,
-            mccDescription: string | null,
-            comment: string,
-            aiContext: string,
-            mccCategoryId?: number | null
-        ]
+        categories: CategoryEntityInterface[],
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string,
+        mccCategoryId: number | null = null
     ): Promise<CategoryEntityInterface[]> {
-        const resolvedMccCategoryId = mccCategoryId ?? null;
         const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
         if (!isDefined(preparation)) {
             return [];
         }
         const { resolved } = preparation;
 
-        const mccLookup = isDefined(resolvedMccCategoryId)
-            ? this.getMccCategorySuggestions(resolvedMccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
+        const mccLookup = isDefined(mccCategoryId)
+            ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
             : Promise.resolve([]);
 
         const [merchantResults, commentResults, mccRows] = await Promise.all([
@@ -90,22 +85,20 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        (...[allTags, categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `enter ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
-        (result, ...[allTags, categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `done ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
-        (error, ...[allTags, categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `throw ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
+        (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
+        (result, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
+        (error, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
     )
     async suggestTags(
-        ...[allTags, categoryId, transactionTitle, mccDescription, comment, aiContext]: [
-            allTags: TagEntityInterface[],
-            categoryId: number,
-            transactionTitle: string,
-            mccDescription: string | null,
-            comment: string,
-            aiContext: string
-        ]
+        allTags: TagEntityInterface[],
+        categoryId: number,
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
     ): Promise<TagEntityInterface[]> {
         const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
         if (!isDefined(preparation)) {
@@ -132,21 +125,19 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        (...[categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `enter categoryId=${categoryId} ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)}`,
-        (result, ...[categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `done categoryId=${categoryId} ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} count=${result.length}`,
-        (error, ...[categoryId, transactionTitle, mccDescription, comment, aiContext]) =>
-            `throw categoryId=${categoryId} ${buildSuggestionContextLog(transactionTitle, mccDescription, comment, aiContext)} error=${getErrorMessage(error)}`
+        (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}"`,
+        (result, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" count=${result.length}`,
+        (error, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" error=${getErrorMessage(error)}`
     )
     async suggestComments(
-        ...[categoryId, transactionTitle, mccDescription, comment, aiContext]: [
-            categoryId: number,
-            transactionTitle: string,
-            mccDescription: string | null,
-            comment: string,
-            aiContext: string
-        ]
+        categoryId: number,
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
     ): Promise<string[]> {
         const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
         if (!isDefined(preparation)) {
@@ -165,9 +156,9 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        context => `enter contextLen=${context.length}`,
-        (result, context) => `done contextLen=${context.length} resolved=${String(isDefined(result))}`,
-        (error, context) => `throw contextLen=${context.length} error=${getErrorMessage(error)}`
+        context => `enter context="${context}"`,
+        (result, context) => `done context="${context}" resolved=${String(isDefined(result))}`,
+        (error, context) => `throw context="${context}" error=${getErrorMessage(error)}`
     )
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
         const service = new EmbeddingService(this.embedding);

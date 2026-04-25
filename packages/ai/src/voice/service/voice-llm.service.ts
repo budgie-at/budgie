@@ -23,9 +23,9 @@ export class VoiceLlmService {
     constructor(private readonly chat: ChatInvokerInterface) {}
 
     @Log(
-        text => `enter textLen=${text.length} preview=${text.slice(0, LOG_PREVIEW_LENGTH)}`,
+        text => `enter text="${text.slice(0, LOG_PREVIEW_LENGTH)}"`,
         result => `done count=${result.length}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
+        (error, text) => `throw text="${text.slice(0, LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
     )
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
         const translatedText = await this.performTranslation(text);
@@ -35,9 +35,9 @@ export class VoiceLlmService {
     }
 
     @Log(
-        text => `enter textLen=${text.length}`,
+        text => `enter text="${text.slice(0, LOG_PREVIEW_LENGTH)}"`,
         result => `done translatedLen=${result.length}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
+        (error, text) => `throw text="${text.slice(0, LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
     )
     private async performTranslation(text: string): Promise<string> {
         const translated = await this.chat.generate(VOICE_TRANSLATION_PROMPT, text);

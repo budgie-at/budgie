@@ -26,8 +26,8 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
 
     @Log(
-        row => `enter kind=${row.kind} id=${row.id} title=${row.title}`,
-        (result, row) => `done id=${row.id} titleEn=${result.titleEn}`,
+        row => `enter kind=${row.kind} id=${row.id} title="${row.title}"`,
+        (result, row) => `done id=${row.id} titleEn="${result.titleEn}"`,
         (error, row) => `throw id=${row.id} error=${getErrorMessage(error)}`
     )
     private async translateRow(row: CategoryOrTagRowInterface): Promise<TranslationResultInterface> {
@@ -37,10 +37,9 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     }
 
     @Log(
-        (row, translationResult) => `enter kind=${row.kind} id=${row.id} titleEnLen=${translationResult.titleEn.length}`,
+        (row, translationResult) => `enter kind=${row.kind} id=${row.id} titleEn="${translationResult.titleEn}"`,
         'done',
-        (error, row, translationResult) =>
-            `throw id=${row.id} titleEnLen=${translationResult.titleEn.length} error=${getErrorMessage(error)}`
+        (error, row, translationResult) => `throw id=${row.id} titleEn="${translationResult.titleEn}" error=${getErrorMessage(error)}`
     )
     private async persistTranslation(row: CategoryOrTagRowInterface, result: TranslationResultInterface): Promise<void> {
         if (row.kind === 'category') {
