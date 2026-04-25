@@ -1,5 +1,5 @@
 import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
-import { AccountWithInstrumentEntityInterface, LoggerNamespaceEnum, TransactionTypeEnum, getLogger } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, TransactionTypeEnum, getLogger } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
@@ -8,7 +8,7 @@ import { useSearchAccountsSortedQuery } from '../../account/query/use-search-acc
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { voiceService } from '../service/voice.service';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useLlmCategorization');
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
 import { useChat } from './use-chat.hook';

@@ -1,11 +1,11 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useEmbeddingGenerator');
 
 interface MarkParamsInterface {
     readonly transactionId: number;

@@ -1,6 +1,6 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
@@ -10,8 +10,6 @@ import { BaseLlamaSubsystemService } from './base-subsystem.service';
 
 import type { EmbeddingInvokerInterface } from '@budgie/ai';
 
-const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
-
 class LocalEmbeddingService
     extends BaseLlamaSubsystemService
     implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, EmbeddingInvokerInterface
@@ -19,34 +17,29 @@ class LocalEmbeddingService
     constructor() {
         super('embedding');
     }
-
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:embed:start')
+    @Log(
+        (text: string) => `embed:enter textLen=${text.length}`,
+        (result: number[]) => `embed:done dimensions=${result.length}`,
+        (error, text: string) => `embed:throw textLen=${text.length} error=${String(error)}`
+    )
     async embed(text: string): Promise<number[]> {
         if (!this.isReady || !isDefined(this.context)) {
-            logger.log('embedding:embed:empty', { reason: 'not-ready' });
-
             return [];
         }
-        const started = Date.now();
-        try {
-            const result = await this.context.embedding(text);
-            logger.log('embedding:embed:complete', { durationMs: Date.now() - started, dimensions: result.embedding.length });
+        const result = await this.context.embedding(text);
 
-            return result.embedding;
-        } catch (error: unknown) {
-            logger.log('embedding:embed:empty', { reason: 'native-throw', errorMessage: getErrorMessage(error) });
-
-            return [];
-        }
+        return result.embedding;
     }
-
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:batchEmbed:start')
+    @Log(
+        (texts: readonly string[]) => `batchEmbed:enter count=${texts.length}`,
+        (result: Map<string, number[]>, texts: readonly string[]) => `batchEmbed:done resolved=${result.size} of=${texts.length}`,
+        (error, texts: readonly string[]) => `batchEmbed:throw count=${texts.length} error=${String(error)}`
+    )
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
         // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]
         if (!this.isReady || !isDefined(this.context) || texts.length === 0) {
             return new Map();
         }
-        const started = Date.now();
         const results = new Map<string, number[]>();
         /* eslint-disable no-await-in-loop -- Sequential batch embedding to avoid Metal thrash */
         for (const text of texts) {
@@ -60,7 +53,6 @@ class LocalEmbeddingService
             }
         }
         /* eslint-enable no-await-in-loop */
-        logger.log('embedding:batchEmbed:complete', { durationMs: Date.now() - started, resolved: results.size });
 
         return results;
     }

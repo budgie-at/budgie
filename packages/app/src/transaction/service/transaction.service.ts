@@ -1,18 +1,13 @@
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
-    LoggerNamespaceEnum,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface,
+    Log,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
-    getLogger,
     transactionAsync
 } from '@budgie/contracts';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -27,9 +22,13 @@ import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-t
 
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
+import type {
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryCreateInputInterface
+} from '@budgie/contracts';
 import type { DB } from '@budgie/contracts';
-
-const logger = getLogger(LoggerNamespaceEnum.TRANSACTION);
 
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
@@ -65,49 +64,34 @@ class TransactionService {
         });
     }
 
-    // eslint-disable-next-line max-statements -- Orchestrates batched creation, deferred embedding, balance updates, and error logging
+    @Log(
+        inputs => `bulkCreate:enter count=${inputs.length}`,
+        (result, inputs) => `bulkCreate:done requested=${inputs.length} inserted=${result.length}`,
+        (error, inputs) => `bulkCreate:throw count=${inputs.length} error=${String(error)}`
+    )
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
         tx?: DB,
         batchSize = TRANSACTION_BATCH_SIZE
     ): Promise<TransactionEntityInterface[]> {
-        logger.log('service:transaction:bulkCreate:enter', {
-            count: inputs.length,
-            hasTx: isDefined(tx),
-            batchSize,
-            externalSources: inputs.map(input => input.externalSource)
-        });
-
         if (!isNotEmptyArray(inputs)) {
-            logger.log('service:transaction:bulkCreate:empty');
-
             return [];
         }
 
         if (!isDefined(tx)) {
-            logger.log('service:transaction:bulkCreate:wrapTx');
-
             return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
         }
 
-        const { stampedInputs, externalSources } = stampForDeferredEmbedding(inputs, 'bulkCreate');
-        try {
-            const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-                transactionBatchCreateService.create(batch, tx)
-            );
-            logger.log('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
-            logger.log('embed:defer:queued', { count: transactions.length, externalSources });
+        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+            transactionBatchCreateService.create(batch, tx)
+        );
 
-            if (isNotEmptyArray(transactions)) {
-                await accountBalanceIncrementalService.updateAllBalances(true, tx);
-            }
-
-            return transactions;
-        } catch (error: unknown) {
-            logger.log('service:transaction:bulkCreate:throw', { message: getErrorMessage(error) });
-            logger.log('embed:defer:throw', { errorMessage: getErrorMessage(error) });
-            throw error;
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
         }
+
+        return transactions;
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {

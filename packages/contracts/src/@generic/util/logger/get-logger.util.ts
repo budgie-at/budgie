@@ -1,6 +1,4 @@
-import { LoggerNamespaceEnum } from '../../enum/logger-namespace.enum';
-
-import { buildLogTag, consoleTransport } from './console-transport.util';
+import { consoleTransport } from './console-transport.util';
 
 export interface NamespacedLoggerInterface {
     readonly debug: (tag: string, payload?: unknown) => void;
@@ -20,14 +18,16 @@ const serializePayload = (payload: unknown): string => {
     return JSON.stringify(payload);
 };
 
-export const getLogger = (namespace: LoggerNamespaceEnum): NamespacedLoggerInterface => ({
+const buildMessage = (tag: string, payload?: unknown): string => (payload === undefined ? tag : `${tag} ${serializePayload(payload)}`);
+
+export const getLogger = (context: string): NamespacedLoggerInterface => ({
     debug: (tag, payload) => {
-        consoleTransport.debug(buildLogTag(namespace, tag), serializePayload(payload));
+        consoleTransport.debug(buildMessage(tag, payload), context);
     },
     error: (tag, error) => {
-        consoleTransport.error(buildLogTag(namespace, tag), error, '');
+        consoleTransport.error(tag, error, context);
     },
     log: (tag, payload) => {
-        consoleTransport.log(buildLogTag(namespace, tag), serializePayload(payload));
+        consoleTransport.log(buildMessage(tag, payload), context);
     }
 });

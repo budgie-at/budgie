@@ -1,4 +1,4 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/contracts';
 import { SpeechToTextModule, WHISPER_SMALL } from 'react-native-executorch';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -11,8 +11,7 @@ import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
 import { BaseSubsystemService } from './base-subsystem.service';
 
 import type { SttInvokerInterface } from '@budgie/ai';
-
-const logger = getLogger(LoggerNamespaceEnum.STT);
+const sttLogger = getLogger('SttService');
 
 class SttService
     extends BaseSubsystemService<SttSnapshotInterface>
@@ -38,20 +37,19 @@ class SttService
     get nonCommittedTranscription(): string {
         return this.snapshot.nonCommittedTranscription;
     }
-
-    @Log(LoggerNamespaceEnum.STT, 'stt:retry')
-    async retry(): Promise<void> {
+    @Log(() => 'retry:enter', () => 'retry:done', error => `retry:throw error=${String(error)}`) async retry(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
-
-    @Log(LoggerNamespaceEnum.STT, 'stt:stream:start')
-    // eslint-disable-next-line max-statements -- Async generator consumption with per-chunk snapshot updates
+    @Log(
+        (options?: { readonly language?: string }) => `stream:start language=${options?.language ?? 'default'}`,
+        (result: string) => `stream:complete committedLen=${result.length}`,
+        error => `stream:throw error=${String(error)}`
+    ) // eslint-disable-next-line max-statements -- Async generator consumption with per-chunk snapshot updates
     async stream(options?: { readonly language?: string }): Promise<string> {
         if (!this.isReady || !isDefined(this.instance)) {
             throw new AiNotReadyError('stt');
         }
-        const started = Date.now();
         this.setSnapshot({ committedTranscription: '', nonCommittedTranscription: '' });
         this.activeStream = this.instance.stream(options as { readonly language?: never } | undefined);
         let lastCommitted = '';
@@ -63,47 +61,41 @@ class SttService
                 });
                 lastCommitted = chunk.committed;
             }
-            logger.log('stt:stream:complete', {
-                durationMs: Date.now() - started,
-                committedLen: lastCommitted.length
-            });
 
             return lastCommitted;
         } finally {
             this.activeStream = null;
         }
     }
-
-    @Log(LoggerNamespaceEnum.STT, 'stt:streamStop')
-    streamStop(): void {
+    @Log(() => 'streamStop:enter', () => 'streamStop:done', error => `streamStop:throw error=${String(error)}`) streamStop(): void {
         this.instance?.streamStop();
     }
-
-    streamInsert(waveform: Float32Array | number[]): void {
-        this.instance?.streamInsert(waveform);
+    @Log(
+        () => 'stt:download:begin model=WHISPER_SMALL',
+        () => 'stt:download:complete',
+        error => `stt:download:throw error=${String(error)}`
+    )
+    private async downloadModel(): Promise<void> {
+        this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
+        this.instance = new SpeechToTextModule();
+        await this.instance.load(WHISPER_SMALL, progress => {
+            this.setSnapshot({ downloadProgress: progress });
+        });
     }
-
-    protected async runStart(): Promise<void> {
+    @Log(() => 'stt:init:enter', () => 'stt:ready', error => `stt:init:throw error=${String(error)}`)
+    private async initModel(): Promise<void> {
         try {
-            this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-            logger.log('stt:download:begin', { model: 'WHISPER_SMALL' });
-            this.instance = new SpeechToTextModule();
-            await this.instance.load(WHISPER_SMALL, progress => {
-                this.setSnapshot({ downloadProgress: progress });
-            });
-            logger.log('stt:init:complete');
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
-            logger.log('stt:ready');
         } catch (error: unknown) {
             const message = getErrorMessage(error);
-            logger.log('stt:init:throw', { errorMessage: message });
+            sttLogger.error('stt:init:throw', { errorMessage: message });
             this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: message });
+            throw error;
         }
     }
-
-    protected async runStop(): Promise<void> {
+    @Log(() => 'stt:stop:enter', () => 'stt:stop:complete', error => `stt:stop:throw error=${String(error)}`)
+    private async releaseInstance(): Promise<void> {
         try {
-            logger.log('stt:stop:release');
             this.instance?.streamStop();
             this.instance?.delete();
             this.instance = null;
@@ -113,13 +105,26 @@ class SttService
                 committedTranscription: '',
                 nonCommittedTranscription: ''
             });
-            logger.log('stt:stop:complete');
         } catch (error: unknown) {
-            logger.log('stt:stop:error', { errorMessage: getErrorMessage(error) });
+            sttLogger.error('stt:stop:error', { errorMessage: getErrorMessage(error) });
             this.instance = null;
             this.activeStream = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
+            throw error;
         }
+    }
+
+    streamInsert(waveform: Float32Array | number[]): void {
+        this.instance?.streamInsert(waveform);
+    }
+
+    protected async runStart(): Promise<void> {
+        await this.downloadModel();
+        await this.initModel();
+    }
+
+    protected async runStop(): Promise<void> {
+        await this.releaseInstance();
     }
 }
 

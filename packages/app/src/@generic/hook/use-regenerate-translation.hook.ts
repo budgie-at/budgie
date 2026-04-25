@@ -1,5 +1,5 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
@@ -9,7 +9,7 @@ import { AiSubsystemStatusEnum } from '../../ai/enum/ai-subsystem-status.enum';
 import { useChat } from '../../ai/hook/use-chat.hook';
 import { chatService } from '../../ai/service/chat.service';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useRegenerateTranslation');
 
 type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
 

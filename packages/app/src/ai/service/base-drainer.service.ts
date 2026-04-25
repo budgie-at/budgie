@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { AppState, AppStateStatus, InteractionManager } from 'react-native';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
@@ -18,8 +18,6 @@ const IDLE_INTERVAL_MS = 10_000;
 const MUTEX_BUSY_RESCHEDULE_MS = 1_000;
 const ERROR_AUTO_RETRY_MS = 30_000;
 const SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
-
-const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnapshotInterface> {
     protected abstract readonly kind: DrainerKindEnum;
@@ -45,7 +43,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (this.started) {
             return;
         }
-        logger.log(`${this.logDomain}:start`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('start');
         this.started = true;
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
         this.subsystemUnsubscribe = this.subscribeToSubsystem(() => {
@@ -65,7 +65,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (!this.started) {
             return;
         }
-        logger.log(`${this.logDomain}:stop`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('stop');
         this.started = false;
         this.haltTimer();
         this.appStateSubscription?.remove();
@@ -79,7 +81,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (this.snapshot.state === DrainerStateEnum.PAUSED) {
             return;
         }
-        logger.log(`${this.logDomain}:pause`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('pause');
         if (this.snapshot.state === DrainerStateEnum.BOOSTING) {
             this.cancelBoost();
         }
@@ -92,7 +96,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
             return;
         }
-        logger.log(`${this.logDomain}:resume`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('resume');
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
         if (this.isSafe()) {
             this.scheduleDrain();
@@ -108,7 +114,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (!drainerMutex.acquire(this.kind)) {
             return;
         }
-        logger.log(`${this.logDomain}:boost:begin`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('boost:begin');
         this.haltTimer();
         this.setSnapshot({ state: DrainerStateEnum.BOOSTING, errorMessage: null });
         const started = Date.now();
@@ -134,12 +142,16 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         if (this.snapshot.state !== DrainerStateEnum.BOOSTING) {
             return;
         }
-        logger.log(`${this.logDomain}:boost:cancel`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('boost:cancel');
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
     retry(): void {
-        logger.log(`${this.logDomain}:retry`, { fromState: this.snapshot.state });
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('retry', { fromState: this.snapshot.state });
         this.consecutiveFailures = 0;
         this.setSnapshot({ state: DrainerStateEnum.IDLE, errorMessage: null });
         if (this.started && this.isSafe()) {
@@ -162,7 +174,9 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     private readonly handleAppState = (state: AppStateStatus): void => {
-        logger.log(`${this.logDomain}:appstate:change`, { to: state });
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('appstate:change', { to: state });
         if (state === 'active') {
             this.scheduleDrain();
         } else {
@@ -211,12 +225,14 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
             return;
         }
-        logger.log(`${this.logDomain}:tick`);
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('tick');
         const started = Date.now();
         try {
             const fetchStarted = Date.now();
             const rows = await this.fetchPending(this.relaxedBatchSize);
-            logger.log(`${this.logDomain}:fetch:done`, { durationMs: Date.now() - fetchStarted, size: rows.length });
+            logger.log('fetch:done', { durationMs: Date.now() - fetchStarted, size: rows.length });
             if (isEmptyArray(rows)) {
                 return;
             }
@@ -227,12 +243,12 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
-            logger.log(`${this.logDomain}:batch:complete`, {
+            logger.log('batch:complete', {
                 durationMs: Date.now() - started,
                 processed: rows.length
             });
         } catch (error: unknown) {
-            logger.log(`${this.logDomain}:batch:throw`, { errorMessage: getErrorMessage(error) });
+            logger.log('batch:throw', { errorMessage: getErrorMessage(error) });
         } finally {
             await this.finalizeBatch();
             drainerMutex.release(this.kind);
@@ -243,10 +259,12 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     private async finalizeBatch(): Promise<void> {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         try {
             await this.afterBatch();
         } catch (flushError: unknown) {
-            logger.log(`${this.logDomain}:afterBatch:throw`, { errorMessage: getErrorMessage(flushError) });
+            logger.log('afterBatch:throw', { errorMessage: getErrorMessage(flushError) });
         }
         await this.refreshPending();
     }
@@ -265,6 +283,8 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
     // eslint-disable-next-line max-statements -- Boost loop: fetch, row processing, yield, progress log
     private async runBoostLoop(startedAt: number): Promise<void> {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         let processed = 0;
         let rowIndex = 0;
         try {
@@ -285,7 +305,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                         await microPause();
                     }
                     if (processed % PROGRESS_LOG_EVERY === 0) {
-                        logger.log(`${this.logDomain}:boost:progress`, { processed });
+                        logger.log('boost:progress', { processed });
                         await this.refreshPending();
                     }
                 }
@@ -293,7 +313,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             /* eslint-enable no-await-in-loop */
         } finally {
             await this.finalizeBatch();
-            logger.log(`${this.logDomain}:boost:complete`, {
+            logger.log('boost:complete', {
                 durationMs: Date.now() - startedAt,
                 processed,
                 pending: this.snapshot.pending
@@ -311,39 +331,45 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     private handleRowFailure(error: unknown): void {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         const message = getErrorMessage(error);
         if (SQLITE_BUSY_PATTERN.test(message)) {
-            logger.log(`${this.logDomain}:row:busy`, { errorMessage: message });
+            logger.log('row:busy', { errorMessage: message });
 
             return;
         }
         this.consecutiveFailures += 1;
-        logger.log(`${this.logDomain}:row:throw`, {
+        logger.log('row:throw', {
             errorMessage: message,
             consecutiveFailures: this.consecutiveFailures
         });
         if (this.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
             return;
         }
-        logger.log(`${this.logDomain}:error:cap-reached`, { consecutiveFailures: this.consecutiveFailures });
+        logger.log('error:cap-reached', { consecutiveFailures: this.consecutiveFailures });
         this.setSnapshot({ state: DrainerStateEnum.ERROR, errorMessage: message });
         this.haltTimer();
         setTimeout(() => {
             if (this.snapshot.state === DrainerStateEnum.ERROR) {
-                logger.log(`${this.logDomain}:error:auto-retry`);
+                // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+                const retryLogger = getLogger(this.logDomain);
+                retryLogger.log('error:auto-retry');
                 this.retry();
             }
         }, ERROR_AUTO_RETRY_MS);
     }
 
     private async refreshPending(): Promise<void> {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         try {
             const pending = await this.countPending();
             if (pending !== this.snapshot.pending) {
                 this.setSnapshot({ pending });
             }
         } catch (error: unknown) {
-            logger.log(`${this.logDomain}:refresh-pending:throw`, { errorMessage: getErrorMessage(error) });
+            logger.log('refresh-pending:throw', { errorMessage: getErrorMessage(error) });
         }
     }
 }

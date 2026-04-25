@@ -1,9 +1,8 @@
-import { LoggerNamespaceEnum } from '../../@generic/enum/logger-namespace.enum';
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
+import { Log } from '../../@generic/util/logger/console-transport.util';
 import { getLogger } from '../../@generic/util/logger/get-logger.util';
-import { Log } from '../../@generic/util/logger/log-decorator.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
@@ -92,7 +91,7 @@ const PENDING_MERCHANT_CONTEXTS_QUERY = `
     LIMIT ?
 `;
 
-const logger = getLogger(LoggerNamespaceEnum.REPO);
+const logger = getLogger('MerchantEmbeddingRepository');
 
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     constructor(db: DB) {
@@ -104,7 +103,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         });
     }
 
-    @Log(LoggerNamespaceEnum.REPO, 'repo:merchantEmbedding:findSimilarComments:start')
+    @Log('repo:merchantEmbedding:findSimilarComments:start')
     async findSimilarComments(
         queryEmbedding: Uint8Array,
         params: SimilarCommentsParamsInterface

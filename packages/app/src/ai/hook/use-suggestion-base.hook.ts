@@ -1,5 +1,5 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
@@ -7,7 +7,7 @@ import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useSuggestionBase');
 
 import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
 

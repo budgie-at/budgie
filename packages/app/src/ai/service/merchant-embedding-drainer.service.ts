@@ -1,5 +1,5 @@
 import { buildMerchantContext, serializeEmbedding } from '@budgie/ai';
-import { LoggerNamespaceEnum, MerchantPendingContextInterface, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -9,9 +9,9 @@ import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
 import { embeddingService } from './embedding.service';
 
-import type { DB } from '@budgie/contracts';
+import type { DB, MerchantPendingContextInterface } from '@budgie/contracts';
 
-const logger = getLogger(LoggerNamespaceEnum.DRAINER);
+const merchantDrainerLogger = getLogger('MerchantEmbeddingDrainerService');
 
 class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<MerchantPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_MERCHANT;
@@ -26,7 +26,7 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
     }
 
     protected logBegin(context: MerchantPendingContextInterface): void {
-        logger.log('embedding:merchant:context:begin', {
+        merchantDrainerLogger.log('embedding:merchant:context:begin', {
             title: context.title,
             categoryId: context.categoryId,
             contextSize: context.transactionIds.length,
@@ -35,6 +35,22 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
     }
 
     protected async runEmbedAndUpsert(context: MerchantPendingContextInterface): Promise<number | null> {
+        const rawEmbedding = await this.embedMerchantContext(context);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return null;
+        }
+
+        return this.upsertMerchantEmbedding(context, rawEmbedding);
+    }
+
+    @Log(
+        (context: { readonly transactionIds: readonly number[] }) =>
+            `embedding:merchant:embed:enter contextSize=${context.transactionIds.length}`,
+        (result: number[]) => `embedding:merchant:embed:done dimensions=${result.length}`,
+        (error, context: { readonly transactionIds: readonly number[] }) =>
+            `embedding:merchant:embed:throw contextSize=${context.transactionIds.length} error=${String(error)}`
+    )
+    private async embedMerchantContext(context: MerchantPendingContextInterface): Promise<number[]> {
         const promptContext = buildMerchantContext({
             title: context.title,
             mccDescription: context.mccDescription,
@@ -42,19 +58,23 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
         });
         const rawEmbedding = await embeddingService.embed(promptContext);
         if (!isNotEmptyArray(rawEmbedding)) {
-            logger.log('embedding:merchant:context:skip', {
+            merchantDrainerLogger.log('embedding:merchant:context:skip', {
                 reason: 'empty-embedding',
                 contextSize: context.transactionIds.length
             });
-
-            return null;
         }
 
-        logger.log('embedding:merchant:context:embedded', {
-            dimensions: rawEmbedding.length,
-            contextSize: context.transactionIds.length
-        });
+        return rawEmbedding;
+    }
 
+    @Log(
+        (context: { readonly transactionIds: readonly number[] }) =>
+            `embedding:merchant:upsert:enter contextSize=${context.transactionIds.length}`,
+        (result: number | null) => `embedding:merchant:upsert:done embeddingId=${String(result)}`,
+        (error, context: { readonly transactionIds: readonly number[] }) =>
+            `embedding:merchant:upsert:throw contextSize=${context.transactionIds.length} error=${String(error)}`
+    )
+    private async upsertMerchantEmbedding(context: MerchantPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
         const embeddingId = await merchantEmbeddingRepository.upsert({
             title: context.title,
@@ -65,7 +85,7 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
             dimensions: rawEmbedding.length
         });
         if (!isDefined(embeddingId)) {
-            logger.log('embedding:merchant:context:skip', {
+            merchantDrainerLogger.log('embedding:merchant:context:skip', {
                 reason: 'upsert-null',
                 contextSize: context.transactionIds.length
             });

@@ -1,4 +1,4 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -11,31 +11,35 @@ import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
 import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
 import { translationDrainerService } from './translation-drainer.service';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
-
 class AiTranslationStatusService extends BaseSubsystemStatusService {
-    @Log(LoggerNamespaceEnum.AI, 'system:action:translation:rebuild:start')
-    // eslint-disable-next-line max-statements -- 5 rebuild phases with pause/resume bookends
+    @Log(() => 'rebuild:enter', () => 'rebuild:done', error => `rebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 5 rebuild phases with pause/resume bookends
     async rebuild(): Promise<void> {
-        const started = Date.now();
         try {
-            await translationDrainerService.pause();
-            logger.log('system:action:translation:rebuild:phase', { phase: 'paused' });
+            await this.pauseDrainer();
             try {
-                await categoryRepository.resetAllTranslations();
-                await tagRepository.resetAllTranslations();
-                logger.log('system:action:translation:rebuild:phase', { phase: 'translations-reset' });
+                await this.resetTranslations();
             } finally {
                 translationDrainerService.resume();
             }
             void translationProgressStore.refresh();
             await translationDrainerService.boost();
-            logger.log('system:action:translation:rebuild:complete', { durationMs: Date.now() - started });
         } catch (error: unknown) {
-            logger.log('system:action:translation:rebuild:throw', { errorMessage: getErrorMessage(error) });
             translationDrainerService.resume();
             throw error;
         }
+    }
+    @Log(() => 'pauseDrainer:enter', () => 'pauseDrainer:done', error => `pauseDrainer:throw error=${getErrorMessage(error)}`)
+    private async pauseDrainer(): Promise<void> {
+        await translationDrainerService.pause();
+    }
+    @Log(
+        () => 'resetTranslations:enter',
+        () => 'resetTranslations:done',
+        error => `resetTranslations:throw error=${getErrorMessage(error)}`
+    )
+    private async resetTranslations(): Promise<void> {
+        await categoryRepository.resetAllTranslations();
+        await tagRepository.resetAllTranslations();
     }
 
     protected buildSubsystemSubscriptions(): (() => void)[] {

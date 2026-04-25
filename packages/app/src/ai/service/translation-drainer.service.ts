@@ -1,20 +1,20 @@
 import { TranslationLlmService } from '@budgie/ai';
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
-import { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
 import { translationProgressStore } from '../store/translation-progress.store';
 
 import { BaseDrainerService } from './base-drainer.service';
 import { chatService } from './chat.service';
 
+import type { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
+import type { TranslationResultInterface } from '@budgie/ai';
+
 const RELAXED_INTERVAL_MS = 5000;
 const RELAXED_BATCH_SIZE = 3;
 const BOOST_BATCH_SIZE = 5;
 const YIELD_EVERY_ROWS = 2;
-
-const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
     protected readonly kind = DrainerKindEnum.TRANSLATION;
@@ -52,19 +52,36 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     }
 
     protected async processRow(row: CategoryOrTagRowInterface): Promise<void> {
-        logger.log('translation:row:begin', { kind: row.kind, id: row.id, title: row.title });
+        const result = await this.translateRow(row);
+        await this.persistTranslation(row, result);
+    }
+
+    @Log(
+        (row: { readonly kind: string; readonly id: number; readonly title: string }) =>
+            `translation:row:begin kind=${row.kind} id=${row.id} title=${row.title}`,
+        (result: TranslationResultInterface, row: { readonly kind: string; readonly id: number }) =>
+            `translation:row:translated kind=${row.kind} id=${row.id} titleEnLen=${result.titleEn.length}`,
+        (error, row: { readonly kind: string; readonly id: number }) =>
+            `translation:row:throw kind=${row.kind} id=${row.id} error=${String(error)}`
+    )
+    private async translateRow(row: CategoryOrTagRowInterface): Promise<TranslationResultInterface> {
         const service = new TranslationLlmService(chatService);
-        const result = await service.translate(row.title);
+
+        return service.translate(row.title);
+    }
+
+    @Log(
+        (row: { readonly kind: string; readonly id: number }) => `translation:row:persist kind=${row.kind} id=${row.id}`,
+        (_result, row: { readonly kind: string; readonly id: number }) => `translation:row:persisted kind=${row.kind} id=${row.id}`,
+        (error, row: { readonly kind: string; readonly id: number }) =>
+            `translation:row:persist:throw kind=${row.kind} id=${row.id} error=${String(error)}`
+    )
+    private async persistTranslation(row: CategoryOrTagRowInterface, result: TranslationResultInterface): Promise<void> {
         if (row.kind === 'category') {
             await categoryRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
         } else {
             await tagRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
         }
-        logger.log('translation:row:persisted', {
-            kind: row.kind,
-            id: row.id,
-            titleEnLen: result.titleEn.length
-        });
     }
 }
 
