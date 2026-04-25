@@ -1,5 +1,5 @@
 import { buildCommentContext, serializeEmbedding } from '@budgie/ai';
-import { Log, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 

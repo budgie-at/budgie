@@ -1,4 +1,4 @@
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 

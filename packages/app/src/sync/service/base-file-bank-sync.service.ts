@@ -1,5 +1,7 @@
 /* eslint-disable no-await-in-loop */
-import { BankSyncModeEnum, ExternalSourceEnum, Log, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+
+import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 

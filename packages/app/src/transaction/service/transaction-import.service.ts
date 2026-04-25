@@ -1,4 +1,6 @@
-import { Log, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+
+import { transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 

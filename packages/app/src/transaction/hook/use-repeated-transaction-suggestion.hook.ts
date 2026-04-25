@@ -1,5 +1,7 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
+
+import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 

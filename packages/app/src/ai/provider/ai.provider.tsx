@@ -1,4 +1,4 @@
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { ReactNode, useEffect } from 'react';
 
 import { aiCoordinatorService } from '../service/ai-coordinator.service';

@@ -1,11 +1,12 @@
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
-    Log,
     SimilarTagsParamsInterface,
     TagEntityInterface,
     TagScoreResultInterface
 } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 

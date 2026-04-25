@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { AppState, InteractionManager } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';

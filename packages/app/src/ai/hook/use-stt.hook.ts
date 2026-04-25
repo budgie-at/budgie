@@ -1,5 +1,5 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 

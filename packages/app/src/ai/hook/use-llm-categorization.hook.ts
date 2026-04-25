@@ -1,5 +1,6 @@
 import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
-import { AccountWithInstrumentEntityInterface, TransactionTypeEnum, getLogger } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';

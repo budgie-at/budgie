@@ -1,5 +1,5 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';

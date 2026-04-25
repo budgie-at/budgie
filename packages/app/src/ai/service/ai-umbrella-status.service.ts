@@ -1,4 +1,4 @@
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
 import { isDefined } from '@rnw-community/shared';

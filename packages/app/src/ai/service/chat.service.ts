@@ -1,5 +1,5 @@
 import { stripThinkingTags } from '@budgie/ai';
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 

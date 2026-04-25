@@ -1,5 +1,5 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
