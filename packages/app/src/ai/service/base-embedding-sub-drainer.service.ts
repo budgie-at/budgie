@@ -7,7 +7,6 @@ import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
@@ -35,7 +34,6 @@ export abstract class BaseEmbeddingSubDrainerService<
         (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
     )
     protected async processRow(context: TContext): Promise<void> {
-        this.logBegin(context);
         if (isDefined(context.existingEmbeddingId)) {
             this.pendingPersists.push({ context, embeddingId: context.existingEmbeddingId, skipped: true });
 
@@ -48,7 +46,7 @@ export abstract class BaseEmbeddingSubDrainerService<
         this.pendingPersists.push({ context, embeddingId, skipped: false });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     protected override async afterBatch(): Promise<void> {
         if (isEmptyArray(this.pendingPersists)) {
             return;
@@ -87,6 +85,20 @@ export abstract class BaseEmbeddingSubDrainerService<
         return this.persistEmbedding(context, serialized, rawEmbedding.length);
     }
 
+    @Log(
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        (result, context) => `done transactionIds=${context.transactionIds.join(',')} embeddingId=${String(result)}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    private async runEmbedAndUpsert(context: TContext): Promise<number | null> {
+        const rawEmbedding = await this.embedContext(context);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return null;
+        }
+
+        return this.upsertEmbedding(context, rawEmbedding);
+    }
+
     protected subscribeToSubsystem(listener: () => void): () => void {
         return embeddingService.subscribe(listener);
     }
@@ -95,25 +107,7 @@ export abstract class BaseEmbeddingSubDrainerService<
         return embeddingService.isReady;
     }
 
-    protected async runEmbedAndUpsert(context: TContext): Promise<number | null> {
-        const rawEmbedding = await this.embedContext(context);
-        if (!isNotEmptyArray(rawEmbedding)) {
-            this.logSkip(context, 'empty-embedding');
-
-            return null;
-        }
-
-        const embeddingId = await this.upsertEmbedding(context, rawEmbedding);
-        if (!isDefined(embeddingId)) {
-            this.logSkip(context, 'upsert-null');
-        }
-
-        return embeddingId;
-    }
-
     protected abstract buildPromptContext(context: TContext): string;
-    protected abstract logBegin(context: TContext): void;
-    protected abstract logSkip(context: TContext, reason: string): void;
     protected abstract persistEmbedding(context: TContext, embedding: Uint8Array, dimensions: number): Promise<number | null>;
     protected abstract replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void>;
 }

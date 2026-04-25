@@ -19,9 +19,9 @@ class LocalEmbeddingService
     }
 
     @Log(
-        text => `enter textLen=${text.length}`,
+        text => `enter text="${text}"`,
         result => `done dimensions=${result.length}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
+        (error, text) => `throw text="${text}" error=${getErrorMessage(error)}`
     )
     async embed(text: string): Promise<number[]> {
         if (!this.isReady || !isDefined(this.context)) {

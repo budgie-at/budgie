@@ -8,7 +8,6 @@ import { microPause } from '../../@generic/utils/micro-pause.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
-import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { SnapshotStore } from './base-subsystem.service';
 import { drainerMutex } from './drainer-mutex.service';
@@ -41,7 +40,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     start(): void {
         if (this.started) {
             return;
@@ -61,7 +60,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         void this.refreshPending();
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     stop(): void {
         if (!this.started) {
             return;
@@ -75,7 +74,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async pause(): Promise<void> {
         if (this.snapshot.state === DrainerStateEnum.PAUSED) {
             return;
@@ -88,7 +87,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.PAUSED });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
             return;
@@ -100,7 +99,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         void this.refreshPending();
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Boost entry: guard, mutex, timer halt, snapshot, loop, finally
     async boost(): Promise<void> {
         if (this.getState() === DrainerStateEnum.BOOSTING) {
@@ -125,7 +124,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     cancelBoost(): void {
         if (this.snapshot.state !== DrainerStateEnum.BOOSTING) {
             return;
@@ -133,7 +132,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     retry(): void {
         this.consecutiveFailures = 0;
         this.setSnapshot({ state: DrainerStateEnum.IDLE, errorMessage: null });
@@ -209,7 +208,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         void pendingBatchPromise.catch(emptyFn);
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Relaxed tick: mutex, fetch, run, refresh, reschedule
     private async runRelaxedTick(): Promise<void> {
         if (!this.isSafe()) {
@@ -241,7 +240,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async finalizeBatch(): Promise<void> {
         try {
             await this.afterBatch();
@@ -262,7 +261,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }, ms);
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     // eslint-disable-next-line max-statements -- Boost loop: fetch, row processing, yield, progress log
     private async runBoostLoop(): Promise<void> {
         let processed = 0;
@@ -326,14 +325,14 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }, ERROR_AUTO_RETRY_MS);
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private onAutoRetry(): void {
         if (this.snapshot.state === DrainerStateEnum.ERROR) {
             this.retry();
         }
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async refreshPending(): Promise<void> {
         try {
             const pending = await this.countPending();

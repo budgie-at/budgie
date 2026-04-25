@@ -1,4 +1,5 @@
 /* eslint-disable max-classes-per-file -- Four tiers of base service class co-located here; separating into four files would hide the inheritance chain */
+import { Log } from '@budgie/logger';
 import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -6,7 +7,6 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
-import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 export abstract class SnapshotStore<TSnapshot> {
     protected snapshot: TSnapshot;
@@ -91,7 +91,7 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
         return this.snapshot.status === AiSubsystemStatusEnum.READY;
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async start(): Promise<void> {
         if (this.snapshot.status === AiSubsystemStatusEnum.READY) {
             return;
@@ -106,7 +106,7 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
         await this.pendingOperation;
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async stop(): Promise<void> {
         await this.pendingOperation;
         if (this.snapshot.status === AiSubsystemStatusEnum.SUSPENDED || this.snapshot.status === AiSubsystemStatusEnum.DISABLED) {
@@ -137,13 +137,13 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
         super(logDomain, { status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null });
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async retry(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     protected async runStart(): Promise<void> {
         if (isDefined(this.context)) {
             try {
@@ -168,7 +168,7 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
         }
     }
 
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     protected async runStop(): Promise<void> {
         try {
             if (isDefined(this.context)) {

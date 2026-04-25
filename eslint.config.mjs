@@ -334,8 +334,7 @@ export default defineConfig(
                         'logger.error',
                         'logger.debug',
                         'syncLogger.log',
-                        'syncLogger.error',
-                        'logStaticLifecycleError'
+                        'syncLogger.error'
                     ]
                 }
             ],

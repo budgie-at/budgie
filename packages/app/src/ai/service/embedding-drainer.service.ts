@@ -1,5 +1,5 @@
 import { transactionAsync } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { getLogger } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -42,7 +42,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     start(): void {
         if (this.startedSubs) {
             return;
@@ -55,7 +54,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         void this.clearResidueOnce();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     stop(): void {
         if (!this.startedSubs) {
             return;
@@ -69,7 +67,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.startedSubs = false;
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async boost(): Promise<void> {
         const started = Date.now();
         await this.merchant.boost();

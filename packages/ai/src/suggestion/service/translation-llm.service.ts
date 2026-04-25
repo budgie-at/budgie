@@ -11,9 +11,9 @@ export class TranslationLlmService {
     constructor(private readonly chat: ChatInvokerInterface) {}
 
     @Log(
-        title => `enter titleLen=${title.length}`,
+        title => `enter title="${title}"`,
         result => `done titleEnLen=${result.titleEn.length} tagsLen=${result.titleTags.length}`,
-        (error, title) => `throw titleLen=${title.length} error=${getErrorMessage(error)}`
+        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
     )
     async translate(title: string): Promise<TranslationResultInterface> {
         const trimmedTitleEn = await this.translateToEnglish(title);
@@ -23,9 +23,9 @@ export class TranslationLlmService {
     }
 
     @Log(
-        titleEn => `enter titleEnLen=${titleEn.length}`,
+        titleEn => `enter titleEn="${titleEn}"`,
         result => `done tagsLen=${result.length}`,
-        (error, titleEn) => `throw titleEnLen=${titleEn.length} error=${getErrorMessage(error)}`
+        (error, titleEn) => `throw titleEn="${titleEn}" error=${getErrorMessage(error)}`
     )
     private async generateTags(titleEn: string): Promise<string> {
         const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, { temperature: TRANSLATION_TEMPERATURE });
@@ -34,9 +34,9 @@ export class TranslationLlmService {
     }
 
     @Log(
-        title => `enter titleLen=${title.length}`,
+        title => `enter title="${title}"`,
         result => `done resultLen=${result.length}`,
-        (error, title) => `throw titleLen=${title.length} error=${getErrorMessage(error)}`
+        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
     )
     private async translateToEnglish(title: string): Promise<string> {
         if (!containsNonLatin(title)) {
