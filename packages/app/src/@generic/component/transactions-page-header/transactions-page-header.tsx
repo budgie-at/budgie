@@ -4,16 +4,18 @@ import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.
 import { TransactionsTabType } from '../../type/transactions-tab.type';
 import { AnimatedTabBar } from '../animated-tab-bar/animated-tab-bar';
 
+import type { TabConfigInterface } from '../../interface/tab-config.interface';
+
 interface Props {
     readonly activeTab: TransactionsTabType;
     readonly onChangeTab: (tab: TransactionsTabType) => void;
 }
 
-export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => {
-    const tabs = [
-        { key: 'transactions', label: <Trans>Transactions</Trans>, testID: TransactionsPageSelector.TransactionsTab },
-        { key: 'recurring', label: <Trans>Recurring</Trans>, testID: TransactionsPageSelector.RecurringTab }
-    ] as const;
+const TABS: readonly TabConfigInterface<TransactionsTabType>[] = [
+    { key: 'transactions', label: <Trans>Transactions</Trans>, testID: TransactionsPageSelector.TransactionsTab },
+    { key: 'recurring', label: <Trans>Recurring</Trans>, testID: TransactionsPageSelector.RecurringTab }
+];
 
-    return <AnimatedTabBar tabs={tabs} activeTab={activeTab} onChangeTab={onChangeTab} />;
-};
+export const TransactionsPageHeader = ({ activeTab, onChangeTab }: Props) => (
+    <AnimatedTabBar tabs={TABS} activeTab={activeTab} onChangeTab={onChangeTab} />
+);

@@ -1,22 +1,18 @@
-import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { TransactionFilterInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { CategoryStatInterface } from '../../interface/category-stat.interface';
 import { StatsByCategories } from '../stats-by-categories/stats-by-categories';
-
-interface CategoryStat {
-    readonly amount: number;
-    readonly category: CategoryEntityInterface | null;
-}
 
 interface Props {
     readonly filters: TransactionFilterInterface;
     readonly income: number;
     readonly expense: number;
-    readonly incomeByCategory: CategoryStat[];
-    readonly expenseByCategory: CategoryStat[];
+    readonly incomeByCategory: CategoryStatInterface[];
+    readonly expenseByCategory: CategoryStatInterface[];
 }
 
 export const StatsByCategoriesPanel = ({ filters, income, expense, incomeByCategory, expenseByCategory }: Props) => {

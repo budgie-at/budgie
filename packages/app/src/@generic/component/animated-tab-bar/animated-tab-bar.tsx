@@ -1,29 +1,19 @@
 import { cva } from 'class-variance-authority';
-import { ReactNode, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TabConfigInterface } from '../../interface/tab-config.interface';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 import type { LayoutChangeEvent } from 'react-native';
-
-interface TabConfigInterface<T extends string> {
-    readonly key: T;
-    readonly label: ReactNode;
-    readonly testID: string;
-}
 
 interface Props<T extends string> {
     readonly tabs: readonly TabConfigInterface<T>[];
     readonly activeTab: T;
     readonly onChangeTab: (tab: T) => void;
-}
-
-interface TabLayoutInterface {
-    readonly x: number;
-    readonly width: number;
 }
 
 const INDICATOR_SPRING = { damping: 28, stiffness: 400, mass: 0.8 };
@@ -38,7 +28,7 @@ const titleVariants = cva('text-3xl font-medium', {
 });
 
 export const AnimatedTabBar = <T extends string>({ tabs, activeTab, onChangeTab }: Props<T>) => {
-    const tabLayouts = useRef(new Map<T, TabLayoutInterface>());
+    const tabLayouts = useRef(new Map<T, { readonly x: number; readonly width: number }>());
     const isIndicatorReady = useRef(false);
 
     const indicatorX = useSharedValue(0);

@@ -4,16 +4,18 @@ import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.select
 import { AnalyticsTabType } from '../../type/analytics-tab.type';
 import { AnimatedTabBar } from '../animated-tab-bar/animated-tab-bar';
 
+import type { TabConfigInterface } from '../../interface/tab-config.interface';
+
 interface Props {
     readonly activeTab: AnalyticsTabType;
     readonly onChangeTab: (tab: AnalyticsTabType) => void;
 }
 
-export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => {
-    const tabs = [
-        { key: 'categories', label: <Trans>Categories</Trans>, testID: AnalyticsPageSelector.CategoriesTab },
-        { key: 'tags', label: <Trans>Tags</Trans>, testID: AnalyticsPageSelector.TagsTab }
-    ] as const;
+const TABS: readonly TabConfigInterface<AnalyticsTabType>[] = [
+    { key: 'categories', label: <Trans>Categories</Trans>, testID: AnalyticsPageSelector.CategoriesTab },
+    { key: 'tags', label: <Trans>Tags</Trans>, testID: AnalyticsPageSelector.TagsTab }
+];
 
-    return <AnimatedTabBar tabs={tabs} activeTab={activeTab} onChangeTab={onChangeTab} />;
-};
+export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => (
+    <AnimatedTabBar tabs={TABS} activeTab={activeTab} onChangeTab={onChangeTab} />
+);
