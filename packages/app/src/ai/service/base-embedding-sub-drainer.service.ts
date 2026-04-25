@@ -28,9 +28,9 @@ export abstract class BaseEmbeddingSubDrainerService<
     private readonly pendingPersists: Array<PendingPersistInterface<TContext>> = [];
 
     @Log(
-        context => `enter contextSize=${context.transactionIds.length} existingEmbeddingId=${String(context.existingEmbeddingId)}`,
+        context => `enter transactionIds=${context.transactionIds.join(',')} existingEmbeddingId=${String(context.existingEmbeddingId)}`,
         'done',
-        (error, context) => `throw contextSize=${context.transactionIds.length} error=${String(error)}`
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${String(error)}`
     )
     protected async processRow(context: TContext): Promise<void> {
         this.logBegin(context);

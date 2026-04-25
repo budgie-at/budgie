@@ -595,13 +595,14 @@ The library auto-derives `logContext = ClassName::methodName` for decorated meth
 Every public service/repository method that warrants observability is decorated with the full lifecycle: `pre` (entry), `post` (success), `error` (catch). No inline `logger.log(...)` inside decorated method bodies.
 
 ```ts
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
 
 class SomeService {
     @Log(
-        input => `doThing:enter input=${input}`,
-        (result, input) => `doThing:done input=${input} result=${result}`,
-        (error, input) => `doThing:throw input=${input} error=${String(error)}`
+        input => `enter input=${input}`,
+        (result, input) => `done input=${input} result=${result}`,
+        (error, input) => `throw input=${input} error=${getErrorMessage(error)}`
     )
     async doThing(input: string): Promise<number> {
         // pure business logic
@@ -621,7 +622,7 @@ If a method has multiple log points today, extract each phase into a private met
 ### Free-function / hook / component — `getLogger`
 
 ```ts
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 
 const logger = getLogger('useSomething');
 

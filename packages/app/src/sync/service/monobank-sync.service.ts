@@ -31,7 +31,7 @@ class AppMonobankSyncService {
     private isRunning = false;
     private mccCategoryIdMap = new Map<string, number>();
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
         if (this.isRunning) {
             return BackgroundTask.BackgroundTaskResult.Success;
@@ -46,7 +46,7 @@ class AppMonobankSyncService {
         }
     }
 
-    @Log(() => 'enter', result => `done count=${result.size}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done mccKeys=${[...result.keys()].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
     private async loadMccCategories(): Promise<Map<string, number>> {
         const mccCategories = await mccCategoryRepository.findAll();
         this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
@@ -54,7 +54,7 @@ class AppMonobankSyncService {
         return this.mccCategoryIdMap;
     }
 
-    @Log(() => 'enter', result => `done result=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done result=${result}`, error => `throw error=${getErrorMessage(error)}`)
     private async executeSyncLoop(): Promise<BackgroundTask.BackgroundTaskResult> {
         try {
             const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
@@ -95,7 +95,7 @@ class AppMonobankSyncService {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
 
-    @Log(() => 'enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
     private async getNextPendingSync(): Promise<BankSyncEntityInterface | null> {
         const backwardSync = await this.findNextBackwardSync();
         if (isDefined(backwardSync)) {
@@ -105,7 +105,7 @@ class AppMonobankSyncService {
         return this.findNextForwardSync();
     }
 
-    @Log(() => 'enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
     private async findNextBackwardSync(): Promise<BankSyncEntityInterface | null> {
         const backwardSyncs = await bankSyncRepository.getPendingBackwardSync(this.provider);
         if (!isNotEmptyArray(backwardSyncs)) {
@@ -117,7 +117,7 @@ class AppMonobankSyncService {
         return backwardSyncs[0];
     }
 
-    @Log(() => 'enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
     private async findNextForwardSync(): Promise<BankSyncEntityInterface | null> {
         const forwardSyncs = await bankSyncRepository.getPendingForwardSync(this.provider, FORWARD_SYNC_STALE_THRESHOLD_MS);
         if (!isNotEmptyArray(forwardSyncs)) {
@@ -131,10 +131,10 @@ class AppMonobankSyncService {
 
     @Log(
         (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactions=${result.transactions.length} completed=${result.completed}`,
+            `enter syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
         'done',
         (error, sync, result) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactions=${result.transactions.length} error=${getErrorMessage(error)}`
+            `throw syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();
@@ -173,7 +173,7 @@ class AppMonobankSyncService {
     @Log(
         sync => `enter syncId=${sync.id} mode=${sync.mode}`,
         (result, sync) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactions=${result.transactions.length} completed=${result.completed}`,
+            `done syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
@@ -198,10 +198,11 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        (newTransactions, accountId) => `enter count=${newTransactions.length} accountId=${accountId}`,
-        (result, newTransactions, accountId) => `done count=${newTransactions.length} accountId=${accountId} inserted=${result.length}`,
+        (newTransactions, accountId) => `enter transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId}`,
+        (result, newTransactions, accountId) =>
+            `done transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId} insertedIds=${result.map(row => row.id).join(',')}`,
         (error, newTransactions, accountId) =>
-            `throw count=${newTransactions.length} accountId=${accountId} error=${getErrorMessage(error)}`
+            `throw transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId} error=${getErrorMessage(error)}`
     )
     private async createBatchTransactions(
         newTransactions: BankSyncBatchResultInterface['transactions'],

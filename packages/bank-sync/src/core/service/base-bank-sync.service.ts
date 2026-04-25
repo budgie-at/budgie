@@ -19,7 +19,7 @@ export class BaseBankSyncService {
         protected readonly options: BankSyncOptionsInterface
     ) {}
 
-    @Log(() => 'enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
     async syncAccounts(): Promise<BankAccountInterface[]> {
         return this.fetchAccounts();
     }
@@ -74,7 +74,7 @@ export class BaseBankSyncService {
         };
     }
 
-    @Log(() => 'enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
     private async fetchAccounts(): Promise<BankAccountInterface[]> {
         const result = await this.client.getAccounts();
 

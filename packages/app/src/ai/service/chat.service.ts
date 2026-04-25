@@ -49,7 +49,7 @@ class ChatService
         return stripThinkingTags(result);
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) interrupt(): void {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) interrupt(): void {
         void this.context?.stopCompletion();
     }
 
