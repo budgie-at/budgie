@@ -272,7 +272,7 @@ msgid "Balance"
 msgstr "Баланс"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -333,7 +333,7 @@ msgstr "Готівка"
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "Categories"
 msgstr "Категорії"
 
@@ -380,7 +380,7 @@ msgstr "Оберіть тип рахунку, який ви хочете дод�
 msgid "Clear"
 msgstr "Очистити"
 
-#: src/transaction/components/transaction-filters/transaction-filters.tsx:47
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:46
 msgid "Clear All"
 msgstr "Очистити все"
 
@@ -421,7 +421,7 @@ msgstr "Підтвердити PIN-код"
 msgid "Confirm Split"
 msgstr "Підтвердити розділення"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:38
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:43
 msgid "Confirm tag selection"
 msgstr "Підтвердити вибір тегів"
 
@@ -520,7 +520,7 @@ msgstr "Не вдалося зберегти тег"
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:30
+#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
 msgid "Couldn't update primary tag"
 msgstr "Не вдалося оновити основний тег"
 
@@ -675,7 +675,7 @@ msgstr "Вимкнути блокування"
 msgid "Done"
 msgstr "Готово"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:40
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
 msgid "Done ({count})"
 msgstr "Готово ({count})"
 
@@ -1257,7 +1257,7 @@ msgid "No languages found"
 msgstr "Мов не знайдено"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1287,7 +1287,7 @@ msgstr "Жоден тег не відповідає вашому пошуку"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1766,7 +1766,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/transaction-list/transaction-list.tsx:37
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -2005,7 +2005,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:41
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -2030,10 +2030,6 @@ msgstr "Українська"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Без категорії"
-
-#: src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx:59
-msgid "Uncategorized ({count})"
-msgstr "Без категорії ({count})"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"

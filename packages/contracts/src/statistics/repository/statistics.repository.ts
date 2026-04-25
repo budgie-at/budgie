@@ -137,10 +137,9 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to))
                 ? this.buildDateCondition(filters.date)
                 : null;
-        const categoryCondition = this.buildTransactionCategoryCondition(filters.categoryMode, filters.categoryIds);
         const conditions = [
             ...(isDefined(dateCondition) ? [dateCondition] : []),
-            ...(isDefined(categoryCondition) ? [categoryCondition] : []),
+            ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
             ...(isNotEmptyArray(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
         ].filter(isDefined);
 

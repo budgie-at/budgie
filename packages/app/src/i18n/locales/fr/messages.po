@@ -272,7 +272,7 @@ msgid "Balance"
 msgstr "Solde"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
@@ -333,7 +333,7 @@ msgstr "Espèces"
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "Categories"
 msgstr "Catégories"
 
@@ -380,7 +380,7 @@ msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 msgid "Clear"
 msgstr "Effacer"
 
-#: src/transaction/components/transaction-filters/transaction-filters.tsx:47
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:46
 msgid "Clear All"
 msgstr "Tout effacer"
 
@@ -421,7 +421,7 @@ msgstr "Confirmer le code PIN"
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:38
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:43
 msgid "Confirm tag selection"
 msgstr "Confirmer la sélection des tags"
 
@@ -520,7 +520,7 @@ msgstr "Impossible d'enregistrer l'étiquette"
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:30
+#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
 msgid "Couldn't update primary tag"
 msgstr "Impossible de mettre à jour le tag principal"
 
@@ -675,7 +675,7 @@ msgstr "Désactiver le verrouillage"
 msgid "Done"
 msgstr "Terminé"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:40
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
 msgid "Done ({count})"
 msgstr "Terminé ({count})"
 
@@ -1257,7 +1257,7 @@ msgid "No languages found"
 msgstr "Aucune langue trouvée"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
@@ -1287,7 +1287,7 @@ msgstr "Aucune étiquette ne correspond à votre recherche"
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
@@ -1766,7 +1766,7 @@ msgstr "Démarrer l'importation"
 msgid "Start Sync"
 msgstr "Démarrer la synchronisation"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/transaction-list/transaction-list.tsx:37
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
@@ -2005,7 +2005,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:41
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 
@@ -2030,10 +2030,6 @@ msgstr "Ukrainien"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Non catégorisé"
-
-#: src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx:59
-msgid "Uncategorized ({count})"
-msgstr "Non catégorisé ({count})"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"

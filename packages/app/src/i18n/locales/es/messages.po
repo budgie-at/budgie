@@ -272,7 +272,7 @@ msgid "Balance"
 msgstr "Saldo"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
@@ -333,7 +333,7 @@ msgstr "Efectivo"
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "Categories"
 msgstr "Categorías"
 
@@ -380,7 +380,7 @@ msgstr "Elige el tipo de cuenta que deseas agregar"
 msgid "Clear"
 msgstr "Limpiar"
 
-#: src/transaction/components/transaction-filters/transaction-filters.tsx:47
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:46
 msgid "Clear All"
 msgstr "Limpiar todo"
 
@@ -421,7 +421,7 @@ msgstr "Confirmar PIN"
 msgid "Confirm Split"
 msgstr "Confirmar división"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:38
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:43
 msgid "Confirm tag selection"
 msgstr "Confirmar selección de etiquetas"
 
@@ -520,7 +520,7 @@ msgstr "No se pudo guardar la etiqueta"
 msgid "Could not update transaction."
 msgstr "No se pudo actualizar la transacción."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:30
+#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
 msgid "Couldn't update primary tag"
 msgstr "No se pudo actualizar la etiqueta principal"
 
@@ -675,7 +675,7 @@ msgstr "Desactivar bloqueo"
 msgid "Done"
 msgstr "Listo"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:40
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
 msgid "Done ({count})"
 msgstr "Listo ({count})"
 
@@ -1257,7 +1257,7 @@ msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
@@ -1287,7 +1287,7 @@ msgstr "Ninguna etiqueta coincide con tu búsqueda"
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
@@ -1766,7 +1766,7 @@ msgstr "Iniciar importación"
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/transaction-list/transaction-list.tsx:37
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
@@ -2005,7 +2005,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:41
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
@@ -2030,10 +2030,6 @@ msgstr "Ucraniano"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Sin categoría"
-
-#: src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx:59
-msgid "Uncategorized ({count})"
-msgstr "Sin categoría ({count})"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"

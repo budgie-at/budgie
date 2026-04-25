@@ -13,7 +13,6 @@ export const buildTransactionFilterKey = (filters?: TransactionFilterInterface):
     const to = filters.date?.to?.getTime() ?? 'null';
 
     return [
-        filters.categoryMode,
         buildNullableArrayKey(filters.accountIds),
         buildNullableArrayKey(filters.categoryIds),
         buildNullableArrayKey(filters.tagIds),

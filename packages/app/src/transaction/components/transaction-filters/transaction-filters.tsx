@@ -1,14 +1,9 @@
-import {
-    DEFAULT_TRANSACTION_FILTER,
-    TransactionCategoryFilterModeEnum,
-    TransactionFilterInterface,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -17,7 +12,6 @@ import { TransactionAccountFilter } from '../transaction-account-filter/transact
 import { TransactionCategoryFilter } from '../transaction-category-filter/transaction-category-filter';
 import { TransactionTagFilter } from '../transaction-tag-filter/transaction-tag-filter';
 import { TransactionTypeFilter } from '../transaction-type-filter/transaction-type-filter';
-import { TransactionUncategorizedFilter } from '../transaction-uncategorized-filter/transaction-uncategorized-filter';
 
 import { TransactionFiltersSelector } from './transaction-filters.selector';
 
@@ -37,21 +31,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
         };
 
     const handleClear = () => void onChange({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null });
-    const handleUncategorizedPress = () => {
-        const categoryMode =
-            filters.categoryMode === TransactionCategoryFilterModeEnum.UNCATEGORIZED
-                ? TransactionCategoryFilterModeEnum.ALL
-                : TransactionCategoryFilterModeEnum.UNCATEGORIZED;
-
-        onChange(prev => ({ ...prev, categoryIds: null, categoryMode }));
-    };
-    const handleCategoryChange = (categoryIds: number[] | null) => {
-        const categoryMode = isNotEmptyArray(categoryIds)
-            ? TransactionCategoryFilterModeEnum.SELECTED
-            : TransactionCategoryFilterModeEnum.ALL;
-
-        onChange(prev => ({ ...prev, categoryIds, categoryMode }));
-    };
 
     return (
         <View className="-mx-7xl">
@@ -69,10 +48,9 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     </HapticPressable>
                 ) : null}
 
-                <TransactionUncategorizedFilter filters={filters} onPress={handleUncategorizedPress} />
                 <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
-                <TransactionCategoryFilter value={filters.categoryIds} onChange={handleCategoryChange} />
+                <TransactionCategoryFilter value={filters.categoryIds} onChange={createFilterHandler('categoryIds')} />
                 <TransactionTagFilter value={filters.tagIds} onChange={createFilterHandler('tagIds')} />
 
                 {isDefined(accountId) ? null : (

@@ -1,4 +1,4 @@
-import { StatisticsFilterInterface, TransactionCategoryFilterModeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { StatisticsFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
@@ -26,19 +26,11 @@ const buildCategoryIds = (params: RouteParams): number[] | null => {
         return [Number(params.categoryId)];
     }
 
-    return null;
-};
-
-const buildCategoryMode = (params: RouteParams): TransactionCategoryFilterModeEnum => {
-    if (isDefined(params.categoryId)) {
-        return TransactionCategoryFilterModeEnum.SELECTED;
-    }
-
     if (isDefined(params.type) && !isDefined(params.tagId)) {
-        return TransactionCategoryFilterModeEnum.UNCATEGORIZED;
+        return [];
     }
 
-    return TransactionCategoryFilterModeEnum.ALL;
+    return null;
 };
 
 const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
@@ -47,7 +39,6 @@ const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
         from: isDefined(params.startDate) ? new Date(params.startDate) : null,
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
-    categoryMode: buildCategoryMode(params),
     categoryIds: buildCategoryIds(params),
     tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null
 });
