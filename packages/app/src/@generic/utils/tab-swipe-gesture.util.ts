@@ -7,7 +7,7 @@ interface Params<T extends string> {
     readonly onChangeTab: (tab: T) => void;
 }
 
-export const useTabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab }: Params<T>) => {
+export const tabSwipeGesture = <T extends string>({ tabs, activeTab, onChangeTab }: Params<T>) => {
     const handleSwipeLeft = () => {
         const index = tabs.indexOf(activeTab);
         if (index < tabs.length - 1) {
