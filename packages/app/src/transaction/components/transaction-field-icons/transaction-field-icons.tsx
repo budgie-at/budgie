@@ -86,7 +86,7 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const handleTagsPress = async () => {
-        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds });
+        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true });
 
         if (isDefined(selectedTagIds)) {
             setValue('tagIds', selectedTagIds);

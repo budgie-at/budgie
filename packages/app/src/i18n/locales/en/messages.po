@@ -522,10 +522,6 @@ msgstr "Could not save tag"
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
-msgid "Couldn't update primary tag"
-msgstr "Couldn't update primary tag"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:35
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
@@ -1118,6 +1114,10 @@ msgstr "Loading models"
 msgid "Main Currency"
 msgstr "Main Currency"
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:31
+msgid "Make primary tag"
+msgstr "Make primary tag"
+
 #: src/app/(tabs)/settings/index.tsx:120
 msgid "Manage Categories"
 msgstr "Manage Categories"
@@ -1276,7 +1276,7 @@ msgid "No Results"
 msgstr "No Results"
 
 #: src/app/transaction-tag-filter.tsx:76
-#: src/tag/components/tags-select-content/tags-select-content.tsx:46
+#: src/tag/components/tags-select-content/tags-select-content.tsx:56
 msgid "No tags found"
 msgstr "No tags found"
 
@@ -1418,6 +1418,10 @@ msgstr "Portuguese (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
 
+#: src/tag/components/tags-select-content/tags-select-content.tsx:30
+msgid "Primary tag"
+msgstr "Primary tag"
+
 #: src/app/(tabs)/settings/index.tsx:64
 msgid "Privacy"
 msgstr "Privacy"
@@ -1554,7 +1558,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(tabs)/settings/tags.tsx:87
-#: src/app/tags-selector.tsx:100
+#: src/app/tags-selector.tsx:138
 #: src/app/transaction-tag-filter.tsx:94
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -2002,7 +2006,7 @@ msgstr "Translations ready"
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:47
+#: src/tag/components/tags-select-content/tags-select-content.tsx:57
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
