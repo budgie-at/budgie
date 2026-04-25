@@ -35,7 +35,7 @@ export class EmbeddingService {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
-    @Log(() => 'enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
         return this.embedding.isReady;
     }

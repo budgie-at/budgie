@@ -26,12 +26,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
     @Log(
-        (inputs, tx) =>
-            `enter count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (inputs, tx) => `enter hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
         (result, inputs, tx) =>
-            `done count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
+            `done hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
         (error, inputs, tx) =>
-            `throw count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+            `throw hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
@@ -224,7 +223,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     @Log(
         (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
-        (result, mccCategoryId, limit) => `done mccCategoryId=${mccCategoryId} limit=${limit} resultCount=${result.length}`,
+        (result, mccCategoryId, limit) =>
+            `done mccCategoryId=${mccCategoryId} limit=${limit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
         (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
     )
     async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
@@ -255,7 +255,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     @Log(
         externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} count=${result.length}`,
+        (result, externalSource) => `done externalSource=${externalSource} externalIds=${result.join(',')}`,
         (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
     )
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {

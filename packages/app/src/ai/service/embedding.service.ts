@@ -34,8 +34,8 @@ class LocalEmbeddingService
 
     @Log(
         texts => `enter texts=${texts.join(',')}`,
-        result => `done resolved=${result.size}`,
-        (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
+        result => `done resolvedKeys=${[...result.keys()].join(',')}`,
+        (error, texts) => `throw texts=${texts.join(',')} error=${getErrorMessage(error)}`
     )
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
         // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]

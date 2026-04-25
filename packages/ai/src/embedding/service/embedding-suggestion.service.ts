@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/max-params -- Hook arrows mirror method args for full debug context */
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
@@ -6,7 +7,6 @@ import {
     TagScoreResultInterface
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -39,7 +39,6 @@ export class EmbeddingSuggestionService {
         ) => Promise<{ categoryId: number; count: number }[]>
     ) {}
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
         (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
             `enter title=${transactionTitle} mcc=${mccDescription ?? 'none'} mccCategoryId=${String(mccCategoryId)} commentLen=${comment.length} aiContextLen=${aiContext.length} categoryIds=${categories.map(category => category.id).join(',')}`,
@@ -85,7 +84,6 @@ export class EmbeddingSuggestionService {
         return this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
         (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
             `enter title=${transactionTitle} mcc=${mccDescription ?? 'none'} categoryId=${categoryId} commentLen=${comment.length} aiContextLen=${aiContext.length} tagIds=${allTags.map(tag => tag.id).join(',')}`,
@@ -126,7 +124,6 @@ export class EmbeddingSuggestionService {
         return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
         (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
             `enter categoryId=${categoryId} title=${transactionTitle} mcc=${mccDescription ?? 'none'} commentLen=${comment.length} aiContextLen=${aiContext.length}`,

@@ -29,7 +29,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) start(): void {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) start(): void {
         if (this.started) {
             return;
         }
@@ -50,7 +50,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         }
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) stop(): void {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) stop(): void {
         if (!this.started) {
             return;
         }
@@ -61,7 +61,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         void this.stopSubsystems();
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async bootModels(): Promise<void> {
         try {
             await Promise.all([chatService.start(), embeddingService.start()]);
@@ -70,7 +70,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         }
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseModels(): Promise<void> {
         try {
             await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
