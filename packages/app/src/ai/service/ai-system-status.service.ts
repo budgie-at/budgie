@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
-import { Log, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';

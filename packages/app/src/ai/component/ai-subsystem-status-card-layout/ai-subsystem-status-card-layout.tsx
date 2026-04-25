@@ -1,4 +1,4 @@
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import * as Haptics from 'expo-haptics';
 import { ReactNode, useState } from 'react';

@@ -1,4 +1,4 @@
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { LlamaContext, initLlama } from 'llama.rn';
 
 import { isDefined } from '@rnw-community/shared';

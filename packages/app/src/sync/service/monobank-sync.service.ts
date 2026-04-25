@@ -1,6 +1,8 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
-import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, Log, TransactionEntityInterface, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
+
+import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 

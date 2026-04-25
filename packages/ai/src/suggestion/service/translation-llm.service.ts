@@ -1,4 +1,4 @@
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 

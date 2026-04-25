@@ -1,4 +1,4 @@
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
