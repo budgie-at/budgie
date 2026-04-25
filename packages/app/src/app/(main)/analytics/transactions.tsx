@@ -1,4 +1,4 @@
-import { StatisticsFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { StatisticsFilterInterface, TransactionCategoryFilterModeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
@@ -14,11 +14,11 @@ import { TransactionFilterPageHeader } from '../../../transaction/components/tra
 import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
 interface RouteParams {
-    startDate?: string;
-    endDate?: string;
-    categoryId?: string;
-    tagId?: string;
-    type?: string;
+    readonly startDate?: string;
+    readonly endDate?: string;
+    readonly categoryId?: string;
+    readonly tagId?: string;
+    readonly type?: string;
 }
 
 const buildCategoryIds = (params: RouteParams): number[] | null => {
@@ -26,11 +26,19 @@ const buildCategoryIds = (params: RouteParams): number[] | null => {
         return [Number(params.categoryId)];
     }
 
-    if (isDefined(params.type) && !isDefined(params.tagId)) {
-        return [];
+    return null;
+};
+
+const buildCategoryMode = (params: RouteParams): TransactionCategoryFilterModeEnum => {
+    if (isDefined(params.categoryId)) {
+        return TransactionCategoryFilterModeEnum.SELECTED;
     }
 
-    return null;
+    if (isDefined(params.type) && !isDefined(params.tagId)) {
+        return TransactionCategoryFilterModeEnum.UNCATEGORIZED;
+    }
+
+    return TransactionCategoryFilterModeEnum.ALL;
 };
 
 const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
@@ -39,6 +47,7 @@ const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
         from: isDefined(params.startDate) ? new Date(params.startDate) : null,
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
+    categoryMode: buildCategoryMode(params),
     categoryIds: buildCategoryIds(params),
     tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null
 });
