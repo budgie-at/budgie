@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -42,7 +42,9 @@ export const TagsSelectorDoneButton = ({ count, onPress, testID }: Props) => {
                 accessibilityRole="button"
                 accessibilityLabel={t`Confirm tag selection`}
             >
-                <Text className="text-primary-reverse text-sm font-semibold">{t`Done (${count})`}</Text>
+                <Text className="text-primary-reverse text-sm font-semibold">
+                    <Trans>Done ({count})</Trans>
+                </Text>
             </HapticPressable>
         </Animated.View>
     );

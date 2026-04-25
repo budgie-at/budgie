@@ -11,9 +11,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/ai/service/ai-system-status.service.ts:232
+#: src/ai/service/ai-system-status.service.ts:241
 msgid " • {embeddingPending} tx queued"
-msgstr ""
+msgstr " • {embeddingPending} транзакц. у черзі"
 
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
@@ -57,13 +57,13 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/ai/service/ai-umbrella-status.service.ts:71
+#: src/ai/service/ai-umbrella-status.service.ts:74
 msgid "{source} error · {message}"
-msgstr ""
+msgstr "Помилка {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:186
+#: src/ai/service/ai-system-status.service.ts:195
 msgid "{source} failed: {message}"
-msgstr ""
+msgstr "Не вдалося виконати {source}: {message}"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 msgid "{splitEntryCount} items"
@@ -156,17 +156,17 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/service/ai-system-status.service.ts:173
+#: src/ai/service/ai-system-status.service.ts:182
 msgid "AI disabled"
-msgstr ""
+msgstr "ШІ вимкнено"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:111
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:114
 msgid "AI idle"
 msgstr "ШІ неактивний"
 
-#: src/ai/service/ai-umbrella-status.service.ts:56
-#: src/ai/service/ai-umbrella-status.service.ts:118
+#: src/ai/service/ai-umbrella-status.service.ts:59
+#: src/ai/service/ai-umbrella-status.service.ts:121
 msgid "AI off"
 msgstr "ШІ вимкнено"
 
@@ -190,9 +190,9 @@ msgstr "Усі стовпці було призначено"
 msgid "All Recurring"
 msgstr "Усі регулярні"
 
-#: src/ai/service/ai-system-status.service.ts:265
+#: src/ai/service/ai-system-status.service.ts:274
 msgid "All set"
-msgstr ""
+msgstr "Усе готово"
 
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
@@ -314,7 +314,7 @@ msgstr "Budgie"
 #: src/account/component/account-action-card/account-action-card.tsx:52
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:49
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:256
 #: src/app/convert-to-transfer.tsx:77
 #: src/import/components/import-database/import-database.tsx:39
@@ -671,7 +671,7 @@ msgstr "Вимкнути блокування"
 msgid "Done"
 msgstr "Готово"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:46
 msgid "Done ({count})"
 msgstr "Готово ({count})"
 
@@ -679,13 +679,13 @@ msgstr "Готово ({count})"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:84
+#: src/ai/service/ai-umbrella-status.service.ts:87
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Downloading models"
-msgstr ""
+msgstr "Завантаження моделей"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -899,9 +899,9 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Failed to update token"
 msgstr "Не вдалося оновити токен"
 
-#: src/ai/service/ai-system-status.service.ts:283
+#: src/ai/service/ai-system-status.service.ts:292
 msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr ""
+msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
 msgid "Fetch Accounts"
@@ -1048,9 +1048,9 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/ai/service/ai-system-status.service.ts:254
+#: src/ai/service/ai-system-status.service.ts:263
 msgid "Indexing {done} of {total}"
-msgstr ""
+msgstr "Індексування {done} з {total}"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
 msgid "Invalid file"
@@ -1080,11 +1080,11 @@ msgstr "Остання синхронізація"
 msgid "Learning"
 msgstr "Навчання"
 
-#: src/ai/service/ai-embedding-status.service.ts:53
+#: src/ai/service/ai-embedding-status.service.ts:44
 msgid "Learning transactions"
 msgstr "Навчання на транзакціях"
 
-#: src/ai/service/ai-embedding-status.service.ts:54
+#: src/ai/service/ai-embedding-status.service.ts:45
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
 
@@ -1096,17 +1096,17 @@ msgstr "Позичено"
 msgid "Listening..."
 msgstr "Слухаю..."
 
-#: src/@generic/hook/use-regenerate-translation.hook.ts:30
+#: src/@generic/hook/use-regenerate-translation.hook.ts:32
 msgid "LLM not ready"
 msgstr "Модель ШІ не готова"
 
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:27
 msgid "Loading AI model..."
-msgstr ""
+msgstr "Завантаження моделі ШІ..."
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Loading models"
-msgstr ""
+msgstr "Завантаження моделей"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:26
 msgid "Main Currency"
@@ -1306,19 +1306,19 @@ msgstr "Нотатка"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:6
 msgid "Only expense transactions can be converted"
-msgstr ""
+msgstr "Можна конвертувати лише витратні транзакції"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:10
 msgid "Only income transactions can be converted"
-msgstr ""
+msgstr "Можна конвертувати лише дохідні транзакції"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:7
 msgid "Only single-entry expenses can be converted"
-msgstr ""
+msgstr "Можна конвертувати лише витрати з одним записом"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:11
 msgid "Only single-entry incomes can be converted"
-msgstr ""
+msgstr "Можна конвертувати лише доходи з одним записом"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Open George (Erste Bank online banking)"
@@ -1428,7 +1428,7 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:50
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
 msgstr "Перебудувати"
 
@@ -1440,11 +1440,11 @@ msgstr "Перебудувати навчання"
 msgid "Rebuild translations"
 msgstr "Перебудувати переклади"
 
-#: src/ai/service/ai-embedding-status.service.ts:52
+#: src/ai/service/ai-embedding-status.service.ts:43
 msgid "Rebuilding learning"
 msgstr "Перебудова навчання"
 
-#: src/ai/service/ai-translation-status.service.ts:49
+#: src/ai/service/ai-translation-status.service.ts:53
 msgid "Rebuilding translations"
 msgstr "Перебудова перекладів"
 
@@ -1481,8 +1481,8 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:102
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:105
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
@@ -1766,7 +1766,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/ai/service/ai-umbrella-status.service.ts:93
+#: src/ai/service/ai-umbrella-status.service.ts:96
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
@@ -1943,15 +1943,15 @@ msgstr "Традиційні банківські рахунки"
 
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
-msgstr ""
+msgstr "Транзакція повинна мати рахунок призначення"
 
 #: src/transaction/service/transaction-transfer.service.ts:165
 msgid "Transaction must have a source account"
-msgstr ""
+msgstr "Транзакція повинна мати рахунок-джерело"
 
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
-msgstr ""
+msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:84
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
@@ -1962,7 +1962,7 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/ai/hook/use-stt.hook.ts:123
+#: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
@@ -1971,11 +1971,11 @@ msgstr "Помилка транскрипції"
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/ai/service/ai-system-status.service.ts:238
+#: src/ai/service/ai-system-status.service.ts:247
 msgid "Translating {translationPending} of {total}{trailer}"
-msgstr ""
+msgstr "Переклад {translationPending} з {total}{trailer}"
 
-#: src/ai/service/ai-translation-status.service.ts:50
+#: src/ai/service/ai-translation-status.service.ts:54
 msgid "Translating categories and tags"
 msgstr "Переклад категорій і тегів"
 
@@ -1983,7 +1983,7 @@ msgstr "Переклад категорій і тегів"
 msgid "Translation"
 msgstr "Переклад"
 
-#: src/ai/service/ai-translation-status.service.ts:51
+#: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
 msgstr "Переклади готові"
 

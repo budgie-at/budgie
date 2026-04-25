@@ -11,9 +11,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/ai/service/ai-system-status.service.ts:232
+#: src/ai/service/ai-system-status.service.ts:241
 msgid " • {embeddingPending} tx queued"
-msgstr ""
+msgstr " • {embeddingPending} tx en file d'attente"
 
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
@@ -57,13 +57,13 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/ai/service/ai-umbrella-status.service.ts:71
+#: src/ai/service/ai-umbrella-status.service.ts:74
 msgid "{source} error · {message}"
-msgstr ""
+msgstr "Erreur {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:186
+#: src/ai/service/ai-system-status.service.ts:195
 msgid "{source} failed: {message}"
-msgstr ""
+msgstr "Échec de {source} : {message}"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 msgid "{splitEntryCount} items"
@@ -156,19 +156,19 @@ msgstr "Ajustement"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/service/ai-system-status.service.ts:173
+#: src/ai/service/ai-system-status.service.ts:182
 msgid "AI disabled"
-msgstr ""
+msgstr "IA désactivée"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:111
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:114
 msgid "AI idle"
 msgstr "IA inactive"
 
-#: src/ai/service/ai-umbrella-status.service.ts:56
-#: src/ai/service/ai-umbrella-status.service.ts:118
+#: src/ai/service/ai-umbrella-status.service.ts:59
+#: src/ai/service/ai-umbrella-status.service.ts:121
 msgid "AI off"
-msgstr ""
+msgstr "IA désactivée"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
@@ -190,9 +190,9 @@ msgstr "Toutes les colonnes ont été assignées"
 msgid "All Recurring"
 msgstr "Tous les récurrents"
 
-#: src/ai/service/ai-system-status.service.ts:265
+#: src/ai/service/ai-system-status.service.ts:274
 msgid "All set"
-msgstr ""
+msgstr "Tout est prêt"
 
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
@@ -314,7 +314,7 @@ msgstr "Budgie"
 #: src/account/component/account-action-card/account-action-card.tsx:52
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:49
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:256
 #: src/app/convert-to-transfer.tsx:77
 #: src/import/components/import-database/import-database.tsx:39
@@ -671,7 +671,7 @@ msgstr "Désactiver le verrouillage"
 msgid "Done"
 msgstr "Terminé"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:46
 msgid "Done ({count})"
 msgstr "Terminé ({count})"
 
@@ -679,13 +679,13 @@ msgstr "Terminé ({count})"
 msgid "Download your statement as PDF"
 msgstr "Téléchargez votre relevé au format PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:84
+#: src/ai/service/ai-umbrella-status.service.ts:87
 msgid "Downloading AI models…"
-msgstr ""
+msgstr "Téléchargement des modèles d'IA…"
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Downloading models"
-msgstr ""
+msgstr "Téléchargement des modèles"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -899,9 +899,9 @@ msgstr "Échec de la configuration de la synchronisation"
 msgid "Failed to update token"
 msgstr "Échec de la mise à jour du jeton"
 
-#: src/ai/service/ai-system-status.service.ts:283
+#: src/ai/service/ai-system-status.service.ts:292
 msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr ""
+msgstr "Indexation rapide {done} sur {total} • touchez pour mettre en pause"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:78
 msgid "Fetch Accounts"
@@ -1048,9 +1048,9 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/ai/service/ai-system-status.service.ts:254
+#: src/ai/service/ai-system-status.service.ts:263
 msgid "Indexing {done} of {total}"
-msgstr ""
+msgstr "Indexation {done} sur {total}"
 
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
 msgid "Invalid file"
@@ -1078,15 +1078,15 @@ msgstr "Dernière synchronisation"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
-msgstr ""
+msgstr "Apprentissage"
 
-#: src/ai/service/ai-embedding-status.service.ts:53
+#: src/ai/service/ai-embedding-status.service.ts:44
 msgid "Learning transactions"
-msgstr ""
+msgstr "Apprentissage des transactions"
 
-#: src/ai/service/ai-embedding-status.service.ts:54
+#: src/ai/service/ai-embedding-status.service.ts:45
 msgid "Learning up to date"
-msgstr ""
+msgstr "Apprentissage à jour"
 
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
@@ -1096,17 +1096,17 @@ msgstr "Prêté"
 msgid "Listening..."
 msgstr "Écoute..."
 
-#: src/@generic/hook/use-regenerate-translation.hook.ts:30
+#: src/@generic/hook/use-regenerate-translation.hook.ts:32
 msgid "LLM not ready"
 msgstr "Modèle IA non disponible"
 
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:27
 msgid "Loading AI model..."
-msgstr ""
+msgstr "Chargement du modèle d'IA..."
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Loading models"
-msgstr ""
+msgstr "Chargement des modèles"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:26
 msgid "Main Currency"
@@ -1306,19 +1306,19 @@ msgstr "Note"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:6
 msgid "Only expense transactions can be converted"
-msgstr ""
+msgstr "Seules les transactions de dépense peuvent être converties"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:10
 msgid "Only income transactions can be converted"
-msgstr ""
+msgstr "Seules les transactions de revenu peuvent être converties"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:7
 msgid "Only single-entry expenses can be converted"
-msgstr ""
+msgstr "Seules les dépenses à écriture unique peuvent être converties"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts:11
 msgid "Only single-entry incomes can be converted"
-msgstr ""
+msgstr "Seuls les revenus à écriture unique peuvent être convertis"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:17
 msgid "Open George (Erste Bank online banking)"
@@ -1428,25 +1428,25 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:50
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
-msgstr ""
+msgstr "Reconstruire"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:19
 msgid "Rebuild learning"
-msgstr ""
+msgstr "Reconstruire l'apprentissage"
 
 #: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:19
 msgid "Rebuild translations"
-msgstr ""
+msgstr "Reconstruire les traductions"
 
-#: src/ai/service/ai-embedding-status.service.ts:52
+#: src/ai/service/ai-embedding-status.service.ts:43
 msgid "Rebuilding learning"
-msgstr ""
+msgstr "Reconstruction de l'apprentissage"
 
-#: src/ai/service/ai-translation-status.service.ts:49
+#: src/ai/service/ai-translation-status.service.ts:53
 msgid "Rebuilding translations"
-msgstr ""
+msgstr "Reconstruction des traductions"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
@@ -1481,8 +1481,8 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:102
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:105
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
 
@@ -1766,9 +1766,9 @@ msgstr "Démarrer la synchronisation"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
-#: src/ai/service/ai-umbrella-status.service.ts:93
+#: src/ai/service/ai-umbrella-status.service.ts:96
 msgid "Starting up AI…"
-msgstr ""
+msgstr "Démarrage de l'IA…"
 
 #: src/app/(tabs)/analytics.tsx:13
 msgid "Statistics"
@@ -1869,11 +1869,11 @@ msgstr "Ce mois-ci"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:20
 msgid "This re-indexes every transaction. Continue?"
-msgstr ""
+msgstr "Cela réindexe chaque transaction. Continuer ?"
 
 #: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:20
 msgid "This re-translates every category and tag. Continue?"
-msgstr ""
+msgstr "Cela retraduit chaque catégorie et tag. Continuer ?"
 
 #: src/app/(tabs)/settings/tags.tsx:43
 msgid "This tag has transactions. Select another tag to reassign them to."
@@ -1943,15 +1943,15 @@ msgstr "Comptes bancaires traditionnels"
 
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
-msgstr ""
+msgstr "La transaction doit avoir un compte de destination"
 
 #: src/transaction/service/transaction-transfer.service.ts:165
 msgid "Transaction must have a source account"
-msgstr ""
+msgstr "La transaction doit avoir un compte source"
 
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
-msgstr ""
+msgstr "Transaction introuvable"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:84
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
@@ -1962,7 +1962,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
-#: src/ai/hook/use-stt.hook.ts:123
+#: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
 
@@ -1971,21 +1971,21 @@ msgstr "Échec de la transcription"
 msgid "Transfer"
 msgstr "Virement"
 
-#: src/ai/service/ai-system-status.service.ts:238
+#: src/ai/service/ai-system-status.service.ts:247
 msgid "Translating {translationPending} of {total}{trailer}"
-msgstr ""
+msgstr "Traduction {translationPending} sur {total}{trailer}"
 
-#: src/ai/service/ai-translation-status.service.ts:50
+#: src/ai/service/ai-translation-status.service.ts:54
 msgid "Translating categories and tags"
-msgstr ""
+msgstr "Traduction des catégories et tags"
 
 #: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx:18
 msgid "Translation"
-msgstr ""
+msgstr "Traduction"
 
-#: src/ai/service/ai-translation-status.service.ts:51
+#: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
-msgstr ""
+msgstr "Traductions prêtes"
 
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40

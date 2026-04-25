@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/ai/service/ai-system-status.service.ts:232
+#: src/ai/service/ai-system-status.service.ts:241
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx queued"
 
@@ -59,11 +59,11 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
-#: src/ai/service/ai-umbrella-status.service.ts:71
+#: src/ai/service/ai-umbrella-status.service.ts:74
 msgid "{source} error · {message}"
 msgstr "{source} error · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:186
+#: src/ai/service/ai-system-status.service.ts:195
 msgid "{source} failed: {message}"
 msgstr "{source} failed: {message}"
 
@@ -158,17 +158,17 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/ai/service/ai-system-status.service.ts:173
+#: src/ai/service/ai-system-status.service.ts:182
 msgid "AI disabled"
 msgstr "AI disabled"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:111
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:114
 msgid "AI idle"
 msgstr "AI idle"
 
-#: src/ai/service/ai-umbrella-status.service.ts:56
-#: src/ai/service/ai-umbrella-status.service.ts:118
+#: src/ai/service/ai-umbrella-status.service.ts:59
+#: src/ai/service/ai-umbrella-status.service.ts:121
 msgid "AI off"
 msgstr "AI off"
 
@@ -192,7 +192,7 @@ msgstr "All columns have been assigned"
 msgid "All Recurring"
 msgstr "All Recurring"
 
-#: src/ai/service/ai-system-status.service.ts:265
+#: src/ai/service/ai-system-status.service.ts:274
 msgid "All set"
 msgstr "All set"
 
@@ -316,7 +316,7 @@ msgstr "Budgie"
 #: src/account/component/account-action-card/account-action-card.tsx:52
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:49
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:256
 #: src/app/convert-to-transfer.tsx:77
 #: src/import/components/import-database/import-database.tsx:39
@@ -673,7 +673,7 @@ msgstr "Disable App Lock"
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:46
 msgid "Done ({count})"
 msgstr "Done ({count})"
 
@@ -681,11 +681,11 @@ msgstr "Done ({count})"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:84
+#: src/ai/service/ai-umbrella-status.service.ts:87
 msgid "Downloading AI models…"
 msgstr "Downloading AI models…"
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Downloading models"
 msgstr "Downloading models"
 
@@ -901,7 +901,7 @@ msgstr "Failed to setup sync"
 msgid "Failed to update token"
 msgstr "Failed to update token"
 
-#: src/ai/service/ai-system-status.service.ts:283
+#: src/ai/service/ai-system-status.service.ts:292
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
 
@@ -1050,7 +1050,7 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/ai/service/ai-system-status.service.ts:254
+#: src/ai/service/ai-system-status.service.ts:263
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
@@ -1082,11 +1082,11 @@ msgstr "Last sync"
 msgid "Learning"
 msgstr "Learning"
 
-#: src/ai/service/ai-embedding-status.service.ts:53
+#: src/ai/service/ai-embedding-status.service.ts:44
 msgid "Learning transactions"
 msgstr "Learning transactions"
 
-#: src/ai/service/ai-embedding-status.service.ts:54
+#: src/ai/service/ai-embedding-status.service.ts:45
 msgid "Learning up to date"
 msgstr "Learning up to date"
 
@@ -1098,7 +1098,7 @@ msgstr "Lent"
 msgid "Listening..."
 msgstr "Listening..."
 
-#: src/@generic/hook/use-regenerate-translation.hook.ts:30
+#: src/@generic/hook/use-regenerate-translation.hook.ts:32
 msgid "LLM not ready"
 msgstr "LLM not ready"
 
@@ -1106,7 +1106,7 @@ msgstr "LLM not ready"
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
 
-#: src/ai/service/ai-system-status.service.ts:300
+#: src/ai/service/ai-system-status.service.ts:309
 msgid "Loading models"
 msgstr "Loading models"
 
@@ -1430,7 +1430,7 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:50
+#: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
 msgstr "Rebuild"
 
@@ -1442,11 +1442,11 @@ msgstr "Rebuild learning"
 msgid "Rebuild translations"
 msgstr "Rebuild translations"
 
-#: src/ai/service/ai-embedding-status.service.ts:52
+#: src/ai/service/ai-embedding-status.service.ts:43
 msgid "Rebuilding learning"
 msgstr "Rebuilding learning"
 
-#: src/ai/service/ai-translation-status.service.ts:49
+#: src/ai/service/ai-translation-status.service.ts:53
 msgid "Rebuilding translations"
 msgstr "Rebuilding translations"
 
@@ -1483,8 +1483,8 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
-#: src/ai/service/ai-system-status.service.ts:211
-#: src/ai/service/ai-umbrella-status.service.ts:102
+#: src/ai/service/ai-system-status.service.ts:220
+#: src/ai/service/ai-umbrella-status.service.ts:105
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
 
@@ -1768,7 +1768,7 @@ msgstr "Start Sync"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
-#: src/ai/service/ai-umbrella-status.service.ts:93
+#: src/ai/service/ai-umbrella-status.service.ts:96
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
 
@@ -1964,7 +1964,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/ai/hook/use-stt.hook.ts:123
+#: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
@@ -1973,11 +1973,11 @@ msgstr "Transcription failed"
 msgid "Transfer"
 msgstr "Transfer"
 
-#: src/ai/service/ai-system-status.service.ts:238
+#: src/ai/service/ai-system-status.service.ts:247
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Translating {translationPending} of {total}{trailer}"
 
-#: src/ai/service/ai-translation-status.service.ts:50
+#: src/ai/service/ai-translation-status.service.ts:54
 msgid "Translating categories and tags"
 msgstr "Translating categories and tags"
 
@@ -1985,7 +1985,7 @@ msgstr "Translating categories and tags"
 msgid "Translation"
 msgstr "Translation"
 
-#: src/ai/service/ai-translation-status.service.ts:51
+#: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
 msgstr "Translations ready"
 

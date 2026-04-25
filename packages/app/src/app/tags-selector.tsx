@@ -127,7 +127,7 @@ export default function TagsSelectorModal() {
     useEffect(
         () => () => {
             if (!hasResolvedRef.current) {
-                resolveTagsSelector(reorderTagIdsByPrimary(selectedRef.current, primaryTagIdRef.current), { skipBack: true });
+                resolveTagsSelector(null, { skipBack: true });
             }
         },
         [resolveTagsSelector]
