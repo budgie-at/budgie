@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.5.0](https://github.com/budgie-at/budgie/compare/v5.4.0...v5.5.0) (2026-04-25)
+
+### Bug Fixes
+
+- **contracts:** wait for sqlite transaction commit ([500d0bb](https://github.com/budgie-at/budgie/commit/500d0bbce4c08758f06bc87f3cfa023f2d9b298c))
+- move primary tag selection to picker ([1c18a6f](https://github.com/budgie-at/budgie/commit/1c18a6f5266ab4a585d36d7125b20e2a4aa6c097))
+- remove duplicate uncategorized filter ([7cd64bb](https://github.com/budgie-at/budgie/commit/7cd64bbddaf3340b15b038a8288876145668ed72))
+
+### Features
+
+- **contracts:** add isPrimary to transaction_tags table ([1946049](https://github.com/budgie-at/budgie/commit/1946049a91b9ee80f27448160bab58b1a16ee8a9))
+- **contracts:** add setPrimary and findPrimaryByTransactionId to TransactionTagsRepository ([2a98924](https://github.com/budgie-at/budgie/commit/2a98924b70c797c7043cb775687c8b53a6d43cdc))
+- **contracts:** include isPrimary in transaction tags create schema ([7819c88](https://github.com/budgie-at/budgie/commit/7819c88db42025d589cfb843f220a97ded78a98d))
+
 # [5.4.0](https://github.com/budgie-at/budgie/compare/v5.3.1...v5.4.0) (2026-04-25)
 
 ### Bug Fixes
