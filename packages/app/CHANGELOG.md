@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.6.0](https://github.com/budgie-at/budgie/compare/v5.5.1...v5.6.0) (2026-04-25)
+
+### Bug Fixes
+
+- **app:** bind LegendList viewport so long lists scroll ([1fa4967](https://github.com/budgie-at/budgie/commit/1fa4967178f74f2f568fe69e7e9b748600388997))
+- **app:** drop bottom margin on analytics transactions list ([26c7f80](https://github.com/budgie-at/budgie/commit/26c7f80da7914b20a7e8101953597e9c7c005bdd))
+- **app:** drop recycleItems and widen end-reached threshold ([9323f75](https://github.com/budgie-at/budgie/commit/9323f755866cbf8c100e954c6042b5fccc942a06))
+- **app:** give analytics list trailing scroll room ([6520ba8](https://github.com/budgie-at/budgie/commit/6520ba8aedc3a9171e0f1ed83e462a9ecbb8aa11))
+- **app:** give analytics transactions list breathing room at bottom ([1864d56](https://github.com/budgie-at/budgie/commit/1864d563bfebdf69eae97962c6905255691b2d9a))
+- **app:** make bottom transactions tappable on category drilldown ([49a704d](https://github.com/budgie-at/budgie/commit/49a704df04d9851962e8f0b16fd6616592435867))
+- **app:** move bottom spacer into contentContainerStyle so last item is reachable ([f294980](https://github.com/budgie-at/budgie/commit/f294980a1cf16d412bcabd872aaa3a333e194741))
+- **app:** unlock transaction list scroll on long lists ([0e679df](https://github.com/budgie-at/budgie/commit/0e679df9777b5de2ae2dd63067aeb2e05737aa3d))
+- **app:** widen analytics list trailing room and tighten estimate ([6f7c26e](https://github.com/budgie-at/budgie/commit/6f7c26e6f012e8d7f04bb602c94bfc42564dfe5d))
+
+### Features
+
+- **app:** split statistics into Categories and Tags tabs ([750fc35](https://github.com/budgie-at/budgie/commit/750fc3525a0f1f7e4c39d806056b0bd95adaa5fc))
+
+### Reverts
+
+- restore recycleItems and onEndReachedThreshold ([a9c41e1](https://github.com/budgie-at/budgie/commit/a9c41e1fab40540b51cdc4903f186bdd895f814d))
+
 ## [5.5.1](https://github.com/budgie-at/budgie/compare/v5.5.0...v5.5.1) (2026-04-25)
 
 ### Bug Fixes
