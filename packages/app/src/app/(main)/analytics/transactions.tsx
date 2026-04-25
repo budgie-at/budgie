@@ -13,6 +13,8 @@ import { TransactionSectionsList } from '../../../transaction/components/transac
 import { TransactionFilterPageHeader } from '../../../transaction/components/transactions-page-header/transaction-filter-page-header';
 import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
+import type { Edge } from 'react-native-safe-area-context';
+
 interface RouteParams {
     readonly startDate?: string;
     readonly endDate?: string;
@@ -20,6 +22,8 @@ interface RouteParams {
     readonly tagId?: string;
     readonly type?: string;
 }
+
+const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 const buildCategoryIds = (params: RouteParams): number[] | null => {
     if (isDefined(params.categoryId)) {
@@ -73,6 +77,7 @@ export default function AnalyticsTransactionsPage() {
 
     return (
         <Page
+            safeEdges={SAFE_EDGES}
             header={
                 <TransactionFilterPageHeader
                     category={category}
@@ -91,7 +96,7 @@ export default function AnalyticsTransactionsPage() {
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
-                footerSpacerMultiplier={3}
+                footerSpacerMultiplier={0}
             />
         </Page>
     );
