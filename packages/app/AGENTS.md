@@ -636,8 +636,8 @@ Free-form `context: string`. Convention: hook/file/component name. No enum.
 
 ### Build-time gate
 
-`EXPO_PUBLIC_LOGGING_DISABLE=true` (set in `app.config.js → extra.loggingEnabled`) suppresses all log output. Currently baked into the e2e build profile. **Build-time only** — flipping it on a deployed binary requires a rebuild. See `is-logging-enabled.util.ts` and the registry in `@budgie/contracts`.
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses app log output. App logging is enabled only for `APP_VARIANT=development` builds unless disabled explicitly. **Build-time only** — flipping it on a deployed binary requires a rebuild.
 
 ### `packages/bank-sync` exception
 
-`packages/bank-sync` cannot depend on `@budgie/contracts`. It re-implements the same `Log` decorator and `syncLogger` locally in `packages/bank-sync/src/core/util/sync-logger.util.ts` against a duplicated `consoleTransport`. Both registries (contracts + bank-sync) are wired from `_layout.tsx` at app startup so a single `EXPO_PUBLIC_LOGGING_DISABLE` controls both.
+`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

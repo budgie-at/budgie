@@ -1,5 +1,5 @@
-import { Log, getLogger } from '@budgie/logger';
 import { transactionAsync } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 

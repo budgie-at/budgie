@@ -29,7 +29,6 @@
     },
     "dependencies": {
         "@budgie/logger": "workspace:*",
-        "@rnw-community/log-decorator": "^2.0.3",
         "@rnw-community/shared": "^2.0.0",
         "date-fns": "^4.1.0",
         "ky": "^1.14.1",

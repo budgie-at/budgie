@@ -325,7 +325,18 @@ export default defineConfig(
                         { regex: { pattern: 'sizes', flags: 'i' } },
                         { regex: { pattern: '^d$', flags: '' } }
                     ],
-                    ignoreFunctions: ['format', 'cva', 'Log', 'getLogger', 'logger.log', 'logger.error', 'logger.debug', 'syncLogger.log', 'syncLogger.error']
+                    ignoreFunctions: [
+                        'format',
+                        'cva',
+                        'Log',
+                        'getLogger',
+                        'logger.log',
+                        'logger.error',
+                        'logger.debug',
+                        'syncLogger.log',
+                        'syncLogger.error',
+                        'logStaticLifecycleError'
+                    ]
                 }
             ],
             'lingui/t-call-in-function': 2,

@@ -1,18 +1,16 @@
-import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
 import { translationProgressStore } from '../store/translation-progress.store';
 import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
+import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
 import { translationDrainerService } from './translation-drainer.service';
 
 class AiTranslationStatusService extends BaseSubsystemStatusService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     async rebuild(): Promise<void> {
         try {
             await this.pauseDrainer();
@@ -29,12 +27,12 @@ class AiTranslationStatusService extends BaseSubsystemStatusService {
         }
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async pauseDrainer(): Promise<void> {
         await translationDrainerService.pause();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();
         await tagRepository.resetAllTranslations();

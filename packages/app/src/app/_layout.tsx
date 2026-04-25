@@ -4,7 +4,9 @@ import Constants from 'expo-constants';
 
 import { RootLayoutContent } from './root-layout-content';
 
-if (Constants.expoConfig?.extra?.loggingEnabled !== true) {
+const loggingEnabledKey = 'loggingEnabled';
+
+if (Constants.expoConfig?.extra?.[loggingEnabledKey] !== true) {
     disableLogging();
     disableBankSyncLogging();
 }

@@ -20,7 +20,7 @@ export class BankSyncRepository {
     @Log(
         (id, input, tx) => `enter id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))}`,
         (result, id, input, tx) =>
-            `done id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} resultMode=${result.mode} forwardSyncFromAt=${result.forwardSyncFromAt} forwardSyncedAt=${result.forwardSyncedAt} transactionCount=${result.transactionCount}`,
+            `done id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} resultMode=${result.mode} forwardSyncFromAt=${String(result.forwardSyncFromAt)} forwardSyncedAt=${String(result.forwardSyncedAt)} transactionCount=${result.transactionCount}`,
         (error, id, input, tx) =>
             `throw id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
@@ -32,6 +32,30 @@ export class BankSyncRepository {
             .returning();
 
         return bankSync;
+    }
+
+    @Log(
+        (provider, staleThresholdMs) => `enter provider=${provider} staleThresholdMs=${staleThresholdMs}`,
+        (result, provider, staleThresholdMs) =>
+            `done provider=${provider} staleThresholdMs=${staleThresholdMs} ids=${result.map(row => row.id).join(',')}`,
+        (error, provider, staleThresholdMs) =>
+            `throw provider=${provider} staleThresholdMs=${staleThresholdMs} error=${getErrorMessage(error)}`
+    )
+    async getPendingForwardSync(provider: ExternalSourceEnum, staleThresholdMs: number): Promise<BankSyncEntityInterface[]> {
+        const staleTime = new Date(Date.now() - staleThresholdMs);
+
+        return await this.selectWithActiveAccount()
+            .where(
+                and(
+                    eq(BankSyncEntityTable.provider, provider),
+                    eq(BankSyncEntityTable.enabled, true),
+                    eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
+                    isNull(BankSyncEntityTable.deletedAt),
+                    isNull(AccountEntityTable.deletedAt),
+                    or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
+                )
+            )
+            .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
     }
 
     async create(input: BankSyncCreateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
@@ -85,30 +109,6 @@ export class BankSyncRepository {
                 isNull(AccountEntityTable.deletedAt)
             )
         );
-    }
-
-    @Log(
-        (provider, staleThresholdMs) => `enter provider=${provider} staleThresholdMs=${staleThresholdMs}`,
-        (result, provider, staleThresholdMs) =>
-            `done provider=${provider} staleThresholdMs=${staleThresholdMs} ids=${result.map(row => row.id).join(',')}`,
-        (error, provider, staleThresholdMs) =>
-            `throw provider=${provider} staleThresholdMs=${staleThresholdMs} error=${getErrorMessage(error)}`
-    )
-    async getPendingForwardSync(provider: ExternalSourceEnum, staleThresholdMs: number): Promise<BankSyncEntityInterface[]> {
-        const staleTime = new Date(Date.now() - staleThresholdMs);
-
-        return await this.selectWithActiveAccount()
-            .where(
-                and(
-                    eq(BankSyncEntityTable.provider, provider),
-                    eq(BankSyncEntityTable.enabled, true),
-                    eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
-                    isNull(BankSyncEntityTable.deletedAt),
-                    isNull(AccountEntityTable.deletedAt),
-                    or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
-                )
-            )
-            .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
     }
 
     async setStatus(id: number, status: BankSyncStatusEnum, tx?: DB): Promise<void> {
