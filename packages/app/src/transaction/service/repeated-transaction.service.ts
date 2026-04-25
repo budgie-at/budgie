@@ -1,6 +1,7 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -41,6 +42,14 @@ const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
 };
 
 class RepeatedTransactionService {
+    @Log(
+        params =>
+            `enter type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} categoryId=${params.categoryId ?? 0}`,
+        (result, params) =>
+            `done type=${params.type} accountId=${params.accountId ?? 0} timeCategoryIds=${result.timePatterns.map(pattern => pattern.categoryId).join(',')} amountCategoryIds=${result.amountPatterns.map(pattern => pattern.categoryId).join(',')}`,
+        (error, params) =>
+            `throw type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} error=${getErrorMessage(error)}`
+    )
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
