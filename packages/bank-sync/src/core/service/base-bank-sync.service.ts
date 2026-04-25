@@ -19,20 +19,16 @@ export class BaseBankSyncService {
         protected readonly options: BankSyncOptionsInterface
     ) {}
 
-    @Log(
-        () => 'syncAccounts:start',
-        accounts => `syncAccounts:done count=${accounts.length}`,
-        error => `syncAccounts:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
     async syncAccounts(): Promise<BankAccountInterface[]> {
         return this.fetchAccounts();
     }
 
     @Log(
-        (_accountId, from) => `syncTransactionsForward:start from=${from.toISOString()}`,
-        (result, accountId) =>
-            `syncTransactionsForward:done accountId=${accountId} count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId) => `syncTransactionsForward:throw accountId=${accountId} error=${String(error)}`
+        (accountId, from) => `enter accountId=${accountId} from=${from.toISOString()}`,
+        (result, accountId, from) =>
+            `done accountId=${accountId} from=${from.toISOString()} count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
         const to = new Date();
@@ -53,10 +49,10 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (_accountId, to) => `syncTransactionsBackward:start to=${to.toISOString()}`,
-        (result, accountId) =>
-            `syncTransactionsBackward:done accountId=${accountId} count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId) => `syncTransactionsBackward:throw accountId=${accountId} error=${String(error)}`
+        (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
+        (result, accountId, to) =>
+            `done accountId=${accountId} to=${to.toISOString()} count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
@@ -80,21 +76,7 @@ export class BaseBankSyncService {
         };
     }
 
-    protected toSeconds(date: Date): number {
-        return Math.floor(date.getTime() / 1000);
-    }
-
-    protected delay(ms: number): Promise<void> {
-        return new Promise(resolve => {
-            setTimeout(resolve, ms);
-        });
-    }
-
-    @Log(
-        () => 'fetchAccounts:enter',
-        accounts => `fetchAccounts:done count=${accounts.length}`,
-        error => `fetchAccounts:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
     private async fetchAccounts(): Promise<BankAccountInterface[]> {
         const result = await this.client.getAccounts();
 
@@ -106,9 +88,11 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (accountId, from, to) => `fetchTransactions:enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
-        (transactions, accountId) => `fetchTransactions:done accountId=${accountId} count=${transactions.length}`,
-        (error, accountId) => `fetchTransactions:throw accountId=${accountId} error=${String(error)}`
+        (accountId, from, to) => `enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
+        (transactions, accountId, from, to) =>
+            `done accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} count=${transactions.length}`,
+        (error, accountId, from, to) =>
+            `throw accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} error=${getErrorMessage(error)}`
     )
     private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
         const fromTs = this.toSeconds(from);
@@ -124,6 +108,16 @@ export class BaseBankSyncService {
         }
 
         throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+    }
+
+    protected toSeconds(date: Date): number {
+        return Math.floor(date.getTime() / 1000);
+    }
+
+    protected delay(ms: number): Promise<void> {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
     }
 
     private hasMoreTransactions(transactions: BankTransactionInterface[]): boolean {

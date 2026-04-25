@@ -1,14 +1,13 @@
 import { eq, isNull, sql } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { Log } from '../util/logger/console-transport.util';
-import { getLogger } from '../util/logger/get-logger.util';
 import { transactionAsync } from '../util/transaction-async.util';
 
 import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
@@ -16,55 +15,52 @@ import type { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-e
 import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 
-const logger = getLogger('BaseEmbeddingRepository');
-
 export abstract class BaseEmbeddingRepository {
     constructor(
         protected readonly db: DB,
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
-    @Log('repo:embedding:findSimilarCategories')
+    @Log(
+        (_queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `enter vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
+        (result, _queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `done vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} resultCount=${result.length}`,
+        (error, _queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `throw vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
         vecLimit: number,
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        const start = Date.now();
-        const result = await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+        return await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
-        logger.log('repo:embedding:findSimilarCategories:done', {
-            vecTable: this.queryConfig.vecTableName,
-            resultCount: result.length,
-            durationMs: Date.now() - start
-        });
-
-        return result;
     }
 
-    @Log('repo:embedding:findSimilarTags')
+    @Log(
+        (_queryEmbedding, params) =>
+            `enter vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit}`,
+        (result, _queryEmbedding, params) =>
+            `done vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} resultCount=${result.length}`,
+        (error, _queryEmbedding, params) =>
+            `throw vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
-        const start = Date.now();
-        const result = await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
+
+        return await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryId,
             tagLimit
         ]);
-        logger.log('repo:embedding:findSimilarTags:done', {
-            vecTable: this.queryConfig.vecTableName,
-            resultCount: result.length,
-            durationMs: Date.now() - start
-        });
-
-        return result;
     }
 
     protected isValidDimensions(dimensions: number): boolean {

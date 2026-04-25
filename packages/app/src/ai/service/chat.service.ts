@@ -1,7 +1,7 @@
 import { stripThinkingTags } from '@budgie/ai';
 import { Log } from '@budgie/contracts';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
@@ -23,10 +23,10 @@ class ChatService
         super('chat');
     }
     @Log(
-        (_systemPrompt: string, userMessage: string) => `generate:enter msgLen=${userMessage.length}`,
-        (result: string) => `generate:done resultLen=${result.length}`,
-        (error, _systemPrompt: string, userMessage: string) => `generate:throw msgLen=${userMessage.length} error=${String(error)}`
-    ) // eslint-disable-next-line max-statements -- Mutex-chained generation
+        (_systemPrompt, userMessage) => `enter msgLen=${userMessage.length}`,
+        (result, _systemPrompt, userMessage) => `done msgLen=${userMessage.length} resultLen=${result.length}`,
+        (error, _systemPrompt, userMessage) => `throw msgLen=${userMessage.length} error=${getErrorMessage(error)}`
+    )
     async generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {
         if (!this.isReady || !isDefined(this.context)) {
             throw new AiNotReadyError('chat');
@@ -45,7 +45,7 @@ class ChatService
 
         return stripThinkingTags(result);
     }
-    @Log(() => 'interrupt:enter', () => 'interrupt:done', error => `interrupt:throw error=${String(error)}`) interrupt(): void {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) interrupt(): void {
         void this.context?.stopCompletion();
     }
 

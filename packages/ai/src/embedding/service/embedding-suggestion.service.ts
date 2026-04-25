@@ -7,7 +7,7 @@ import {
     TagScoreResultInterface
 } from '@budgie/contracts';
 
-import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
@@ -40,11 +40,11 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (_categories: CategoryEntityInterface[], transactionTitle: string) => `suggestCategories:enter title=${transactionTitle}`,
-        (result, _categories: CategoryEntityInterface[], transactionTitle: string) =>
-            `suggestCategories:done title=${transactionTitle} resolvedCount=${result.length}`,
-        (error, _categories: CategoryEntityInterface[], transactionTitle: string) =>
-            `suggestCategories:throw title=${transactionTitle} error=${String(error)}`
+        (categories, transactionTitle) => `enter categoriesCount=${categories.length} title=${transactionTitle}`,
+        (result, categories, transactionTitle) =>
+            `done categoriesCount=${categories.length} title=${transactionTitle} resolvedCount=${result.length}`,
+        (error, categories, transactionTitle) =>
+            `throw categoriesCount=${categories.length} title=${transactionTitle} error=${getErrorMessage(error)}`
     )
     async suggestCategories(
         categories: CategoryEntityInterface[],
@@ -85,12 +85,11 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (_allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
-            `suggestTags:enter title=${transactionTitle} categoryId=${categoryId}`,
-        (result, _allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
-            `suggestTags:done title=${transactionTitle} categoryId=${categoryId} resolvedCount=${result.length}`,
-        (error, _allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
-            `suggestTags:throw title=${transactionTitle} categoryId=${categoryId} error=${String(error)}`
+        (allTags, categoryId, transactionTitle) => `enter tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId}`,
+        (result, allTags, categoryId, transactionTitle) =>
+            `done tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId} resolvedCount=${result.length}`,
+        (error, allTags, categoryId, transactionTitle) =>
+            `throw tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId} error=${getErrorMessage(error)}`
     )
     async suggestTags(
         allTags: TagEntityInterface[],
@@ -126,11 +125,9 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (categoryId: number, transactionTitle: string) => `suggestComments:enter title=${transactionTitle} categoryId=${categoryId}`,
-        (result, categoryId: number, transactionTitle: string) =>
-            `suggestComments:done title=${transactionTitle} categoryId=${categoryId} count=${result.length}`,
-        (error, categoryId: number, transactionTitle: string) =>
-            `suggestComments:throw title=${transactionTitle} categoryId=${categoryId} error=${String(error)}`
+        (categoryId, transactionTitle) => `enter categoryId=${categoryId} title=${transactionTitle}`,
+        (result, categoryId, transactionTitle) => `done categoryId=${categoryId} title=${transactionTitle} count=${result.length}`,
+        (error, categoryId, transactionTitle) => `throw categoryId=${categoryId} title=${transactionTitle} error=${getErrorMessage(error)}`
     )
     async suggestComments(
         categoryId: number,
@@ -156,9 +153,9 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        (ctx: string) => `generateSerializedEmbedding:enter contextLen=${ctx.length}`,
-        (result, ctx: string) => `generateSerializedEmbedding:done contextLen=${ctx.length} resolved=${String(isDefined(result))}`,
-        (error, ctx: string) => `generateSerializedEmbedding:throw contextLen=${ctx.length} error=${String(error)}`
+        ctx => `enter contextLen=${ctx.length}`,
+        (result, ctx) => `done contextLen=${ctx.length} resolved=${String(isDefined(result))}`,
+        (error, ctx) => `throw contextLen=${ctx.length} error=${getErrorMessage(error)}`
     )
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
         const service = new EmbeddingService(this.embedding);
