@@ -28,6 +28,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) start(): void {
         if (this.started) {
             return;
@@ -48,6 +49,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             this.setSnapshot({ isSuspended: true });
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) stop(): void {
         if (!this.started) {
             return;
@@ -58,6 +60,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         this.appStateSubscription = null;
         void this.stopSubsystems();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async bootModels(): Promise<void> {
         try {
@@ -66,6 +69,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             logger.log('bootModels:error', { errorMessage: getErrorMessage(error) });
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseModels(): Promise<void> {
         try {

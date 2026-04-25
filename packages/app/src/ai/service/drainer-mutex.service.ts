@@ -10,6 +10,7 @@ class DrainerMutexService {
     get holder(): DrainerKindEnum | null {
         return this.heldBy;
     }
+
     @Log(
         kind => `enter kind=${kind}`,
         (result, kind) => `done kind=${kind} acquired=${String(result)}`,
@@ -24,11 +25,8 @@ class DrainerMutexService {
 
         return this.heldBy === kind;
     }
-    @Log(
-        kind => `enter kind=${kind}`,
-        (_result, kind) => `done kind=${kind}`,
-        (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`
-    )
+
+    @Log(kind => `enter kind=${kind}`, 'done', (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`)
     release(kind: DrainerKindEnum): void {
         if (this.heldBy === kind) {
             this.heldBy = null;

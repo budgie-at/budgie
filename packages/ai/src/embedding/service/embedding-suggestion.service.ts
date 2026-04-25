@@ -40,11 +40,12 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (categories, transactionTitle) => `enter categoriesCount=${categories.length} title=${transactionTitle}`,
-        (result, categories, transactionTitle) =>
-            `done categoriesCount=${categories.length} title=${transactionTitle} resolvedCount=${result.length}`,
-        (error, categories, transactionTitle) =>
-            `throw categoriesCount=${categories.length} title=${transactionTitle} error=${getErrorMessage(error)}`
+        (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `enter title=${transactionTitle} mcc=${mccDescription ?? 'none'} mccCategoryId=${String(mccCategoryId)} commentLen=${comment.length} aiContextLen=${aiContext.length} categoryIds=${categories.map(category => category.id).join(',')}`,
+        (result, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `done title=${transactionTitle} mcc=${mccDescription ?? 'none'} mccCategoryId=${String(mccCategoryId)} commentLen=${comment.length} aiContextLen=${aiContext.length} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
+        (error, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `throw title=${transactionTitle} mcc=${mccDescription ?? 'none'} mccCategoryId=${String(mccCategoryId)} commentLen=${comment.length} aiContextLen=${aiContext.length} categoryCount=${categories.length} error=${getErrorMessage(error)}`
     )
     async suggestCategories(
         categories: CategoryEntityInterface[],
@@ -85,11 +86,12 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (allTags, categoryId, transactionTitle) => `enter tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId}`,
-        (result, allTags, categoryId, transactionTitle) =>
-            `done tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId} resolvedCount=${result.length}`,
-        (error, allTags, categoryId, transactionTitle) =>
-            `throw tagsCount=${allTags.length} title=${transactionTitle} categoryId=${categoryId} error=${getErrorMessage(error)}`
+        (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter title=${transactionTitle} mcc=${mccDescription ?? 'none'} categoryId=${categoryId} commentLen=${comment.length} aiContextLen=${aiContext.length} tagIds=${allTags.map(tag => tag.id).join(',')}`,
+        (result, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done title=${transactionTitle} mcc=${mccDescription ?? 'none'} categoryId=${categoryId} commentLen=${comment.length} aiContextLen=${aiContext.length} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
+        (error, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw title=${transactionTitle} mcc=${mccDescription ?? 'none'} categoryId=${categoryId} commentLen=${comment.length} aiContextLen=${aiContext.length} tagCount=${allTags.length} error=${getErrorMessage(error)}`
     )
     async suggestTags(
         allTags: TagEntityInterface[],
@@ -125,9 +127,12 @@ export class EmbeddingSuggestionService {
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
     @Log(
-        (categoryId, transactionTitle) => `enter categoryId=${categoryId} title=${transactionTitle}`,
-        (result, categoryId, transactionTitle) => `done categoryId=${categoryId} title=${transactionTitle} count=${result.length}`,
-        (error, categoryId, transactionTitle) => `throw categoryId=${categoryId} title=${transactionTitle} error=${getErrorMessage(error)}`
+        (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter categoryId=${categoryId} title=${transactionTitle} mcc=${mccDescription ?? 'none'} commentLen=${comment.length} aiContextLen=${aiContext.length}`,
+        (result, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done categoryId=${categoryId} title=${transactionTitle} mcc=${mccDescription ?? 'none'} commentLen=${comment.length} aiContextLen=${aiContext.length} count=${result.length}`,
+        (error, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw categoryId=${categoryId} title=${transactionTitle} mcc=${mccDescription ?? 'none'} commentLen=${comment.length} aiContextLen=${aiContext.length} error=${getErrorMessage(error)}`
     )
     async suggestComments(
         categoryId: number,
@@ -153,9 +158,9 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        ctx => `enter contextLen=${ctx.length}`,
-        (result, ctx) => `done contextLen=${ctx.length} resolved=${String(isDefined(result))}`,
-        (error, ctx) => `throw contextLen=${ctx.length} error=${getErrorMessage(error)}`
+        context => `enter contextLen=${context.length}`,
+        (result, context) => `done contextLen=${context.length} resolved=${String(isDefined(result))}`,
+        (error, context) => `throw contextLen=${context.length} error=${getErrorMessage(error)}`
     )
     private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
         const service = new EmbeddingService(this.embedding);

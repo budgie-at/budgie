@@ -14,7 +14,7 @@ export class EmbeddingService {
 
     @Log(
         text => `enter textLen=${text.length}`,
-        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
         (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async generateEmbedding(text: string): Promise<Float32Array | null> {
@@ -28,22 +28,23 @@ export class EmbeddingService {
 
     @Log(
         texts => `enter count=${texts.length}`,
-        (result, texts) => `done requested=${texts.length} resolved=${result.size}`,
+        result => `done resolved=${result.size}`,
         (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
     )
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
-    @Log(() => 'enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
         return this.embedding.isReady;
     }
 
     @Log(
-        text => `enter textLen=${text.length}`,
-        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
+        (text, cached) => `enter textLen=${text.length} hasCached=${String(isDefined(cached))}`,
+        (result, text, cached) =>
+            `done textLen=${text.length} hasCached=${String(isDefined(cached))} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text, cached) => `throw textLen=${text.length} hasCached=${String(isDefined(cached))} error=${getErrorMessage(error)}`
     )
     private async returnCachedEmbedding(_text: string, cached: Promise<Float32Array | null>): Promise<Float32Array | null> {
         return cached;
@@ -51,7 +52,7 @@ export class EmbeddingService {
 
     @Log(
         text => `enter textLen=${text.length}`,
-        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
         (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     private async enqueueEmbedding(text: string): Promise<Float32Array | null> {

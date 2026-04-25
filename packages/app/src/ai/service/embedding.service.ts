@@ -17,9 +17,10 @@ class LocalEmbeddingService
     constructor() {
         super('embedding');
     }
+
     @Log(
         text => `enter textLen=${text.length}`,
-        (result, text) => `done textLen=${text.length} dimensions=${result.length}`,
+        result => `done dimensions=${result.length}`,
         (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async embed(text: string): Promise<number[]> {
@@ -30,9 +31,10 @@ class LocalEmbeddingService
 
         return result.embedding;
     }
+
     @Log(
-        texts => `enter count=${texts.length}`,
-        (result, texts) => `done resolved=${result.size} of=${texts.length}`,
+        texts => `enter texts=${texts.join(',')}`,
+        result => `done resolved=${result.size}`,
         (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
     )
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {

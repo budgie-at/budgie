@@ -21,9 +21,11 @@ export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
 
     @Log(
-        (_client, bankAccount) => `enter accountId=${bankAccount.id}`,
-        (_result, _client, bankAccount) => `done accountId=${bankAccount.id}`,
-        (error, _client, bankAccount) => `throw accountId=${bankAccount.id} error=${getErrorMessage(error)}`
+        (client, bankAccount, context) =>
+            `enter accountId=${bankAccount.id} accountCount=${client.getAccounts().length} existingCount=${context.existingTransactionIdMap.size}`,
+        'done',
+        (error, client, bankAccount, context) =>
+            `throw accountId=${bankAccount.id} accountCount=${client.getAccounts().length} existingCount=${context.existingTransactionIdMap.size} error=${getErrorMessage(error)}`
     )
     private async importAccountTransactions(
         client: FileBasedBankSyncClientInterface,

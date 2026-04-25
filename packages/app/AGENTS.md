@@ -633,25 +633,6 @@ export const useSomething = () => {
 
 Free-form `context: string`. Convention: hook/file/component name. No enum.
 
-### Rule 32 exception — dynamic instance-state tags
-
-The decorator library calls hook callbacks as plain functions, with no `this` receiver. Methods whose log tag must read instance state (e.g. `${this.logDomain}`) cannot be decorated. The fallback is inline `getLogger(this.X)` plus a one-line comment that documents the exception:
-
-```ts
-class BaseDrainerService {
-    constructor(private readonly logDomain: string) {}
-
-    start(): void {
-        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
-        const logger = getLogger(this.logDomain);
-        logger.log('start');
-        // ...
-    }
-}
-```
-
-This is the ONLY case where comments are required. The exception is bounded to `base-drainer.service.ts`, `base-subsystem.service.ts`, and concrete drainer subclasses.
-
 ### Build-time gate
 
 `EXPO_PUBLIC_LOGGING_DISABLE=true` (set in `app.config.js → extra.loggingEnabled`) suppresses all log output. Currently baked into the e2e build profile. **Build-time only** — flipping it on a deployed binary requires a rebuild. See `is-logging-enabled.util.ts` and the registry in `@budgie/contracts`.

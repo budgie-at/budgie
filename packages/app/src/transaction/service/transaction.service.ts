@@ -32,9 +32,11 @@ import type {
 
 class TransactionService {
     @Log(
-        inputs => `enter count=${inputs.length}`,
-        (result, inputs) => `done requested=${inputs.length} inserted=${result.length}`,
-        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
+        (inputs, tx, batchSize) => `enter count=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
+        (result, inputs, tx, batchSize) =>
+            `done requested=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize} inserted=${result.length}`,
+        (error, inputs, tx, batchSize) =>
+            `throw count=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
     )
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],
@@ -202,6 +204,7 @@ class TransactionService {
 
         return { fromEntry, toEntry };
     }
+
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 

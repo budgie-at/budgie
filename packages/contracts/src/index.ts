@@ -19,10 +19,8 @@ export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.re
 export type { DB } from './@generic/type/db.type';
 
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
-export { consoleTransport, Log } from './@generic/util/logger/console-transport.util';
-export { getLogger } from './@generic/util/logger/get-logger.util';
-export type { NamespacedLoggerInterface } from './@generic/util/logger/get-logger.util';
-export { isLoggingEnabled, setLoggingEnabledProvider } from './@generic/util/logger/is-logging-enabled.util';
+export { consoleTransport, disableLogging, getLogger, Log } from '@budgie/logger';
+export type { NamespacedLoggerInterface } from '@budgie/logger';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';

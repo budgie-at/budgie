@@ -15,12 +15,11 @@ const merchantDrainerLogger = getLogger('MerchantEmbeddingDrainerService');
 
 class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<MerchantPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_MERCHANT;
-    protected readonly logDomain = 'drainer:embedding:merchant';
 
     @Log(
-        context => `enter contextSize=${context.transactionIds.length}`,
-        (result, context) => `done contextSize=${context.transactionIds.length} dimensions=${result.length}`,
-        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done dimensions=${result.length}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
     )
     private async embedMerchantContext(context: MerchantPendingContextInterface): Promise<number[]> {
         const promptContext = buildMerchantContext({
@@ -40,9 +39,9 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
     }
 
     @Log(
-        context => `enter contextSize=${context.transactionIds.length}`,
-        (result, context) => `done contextSize=${context.transactionIds.length} embeddingId=${String(result)}`,
-        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done embeddingId=${String(result)}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
     )
     private async upsertMerchantEmbedding(context: MerchantPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));

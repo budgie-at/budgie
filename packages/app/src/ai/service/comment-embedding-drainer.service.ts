@@ -15,12 +15,11 @@ const commentDrainerLogger = getLogger('CommentEmbeddingDrainerService');
 
 class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<CommentPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
-    protected readonly logDomain = 'drainer:embedding:comment';
 
     @Log(
-        context => `enter contextSize=${context.transactionIds.length}`,
-        (result, context) => `done contextSize=${context.transactionIds.length} dimensions=${result.length}`,
-        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done dimensions=${result.length}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
     )
     private async embedCommentContext(context: CommentPendingContextInterface): Promise<number[]> {
         const promptContext = buildCommentContext({
@@ -39,9 +38,9 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
     }
 
     @Log(
-        context => `enter contextSize=${context.transactionIds.length}`,
-        (result, context) => `done contextSize=${context.transactionIds.length} embeddingId=${String(result)}`,
-        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done embeddingId=${String(result)}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
     )
     private async upsertCommentEmbedding(context: CommentPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
         const serialized = serializeEmbedding(new Float32Array(rawEmbedding));

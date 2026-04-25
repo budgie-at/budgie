@@ -20,7 +20,6 @@ const YIELD_EVERY_ROWS = 2;
 
 class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
     protected readonly kind = DrainerKindEnum.TRANSLATION;
-    protected readonly logDomain = 'drainer:translation';
     protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
     protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;
     protected readonly boostBatchSize = BOOST_BATCH_SIZE;
@@ -28,8 +27,8 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
 
     @Log(
         row => `enter kind=${row.kind} id=${row.id} title=${row.title}`,
-        (result, row) => `done kind=${row.kind} id=${row.id} titleEnLen=${result.titleEn.length}`,
-        (error, row) => `throw kind=${row.kind} id=${row.id} error=${getErrorMessage(error)}`
+        (result, row) => `done id=${row.id} titleEn=${result.titleEn}`,
+        (error, row) => `throw id=${row.id} error=${getErrorMessage(error)}`
     )
     private async translateRow(row: CategoryOrTagRowInterface): Promise<TranslationResultInterface> {
         const service = new TranslationLlmService(chatService);
@@ -38,9 +37,10 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     }
 
     @Log(
-        row => `enter kind=${row.kind} id=${row.id}`,
-        (_result, row) => `done kind=${row.kind} id=${row.id}`,
-        (error, row) => `throw kind=${row.kind} id=${row.id} error=${getErrorMessage(error)}`
+        (row, translationResult) => `enter kind=${row.kind} id=${row.id} titleEnLen=${translationResult.titleEn.length}`,
+        'done',
+        (error, row, translationResult) =>
+            `throw id=${row.id} titleEnLen=${translationResult.titleEn.length} error=${getErrorMessage(error)}`
     )
     private async persistTranslation(row: CategoryOrTagRowInterface, result: TranslationResultInterface): Promise<void> {
         if (row.kind === 'category') {

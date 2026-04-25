@@ -22,10 +22,13 @@ class ChatService
     constructor() {
         super('chat');
     }
+
     @Log(
-        (_systemPrompt, userMessage) => `enter msgLen=${userMessage.length}`,
-        (result, _systemPrompt, userMessage) => `done msgLen=${userMessage.length} resultLen=${result.length}`,
-        (error, _systemPrompt, userMessage) => `throw msgLen=${userMessage.length} error=${getErrorMessage(error)}`
+        (systemPrompt, userMessage) => `enter systemPromptLen=${systemPrompt.length} msgLen=${userMessage.length}`,
+        (result, systemPrompt, userMessage) =>
+            `done systemPromptLen=${systemPrompt.length} msgLen=${userMessage.length} resultLen=${result.length}`,
+        (error, systemPrompt, userMessage) =>
+            `throw systemPromptLen=${systemPrompt.length} msgLen=${userMessage.length} error=${getErrorMessage(error)}`
     )
     async generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {
         if (!this.isReady || !isDefined(this.context)) {
@@ -45,6 +48,7 @@ class ChatService
 
         return stripThinkingTags(result);
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) interrupt(): void {
         void this.context?.stopCompletion();
     }

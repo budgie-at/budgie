@@ -23,7 +23,7 @@ export class VoiceLlmService {
 
     @Log(
         text => `enter textLen=${text.length} preview=${text.slice(0, LOG_PREVIEW_LENGTH)}`,
-        (result, text) => `done textLen=${text.length} count=${result.length}`,
+        result => `done count=${result.length}`,
         (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
@@ -35,7 +35,7 @@ export class VoiceLlmService {
 
     @Log(
         text => `enter textLen=${text.length}`,
-        (result, text) => `done textLen=${text.length} translatedLen=${result.length}`,
+        result => `done translatedLen=${result.length}`,
         (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     private async performTranslation(text: string): Promise<string> {

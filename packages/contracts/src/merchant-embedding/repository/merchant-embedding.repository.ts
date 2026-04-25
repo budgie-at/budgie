@@ -1,9 +1,10 @@
+import { Log } from '@budgie/logger';
+
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
-import { Log } from '../../@generic/util/logger/console-transport.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
@@ -103,12 +104,12 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     @Log(
-        (_queryEmbedding, params) =>
-            `enter vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit}`,
-        (result, _queryEmbedding, params) =>
-            `done vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} resultCount=${result.length}`,
-        (error, _queryEmbedding, params) =>
-            `throw vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} error=${getErrorMessage(error)}`
+        (queryEmbedding, params) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit}`,
+        (result, queryEmbedding, params) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} count=${result.length}`,
+        (error, queryEmbedding, params) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} error=${getErrorMessage(error)}`
     )
     async findSimilarComments(
         queryEmbedding: Uint8Array,

@@ -1,3 +1,4 @@
+import { Log } from '@budgie/logger';
 import { addSeconds } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
@@ -6,7 +7,6 @@ import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 import { BankTransactionInterface } from '../interface/bank-transaction.interface';
-import { Log } from '../util/sync-logger.util';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
@@ -26,8 +26,7 @@ export class BaseBankSyncService {
 
     @Log(
         (accountId, from) => `enter accountId=${accountId} from=${from.toISOString()}`,
-        (result, accountId, from) =>
-            `done accountId=${accountId} from=${from.toISOString()} count=${result.transactions.length} completed=${String(result.completed)}`,
+        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
         (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
@@ -50,8 +49,7 @@ export class BaseBankSyncService {
 
     @Log(
         (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
-        (result, accountId, to) =>
-            `done accountId=${accountId} to=${to.toISOString()} count=${result.transactions.length} completed=${String(result.completed)}`,
+        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
         (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
@@ -89,8 +87,7 @@ export class BaseBankSyncService {
 
     @Log(
         (accountId, from, to) => `enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
-        (transactions, accountId, from, to) =>
-            `done accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} count=${transactions.length}`,
+        result => `done count=${result.length}`,
         (error, accountId, from, to) =>
             `throw accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} error=${getErrorMessage(error)}`
     )

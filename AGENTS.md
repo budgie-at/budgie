@@ -325,6 +325,84 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 4. Run `yarn i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
+## Logging
+
+The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log`-decorated methods) or `[context]` (for `getLogger(context)`). Tags must not repeat that information.
+
+### `@Log` decorator (class methods)
+
+Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
+
+```ts
+import { Log } from '@budgie/contracts';
+import { getErrorMessage } from '@rnw-community/shared';
+
+class TransactionRepository {
+    @Log(
+        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        result => `done insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> { /* ... */ }
+}
+```
+
+Output:
+```
+[TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
+[TransactionRepository::bulkCreate] done insertedIds=42,43
+```
+
+**Static-tag shortcut.** When `enter` and/or `done` carry no dynamic data (no inputs, no result), pass strings directly — don't wrap in `() =>`:
+
+```ts
+// Good — static strings
+@Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+
+// Bad — needless arrow wrapping a static value
+@Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+```
+
+Mix freely: any of the three hooks can independently be a string or a function.
+
+### Hook formatting rules
+
+1. **Tag prefix:** `enter` | `done` | `throw` only. No method name. The transport already shows `[Class::method]`.
+2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
+3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
+4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
+5. **Strings (short)** → output directly: `title=${transactionTitle}`. No quotes.
+6. **Strings (long, e.g. prompts)** → `lenName=${arg.length}`. The arg still appears, just summarized.
+7. **Numbers / IDs** → output directly: `id=${row.id}`.
+8. **Arrays** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`, `kind`). Never log raw `.length` — the join makes the failing entries debuggable.
+9. **Objects** → destructure their identifying scalars; do not stringify the whole object.
+10. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
+11. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
+
+### `getLogger(context)` (free-form / non-class)
+
+```ts
+import { getLogger } from '@budgie/contracts';
+import { getErrorMessage } from '@rnw-community/shared';
+
+const logger = getLogger('useCategorySuggestion');
+
+logger.log('fired', { transactionTitle });
+logger.error('failed', { errorMessage: getErrorMessage(error) });
+```
+
+Free-form `context: string`. Convention: hook/file/component name. Instantiate once at module top.
+
+### Build-time gate
+
+`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+
+### `bank-sync` exception
+
+`packages/bank-sync` cannot depend on `@budgie/contracts`. It re-implements the same `Log` decorator and `syncLogger` locally in `packages/bank-sync/src/core/util/sync-logger.util.ts`. Same rules apply.
+
 ## Tech Stack
 
 | Package | Stack |

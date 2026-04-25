@@ -37,10 +37,12 @@ class SttService
     get nonCommittedTranscription(): string {
         return this.snapshot.nonCommittedTranscription;
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
+
     @Log(
         options => `enter language=${options?.language ?? 'default'}`,
         (result, options) => `done language=${options?.language ?? 'default'} committedLen=${result.length}`,
@@ -67,9 +69,11 @@ class SttService
             this.activeStream = null;
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) streamStop(): void {
         this.instance?.streamStop();
     }
+
     @Log(() => 'enter model=WHISPER_SMALL', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async downloadModel(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
@@ -78,6 +82,7 @@ class SttService
             this.setSnapshot({ downloadProgress: progress });
         });
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async initModel(): Promise<void> {
         try {
@@ -89,6 +94,7 @@ class SttService
             throw error;
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseInstance(): Promise<void> {
         try {
