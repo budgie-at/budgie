@@ -12,7 +12,7 @@ import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-sub
 import { translationDrainerService } from './translation-drainer.service';
 
 class AiTranslationStatusService extends BaseSubsystemStatusService {
-    @Log(() => 'rebuild:enter', () => 'rebuild:done', error => `rebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 5 rebuild phases with pause/resume bookends
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     async rebuild(): Promise<void> {
         try {
             await this.pauseDrainer();
@@ -28,15 +28,11 @@ class AiTranslationStatusService extends BaseSubsystemStatusService {
             throw error;
         }
     }
-    @Log(() => 'pauseDrainer:enter', () => 'pauseDrainer:done', error => `pauseDrainer:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainer(): Promise<void> {
         await translationDrainerService.pause();
     }
-    @Log(
-        () => 'resetTranslations:enter',
-        () => 'resetTranslations:done',
-        error => `resetTranslations:throw error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();
         await tagRepository.resetAllTranslations();

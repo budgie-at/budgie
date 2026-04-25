@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { consoleTransport } from './console-transport.util';
 
 export interface NamespacedLoggerInterface {
@@ -18,7 +20,7 @@ const serializePayload = (payload: unknown): string => {
     return JSON.stringify(payload);
 };
 
-const buildMessage = (tag: string, payload?: unknown): string => (payload === undefined ? tag : `${tag} ${serializePayload(payload)}`);
+const buildMessage = (tag: string, payload?: unknown): string => (isDefined(payload) ? `${tag} ${serializePayload(payload)}` : tag);
 
 export const getLogger = (context: string): NamespacedLoggerInterface => ({
     debug: (tag, payload) => {

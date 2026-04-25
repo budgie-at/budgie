@@ -340,13 +340,16 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             return;
         }
         this.consecutiveFailures += 1;
-        logger.log('row:throw', {
-            errorMessage: message,
-            consecutiveFailures: this.consecutiveFailures
-        });
+        logger.log('row:throw', { errorMessage: message, consecutiveFailures: this.consecutiveFailures });
         if (this.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
             return;
         }
+        this.enterErrorState(message);
+    }
+
+    private enterErrorState(message: string): void {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         logger.log('error:cap-reached', { consecutiveFailures: this.consecutiveFailures });
         this.setSnapshot({ state: DrainerStateEnum.ERROR, errorMessage: message });
         this.haltTimer();

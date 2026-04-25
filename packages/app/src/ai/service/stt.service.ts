@@ -37,15 +37,15 @@ class SttService
     get nonCommittedTranscription(): string {
         return this.snapshot.nonCommittedTranscription;
     }
-    @Log(() => 'retry:enter', () => 'retry:done', error => `retry:throw error=${String(error)}`) async retry(): Promise<void> {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
     @Log(
-        (options?: { readonly language?: string }) => `stream:start language=${options?.language ?? 'default'}`,
-        (result: string) => `stream:complete committedLen=${result.length}`,
-        error => `stream:throw error=${String(error)}`
-    ) // eslint-disable-next-line max-statements -- Async generator consumption with per-chunk snapshot updates
+        options => `enter language=${options?.language ?? 'default'}`,
+        (result, options) => `done language=${options?.language ?? 'default'} committedLen=${result.length}`,
+        (error, options) => `throw language=${options?.language ?? 'default'} error=${getErrorMessage(error)}`
+    )
     async stream(options?: { readonly language?: string }): Promise<string> {
         if (!this.isReady || !isDefined(this.instance)) {
             throw new AiNotReadyError('stt');
@@ -67,14 +67,10 @@ class SttService
             this.activeStream = null;
         }
     }
-    @Log(() => 'streamStop:enter', () => 'streamStop:done', error => `streamStop:throw error=${String(error)}`) streamStop(): void {
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) streamStop(): void {
         this.instance?.streamStop();
     }
-    @Log(
-        () => 'stt:download:begin model=WHISPER_SMALL',
-        () => 'stt:download:complete',
-        error => `stt:download:throw error=${String(error)}`
-    )
+    @Log(() => 'enter model=WHISPER_SMALL', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async downloadModel(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
         this.instance = new SpeechToTextModule();
@@ -82,7 +78,7 @@ class SttService
             this.setSnapshot({ downloadProgress: progress });
         });
     }
-    @Log(() => 'stt:init:enter', () => 'stt:ready', error => `stt:init:throw error=${String(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async initModel(): Promise<void> {
         try {
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
@@ -93,7 +89,7 @@ class SttService
             throw error;
         }
     }
-    @Log(() => 'stt:stop:enter', () => 'stt:stop:complete', error => `stt:stop:throw error=${String(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseInstance(): Promise<void> {
         try {
             this.instance?.streamStop();

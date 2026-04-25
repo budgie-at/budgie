@@ -1,6 +1,6 @@
 import { Log } from '@budgie/contracts';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
@@ -18,9 +18,9 @@ class LocalEmbeddingService
         super('embedding');
     }
     @Log(
-        (text: string) => `embed:enter textLen=${text.length}`,
-        (result: number[]) => `embed:done dimensions=${result.length}`,
-        (error, text: string) => `embed:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length}`,
+        (result, text) => `done textLen=${text.length} dimensions=${result.length}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async embed(text: string): Promise<number[]> {
         if (!this.isReady || !isDefined(this.context)) {
@@ -31,9 +31,9 @@ class LocalEmbeddingService
         return result.embedding;
     }
     @Log(
-        (texts: readonly string[]) => `batchEmbed:enter count=${texts.length}`,
-        (result: Map<string, number[]>, texts: readonly string[]) => `batchEmbed:done resolved=${result.size} of=${texts.length}`,
-        (error, texts: readonly string[]) => `batchEmbed:throw count=${texts.length} error=${String(error)}`
+        texts => `enter count=${texts.length}`,
+        (result, texts) => `done resolved=${result.size} of=${texts.length}`,
+        (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
     )
     async batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
         // eslint-disable-next-line no-restricted-syntax -- readonly string[] isn't assignable to isEmptyArray's string[]

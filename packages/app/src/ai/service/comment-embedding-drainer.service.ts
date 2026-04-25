@@ -1,7 +1,7 @@
 import { buildCommentContext, serializeEmbedding } from '@budgie/ai';
 import { Log, getLogger } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
@@ -16,6 +16,50 @@ const commentDrainerLogger = getLogger('CommentEmbeddingDrainerService');
 class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<CommentPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
     protected readonly logDomain = 'drainer:embedding:comment';
+
+    @Log(
+        context => `enter contextSize=${context.transactionIds.length}`,
+        (result, context) => `done contextSize=${context.transactionIds.length} dimensions=${result.length}`,
+        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    private async embedCommentContext(context: CommentPendingContextInterface): Promise<number[]> {
+        const promptContext = buildCommentContext({
+            comment: context.comment,
+            categoryTitle: context.categoryTitleEn
+        });
+        const rawEmbedding = await embeddingService.embed(promptContext);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            commentDrainerLogger.log('embedding:comment:context:skip', {
+                reason: 'empty-embedding',
+                contextSize: context.transactionIds.length
+            });
+        }
+
+        return rawEmbedding;
+    }
+
+    @Log(
+        context => `enter contextSize=${context.transactionIds.length}`,
+        (result, context) => `done contextSize=${context.transactionIds.length} embeddingId=${String(result)}`,
+        (error, context) => `throw contextSize=${context.transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    private async upsertCommentEmbedding(context: CommentPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
+        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
+        const embeddingId = await commentEmbeddingRepository.upsert({
+            comment: context.comment,
+            categoryId: context.categoryId,
+            embedding: serialized,
+            dimensions: rawEmbedding.length
+        });
+        if (!isDefined(embeddingId)) {
+            commentDrainerLogger.log('embedding:comment:context:skip', {
+                reason: 'upsert-null',
+                contextSize: context.transactionIds.length
+            });
+        }
+
+        return embeddingId;
+    }
 
     protected async fetchPending(limit: number): Promise<CommentPendingContextInterface[]> {
         return commentEmbeddingRepository.findPendingCommentContexts(limit);
@@ -40,54 +84,6 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
         }
 
         return this.upsertCommentEmbedding(context, rawEmbedding);
-    }
-
-    @Log(
-        (context: { readonly transactionIds: readonly number[] }) =>
-            `embedding:comment:embed:enter contextSize=${context.transactionIds.length}`,
-        (result: number[]) => `embedding:comment:embed:done dimensions=${result.length}`,
-        (error, context: { readonly transactionIds: readonly number[] }) =>
-            `embedding:comment:embed:throw contextSize=${context.transactionIds.length} error=${String(error)}`
-    )
-    private async embedCommentContext(context: CommentPendingContextInterface): Promise<number[]> {
-        const promptContext = buildCommentContext({
-            comment: context.comment,
-            categoryTitle: context.categoryTitleEn
-        });
-        const rawEmbedding = await embeddingService.embed(promptContext);
-        if (!isNotEmptyArray(rawEmbedding)) {
-            commentDrainerLogger.log('embedding:comment:context:skip', {
-                reason: 'empty-embedding',
-                contextSize: context.transactionIds.length
-            });
-        }
-
-        return rawEmbedding;
-    }
-
-    @Log(
-        (context: { readonly transactionIds: readonly number[] }) =>
-            `embedding:comment:upsert:enter contextSize=${context.transactionIds.length}`,
-        (result: number | null) => `embedding:comment:upsert:done embeddingId=${String(result)}`,
-        (error, context: { readonly transactionIds: readonly number[] }) =>
-            `embedding:comment:upsert:throw contextSize=${context.transactionIds.length} error=${String(error)}`
-    )
-    private async upsertCommentEmbedding(context: CommentPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
-        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
-        const embeddingId = await commentEmbeddingRepository.upsert({
-            comment: context.comment,
-            categoryId: context.categoryId,
-            embedding: serialized,
-            dimensions: rawEmbedding.length
-        });
-        if (!isDefined(embeddingId)) {
-            commentDrainerLogger.log('embedding:comment:context:skip', {
-                reason: 'upsert-null',
-                contextSize: context.transactionIds.length
-            });
-        }
-
-        return embeddingId;
     }
 
     protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {

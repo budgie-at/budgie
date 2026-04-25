@@ -1,6 +1,6 @@
 import { Log } from '@budgie/contracts';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
@@ -13,9 +13,9 @@ export class EmbeddingService {
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
     @Log(
-        (text: string) => `generateEmbedding:enter textLen=${text.length}`,
-        (result, text: string) => `generateEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text: string) => `generateEmbedding:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length}`,
+        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
@@ -27,36 +27,32 @@ export class EmbeddingService {
     }
 
     @Log(
-        (texts: string[]) => `generateEmbeddings:enter count=${texts.length}`,
-        (result, texts: string[]) => `generateEmbeddings:done requested=${texts.length} resolved=${result.size}`,
-        (error, texts: string[]) => `generateEmbeddings:throw count=${texts.length} error=${String(error)}`
+        texts => `enter count=${texts.length}`,
+        (result, texts) => `done requested=${texts.length} resolved=${result.size}`,
+        (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
     )
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
-    @Log(
-        () => 'isAvailable:enter',
-        result => `isAvailable:done result=${String(result)}`,
-        error => `isAvailable:throw error=${String(error)}`
-    )
+    @Log(() => 'enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
         return this.embedding.isReady;
     }
 
     @Log(
-        (text: string) => `returnCachedEmbedding:enter textLen=${text.length}`,
-        (result, text: string) => `returnCachedEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text: string) => `returnCachedEmbedding:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length}`,
+        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     private async returnCachedEmbedding(_text: string, cached: Promise<Float32Array | null>): Promise<Float32Array | null> {
         return cached;
     }
 
     @Log(
-        (text: string) => `enqueueEmbedding:enter textLen=${text.length}`,
-        (result, text: string) => `enqueueEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text: string) => `enqueueEmbedding:throw textLen=${text.length} error=${String(error)}`
+        text => `enter textLen=${text.length}`,
+        (result, text) => `done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text) => `throw textLen=${text.length} error=${getErrorMessage(error)}`
     )
     private async enqueueEmbedding(text: string): Promise<Float32Array | null> {
         const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));

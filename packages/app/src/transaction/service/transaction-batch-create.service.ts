@@ -1,5 +1,7 @@
 import { Log, TransactionCreateInputInterface, TransactionEntityInterface } from '@budgie/contracts';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
@@ -8,9 +10,9 @@ import type { DB } from '@budgie/contracts';
 
 class TransactionBatchCreateService {
     @Log(
-        batch => `batchCreate:enter count=${batch.length}`,
-        (result, batch) => `batchCreate:done requested=${batch.length} inserted=${result.length}`,
-        (error, batch) => `batchCreate:throw count=${batch.length} error=${String(error)}`
+        batch => `enter count=${batch.length}`,
+        (result, batch) => `done requested=${batch.length} inserted=${result.length}`,
+        (error, batch) => `throw count=${batch.length} error=${getErrorMessage(error)}`
     )
     async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
         const transactions = await transactionRepository.bulkCreate([...batch], tx);

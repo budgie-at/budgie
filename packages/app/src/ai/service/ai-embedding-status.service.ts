@@ -12,7 +12,7 @@ import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-sub
 import { embeddingDrainerService } from './embedding-drainer.service';
 
 class AiEmbeddingStatusService extends BaseSubsystemStatusService {
-    @Log(() => 'rebuild:enter', () => 'rebuild:done', error => `rebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 6 rebuild phases with pause/resume bookends
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     async rebuild(): Promise<void> {
         try {
             await this.pauseDrainer();
@@ -29,20 +29,16 @@ class AiEmbeddingStatusService extends BaseSubsystemStatusService {
             throw error;
         }
     }
-    @Log(() => 'pauseDrainer:enter', () => 'pauseDrainer:done', error => `pauseDrainer:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainer(): Promise<void> {
         await embeddingDrainerService.pause();
     }
-    @Log(
-        () => 'truncateEmbeddings:enter',
-        () => 'truncateEmbeddings:done',
-        error => `truncateEmbeddings:throw error=${getErrorMessage(error)}`
-    )
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
-    @Log(() => 'markTransactions:enter', () => 'markTransactions:done', error => `markTransactions:throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async markTransactions(): Promise<void> {
         await transactionRepository.markAllForEmbedding();
         await transactionRepository.clearNonIndexableFlags();

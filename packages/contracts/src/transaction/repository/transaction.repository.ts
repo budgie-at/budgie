@@ -1,11 +1,10 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { Log } from '../../@generic/util/logger/console-transport.util';
-import { getLogger } from '../../@generic/util/logger/get-logger.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -23,27 +22,17 @@ import type { TransactionCreateEntityInterface } from '../entity/transaction-cre
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
-const logger = getLogger('TransactionRepository');
-
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
-    @Log('repo:transaction:bulkCreate')
+    @Log(
+        inputs => `enter count=${inputs.length}`,
+        (result, inputs) => `done requested=${inputs.length} inserted=${result.length}`,
+        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
+    )
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
-            logger.log('repo:transaction:bulkCreate', {
-                count: inputs.length,
-                externalSources: inputs.map(input => input.externalSource),
-                externalIds: inputs.map(input => input.externalId)
-            });
-            const results = await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
-            logger.log('repo:transaction:bulkCreate:done', {
-                requested: inputs.length,
-                inserted: results.length,
-                insertedIds: results.map(row => row.id)
-            });
-
-            return results;
+            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
         }
 
         return [];
@@ -179,8 +168,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         `);
     }
 
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
-        const start = Date.now();
         (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
@@ -199,11 +188,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.category_id IS NOT NULL
               )
         `);
-        logger.log('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
     }
 
+    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
-        const start = Date.now();
         (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
@@ -221,12 +209,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.category_id IS NOT NULL
               )
         `);
-        logger.log('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
     }
 
+    @Log(
+        (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
+        (result, mccCategoryId, limit) => `done mccCategoryId=${mccCategoryId} limit=${limit} resultCount=${result.length}`,
+        (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
+    )
     async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
-        const start = Date.now();
-        const rows = await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
+        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
             `WITH signals AS (
                 SELECT me.category_id AS category_id
                 FROM merchant_embeddings me
@@ -249,17 +240,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             LIMIT ?`,
             [mccCategoryId, mccCategoryId, limit]
         );
-
-        logger.log('repo:transaction:findMccCategorySuggestions:done', {
-            mccCategoryId,
-            resultCount: rows.length,
-            durationMs: Date.now() - start,
-            topCategoryIds: rows.slice(0, 3).map(row => row.categoryId)
-        });
-
-        return rows;
     }
 
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} count=${result.length}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })
@@ -272,10 +259,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 )
             );
 
-        const ids = results.map(row => row.externalId).filter(isDefined);
-        logger.log('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
-
-        return ids;
+        return results.map(row => row.externalId).filter(isDefined);
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
