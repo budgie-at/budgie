@@ -13,7 +13,7 @@ interface Props {
     readonly testID?: string;
 }
 
-const BOTTOM_PADDING = 12;
+const BOTTOM_PADDING = 4;
 const EXIT_DURATION_MS = 160;
 
 export const TagsSelectorDoneButton = ({ count, onPress, testID }: Props) => {
