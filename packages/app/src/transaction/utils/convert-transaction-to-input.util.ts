@@ -9,6 +9,8 @@ import {
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
+import { sortTransactionTagsByPrimary } from './sort-transaction-tags-by-primary.util';
+
 const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) => {
     if (
         transaction.type === TransactionTypeEnum.EXPENSE ||
@@ -29,7 +31,7 @@ const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) =
 export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): TransactionCreateInputInterface => ({
     ...transaction,
     amount: convertFromMicroUnits(calculateAmount(transaction)),
-    tagIds: transaction.transactionTags.map(({ tagId }) => tagId),
+    tagIds: sortTransactionTagsByPrimary(transaction.transactionTags).map(({ tagId }) => tagId),
     entries: transaction.entries.map(entry => ({
         ...entry,
         amount: convertFromMicroUnits(entry.amount)
