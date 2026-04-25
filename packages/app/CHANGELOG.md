@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.5.1](https://github.com/budgie-at/budgie/compare/v5.5.0...v5.5.1) (2026-04-25)
+
+### Bug Fixes
+
+- **contracts,app:** suggest patterns for manual transactions on new expense ([d1c4964](https://github.com/budgie-at/budgie/commit/d1c4964b4e7c889a32602f8bd413b983fde2d41d))
+
 # [5.5.0](https://github.com/budgie-at/budgie/compare/v5.4.0...v5.5.0) (2026-04-25)
 
 ### Bug Fixes
