@@ -5,19 +5,19 @@
     "scripts": {
         "android": "expo run:android",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo .expo",
+        "db:generate": "drizzle-kit generate",
+        "eas-build-post-install": "cd ../.. && yarn build",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
         "i18n:sync": "yarn i18n:extract && yarn i18n:compile",
+        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true",
         "ios": "APP_VARIANT=development expo run:ios",
         "ios:device": "APP_VARIANT=development expo run:ios --device",
         "lint": "run -T eslint --fix src",
         "prebuild": "expo prebuild --clean",
         "start": "expo start --dev-client -c",
         "ts": "run -T tsc -p .",
-        "web": "expo start --web",
-        "db:generate": "drizzle-kit generate",
-        "postinstall": "cp -R patches/expo-sqlite-vec-ios/vec.xcframework ../../node_modules/expo-sqlite/ios/vec.xcframework 2>/dev/null || true",
-        "eas-build-post-install": "cd ../.. && yarn build"
+        "web": "expo start --web"
     },
     "resolutions": {
         "lightningcss": "1.30.1"
@@ -26,6 +26,7 @@
         "@budgie/ai": "workspace:^",
         "@budgie/bank-sync": "workspace:*",
         "@budgie/contracts": "workspace:^",
+        "@budgie/logger": "workspace:*",
         "@expo/fingerprint": "~0.16.6",
         "@formatjs/intl": "^3.1.8",
         "@hookform/resolvers": "^5.2.2",
@@ -33,7 +34,7 @@
         "@lingui/core": "^5.7.0",
         "@lingui/react": "^5.7.0",
         "@react-native-masked-view/masked-view": "^0.3.2",
-        "@rnw-community/shared": "^1.8.2",
+        "@rnw-community/shared": "^2.0.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",

@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -98,7 +100,7 @@ export const TransactionSectionsList = ({
         }))
     ]);
 
-    const isEmpty = flatData.length === 0;
+    const isEmpty = isEmptyArray(flatData);
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
 
     const listFooter = <MenuSpacer multiplier={footerSpacerMultiplier} />;

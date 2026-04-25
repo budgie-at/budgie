@@ -1,0 +1,32 @@
+{
+    "name": "@budgie/logger",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Shared logging primitives: console transport, build-time disable gate, @Log decorator, getLogger",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js",
+            "react-native": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "react-native": "./dist/esm/index.js",
+    "scripts": {
+        "build": "run -T tsc -p tsconfig.json",
+        "build:watch": "yarn build --watch",
+        "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
+        "format": "run -T prettier --write src",
+        "lint": "run -T eslint --fix src",
+        "ts": "run -T tsc -p .",
+        "test": "run -T jest --passWithNoTests"
+    },
+    "dependencies": {
+        "@rnw-community/log-decorator": "^2.0.3",
+        "@rnw-community/shared": "^2.0.0"
+    }
+}

@@ -1,5 +1,8 @@
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
+
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
-import { aiLog } from '../utils/ai-log.util';
 
 class DrainerMutexService {
     private heldBy: DrainerKindEnum | null = null;
@@ -8,10 +11,14 @@ class DrainerMutexService {
         return this.heldBy;
     }
 
+    @Log(
+        kind => `enter kind=${kind}`,
+        (result, kind) => `done kind=${kind} acquired=${String(result)}`,
+        (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`
+    )
     acquire(kind: DrainerKindEnum): boolean {
-        if (this.heldBy === null) {
+        if (!isDefined(this.heldBy)) {
             this.heldBy = kind;
-            aiLog('drainer:mutex:acquire', { kind });
 
             return true;
         }
@@ -19,10 +26,10 @@ class DrainerMutexService {
         return this.heldBy === kind;
     }
 
+    @Log(kind => `enter kind=${kind}`, 'done', (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`)
     release(kind: DrainerKindEnum): void {
         if (this.heldBy === kind) {
             this.heldBy = null;
-            aiLog('drainer:mutex:release', { kind });
         }
     }
 

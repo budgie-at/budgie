@@ -28,7 +28,8 @@
         "test:cov": "run -T jest --coverage"
     },
     "dependencies": {
-        "@rnw-community/shared": "^1.8.2",
+        "@budgie/logger": "workspace:*",
+        "@rnw-community/shared": "^2.0.0",
         "date-fns": "^4.1.0",
         "drizzle-orm": "^0.45.2",
         "drizzle-zod": "^0.8.3",
