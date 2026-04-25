@@ -23,7 +23,10 @@ export const TransactionCardTags = ({ transaction }: Props) => {
             <TransactionCardTagChip title={primaryTag.title} isPrimary={hasMultipleTags} />
             {hasMultipleTags ? (
                 <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
-                    <Text className="text-xs text-secondary-foreground">{`+${siblingsCount}`}</Text>
+                    <Text
+                        className="text-xs text-secondary-foreground"
+                        testID={TransactionCardSelector.TagSiblingsCount(primaryTag.title)}
+                    >{`+${siblingsCount}`}</Text>
                 </View>
             ) : null}
         </View>

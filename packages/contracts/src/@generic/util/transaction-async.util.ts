@@ -14,7 +14,7 @@ class TransactionAsyncResult<T> {
     }
 
     get(): T {
-        const {result} = this;
+        const { result } = this;
 
         if (!isDefined(result)) {
             throw new Error('Transaction did not produce a result');
