@@ -1,18 +1,16 @@
-import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository, merchantEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
+import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 
 class AiEmbeddingStatusService extends BaseSubsystemStatusService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     async rebuild(): Promise<void> {
         try {
             await this.pauseDrainer();
@@ -30,18 +28,18 @@ class AiEmbeddingStatusService extends BaseSubsystemStatusService {
         }
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async pauseDrainer(): Promise<void> {
         await embeddingDrainerService.pause();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async markTransactions(): Promise<void> {
         await transactionRepository.markAllForEmbedding();
         await transactionRepository.clearNonIndexableFlags();

@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
-import { Log } from '@budgie/logger';
-
 import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -26,13 +25,13 @@ export abstract class BaseFileBankSyncService {
         (client, bankAccount, context) =>
             `enter accountId=${bankAccount.id} accountIds=${client
                 .getAccounts()
-                .map(a => a.id)
+                .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
         'done',
         (error, client, bankAccount, context) =>
             `throw accountId=${bankAccount.id} accountIds=${client
                 .getAccounts()
-                .map(a => a.id)
+                .map(account => account.id)
                 .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
     )
     private async importAccountTransactions(

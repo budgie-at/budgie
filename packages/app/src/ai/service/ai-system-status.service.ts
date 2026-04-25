@@ -1,8 +1,8 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
-import { Log, getLogger } from '@budgie/logger';
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     categoryRepository,
@@ -19,6 +19,7 @@ import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
+import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
@@ -58,7 +59,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         super(EMPTY_SNAPSHOT);
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) async boost(): Promise<void> {
+    @staticLifecycleLog async boost(): Promise<void> {
         if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
 
@@ -67,12 +68,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         await embeddingDrainerService.boost();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) cancelBoost(): void {
+    @staticLifecycleLog cancelBoost(): void {
         translationDrainerService.cancelBoost();
         embeddingDrainerService.cancelBoost();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
+    @staticLifecycleLog async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
             promises.push(chatService.retry());
@@ -92,7 +93,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
+    @staticLifecycleLog // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
     async freshRebuild(): Promise<void> {
         try {
             await this.pauseDrainers();
@@ -115,24 +116,24 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async pauseDrainers(): Promise<void> {
         await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();
         await tagRepository.resetAllTranslations();
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    @staticLifecycleLog
     private async markTransactionsForRebuild(): Promise<void> {
         await transactionRepository.markAllForEmbedding();
         await transactionRepository.clearNonIndexableFlags();

@@ -1,13 +1,12 @@
-import { buildMerchantContext, serializeEmbedding } from '@budgie/ai';
-import { Log, getLogger } from '@budgie/logger';
+import { buildMerchantContext } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { merchantEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 
 import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
-import { embeddingService } from './embedding.service';
 
 import type { DB, MerchantPendingContextInterface } from '@budgie/contracts';
 
@@ -16,51 +15,27 @@ const merchantDrainerLogger = getLogger('MerchantEmbeddingDrainerService');
 class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<MerchantPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_MERCHANT;
 
-    @Log(
-        context => `enter transactionIds=${context.transactionIds.join(',')}`,
-        result => `done dimensions=${result.length}`,
-        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
-    )
-    private async embedMerchantContext(context: MerchantPendingContextInterface): Promise<number[]> {
-        const promptContext = buildMerchantContext({
+    protected buildPromptContext(context: MerchantPendingContextInterface): string {
+        return buildMerchantContext({
             title: context.title,
             mccDescription: context.mccDescription,
             categoryTitle: context.categoryTitleEn
         });
-        const rawEmbedding = await embeddingService.embed(promptContext);
-        if (!isNotEmptyArray(rawEmbedding)) {
-            merchantDrainerLogger.log('embedding:merchant:context:skip', {
-                reason: 'empty-embedding',
-                contextSize: context.transactionIds.length
-            });
-        }
-
-        return rawEmbedding;
     }
 
-    @Log(
-        context => `enter transactionIds=${context.transactionIds.join(',')}`,
-        result => `done embeddingId=${String(result)}`,
-        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
-    )
-    private async upsertMerchantEmbedding(context: MerchantPendingContextInterface, rawEmbedding: number[]): Promise<number | null> {
-        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
-        const embeddingId = await merchantEmbeddingRepository.upsert({
+    protected async persistEmbedding(
+        context: MerchantPendingContextInterface,
+        embedding: Uint8Array,
+        dimensions: number
+    ): Promise<number | null> {
+        return merchantEmbeddingRepository.upsert({
             title: context.title,
             mccDescription: context.mccDescription,
             categoryId: context.categoryId,
             comment: context.comment,
-            embedding: serialized,
-            dimensions: rawEmbedding.length
+            embedding,
+            dimensions
         });
-        if (!isDefined(embeddingId)) {
-            merchantDrainerLogger.log('embedding:merchant:context:skip', {
-                reason: 'upsert-null',
-                contextSize: context.transactionIds.length
-            });
-        }
-
-        return embeddingId;
     }
 
     protected async fetchPending(limit: number): Promise<MerchantPendingContextInterface[]> {
@@ -80,13 +55,11 @@ class MerchantEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Mer
         });
     }
 
-    protected async runEmbedAndUpsert(context: MerchantPendingContextInterface): Promise<number | null> {
-        const rawEmbedding = await this.embedMerchantContext(context);
-        if (!isNotEmptyArray(rawEmbedding)) {
-            return null;
-        }
-
-        return this.upsertMerchantEmbedding(context, rawEmbedding);
+    protected logSkip(context: MerchantPendingContextInterface, reason: string): void {
+        merchantDrainerLogger.log('embedding:merchant:context:skip', {
+            reason,
+            contextSize: context.transactionIds.length
+        });
     }
 
     protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
