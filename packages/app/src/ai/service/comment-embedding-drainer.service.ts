@@ -1,7 +1,4 @@
 import { buildCommentContext } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
@@ -9,8 +6,6 @@ import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { BaseEmbeddingSubDrainerService } from './base-embedding-sub-drainer.service';
 
 import type { CommentPendingContextInterface, DB } from '@budgie/contracts';
-
-const commentDrainerLogger = getLogger('CommentEmbeddingDrainerService');
 
 class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<CommentPendingContextInterface> {
     protected readonly kind = DrainerKindEnum.EMBEDDING_COMMENT;
@@ -41,21 +36,6 @@ class CommentEmbeddingDrainerService extends BaseEmbeddingSubDrainerService<Comm
 
     protected async countPending(): Promise<number> {
         return commentEmbeddingRepository.countPendingCommentContexts();
-    }
-
-    protected logBegin(context: CommentPendingContextInterface): void {
-        commentDrainerLogger.log('embedding:comment:context:begin', {
-            categoryId: context.categoryId,
-            contextSize: context.transactionIds.length,
-            hasExisting: isDefined(context.existingEmbeddingId)
-        });
-    }
-
-    protected logSkip(context: CommentPendingContextInterface, reason: string): void {
-        commentDrainerLogger.log('embedding:comment:context:skip', {
-            reason,
-            contextSize: context.transactionIds.length
-        });
     }
 
     protected async replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {

@@ -1,16 +1,18 @@
+import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { commentEmbeddingRepository, merchantEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
-import { staticLifecycleLog } from '../utils/static-lifecycle-log.util';
 
 import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 
 class AiEmbeddingStatusService extends BaseSubsystemStatusService {
-    @staticLifecycleLog
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async rebuild(): Promise<void> {
         try {
             await this.pauseDrainer();
@@ -28,23 +30,6 @@ class AiEmbeddingStatusService extends BaseSubsystemStatusService {
         }
     }
 
-    @staticLifecycleLog
-    private async pauseDrainer(): Promise<void> {
-        await embeddingDrainerService.pause();
-    }
-
-    @staticLifecycleLog
-    private async truncateEmbeddings(): Promise<void> {
-        await merchantEmbeddingRepository.truncate();
-        await commentEmbeddingRepository.truncate();
-    }
-
-    @staticLifecycleLog
-    private async markTransactions(): Promise<void> {
-        await transactionRepository.markAllForEmbedding();
-        await transactionRepository.clearNonIndexableFlags();
-    }
-
     protected buildSubsystemSubscriptions(): (() => void)[] {
         return [embeddingDrainerService.subscribe(this.scheduleRecompute), embeddingProgressStore.subscribe(this.scheduleRecompute)];
     }
@@ -59,6 +44,20 @@ class AiEmbeddingStatusService extends BaseSubsystemStatusService {
             working: t`Learning transactions`,
             ready: t`Learning up to date`
         });
+    }
+
+    private async pauseDrainer(): Promise<void> {
+        await embeddingDrainerService.pause();
+    }
+
+    private async truncateEmbeddings(): Promise<void> {
+        await merchantEmbeddingRepository.truncate();
+        await commentEmbeddingRepository.truncate();
+    }
+
+    private async markTransactions(): Promise<void> {
+        await transactionRepository.markAllForEmbedding();
+        await transactionRepository.clearNonIndexableFlags();
     }
 }
 
