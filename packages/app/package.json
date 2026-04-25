@@ -33,7 +33,7 @@
         "@lingui/core": "^5.7.0",
         "@lingui/react": "^5.7.0",
         "@react-native-masked-view/masked-view": "^0.3.2",
-        "@rnw-community/shared": "^1.8.2",
+        "@rnw-community/shared": "^2.0.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",

@@ -12,7 +12,7 @@ export class TranslationLlmService {
 
     @Log(
         title => `enter titleLen=${title.length}`,
-        (result, title) => `done titleLen=${title.length} titleEnLen=${result.titleEn.length} tagsLen=${result.titleTags.length}`,
+        result => `done titleEnLen=${result.titleEn.length} tagsLen=${result.titleTags.length}`,
         (error, title) => `throw titleLen=${title.length} error=${getErrorMessage(error)}`
     )
     async translate(title: string): Promise<TranslationResultInterface> {
@@ -24,7 +24,7 @@ export class TranslationLlmService {
 
     @Log(
         titleEn => `enter titleEnLen=${titleEn.length}`,
-        (result, titleEn) => `done titleEnLen=${titleEn.length} tagsLen=${result.length}`,
+        result => `done tagsLen=${result.length}`,
         (error, titleEn) => `throw titleEnLen=${titleEn.length} error=${getErrorMessage(error)}`
     )
     private async generateTags(titleEn: string): Promise<string> {
@@ -35,7 +35,7 @@ export class TranslationLlmService {
 
     @Log(
         title => `enter titleLen=${title.length}`,
-        (result, title) => `done titleLen=${title.length} resultLen=${result.length}`,
+        result => `done resultLen=${result.length}`,
         (error, title) => `throw titleLen=${title.length} error=${getErrorMessage(error)}`
     )
     private async translateToEnglish(title: string): Promise<string> {

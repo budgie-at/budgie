@@ -1,10 +1,10 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
+import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { Log } from '../../@generic/util/logger/console-transport.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -26,9 +26,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
     @Log(
-        inputs => `enter count=${inputs.length}`,
-        (result, inputs) => `done requested=${inputs.length} inserted=${result.length}`,
-        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
+        (inputs, tx) =>
+            `enter count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (result, inputs, tx) =>
+            `done count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs, tx) =>
+            `throw count=${inputs.length} hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
@@ -168,7 +171,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         `);
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
         (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0
@@ -190,7 +197,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         `);
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
     async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
         (tx ?? this.db).run(sql`
             UPDATE transactions SET needs_embedding = 0

@@ -28,9 +28,12 @@ import type {
 
 class TransactionImportService {
     @Log(
-        inputs => `enter count=${inputs.length}`,
-        (result, inputs) => `done requested=${inputs.length} upserted=${result.length}`,
-        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
+        (inputs, existingTransactionIdMap, tx, options) =>
+            `enter count=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+        (result, inputs, existingTransactionIdMap, tx, options) =>
+            `done requested=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upserted=${result.length}`,
+        (error, inputs, existingTransactionIdMap, tx, options) =>
+            `throw count=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
     )
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],

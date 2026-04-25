@@ -28,10 +28,12 @@ class AiTranslationStatusService extends BaseSubsystemStatusService {
             throw error;
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainer(): Promise<void> {
         await translationDrainerService.pause();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();

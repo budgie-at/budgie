@@ -1,26 +1,28 @@
 import { createLogDecorator } from '@rnw-community/log-decorator';
 
-import { isLoggingEnabled } from './is-logging-enabled.util';
+let loggingEnabled = true;
 
-import type { LogTransportInterface } from '@rnw-community/log-decorator';
+export const disableLogging = (): void => {
+    loggingEnabled = false;
+};
 
-export const consoleTransport: LogTransportInterface = {
-    debug: (message, logContext) => {
-        if (!isLoggingEnabled()) {
+export const consoleTransport = {
+    debug: (message: string, logContext: string) => {
+        if (!loggingEnabled) {
             return;
         }
         // eslint-disable-next-line no-console -- Routed log sink
         console.debug(`[${logContext}]`, message);
     },
-    error: (message, error, logContext) => {
-        if (!isLoggingEnabled()) {
+    error: (message: string, error: unknown, logContext: string) => {
+        if (!loggingEnabled) {
             return;
         }
         // eslint-disable-next-line no-console -- Routed log sink
         console.error(`[${logContext}]`, message, error);
     },
-    log: (message, logContext) => {
-        if (!isLoggingEnabled()) {
+    log: (message: string, logContext: string) => {
+        if (!loggingEnabled) {
             return;
         }
         // eslint-disable-next-line no-console -- Routed log sink
@@ -28,4 +30,4 @@ export const consoleTransport: LogTransportInterface = {
     }
 };
 
-export const Log: ReturnType<typeof createLogDecorator> = createLogDecorator({ transport: consoleTransport });
+export const Log = createLogDecorator({ transport: consoleTransport });

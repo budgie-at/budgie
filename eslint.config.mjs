@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
 import nodePlugin from 'eslint-plugin-n';
@@ -41,6 +42,7 @@ export default defineConfig(
     {
         files: ['**/*.{ts,tsx}'],
         extends: [js.configs.all],
+        plugins: { '@stylistic': stylistic },
         rules: {
             camelcase: ['error', { properties: 'never' }],
             complexity: ['error', 25],
@@ -51,6 +53,7 @@ export default defineConfig(
             'one-var': 'off',
             'new-cap': 'off',
             'lines-between-class-members': 'off',
+            '@stylistic/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
             'no-duplicate-imports': 'off',
             'no-ternary': 'off',
             'no-void': 'off',
