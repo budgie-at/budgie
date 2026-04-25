@@ -27,11 +27,12 @@ import type {
 
 class TransactionService {
     @Log(
-        (inputs, tx, batchSize) => `enter count=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
+        (inputs, tx, batchSize) =>
+            `enter externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
         (result, inputs, tx, batchSize) =>
-            `done requested=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize} inserted=${result.length}`,
+            `done externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} insertedIds=${result.map(row => row.id).join(',')}`,
         (error, inputs, tx, batchSize) =>
-            `throw count=${inputs.length} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
+            `throw externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
     )
     async bulkCreate(
         inputs: TransactionCreateInputInterface[],

@@ -24,10 +24,16 @@ export abstract class BaseFileBankSyncService {
 
     @Log(
         (client, bankAccount, context) =>
-            `enter accountId=${bankAccount.id} accountCount=${client.getAccounts().length} existingCount=${context.existingTransactionIdMap.size}`,
+            `enter accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(a => a.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
         'done',
         (error, client, bankAccount, context) =>
-            `throw accountId=${bankAccount.id} accountCount=${client.getAccounts().length} existingCount=${context.existingTransactionIdMap.size} error=${getErrorMessage(error)}`
+            `throw accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(a => a.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
     )
     private async importAccountTransactions(
         client: FileBasedBankSyncClientInterface,

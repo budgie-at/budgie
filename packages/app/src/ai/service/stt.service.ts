@@ -38,7 +38,7 @@ class SttService
         return this.snapshot.nonCommittedTranscription;
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
@@ -70,11 +70,11 @@ class SttService
         }
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) streamStop(): void {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) streamStop(): void {
         this.instance?.streamStop();
     }
 
-    @Log(() => 'enter model=WHISPER_SMALL', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log(() => 'enter model=WHISPER_SMALL', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async downloadModel(): Promise<void> {
         this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
         this.instance = new SpeechToTextModule();
@@ -83,7 +83,7 @@ class SttService
         });
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async initModel(): Promise<void> {
         try {
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
@@ -95,7 +95,7 @@ class SttService
         }
     }
 
-    @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async releaseInstance(): Promise<void> {
         try {
             this.instance?.streamStop();

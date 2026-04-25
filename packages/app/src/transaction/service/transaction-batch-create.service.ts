@@ -12,9 +12,11 @@ import type { DB } from '@budgie/contracts';
 
 class TransactionBatchCreateService {
     @Log(
-        (batch, tx) => `enter count=${batch.length} hasTx=${String(isDefined(tx))}`,
-        (result, batch, tx) => `done requested=${batch.length} hasTx=${String(isDefined(tx))} inserted=${result.length}`,
-        (error, batch, tx) => `throw count=${batch.length} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (batch, tx) => `enter externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, batch, tx) =>
+            `done externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, batch, tx) =>
+            `throw externalIds=${batch.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
         const transactions = await transactionRepository.bulkCreate([...batch], tx);

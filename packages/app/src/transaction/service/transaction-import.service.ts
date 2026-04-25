@@ -31,11 +31,11 @@ import type {
 class TransactionImportService {
     @Log(
         (inputs, existingTransactionIdMap, tx, options) =>
-            `enter count=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+            `enter externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
         (result, inputs, existingTransactionIdMap, tx, options) =>
-            `done requested=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upserted=${result.length}`,
+            `done externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
         (error, inputs, existingTransactionIdMap, tx, options) =>
-            `throw count=${inputs.length} existingCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
+            `throw externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
     )
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],

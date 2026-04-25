@@ -334,7 +334,7 @@ The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log
 Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
 
 ```ts
-import { Log } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { getErrorMessage } from '@rnw-community/shared';
 
 class TransactionRepository {
@@ -376,15 +376,19 @@ Mix freely: any of the three hooks can independently be a string or a function.
 5. **Strings (short)** → output directly: `title=${transactionTitle}`. No quotes.
 6. **Strings (long, e.g. prompts)** → `lenName=${arg.length}`. The arg still appears, just summarized.
 7. **Numbers / IDs** → output directly: `id=${row.id}`.
-8. **Arrays** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`, `kind`). Never log raw `.length` — the join makes the failing entries debuggable.
-9. **Objects** → destructure their identifying scalars; do not stringify the whole object.
-10. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
-11. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
+8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
+9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
+10. **`Map<K, V>`** → `[...map.keys()].join(',')`. Keys are usually the debuggable handle; `.size` loses information.
+11. **`Set<T>`** → `[...set].join(',')`.
+12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
+13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
+14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
+15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
 
 ### `getLogger(context)` (free-form / non-class)
 
 ```ts
-import { getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { getErrorMessage } from '@rnw-community/shared';
 
 const logger = getLogger('useCategorySuggestion');
