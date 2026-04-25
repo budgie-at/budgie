@@ -1,6 +1,6 @@
 import { SQL, and, gte, inArray, isNull, lte } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -27,23 +27,11 @@ export abstract class BaseTransactionFilterRepository {
     /* jscpd:ignore-end */
 
     protected buildCategoryCondition(categoryIds: number[]) {
-        if (categoryIds.length === 0) {
-            return inArray(
-                TransactionEntityTable.id,
-                this.db
-                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                    .from(TransactionEntryEntityTable)
-                    .where(isNull(TransactionEntryEntityTable.categoryId))
-            );
+        if (isEmptyArray(categoryIds)) {
+            return this.buildUncategorizedCondition();
         }
 
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .where(inArray(TransactionEntryEntityTable.categoryId, categoryIds))
-        );
+        return this.buildSelectedCategoryCondition(categoryIds);
     }
 
     protected buildTagCondition(tagIds: number[]) {
@@ -77,5 +65,25 @@ export abstract class BaseTransactionFilterRepository {
 
         // eslint-disable-next-line no-undefined
         return isNotEmptyArray(parts) ? and(...parts) : undefined;
+    }
+
+    private buildUncategorizedCondition() {
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(isNull(TransactionEntryEntityTable.categoryId))
+        );
+    }
+
+    private buildSelectedCategoryCondition(categoryIds: number[]) {
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(inArray(TransactionEntryEntityTable.categoryId, categoryIds))
+        );
     }
 }

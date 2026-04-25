@@ -1,7 +1,8 @@
 /* eslint-disable max-lines -- Two-path monthly detection (bank-synced + manual) with window-function CTEs */
+import { Log } from '@budgie/logger';
 import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -21,14 +22,15 @@ import {
     PATTERN_OVERALL_AGG_CTE
 } from '../constant/transaction-pattern-ctes.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
-import { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
-import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
-import { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row.interface';
-import { PatternRowInterface } from '../interface/pattern-row.interface';
-import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
-import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard';
+
+import type { AmountPatternQueryInterface } from '../interface/amount-pattern-query.interface';
+import type { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
+import type { MonthlyPatternRawRowInterface } from '../interface/monthly-pattern-raw-row.interface';
+import type { PatternRowInterface } from '../interface/pattern-row.interface';
+import type { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
+import type { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
 
 const DEFAULT_LIMIT = 10;
 const MIN_OCCURRENCES = 2;
@@ -43,29 +45,42 @@ const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transact
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
 const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
 
+type PatternGroupColumn = 'title' | 'comment';
+
+const PATTERN_GROUP_COLUMNS: PatternGroupColumn[] = ['title', 'comment'];
+
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
 
-    private get latestAmountSubquery() {
-        return sql<number>`(
-            SELECT te2.amount
-            FROM transactions t2
-            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
-            WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
-              AND t2.title = ${TransactionEntityTable.title}
-              AND t2.deleted_at IS NULL
-            ORDER BY t2.operated_at DESC
-            LIMIT 1
-        )`.as('latestAmount');
-    }
-
+    @Log(
+        query =>
+            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes}`,
+        (result, query) =>
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+        (error, query) =>
+            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} error=${getErrorMessage(error)}`
+    )
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const conditions = this.buildPatternConditions(query);
-        const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
+        const limit = query.limit ?? DEFAULT_LIMIT;
+        const pathResults = await Promise.all(
+            PATTERN_GROUP_COLUMNS.map(async groupColumn => {
+                const conditions = this.buildPatternConditions(query, groupColumn);
+                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn);
 
-        return this.enrichPatternsWithTags(patternRows);
+                return this.enrichPatternsWithTags(patternRows, groupColumn);
+            })
+        );
+
+        return this.mergePatternResults(pathResults, limit);
     }
 
+    @Log(
+        query =>
+            `enter type=${query.type} defaultInstrumentId=${query.defaultInstrumentId} displayMonth=${query.displayMonth} tzOffset=${query.timezoneOffsetSeconds}`,
+        (result, query) =>
+            `done type=${query.type} displayMonth=${query.displayMonth} titles=${result.map(pattern => pattern.title).join('|')} accountIds=${result.map(pattern => pattern.accountId).join(',')}`,
+        (error, query) => `throw type=${query.type} displayMonth=${query.displayMonth} error=${getErrorMessage(error)}`
+    )
     async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
         const [bankPatterns, manualPatterns] = await Promise.all([
             this.executeBankSyncedMonthlyQuery(query),
@@ -86,35 +101,89 @@ export class TransactionPatternRepository {
         return allPatterns.slice(0, query.limit ?? DEFAULT_MONTHLY_LIMIT);
     }
 
+    @Log(
+        query =>
+            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax}`,
+        (result, query) =>
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+        (error, query) =>
+            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} error=${getErrorMessage(error)}`
+    )
     async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const conditions = this.buildAmountPatternConditions(query);
-        const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
+        const limit = query.limit ?? DEFAULT_LIMIT;
+        const pathResults = await Promise.all(
+            PATTERN_GROUP_COLUMNS.map(async groupColumn => {
+                const conditions = this.buildAmountPatternConditions(query, groupColumn);
+                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn);
 
-        return this.enrichPatternsWithTags(patternRows);
+                return this.enrichPatternsWithTags(patternRows, groupColumn);
+            })
+        );
+
+        return this.mergePatternResults(pathResults, limit);
     }
 
-    private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
+    private buildLatestAmountSubquery(groupColumn: PatternGroupColumn) {
+        if (groupColumn === 'title') {
+            return sql<number>`(
+                SELECT te2.amount
+                FROM transactions t2
+                INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+                WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+                  AND t2.title = ${TransactionEntityTable.title}
+                  AND t2.deleted_at IS NULL
+                ORDER BY t2.operated_at DESC
+                LIMIT 1
+            )`.as('latestAmount');
+        }
+
+        return sql<number>`(
+            SELECT te2.amount
+            FROM transactions t2
+            INNER JOIN transaction_entries te2 ON te2.transaction_id = t2.id
+            WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
+              AND t2.comment = ${TransactionEntityTable.comment}
+              AND t2.title = ''
+              AND t2.deleted_at IS NULL
+            ORDER BY t2.operated_at DESC
+            LIMIT 1
+        )`.as('latestAmount');
+    }
+
+    private mergePatternResults(
+        pathResults: RepeatedTransactionPatternInterface[][],
+        limit: number
+    ): RepeatedTransactionPatternInterface[] {
+        return pathResults
+            .flat()
+            .sort(
+                (first, second) =>
+                    second.lastOccurrence.getTime() - first.lastOccurrence.getTime() || second.occurrenceCount - first.occurrenceCount
+            )
+            .slice(0, limit);
+    }
+
+    private buildPatternConditions(query: TransactionPatternQueryInterface, groupColumn: PatternGroupColumn): SQL[] {
         const weekdayCondition = eq(TransactionEntityTable.operatedWeekday, query.weekday);
         const timeCondition = between(TransactionEntityTable.operatedMinuteOfDay, query.timeWindowStartMinutes, query.timeWindowEndMinutes);
 
-        const conditions = this.buildBasePatternConditions(query);
-        conditions.push(weekdayCondition, timeCondition, sql`${TransactionEntityTable.title} != ''`);
+        const conditions = this.buildBasePatternConditions(query, groupColumn);
+        conditions.push(weekdayCondition, timeCondition);
 
         return conditions;
     }
 
-    private buildAmountPatternConditions(query: AmountPatternQueryInterface): SQL[] {
-        const conditions = this.buildBasePatternConditions(query);
-        conditions.push(
-            gte(TransactionEntryEntityTable.amount, query.amountMin),
-            lte(TransactionEntryEntityTable.amount, query.amountMax),
-            sql`${TransactionEntityTable.title} != ''`
-        );
+    private buildAmountPatternConditions(query: AmountPatternQueryInterface, groupColumn: PatternGroupColumn): SQL[] {
+        const conditions = this.buildBasePatternConditions(query, groupColumn);
+        conditions.push(gte(TransactionEntryEntityTable.amount, query.amountMin), lte(TransactionEntryEntityTable.amount, query.amountMax));
 
         return conditions;
     }
 
-    private buildBasePatternConditions(query: { type: TransactionTypeEnum; accountId?: number; categoryId?: number }): SQL[] {
+    private buildBasePatternConditions(
+        query: { type: TransactionTypeEnum; accountId?: number; categoryId?: number },
+        groupColumn: PatternGroupColumn
+    ): SQL[] {
         const entryType = this.getEntryTypeForTransactionType(query.type);
 
         const conditions: SQL[] = [
@@ -124,6 +193,12 @@ export class TransactionPatternRepository {
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
             isNotNull(TransactionEntryEntityTable.categoryId)
         ];
+
+        if (groupColumn === 'title') {
+            conditions.push(ne(TransactionEntityTable.title, ''));
+        } else {
+            conditions.push(eq(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''));
+        }
 
         if (isPositiveNumber(query.accountId)) {
             conditions.push(eq(TransactionEntryEntityTable.accountId, query.accountId));
@@ -136,15 +211,17 @@ export class TransactionPatternRepository {
         return conditions;
     }
 
-    private async executePatternQuery(conditions: SQL[], limit: number): Promise<PatternRowInterface[]> {
+    private async executePatternQuery(conditions: SQL[], limit: number, groupColumn: PatternGroupColumn): Promise<PatternRowInterface[]> {
+        const titleSource = groupColumn === 'title' ? TransactionEntityTable.title : TransactionEntityTable.comment;
+
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
                 categoryTitle: CategoryEntityTable.title,
                 categoryIcon: CategoryEntityTable.icon,
-                title: TransactionEntityTable.title,
+                title: titleSource,
                 comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
-                latestAmount: this.latestAmountSubquery,
+                latestAmount: this.buildLatestAmountSubquery(groupColumn),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
                 accountId: AccountEntityTable.id,
@@ -157,29 +234,35 @@ export class TransactionPatternRepository {
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
             .where(and(...conditions))
-            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
+            .groupBy(TransactionEntryEntityTable.categoryId, titleSource)
             .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`), desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
             .limit(limit);
     }
 
-    private async enrichPatternsWithTags(patternRows: PatternRowInterface[]): Promise<RepeatedTransactionPatternInterface[]> {
+    private async enrichPatternsWithTags(
+        patternRows: PatternRowInterface[],
+        groupColumn: PatternGroupColumn
+    ): Promise<RepeatedTransactionPatternInterface[]> {
         if (!isNotEmptyArray(patternRows)) {
             return [];
         }
         const validRows = patternRows.filter(isValidPatternRow);
-        const tagMap = await this.findTagsForPatterns(validRows);
+        const tagMap = await this.findTagsForPatterns(validRows, groupColumn);
 
         return validRows.map(row => ({
             ...row,
             tagIds: tagMap.get(`${row.categoryId}-${row.title}`) ?? [],
             lastOccurrence: new Date(row.lastOccurrence * 1000),
-            accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
+            accountDeletedAt: isDefined(row.accountDeletedAt) ? new Date(row.accountDeletedAt * 1000) : null
         }));
     }
 
     // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
-    private async findTagsForPatterns(patterns: { categoryId: number; title: string }[]): Promise<Map<string, number[]>> {
+    private async findTagsForPatterns(
+        patterns: { categoryId: number; title: string }[],
+        groupColumn: PatternGroupColumn
+    ): Promise<Map<string, number[]>> {
         const tagMap = new Map<string, number[]>();
         if (!isNotEmptyArray(patterns)) {
             return tagMap;
@@ -187,11 +270,13 @@ export class TransactionPatternRepository {
 
         const titles = [...new Set(patterns.map(pattern => pattern.title))];
         const categoryIds = [...new Set(patterns.map(pattern => pattern.categoryId))];
+        const titleSource = groupColumn === 'title' ? TransactionEntityTable.title : TransactionEntityTable.comment;
+        const titleScopeCondition = groupColumn === 'title' ? ne(TransactionEntityTable.title, '') : eq(TransactionEntityTable.title, '');
 
         const tagRows = await this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
-                title: TransactionEntityTable.title,
+                title: titleSource,
                 tagId: TransactionTagsEntityTable.tagId,
                 tagCount: sql<number>`COUNT(${TransactionTagsEntityTable.tagId})`.as('tagCount')
             })
@@ -201,16 +286,13 @@ export class TransactionPatternRepository {
             .where(
                 and(
                     inArray(TransactionEntryEntityTable.categoryId, categoryIds),
-                    inArray(TransactionEntityTable.title, titles),
+                    inArray(titleSource, titles),
+                    titleScopeCondition,
                     isNull(TransactionEntityTable.deletedAt)
                 )
             )
-            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title, TransactionTagsEntityTable.tagId)
-            .orderBy(
-                TransactionEntryEntityTable.categoryId,
-                TransactionEntityTable.title,
-                desc(sql`COUNT(${TransactionTagsEntityTable.tagId})`)
-            );
+            .groupBy(TransactionEntryEntityTable.categoryId, titleSource, TransactionTagsEntityTable.tagId)
+            .orderBy(TransactionEntryEntityTable.categoryId, titleSource, desc(sql`COUNT(${TransactionTagsEntityTable.tagId})`));
 
         const patternKeys = new Set(patterns.map(pattern => `${pattern.categoryId}-${pattern.title}`));
         const maxTagsPerPattern = 5;

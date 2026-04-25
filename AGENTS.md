@@ -118,6 +118,10 @@ packages/
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
+32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Free-function / component / hook logs use `getLogger(context)` from the same package. Do not import `console.log` / `console.debug` / `console.error` directly in service code — route through the transport so app builds can gate logging consistently.
+33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
+34. **No log-only abstractions.** Do not add helpers, wrapper decorators, or shared constants whose only purpose is to build or reuse lifecycle log strings. Keep `@Log` usage directly on the method so argument usage stays obvious.
+35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
 
 ### Naming Conventions
 
@@ -324,6 +328,88 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 4. Run `yarn i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
+## Logging
+
+The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log`-decorated methods) or `[context]` (for `getLogger(context)`). Tags must not repeat that information.
+
+### `@Log` decorator (class methods)
+
+Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
+
+```ts
+import { Log } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
+
+class TransactionRepository {
+    @Log(
+        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        result => `done insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> { /* ... */ }
+}
+```
+
+Output:
+```
+[TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
+[TransactionRepository::bulkCreate] done insertedIds=42,43
+```
+
+**Static-tag shortcut.** When `enter` and/or `done` carry no dynamic data (no inputs, no result), pass strings directly — don't wrap in `() =>`:
+
+```ts
+// Good — static strings
+@Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+
+// Bad — needless arrow wrapping a static value
+@Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+```
+
+Mix freely: any of the three hooks can independently be a string or a function.
+
+### Hook formatting rules
+
+1. **Tag prefix:** `enter` | `done` | `throw` only. No method name. The transport already shows `[Class::method]`.
+2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
+3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
+4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
+5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
+6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
+7. **Numbers / IDs** → output directly: `id=${row.id}`.
+8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
+9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
+10. **`Map<K, V>`** → `[...map.keys()].join(',')`. Keys are usually the debuggable handle; `.size` loses information.
+11. **`Set<T>`** → `[...set].join(',')`.
+12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
+13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
+14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
+15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
+
+### `getLogger(context)` (free-form / non-class)
+
+```ts
+import { getLogger } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
+
+const logger = getLogger('useCategorySuggestion');
+
+logger.log('fired', { transactionTitle });
+logger.error('failed', { errorMessage: getErrorMessage(error) });
+```
+
+Free-form `context: string`. Convention: hook/file/component name. Instantiate once at module top.
+
+### Build-time gate
+
+`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+
+### `bank-sync` exception
+
+`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+
 ## Tech Stack
 
 | Package | Stack |
@@ -409,6 +495,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 |------|-----------------|----------------------|
 | `max-statements` | Form orchestration components with multiple hooks/handlers | `-- Form orchestration component with multiple hooks and handlers` |
 | `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
+| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape | `-- Existing public API and Log hooks intentionally keep positional arguments` |
 
 Example:
 ```typescript

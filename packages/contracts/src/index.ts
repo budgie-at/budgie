@@ -3,8 +3,8 @@ export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
-export { LanguageEnum } from './@generic/enum/language.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
+export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';

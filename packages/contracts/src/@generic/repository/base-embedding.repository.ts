@@ -1,18 +1,19 @@
+import { Log } from '@budgie/logger';
 import { eq, isNull, sql } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
-import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
-import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
-import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
-import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB } from '../type/db.type';
-import { bankSyncLog } from '../util/bank-sync-log.util';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { transactionAsync } from '../util/transaction-async.util';
+
+import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import type { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
+import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
+import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -20,45 +21,46 @@ export abstract class BaseEmbeddingRepository {
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
+    @Log(
+        (queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
+        (result, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
+        (error, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
         vecLimit: number,
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        const start = Date.now();
-        const result = await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+        return await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
-        bankSyncLog('repo:embedding:findSimilarCategories:done', {
-            vecTable: this.queryConfig.vecTableName,
-            resultCount: result.length,
-            durationMs: Date.now() - start
-        });
-
-        return result;
     }
 
+    @Log(
+        (queryEmbedding, params) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit}`,
+        (result, queryEmbedding, params) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} tagIds=${result.map(row => row.tagId).join(',')}`,
+        (error, queryEmbedding, params) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
-        const start = Date.now();
-        const result = await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
+
+        return await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryId,
             tagLimit
         ]);
-        bankSyncLog('repo:embedding:findSimilarTags:done', {
-            vecTable: this.queryConfig.vecTableName,
-            resultCount: result.length,
-            durationMs: Date.now() - start
-        });
-
-        return result;
     }
 
     protected isValidDimensions(dimensions: number): boolean {

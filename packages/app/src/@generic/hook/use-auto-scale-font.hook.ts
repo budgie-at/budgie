@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 const MIN_FONT_SIZE = 24;
 const FONT_WIDTH_RATIO = 0.55;
@@ -12,7 +12,7 @@ interface UseAutoScaleFontResult {
 }
 
 const getFontSize = (text: string, containerWidth: number, baseFontSize: number) => {
-    if (!isPositiveNumber(containerWidth) || text.length === 0) {
+    if (!isPositiveNumber(containerWidth) || !isNotEmptyString(text)) {
         return baseFontSize;
     }
 

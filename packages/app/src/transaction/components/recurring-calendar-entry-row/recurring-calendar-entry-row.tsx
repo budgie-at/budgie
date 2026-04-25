@@ -60,7 +60,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
                 title={entry.title}
                 description={description}
                 {...(isDefined(handlePress) && { onPress: handlePress })}
-                {...(right !== null && { right })}
+                {...(isDefined(right) && { right })}
             />
         </Animated.View>
     );

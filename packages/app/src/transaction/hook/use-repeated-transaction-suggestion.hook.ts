@@ -1,11 +1,12 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { aiLog } from '../../ai/utils/ai-log.util';
+const logger = getLogger('useRepeatedTransactionSuggestion');
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
@@ -77,9 +78,9 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 };
 
-                aiLog('hook:pattern:fetch:begin', queryParams);
+                logger.log('hook:pattern:fetch:begin', queryParams);
                 const result = await repeatedTransactionService.getSuggestions(queryParams);
-                aiLog('hook:pattern:fetch:done', {
+                logger.log('hook:pattern:fetch:done', {
                     durationMs: Date.now() - startedAt,
                     time: result.timePatterns.length,
                     amount: result.amountPatterns.length
@@ -91,7 +92,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                     setInternalStatus('success');
                 }
             } catch (error: unknown) {
-                aiLog('hook:pattern:fetch:throw', {
+                logger.error('hook:pattern:fetch:throw', {
                     durationMs: Date.now() - startedAt,
                     errorMessage: getErrorMessage(error)
                 });

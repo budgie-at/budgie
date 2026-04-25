@@ -14,11 +14,11 @@ import { TransactionFilterPageHeader } from '../../../transaction/components/tra
 import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
 interface RouteParams {
-    startDate?: string;
-    endDate?: string;
-    categoryId?: string;
-    tagId?: string;
-    type?: string;
+    readonly startDate?: string;
+    readonly endDate?: string;
+    readonly categoryId?: string;
+    readonly tagId?: string;
+    readonly type?: string;
 }
 
 const buildCategoryIds = (params: RouteParams): number[] | null => {
@@ -91,7 +91,7 @@ export default function AnalyticsTransactionsPage() {
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
-                footerSpacerMultiplier={3}
+                footerSpacerMultiplier={2}
             />
         </Page>
     );
