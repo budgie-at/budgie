@@ -4,11 +4,12 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
@@ -49,6 +50,7 @@ export const TransactionSectionsList = ({
     const router = useRouter();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
+    const { bottom } = useSafeAreaInsets();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
@@ -102,9 +104,12 @@ export const TransactionSectionsList = ({
     ]);
 
     const isEmpty = isEmptyArray(flatData);
-    const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
-
-    const listFooter = <MenuSpacer multiplier={footerSpacerMultiplier} />;
+    const paddingBottom = (footerSpacerMultiplier ?? 0) * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
+    const contentContainerStyle = {
+        gap: 16,
+        paddingBottom,
+        ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const })
+    };
 
     return (
         <>
@@ -123,7 +128,6 @@ export const TransactionSectionsList = ({
                     contentContainerStyle={contentContainerStyle}
                     ListEmptyComponent={listEmptyState}
                     getItemType={getItemType}
-                    ListFooterComponent={listFooter}
                 />
             </View>
             <TransactionListContextMenu
