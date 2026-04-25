@@ -202,14 +202,12 @@ class TransactionService {
 
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
-
         await transactionEntryRepository.bulkCreate(
             input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId)),
             tx
         );
 
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
-
         if (isNotEmptyArray(input.tagIds)) {
             await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
         }

@@ -17,16 +17,9 @@ interface Props {
     readonly filters?: TransactionFilterInterface;
     readonly showFilters?: boolean;
     readonly footerSpacerMultiplier?: number;
-    readonly focusKey?: number;
 }
 
-export const TransactionList = ({
-    accountId = null,
-    filters: externalFilters,
-    showFilters = true,
-    footerSpacerMultiplier,
-    focusKey
-}: Props) => {
+export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true, footerSpacerMultiplier }: Props) => {
     const { t } = useLingui();
 
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
@@ -34,7 +27,7 @@ export const TransactionList = ({
     const baseAccountIds = isDefined(accountId) ? [accountId] : null;
     const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds ?? internalFilters.accountIds };
     const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters, focusKey);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
 
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
@@ -76,7 +69,6 @@ export const TransactionList = ({
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
                 footerSpacerMultiplier={footerSpacerMultiplier}
-                focusKey={focusKey}
             />
         </View>
     );

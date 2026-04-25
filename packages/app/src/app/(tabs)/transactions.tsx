@@ -5,7 +5,6 @@ import { runOnJS } from 'react-native-reanimated';
 
 import { Page } from '../../@generic/component/page/page';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { RecurringCalendarContent } from '../../transaction/components/recurring-calendar-content/recurring-calendar-content';
 import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
 
@@ -15,7 +14,6 @@ import type { TransactionsTabType } from '../../@generic/type/transactions-tab.t
 
 export default function TransactionsPage() {
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');
-    const focusKey = useFocusKey();
 
     const handleSwipeLeft = () => void setActiveTab('recurring');
     const handleSwipeRight = () => void setActiveTab('transactions');
@@ -34,7 +32,7 @@ export default function TransactionsPage() {
         <Page testID={TransactionsPageSelector.Container} header={header}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    {activeTab === 'transactions' ? <TransactionList focusKey={focusKey} accountId={null} /> : <RecurringCalendarContent />}
+                    {activeTab === 'transactions' ? <TransactionList accountId={null} /> : <RecurringCalendarContent />}
                 </View>
             </GestureDetector>
         </Page>
