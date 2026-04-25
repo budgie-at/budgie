@@ -66,7 +66,11 @@ class AppMonobankSyncService {
         }
     }
 
-    @Log(() => 'enter', result => `done result=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log(
+        error => `enter error=${getErrorMessage(error)}`,
+        (result, error) => `done error=${getErrorMessage(error)} result=${result}`,
+        (thrownError, error) => `throw error=${getErrorMessage(error)} thrownError=${getErrorMessage(thrownError)}`
+    )
     private async handleSyncError(error: unknown): Promise<BackgroundTask.BackgroundTaskResult> {
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
         const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
@@ -124,9 +128,11 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        sync => `enter syncId=${sync.id} mode=${sync.mode}`,
-        (_result, sync) => `done syncId=${sync.id} mode=${sync.mode}`,
-        (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
+        (sync, result) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactions=${result.transactions.length} completed=${result.completed}`,
+        'done',
+        (error, sync, result) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactions=${result.transactions.length} error=${getErrorMessage(error)}`
     )
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();

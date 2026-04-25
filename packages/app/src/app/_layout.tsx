@@ -1,12 +1,13 @@
-import { setLoggingEnabledProvider as setBankSyncLoggingEnabledProvider } from '@budgie/bank-sync';
-import { setLoggingEnabledProvider } from '@budgie/contracts';
-
-import { isLoggingEnabled } from '../@generic/utils/is-logging-enabled.util';
+import { disableLogging as disableBankSyncLogging } from '@budgie/bank-sync';
+import { disableLogging } from '@budgie/contracts';
+import Constants from 'expo-constants';
 
 import { RootLayoutContent } from './root-layout-content';
 
-setLoggingEnabledProvider(isLoggingEnabled);
-setBankSyncLoggingEnabledProvider(isLoggingEnabled);
+if (Constants.expoConfig?.extra?.loggingEnabled !== true) {
+    disableLogging();
+    disableBankSyncLogging();
+}
 
 export default function RootLayout() {
     return <RootLayoutContent />;

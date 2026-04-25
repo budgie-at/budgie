@@ -29,15 +29,18 @@ class AiEmbeddingStatusService extends BaseSubsystemStatusService {
             throw error;
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainer(): Promise<void> {
         await embeddingDrainerService.pause();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async markTransactions(): Promise<void> {
         await transactionRepository.markAllForEmbedding();

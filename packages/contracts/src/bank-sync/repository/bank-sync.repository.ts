@@ -1,8 +1,8 @@
+import { Log } from '@budgie/logger';
 import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { Log } from '../../@generic/util/logger/console-transport.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
@@ -18,10 +18,11 @@ export class BankSyncRepository {
     constructor(private db: DB) {}
 
     @Log(
-        (id, input) => `enter id=${id} mode=${input.mode ?? 'unchanged'}`,
-        (result, id) =>
-            `done id=${id} mode=${result.mode} forwardSyncFromAt=${result.forwardSyncFromAt} forwardSyncedAt=${result.forwardSyncedAt} transactionCount=${result.transactionCount}`,
-        (error, id) => `throw id=${id} error=${getErrorMessage(error)}`
+        (id, input, tx) => `enter id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))}`,
+        (result, id, input, tx) =>
+            `done id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} resultMode=${result.mode} forwardSyncFromAt=${result.forwardSyncFromAt} forwardSyncedAt=${result.forwardSyncedAt} transactionCount=${result.transactionCount}`,
+        (error, id, input, tx) =>
+            `throw id=${id} mode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db)
@@ -89,7 +90,7 @@ export class BankSyncRepository {
     @Log(
         (provider, staleThresholdMs) => `enter provider=${provider} staleThresholdMs=${staleThresholdMs}`,
         (result, provider, staleThresholdMs) =>
-            `done provider=${provider} staleThresholdMs=${staleThresholdMs} resultCount=${result.length}`,
+            `done provider=${provider} staleThresholdMs=${staleThresholdMs} ids=${result.map(row => row.id).join(',')}`,
         (error, provider, staleThresholdMs) =>
             `throw provider=${provider} staleThresholdMs=${staleThresholdMs} error=${getErrorMessage(error)}`
     )

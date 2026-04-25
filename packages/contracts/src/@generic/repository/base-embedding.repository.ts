@@ -1,3 +1,4 @@
+import { Log } from '@budgie/logger';
 import { eq, isNull, sql } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
@@ -7,7 +8,6 @@ import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant'
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
-import { Log } from '../util/logger/console-transport.util';
 import { transactionAsync } from '../util/transaction-async.util';
 
 import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
@@ -22,12 +22,12 @@ export abstract class BaseEmbeddingRepository {
     ) {}
 
     @Log(
-        (_queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
-            `enter vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
-        (result, _queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
-            `done vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} resultCount=${result.length}`,
-        (error, _queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
-            `throw vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
+        (queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
+        (result, queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
+        (error, queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
     )
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
@@ -44,12 +44,12 @@ export abstract class BaseEmbeddingRepository {
     }
 
     @Log(
-        (_queryEmbedding, params) =>
-            `enter vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit}`,
-        (result, _queryEmbedding, params) =>
-            `done vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} resultCount=${result.length}`,
-        (error, _queryEmbedding, params) =>
-            `throw vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} error=${getErrorMessage(error)}`
+        (queryEmbedding, params) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit}`,
+        (result, queryEmbedding, params) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} tagIds=${result.map(row => row.tagId).join(',')}`,
+        (error, queryEmbedding, params) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} error=${getErrorMessage(error)}`
     )
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;

@@ -57,6 +57,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     constructor() {
         super(EMPTY_SNAPSHOT);
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async boost(): Promise<void> {
         if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
@@ -65,10 +66,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
         await embeddingDrainerService.boost();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) cancelBoost(): void {
         translationDrainerService.cancelBoost();
         embeddingDrainerService.cancelBoost();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
@@ -88,6 +91,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             embeddingDrainerService.retry();
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
     async freshRebuild(): Promise<void> {
         try {
@@ -110,20 +114,24 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             throw error;
         }
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async pauseDrainers(): Promise<void> {
         await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async truncateEmbeddings(): Promise<void> {
         await merchantEmbeddingRepository.truncate();
         await commentEmbeddingRepository.truncate();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async resetTranslations(): Promise<void> {
         await categoryRepository.resetAllTranslations();
         await tagRepository.resetAllTranslations();
     }
+
     @Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
     private async markTransactionsForRebuild(): Promise<void> {
         await transactionRepository.markAllForEmbedding();
@@ -347,6 +355,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         return null;
     }
+
     private snapshotEquals(current: AiSystemSnapshotInterface, next: AiSystemSnapshotInterface): boolean {
         return (
             current.state === next.state &&
