@@ -26,7 +26,6 @@ interface Props {
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
     readonly footerSpacerMultiplier?: number;
-    readonly focusKey?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -35,15 +34,14 @@ const getItemType = (item: TransactionListItemType | undefined) => item?.type ??
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
+// eslint-disable-next-line max-statements -- List orchestration component with context menu state management
 export const TransactionSectionsList = ({
     sections,
     onEndReached,
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
-    footerSpacerMultiplier,
-    focusKey
+    footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
     const [, hapticImpact] = useVibration();
@@ -108,7 +106,6 @@ export const TransactionSectionsList = ({
     return (
         <>
             <LegendList
-                key={focusKey}
                 data={flatData}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
