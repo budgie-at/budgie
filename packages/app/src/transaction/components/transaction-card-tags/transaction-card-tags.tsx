@@ -1,6 +1,5 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -20,17 +19,13 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <Animated.View
-            className="flex-row items-center gap-x-xs"
-            layout={LinearTransition.springify()}
-            testID={TransactionCardSelector.Tag(primaryTag.title)}
-        >
+        <View className="flex-row items-center gap-x-xs" testID={TransactionCardSelector.Tag(primaryTag.title)}>
             <TransactionCardTagChip title={primaryTag.title} isPrimary={hasMultipleTags} />
             {hasMultipleTags ? (
                 <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
                     <Text className="text-xs text-secondary-foreground">{`+${siblingsCount}`}</Text>
                 </View>
             ) : null}
-        </Animated.View>
+        </View>
     );
 };
