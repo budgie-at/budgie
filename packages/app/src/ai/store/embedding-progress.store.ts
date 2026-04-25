@@ -1,10 +1,10 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('embeddingProgressStore');
 
 export interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;

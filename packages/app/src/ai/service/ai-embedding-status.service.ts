@@ -1,4 +1,4 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -11,34 +11,41 @@ import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
 import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 
-const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
-
 class AiEmbeddingStatusService extends BaseSubsystemStatusService {
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'system:action:embedding:rebuild:start')
-    // eslint-disable-next-line max-statements -- 6 rebuild phases with pause/resume bookends
+    @Log(() => 'rebuild:enter', () => 'rebuild:done', error => `rebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 6 rebuild phases with pause/resume bookends
     async rebuild(): Promise<void> {
-        const started = Date.now();
         try {
-            await embeddingDrainerService.pause();
-            logger.log('system:action:embedding:rebuild:phase', { phase: 'paused' });
+            await this.pauseDrainer();
             try {
-                await merchantEmbeddingRepository.truncate();
-                await commentEmbeddingRepository.truncate();
-                logger.log('system:action:embedding:rebuild:phase', { phase: 'embeddings-truncated' });
-                await transactionRepository.markAllForEmbedding();
-                await transactionRepository.clearNonIndexableFlags();
-                logger.log('system:action:embedding:rebuild:phase', { phase: 'transactions-marked' });
+                await this.truncateEmbeddings();
+                await this.markTransactions();
             } finally {
                 embeddingDrainerService.resume();
             }
             void embeddingProgressStore.refresh();
             await embeddingDrainerService.boost();
-            logger.log('system:action:embedding:rebuild:complete', { durationMs: Date.now() - started });
         } catch (error: unknown) {
-            logger.log('system:action:embedding:rebuild:throw', { errorMessage: getErrorMessage(error) });
             embeddingDrainerService.resume();
             throw error;
         }
+    }
+    @Log(() => 'pauseDrainer:enter', () => 'pauseDrainer:done', error => `pauseDrainer:throw error=${getErrorMessage(error)}`)
+    private async pauseDrainer(): Promise<void> {
+        await embeddingDrainerService.pause();
+    }
+    @Log(
+        () => 'truncateEmbeddings:enter',
+        () => 'truncateEmbeddings:done',
+        error => `truncateEmbeddings:throw error=${getErrorMessage(error)}`
+    )
+    private async truncateEmbeddings(): Promise<void> {
+        await merchantEmbeddingRepository.truncate();
+        await commentEmbeddingRepository.truncate();
+    }
+    @Log(() => 'markTransactions:enter', () => 'markTransactions:done', error => `markTransactions:throw error=${getErrorMessage(error)}`)
+    private async markTransactions(): Promise<void> {
+        await transactionRepository.markAllForEmbedding();
+        await transactionRepository.clearNonIndexableFlags();
     }
 
     protected buildSubsystemSubscriptions(): (() => void)[] {

@@ -1,5 +1,5 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
@@ -10,7 +10,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useStt');
 
 import { useStartStopStt } from './use-start-stop-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';

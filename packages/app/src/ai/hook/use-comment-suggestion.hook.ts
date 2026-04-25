@@ -1,11 +1,11 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useCommentSuggestion');
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';

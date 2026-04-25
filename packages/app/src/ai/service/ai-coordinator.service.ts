@@ -1,4 +1,4 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/contracts';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -18,8 +18,7 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('AiCoordinatorService');
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
     private started = false;
@@ -29,17 +28,13 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'coordinator:start:enter')
-    start(): void {
+    @Log(() => 'start:enter', () => 'start:done', error => `start:throw error=${String(error)}`) start(): void {
         if (this.started) {
             return;
         }
         this.started = true;
 
         if (!this.snapshot.isAvailable) {
-            logger.log('coordinator:start:skip:disabled');
-
             return;
         }
 
@@ -53,9 +48,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             this.setSnapshot({ isSuspended: true });
         }
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'coordinator:stop:enter')
-    stop(): void {
+    @Log(() => 'stop:enter', () => 'stop:done', error => `stop:throw error=${String(error)}`) stop(): void {
         if (!this.started) {
             return;
         }
@@ -65,13 +58,29 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         this.appStateSubscription = null;
         void this.stopSubsystems();
     }
+    @Log(() => 'bootModels:enter', () => 'bootModels:done', error => `bootModels:throw error=${getErrorMessage(error)}`)
+    private async bootModels(): Promise<void> {
+        try {
+            await Promise.all([chatService.start(), embeddingService.start()]);
+        } catch (error: unknown) {
+            logger.log('bootModels:error', { errorMessage: getErrorMessage(error) });
+        }
+    }
+    @Log(() => 'releaseModels:enter', () => 'releaseModels:done', error => `releaseModels:throw error=${getErrorMessage(error)}`)
+    private async releaseModels(): Promise<void> {
+        try {
+            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
+        } catch (error: unknown) {
+            logger.log('releaseModels:error', { errorMessage: getErrorMessage(error) });
+        }
+    }
 
     // eslint-disable-next-line max-statements -- AppState handler: foreground/background branches with timer control
     private readonly handleAppStateChange = (state: AppStateStatus): void => {
-        logger.log('coordinator:appstate:change', { to: state });
+        logger.log('appstate:change', { to: state });
         if (state === 'active') {
             if (isDefined(this.releaseTimer)) {
-                logger.log('coordinator:release:cancel');
+                logger.log('release:cancel');
                 this.clearReleaseTimer();
             }
             if (this.snapshot.isSuspended) {
@@ -85,10 +94,10 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         if (isDefined(this.releaseTimer)) {
             return;
         }
-        logger.log('coordinator:release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
+        logger.log('release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
         this.releaseTimer = setTimeout(() => {
             this.releaseTimer = null;
-            logger.log('coordinator:release:fire');
+            logger.log('release:fire');
             this.setSnapshot({ isSuspended: true });
             void this.stopSubsystems();
         }, BACKGROUND_RELEASE_DELAY_MS);
@@ -96,13 +105,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
 
     // eslint-disable-next-line max-statements -- Start sequence: model boots, drainer starts, status services start, progress refresh
     private async startSubsystems(): Promise<void> {
-        const started = Date.now();
-        logger.log('coordinator:subsystems:start:begin');
-        try {
-            await Promise.all([chatService.start(), embeddingService.start()]);
-        } catch (error: unknown) {
-            logger.log('coordinator:subsystems:start:error', { errorMessage: getErrorMessage(error) });
-        }
+        await this.bootModels();
         translationDrainerService.start();
         embeddingDrainerService.start();
         aiUmbrellaStatusService.start();
@@ -110,27 +113,15 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         aiEmbeddingStatusService.start();
         void translationProgressStore.refresh();
         void embeddingProgressStore.refresh(true);
-        logger.log('coordinator:subsystems:start:complete', {
-            durationMs: Date.now() - started,
-            chatStatus: chatService.getSnapshot().status,
-            embeddingStatus: embeddingService.getSnapshot().status
-        });
     }
 
     private async stopSubsystems(): Promise<void> {
-        const started = Date.now();
-        logger.log('coordinator:subsystems:stop:begin');
         aiEmbeddingStatusService.stop();
         aiTranslationStatusService.stop();
         aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
-        try {
-            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
-        } catch (error: unknown) {
-            logger.log('coordinator:subsystems:stop:error', { errorMessage: getErrorMessage(error) });
-        }
-        logger.log('coordinator:subsystems:stop:complete', { durationMs: Date.now() - started });
+        await this.releaseModels();
     }
 
     private clearReleaseTimer(): void {

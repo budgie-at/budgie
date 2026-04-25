@@ -1,4 +1,4 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -7,8 +7,7 @@ import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('AiUmbrellaStatusService');
 
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';

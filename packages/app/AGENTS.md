@@ -588,81 +588,74 @@ protected emptySnapshot(): AiSystemSnapshotInterface {
 
 ## Logging
 
+The library auto-derives `logContext = ClassName::methodName` for decorated methods, so there is no namespace argument. The transport prefixes every line as `[logContext]`.
+
 ### Class methods — `@Log` decorator
 
+Every public service/repository method that warrants observability is decorated with the full lifecycle: `pre` (entry), `post` (success), `error` (catch). No inline `logger.log(...)` inside decorated method bodies.
+
 ```ts
-import { Log, LoggerNamespaceEnum } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 
 class SomeService {
-    @Log(LoggerNamespaceEnum.AI, 'someService:doThing:enter', 'someService:doThing:done', 'someService:doThing:error')
+    @Log(
+        input => `doThing:enter input=${input}`,
+        (result, input) => `doThing:done input=${input} result=${result}`,
+        (error, input) => `doThing:throw input=${input} error=${String(error)}`
+    )
     async doThing(input: string): Promise<number> {
+        // pure business logic
+    }
+}
+```
+
+Output:
+
+```
+[SomeService::doThing] doThing:enter input=hello
+[SomeService::doThing] doThing:done input=hello result=42
+```
+
+If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
+
+### Free-function / hook / component — `getLogger`
+
+```ts
+import { getLogger } from '@budgie/contracts';
+
+const logger = getLogger('useSomething');
+
+export const useSomething = () => {
+    logger.log('fired', { foo, bar });
+    logger.error('failed', { errorMessage });
+};
+```
+
+Free-form `context: string`. Convention: hook/file/component name. No enum.
+
+### Rule 32 exception — dynamic instance-state tags
+
+The decorator library calls hook callbacks as plain functions, with no `this` receiver. Methods whose log tag must read instance state (e.g. `${this.logDomain}`) cannot be decorated. The fallback is inline `getLogger(this.X)` plus a one-line comment that documents the exception:
+
+```ts
+class BaseDrainerService {
+    constructor(private readonly logDomain: string) {}
+
+    start(): void {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('start');
         // ...
     }
 }
 ```
 
-For dynamic function hooks:
+This is the ONLY case where comments are required. The exception is bounded to `base-drainer.service.ts`, `base-subsystem.service.ts`, and concrete drainer subclasses.
 
-```ts
-@Log(
-    LoggerNamespaceEnum.AI,
-    input => `someService:doThing:enter:${input}`,
-    (result, input) => `someService:doThing:done:${input}:${result}`
-)
-async doThing(input: string): Promise<number> { ... }
-```
+### Build-time gate
 
-Decorate only PUBLIC methods. Private methods, arrow-function class fields, and abstract methods use `getLogger(ns).log(tag, payload)` instead.
-
-### Free-function / hook / component — `getLogger`
-
-```ts
-import { getLogger, LoggerNamespaceEnum } from '@budgie/contracts';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
-
-export const useSomething = () => {
-    // ...
-    logger.log('useSomething:fired', { foo, bar });
-    logger.error('useSomething:failed', { errorMessage });
-    // ...
-};
-```
-
-Instantiate `logger` once at module-top; reuse for every call in the file. Use `logger.error(...)` inside `catch` blocks for failure semantics.
-
-### Dynamic payloads in decorated methods
-
-`@Log`'s tag hooks return strings, not objects. For methods that need to log a dynamic payload object, decorate with a static entry tag and emit the post-log inline via `getLogger`:
-
-```ts
-const logger = getLogger(LoggerNamespaceEnum.TRANSACTION);
-
-class TransactionService {
-    @Log(LoggerNamespaceEnum.TRANSACTION, 'bulkCreate:enter')
-    async bulkCreate(inputs: TransactionInput[]): Promise<Transaction[]> {
-        const started = Date.now();
-        const result = await this.repo.bulkCreate(inputs);
-        logger.log('bulkCreate:done', { requested: inputs.length, inserted: result.length, durationMs: Date.now() - started });
-
-        return result;
-    }
-}
-```
-
-### Namespaces
-
-| Namespace | Typical users |
-|---|---|
-| `AI` | AI coordinator, generic AI hooks / providers |
-| `CHAT` | LLM chat subsystem |
-| `STT` | Speech-to-text subsystem |
-| `EMBEDDING` | Embedding service + status + suggestion |
-| `DRAINER` | Embedding + translation drainers |
-| `SYNC` | Monobank + bank-sync base |
-| `TRANSACTION` | Transaction domain services |
-| `REPO` | Any repository class |
+`EXPO_PUBLIC_LOGGING_DISABLE=true` (set in `app.config.js → extra.loggingEnabled`) suppresses all log output. Currently baked into the e2e build profile. **Build-time only** — flipping it on a deployed binary requires a rebuild. See `is-logging-enabled.util.ts` and the registry in `@budgie/contracts`.
 
 ### `packages/bank-sync` exception
 
-`packages/bank-sync` cannot depend on `@budgie/contracts`. It uses its own local `SyncLog` decorator and `syncLogger` instance from `packages/bank-sync/src/core/util/sync-logger.util.ts`. Same `[SYNC]` namespace prefix; same transport shape.
+`packages/bank-sync` cannot depend on `@budgie/contracts`. It re-implements the same `Log` decorator and `syncLogger` locally in `packages/bank-sync/src/core/util/sync-logger.util.ts` against a duplicated `consoleTransport`. Both registries (contracts + bank-sync) are wired from `_layout.tsx` at app startup so a single `EXPO_PUBLIC_LOGGING_DISABLE` controls both.

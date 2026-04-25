@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { BankSyncModeEnum, ExternalSourceEnum, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
+import { BankSyncModeEnum, ExternalSourceEnum, Log, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -16,8 +16,6 @@ import type { ImportContextInterface } from '../interface/import-context.interfa
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
 import type { DB } from '@budgie/contracts';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
@@ -93,6 +91,11 @@ export abstract class BaseFileBankSyncService {
         );
     }
 
+    @Log(
+        (_client, bankAccount) => `importAccountTransactions:enter accountId=${bankAccount.id}`,
+        (_result, _client, bankAccount) => `importAccountTransactions:done accountId=${bankAccount.id}`,
+        (error, _client, bankAccount) => `importAccountTransactions:throw accountId=${bankAccount.id} error=${String(error)}`
+    )
     private async importAccountTransactions(
         client: FileBasedBankSyncClientInterface,
         bankAccount: BankAccountInterface,
@@ -114,18 +117,8 @@ export abstract class BaseFileBankSyncService {
             return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
         });
 
-        logger.log('embed:defer:bank-sync:batch:begin', {
-            provider: this.provider,
-            accountId: account.id,
-            count: transactionInputs.length
-        });
-        const created = await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
+        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
             shouldUpdateBalances: false
-        });
-        logger.log('embed:defer:bank-sync:batch:complete', {
-            provider: this.provider,
-            accountId: account.id,
-            inserted: created.length
         });
     }
 

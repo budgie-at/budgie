@@ -1,4 +1,4 @@
-import { Log, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
+import { Log, getLogger, transactionAsync } from '@budgie/contracts';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -10,7 +10,7 @@ import { SnapshotStore } from './base-subsystem.service';
 import { commentEmbeddingDrainerService } from './comment-embedding-drainer.service';
 import { merchantEmbeddingDrainerService } from './merchant-embedding-drainer.service';
 
-const logger = getLogger(LoggerNamespaceEnum.DRAINER);
+const embeddingDrainerLogger = getLogger('EmbeddingDrainerService');
 
 const deriveState = (merchantState: DrainerStateEnum, commentState: DrainerStateEnum): DrainerStateEnum => {
     if (merchantState === DrainerStateEnum.ERROR || commentState === DrainerStateEnum.ERROR) {
@@ -41,7 +41,11 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
     }
 
-    @Log(LoggerNamespaceEnum.DRAINER, 'embedding:orchestrator:start')
+    @Log(
+        () => 'embedding:orchestrator:start',
+        () => 'embedding:orchestrator:start:done',
+        error => `embedding:orchestrator:start:throw error=${String(error)}`
+    )
     start(): void {
         if (this.startedSubs) {
             return;
@@ -54,11 +58,15 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         void this.clearResidueOnce();
     }
 
+    @Log(
+        () => 'embedding:orchestrator:stop',
+        () => 'embedding:orchestrator:stop:done',
+        error => `embedding:orchestrator:stop:throw error=${String(error)}`
+    )
     stop(): void {
         if (!this.startedSubs) {
             return;
         }
-        logger.log('embedding:orchestrator:stop');
         this.merchant.stop();
         this.comment.stop();
         this.unsubscribeMerchant?.();
@@ -68,20 +76,23 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.startedSubs = false;
     }
 
+    @Log(
+        () => 'embedding:orchestrator:boost:begin',
+        () => 'embedding:orchestrator:boost:done',
+        error => `embedding:orchestrator:boost:throw error=${String(error)}`
+    )
     async boost(): Promise<void> {
-        logger.log('embedding:orchestrator:boost:begin');
         const started = Date.now();
         await this.merchant.boost();
-        logger.log('embedding:orchestrator:merchant:complete', { durationMs: Date.now() - started });
+        embeddingDrainerLogger.log('embedding:orchestrator:merchant:complete', { durationMs: Date.now() - started });
         if (this.comment.getSnapshot().state === DrainerStateEnum.PAUSED) {
-            logger.log('embedding:orchestrator:comment:skip', { reason: 'paused' });
+            embeddingDrainerLogger.log('embedding:orchestrator:comment:skip', { reason: 'paused' });
 
             return;
         }
         const commentStart = Date.now();
         await this.comment.boost();
-        logger.log('embedding:orchestrator:comment:complete', { durationMs: Date.now() - commentStart });
-        logger.log('embedding:orchestrator:boost:done', { totalDurationMs: Date.now() - started });
+        embeddingDrainerLogger.log('embedding:orchestrator:comment:complete', { durationMs: Date.now() - commentStart });
     }
 
     cancelBoost(): void {
@@ -125,9 +136,9 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
                 await transactionRepository.clearAlreadyIndexedMerchantFlags(tx);
                 await transactionRepository.clearAlreadyIndexedCommentFlags(tx);
             });
-            logger.log('embedding:orchestrator:pre-clear:done');
+            embeddingDrainerLogger.log('embedding:orchestrator:pre-clear:done');
         } catch (error: unknown) {
-            logger.log('embedding:orchestrator:residue:throw', {
+            embeddingDrainerLogger.error('embedding:orchestrator:residue:throw', {
                 errorMessage: getErrorMessage(error)
             });
         }

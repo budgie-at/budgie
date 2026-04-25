@@ -1,4 +1,4 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Haptics from 'expo-haptics';
 import { ReactNode, useState } from 'react';
@@ -14,7 +14,7 @@ import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enu
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('AiSubsystemStatusCardLayout');
 
 interface Props {
     readonly snapshot: AiSubsystemStatusSnapshotInterface;
