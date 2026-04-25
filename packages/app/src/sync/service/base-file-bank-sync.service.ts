@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
@@ -20,6 +20,45 @@ import type { DB } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
+
+    @Log(
+        (client, bankAccount, context) =>
+            `enter accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(account => account.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
+        'done',
+        (error, client, bankAccount, context) =>
+            `throw accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(account => account.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
+    )
+    private async importAccountTransactions(
+        client: FileBasedBankSyncClientInterface,
+        bankAccount: BankAccountInterface,
+        context: ImportContextInterface
+    ): Promise<void> {
+        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        await this.createBankSyncRecord(account.id, context.tx);
+
+        const transactions = client.getTransactions(bankAccount.id);
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
+
+        const transactionInputs = transactions.map(transaction => {
+            const mccCategoryId = isNotEmptyString(transaction.category)
+                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
+                : null;
+
+            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
+        });
+
+        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
+            shouldUpdateBalances: false
+        });
+    }
 
     async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
         const { bankAccounts } = await this.parseFile(uri);
@@ -90,42 +129,6 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
-    }
-
-    private async importAccountTransactions(
-        client: FileBasedBankSyncClientInterface,
-        bankAccount: BankAccountInterface,
-        context: ImportContextInterface
-    ): Promise<void> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
-        await this.createBankSyncRecord(account.id, context.tx);
-
-        const transactions = client.getTransactions(bankAccount.id);
-        if (!isNotEmptyArray(transactions)) {
-            return;
-        }
-
-        const transactionInputs = transactions.map(transaction => {
-            const mccCategoryId = isNotEmptyString(transaction.category)
-                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
-                : null;
-
-            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
-        });
-
-        aiLog('embed:defer:bank-sync:batch:begin', {
-            provider: this.provider,
-            accountId: account.id,
-            count: transactionInputs.length
-        });
-        const created = await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
-            shouldUpdateBalances: false
-        });
-        aiLog('embed:defer:bank-sync:batch:complete', {
-            provider: this.provider,
-            accountId: account.id,
-            inserted: created.length
-        });
     }
 
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {

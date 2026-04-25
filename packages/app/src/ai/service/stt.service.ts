@@ -1,3 +1,4 @@
+import { Log } from '@budgie/logger';
 import { SpeechToTextModule, WHISPER_SMALL } from 'react-native-executorch';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -6,7 +7,6 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
-import { aiLog } from '../utils/ai-log.util';
 
 import { BaseSubsystemService } from './base-subsystem.service';
 
@@ -37,19 +37,15 @@ class SttService
         return this.snapshot.nonCommittedTranscription;
     }
 
-    async retry(): Promise<void> {
-        aiLog('stt:retry', { fromStatus: this.snapshot.status });
-        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-        await this.start();
-    }
-
-    // eslint-disable-next-line max-statements -- Async generator consumption with per-chunk snapshot updates
+    @Log(
+        options => `enter language=${options?.language ?? 'default'}`,
+        (result, options) => `done language=${options?.language ?? 'default'} committedLen=${result.length}`,
+        (error, options) => `throw language=${options?.language ?? 'default'} error=${getErrorMessage(error)}`
+    )
     async stream(options?: { readonly language?: string }): Promise<string> {
-        aiLog('stt:stream:start');
         if (!this.isReady || !isDefined(this.instance)) {
             throw new AiNotReadyError('stt');
         }
-        const started = Date.now();
         this.setSnapshot({ committedTranscription: '', nonCommittedTranscription: '' });
         this.activeStream = this.instance.stream(options as { readonly language?: never } | undefined);
         let lastCommitted = '';
@@ -61,10 +57,6 @@ class SttService
                 });
                 lastCommitted = chunk.committed;
             }
-            aiLog('stt:stream:complete', {
-                durationMs: Date.now() - started,
-                committedLen: lastCommitted.length
-            });
 
             return lastCommitted;
         } finally {
@@ -72,8 +64,12 @@ class SttService
         }
     }
 
+    async retry(): Promise<void> {
+        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
+        await this.start();
+    }
+
     streamStop(): void {
-        aiLog('stt:streamStop');
         this.instance?.streamStop();
     }
 
@@ -82,26 +78,28 @@ class SttService
     }
 
     protected async runStart(): Promise<void> {
-        try {
-            this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-            aiLog('stt:download:begin', { model: 'WHISPER_SMALL' });
-            this.instance = new SpeechToTextModule();
-            await this.instance.load(WHISPER_SMALL, progress => {
-                this.setSnapshot({ downloadProgress: progress });
-            });
-            aiLog('stt:init:complete');
-            this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
-            aiLog('stt:ready');
-        } catch (error: unknown) {
-            const message = getErrorMessage(error);
-            aiLog('stt:init:throw', { errorMessage: message });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: message });
-        }
+        await this.downloadModel();
+        await this.initModel();
     }
 
     protected async runStop(): Promise<void> {
+        await this.releaseInstance();
+    }
+
+    private async downloadModel(): Promise<void> {
+        this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
+        this.instance = new SpeechToTextModule();
+        await this.instance.load(WHISPER_SMALL, progress => {
+            this.setSnapshot({ downloadProgress: progress });
+        });
+    }
+
+    private async initModel(): Promise<void> {
+        this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
+    }
+
+    private async releaseInstance(): Promise<void> {
         try {
-            aiLog('stt:stop:release');
             this.instance?.streamStop();
             this.instance?.delete();
             this.instance = null;
@@ -111,12 +109,11 @@ class SttService
                 committedTranscription: '',
                 nonCommittedTranscription: ''
             });
-            aiLog('stt:stop:complete');
         } catch (error: unknown) {
-            aiLog('stt:stop:error', { errorMessage: getErrorMessage(error) });
             this.instance = null;
             this.activeStream = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
+            throw error;
         }
     }
 }
