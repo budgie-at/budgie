@@ -1,11 +1,12 @@
+import { getLogger } from '@budgie/logger';
 import { LlamaContext, initLlama } from 'llama.rn';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { aiLog } from '../utils/ai-log.util';
-
 import { GPU_LAYERS } from './ai-constants.util';
 import { downloadModel } from './download-model.util';
+
+const logger = getLogger('loadLlamaContext');
 
 interface LoadLlamaContextParamsInterface {
     readonly domain: string;
@@ -21,13 +22,13 @@ interface LoadLlamaContextParamsInterface {
 
 export const loadLlamaContext = async (params: LoadLlamaContextParamsInterface): Promise<LlamaContext> => {
     params.onDownloadBegin();
-    aiLog(`${params.domain}:download:begin`, { url: params.modelUrl, filename: params.modelFilename });
+    logger.log(`${params.domain}:download:begin`, { url: params.modelUrl, filename: params.modelFilename });
     const downloadStarted = Date.now();
     const modelPath = await downloadModel(params.modelUrl, params.modelFilename, params.onDownloadProgress);
-    aiLog(`${params.domain}:download:complete`, { path: modelPath, durationMs: Date.now() - downloadStarted });
+    logger.log(`${params.domain}:download:complete`, { path: modelPath, durationMs: Date.now() - downloadStarted });
 
     params.onInitBegin();
-    aiLog(`${params.domain}:init:begin`);
+    logger.log(`${params.domain}:init:begin`);
     const initStarted = Date.now();
     const context = await initLlama({
         model: modelPath,
@@ -37,7 +38,7 @@ export const loadLlamaContext = async (params: LoadLlamaContextParamsInterface):
         embedding: params.embedding,
         ...(isDefined(params.poolingType) && { pooling_type: params.poolingType })
     });
-    aiLog(`${params.domain}:init:complete`, { durationMs: Date.now() - initStarted });
+    logger.log(`${params.domain}:init:complete`, { durationMs: Date.now() - initStarted });
 
     return context;
 };

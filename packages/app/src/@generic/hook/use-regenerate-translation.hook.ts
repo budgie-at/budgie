@@ -1,4 +1,5 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
@@ -7,7 +8,8 @@ import { getErrorMessage } from '@rnw-community/shared';
 import { AiSubsystemStatusEnum } from '../../ai/enum/ai-subsystem-status.enum';
 import { useChat } from '../../ai/hook/use-chat.hook';
 import { chatService } from '../../ai/service/chat.service';
-import { aiLog } from '../../ai/utils/ai-log.util';
+
+const logger = getLogger('useRegenerateTranslation');
 
 type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
 
@@ -26,13 +28,13 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
     // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
         if (!isChatReady) {
-            aiLog('translation:regenerate:skip:not-ready', { chatStatus });
+            logger.log('translation:regenerate:skip:not-ready', { chatStatus });
             setError(t`LLM not ready`);
 
             return null;
         }
 
-        aiLog('translation:regenerate:start', { entityId, titleLen: title.length });
+        logger.log('translation:regenerate:start', { entityId, titleLen: title.length });
         setIsRegenerating(true);
         setError(null);
 
@@ -40,11 +42,11 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
             const service = new TranslationLlmService(chatService);
             const result = await service.translate(title);
             await updateTranslation(entityId, result.titleEn, result.titleTags);
-            aiLog('translation:regenerate:complete', { entityId, titleEnLen: result.titleEn.length });
+            logger.log('translation:regenerate:complete', { entityId, titleEnLen: result.titleEn.length });
 
             return result;
         } catch (regenerateError: unknown) {
-            aiLog('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) });
+            logger.error('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) });
             setError(getErrorMessage(regenerateError));
 
             return null;

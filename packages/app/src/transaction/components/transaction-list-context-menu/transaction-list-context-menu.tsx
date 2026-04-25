@@ -45,7 +45,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
     const [openConvertToTransfer] = useConvertToTransferModal();
     const pendingActionRef = useRef<EmptyFn | null>(null);
 
-    if (transaction === null) {
+    if (!isDefined(transaction)) {
         return null;
     }
 

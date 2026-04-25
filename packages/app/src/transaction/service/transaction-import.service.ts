@@ -1,33 +1,41 @@
-import {
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface,
-    TransactionEntryEntityInterface,
-    TransactionWithEntriesEntityInterface,
-    transactionAsync
-} from '@budgie/contracts';
+import { transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { ImportedBatchPartitionInterface } from '../interface/imported-batch-partition.interface';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
 import { ImportedUpdateParamInterface } from '../interface/imported-update-param.interface';
 import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result.interface';
-import { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
-import type { DB } from '@budgie/contracts';
+import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
+import type {
+    DB,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryCreateInputInterface,
+    TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 class TransactionImportService {
+    @Log(
+        (inputs, existingTransactionIdMap, tx, options) =>
+            `enter externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
+        (result, ...[inputs, existingTransactionIdMap, tx, options]) =>
+            `done externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedIds=${result.map(row => row.id).join(',')}`,
+        (error, ...[inputs, existingTransactionIdMap, tx, options]) =>
+            `throw externalIds=${inputs.map(input => input.externalId).join(',')} existingKeys=${[...existingTransactionIdMap.keys()].join(',')} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
+    )
     async bulkUpsertImported(
         inputs: TransactionCreateInputInterface[],
         existingTransactionIdMap: Map<string, number>,
@@ -45,13 +53,11 @@ class TransactionImportService {
             return transactionAsync(db, async innerTx => this.bulkUpsertImported(inputs, existingTransactionIdMap, innerTx, options));
         }
 
-        const { stampedInputs, externalSources } = stampForDeferredEmbedding(inputs, 'import');
+        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'import');
 
         const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
             this.processImportedBatchInner(batch, existingTransactionIdMap, tx)
         );
-
-        aiLog('embed:defer:queued', { source: 'import', count: transactions.length, externalSources });
 
         if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);

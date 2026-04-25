@@ -1,10 +1,13 @@
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
-import { aiLog } from '../utils/ai-log.util';
+const logger = getLogger('AiUmbrellaStatusService');
 
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
@@ -43,7 +46,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         }
         if (next.state !== this.lastState) {
             const now = Date.now();
-            aiLog('umbrella:state:transition', { from: this.lastState, to: next.state, durationMs: now - this.lastStateAt });
+            logger.log('umbrella:state:transition', { from: this.lastState, to: next.state, durationMs: now - this.lastStateAt });
             this.lastState = next.state;
             this.lastStateAt = now;
         }
@@ -61,8 +64,8 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         const chatError = chat.errorMessage;
         const embeddingError = embedding.errorMessage;
-        if (chatError !== null || embeddingError !== null) {
-            const source = chatError === null ? 'embedding' : 'chat';
+        if (isDefined(chatError) || isDefined(embeddingError)) {
+            const source = isDefined(chatError) ? 'chat' : 'embedding';
 
             const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
 

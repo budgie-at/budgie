@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/max-params -- Existing suggestion APIs and Log hooks intentionally keep positional arguments */
 import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
@@ -5,8 +6,9 @@ import {
     TagEntityInterface,
     TagScoreResultInterface
 } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
@@ -16,16 +18,16 @@ import {
     EMBEDDING_VEC_OVERSAMPLE_LIMIT,
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
-import { aiLog } from '../../@generic/util/ai-log.util';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
-import { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
-import { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
-import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
+
+import type { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
+import type { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
+import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 
 export class EmbeddingSuggestionService {
     constructor(
@@ -37,7 +39,14 @@ export class EmbeddingSuggestionService {
         ) => Promise<{ categoryId: number; count: number }[]>
     ) {}
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(
+        (categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryIds=${categories.map(category => category.id).join(',')}`,
+        (result, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} resolvedIds=${result.map(category => category.id).join(',')}`,
+        (error, categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId) =>
+            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" mccCategoryId=${String(mccCategoryId)} categoryCount=${categories.length} error=${getErrorMessage(error)}`
+    )
     async suggestCategories(
         categories: CategoryEntityInterface[],
         transactionTitle: string,
@@ -50,7 +59,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const mccLookup = isDefined(mccCategoryId)
             ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
@@ -72,19 +81,17 @@ export class EmbeddingSuggestionService {
             mccLookup
         ]);
 
-        aiLog('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
-
-        const resolvedCategories = this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
-        aiLog('suggest:category:final', {
-            resolvedCount: resolvedCategories.length,
-            topCategoryIds: resolvedCategories.map(category => category.id),
-            totalDurationMs: Date.now() - methodStart
-        });
-
-        return resolvedCategories;
+        return this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(
+        (allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagIds=${allTags.map(tag => tag.id).join(',')}`,
+        (result, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} resolvedIds=${result.map(tag => tag.id).join(',')}`,
+        (error, allTags, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" categoryId=${categoryId} tagCount=${allTags.length} error=${getErrorMessage(error)}`
+    )
     async suggestTags(
         allTags: TagEntityInterface[],
         categoryId: number,
@@ -97,7 +104,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -113,19 +120,18 @@ export class EmbeddingSuggestionService {
 
         const merged = this.mergeTagScores(merchantResults, commentResults);
         const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
-        const resolvedTags = topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
 
-        aiLog('suggest:tag:final', {
-            topCount: topTags.length,
-            resolvedCount: resolvedTags.length,
-            topTagIds: resolvedTags.map(tag => tag.id),
-            totalDurationMs: Date.now() - methodStart
-        });
-
-        return resolvedTags;
+        return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     }
 
-    // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
+    @Log(
+        (categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `enter categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}"`,
+        (result, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `done categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" count=${result.length}`,
+        (error, categoryId, transactionTitle, mccDescription, comment, aiContext) =>
+            `throw categoryId=${categoryId} title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" aiContext="${aiContext}" error=${getErrorMessage(error)}`
+    )
     async suggestComments(
         categoryId: number,
         transactionTitle: string,
@@ -137,7 +143,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -146,10 +152,24 @@ export class EmbeddingSuggestionService {
             commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
         });
 
-        const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
-        aiLog('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
+        return commentResults.map(row => row.comment).filter(isNotEmptyString);
+    }
 
-        return finalComments;
+    @Log(
+        context => `enter context="${context}"`,
+        (result, context) => `done context="${context}" resolved=${String(isDefined(result))}`,
+        (error, context) => `throw context="${context}" error=${getErrorMessage(error)}`
+    )
+    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
+        const service = new EmbeddingService(this.embedding);
+        const queryEmbedding = await service.generateEmbedding(context);
+
+        // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
+        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
+            return null;
+        }
+
+        return serializeEmbedding(queryEmbedding);
     }
 
     private async prepareSuggestion(
@@ -256,18 +276,5 @@ export class EmbeddingSuggestionService {
         }
 
         return [...scoreMap.entries()].map(([tagId, score]) => ({ tagId, score })).sort((first, second) => second.score - first.score);
-    }
-
-    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
-        const service = new EmbeddingService(this.embedding);
-        const queryEmbedding = await service.generateEmbedding(context);
-
-        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
-            aiLog('suggest:embed:empty', { context });
-
-            return null;
-        }
-
-        return serializeEmbedding(queryEmbedding);
     }
 }
