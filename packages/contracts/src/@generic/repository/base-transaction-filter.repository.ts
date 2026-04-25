@@ -2,7 +2,6 @@ import { SQL, and, gte, inArray, isNull, lte } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionCategoryFilterModeEnum } from '../../transaction/enum/transaction-category-filter-mode.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -14,11 +13,10 @@ export abstract class BaseTransactionFilterRepository {
     constructor(protected db: DB) {}
 
     /* jscpd:ignore-start */
-    protected buildFilterWhere({ tagIds, categoryIds, categoryMode, accountIds, date }: TransactionFilterInterface) {
-        const categoryCondition = this.buildTransactionCategoryCondition(categoryMode, categoryIds);
+    protected buildFilterWhere({ tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
             ...this.buildAccountCondition(accountIds),
-            ...(isDefined(categoryCondition) ? [categoryCondition] : []),
+            ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
@@ -27,18 +25,6 @@ export abstract class BaseTransactionFilterRepository {
         return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
     }
     /* jscpd:ignore-end */
-
-    protected buildTransactionCategoryCondition(categoryMode: TransactionCategoryFilterModeEnum, categoryIds: number[] | null) {
-        if (categoryMode === TransactionCategoryFilterModeEnum.UNCATEGORIZED) {
-            return this.buildUncategorizedCondition();
-        }
-
-        if (categoryMode === TransactionCategoryFilterModeEnum.SELECTED && isNotEmptyArray(categoryIds)) {
-            return this.buildSelectedCategoryCondition(categoryIds);
-        }
-
-        return null;
-    }
 
     protected buildCategoryCondition(categoryIds: number[]) {
         if (!isNotEmptyArray(categoryIds)) {

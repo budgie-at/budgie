@@ -274,7 +274,7 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -335,7 +335,7 @@ msgstr "Cash"
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "Categories"
 msgstr "Categories"
 
@@ -382,7 +382,7 @@ msgstr "Choose the type of account you want to add"
 msgid "Clear"
 msgstr "Clear"
 
-#: src/transaction/components/transaction-filters/transaction-filters.tsx:47
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:46
 msgid "Clear All"
 msgstr "Clear All"
 
@@ -423,7 +423,7 @@ msgstr "Confirm PIN"
 msgid "Confirm Split"
 msgstr "Confirm Split"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:38
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:43
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
 
@@ -522,7 +522,7 @@ msgstr "Could not save tag"
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
-#: src/transaction/hook/use-promote-primary-tag.hook.ts:30
+#: src/transaction/hook/use-promote-primary-tag.hook.ts:27
 msgid "Couldn't update primary tag"
 msgstr "Couldn't update primary tag"
 
@@ -677,7 +677,7 @@ msgstr "Disable App Lock"
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:40
+#: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx:45
 msgid "Done ({count})"
 msgstr "Done ({count})"
 
@@ -1259,7 +1259,7 @@ msgid "No languages found"
 msgstr "No languages found"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -1289,7 +1289,7 @@ msgstr "No tags match your search"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1768,7 +1768,7 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/transaction-list/transaction-list.tsx:37
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
@@ -2007,7 +2007,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:41
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
@@ -2032,10 +2032,6 @@ msgstr "Ukrainian"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Uncategorized"
-
-#: src/transaction/components/transaction-uncategorized-filter/transaction-uncategorized-filter.tsx:59
-msgid "Uncategorized ({count})"
-msgstr "Uncategorized ({count})"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"
