@@ -1,3 +1,4 @@
+import { TransactionCategoryFilterModeEnum } from '../enum/transaction-category-filter-mode.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 
 export const DEFAULT_TRANSACTION_FILTER: TransactionFilterInterface = {
@@ -5,5 +6,6 @@ export const DEFAULT_TRANSACTION_FILTER: TransactionFilterInterface = {
     types: null,
     tagIds: null,
     accountIds: null,
+    categoryMode: TransactionCategoryFilterModeEnum.ALL,
     categoryIds: null
 };

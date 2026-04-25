@@ -194,6 +194,12 @@ class TransactionService {
         });
     }
 
+    async promotePrimaryTag(transactionId: number, tagId: number): Promise<void> {
+        await transactionAsync(db, async tx => {
+            await transactionTagsRepository.setPrimary(transactionId, tagId, tx);
+        });
+    }
+
     private buildAdditionalEntries(
         entries: TransactionEntryCreateInputInterface[],
         fromEntry: TransactionEntryCreateInputInterface,

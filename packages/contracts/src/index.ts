@@ -193,6 +193,8 @@ export { TransactionRepository } from './transaction/repository/transaction.repo
 
 export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
 
+export { TransactionCategoryFilterModeEnum } from './transaction/enum/transaction-category-filter-mode.enum';
+
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';

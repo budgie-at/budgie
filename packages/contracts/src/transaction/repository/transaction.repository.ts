@@ -14,6 +14,7 @@ import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filt
 import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionCategoryFilterModeEnum } from '../enum/transaction-category-filter-mode.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
@@ -392,6 +393,20 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return row.value;
     }
 
+    countUncategorized(filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
+        const uncategorizedFilters = {
+            ...filters,
+            categoryMode: TransactionCategoryFilterModeEnum.UNCATEGORIZED,
+            categoryIds: null
+        };
+        const filterWhere = this.buildWhere(uncategorizedFilters);
+        const where = isDefined(filterWhere)
+            ? and(filterWhere, isNull(TransactionEntityTable.deletedAt))
+            : isNull(TransactionEntityTable.deletedAt);
+
+        return this.db.select({ value: count() }).from(TransactionEntityTable).where(where);
+    }
+
     protected override buildAccountCondition(accountIds: number[] | null) {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
@@ -412,11 +427,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     }
 
-    private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
+    private buildWhere({ types, tagIds, categoryIds, categoryMode, accountIds, date }: TransactionFilterInterface) {
+        const categoryCondition = this.buildTransactionCategoryCondition(categoryMode, categoryIds);
         const conditions: SQL[] = [
             ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
-            ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
+            ...(isDefined(categoryCondition) ? [categoryCondition] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
