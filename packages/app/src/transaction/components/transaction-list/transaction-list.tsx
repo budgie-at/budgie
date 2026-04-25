@@ -52,7 +52,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
     const canShowFilters = showFilters && !externalFilters;
 
     return (
-        <View>
+        <View className="flex-1">
             {canShowFilters && (
                 <TransactionFilters
                     filters={activeFilters}

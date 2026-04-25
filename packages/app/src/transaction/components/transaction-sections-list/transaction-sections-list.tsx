@@ -34,7 +34,10 @@ const getItemType = (item: TransactionListItemType | undefined) => item?.type ??
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-// eslint-disable-next-line max-statements -- List orchestration component with context menu state management
+const ESTIMATED_ITEM_SIZE = 130;
+const LIST_STYLE = { flex: 1 };
+
+// eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
 export const TransactionSectionsList = ({
     sections,
     onEndReached,
@@ -105,20 +108,24 @@ export const TransactionSectionsList = ({
 
     return (
         <>
-            <LegendList
-                data={flatData}
-                keyExtractor={keyExtractor}
-                renderItem={renderItem}
-                estimatedItemSize={80}
-                stickyIndices={getStickyIndices(flatData)}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.3}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={contentContainerStyle}
-                ListEmptyComponent={listEmptyState}
-                getItemType={getItemType}
-                ListFooterComponent={listFooter}
-            />
+            <View className="flex-1">
+                <LegendList
+                    style={LIST_STYLE}
+                    data={flatData}
+                    keyExtractor={keyExtractor}
+                    renderItem={renderItem}
+                    estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                    stickyIndices={getStickyIndices(flatData)}
+                    recycleItems
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.3}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={contentContainerStyle}
+                    ListEmptyComponent={listEmptyState}
+                    getItemType={getItemType}
+                    ListFooterComponent={listFooter}
+                />
+            </View>
             <TransactionListContextMenu
                 transaction={menuTransaction}
                 isOpen={isMenuOpen}
