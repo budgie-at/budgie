@@ -267,7 +267,7 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:63
+#: src/transaction/components/statistics-content/statistics-content.tsx:68
 msgid "Balance"
 msgstr "Баланс"
 
@@ -330,6 +330,7 @@ msgstr "Скасувати"
 msgid "Cash"
 msgstr "Готівка"
 
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:84
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
@@ -1029,17 +1030,17 @@ msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
-#: src/transaction/components/statistics-content/statistics-content.tsx:62
+#: src/transaction/components/statistics-content/statistics-content.tsx:67
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:70
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:30
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:92
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:46
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
@@ -1274,6 +1275,10 @@ msgstr "Немає результатів"
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:35
+msgid "No tags in this period"
+msgstr "Немає тегів за цей період"
+
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
@@ -1336,7 +1341,7 @@ msgstr "Відкрийте додаток Приват24"
 msgid "Organization"
 msgstr "Організація"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:52
+#: src/transaction/components/statistics-content/statistics-content.tsx:57
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1737,15 +1742,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:81
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:41
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:103
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:57
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:58
+#: src/transaction/components/statistics-content/statistics-content.tsx:63
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1769,10 +1774,6 @@ msgstr "Почніть відстежувати свої витрати, вик�
 #: src/ai/service/ai-umbrella-status.service.ts:96
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
-
-#: src/app/(tabs)/analytics.tsx:13
-msgid "Statistics"
-msgstr "Статистика"
 
 #: src/account/constant/account-type-description.constant.ts:10
 msgid "Stock investments"
@@ -1827,6 +1828,11 @@ msgstr "Тег"
 msgid "Tag Name"
 msgstr "Назва тегу"
 
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx:36
+msgid "Tag transactions to see how your spending breaks down by context."
+msgstr "Додавайте теги до транзакцій, щоб побачити, як ваші витрати розподіляються за контекстом."
+
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx:84
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28

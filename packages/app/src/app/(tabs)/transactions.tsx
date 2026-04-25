@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Page } from '../../@generic/component/page/page';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
+import { useTabSwipeGesture } from '../../@generic/hook/use-tab-swipe-gesture.hook';
 import { RecurringCalendarContent } from '../../transaction/components/recurring-calendar-content/recurring-calendar-content';
 import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
 
@@ -12,19 +12,12 @@ import { TransactionsPageSelector } from './transactions-page.selector';
 
 import type { TransactionsTabType } from '../../@generic/type/transactions-tab.type';
 
+const TABS: readonly TransactionsTabType[] = ['transactions', 'recurring'];
+
 export default function TransactionsPage() {
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');
 
-    const handleSwipeLeft = () => void setActiveTab('recurring');
-    const handleSwipeRight = () => void setActiveTab('transactions');
-
-    const swipeLeft = Gesture.Fling()
-        .direction(Directions.LEFT)
-        .onEnd(() => void runOnJS(handleSwipeLeft)());
-    const swipeRight = Gesture.Fling()
-        .direction(Directions.RIGHT)
-        .onEnd(() => void runOnJS(handleSwipeRight)());
-    const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
+    const swipeGesture = useTabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: setActiveTab });
 
     const header = <TransactionsPageHeader activeTab={activeTab} onChangeTab={setActiveTab} />;
 
