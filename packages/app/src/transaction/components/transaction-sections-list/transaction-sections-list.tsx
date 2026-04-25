@@ -116,9 +116,8 @@ export const TransactionSectionsList = ({
                     renderItem={renderItem}
                     estimatedItemSize={TRANSACTION_LIST_ESTIMATED_ITEM_SIZE}
                     stickyIndices={getStickyIndices(flatData)}
-                    recycleItems
                     onEndReached={onEndReached}
-                    onEndReachedThreshold={0.3}
+                    onEndReachedThreshold={0.5}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
                     ListEmptyComponent={listEmptyState}
