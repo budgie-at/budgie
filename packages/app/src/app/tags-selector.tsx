@@ -21,6 +21,7 @@ import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.
 import { TagsSelectorModalSelector } from './tags-selector-modal.selector';
 
 const NUM_COLUMNS = 3;
+const PRIMARY_PROMOTION_SAVE_DELAY_MS = 260;
 
 const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number[], selectedTagIds: number[]) => {
     const filtered = isNotEmptyArray(tags) ? tags.filter(tag => !excludeTagIds.includes(tag.id)) : [];
@@ -63,11 +64,13 @@ export default function TagsSelectorModal() {
     const [search, setSearch] = useState('');
     const [selected, setSelected] = useState<number[]>(initialTagIds);
     const [primaryTagId, setPrimaryTagId] = useState<number | null>(initialPrimaryTagId);
+    const [isPrimaryPromoting, setIsPrimaryPromoting] = useState(false);
     const { tags } = useSearchTagsQuery(search);
 
     const selectedRef = useRef(selected);
     const primaryTagIdRef = useRef(primaryTagId);
     const hasResolvedRef = useRef(false);
+    const primaryPromotionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         selectedRef.current = selected;
@@ -76,7 +79,7 @@ export default function TagsSelectorModal() {
 
     const data = prepareTagData(tags, excludeTagIds, selected);
     const containerStyle = { flex: 1, backgroundColor };
-    const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
+    const dirty = (isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId) && !isPrimaryPromoting;
 
     const handleSelectTag = (tagId: number) => {
         if (singleSelect) {
@@ -98,11 +101,25 @@ export default function TagsSelectorModal() {
 
     const handlePrimarySelect = (tagId: number) => {
         setPrimaryTagId(tagId);
+        setIsPrimaryPromoting(true);
         setSelected(previous => {
             const selectedTagIds = previous.includes(tagId) ? previous : [...previous, tagId];
+            const orderedTagIds = reorderTagIdsByPrimary(selectedTagIds, tagId);
 
-            return reorderTagIdsByPrimary(selectedTagIds, tagId);
+            selectedRef.current = orderedTagIds;
+            primaryTagIdRef.current = tagId;
+
+            return orderedTagIds;
         });
+
+        if (isDefined(primaryPromotionTimeoutRef.current)) {
+            clearTimeout(primaryPromotionTimeoutRef.current);
+        }
+
+        primaryPromotionTimeoutRef.current = setTimeout(() => {
+            hasResolvedRef.current = true;
+            resolveTagsSelector(reorderTagIdsByPrimary(selectedRef.current, primaryTagIdRef.current));
+        }, PRIMARY_PROMOTION_SAVE_DELAY_MS);
     };
 
     const handleCreatePress = async () => {
@@ -126,6 +143,10 @@ export default function TagsSelectorModal() {
 
     useEffect(
         () => () => {
+            if (isDefined(primaryPromotionTimeoutRef.current)) {
+                clearTimeout(primaryPromotionTimeoutRef.current);
+            }
+
             if (!hasResolvedRef.current) {
                 resolveTagsSelector(reorderTagIdsByPrimary(selectedRef.current, primaryTagIdRef.current), { skipBack: true });
             }
