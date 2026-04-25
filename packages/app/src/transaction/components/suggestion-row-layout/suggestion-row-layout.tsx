@@ -1,11 +1,13 @@
+import { getLogger } from '@budgie/logger';
 import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../../../ai/constant/embedding-completeness-threshold.constant';
 import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
-import { aiLog } from '../../../ai/utils/ai-log.util';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
+
+const logger = getLogger('SuggestionRowLayout');
 
 interface Props {
     readonly showContent: boolean;
@@ -26,7 +28,7 @@ export const SuggestionRowLayout = (props: Props) => {
     const showBrain = showContent || isIncomplete || isProcessing;
     const showPills = showContent && !showLoading;
 
-    aiLog('hook:suggestion:layout:render', {
+    logger.log('hook:suggestion:layout:render', {
         showContent,
         showLoading,
         isProcessing,
