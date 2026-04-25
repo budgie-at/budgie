@@ -1,11 +1,11 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
-import { LoggerNamespaceEnum, RepeatedTransactionPatternInterface, TransactionTypeEnum, getLogger } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TransactionTypeEnum, getLogger } from '@budgie/contracts';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useRepeatedTransactionSuggestion');
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 

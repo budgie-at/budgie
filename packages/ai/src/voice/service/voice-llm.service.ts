@@ -1,14 +1,12 @@
-import { CurrencyEnum, Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { CurrencyEnum, Log } from '@budgie/contracts';
 import { z } from 'zod';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
 
 const LOG_PREVIEW_LENGTH = 120;
 
@@ -23,24 +21,24 @@ type ExtractedItemType = z.infer<typeof ExtractedItemSchema>;
 export class VoiceLlmService {
     constructor(private readonly chat: ChatInvokerInterface) {}
 
-    @Log(LoggerNamespaceEnum.AI, 'voice:extract:start')
+    @Log(
+        (text: string) => `extractTransactions:enter textLen=${text.length} preview=${text.slice(0, LOG_PREVIEW_LENGTH)}`,
+        (result, text: string) => `extractTransactions:done textLen=${text.length} count=${result.length}`,
+        (error, text: string) => `extractTransactions:throw textLen=${text.length} error=${String(error)}`
+    )
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
-        logger.log('voice:extract:start', { textLen: text.length, preview: text.slice(0, LOG_PREVIEW_LENGTH) });
-        try {
-            const translatedText = await this.translateToEnglish(text);
-            logger.log('voice:extract:translated', { translatedLen: translatedText.length });
-            const response = await this.chat.generate(ITEM_EXTRACTION_PROMPT, translatedText);
-            const parsed = this.parseExtractionResponse(response);
-            logger.log('voice:extract:parsed', { count: parsed.length });
+        const translatedText = await this.performTranslation(text);
+        const response = await this.chat.generate(ITEM_EXTRACTION_PROMPT, translatedText);
 
-            return parsed;
-        } catch (error: unknown) {
-            logger.log('voice:extract:throw', { errorMessage: getErrorMessage(error) });
-            throw error;
-        }
+        return this.parseExtractionResponse(response);
     }
 
-    private async translateToEnglish(text: string): Promise<string> {
+    @Log(
+        (text: string) => `performTranslation:enter textLen=${text.length}`,
+        (result, text: string) => `performTranslation:done textLen=${text.length} translatedLen=${result.length}`,
+        (error, text: string) => `performTranslation:throw textLen=${text.length} error=${String(error)}`
+    )
+    private async performTranslation(text: string): Promise<string> {
         const translated = await this.chat.generate(VOICE_TRANSLATION_PROMPT, text);
 
         return translated.trim();

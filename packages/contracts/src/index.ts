@@ -5,7 +5,6 @@ export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { LanguageEnum } from './@generic/enum/language.enum';
-export { LoggerNamespaceEnum } from './@generic/enum/logger-namespace.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
@@ -20,9 +19,10 @@ export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.re
 export type { DB } from './@generic/type/db.type';
 
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
+export { consoleTransport, Log } from './@generic/util/logger/console-transport.util';
 export { getLogger } from './@generic/util/logger/get-logger.util';
 export type { NamespacedLoggerInterface } from './@generic/util/logger/get-logger.util';
-export { Log } from './@generic/util/logger/log-decorator.util';
+export { isLoggingEnabled, setLoggingEnabledProvider } from './@generic/util/logger/is-logging-enabled.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';

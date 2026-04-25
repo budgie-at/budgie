@@ -1,4 +1,4 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { LlamaContext, initLlama } from 'llama.rn';
 
 import { isDefined } from '@rnw-community/shared';
@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { GPU_LAYERS } from './ai-constants.util';
 import { downloadModel } from './download-model.util';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('loadLlamaContext');
 
 interface LoadLlamaContextParamsInterface {
     readonly domain: string;

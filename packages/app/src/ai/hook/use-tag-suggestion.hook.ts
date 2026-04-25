@@ -1,5 +1,5 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { LoggerNamespaceEnum, TagEntityInterface, getLogger } from '@budgie/contracts';
+import { TagEntityInterface, getLogger } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -8,7 +8,7 @@ import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('useTagSuggestion');
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';

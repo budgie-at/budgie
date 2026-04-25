@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log, getLogger } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -27,8 +27,7 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('AiSystemStatusService');
 
 const FULL_PERCENT = 100;
 const TRUNCATE_LEN = 80;
@@ -58,9 +57,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     constructor() {
         super(EMPTY_SNAPSHOT);
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'system:action:boost')
-    async boost(): Promise<void> {
+    @Log(() => 'boost:enter', () => 'boost:done', error => `boost:throw error=${String(error)}`) async boost(): Promise<void> {
         if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
             await translationDrainerService.boost();
 
@@ -68,15 +65,11 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         }
         await embeddingDrainerService.boost();
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'system:action:cancel')
-    cancelBoost(): void {
+    @Log(() => 'cancelBoost:enter', () => 'cancelBoost:done', error => `cancelBoost:throw error=${String(error)}`) cancelBoost(): void {
         translationDrainerService.cancelBoost();
         embeddingDrainerService.cancelBoost();
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'system:action:retry')
-    async retry(): Promise<void> {
+    @Log(() => 'retry:enter', () => 'retry:done', error => `retry:throw error=${String(error)}`) async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
             promises.push(chatService.retry());
@@ -95,24 +88,14 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             embeddingDrainerService.retry();
         }
     }
-
-    @Log(LoggerNamespaceEnum.AI, 'system:action:rebuild:start')
-    // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
+    @Log(() => 'freshRebuild:enter', () => 'freshRebuild:done', error => `freshRebuild:throw error=${getErrorMessage(error)}`) // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
     async freshRebuild(): Promise<void> {
-        const started = Date.now();
         try {
-            await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
-            logger.log('system:action:rebuild:phase', { phase: 'paused' });
+            await this.pauseDrainers();
             try {
-                await merchantEmbeddingRepository.truncate();
-                await commentEmbeddingRepository.truncate();
-                logger.log('system:action:rebuild:phase', { phase: 'embeddings-truncated' });
-                await categoryRepository.resetAllTranslations();
-                await tagRepository.resetAllTranslations();
-                logger.log('system:action:rebuild:phase', { phase: 'translations-reset' });
-                await transactionRepository.markAllForEmbedding();
-                await transactionRepository.clearNonIndexableFlags();
-                logger.log('system:action:rebuild:phase', { phase: 'transactions-marked' });
+                await this.truncateEmbeddings();
+                await this.resetTranslations();
+                await this.markTransactionsForRebuild();
             } finally {
                 translationDrainerService.resume();
                 embeddingDrainerService.resume();
@@ -121,13 +104,42 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             void embeddingProgressStore.refresh();
             await translationDrainerService.boost();
             await embeddingDrainerService.boost();
-            logger.log('system:action:rebuild:complete', { durationMs: Date.now() - started });
         } catch (error: unknown) {
-            logger.log('system:action:rebuild:throw', { errorMessage: getErrorMessage(error) });
             translationDrainerService.resume();
             embeddingDrainerService.resume();
             throw error;
         }
+    }
+    @Log(() => 'pauseDrainers:enter', () => 'pauseDrainers:done', error => `pauseDrainers:throw error=${getErrorMessage(error)}`)
+    private async pauseDrainers(): Promise<void> {
+        await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
+    }
+    @Log(
+        () => 'truncateEmbeddings:enter',
+        () => 'truncateEmbeddings:done',
+        error => `truncateEmbeddings:throw error=${getErrorMessage(error)}`
+    )
+    private async truncateEmbeddings(): Promise<void> {
+        await merchantEmbeddingRepository.truncate();
+        await commentEmbeddingRepository.truncate();
+    }
+    @Log(
+        () => 'resetTranslations:enter',
+        () => 'resetTranslations:done',
+        error => `resetTranslations:throw error=${getErrorMessage(error)}`
+    )
+    private async resetTranslations(): Promise<void> {
+        await categoryRepository.resetAllTranslations();
+        await tagRepository.resetAllTranslations();
+    }
+    @Log(
+        () => 'markTransactionsForRebuild:enter',
+        () => 'markTransactionsForRebuild:done',
+        error => `markTransactionsForRebuild:throw error=${getErrorMessage(error)}`
+    )
+    private async markTransactionsForRebuild(): Promise<void> {
+        await transactionRepository.markAllForEmbedding();
+        await transactionRepository.clearNonIndexableFlags();
     }
 
     protected buildSubscriptions(): (() => void)[] {
@@ -347,8 +359,6 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         return null;
     }
-    /* eslint-enable lingui/no-unlocalized-strings */
-
     private snapshotEquals(current: AiSystemSnapshotInterface, next: AiSystemSnapshotInterface): boolean {
         return (
             current.state === next.state &&

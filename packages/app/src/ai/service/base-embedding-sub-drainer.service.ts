@@ -1,12 +1,10 @@
-import { EmbeddingPendingContextBaseInterface, LoggerNamespaceEnum, getLogger, transactionAsync } from '@budgie/contracts';
+import { EmbeddingPendingContextBaseInterface, getLogger, transactionAsync } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-
-const logger = getLogger(LoggerNamespaceEnum.DRAINER);
 
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
@@ -39,7 +37,9 @@ export abstract class BaseEmbeddingSubDrainerService<
     protected async processRow(context: TContext): Promise<void> {
         this.logBegin(context);
         if (isDefined(context.existingEmbeddingId)) {
-            logger.log(`${this.logDomain}:context:skip`, {
+            // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+            const logger = getLogger(this.logDomain);
+            logger.log('context:skip', {
                 reason: 'preflight-hit',
                 contextSize: context.transactionIds.length,
                 embeddingId: context.existingEmbeddingId
@@ -72,8 +72,10 @@ export abstract class BaseEmbeddingSubDrainerService<
 
         void embeddingProgressStore.refresh();
 
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         for (const persist of batch) {
-            logger.log(`${this.logDomain}:context:persisted`, {
+            logger.log('context:persisted', {
                 embeddingId: persist.embeddingId,
                 contextSize: persist.context.transactionIds.length,
                 clearedFlags: persist.context.transactionIds.length,

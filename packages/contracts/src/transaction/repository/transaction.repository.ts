@@ -3,10 +3,9 @@ import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from
 
 import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { LoggerNamespaceEnum } from '../../@generic/enum/logger-namespace.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { Log } from '../../@generic/util/logger/console-transport.util';
 import { getLogger } from '../../@generic/util/logger/get-logger.util';
-import { Log } from '../../@generic/util/logger/log-decorator.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -24,12 +23,12 @@ import type { TransactionCreateEntityInterface } from '../entity/transaction-cre
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
-const logger = getLogger(LoggerNamespaceEnum.REPO);
+const logger = getLogger('TransactionRepository');
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
 
-    @Log(LoggerNamespaceEnum.REPO, 'repo:transaction:bulkCreate')
+    @Log('repo:transaction:bulkCreate')
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             logger.log('repo:transaction:bulkCreate', {

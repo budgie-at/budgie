@@ -1,10 +1,10 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('translationProgressStore');
 
 interface TranslationProgressSnapshotInterface {
     readonly percent: number;

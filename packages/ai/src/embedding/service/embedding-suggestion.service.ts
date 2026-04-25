@@ -2,11 +2,9 @@ import {
     CategoryEntityInterface,
     CategoryScoreResultInterface,
     Log,
-    LoggerNamespaceEnum,
     SimilarTagsParamsInterface,
     TagEntityInterface,
-    TagScoreResultInterface,
-    getLogger
+    TagScoreResultInterface
 } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -22,14 +20,13 @@ import {
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
-import { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
-import { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
-import { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
 
-const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
+import type { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
+import type { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
+import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 
 export class EmbeddingSuggestionService {
     constructor(
@@ -42,7 +39,13 @@ export class EmbeddingSuggestionService {
     ) {}
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:category:start')
+    @Log(
+        (_categories: CategoryEntityInterface[], transactionTitle: string) => `suggestCategories:enter title=${transactionTitle}`,
+        (result, _categories: CategoryEntityInterface[], transactionTitle: string) =>
+            `suggestCategories:done title=${transactionTitle} resolvedCount=${result.length}`,
+        (error, _categories: CategoryEntityInterface[], transactionTitle: string) =>
+            `suggestCategories:throw title=${transactionTitle} error=${String(error)}`
+    )
     async suggestCategories(
         categories: CategoryEntityInterface[],
         transactionTitle: string,
@@ -55,7 +58,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const mccLookup = isDefined(mccCategoryId)
             ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
@@ -77,20 +80,18 @@ export class EmbeddingSuggestionService {
             mccLookup
         ]);
 
-        logger.log('suggest:category:mcc-signal', { mccCategoryId, resultCount: mccRows.length, results: mccRows });
-
-        const resolvedCategories = this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
-        logger.log('suggest:category:final', {
-            resolvedCount: resolvedCategories.length,
-            topCategoryIds: resolvedCategories.map(category => category.id),
-            totalDurationMs: Date.now() - methodStart
-        });
-
-        return resolvedCategories;
+        return this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:tag:start')
+    @Log(
+        (_allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
+            `suggestTags:enter title=${transactionTitle} categoryId=${categoryId}`,
+        (result, _allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
+            `suggestTags:done title=${transactionTitle} categoryId=${categoryId} resolvedCount=${result.length}`,
+        (error, _allTags: TagEntityInterface[], categoryId: number, transactionTitle: string) =>
+            `suggestTags:throw title=${transactionTitle} categoryId=${categoryId} error=${String(error)}`
+    )
     async suggestTags(
         allTags: TagEntityInterface[],
         categoryId: number,
@@ -103,7 +104,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -119,20 +120,18 @@ export class EmbeddingSuggestionService {
 
         const merged = this.mergeTagScores(merchantResults, commentResults);
         const topTags = merged.slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
-        const resolvedTags = topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
 
-        logger.log('suggest:tag:final', {
-            topCount: topTags.length,
-            resolvedCount: resolvedTags.length,
-            topTagIds: resolvedTags.map(tag => tag.id),
-            totalDurationMs: Date.now() - methodStart
-        });
-
-        return resolvedTags;
+        return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Keep full context fields explicit
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'suggest:comment:start')
+    @Log(
+        (categoryId: number, transactionTitle: string) => `suggestComments:enter title=${transactionTitle} categoryId=${categoryId}`,
+        (result, categoryId: number, transactionTitle: string) =>
+            `suggestComments:done title=${transactionTitle} categoryId=${categoryId} count=${result.length}`,
+        (error, categoryId: number, transactionTitle: string) =>
+            `suggestComments:throw title=${transactionTitle} categoryId=${categoryId} error=${String(error)}`
+    )
     async suggestComments(
         categoryId: number,
         transactionTitle: string,
@@ -144,7 +143,7 @@ export class EmbeddingSuggestionService {
         if (!isDefined(preparation)) {
             return [];
         }
-        const { resolved, methodStart } = preparation;
+        const { resolved } = preparation;
 
         const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -153,10 +152,24 @@ export class EmbeddingSuggestionService {
             commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
         });
 
-        const finalComments = commentResults.map(row => row.comment).filter(isNotEmptyString);
-        logger.log('suggest:comment:final', { count: finalComments.length, totalDurationMs: Date.now() - methodStart });
+        return commentResults.map(row => row.comment).filter(isNotEmptyString);
+    }
 
-        return finalComments;
+    @Log(
+        (ctx: string) => `generateSerializedEmbedding:enter contextLen=${ctx.length}`,
+        (result, ctx: string) => `generateSerializedEmbedding:done contextLen=${ctx.length} resolved=${String(isDefined(result))}`,
+        (error, ctx: string) => `generateSerializedEmbedding:throw contextLen=${ctx.length} error=${String(error)}`
+    )
+    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
+        const service = new EmbeddingService(this.embedding);
+        const queryEmbedding = await service.generateEmbedding(context);
+
+        // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
+        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
+            return null;
+        }
+
+        return serializeEmbedding(queryEmbedding);
     }
 
     private async prepareSuggestion(
@@ -263,19 +276,5 @@ export class EmbeddingSuggestionService {
         }
 
         return [...scoreMap.entries()].map(([tagId, score]) => ({ tagId, score })).sort((first, second) => second.score - first.score);
-    }
-
-    private async generateSerializedEmbedding(context: string): Promise<Uint8Array | null> {
-        const service = new EmbeddingService(this.embedding);
-        const queryEmbedding = await service.generateEmbedding(context);
-
-        // eslint-disable-next-line no-restricted-syntax -- Float32Array; isEmptyArray uses Array.isArray which is false for typed arrays
-        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
-            logger.log('suggest:embed:empty', { context });
-
-            return null;
-        }
-
-        return serializeEmbedding(queryEmbedding);
     }
 }

@@ -1,6 +1,6 @@
-import { LoggerNamespaceEnum, TransactionCreateInputInterface, getLogger } from '@budgie/contracts';
+import { TransactionCreateInputInterface, getLogger } from '@budgie/contracts';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('stampForDeferredEmbedding');
 
 interface StampForDeferredEmbeddingResultInterface {
     readonly stampedInputs: TransactionCreateInputInterface[];

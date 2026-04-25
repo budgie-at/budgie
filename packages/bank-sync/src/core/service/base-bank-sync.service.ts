@@ -6,7 +6,7 @@ import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 import { BankTransactionInterface } from '../interface/bank-transaction.interface';
-import { SyncLog, syncLogger } from '../util/sync-logger.util';
+import { Log } from '../util/sync-logger.util';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
@@ -19,28 +19,24 @@ export class BaseBankSyncService {
         protected readonly options: BankSyncOptionsInterface
     ) {}
 
-    @SyncLog('syncAccounts:start', 'syncAccounts:done')
+    @Log(
+        () => 'syncAccounts:start',
+        accounts => `syncAccounts:done count=${accounts.length}`,
+        error => `syncAccounts:throw error=${String(error)}`
+    )
     async syncAccounts(): Promise<BankAccountInterface[]> {
-        const result = await this.client.getAccounts();
-
-        if (result.success) {
-            syncLogger.log('syncAccounts:ok', { count: result.data.length });
-
-            return result.data;
-        }
-
-        syncLogger.error('syncAccounts:error', { code: result.error.code, message: result.error.message });
-
-        return [];
+        return this.fetchAccounts();
     }
 
-    @SyncLog('syncTransactionsForward:start', 'syncTransactionsForward:done')
+    @Log(
+        (_accountId, from) => `syncTransactionsForward:start from=${from.toISOString()}`,
+        (result, accountId) =>
+            `syncTransactionsForward:done accountId=${accountId} count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId) => `syncTransactionsForward:throw accountId=${accountId} error=${String(error)}`
+    )
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
         const to = new Date();
-
-        syncLogger.log('syncForward:start', { accountId, from: from.toISOString(), to: to.toISOString() });
         const transactions = await this.fetchTransactions(accountId, from, to);
-        syncLogger.log('syncForward:fetched', { accountId, count: transactions.length });
 
         const oldestTransaction = transactions.at(-1);
 
@@ -56,13 +52,15 @@ export class BaseBankSyncService {
         return { nextFrom: to, nextTo: to, transactions, completed: true };
     }
 
-    @SyncLog('syncTransactionsBackward:start', 'syncTransactionsBackward:done')
+    @Log(
+        (_accountId, to) => `syncTransactionsBackward:start to=${to.toISOString()}`,
+        (result, accountId) =>
+            `syncTransactionsBackward:done accountId=${accountId} count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId) => `syncTransactionsBackward:throw accountId=${accountId} error=${String(error)}`
+    )
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
-
-        syncLogger.log('syncBackward:start', { accountId, from: from.toISOString(), to: to.toISOString() });
         const transactions = await this.fetchTransactions(accountId, from, to);
-        syncLogger.log('syncBackward:fetched', { accountId, count: transactions.length });
         const oldestTransaction = transactions.at(-1);
 
         if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
@@ -92,25 +90,38 @@ export class BaseBankSyncService {
         });
     }
 
+    @Log(
+        () => 'fetchAccounts:enter',
+        accounts => `fetchAccounts:done count=${accounts.length}`,
+        error => `fetchAccounts:throw error=${String(error)}`
+    )
+    private async fetchAccounts(): Promise<BankAccountInterface[]> {
+        const result = await this.client.getAccounts();
+
+        if (result.success) {
+            return result.data;
+        }
+
+        throw new Error(`Failed to fetch accounts: ${result.error.code} ${result.error.message}`);
+    }
+
+    @Log(
+        (accountId, from, to) => `fetchTransactions:enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
+        (transactions, accountId) => `fetchTransactions:done accountId=${accountId} count=${transactions.length}`,
+        (error, accountId) => `fetchTransactions:throw accountId=${accountId} error=${String(error)}`
+    )
     private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
         const fromTs = this.toSeconds(from);
         const toTs = this.toSeconds(to);
-        syncLogger.log('fetchTransactions:request', { accountId, fromTs, toTs });
         const result = await this.client.getTransactions(accountId, fromTs, toTs);
 
         if (result.success) {
-            syncLogger.log('fetchTransactions:ok', { accountId, count: result.data.length });
-
             return result.data;
         }
 
         if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
-            syncLogger.error('fetchTransactions:invalidResponse:swallow', { accountId, message: result.error.message });
-
             return [];
         }
-
-        syncLogger.error('fetchTransactions:throw', { accountId, code: result.error.code, message: result.error.message });
 
         throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
     }

@@ -4,12 +4,11 @@ import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
-import { LoggerNamespaceEnum } from '../enum/logger-namespace.enum';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
+import { Log } from '../util/logger/console-transport.util';
 import { getLogger } from '../util/logger/get-logger.util';
-import { Log } from '../util/logger/log-decorator.util';
 import { transactionAsync } from '../util/transaction-async.util';
 
 import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
@@ -17,7 +16,7 @@ import type { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-e
 import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 
-const logger = getLogger(LoggerNamespaceEnum.REPO);
+const logger = getLogger('BaseEmbeddingRepository');
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -25,7 +24,7 @@ export abstract class BaseEmbeddingRepository {
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
-    @Log(LoggerNamespaceEnum.REPO, 'repo:embedding:findSimilarCategories')
+    @Log('repo:embedding:findSimilarCategories')
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
         vecLimit: number,
@@ -48,7 +47,7 @@ export abstract class BaseEmbeddingRepository {
         return result;
     }
 
-    @Log(LoggerNamespaceEnum.REPO, 'repo:embedding:findSimilarTags')
+    @Log('repo:embedding:findSimilarTags')
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
         const start = Date.now();

@@ -1,11 +1,9 @@
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
-
-const logger = getLogger(LoggerNamespaceEnum.EMBEDDING);
 
 export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
@@ -14,44 +12,60 @@ export class EmbeddingService {
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:generateEmbedding:enqueue')
+    @Log(
+        (text: string) => `generateEmbedding:enter textLen=${text.length}`,
+        (result, text: string) => `generateEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text: string) => `generateEmbedding:throw textLen=${text.length} error=${String(error)}`
+    )
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
-            logger.log('embedding:generateEmbedding:cache-hit', { textLen: text.length });
-
-            return cached;
+            return this.returnCachedEmbedding(text, cached);
         }
 
-        const enqueueStart = Date.now();
-        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
-        EmbeddingService.embeddingCache.set(text, promise);
-        EmbeddingService.evictOldestCacheEntry();
-
-        void promise.then(
-            result => {
-                logger.log('embedding:generateEmbedding:done', {
-                    textLen: text.length,
-                    dimensions: isDefined(result) ? result.length : 0,
-                    durationMs: Date.now() - enqueueStart
-                });
-
-                return result;
-            },
-            () => EmbeddingService.embeddingCache.delete(text)
-        );
-
-        return promise;
+        return this.enqueueEmbedding(text);
     }
 
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:generateEmbeddings:start')
+    @Log(
+        (texts: string[]) => `generateEmbeddings:enter count=${texts.length}`,
+        (result, texts: string[]) => `generateEmbeddings:done requested=${texts.length} resolved=${result.size}`,
+        (error, texts: string[]) => `generateEmbeddings:throw count=${texts.length} error=${String(error)}`
+    )
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
-    @Log(LoggerNamespaceEnum.EMBEDDING, 'embedding:isAvailable')
+    @Log(
+        () => 'isAvailable:enter',
+        result => `isAvailable:done result=${String(result)}`,
+        error => `isAvailable:throw error=${String(error)}`
+    )
     isAvailable(): boolean {
         return this.embedding.isReady;
+    }
+
+    @Log(
+        (text: string) => `returnCachedEmbedding:enter textLen=${text.length}`,
+        (result, text: string) => `returnCachedEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text: string) => `returnCachedEmbedding:throw textLen=${text.length} error=${String(error)}`
+    )
+    private async returnCachedEmbedding(_text: string, cached: Promise<Float32Array | null>): Promise<Float32Array | null> {
+        return cached;
+    }
+
+    @Log(
+        (text: string) => `enqueueEmbedding:enter textLen=${text.length}`,
+        (result, text: string) => `enqueueEmbedding:done textLen=${text.length} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text: string) => `enqueueEmbedding:throw textLen=${text.length} error=${String(error)}`
+    )
+    private async enqueueEmbedding(text: string): Promise<Float32Array | null> {
+        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
+        EmbeddingService.embeddingCache.set(text, promise);
+        EmbeddingService.evictOldestCacheEntry();
+
+        void promise.catch(() => EmbeddingService.embeddingCache.delete(text));
+
+        return promise;
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {

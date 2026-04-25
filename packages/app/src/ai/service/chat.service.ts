@@ -1,7 +1,7 @@
 import { stripThinkingTags } from '@budgie/ai';
-import { Log, LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { Log } from '@budgie/contracts';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
@@ -13,8 +13,6 @@ import { BaseLlamaSubsystemService } from './base-subsystem.service';
 
 import type { ChatInvokerInterface, GenerateOptionsInterface } from '@budgie/ai';
 
-const logger = getLogger(LoggerNamespaceEnum.CHAT);
-
 class ChatService
     extends BaseLlamaSubsystemService
     implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, ChatInvokerInterface
@@ -24,13 +22,13 @@ class ChatService
     constructor() {
         super('chat');
     }
-
-    @Log(LoggerNamespaceEnum.CHAT, 'chat:generate:start')
-    // eslint-disable-next-line max-statements -- Mutex-chained generation with error/success logging
+    @Log(
+        (_systemPrompt: string, userMessage: string) => `generate:enter msgLen=${userMessage.length}`,
+        (result: string) => `generate:done resultLen=${result.length}`,
+        (error, _systemPrompt: string, userMessage: string) => `generate:throw msgLen=${userMessage.length} error=${String(error)}`
+    ) // eslint-disable-next-line max-statements -- Mutex-chained generation
     async generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {
         if (!this.isReady || !isDefined(this.context)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings -- Diagnostic tag payload, not user-facing
-            logger.log('chat:generate:throw', { errorName: 'AiNotReadyError' });
             throw new AiNotReadyError('chat');
         }
 
@@ -41,22 +39,13 @@ class ChatService
 
             return runCompletion(this.context, systemPrompt, userMessage, options);
         };
-        const started = Date.now();
         const current = this.mutexChain.then(runFn, runFn);
         this.mutexChain = current.catch(emptyFn);
-        try {
-            const stripped = stripThinkingTags(await current);
-            logger.log('chat:generate:complete', { durationMs: Date.now() - started, resultLen: stripped.length });
+        const result = await current;
 
-            return stripped;
-        } catch (error: unknown) {
-            logger.log('chat:generate:throw', { errorName: 'runtime', errorMessage: getErrorMessage(error) });
-            throw error;
-        }
+        return stripThinkingTags(result);
     }
-
-    @Log(LoggerNamespaceEnum.CHAT, 'chat:interrupt')
-    interrupt(): void {
+    @Log(() => 'interrupt:enter', () => 'interrupt:done', error => `interrupt:throw error=${String(error)}`) interrupt(): void {
         void this.context?.stopCompletion();
     }
 

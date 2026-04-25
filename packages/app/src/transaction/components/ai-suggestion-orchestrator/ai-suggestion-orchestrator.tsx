@@ -1,8 +1,8 @@
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-const logger = getLogger(LoggerNamespaceEnum.AI);
+const logger = getLogger('AiSuggestionOrchestrator');
 import { useAiSuggestionOrchestrator } from '../../hook/use-ai-suggestion-orchestrator.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';

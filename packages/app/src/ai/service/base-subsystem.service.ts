@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file -- Four tiers of base service class co-located here; separating into four files would hide the inheritance chain */
-import { LoggerNamespaceEnum, getLogger } from '@budgie/contracts';
+import { getLogger } from '@budgie/contracts';
 import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -7,8 +7,6 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
-
-const logger = getLogger(LoggerNamespaceEnum.AI);
 
 export abstract class SnapshotStore<TSnapshot> {
     protected snapshot: TSnapshot;
@@ -94,14 +92,16 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
     }
 
     async start(): Promise<void> {
-        logger.log(`${this.logDomain}:start:enter`, { priorStatus: this.snapshot.status });
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('start:enter', { priorStatus: this.snapshot.status });
         if (this.snapshot.status === AiSubsystemStatusEnum.READY) {
-            logger.log(`${this.logDomain}:start:skip:ready`);
+            logger.log('start:skip:ready');
 
             return;
         }
         if (this.snapshot.status === AiSubsystemStatusEnum.DOWNLOADING || this.snapshot.status === AiSubsystemStatusEnum.INITIALIZING) {
-            logger.log(`${this.logDomain}:start:skip:in-flight`);
+            logger.log('start:skip:in-flight');
             await this.pendingOperation;
 
             return;
@@ -112,7 +112,9 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
     }
 
     async stop(): Promise<void> {
-        logger.log(`${this.logDomain}:stop:enter`, { priorStatus: this.snapshot.status });
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('stop:enter', { priorStatus: this.snapshot.status });
         await this.pendingOperation;
         if (this.snapshot.status === AiSubsystemStatusEnum.SUSPENDED || this.snapshot.status === AiSubsystemStatusEnum.DISABLED) {
             return;
@@ -143,7 +145,9 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
     }
 
     async retry(): Promise<void> {
-        logger.log(`${this.logDomain}:retry`, { fromStatus: this.snapshot.status });
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
+        logger.log('retry', { fromStatus: this.snapshot.status });
         this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
         await this.start();
     }
@@ -159,6 +163,8 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
             this.context = null;
         }
         const started = Date.now();
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         try {
             this.context = await loadLlamaContext({
                 domain: this.logDomain,
@@ -168,25 +174,27 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
                 onInitBegin: () => void this.setSnapshot({ status: AiSubsystemStatusEnum.INITIALIZING })
             });
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
-            logger.log(`${this.logDomain}:ready`, { totalBootMs: Date.now() - started });
+            logger.log('ready', { totalBootMs: Date.now() - started });
         } catch (error: unknown) {
             const message = getErrorMessage(error);
-            logger.log(`${this.logDomain}:init:throw`, { errorMessage: message });
+            logger.log('init:throw', { errorMessage: message });
             this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: message });
         }
     }
 
     protected async runStop(): Promise<void> {
+        // Rule 32 exception: dynamic logDomain tag, see log-decorator-v2-design.md
+        const logger = getLogger(this.logDomain);
         try {
-            logger.log(`${this.logDomain}:stop:release`);
+            logger.log('stop:release');
             if (isDefined(this.context)) {
                 await this.context.release();
             }
             this.context = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED, downloadProgress: 0 });
-            logger.log(`${this.logDomain}:stop:complete`);
+            logger.log('stop:complete');
         } catch (error: unknown) {
-            logger.log(`${this.logDomain}:stop:error`, { errorMessage: getErrorMessage(error) });
+            logger.log('stop:error', { errorMessage: getErrorMessage(error) });
             this.context = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
         }
