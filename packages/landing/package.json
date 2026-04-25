@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "5.1.1",
+    "version": "5.4.0",
     "private": true,
     "scripts": {
         "build": "next build",
@@ -23,7 +23,7 @@
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-dropdown-menu": "^2.1.16",
         "@radix-ui/react-slot": "^1.2.3",
-        "@rnw-community/shared": "^1.8.2",
+        "@rnw-community/shared": "^2.0.0",
         "@vercel/kv": "^3.0.0",
         "autoprefixer": "^10.4.21",
         "class-variance-authority": "^0.7.1",

@@ -1,8 +1,8 @@
 {
-    "name": "@budgie/contracts",
+    "name": "@budgie/logger",
     "version": "5.4.0",
     "private": true,
-    "description": "Contracts",
+    "description": "Shared logging primitives: console transport, build-time disable gate, @Log decorator, getLogger",
     "sideEffects": false,
     "exports": {
         ".": {
@@ -23,17 +23,10 @@
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
         "ts": "run -T tsc -p .",
-        "test": "run -T jest --passWithNoTests",
-        "test:watch": "run -T jest --watch",
-        "test:cov": "run -T jest --coverage"
+        "test": "run -T jest --passWithNoTests"
     },
     "dependencies": {
-        "@budgie/logger": "workspace:*",
-        "@rnw-community/shared": "^2.0.0",
-        "date-fns": "^4.1.0",
-        "drizzle-orm": "^0.45.2",
-        "drizzle-zod": "^0.8.3",
-        "expo-sqlite": "~55.0.15",
-        "zod": "^4.1.12"
+        "@rnw-community/log-decorator": "^2.0.3",
+        "@rnw-community/shared": "^2.0.0"
     }
 }

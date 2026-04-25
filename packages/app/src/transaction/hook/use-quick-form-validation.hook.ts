@@ -1,5 +1,7 @@
 import { NotificationFeedbackType } from 'expo-haptics';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 
 interface ValidationCheck {
@@ -17,7 +19,7 @@ export const useQuickFormValidation = (): UseQuickFormValidationResult => {
     const validateAndShake = (checks: ValidationCheck[]): boolean => {
         const failedChecks = checks.filter(check => !check.isValid);
 
-        if (failedChecks.length > 0) {
+        if (isNotEmptyArray(failedChecks)) {
             hapticNotification(NotificationFeedbackType.Error);
             failedChecks.forEach(check => check.shake?.());
 

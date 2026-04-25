@@ -1,9 +1,11 @@
+import { isEmptyArray } from '@rnw-community/shared';
+
 interface WithId {
     readonly id: number;
 }
 
 export const sortSelectedFirst = <T extends WithId>(items: T[], selectedIds: number[]): T[] => {
-    if (selectedIds.length === 0) {
+    if (isEmptyArray(selectedIds)) {
         return items;
     }
 

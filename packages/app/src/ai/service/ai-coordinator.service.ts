@@ -1,13 +1,13 @@
+import { Log, getLogger } from '@budgie/logger';
 import { AppState, AppStateStatus } from 'react-native';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
-import { aiLog } from '../utils/ai-log.util';
 
 import { aiEmbeddingStatusService } from './ai-embedding-status.service';
 import { aiTranslationStatusService } from './ai-translation-status.service';
@@ -18,6 +18,7 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
+const logger = getLogger('AiCoordinatorService');
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
     private started = false;
@@ -28,17 +29,13 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         super({ isAvailable: isAiEnabled(), isSuspended: false });
     }
 
-    // eslint-disable-next-line max-statements -- Multi-branch lifecycle gate: disabled check, subscribe, state probe
-    start(): void {
-        aiLog('coordinator:start:enter', { isAvailable: this.snapshot.isAvailable, appState: AppState.currentState });
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) start(): void {
         if (this.started) {
             return;
         }
         this.started = true;
 
         if (!this.snapshot.isAvailable) {
-            aiLog('coordinator:start:skip:disabled');
-
             return;
         }
 
@@ -47,14 +44,13 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         const { currentState } = AppState;
         if (currentState === 'active' || currentState === 'unknown') {
             this.setSnapshot({ isSuspended: false });
-            void this.startSubsystems();
+            void this.startSubsystems().catch(emptyFn);
         } else {
             this.setSnapshot({ isSuspended: true });
         }
     }
 
-    stop(): void {
-        aiLog('coordinator:stop:enter', { priorAvailable: this.snapshot.isAvailable, priorSuspended: this.snapshot.isSuspended });
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`) stop(): void {
         if (!this.started) {
             return;
         }
@@ -62,20 +58,30 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         this.clearReleaseTimer();
         this.appStateSubscription?.remove();
         this.appStateSubscription = null;
-        void this.stopSubsystems();
+        void this.stopSubsystems().catch(emptyFn);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async bootModels(): Promise<void> {
+        await Promise.all([chatService.start(), embeddingService.start()]);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async releaseModels(): Promise<void> {
+        await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
     }
 
     // eslint-disable-next-line max-statements -- AppState handler: foreground/background branches with timer control
     private readonly handleAppStateChange = (state: AppStateStatus): void => {
-        aiLog('coordinator:appstate:change', { to: state });
+        logger.log('appstate:change', { to: state });
         if (state === 'active') {
             if (isDefined(this.releaseTimer)) {
-                aiLog('coordinator:release:cancel');
+                logger.log('release:cancel');
                 this.clearReleaseTimer();
             }
             if (this.snapshot.isSuspended) {
                 this.setSnapshot({ isSuspended: false });
-                void this.startSubsystems();
+                void this.startSubsystems().catch(emptyFn);
             }
 
             return;
@@ -84,24 +90,17 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         if (isDefined(this.releaseTimer)) {
             return;
         }
-        aiLog('coordinator:release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
+        logger.log('release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
         this.releaseTimer = setTimeout(() => {
             this.releaseTimer = null;
-            aiLog('coordinator:release:fire');
+            logger.log('release:fire');
             this.setSnapshot({ isSuspended: true });
-            void this.stopSubsystems();
+            void this.stopSubsystems().catch(emptyFn);
         }, BACKGROUND_RELEASE_DELAY_MS);
     };
 
-    // eslint-disable-next-line max-statements -- Start sequence: model boots, drainer starts, status services start, progress refresh
     private async startSubsystems(): Promise<void> {
-        const started = Date.now();
-        aiLog('coordinator:subsystems:start:begin');
-        try {
-            await Promise.all([chatService.start(), embeddingService.start()]);
-        } catch (error: unknown) {
-            aiLog('coordinator:subsystems:start:error', { errorMessage: getErrorMessage(error) });
-        }
+        await this.bootModels();
         translationDrainerService.start();
         embeddingDrainerService.start();
         aiUmbrellaStatusService.start();
@@ -109,27 +108,15 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         aiEmbeddingStatusService.start();
         void translationProgressStore.refresh();
         void embeddingProgressStore.refresh(true);
-        aiLog('coordinator:subsystems:start:complete', {
-            durationMs: Date.now() - started,
-            chatStatus: chatService.getSnapshot().status,
-            embeddingStatus: embeddingService.getSnapshot().status
-        });
     }
 
     private async stopSubsystems(): Promise<void> {
-        const started = Date.now();
-        aiLog('coordinator:subsystems:stop:begin');
         aiEmbeddingStatusService.stop();
         aiTranslationStatusService.stop();
         aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
-        try {
-            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
-        } catch (error: unknown) {
-            aiLog('coordinator:subsystems:stop:error', { errorMessage: getErrorMessage(error) });
-        }
-        aiLog('coordinator:subsystems:stop:complete', { durationMs: Date.now() - started });
+        await this.releaseModels();
     }
 
     private clearReleaseTimer(): void {

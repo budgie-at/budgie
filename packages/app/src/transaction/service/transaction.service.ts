@@ -1,14 +1,5 @@
-import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
-} from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -17,9 +8,7 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
-import { aiLog } from '../../ai/utils/ai-log.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { bankSyncLog } from '../../sync/util/bank-sync-log.util';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
@@ -27,9 +16,48 @@ import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-t
 
 import { transactionBatchCreateService } from './transaction-batch-create.service';
 
-import type { DB } from '@budgie/contracts';
+import type {
+    DB,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryCreateInputInterface
+} from '@budgie/contracts';
 
 class TransactionService {
+    @Log(
+        (inputs, tx, batchSize) =>
+            `enter externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
+        (result, inputs, tx, batchSize) =>
+            `done externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs, tx, batchSize) =>
+            `throw externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(
+        inputs: TransactionCreateInputInterface[],
+        tx?: DB,
+        batchSize = TRANSACTION_BATCH_SIZE
+    ): Promise<TransactionEntityInterface[]> {
+        if (!isNotEmptyArray(inputs)) {
+            return [];
+        }
+
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+        }
+
+        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+            transactionBatchCreateService.create(batch, tx)
+        );
+
+        if (isNotEmptyArray(transactions)) {
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        }
+
+        return transactions;
+    }
+
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
         return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
@@ -61,51 +89,6 @@ class TransactionService {
 
             return transaction;
         });
-    }
-
-    // eslint-disable-next-line max-statements -- Orchestrates batched creation, deferred embedding, balance updates, and error logging
-    async bulkCreate(
-        inputs: TransactionCreateInputInterface[],
-        tx?: DB,
-        batchSize = TRANSACTION_BATCH_SIZE
-    ): Promise<TransactionEntityInterface[]> {
-        bankSyncLog('service:transaction:bulkCreate:enter', {
-            count: inputs.length,
-            hasTx: isDefined(tx),
-            batchSize,
-            externalSources: inputs.map(input => input.externalSource)
-        });
-
-        if (!isNotEmptyArray(inputs)) {
-            bankSyncLog('service:transaction:bulkCreate:empty');
-
-            return [];
-        }
-
-        if (!isDefined(tx)) {
-            bankSyncLog('service:transaction:bulkCreate:wrapTx');
-
-            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
-        }
-
-        const { stampedInputs, externalSources } = stampForDeferredEmbedding(inputs, 'bulkCreate');
-        try {
-            const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-                transactionBatchCreateService.create(batch, tx)
-            );
-            bankSyncLog('service:transaction:bulkCreate:done', { requested: inputs.length, created: transactions.length });
-            aiLog('embed:defer:queued', { count: transactions.length, externalSources });
-
-            if (isNotEmptyArray(transactions)) {
-                await accountBalanceIncrementalService.updateAllBalances(true, tx);
-            }
-
-            return transactions;
-        } catch (error: unknown) {
-            bankSyncLog('service:transaction:bulkCreate:throw', { message: getErrorMessage(error) });
-            aiLog('embed:defer:throw', { errorMessage: getErrorMessage(error) });
-            throw error;
-        }
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
@@ -216,6 +199,7 @@ class TransactionService {
 
         return { fromEntry, toEntry };
     }
+
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
         await transactionEntryRepository.bulkCreate(
