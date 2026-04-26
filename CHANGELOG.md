@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.6.1](https://github.com/budgie-at/budgie/compare/v5.6.0...v5.6.1) (2026-04-26)
+
+### Bug Fixes
+
+- **app:** prevent tag cards collapse on sheet resize ([b191c51](https://github.com/budgie-at/budgie/commit/b191c51849e18dfe65d45b9a3329f986407f6309))
+
 # [5.6.0](https://github.com/budgie-at/budgie/compare/v5.5.1...v5.6.0) (2026-04-25)
 
 ### Bug Fixes
