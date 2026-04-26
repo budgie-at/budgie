@@ -22,6 +22,7 @@ interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
 }
 
 const STAR_SIZE = 13;
+const TAG_CARD_HEIGHT = 56;
 const PRIMARY_SCALE = 1.04;
 const NORMAL_SCALE = 1;
 const SCALE_SPRING = { damping: 14, stiffness: 220 };
@@ -33,7 +34,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justi
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
         variant: {
-            static: 'flex-1 h-[56px]',
+            static: 'flex-1',
             removable: 'flex-none flex-row bg-primary border-primary py-md px-2xl'
         }
     },
@@ -112,28 +113,28 @@ export const TagsSelectorCard = ({
         transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
     }));
 
+    const wrapperStyle = variant === 'static' ? [{ height: TAG_CARD_HEIGHT }, scaleStyle] : scaleStyle;
+
     return (
-        <Animated.View className="flex-1" layout={LinearTransition.springify()}>
-            <Animated.View className="flex-1" style={scaleStyle}>
-                <HapticPressable
-                    testID={testID}
-                    className={cn(cardVariants({ isSelected, isPrimary, variant }), className)}
-                    onPress={handleSelect}
-                    onLongPress={longPressHandler}
-                >
-                    <Text className={cn(textVariants({ isSelected, isPrimary, variant }), 'text-center')} numberOfLines={numberOfLines}>
-                        {title}
-                    </Text>
+        <Animated.View className="flex-1" style={wrapperStyle} layout={LinearTransition.springify()}>
+            <HapticPressable
+                testID={testID}
+                className={cn(cardVariants({ isSelected, isPrimary, variant }), className)}
+                onPress={handleSelect}
+                onLongPress={longPressHandler}
+            >
+                <Text className={cn(textVariants({ isSelected, isPrimary, variant }), 'text-center')} numberOfLines={numberOfLines}>
+                    {title}
+                </Text>
 
-                    {showStarBadge ? (
-                        <View className="absolute top-1.5 right-1.5">
-                            <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} fill={starFill} className={starVariants({ isPrimary })} />
-                        </View>
-                    ) : null}
+                {showStarBadge ? (
+                    <View className="absolute top-1.5 right-1.5">
+                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} fill={starFill} className={starVariants({ isPrimary })} />
+                    </View>
+                ) : null}
 
-                    {variant === 'removable' ? <Icon icon={UserIconNameEnum.X} className="text-primary-reverse" size={14} /> : null}
-                </HapticPressable>
-            </Animated.View>
+                {variant === 'removable' ? <Icon icon={UserIconNameEnum.X} className="text-primary-reverse" size={14} /> : null}
+            </HapticPressable>
         </Animated.View>
     );
 };
