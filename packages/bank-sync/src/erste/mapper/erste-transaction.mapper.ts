@@ -1,3 +1,5 @@
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
 import { ERSTE_CURRENCY_CODE_EUR } from '../constant/erste.constant';
@@ -11,6 +13,18 @@ const MILLISECONDS_TO_SECONDS_DIVISOR = 1000;
 const getTransactionType = (isCredit: boolean): BankTransactionTypeEnum =>
     isCredit ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
+const buildComment = (row: ErsteRowInterface): string => {
+    if (!isNotEmptyString(row.city)) {
+        return '';
+    }
+
+    if (isNotEmptyString(row.countryAlpha2)) {
+        return `${row.city}, ${row.countryAlpha2}`;
+    }
+
+    return row.city;
+};
+
 export const ersteTransactionMapper = (row: ErsteRowInterface, iban: string): BankTransactionInterface => ({
     id: generateErsteExternalId(row, iban),
     provider: BankProviderEnum.ERSTE,
@@ -18,6 +32,7 @@ export const ersteTransactionMapper = (row: ErsteRowInterface, iban: string): Ba
     type: getTransactionType(row.isCredit),
     time: Math.floor(row.date.getTime() / MILLISECONDS_TO_SECONDS_DIVISOR),
     description: row.description,
+    comment: buildComment(row),
     mcc: 0,
     originalMcc: 0,
     amount: Math.abs(row.amount),

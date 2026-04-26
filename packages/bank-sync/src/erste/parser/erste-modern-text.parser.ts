@@ -10,9 +10,11 @@ import {
     ERSTE_MODERN_FULL_DATE_REGEX,
     ERSTE_MODERN_INLINE_TRANSACTION_TAIL_REGEX,
     ERSTE_MODERN_NOTE_HEADER_MARKERS,
+    ERSTE_MODERN_PAGE_NOISE_PATTERNS,
     ERSTE_MODERN_TRANSACTION_DATE_REGEX
 } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
+import { parseErsteCardMerchant } from '../util/parse-erste-card-merchant.util';
 import { parseErsteModernDateAmount } from '../util/parse-erste-modern-date-amount.util';
 
 import { ErsteBaseTextParser } from './erste-base-text.parser';
@@ -99,7 +101,7 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
                 isInSection = true;
             } else if (isInSection && trimmed.includes(ERSTE_MODERN_END_MARKER)) {
                 isInSection = false;
-            } else if (isInSection && isNotEmptyString(trimmed)) {
+            } else if (isInSection && isNotEmptyString(trimmed) && !this.isPageNoiseLine(trimmed)) {
                 sectionLines.push(trimmed);
             }
         }
@@ -382,32 +384,37 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
     private createTransaction(
         state: ErsteModernInlineTransactionStateInterface | ErsteModernStandardTransactionStateInterface
     ): ErsteRowInterface {
-        if (state.kind === 'standard') {
-            const reference = isNotEmptyArray(state.leadingLines) ? state.leadingLines[state.leadingLines.length - 1] : '';
-            const description = isNotEmptyArray(state.trailingLines) ? state.trailingLines[0] : reference;
-            const details = state.trailingLines.slice(1).join(' ').trim();
-
-            return {
-                date: state.date,
-                reference,
-                description,
-                details,
-                amount: state.amount,
-                isCredit: state.isCredit
-            };
-        }
-
-        const description = isNotEmptyArray(state.continuationLines) ? state.continuationLines[0] : state.reference;
-        const details = state.continuationLines.slice(1).join(' ').trim();
+        const { reference, rawDescription, details } = this.resolveTransactionParts(state);
+        const merchantInfo = parseErsteCardMerchant(rawDescription);
 
         return {
             date: state.date,
-            reference: state.reference,
-            description,
+            reference,
+            description: merchantInfo?.merchant ?? rawDescription,
             details,
             amount: state.amount,
-            isCredit: state.isCredit
+            isCredit: state.isCredit,
+            ...(isDefined(merchantInfo) && { city: merchantInfo.city, countryAlpha2: merchantInfo.countryAlpha2 })
         };
+    }
+
+    private resolveTransactionParts(state: ErsteModernInlineTransactionStateInterface | ErsteModernStandardTransactionStateInterface): {
+        reference: string;
+        rawDescription: string;
+        details: string;
+    } {
+        if (state.kind === 'standard') {
+            const reference = isNotEmptyArray(state.leadingLines) ? state.leadingLines[state.leadingLines.length - 1] : '';
+            const rawDescription = isNotEmptyArray(state.trailingLines) ? state.trailingLines[0] : reference;
+            const details = state.trailingLines.slice(1).join(' ').trim();
+
+            return { reference, rawDescription, details };
+        }
+
+        const rawDescription = isNotEmptyArray(state.continuationLines) ? state.continuationLines[0] : state.reference;
+        const details = state.continuationLines.slice(1).join(' ').trim();
+
+        return { reference: state.reference, rawDescription, details };
     }
 
     private validateTransactions(transactions: ErsteRowInterface[]): void {
@@ -424,6 +431,10 @@ export class ErsteModernTextParser extends ErsteBaseTextParser {
 
     private isNoteHeaderLine(line: string): boolean {
         return ERSTE_MODERN_NOTE_HEADER_MARKERS.some(marker => line.includes(marker));
+    }
+
+    private isPageNoiseLine(line: string): boolean {
+        return ERSTE_MODERN_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(line));
     }
 
     private isStandaloneDateLine(line: string): boolean {
