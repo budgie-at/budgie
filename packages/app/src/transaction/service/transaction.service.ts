@@ -167,7 +167,19 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.updateById(id, input, tx);
+            const transaction = await transactionRepository.updateById(
+                id,
+                {
+                    title: input.title,
+                    comment: input.comment,
+                    type: input.type,
+                    operatedAt: input.operatedAt,
+                    fromAccountId: input.fromAccountId,
+                    toAccountId: input.toAccountId,
+                    exchangeRate: input.exchangeRate
+                },
+                tx
+            );
 
             await this.upsertEntriesAndTags(id, input, tx);
 

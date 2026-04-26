@@ -12,3 +12,9 @@ export const ERSTE_MODERN_END_MARKER = 'Neuer Kontostand/New Balance';
 export const ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT = 3;
 export const ERSTE_MODERN_BALANCE_AMOUNT_REGEX = /^\d[\d.,]*$/u;
 export const ERSTE_MODERN_NOTE_HEADER_MARKERS = ['Abschlussbuchung', 'Reklamationen bitte binnen'] as const;
+
+export const ERSTE_MODERN_PAGE_NOISE_PATTERNS: readonly RegExp[] = [
+    /^AT\d{18,20}\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}\b/u,
+    /^IBAN\s+Datum\/Date\s+Uhrzeit\/Time/u,
+    /Auszug\/Statement\s+Seite\/Page/u
+];
