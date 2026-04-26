@@ -189,6 +189,8 @@ export { TransactionCreateInputSchema } from './transaction/schema/transaction-c
 
 export type { TransactionCreateInputInterface } from './transaction/input/transaction-create-input.interface';
 
+export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
+
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
 export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';

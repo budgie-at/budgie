@@ -21,6 +21,7 @@ import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
+import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
@@ -153,7 +154,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DB): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionUpdateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
