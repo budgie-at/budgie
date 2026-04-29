@@ -1,5 +1,9 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { extractText } from 'expo-pdf-text-extract';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage } from '@rnw-community/shared';
+
+import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
 
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 
@@ -10,18 +14,27 @@ class ErsteSyncService extends BaseFileBankSyncService {
         super(ExternalSourceEnum.ERSTE);
     }
 
+    @Log(
+        uri => `enter uri=${uri}`,
+        (result, uri) =>
+            `done uri=${uri} bankAccountIds=${result.bankAccounts.map(account => account.id).join(',')} bankAccountCount=${result.bankAccounts.length}`,
+        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
+    )
     protected async parseFile(uri: string): Promise<ParsedFileResultInterface> {
-        const text = await extractText(uri);
+        const items = await extractPdfTextItems(uri);
         const module = await import('@budgie/bank-sync');
         const ersteClient = new module.ErsteFileClient();
-        ersteClient.parse(text);
+        ersteClient.parse(items);
+
+        const accounts = ersteClient.getAccounts();
+        const transactions = ersteClient.getTransactions();
 
         const client = {
-            getAccounts: () => ersteClient.getAccounts(),
-            getTransactions: () => ersteClient.getTransactions()
+            getAccounts: () => accounts,
+            getTransactions: () => transactions
         };
 
-        return { client, bankAccounts: client.getAccounts() };
+        return { client, bankAccounts: accounts };
     }
 
     protected async resolveMccCategoryIdMap(): Promise<Map<string, number | null>> {

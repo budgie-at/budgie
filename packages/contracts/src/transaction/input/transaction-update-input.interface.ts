@@ -1,12 +1,8 @@
-import type { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 
-export interface TransactionUpdateInputInterface {
-    readonly title?: string;
-    readonly comment?: string;
-    readonly type?: TransactionTypeEnum;
-    readonly operatedAt?: Date;
-    readonly fromAccountId?: number | null;
-    readonly toAccountId?: number | null;
-    readonly exchangeRate?: number;
-    readonly needsEmbedding?: boolean;
-}
+export type TransactionUpdateInputInterface = Partial<
+    Pick<
+        TransactionEntityInterface,
+        'title' | 'comment' | 'type' | 'operatedAt' | 'fromAccountId' | 'toAccountId' | 'exchangeRate' | 'needsEmbedding'
+    >
+>;

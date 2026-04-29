@@ -22,6 +22,59 @@ export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
 
     @Log(
+        uri => `enter uri=${uri}`,
+        (result, uri) => `done uri=${uri} previewCount=${result.length}`,
+        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
+    )
+    async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
+        const { bankAccounts } = await this.parseFile(uri);
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return [];
+        }
+
+        return mapBankAccountsToPreview(bankAccounts, this.provider);
+    }
+
+    @Log(
+        (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (error, uri, selectedAccountIds) =>
+            `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
+
+        if (!isNotEmptyArray(selectedBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, selectedBankAccounts);
+    }
+
+    @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
+    async quickImport(uri: string): Promise<void> {
+        const { client, bankAccounts } = await this.parseFile(uri);
+
+        if (!isNotEmptyArray(bankAccounts)) {
+            return;
+        }
+
+        const enabledExternalIds = await this.getEnabledExternalIds();
+        if (enabledExternalIds.size === 0) {
+            return;
+        }
+
+        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
+        if (!isNotEmptyArray(enabledBankAccounts)) {
+            return;
+        }
+
+        await this.executeImport(client, enabledBankAccounts);
+    }
+
+    @Log(
         (client, bankAccount, context) =>
             `enter accountId=${bankAccount.id} accountIds=${client
                 .getAccounts()
@@ -60,45 +113,27 @@ export abstract class BaseFileBankSyncService {
         });
     }
 
-    async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
-        const { bankAccounts } = await this.parseFile(uri);
+    @Log(
+        (_client, bankAccounts) => `enter bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (_result, _client, bankAccounts) => `done bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (error, _client, bankAccounts) =>
+            `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
+        const [mccCategoryIdMap, existingTransactionIdMap] = await Promise.all([
+            this.resolveMccCategoryIdMap(client, bankAccounts),
+            transactionService.findIdMapByExternalSource(this.provider)
+        ]);
 
-        if (!isNotEmptyArray(bankAccounts)) {
-            return [];
-        }
+        await transactionAsync(db, async tx => {
+            const context: ImportContextInterface = { mccCategoryIdMap, existingTransactionIdMap, tx };
 
-        return mapBankAccountsToPreview(bankAccounts, this.provider);
-    }
+            for (const bankAccount of bankAccounts) {
+                await this.importAccountTransactions(client, bankAccount, context);
+            }
 
-    async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-
-        if (!isNotEmptyArray(selectedBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, selectedBankAccounts);
-    }
-
-    async quickImport(uri: string): Promise<void> {
-        const { client, bankAccounts } = await this.parseFile(uri);
-
-        if (!isNotEmptyArray(bankAccounts)) {
-            return;
-        }
-
-        const enabledExternalIds = await this.getEnabledExternalIds();
-        if (enabledExternalIds.size === 0) {
-            return;
-        }
-
-        const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
-        if (!isNotEmptyArray(enabledBankAccounts)) {
-            return;
-        }
-
-        await this.executeImport(client, enabledBankAccounts);
+            await transactionService.updateAllBalances(tx);
+        });
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
@@ -129,23 +164,6 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
-    }
-
-    private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryIdMap, existingTransactionIdMap] = await Promise.all([
-            this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findIdMapByExternalSource(this.provider)
-        ]);
-
-        await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryIdMap, existingTransactionIdMap, tx };
-
-            for (const bankAccount of bankAccounts) {
-                await this.importAccountTransactions(client, bankAccount, context);
-            }
-
-            await transactionService.updateAllBalances(tx);
-        });
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;

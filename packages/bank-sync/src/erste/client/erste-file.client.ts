@@ -1,20 +1,24 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { ersteAccountMapper } from '../mapper/erste-account.mapper';
 import { ersteTransactionMapper } from '../mapper/erste-transaction.mapper';
-import { parseErsteText } from '../util/parse-erste-pdf.util';
+import { parseErsteItems } from '../util/parse-erste-items.util';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
+import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
+import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 export class ErsteFileClient {
     private parsedData: ErsteParsedDataInterface | null = null;
 
-    parse(text: string): void {
-        this.parsedData = parseErsteText(text);
+    parse(items: PdfTextItemInterface[]): void {
+        this.parsedData = parseErsteItems(items);
     }
 
     getAccounts(): BankAccountInterface[] {
-        if (!this.parsedData) {
+        if (!isDefined(this.parsedData)) {
             return [];
         }
 
@@ -22,7 +26,7 @@ export class ErsteFileClient {
     }
 
     getTransactions(): BankTransactionInterface[] {
-        if (!this.parsedData) {
+        if (!isDefined(this.parsedData)) {
             return [];
         }
 
@@ -31,7 +35,7 @@ export class ErsteFileClient {
         return this.parsedData.transactions.map(row => ersteTransactionMapper(row, iban));
     }
 
-    getAccountInfo() {
+    getAccountInfo(): ErsteAccountInfoInterface | null {
         return this.parsedData?.account ?? null;
     }
 }
