@@ -10944,12 +10944,12 @@ __metadata:
 
 "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch":
   version: 1.0.0
-  resolution: "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch::version=1.0.0&hash=cb1605"
+  resolution: "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch::version=1.0.0&hash=4a3eb3"
   peerDependencies:
     expo: ">=49.0.0"
     react: ">=18.0.0"
     react-native: ">=0.72.0"
-  checksum: 10/be381b00c2e1eb6fe49f13a6b3d1f99bd73f7ea88ba78c47df7fbfaa803fd1aa3ec48dbea27bb3ac4268d013779f8f111d1606be5154de8dcb0abdb0cbbf0a5a
+  checksum: 10/d1ee694a9cd25c5a53223e8c7bb97b45cca99946f24249fc7baa56dc10e1efa14701bf2ab925f0df7f86684ae0389956a594ea7e85ae764c02ae7b81f62cc2e3
   languageName: node
   linkType: hard
 

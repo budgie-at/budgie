@@ -37,6 +37,7 @@
         "react-compiler-runtime",
         "babel-jest",
         "@jest/globals",
+        "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
