@@ -1,8 +1,8 @@
-import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
+import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 
 export type TransactionUpdateInputInterface = Partial<
     Pick<
-        TransactionEntityInterface,
+        TransactionCreateEntityInterface,
         'title' | 'comment' | 'type' | 'operatedAt' | 'fromAccountId' | 'toAccountId' | 'exchangeRate' | 'needsEmbedding'
     >
 >;
