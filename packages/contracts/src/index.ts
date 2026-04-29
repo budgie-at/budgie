@@ -190,6 +190,7 @@ export { TransactionCreateInputSchema } from './transaction/schema/transaction-c
 export type { TransactionCreateInputInterface } from './transaction/input/transaction-create-input.interface';
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
+export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
