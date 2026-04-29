@@ -35,10 +35,10 @@ export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-r
 export { ErsteFileClient } from './erste/client/erste-file.client';
 export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
 export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
-export { parseErsteText } from './erste/util/parse-erste-pdf.util';
+export { parseErsteItems } from './erste/util/parse-erste-items.util';
 export { generateErsteExternalId } from './erste/util/generate-erste-external-id.util';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { ErsteAccountInfoInterface } from './erste/interface/erste-account-info.interface';
 export type { ErsteParsedDataInterface } from './erste/interface/erste-parsed-data.interface';
-export type { ErsteTextParserInterface } from './erste/parser/erste-text-parser.interface';
+export type { PdfTextItemInterface } from './erste/interface/pdf-text-item.interface';

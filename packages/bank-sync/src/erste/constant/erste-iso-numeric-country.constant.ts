@@ -1,6 +1,3 @@
-// Codes observed in real Erste card transactions across the /ERSTE corpus.
-// Note: 280 is the legacy ISO 3166-1 numeric for West Germany (modern is 276).
-// Erste/SEPA networks still emit 280, so we keep both forms semantically as DE.
 export const ERSTE_ISO_NUMERIC_TO_ALPHA2: Readonly<Record<string, string>> = Object.freeze({
     '040': 'AT',
     '203': 'CZ',

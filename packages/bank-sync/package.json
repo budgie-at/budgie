@@ -22,10 +22,7 @@
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p .",
-        "test": "run -T jest --passWithNoTests",
-        "test:watch": "run -T jest --watch",
-        "test:cov": "run -T jest --coverage"
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@budgie/logger": "workspace:*",

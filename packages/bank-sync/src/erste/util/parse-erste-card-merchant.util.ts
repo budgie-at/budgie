@@ -5,9 +5,6 @@ import { ERSTE_ISO_NUMERIC_TO_ALPHA2 } from '../constant/erste-iso-numeric-count
 import type { ErsteCardMerchantInterface } from '../interface/erste-card-merchant.interface';
 
 const COUNTRY_NUMERIC_REGEX = /^\d{3}$/u;
-// Real postal tokens are alphanumeric only, ≤6 chars (1010, 11457, L2338, DP, 1011DK, AM).
-// This intentionally rejects phone numbers (800-279-6620), Amazon order ids (DE*HB5TB50S4),
-// and similar long IDs that would otherwise be misclassified as postal.
 const POSTAL_TOKEN_REGEX = /^[A-Za-z0-9]{1,6}$/u;
 const POSTAL_GLUE_LETTERS_REGEX = /^[A-Za-z]{1,2}$/u;
 const POSTAL_DIGIT_REGEX = /\d/u;
