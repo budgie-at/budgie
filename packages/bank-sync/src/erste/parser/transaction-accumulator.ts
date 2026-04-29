@@ -8,18 +8,6 @@ import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 type MerchantInfo = Partial<Pick<ErsteCardMerchantInterface, 'city' | 'countryAlpha2'>>;
 
-const findMerchantInfo = (lines: readonly string[]): MerchantInfo => {
-    for (const line of lines) {
-        const merchant = parseErsteCardMerchant(line);
-
-        if (isDefined(merchant)) {
-            return { city: merchant.city, countryAlpha2: merchant.countryAlpha2 };
-        }
-    }
-
-    return {};
-};
-
 export class TransactionAccumulator {
     private readonly continuationLines: string[] = [];
 
@@ -36,7 +24,6 @@ export class TransactionAccumulator {
         const description = this.continuationLines.join(' ').trim();
         const reference = isNotEmptyString(this.primary) ? this.primary : description;
         const finalDescription = isNotEmptyString(description) ? description : reference;
-        const merchantInfo = findMerchantInfo(this.continuationLines);
 
         return {
             date: this.dateAmount.date,
@@ -45,7 +32,19 @@ export class TransactionAccumulator {
             details: '',
             amount: this.dateAmount.amount,
             isCredit: this.dateAmount.isCredit,
-            ...merchantInfo
+            ...this.findMerchantInfo()
         };
+    }
+
+    private findMerchantInfo(): MerchantInfo {
+        for (const line of this.continuationLines) {
+            const merchant = parseErsteCardMerchant(line);
+
+            if (isDefined(merchant)) {
+                return { city: merchant.city, countryAlpha2: merchant.countryAlpha2 };
+            }
+        }
+
+        return {};
     }
 }

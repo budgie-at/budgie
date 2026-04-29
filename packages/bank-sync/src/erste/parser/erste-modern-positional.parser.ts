@@ -25,145 +25,149 @@ const NEW_BALANCE_INLINE_PREFIX = 'Neuer Kontostand';
 const DATE_AMOUNT_RIGHT_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 const DATE_AMOUNT_TAIL_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 
-const joinTexts = (items: PdfTextItemInterface[]): string =>
-    items
-        .map(item => item.text.trim())
-        .filter(isNotEmptyString)
-        .join(' ')
-        .trim();
-
-const isEndOfSection = (leftText: string, rightText: string): boolean =>
-    leftText.startsWith(NEW_BALANCE_INLINE_PREFIX) || rightText.startsWith(NEW_BALANCE_INLINE_PREFIX);
-
-const isPageNoise = (text: string): boolean => {
-    if (!isNotEmptyString(text)) {
-        return false;
-    }
-    
-return ERSTE_MODERN_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
-};
-
-const buildDateAmount = (input: DateAmountInputInterface): DateAmountInterface => {
-    const date = parse(`${input.day}.${input.month}.${input.year}`, 'dd.MM.yyyy', new Date());
-
-    if (!isValid(date)) {
-        throw new BankSyncError(
-            BankSyncErrorCodeEnum.INVALID_RESPONSE,
-            `Invalid Erste transaction date: ${input.day}.${input.month}.${input.year}`,
-            BankProviderEnum.ERSTE
-        );
-    }
-
-    date.setHours(12, 0, 0, 0);
-
-    return {
-        date,
-        amount: parseErsteAmount(input.amountStr, input.isDebit),
-        isCredit: !input.isDebit
-    };
-};
-
-const parseRightDateAmount = (text: string): DateAmountInterface | null => {
-    const match = DATE_AMOUNT_RIGHT_REGEX.exec(text);
-
-    if (!match) {
-        return null;
-    }
-
-    const [, day, month, year, amountStr, sign] = match;
-    
-return buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
-};
-
-const parseInlineDateAmount = (text: string): InlineDateAmountInterface | null => {
-    const match = DATE_AMOUNT_TAIL_REGEX.exec(text);
-
-    if (!match) {
-        return null;
-    }
-
-    const [, prefix, day, month, year, amountStr, sign] = match;
-    const dateAmount = buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
-    
-return { ...dateAmount, prefix: prefix.trim() };
-};
-
-const tryHandleSectionTransition = (state: ParserState, leftText: string, rightText: string): boolean => {
-    if (leftText.startsWith(COLUMN_HEADER_PREFIX)) {
-        state.enterSection();
-        
-return true;
-    }
-
-    if (isEndOfSection(leftText, rightText)) {
-        state.exitSection();
-        
-return true;
-    }
-
-    return false;
-};
-
-const tryHandleInlineAnchor = (state: ParserState, leftText: string, rightText: string): boolean => {
-    if (isNotEmptyString(rightText) || !isNotEmptyString(leftText)) {
-        return false;
-    }
-
-    const inlineAnchor = parseInlineDateAmount(leftText);
-
-    if (!isDefined(inlineAnchor)) {
-        return false;
-    }
-
-    state.startTransaction(inlineAnchor, inlineAnchor.prefix);
-    
-return true;
-};
-
-const tryHandleAnchor = (state: ParserState, leftText: string, rightText: string): boolean => {
-    const rightAnchor = parseRightDateAmount(rightText);
-
-    if (isDefined(rightAnchor)) {
-        state.startTransaction(rightAnchor, leftText);
-        
-return true;
-    }
-
-    return tryHandleInlineAnchor(state, leftText, rightText);
-};
-
-const processRow = (state: ParserState, row: PageRowInterface): void => {
-    const leftText = joinTexts(row.leftItems);
-    const rightText = joinTexts(row.rightItems);
-
-    if (tryHandleSectionTransition(state, leftText, rightText)) {
-        return;
-    }
-    if (!state.isInSection()) {
-        return;
-    }
-    if (isPageNoise(leftText) || isPageNoise(rightText)) {
-        return;
-    }
-    if (tryHandleAnchor(state, leftText, rightText)) {
-        return;
-    }
-    if (state.hasCurrent() && isNotEmptyString(leftText)) {
-        state.addContinuationLine(leftText);
-    }
-};
-
 export class ErsteModernPositionalParser {
+    private state: ParserState = new ParserState();
+
     parse(items: PdfTextItemInterface[]): ErsteParsedDataInterface {
         const account = extractErsteAccountInfo(items);
         const rows = groupPdfItemsIntoRows(items);
-        const state = new ParserState();
+        this.state = new ParserState();
 
         for (const row of rows) {
-            processRow(state, row);
+            this.processRow(row);
         }
-        state.flush();
+        this.state.flush();
 
-        return { account, transactions: state.getTransactions() };
+        return { account, transactions: this.state.getTransactions() };
+    }
+
+    private processRow(row: PageRowInterface): void {
+        const leftText = this.joinTexts(row.leftItems);
+        const rightText = this.joinTexts(row.rightItems);
+
+        if (this.tryHandleSectionTransition(leftText, rightText)) {
+            return;
+        }
+        if (!this.state.isInSection()) {
+            return;
+        }
+        if (this.isPageNoise(leftText) || this.isPageNoise(rightText)) {
+            return;
+        }
+        if (this.tryHandleAnchor(leftText, rightText)) {
+            return;
+        }
+        if (this.state.hasCurrent() && isNotEmptyString(leftText)) {
+            this.state.addContinuationLine(leftText);
+        }
+    }
+
+    private tryHandleSectionTransition(leftText: string, rightText: string): boolean {
+        if (leftText.startsWith(COLUMN_HEADER_PREFIX)) {
+            this.state.enterSection();
+            
+return true;
+        }
+
+        if (this.isEndOfSection(leftText, rightText)) {
+            this.state.exitSection();
+            
+return true;
+        }
+
+        return false;
+    }
+
+    private tryHandleAnchor(leftText: string, rightText: string): boolean {
+        const rightAnchor = this.parseRightDateAmount(rightText);
+
+        if (isDefined(rightAnchor)) {
+            this.state.startTransaction(rightAnchor, leftText);
+            
+return true;
+        }
+
+        return this.tryHandleInlineAnchor(leftText, rightText);
+    }
+
+    private tryHandleInlineAnchor(leftText: string, rightText: string): boolean {
+        if (isNotEmptyString(rightText) || !isNotEmptyString(leftText)) {
+            return false;
+        }
+
+        const inlineAnchor = this.parseInlineDateAmount(leftText);
+
+        if (!isDefined(inlineAnchor)) {
+            return false;
+        }
+
+        this.state.startTransaction(inlineAnchor, inlineAnchor.prefix);
+        
+return true;
+    }
+
+    private joinTexts(items: PdfTextItemInterface[]): string {
+        return items
+            .map(item => item.text.trim())
+            .filter(isNotEmptyString)
+            .join(' ')
+            .trim();
+    }
+
+    private isEndOfSection(leftText: string, rightText: string): boolean {
+        return leftText.startsWith(NEW_BALANCE_INLINE_PREFIX) || rightText.startsWith(NEW_BALANCE_INLINE_PREFIX);
+    }
+
+    private isPageNoise(text: string): boolean {
+        if (!isNotEmptyString(text)) {
+            return false;
+        }
+        
+return ERSTE_MODERN_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
+    }
+
+    private parseRightDateAmount(text: string): DateAmountInterface | null {
+        const match = DATE_AMOUNT_RIGHT_REGEX.exec(text);
+
+        if (!match) {
+            return null;
+        }
+
+        const [, day, month, year, amountStr, sign] = match;
+        
+return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
+    }
+
+    private parseInlineDateAmount(text: string): InlineDateAmountInterface | null {
+        const match = DATE_AMOUNT_TAIL_REGEX.exec(text);
+
+        if (!match) {
+            return null;
+        }
+
+        const [, prefix, day, month, year, amountStr, sign] = match;
+        const dateAmount = this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
+        
+return { ...dateAmount, prefix: prefix.trim() };
+    }
+
+    private buildDateAmount(input: DateAmountInputInterface): DateAmountInterface {
+        const date = parse(`${input.day}.${input.month}.${input.year}`, 'dd.MM.yyyy', new Date());
+
+        if (!isValid(date)) {
+            throw new BankSyncError(
+                BankSyncErrorCodeEnum.INVALID_RESPONSE,
+                `Invalid Erste transaction date: ${input.day}.${input.month}.${input.year}`,
+                BankProviderEnum.ERSTE
+            );
+        }
+
+        date.setHours(12, 0, 0, 0);
+
+        return {
+            date,
+            amount: parseErsteAmount(input.amountStr, input.isDebit),
+            isCredit: !input.isDebit
+        };
     }
 }
