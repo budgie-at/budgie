@@ -1,7 +1,6 @@
 import { Log } from '@budgie/logger';
 import { isValid } from 'date-fns';
 
-
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';

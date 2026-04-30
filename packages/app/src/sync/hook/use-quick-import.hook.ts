@@ -30,8 +30,8 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
 
             if (result.canceled || !isNotEmptyString(uri)) {
                 setIsLoading(false);
-                
-return;
+
+                return;
             }
 
             await config.importHandler(uri);

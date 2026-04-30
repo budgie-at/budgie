@@ -17,8 +17,8 @@ class ErsteExternalIdGenerator {
     )
     generate(row: ErsteRowInterface, iban: string): string {
         const seed = `${row.date.toISOString()}|${iban}|${row.amount}|${row.reference}|${row.details}`;
-        
-return this.fnv1aHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+
+        return this.fnv1aHash(seed).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
     }
 
     /* jscpd:ignore-start */
