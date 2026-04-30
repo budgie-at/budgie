@@ -9,19 +9,6 @@ import { ErsteRowBucket } from './erste-row-bucket';
 import type { ErstePageRowInterface } from '../interface/erste-page-row.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
-const compareByPageThenRow = (left: PdfTextItemInterface, right: PdfTextItemInterface): number => {
-    if (left.page !== right.page) {
-        return left.page - right.page;
-    }
-
-    const yDiff = right.y - left.y;
-    if (Math.abs(yDiff) > ERSTE_LAYOUT_Y_ROW_TOLERANCE) {
-        return yDiff;
-    }
-
-    return left.x - right.x;
-};
-
 class ErsteRowGrouper {
     @Log(
         items => `enter itemCount=${items.length}`,
@@ -29,7 +16,9 @@ class ErsteRowGrouper {
         (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
     )
     group(items: PdfTextItemInterface[]): ErstePageRowInterface[] {
-        const sorted = items.filter(item => item.y >= ERSTE_LAYOUT_FOOTER_Y_THRESHOLD).sort(compareByPageThenRow);
+        const sorted = items
+            .filter(item => item.y >= ERSTE_LAYOUT_FOOTER_Y_THRESHOLD)
+            .sort((left, right) => this.compareByPageThenRow(left, right));
         const buckets: ErsteRowBucket[] = [];
 
         for (const item of sorted) {
@@ -43,6 +32,19 @@ class ErsteRowGrouper {
         }
 
         return buckets.map(bucket => bucket.toPageRow());
+    }
+
+    private compareByPageThenRow(left: PdfTextItemInterface, right: PdfTextItemInterface): number {
+        if (left.page !== right.page) {
+            return left.page - right.page;
+        }
+
+        const yDiff = right.y - left.y;
+        if (Math.abs(yDiff) > ERSTE_LAYOUT_Y_ROW_TOLERANCE) {
+            return yDiff;
+        }
+
+        return left.x - right.x;
     }
 }
 
