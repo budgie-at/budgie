@@ -1,7 +1,6 @@
 import { Log } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 
-
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -32,8 +31,7 @@ class ErsteParser {
 
     @Log(
         items => `enter itemCount=${items.length}`,
-        (result, items) =>
-            `done itemCount=${items.length} iban=${result.account.iban} transactionCount=${result.transactions.length}`,
+        (result, items) => `done itemCount=${items.length} iban=${result.account.iban} transactionCount=${result.transactions.length}`,
         (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
     )
     parse(items: PdfTextItemInterface[]): ErsteParsedDataInterface {
@@ -73,14 +71,14 @@ class ErsteParser {
     private tryHandleSectionTransition(leftText: string, rightText: string): boolean {
         if (leftText.startsWith(COLUMN_HEADER_PREFIX)) {
             this.state.enterSection();
-            
-return true;
+
+            return true;
         }
 
         if (this.isEndOfSection(leftText, rightText)) {
             this.state.exitSection();
-            
-return true;
+
+            return true;
         }
 
         return false;
@@ -91,8 +89,8 @@ return true;
 
         if (isDefined(rightAnchor)) {
             this.state.startTransaction(rightAnchor, leftText);
-            
-return true;
+
+            return true;
         }
 
         return this.tryHandleInlineAnchor(leftText, rightText);
@@ -110,8 +108,8 @@ return true;
         }
 
         this.state.startTransaction(inlineAnchor, inlineAnchor.prefix);
-        
-return true;
+
+        return true;
     }
 
     private joinTexts(items: PdfTextItemInterface[]): string {
@@ -130,8 +128,8 @@ return true;
         if (!isNotEmptyString(text)) {
             return false;
         }
-        
-return ERSTE_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
+
+        return ERSTE_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
     }
 
     private parseRightDateAmount(text: string): ErsteDateAmountInterface | null {
@@ -142,8 +140,8 @@ return ERSTE_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
         }
 
         const [, day, month, year, amountStr, sign] = match;
-        
-return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
+
+        return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
     }
 
     private parseInlineDateAmount(text: string): ErsteInlineDateAmountInterface | null {
@@ -155,8 +153,8 @@ return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-'
 
         const [, prefix, day, month, year, amountStr, sign] = match;
         const dateAmount = this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
-        
-return { ...dateAmount, prefix: prefix.trim() };
+
+        return { ...dateAmount, prefix: prefix.trim() };
     }
 
     private buildDateAmount(input: ErsteDateAmountInputInterface): ErsteDateAmountInterface {
