@@ -3,7 +3,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
 import { ERSTE_CURRENCY_CODE_EUR } from '../constant/erste.constant';
-import { generateErsteExternalId } from '../util/generate-erste-external-id.util';
+import { ersteExternalIdGenerator } from '../parser/erste-external-id.generator';
 
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
@@ -26,7 +26,7 @@ const buildComment = (row: ErsteRowInterface): string => {
 };
 
 export const ersteTransactionMapper = (row: ErsteRowInterface, iban: string): BankTransactionInterface => ({
-    id: generateErsteExternalId(row, iban),
+    id: ersteExternalIdGenerator.generate(row, iban),
     provider: BankProviderEnum.ERSTE,
     accountId: iban,
     type: getTransactionType(row.isCredit),
