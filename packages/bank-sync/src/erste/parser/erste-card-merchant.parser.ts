@@ -6,14 +6,14 @@ import { ERSTE_ISO_NUMERIC_TO_ALPHA2 } from '../constant/erste-iso-numeric-count
 
 import type { ErsteCardMerchantInterface } from '../interface/erste-card-merchant.interface';
 
-const COUNTRY_NUMERIC_REGEX = /^\d{3}$/u;
-const POSTAL_TOKEN_REGEX = /^[A-Za-z0-9]{1,6}$/u;
-const POSTAL_GLUE_LETTERS_REGEX = /^[A-Za-z]{1,2}$/u;
-const POSTAL_DIGIT_REGEX = /\d/u;
-const CITY_TOKEN_REGEX = /^[A-Za-zÄÖÜßäöü.-]+$/u;
-const MAX_POSTAL_TOKENS = 3;
-
 class ErsteCardMerchantParser {
+    private static readonly COUNTRY_NUMERIC_REGEX = /^\d{3}$/u;
+    private static readonly POSTAL_TOKEN_REGEX = /^[A-Za-z0-9]{1,6}$/u;
+    private static readonly POSTAL_GLUE_LETTERS_REGEX = /^[A-Za-z]{1,2}$/u;
+    private static readonly POSTAL_DIGIT_REGEX = /\d/u;
+    private static readonly CITY_TOKEN_REGEX = /^[A-Za-zÄÖÜßäöü.-]+$/u;
+    private static readonly MAX_POSTAL_TOKENS = 3;
+
     @Log(
         line => `enter line="${line}"`,
         (result, line) =>
@@ -24,7 +24,11 @@ class ErsteCardMerchantParser {
         const tokens = line.trim().split(/\s+/u);
         const countryNumeric = tokens.at(-1);
 
-        if (tokens.length < 3 || !isNotEmptyString(countryNumeric) || !COUNTRY_NUMERIC_REGEX.test(countryNumeric)) {
+        if (
+            tokens.length < 3 ||
+            !isNotEmptyString(countryNumeric) ||
+            !ErsteCardMerchantParser.COUNTRY_NUMERIC_REGEX.test(countryNumeric)
+        ) {
             return null;
         }
 
@@ -58,7 +62,7 @@ class ErsteCardMerchantParser {
 
         const cityStartIndex = postalStartIndex - 1;
 
-        if (cityStartIndex < 1 || !CITY_TOKEN_REGEX.test(tokens[cityStartIndex])) {
+        if (cityStartIndex < 1 || !ErsteCardMerchantParser.CITY_TOKEN_REGEX.test(tokens[cityStartIndex])) {
             return null;
         }
 
@@ -67,17 +71,17 @@ class ErsteCardMerchantParser {
 
     private findPostalStartIndex(tokens: string[]): number {
         let postalStartIndex = tokens.length - 1;
-        const peelLimit = Math.min(MAX_POSTAL_TOKENS, tokens.length - 2);
+        const peelLimit = Math.min(ErsteCardMerchantParser.MAX_POSTAL_TOKENS, tokens.length - 2);
 
         for (let offset = 1; offset <= peelLimit; offset += 1) {
             const candidate = tokens[tokens.length - 1 - offset];
 
-            if (!POSTAL_TOKEN_REGEX.test(candidate)) {
+            if (!ErsteCardMerchantParser.POSTAL_TOKEN_REGEX.test(candidate)) {
                 break;
             }
 
-            const containsDigit = POSTAL_DIGIT_REGEX.test(candidate);
-            const isShortAlpha = POSTAL_GLUE_LETTERS_REGEX.test(candidate);
+            const containsDigit = ErsteCardMerchantParser.POSTAL_DIGIT_REGEX.test(candidate);
+            const isShortAlpha = ErsteCardMerchantParser.POSTAL_GLUE_LETTERS_REGEX.test(candidate);
 
             if (!containsDigit && !isShortAlpha) {
                 break;

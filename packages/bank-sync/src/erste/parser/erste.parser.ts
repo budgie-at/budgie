@@ -1,6 +1,7 @@
 import { Log } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 
+
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -20,13 +21,12 @@ import type { ErstePageRowInterface } from '../interface/erste-page-row.interfac
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
-const COLUMN_HEADER_PREFIX = 'Buchungstext/Booking Text';
-const NEW_BALANCE_INLINE_PREFIX = 'Neuer Kontostand';
-
-const DATE_AMOUNT_RIGHT_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
-const DATE_AMOUNT_TAIL_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
-
 class ErsteParser {
+    private static readonly COLUMN_HEADER_PREFIX = 'Buchungstext/Booking Text';
+    private static readonly NEW_BALANCE_INLINE_PREFIX = 'Neuer Kontostand';
+    private static readonly DATE_AMOUNT_RIGHT_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
+    private static readonly DATE_AMOUNT_TAIL_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
+
     private state: ErsteParserState = new ErsteParserState();
 
     @Log(
@@ -69,7 +69,7 @@ class ErsteParser {
     }
 
     private tryHandleSectionTransition(leftText: string, rightText: string): boolean {
-        if (leftText.startsWith(COLUMN_HEADER_PREFIX)) {
+        if (leftText.startsWith(ErsteParser.COLUMN_HEADER_PREFIX)) {
             this.state.enterSection();
 
             return true;
@@ -121,7 +121,10 @@ class ErsteParser {
     }
 
     private isEndOfSection(leftText: string, rightText: string): boolean {
-        return leftText.startsWith(NEW_BALANCE_INLINE_PREFIX) || rightText.startsWith(NEW_BALANCE_INLINE_PREFIX);
+        return (
+            leftText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX) ||
+            rightText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX)
+        );
     }
 
     private isPageNoise(text: string): boolean {
@@ -133,7 +136,7 @@ class ErsteParser {
     }
 
     private parseRightDateAmount(text: string): ErsteDateAmountInterface | null {
-        const match = DATE_AMOUNT_RIGHT_REGEX.exec(text);
+        const match = ErsteParser.DATE_AMOUNT_RIGHT_REGEX.exec(text);
 
         if (!match) {
             return null;
@@ -145,7 +148,7 @@ class ErsteParser {
     }
 
     private parseInlineDateAmount(text: string): ErsteInlineDateAmountInterface | null {
-        const match = DATE_AMOUNT_TAIL_REGEX.exec(text);
+        const match = ErsteParser.DATE_AMOUNT_TAIL_REGEX.exec(text);
 
         if (!match) {
             return null;

@@ -1,7 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { ersteAccountMapper } from '../mapper/erste-account.mapper';
-import { ersteTransactionMapper } from '../mapper/erste-transaction.mapper';
+import { ersteMapper } from '../mapper/erste.mapper';
 import { ersteParser } from '../parser/erste.parser';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
@@ -22,7 +21,7 @@ export class ErsteFileClient {
             return [];
         }
 
-        return [ersteAccountMapper(this.parsedData.account)];
+        return [ersteMapper.mapAccount(this.parsedData.account)];
     }
 
     getTransactions(): BankTransactionInterface[] {
@@ -32,7 +31,7 @@ export class ErsteFileClient {
 
         const { iban } = this.parsedData.account;
 
-        return this.parsedData.transactions.map(row => ersteTransactionMapper(row, iban));
+        return this.parsedData.transactions.map(row => ersteMapper.mapTransaction(row, iban));
     }
 
     getAccountInfo(): ErsteAccountInfoInterface | null {
