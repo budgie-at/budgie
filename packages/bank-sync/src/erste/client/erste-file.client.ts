@@ -1,37 +1,40 @@
-import { ersteAccountMapper } from '../mapper/erste-account.mapper';
-import { ersteTransactionMapper } from '../mapper/erste-transaction.mapper';
-import { parseErsteText } from '../util/parse-erste-pdf.util';
+import { isDefined } from '@rnw-community/shared';
+
+import { ersteMapper } from '../mapper/erste.mapper';
+import { ersteParser } from '../parser/erste.parser';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
+import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
+import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 export class ErsteFileClient {
     private parsedData: ErsteParsedDataInterface | null = null;
 
-    parse(text: string): void {
-        this.parsedData = parseErsteText(text);
+    parse(items: PdfTextItemInterface[]): void {
+        this.parsedData = ersteParser.parse(items);
     }
 
     getAccounts(): BankAccountInterface[] {
-        if (!this.parsedData) {
+        if (!isDefined(this.parsedData)) {
             return [];
         }
 
-        return [ersteAccountMapper(this.parsedData.account)];
+        return [ersteMapper.mapAccount(this.parsedData.account)];
     }
 
     getTransactions(): BankTransactionInterface[] {
-        if (!this.parsedData) {
+        if (!isDefined(this.parsedData)) {
             return [];
         }
 
         const { iban } = this.parsedData.account;
 
-        return this.parsedData.transactions.map(row => ersteTransactionMapper(row, iban));
+        return this.parsedData.transactions.map(row => ersteMapper.mapTransaction(row, iban));
     }
 
-    getAccountInfo() {
+    getAccountInfo(): ErsteAccountInfoInterface | null {
         return this.parsedData?.account ?? null;
     }
 }

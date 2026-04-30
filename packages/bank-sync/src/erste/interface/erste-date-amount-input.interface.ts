@@ -1,7 +1,7 @@
-export interface ErsteModernDateAmountInputInterface {
+export interface ErsteDateAmountInputInterface {
     readonly day: string;
     readonly month: string;
     readonly year: string;
-    readonly amount: string;
+    readonly amountStr: string;
     readonly isDebit: boolean;
 }

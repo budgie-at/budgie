@@ -5,4 +5,6 @@ export interface ErsteRowInterface {
     readonly details: string;
     readonly amount: number;
     readonly isCredit: boolean;
+    readonly city?: string;
+    readonly countryAlpha2?: string | null;
 }
