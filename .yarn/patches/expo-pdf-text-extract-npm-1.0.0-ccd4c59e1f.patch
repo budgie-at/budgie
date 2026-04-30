@@ -8,3 +8,259 @@ index 65f8044619109f405a30bf078ec772fa12978963..18d54ef61f801b76d25343047dc2f16a
    s.source_files = "**/*.{h,m,swift}"
 +  s.exclude_files = "**/*Tests.swift"
  end
+diff --git a/ios/PdfExtractorModule.swift b/ios/PdfExtractorModule.swift
+index a60c77da96e5a378e52e64abbdc04b2c0ec3f9d4..010381ca81ac6448816f30ddd69f7b1c4c8ea106 100644
+--- a/ios/PdfExtractorModule.swift
++++ b/ios/PdfExtractorModule.swift
+@@ -1,55 +1,116 @@
+ import ExpoModulesCore
+ import PDFKit
+ 
+-/**
+- * PdfExtractorModule - Native module for extracting text from PDF files on iOS
+- *
+- * This module uses Apple's native PDFKit framework to read PDF files and
+- * extract their text content. PDFKit is built into iOS and handles:
+- * - Compressed PDF streams
+- * - Font encoding and character mapping
+- * - Multi-page documents
+- * - Various PDF versions
+- *
+- * HOW THIS WORKS:
+- * 1. JavaScript calls: PdfExtractorModule.extractText(filePath)
+- * 2. Expo bridges this call to the Swift function below
+- * 3. We use PDFKit to read and extract text
+- * 4. Result is returned back to JavaScript as a Promise
+- */
++private let pdfRowYTolerance: CGFloat = 3.0
++private let pdfColumnGapThreshold: CGFloat = 12.0
++private let pdfColumnGapSeparator = "    "
++
++private struct PdfVisualLine {
++    let text: String
++    let minX: CGFloat
++    let y: CGFloat
++}
++
++private func collectPdfVisualLines(on page: PDFPage) -> [PdfVisualLine] {
++    let pageBounds = page.bounds(for: .mediaBox)
++    guard let pageSelection = page.selection(for: pageBounds) else { return [] }
++    let lineSelections = pageSelection.selectionsByLine()
++    return lineSelections.compactMap { selection in
++        guard let text = selection.string, !text.isEmpty else { return nil }
++        let bounds = selection.bounds(for: page)
++        return PdfVisualLine(text: text, minX: bounds.minX, y: bounds.midY)
++    }
++}
++
++private func renderPdfRow(_ parts: [PdfVisualLine]) -> String {
++    var rendered = ""
++    var previousMinX: CGFloat?
++    for (index, part) in parts.enumerated() {
++        if let previous = previousMinX, part.minX - previous > pdfColumnGapThreshold {
++            rendered.append(pdfColumnGapSeparator)
++        } else if index > 0 && !rendered.hasSuffix(" ") {
++            rendered.append(" ")
++        }
++        rendered.append(part.text)
++        previousMinX = part.minX
++    }
++    return rendered
++}
++
++private func extractPageLayoutText(_ page: PDFPage) -> String {
++    let visualLines = collectPdfVisualLines(on: page)
++    let sorted = visualLines.sorted { lhs, rhs in
++        if abs(lhs.y - rhs.y) <= pdfRowYTolerance { return lhs.minX < rhs.minX }
++        return lhs.y > rhs.y
++    }
++
++    var renderedLines: [String] = []
++    var rowY: CGFloat?
++    var rowParts: [PdfVisualLine] = []
++
++    for line in sorted {
++        let isSameRow = rowY.map { abs($0 - line.y) <= pdfRowYTolerance } ?? false
++        if !isSameRow {
++            if !rowParts.isEmpty {
++                renderedLines.append(renderPdfRow(rowParts))
++            }
++            rowParts = []
++            rowY = line.y
++        }
++        rowParts.append(line)
++    }
++
++    if !rowParts.isEmpty {
++        renderedLines.append(renderPdfRow(rowParts))
++    }
++
++    return renderedLines.joined(separator: "\n")
++}
++
++private func extractPageTextItems(_ page: PDFPage, pageNumber: Int) -> [[String: Any]] {
++    let pageBounds = page.bounds(for: .mediaBox)
++    guard let pageSelection = page.selection(for: pageBounds) else { return [] }
++    let lineSelections = pageSelection.selectionsByLine()
++    return lineSelections.compactMap { selection in
++        guard let text = selection.string, !text.isEmpty else { return nil }
++        let bounds = selection.bounds(for: page)
++        return [
++            "text": text,
++            "x": Double(bounds.minX),
++            "y": Double(bounds.minY),
++            "width": Double(bounds.width),
++            "height": Double(bounds.height),
++            "page": pageNumber
++        ]
++    }
++}
++
+ public class PdfExtractorModule: Module {
+ 
+   public func definition() -> ModuleDefinition {
+-    // The name that JavaScript will use to access this module
+-    // Must match the Android module name for cross-platform compatibility
+     Name("PdfExtractor")
+ 
+-    // A simple function to check if the module is available
+     Function("isAvailable") { () -> Bool in
+       return true
+     }
+ 
+-    // Extract all text from a PDF file
+     AsyncFunction("extractText") { (filePath: String, promise: Promise) in
+       self.extractText(filePath: filePath, promise: promise)
+     }
+ 
+-    // Get the number of pages in a PDF
+     AsyncFunction("getPageCount") { (filePath: String, promise: Promise) in
+       self.getPageCount(filePath: filePath, promise: promise)
+     }
+ 
+-    // Extract text from a specific page (1-indexed)
+     AsyncFunction("extractTextFromPage") { (filePath: String, pageNumber: Int, promise: Promise) in
+       self.extractTextFromPage(filePath: filePath, pageNumber: pageNumber, promise: promise)
+     }
+-  }
+ 
+-  // MARK: - Private Methods
++    AsyncFunction("extractTextItems") { (filePath: String, promise: Promise) in
++      self.extractTextItems(filePath: filePath, promise: promise)
++    }
++  }
+ 
+-  /**
+-   * Extract all text from a PDF file
+-   */
+   private func extractText(filePath: String, promise: Promise) {
+     DispatchQueue.global(qos: .userInitiated).async {
+       do {
+@@ -63,29 +124,21 @@ public class PdfExtractorModule: Module {
+         var fullText = ""
+ 
+         for pageIndex in 0..<document.pageCount {
+-          if let page = document.page(at: pageIndex),
+-             let pageText = page.string {
+-            fullText += pageText
+-            // Add newline between pages for readability
++          if let page = document.page(at: pageIndex) {
++            fullText += extractPageLayoutText(page)
+             if pageIndex < document.pageCount - 1 {
+               fullText += "\n"
+             }
+           }
+         }
+ 
+-        NSLog("[PdfExtractor] Extracted \(fullText.count) characters from \(document.pageCount) pages")
+-
+         promise.resolve(fullText)
+       } catch {
+-        NSLog("[PdfExtractor] Error extracting text: \(error.localizedDescription)")
+         promise.reject("PDF_EXTRACTION_ERROR", "Failed to extract text: \(error.localizedDescription)")
+       }
+     }
+   }
+ 
+-  /**
+-   * Get the number of pages in a PDF
+-   */
+   private func getPageCount(filePath: String, promise: Promise) {
+     DispatchQueue.global(qos: .userInitiated).async {
+       do {
+@@ -103,9 +156,6 @@ public class PdfExtractorModule: Module {
+     }
+   }
+ 
+-  /**
+-   * Extract text from a specific page (1-indexed)
+-   */
+   private func extractTextFromPage(filePath: String, pageNumber: Int, promise: Promise) {
+     DispatchQueue.global(qos: .userInitiated).async {
+       do {
+@@ -116,7 +166,6 @@ public class PdfExtractorModule: Module {
+           return
+         }
+ 
+-        // Convert 1-indexed to 0-indexed
+         let pageIndex = pageNumber - 1
+ 
+         guard pageIndex >= 0 && pageIndex < document.pageCount else {
+@@ -129,7 +178,7 @@ public class PdfExtractorModule: Module {
+           return
+         }
+ 
+-        let pageText = page.string ?? ""
++        let pageText = extractPageLayoutText(page)
+         promise.resolve(pageText)
+       } catch {
+         promise.reject("PDF_EXTRACTION_ERROR", "Failed to extract page: \(error.localizedDescription)")
+@@ -137,13 +186,32 @@ public class PdfExtractorModule: Module {
+     }
+   }
+ 
+-  /**
+-   * Convert various file path formats to a URL
+-   * Handles: file://, absolute paths
+-   */
++  private func extractTextItems(filePath: String, promise: Promise) {
++    DispatchQueue.global(qos: .userInitiated).async {
++      do {
++        let url = try self.getFileURL(from: filePath)
++
++        guard let document = PDFDocument(url: url) else {
++          promise.reject("PDF_LOAD_ERROR", "Failed to load PDF document")
++          return
++        }
++
++        var allItems: [[String: Any]] = []
++        for pageIndex in 0..<document.pageCount {
++          if let page = document.page(at: pageIndex) {
++            allItems.append(contentsOf: extractPageTextItems(page, pageNumber: pageIndex + 1))
++          }
++        }
++
++        promise.resolve(allItems)
++      } catch {
++        promise.reject("PDF_EXTRACTION_ERROR", "Failed to extract items: \(error.localizedDescription)")
++      }
++    }
++  }
++
+   private func getFileURL(from filePath: String) throws -> URL {
+     if filePath.hasPrefix("file://") {
+-      // File URI
+       guard let url = URL(string: filePath) else {
+         throw NSError(domain: "PdfExtractor", code: 1, userInfo: [
+           NSLocalizedDescriptionKey: "Invalid file URI: \(filePath)"
+@@ -151,10 +219,8 @@ public class PdfExtractorModule: Module {
+       }
+       return url
+     } else {
+-      // Absolute path
+       let url = URL(fileURLWithPath: filePath)
+ 
+-      // Verify file exists
+       guard FileManager.default.fileExists(atPath: url.path) else {
+         throw NSError(domain: "PdfExtractor", code: 2, userInfo: [
+           NSLocalizedDescriptionKey: "File not found: \(filePath)"

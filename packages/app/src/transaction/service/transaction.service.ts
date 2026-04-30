@@ -21,7 +21,8 @@ import type {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface
+    TransactionEntryCreateInputInterface,
+    TransactionUpdateServiceInputInterface
 } from '@budgie/contracts';
 
 class TransactionService {
@@ -165,9 +166,21 @@ class TransactionService {
         });
     }
 
-    async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.updateById(id, input, tx);
+            const transaction = await transactionRepository.updateById(
+                id,
+                {
+                    title: input.title,
+                    comment: input.comment,
+                    type: input.type,
+                    operatedAt: input.operatedAt,
+                    fromAccountId: input.fromAccountId,
+                    toAccountId: input.toAccountId,
+                    exchangeRate: input.exchangeRate
+                },
+                tx
+            );
 
             await this.upsertEntriesAndTags(id, input, tx);
 
@@ -200,7 +213,7 @@ class TransactionService {
         return { fromEntry, toEntry };
     }
 
-    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionUpdateServiceInputInterface, tx: DB): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
         await transactionEntryRepository.bulkCreate(
             input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId)),
