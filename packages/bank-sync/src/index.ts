@@ -33,10 +33,8 @@ export { generatePrivatbankExternalId } from './privatbank/util/generate-privatb
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { ErsteFileClient } from './erste/client/erste-file.client';
-export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
-export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
+export { ersteMapper } from './erste/mapper/erste.mapper';
 export { ersteParser } from './erste/parser/erste.parser';
-export { ersteExternalIdGenerator } from './erste/parser/erste-external-id.generator';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { ErsteAccountInfoInterface } from './erste/interface/erste-account-info.interface';
