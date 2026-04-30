@@ -1,9 +1,9 @@
 import { ERSTE_LAYOUT_RIGHT_COLUMN_X_THRESHOLD, ERSTE_LAYOUT_Y_ROW_TOLERANCE } from '../constant/erste.constant';
 
-import type { PageRowInterface } from '../interface/page-row.interface';
+import type { ErstePageRowInterface } from '../interface/erste-page-row.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
-export class RowBucket {
+export class ErsteRowBucket {
     private readonly items: PdfTextItemInterface[] = [];
 
     constructor(
@@ -22,7 +22,7 @@ export class RowBucket {
         this.items.push(item);
     }
 
-    toPageRow(): PageRowInterface {
+    toPageRow(): ErstePageRowInterface {
         const sorted = [...this.items].sort((left, right) => left.x - right.x);
 
         return {

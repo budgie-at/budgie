@@ -1,13 +1,13 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionAccumulator } from './transaction-accumulator';
+import { ErsteTransactionAccumulator } from './erste-transaction-accumulator';
 
-import type { DateAmountInterface } from '../interface/date-amount.interface';
+import type { ErsteDateAmountInterface } from '../interface/erste-date-amount.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
-export class ParserState {
+export class ErsteParserState {
     private inSection = false;
-    private current: TransactionAccumulator | null = null;
+    private current: ErsteTransactionAccumulator | null = null;
     private readonly transactions: ErsteRowInterface[] = [];
 
     enterSection(): void {
@@ -23,9 +23,9 @@ export class ParserState {
         return this.inSection;
     }
 
-    startTransaction(dateAmount: DateAmountInterface, primary: string): void {
+    startTransaction(dateAmount: ErsteDateAmountInterface, primary: string): void {
         this.flush();
-        this.current = new TransactionAccumulator(dateAmount, primary);
+        this.current = new ErsteTransactionAccumulator(dateAmount, primary);
     }
 
     addContinuationLine(line: string): void {

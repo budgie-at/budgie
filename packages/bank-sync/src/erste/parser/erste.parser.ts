@@ -1,22 +1,24 @@
+import { Log } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankSyncErrorCodeEnum } from '../../core/enum/bank-sync-error-code.enum';
 import { BankSyncError } from '../../core/error/bank-sync.error';
-import { ERSTE_MODERN_PAGE_NOISE_PATTERNS } from '../constant/erste.constant';
-import { extractErsteAccountInfo } from '../util/extract-erste-account-info.util';
-import { groupPdfItemsIntoRows } from '../util/group-pdf-items-into-rows.util';
+import { ERSTE_PAGE_NOISE_PATTERNS } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
-import { ParserState } from './parser-state';
+import { ersteAccountInfoExtractor } from './erste-account-info.extractor';
+import { ErsteParserState } from './erste-parser-state';
+import { ersteRowGrouper } from './erste-row.grouper';
 
-import type { DateAmountInputInterface } from '../interface/date-amount-input.interface';
-import type { DateAmountInterface } from '../interface/date-amount.interface';
+import type { ErsteDateAmountInputInterface } from '../interface/erste-date-amount-input.interface';
+import type { ErsteDateAmountInterface } from '../interface/erste-date-amount.interface';
+import type { ErsteInlineDateAmountInterface } from '../interface/erste-inline-date-amount.interface';
+import type { ErstePageRowInterface } from '../interface/erste-page-row.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
-import type { InlineDateAmountInterface } from '../interface/inline-date-amount.interface';
-import type { PageRowInterface } from '../interface/page-row.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 const COLUMN_HEADER_PREFIX = 'Buchungstext/Booking Text';
@@ -25,13 +27,19 @@ const NEW_BALANCE_INLINE_PREFIX = 'Neuer Kontostand';
 const DATE_AMOUNT_RIGHT_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 const DATE_AMOUNT_TAIL_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 
-export class ErsteModernPositionalParser {
-    private state: ParserState = new ParserState();
+class ErsteParser {
+    private state: ErsteParserState = new ErsteParserState();
 
+    @Log(
+        items => `enter itemCount=${items.length}`,
+        (result, items) =>
+            `done itemCount=${items.length} iban=${result.account.iban} transactionCount=${result.transactions.length}`,
+        (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
+    )
     parse(items: PdfTextItemInterface[]): ErsteParsedDataInterface {
-        const account = extractErsteAccountInfo(items);
-        const rows = groupPdfItemsIntoRows(items);
-        this.state = new ParserState();
+        const account = ersteAccountInfoExtractor.extract(items);
+        const rows = ersteRowGrouper.group(items);
+        this.state = new ErsteParserState();
 
         for (const row of rows) {
             this.processRow(row);
@@ -41,7 +49,7 @@ export class ErsteModernPositionalParser {
         return { account, transactions: this.state.getTransactions() };
     }
 
-    private processRow(row: PageRowInterface): void {
+    private processRow(row: ErstePageRowInterface): void {
         const leftText = this.joinTexts(row.leftItems);
         const rightText = this.joinTexts(row.rightItems);
 
@@ -123,10 +131,10 @@ return true;
             return false;
         }
         
-return ERSTE_MODERN_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
+return ERSTE_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
     }
 
-    private parseRightDateAmount(text: string): DateAmountInterface | null {
+    private parseRightDateAmount(text: string): ErsteDateAmountInterface | null {
         const match = DATE_AMOUNT_RIGHT_REGEX.exec(text);
 
         if (!match) {
@@ -138,7 +146,7 @@ return ERSTE_MODERN_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
 return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
     }
 
-    private parseInlineDateAmount(text: string): InlineDateAmountInterface | null {
+    private parseInlineDateAmount(text: string): ErsteInlineDateAmountInterface | null {
         const match = DATE_AMOUNT_TAIL_REGEX.exec(text);
 
         if (!match) {
@@ -151,7 +159,7 @@ return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-'
 return { ...dateAmount, prefix: prefix.trim() };
     }
 
-    private buildDateAmount(input: DateAmountInputInterface): DateAmountInterface {
+    private buildDateAmount(input: ErsteDateAmountInputInterface): ErsteDateAmountInterface {
         const date = parse(`${input.day}.${input.month}.${input.year}`, 'dd.MM.yyyy', new Date());
 
         if (!isValid(date)) {
@@ -171,3 +179,5 @@ return { ...dateAmount, prefix: prefix.trim() };
         };
     }
 }
+
+export const ersteParser = new ErsteParser();

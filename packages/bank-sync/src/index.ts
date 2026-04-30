@@ -35,8 +35,8 @@ export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-r
 export { ErsteFileClient } from './erste/client/erste-file.client';
 export { ersteAccountMapper } from './erste/mapper/erste-account.mapper';
 export { ersteTransactionMapper } from './erste/mapper/erste-transaction.mapper';
-export { parseErsteItems } from './erste/util/parse-erste-items.util';
-export { generateErsteExternalId } from './erste/util/generate-erste-external-id.util';
+export { ersteParser } from './erste/parser/erste.parser';
+export { ersteExternalIdGenerator } from './erste/parser/erste-external-id.generator';
 
 export type { ErsteRowInterface } from './erste/interface/erste-row.interface';
 export type { ErsteAccountInfoInterface } from './erste/interface/erste-account-info.interface';

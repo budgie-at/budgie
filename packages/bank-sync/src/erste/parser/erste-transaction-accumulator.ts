@@ -1,18 +1,18 @@
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { parseErsteCardMerchant } from '../util/parse-erste-card-merchant.util';
+import { ersteCardMerchantParser } from './erste-card-merchant.parser';
 
-import type { DateAmountInterface } from '../interface/date-amount.interface';
 import type { ErsteCardMerchantInterface } from '../interface/erste-card-merchant.interface';
+import type { ErsteDateAmountInterface } from '../interface/erste-date-amount.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 type MerchantInfo = Partial<Pick<ErsteCardMerchantInterface, 'city' | 'countryAlpha2'>>;
 
-export class TransactionAccumulator {
+export class ErsteTransactionAccumulator {
     private readonly continuationLines: string[] = [];
 
     constructor(
-        private readonly dateAmount: DateAmountInterface,
+        private readonly dateAmount: ErsteDateAmountInterface,
         private readonly primary: string
     ) {}
 
@@ -38,7 +38,7 @@ export class TransactionAccumulator {
 
     private findMerchantInfo(): MerchantInfo {
         for (const line of this.continuationLines) {
-            const merchant = parseErsteCardMerchant(line);
+            const merchant = ersteCardMerchantParser.parse(line);
 
             if (isDefined(merchant)) {
                 return { city: merchant.city, countryAlpha2: merchant.countryAlpha2 };

@@ -26,15 +26,13 @@ class ErsteSyncService extends BaseFileBankSyncService {
         const ersteClient = new module.ErsteFileClient();
         ersteClient.parse(items);
 
-        const accounts = ersteClient.getAccounts();
-        const transactions = ersteClient.getTransactions();
-
-        const client = {
-            getAccounts: () => accounts,
-            getTransactions: () => transactions
+        return {
+            client: {
+                getAccounts: () => ersteClient.getAccounts(),
+                getTransactions: () => ersteClient.getTransactions()
+            },
+            bankAccounts: ersteClient.getAccounts()
         };
-
-        return { client, bankAccounts: accounts };
     }
 
     protected async resolveMccCategoryIdMap(): Promise<Map<string, number | null>> {
