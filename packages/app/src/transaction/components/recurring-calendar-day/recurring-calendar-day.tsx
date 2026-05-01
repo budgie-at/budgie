@@ -1,5 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { CalendarDay as DatePickerCalendarDay } from 'react-native-ui-datepicker';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,6 +10,8 @@ import { RecurringCalendarEntryInterface } from '../../interface/recurring-calen
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 const MAX_DOTS = 3;
+const DOT_STAGGER_MS = 10;
+const DOT_FADE_MS = 280;
 
 const circleVariants = cva('w-10 h-10 items-center justify-center rounded-full', {
     variants: {
@@ -129,14 +132,17 @@ export const RecurringCalendarDay = (props: Props) => {
             <View className={circleClassName} accessible={isDefined(testID)} {...(isDefined(testID) && { testID })}>
                 <Text className={dayTextClassName}>{day.text}</Text>
                 {hasDots ? (
-                    <View className="flex-row gap-x-0.5 -mt-0.5">
+                    <Animated.View
+                        entering={FadeIn.delay(dayOfMonth * DOT_STAGGER_MS).duration(DOT_FADE_MS)}
+                        className="flex-row gap-x-0.5 -mt-0.5"
+                    >
                         {Array.from({ length: actualDots }, (_, index) => (
                             <View key={`a-${index}`} className={dotVariants({ isSelected, type: 'solid' })} />
                         ))}
                         {Array.from({ length: forecastedDots }, (_, index) => (
                             <View key={`f-${index}`} className={dotVariants({ isSelected, type: 'hollow' })} />
                         ))}
-                    </View>
+                    </Animated.View>
                 ) : null}
             </View>
         </View>
