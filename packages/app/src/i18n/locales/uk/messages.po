@@ -48,12 +48,12 @@ msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
@@ -267,11 +267,11 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:68
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/app/(main)/analytics/transactions.tsx:59
+#: src/app/(main)/analytics/transactions.tsx:80
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
@@ -341,7 +341,7 @@ msgid "Cash"
 msgstr "Готівка"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:60
+#: src/app/(main)/analytics/transactions.tsx:81
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -416,7 +416,7 @@ msgstr "Буфер обміну порожній"
 msgid "Close"
 msgstr "Закрити"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:50
+#: src/@generic/component/popover-menu/popover-menu.tsx:72
 msgid "Close menu"
 msgstr "Закрити меню"
 
@@ -1097,7 +1097,7 @@ msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
-#: src/transaction/components/statistics-content/statistics-content.tsx:67
+#: src/transaction/components/statistics-content/statistics-content.tsx:69
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1324,7 +1324,7 @@ msgstr "Жоден неактивний рахунок не відповідає
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/app/(main)/analytics/transactions.tsx:67
+#: src/app/(main)/analytics/transactions.tsx:88
 #: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -1425,7 +1425,7 @@ msgstr "Початкові імпортовані транзакції буде 
 msgid "Original transaction"
 msgstr "Початкова транзакція"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:57
+#: src/transaction/components/statistics-content/statistics-content.tsx:59
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1841,7 +1841,7 @@ msgstr "Витрати за категоріями"
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:63
+#: src/transaction/components/statistics-content/statistics-content.tsx:65
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -2113,7 +2113,7 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/app/(main)/analytics/transactions.tsx:69
+#: src/app/(main)/analytics/transactions.tsx:90
 #: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
@@ -2158,6 +2158,10 @@ msgstr "Розконсолідувати транзакцію?"
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"
 msgstr "Невідомо"
+
+#: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
+msgid "Untagged"
+msgstr "Без тегу"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts:16
 msgid "Up to date"

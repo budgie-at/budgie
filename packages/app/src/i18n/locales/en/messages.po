@@ -50,12 +50,12 @@ msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} over budget"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% of expenses"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
@@ -269,11 +269,11 @@ msgstr "Auto-sync accounts and transactions from Monobank"
 msgid "Available Columns"
 msgstr "Available Columns"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:68
+#: src/transaction/components/statistics-content/statistics-content.tsx:70
 msgid "Balance"
 msgstr "Balance"
 
-#: src/app/(main)/analytics/transactions.tsx:59
+#: src/app/(main)/analytics/transactions.tsx:80
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
@@ -343,7 +343,7 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:60
+#: src/app/(main)/analytics/transactions.tsx:81
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -418,7 +418,7 @@ msgstr "Clipboard is empty"
 msgid "Close"
 msgstr "Close"
 
-#: src/@generic/component/popover-menu/popover-menu.tsx:50
+#: src/@generic/component/popover-menu/popover-menu.tsx:72
 msgid "Close menu"
 msgstr "Close menu"
 
@@ -1099,7 +1099,7 @@ msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
-#: src/transaction/components/statistics-content/statistics-content.tsx:67
+#: src/transaction/components/statistics-content/statistics-content.tsx:69
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1326,7 +1326,7 @@ msgstr "No inactive accounts match your search"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/app/(main)/analytics/transactions.tsx:67
+#: src/app/(main)/analytics/transactions.tsx:88
 #: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1427,7 +1427,7 @@ msgstr "Original imported transactions will be restored and the consolidated tra
 msgid "Original transaction"
 msgstr "Original transaction"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:57
+#: src/transaction/components/statistics-content/statistics-content.tsx:59
 msgid "Overview"
 msgstr "Overview"
 
@@ -1843,7 +1843,7 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:63
+#: src/transaction/components/statistics-content/statistics-content.tsx:65
 msgid "Spent"
 msgstr "Spent"
 
@@ -2115,7 +2115,7 @@ msgstr "Try a different search term"
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
-#: src/app/(main)/analytics/transactions.tsx:69
+#: src/app/(main)/analytics/transactions.tsx:90
 #: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
@@ -2160,6 +2160,10 @@ msgstr "Unconsolidate transaction?"
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
 msgid "Unknown"
 msgstr "Unknown"
+
+#: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
+msgid "Untagged"
+msgstr "Untagged"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts:16
 msgid "Up to date"
