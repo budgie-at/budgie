@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.7.1](https://github.com/budgie-at/budgie/compare/v5.7.0...v5.7.1) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** allow home header collapse with dense accounts ([cd37188](https://github.com/budgie-at/budgie/commit/cd371884044eb3dfaba8a3a78a3c4ab8542ec689))
+- **app:** correct export database toast copy ([1995328](https://github.com/budgie-at/budgie/commit/199532846b852cccdb469f3b940ef69f88c2dcd0))
+
 # [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
 
 ### Features
