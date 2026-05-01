@@ -293,6 +293,10 @@ msgstr "Synchronisation bancaire"
 msgid "Bank sync has been reset. History will be re-synced on next sync."
 msgstr "La synchronisation bancaire a été réinitialisée. L'historique sera resynchronisé lors de la prochaine synchronisation."
 
+#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:44
+msgid "Bank sync reset"
+msgstr "Synchronisation bancaire réinitialisée"
+
 #: src/@generic/component/currency-selector/currency-selector.tsx:64
 msgid "Base currency"
 msgstr "Devise de base"
@@ -479,6 +483,18 @@ msgstr "Convertir en transfert ?"
 msgid "Could not activate account."
 msgstr "Impossible d'activer le compte."
 
+#: src/account/component/archive-account/archive-account.tsx:44
+msgid "Could not archive account"
+msgstr "Impossible d'archiver le compte"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:36
+msgid "Could not clear data"
+msgstr "Impossible d'effacer les données"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
+msgid "Could not consolidate transfers"
+msgstr "Impossible de consolider les virements"
+
 #: src/category/components/category-form/category-form.tsx:143
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
@@ -486,6 +502,10 @@ msgstr "Impossible de créer la catégorie"
 #: src/tag/components/tag-form/tag-form.tsx:132
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
+
+#: src/transaction/hook/use-create-transaction-form.hook.ts:57
+msgid "Could not create transaction"
+msgstr "Impossible de créer la transaction"
 
 #: src/transaction/hook/use-create-transaction-form.hook.ts:58
 msgid "Could not create transaction. Please try again later."
@@ -508,6 +528,22 @@ msgstr "Impossible de supprimer le tag"
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
+#: src/export/components/export-csv/export-csv.tsx:16
+msgid "Could not export CSV"
+msgstr "Impossible d'exporter le CSV"
+
+#: src/export/components/export-database/export-database.tsx:15
+msgid "Could not export database"
+msgstr "Impossible d'exporter la base de données"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:53
+msgid "Could not fetch accounts"
+msgstr "Impossible de récupérer les comptes"
+
+#: src/app/(tabs)/settings/import.tsx:142
+msgid "Could not import CSV file"
+msgstr "Impossible d'importer le fichier CSV"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
 msgid "Could not load sources. Please try again."
 msgstr "Impossible de charger les sources. Veuillez réessayer."
@@ -520,6 +556,10 @@ msgstr "Impossible de fusionner la catégorie"
 msgid "Could not merge tag"
 msgstr "Impossible de fusionner l'étiquette"
 
+#: src/app/(tabs)/settings/import.tsx:111
+msgid "Could not read CSV file"
+msgstr "Impossible de lire le fichier CSV"
+
 #: src/app/(tabs)/settings/categories.tsx:53
 msgid "Could not reassign category"
 msgstr "Impossible de réassigner la catégorie"
@@ -527,6 +567,14 @@ msgstr "Impossible de réassigner la catégorie"
 #: src/app/(tabs)/settings/tags.tsx:54
 msgid "Could not reassign tag"
 msgstr "Impossible de réassigner l'étiquette"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+msgid "Could not recalculate balances"
+msgstr "Impossible de recalculer les soldes"
+
+#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:50
+msgid "Could not reset bank sync"
+msgstr "Impossible de réinitialiser la synchronisation bancaire"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 msgid "Could not restore account."
@@ -540,9 +588,25 @@ msgstr "Impossible d'enregistrer la catégorie"
 msgid "Could not save tag"
 msgstr "Impossible d'enregistrer l'étiquette"
 
+#: src/import/components/import-csv/import-csv.tsx:32
+msgid "Could not select CSV file"
+msgstr "Impossible de sélectionner le fichier CSV"
+
+#: src/import/components/import-database/import-database.tsx:50
+msgid "Could not select database backup"
+msgstr "Impossible de sélectionner la sauvegarde de la base de données"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:69
+msgid "Could not set up sync"
+msgstr "Impossible de configurer la synchronisation"
+
 #: src/transaction/hook/use-delete-transaction.hook.ts:21
 msgid "Could not unconsolidate transaction."
 msgstr "Impossible de déconsolider la transaction."
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:55
+msgid "Could not update token"
+msgstr "Impossible de mettre à jour le jeton"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:44
 msgid "Could not update transaction."
@@ -552,7 +616,7 @@ msgstr "Impossible de mettre à jour la transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 
-#: src/export/components/export-database/export-database.tsx:16
+#: src/export/components/export-database/export-database.tsx:21
 msgid "Create a backup of all your data"
 msgstr "Créer une sauvegarde de toutes vos données"
 
@@ -617,6 +681,10 @@ msgstr "Crypto"
 msgid "Cryptocurrency holdings"
 msgstr "Avoirs en cryptomonnaies"
 
+#: src/export/components/export-csv/export-csv.tsx:14
+msgid "CSV exported"
+msgstr "CSV exporté"
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:16
 msgid "Currency"
 msgstr "Devise"
@@ -637,6 +705,10 @@ msgstr "Mode sombre"
 #: src/app/(tabs)/settings/index.tsx:182
 msgid "Data management"
 msgstr "Gestion des données"
+
+#: src/export/components/export-database/export-database.tsx:13
+msgid "Database exported"
+msgstr "Base de données exportée"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
@@ -695,7 +767,6 @@ msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/export/hook/use-export-action.hook.ts:15
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
 msgid "Done"
 msgstr "Terminé"
@@ -830,14 +901,6 @@ msgstr "Entrez votre jeton API Monobank"
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/app/(tabs)/settings/import.tsx:111
-#: src/import/components/import-csv/import-csv.tsx:32
-#: src/import/components/import-database/import-database.tsx:50
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
-msgid "Error"
-msgstr "Erreur"
-
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
 msgid "Errors"
 msgstr "Erreurs"
@@ -871,22 +934,17 @@ msgstr "Dépense"
 msgid "Expenses"
 msgstr "Dépenses"
 
-#: src/export/components/export-csv/export-csv.tsx:17
+#: src/export/components/export-csv/export-csv.tsx:22
 msgid "Export all transactions to a CSV file"
 msgstr "Exporter toutes les transactions vers un fichier CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:16
-#: src/export/hook/use-export-action.hook.ts:15
+#: src/export/components/export-csv/export-csv.tsx:21
 msgid "Export CSV"
 msgstr "Exporter CSV"
 
-#: src/export/components/export-database/export-database.tsx:15
+#: src/export/components/export-database/export-database.tsx:20
 msgid "Export Database"
 msgstr "Exporter la base de données"
-
-#: src/export/hook/use-export-action.hook.ts:17
-msgid "Export Failed"
-msgstr "Échec de l'export"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
 msgid "Export your transactions to Excel"
@@ -905,14 +963,6 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:36
-msgid "Failed to clear data"
-msgstr "Échec de la suppression des données"
-
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:53
-msgid "Failed to fetch accounts"
-msgstr "Échec de la récupération des comptes"
-
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
 msgstr "Échec du chargement des contacts."
@@ -920,14 +970,6 @@ msgstr "Échec du chargement des contacts."
 #: src/auth/hook/use-pin-setup.hook.tsx:82
 msgid "Failed to save PIN. Please try again."
 msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
-
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:69
-msgid "Failed to setup sync"
-msgstr "Échec de la configuration de la synchronisation"
-
-#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:55
-msgid "Failed to update token"
-msgstr "Échec de la mise à jour du jeton"
 
 #: src/ai/service/ai-system-status.service.ts:292
 msgid "Fast-indexing {done} of {total} • tap to pause"
@@ -1032,10 +1074,6 @@ msgstr "Importer Erste Bank"
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:81
 msgid "Import failed"
 msgstr "Échec de l'importation"
-
-#: src/app/(tabs)/settings/import.tsx:142
-msgid "Import Failed"
-msgstr "Importation échouée"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:15
 msgid "Import Privatbank"
@@ -1773,15 +1811,9 @@ msgid "Show this account on the main page"
 msgstr "Afficher ce compte sur la page principale"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:44
 #: src/ai/component/voice-input-error/voice-input-error.tsx:29
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:50
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
-
-#: src/transaction/hook/use-create-transaction-form.hook.ts:57
-msgid "Something went wrong."
-msgstr "Quelque chose s'est mal passé."
 
 #: src/account/component/account-action-card/account-action-card.tsx:60
 #: src/account/component/archived-account-card/archived-account-card.tsx:42
@@ -1849,10 +1881,6 @@ msgstr "Soumettre"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:28
 msgid "Subscriptions"
 msgstr "Abonnements"
-
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:44
-msgid "Success"
-msgstr "Succès"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
 msgid "Swap accounts"
@@ -2205,6 +2233,14 @@ msgstr "Vous devez"
 msgid "You received money"
 msgstr "Vous avez reçu de l'argent"
 
+#: src/export/components/export-database/export-database.tsx:14
+msgid "Your database backup is ready to share."
+msgstr "Votre sauvegarde de base de données est prête à être partagée."
+
 #: src/sync/component/token-input-step/token-input-step.tsx:27
 msgid "Your token is stored securely in the database. Sync continues in the background."
 msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La synchronisation continue en arrière-plan."
+
+#: src/export/components/export-csv/export-csv.tsx:15
+msgid "Your transaction file is ready to share."
+msgstr "Votre fichier de transactions est prêt à être partagé."

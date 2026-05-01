@@ -41,7 +41,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
         } catch (error) {
             Toast.show({
                 type: 'error',
-                text1: t`Something went wrong`,
+                text1: t`Could not archive account`,
                 text2: getErrorMessage(error)
             });
         } finally {
