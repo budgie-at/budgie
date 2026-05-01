@@ -1,6 +1,6 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -38,6 +38,8 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     const isCategoriesTab = activeTab === 'categories';
+    const categoriesActivityMode = isCategoriesTab ? 'visible' : 'hidden';
+    const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
     return (
         <>
@@ -69,7 +71,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                     </View>
                 </View>
 
-                {isCategoriesTab ? (
+                <Activity mode={categoriesActivityMode}>
                     <StatsByCategoriesPanel
                         filters={filters}
                         income={income}
@@ -77,7 +79,9 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                         incomeByCategory={incomeByCategory}
                         expenseByCategory={expenseByCategory}
                     />
-                ) : (
+                </Activity>
+
+                <Activity mode={tagsActivityMode}>
                     <StatsByTagsPanel
                         filters={filters}
                         income={income}
@@ -85,7 +89,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                         incomeByTag={incomeByTag}
                         expenseByTag={expenseByTag}
                     />
-                )}
+                </Activity>
 
                 <MenuSpacer />
             </ScrollView>
