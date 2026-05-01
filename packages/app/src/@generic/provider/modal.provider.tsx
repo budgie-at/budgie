@@ -9,6 +9,7 @@ import { LanguageSelectorModalProvider } from '../../i18n/provider/language-sele
 import { ImportColumnMapperModalProvider } from '../../import/provider/import-column-mapper-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
+import { ConsolidationSourceModalProvider } from '../../transaction/provider/consolidation-source-modal.provider';
 import { ConvertToTransferModalProvider } from '../../transaction/provider/convert-to-transfer-modal.provider';
 import { DatePickerModalProvider } from '../../transaction/provider/date-picker-modal.provider';
 import { NoteInputModalProvider } from '../../transaction/provider/note-input-modal.provider';
@@ -33,29 +34,31 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                             <DatePickerModalProvider>
                                 <NoteInputModalProvider>
                                     <SplitEntriesModalProvider>
-                                        <ConvertToTransferModalProvider>
-                                            <CurrencySelectorModalProvider>
-                                                <LanguageSelectorModalProvider>
-                                                    <ContactSelectorModalProvider>
-                                                        <AccountTypeSelectorModalProvider>
-                                                            <ImportColumnMapperModalProvider>
-                                                                <TransactionTypeFilterModalProvider>
-                                                                    <DateFilterModalProvider>
-                                                                        <TransactionCategoryFilterModalProvider>
-                                                                            <TransactionAccountFilterModalProvider>
-                                                                                <TransactionTagFilterModalProvider>
-                                                                                    {children}
-                                                                                </TransactionTagFilterModalProvider>
-                                                                            </TransactionAccountFilterModalProvider>
-                                                                        </TransactionCategoryFilterModalProvider>
-                                                                    </DateFilterModalProvider>
-                                                                </TransactionTypeFilterModalProvider>
-                                                            </ImportColumnMapperModalProvider>
-                                                        </AccountTypeSelectorModalProvider>
-                                                    </ContactSelectorModalProvider>
-                                                </LanguageSelectorModalProvider>
-                                            </CurrencySelectorModalProvider>
-                                        </ConvertToTransferModalProvider>
+                                        <ConsolidationSourceModalProvider>
+                                            <ConvertToTransferModalProvider>
+                                                <CurrencySelectorModalProvider>
+                                                    <LanguageSelectorModalProvider>
+                                                        <ContactSelectorModalProvider>
+                                                            <AccountTypeSelectorModalProvider>
+                                                                <ImportColumnMapperModalProvider>
+                                                                    <TransactionTypeFilterModalProvider>
+                                                                        <DateFilterModalProvider>
+                                                                            <TransactionCategoryFilterModalProvider>
+                                                                                <TransactionAccountFilterModalProvider>
+                                                                                    <TransactionTagFilterModalProvider>
+                                                                                        {children}
+                                                                                    </TransactionTagFilterModalProvider>
+                                                                                </TransactionAccountFilterModalProvider>
+                                                                            </TransactionCategoryFilterModalProvider>
+                                                                        </DateFilterModalProvider>
+                                                                    </TransactionTypeFilterModalProvider>
+                                                                </ImportColumnMapperModalProvider>
+                                                            </AccountTypeSelectorModalProvider>
+                                                        </ContactSelectorModalProvider>
+                                                    </LanguageSelectorModalProvider>
+                                                </CurrencySelectorModalProvider>
+                                            </ConvertToTransferModalProvider>
+                                        </ConsolidationSourceModalProvider>
                                     </SplitEntriesModalProvider>
                                 </NoteInputModalProvider>
                             </DatePickerModalProvider>

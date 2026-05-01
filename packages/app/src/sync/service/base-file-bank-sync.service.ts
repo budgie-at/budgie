@@ -1,9 +1,11 @@
 /* eslint-disable no-await-in-loop */
 import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -19,6 +21,11 @@ import type { DB } from '@budgie/contracts';
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
 
+    @Log(
+        uri => `enter uri=${uri}`,
+        (result, uri) => `done uri=${uri} previewCount=${result.length}`,
+        (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`
+    )
     async importPreview(uri: string): Promise<BankAccountPreviewInterface[]> {
         const { bankAccounts } = await this.parseFile(uri);
 
@@ -29,6 +36,12 @@ export abstract class BaseFileBankSyncService {
         return mapBankAccountsToPreview(bankAccounts, this.provider);
     }
 
+    @Log(
+        (uri, selectedAccountIds) => `enter uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (_result, uri, selectedAccountIds) => `done uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')}`,
+        (error, uri, selectedAccountIds) =>
+            `throw uri=${uri} selectedAccountIds=${selectedAccountIds.join(',')} error=${getErrorMessage(error)}`
+    )
     async executeImportForSelectedAccounts(uri: string, selectedAccountIds: string[]): Promise<void> {
         const { client, bankAccounts } = await this.parseFile(uri);
         const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
@@ -40,6 +53,7 @@ export abstract class BaseFileBankSyncService {
         await this.executeImport(client, selectedBankAccounts);
     }
 
+    @Log(uri => `enter uri=${uri}`, (_result, uri) => `done uri=${uri}`, (error, uri) => `throw uri=${uri} error=${getErrorMessage(error)}`)
     async quickImport(uri: string): Promise<void> {
         const { client, bankAccounts } = await this.parseFile(uri);
 
@@ -58,6 +72,68 @@ export abstract class BaseFileBankSyncService {
         }
 
         await this.executeImport(client, enabledBankAccounts);
+    }
+
+    @Log(
+        (client, bankAccount, context) =>
+            `enter accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(account => account.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')}`,
+        'done',
+        (error, client, bankAccount, context) =>
+            `throw accountId=${bankAccount.id} accountIds=${client
+                .getAccounts()
+                .map(account => account.id)
+                .join(',')} existingKeys=${[...context.existingTransactionIdMap.keys()].join(',')} error=${getErrorMessage(error)}`
+    )
+    private async importAccountTransactions(
+        client: FileBasedBankSyncClientInterface,
+        bankAccount: BankAccountInterface,
+        context: ImportContextInterface
+    ): Promise<void> {
+        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
+        await this.createBankSyncRecord(account.id, context.tx);
+
+        const transactions = client.getTransactions(bankAccount.id);
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
+
+        const transactionInputs = transactions.map(transaction => {
+            const mccCategoryId = isNotEmptyString(transaction.category)
+                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
+                : null;
+
+            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
+        });
+
+        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
+            shouldUpdateBalances: false
+        });
+    }
+
+    @Log(
+        (_client, bankAccounts) => `enter bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (_result, _client, bankAccounts) => `done bankAccountIds=${bankAccounts.map(account => account.id).join(',')}`,
+        (error, _client, bankAccounts) =>
+            `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
+        const [mccCategoryIdMap, existingTransactionIdMap] = await Promise.all([
+            this.resolveMccCategoryIdMap(client, bankAccounts),
+            transactionService.findIdMapByExternalSource(this.provider)
+        ]);
+
+        await transactionAsync(db, async tx => {
+            const context: ImportContextInterface = { mccCategoryIdMap, existingTransactionIdMap, tx };
+
+            for (const bankAccount of bankAccounts) {
+                await this.importAccountTransactions(client, bankAccount, context);
+            }
+
+            await transactionService.updateAllBalances(tx);
+        });
     }
 
     private async getEnabledExternalIds(): Promise<Set<string>> {
@@ -88,47 +164,6 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
-    }
-
-    private async importAccountTransactions(
-        client: FileBasedBankSyncClientInterface,
-        bankAccount: BankAccountInterface,
-        context: ImportContextInterface
-    ): Promise<void> {
-        const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
-        await this.createBankSyncRecord(account.id, context.tx);
-
-        const transactions = client.getTransactions(bankAccount.id);
-        const newTransactions = transactions.filter(transaction => !context.existingExternalIds.has(transaction.id));
-
-        if (!isNotEmptyArray(newTransactions)) {
-            return;
-        }
-
-        const transactionInputs = newTransactions.map(transaction => {
-            const mccCategoryId = isNotEmptyString(transaction.category)
-                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
-                : null;
-
-            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
-        });
-
-        await transactionService.bulkCreate(transactionInputs, context.tx);
-    }
-
-    private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryIdMap, existingExternalIds] = await Promise.all([
-            this.resolveMccCategoryIdMap(client, bankAccounts),
-            transactionService.findByExternalSource(this.provider)
-        ]);
-
-        await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryIdMap, existingExternalIds, tx };
-
-            for (const bankAccount of bankAccounts) {
-                await this.importAccountTransactions(client, bankAccount, context);
-            }
-        });
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;

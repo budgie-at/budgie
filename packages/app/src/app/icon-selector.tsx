@@ -3,9 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { IconSelectorSelectors } from '../@e2e/selectors/icon-selector.selector';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -14,13 +13,15 @@ import { useIconSelectorModal } from '../@generic/context/icon-selector-modal.co
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 
+import { IconSelectorModalSelector } from './icon-selector-modal.selector';
+
 const NUM_COLUMNS = 4;
 const MAX_ICONS = 100;
 
 const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
 
 const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] => {
-    if (keywords.length === 0) {
+    if (isEmptyArray(keywords)) {
         return icons;
     }
 
@@ -43,7 +44,7 @@ const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] 
 };
 
 const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserIcon>[] => {
-    if (search.length === 0) {
+    if (!isNotEmptyString(search)) {
         const sorted = sortIconsByKeywords(USER_ICONS_LIST, keywords);
 
         return padFlatListData(sorted.slice(0, MAX_ICONS), NUM_COLUMNS);
@@ -103,7 +104,7 @@ export default function IconSelectorModal() {
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search icons (e.g., money, travel, food)...`}
-                testID={IconSelectorSelectors.SearchInput}
+                testID={IconSelectorModalSelector.SearchInput}
             />
 
             <FlatList

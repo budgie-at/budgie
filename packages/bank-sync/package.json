@@ -1,6 +1,6 @@
 {
     "name": "@budgie/bank-sync",
-    "version": "2.41.2",
+    "version": "5.7.0",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
@@ -22,13 +22,11 @@
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p .",
-        "test": "run -T jest --passWithNoTests",
-        "test:watch": "run -T jest --watch",
-        "test:cov": "run -T jest --coverage"
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
-        "@rnw-community/shared": "^1.8.2",
+        "@budgie/logger": "workspace:*",
+        "@rnw-community/shared": "^2.0.0",
         "date-fns": "^4.1.0",
         "ky": "^1.14.1",
         "xlsx": "^0.18.5"

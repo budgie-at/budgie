@@ -1,0 +1,124 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '06.db(, db)?'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.ManageTagsCard'
+      DESTINATION_ID: 'TagPage.SearchInput'
+
+# --- Create Primary Tag ---
+
+- tapOn:
+    id: 'ActionButton'
+- tapOn:
+    text: 'Tag'
+
+- tapOn:
+    id: 'TagForm.Input'
+- inputText: 'E2E Tag Primary'
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TagForm.Submit'
+
+- assertVisible:
+    id: 'TagCard.E2E Tag Primary'
+
+# --- Create Second Tag For Search ---
+
+- tapOn:
+    id: 'ActionButton'
+- tapOn:
+    text: 'Tag'
+
+- tapOn:
+    id: 'TagForm.Input'
+- inputText: 'E2E Tag Search'
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TagForm.Submit'
+
+- assertVisible:
+    id: 'TagCard.E2E Tag Search'
+
+# --- Search And Open Result ---
+
+- tapOn:
+    id: 'TagPage.SearchInput'
+- inputText: 'Search'
+
+- assertVisible:
+    id: 'TagCard.E2E Tag Search'
+- assertNotVisible:
+    id: 'TagCard.E2E Tag Primary'
+
+- tapOn:
+    id: 'TagCard.E2E Tag Search'
+
+- assertVisible: 'E2E Tag Search.*'
+- tapOn:
+    id: 'TagForm.Merge'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- inputText: 'Primary'
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Card.E2E Tag Primary'
+    timeout: 10000
+- tapOn:
+    id: 'TagPickerBottomSheet.Card.E2E Tag Primary'
+
+- assertNotVisible:
+    id: 'TagCard.E2E Tag Search'
+
+- tapOn:
+    id: 'TagPage.SearchInput'
+- eraseText: 50
+
+- assertVisible:
+    id: 'TagCard.E2E Tag Primary'
+- assertNotVisible:
+    id: 'TagCard.E2E Tag Search'
+
+# --- Edit Primary Tag ---
+
+- tapOn:
+    id: 'TagCard.E2E Tag Primary'
+
+- tapOn:
+    id: 'TagForm.Input'
+- eraseText: 80
+- inputText: 'E2E Tag Updated'
+- pressKey: Enter
+- waitForAnimationToEnd
+- tapOn:
+    id: 'TagForm.Submit'
+
+- assertVisible:
+    id: 'TagCard.E2E Tag Updated'
+- assertNotVisible:
+    id: 'TagCard.E2E Tag Primary'
+
+- swipe:
+    from:
+      id: 'TagCard.E2E Tag Updated'
+    direction: LEFT
+- extendedWaitUntil:
+    visible:
+      id: 'DeletableRow.DeleteButton'
+    timeout: 10000
+- tapOn:
+    id: 'DeletableRow.DeleteButton'
+- tapOn: 'Delete'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TagCard.E2E Tag Updated'
+    timeout: 10000

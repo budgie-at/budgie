@@ -1,12 +1,15 @@
 {
     "ignore": [
+        ".agents/**",
         ".claude/**",
+        ".codex/**",
         "packages/landing/**",
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "packages/app/plugins/with-vec-xcframework-fix.js",
         "scripts/after-install.cjs",
+        "tests/app-tests/scripts/prepare-date-sensitive-fixtures.mjs",
         "packages/contracts/babel.config.js",
         "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
@@ -17,12 +20,13 @@
         "**/*.web.ts",
         "**/*.web.tsx",
         "**/selectors.ts",
+        "packages/app/src/ai/hook/use-ai-stt.hook.ts",
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/src/category/enum/system-category-id.enum.ts",
-        "packages/app/src/ai/provider/llm.provider.tsx",
-        "packages/app/src/ai/hook/use-llama-llm.hook.ts",
-        "packages/app/src/ai/context/llm.context.ts"
+        "packages/app/scripts/bench-queries.ts",
+        "packages/app/scripts/seed-bench-db.ts",
+        "packages/app/scripts/snapshot-monthly-patterns.ts"
     ],
     "ignoreDependencies": [
         "husky",
@@ -32,12 +36,12 @@
         "metro-minify-terser",
         "react-compiler-runtime",
         "babel-jest",
-        "tsx",
         "@jest/globals",
+        "expo-pdf-text-extract",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
         "rimraf"
     ],
-    "ignoreBinaries": ["run", "maestro"]
+    "ignoreBinaries": ["run", "build"]
 }

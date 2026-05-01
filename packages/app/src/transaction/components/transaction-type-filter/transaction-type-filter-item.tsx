@@ -1,11 +1,11 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { TransactionFilterCard } from '../transaction-filter-card/transaction-filter-card';
+import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
 
 interface Props {
     readonly isSelected: boolean;
@@ -17,7 +17,6 @@ export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props)
     const { t } = useLingui();
 
     const handlePress = () => void onSelect(type);
-    const selectedTestID = isSelected ? TransactionFiltersSelectors.TypeOptionSelected(type) : null;
 
     return (
         <TransactionFilterCard
@@ -26,8 +25,7 @@ export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props)
             icon={TRANSACTION_ICON[type]}
             variant={TRANSACTION_COLOR[type]}
             label={t(TRANSACTION_TYPE[type])}
-            testID={TransactionFiltersSelectors.TypeOption(type)}
-            selectedTestID={selectedTestID ?? ''}
+            testID={TransactionFiltersSelector.TypeOption(type)}
         />
     );
 };

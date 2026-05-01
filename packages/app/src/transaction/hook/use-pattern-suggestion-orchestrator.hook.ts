@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 
-import { PatternSuggestionOrchestratorConfig } from '../interface/pattern-suggestion-orchestrator-config.interface';
-import { PatternSuggestionOrchestratorFacts } from '../interface/pattern-suggestion-orchestrator-facts.interface';
+import { PatternSuggestionOrchestratorConfig } from '../interface/pattern-suggestion-orchestrator-config.type';
+import { PatternSuggestionOrchestratorFacts } from '../interface/pattern-suggestion-orchestrator-facts.type';
 import {
     PatternSuggestionOrchestratorActionTypeEnum,
     patternSuggestionOrchestratorInitialState,

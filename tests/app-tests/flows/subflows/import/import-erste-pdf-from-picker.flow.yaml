@@ -1,0 +1,44 @@
+appId: ${APP_ID}
+env:
+  PDF_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
+---
+- extendedWaitUntil:
+    visible:
+      text: 'Select File'
+    timeout: 10000
+
+- tapOn:
+    text: 'Select File'
+
+- runFlow:
+    file: select-file-from-app-provider.flow.yaml
+    env:
+      FILE_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
+
+- extendedWaitUntil:
+    visible:
+        id: 'SyncAccountSelection.Row.Erste_EUR'
+    timeout: 5000
+
+- tapOn:
+    id: 'SyncAccountSelection.Row.Erste_EUR'
+
+- extendedWaitUntil:
+    visible:
+      text: 'Start Sync'
+    timeout: 15000
+
+- tapOn:
+      text: 'Start Sync'
+
+- runFlow:
+      when:
+          visible: 'Already syncing'
+      commands:
+          - tapOn:
+                id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 3000

@@ -1,12 +1,11 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { TagFormSelectors } from '../../../@e2e/selectors/tag-form.selector';
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
@@ -18,12 +17,14 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { useLlmContext } from '../../../ai/context/llm.context';
+import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
+
+import { TagFormSelector } from './tag-form.selector';
 
 type TagFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 
@@ -48,7 +49,7 @@ export const TagForm = (props: Props) => {
     const [openTagsSelector] = useTagsSelectorModal();
     const [openNoteInput] = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
-    const { llm } = useLlmContext();
+    const { isChatReady, modelStatus } = useChatModelStatus();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -60,7 +61,7 @@ export const TagForm = (props: Props) => {
         currentTitle: title,
         regenerate,
         isRegenerating,
-        isModelReady: llm.isReady
+        isModelReady: isChatReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -135,7 +136,12 @@ export const TagForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={false} bounces={false}>
+            <KeyboardAwareScrollView
+                testID={TagFormSelector.ScrollView}
+                keyboardShouldPersistTaps="always"
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+            >
                 <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
                     <FormItem label={t`Tag Name`}>
                         <Input
@@ -151,7 +157,7 @@ export const TagForm = (props: Props) => {
                             textContentType="none"
                             spellCheck={false}
                             inputMode="text"
-                            testID={TagFormSelectors.Input}
+                            testID={TagFormSelector.Input}
                         />
                     </FormItem>
                 </Animated.View>
@@ -164,22 +170,20 @@ export const TagForm = (props: Props) => {
                     onRegenerate={handleRegenerate}
                     onTitleEnPress={handleTitleEnPress}
                     onTitleTagsPress={handleTitleTagsPress}
-                    modelStatus={llm}
+                    modelStatus={modelStatus}
                 />
             </KeyboardAwareScrollView>
 
-            <KeyboardStickyView>
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    {isEditing ? (
-                        <ModalFormMergeButton testID={TagFormSelectors.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
-                    ) : null}
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? (
+                    <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
+                ) : null}
 
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelectors.Submit} />
-                    </View>
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} testID={TagFormSelector.Submit} />
                 </View>
-            </KeyboardStickyView>
+            </View>
         </ModalPage>
     );
 };

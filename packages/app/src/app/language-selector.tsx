@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
-import { LanguageSelectorSelectors } from '../@e2e/selectors/language-selector.selector';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
@@ -12,6 +11,8 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../i18n/context/language-selector-modal.context';
 import { LanguageInterface } from '../i18n/interface/language.interface';
+
+import { LanguageSelectorModalSelector } from './language-selector-modal.selector';
 
 const keyExtractor = (item: LanguageInterface) => item.code;
 
@@ -44,7 +45,7 @@ export default function LanguageSelectorModal() {
             identifier={item.code}
             isSelected={item.code === selectedLanguage}
             onSelect={handleSelect}
-            testID={LanguageSelectorSelectors.Option(item.code)}
+            testID={LanguageSelectorModalSelector.Option(item.code)}
             iconSlot={
                 <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
                     <Text className="text-primary text-4xl">{item.emoji}</Text>
@@ -68,7 +69,7 @@ export default function LanguageSelectorModal() {
                 search={search}
                 onSearchChange={setSearch}
                 placeholder={t`Search languages...`}
-                testID={LanguageSelectorSelectors.SearchInput}
+                testID={LanguageSelectorModalSelector.SearchInput}
             />
 
             <FlatList

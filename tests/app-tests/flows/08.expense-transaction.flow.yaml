@@ -1,0 +1,145 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '08.db(, db)?'
+
+# --- Create Expense ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Expense'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Expense'
+
+- tapOn: '4'
+- tapOn: '2'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/categories/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+- runFlow:
+    file: subflows/tags/create-tag-from-transaction.flow.yaml
+    env:
+      TAG_NAME: 'E2E Txn Tag'
+
+- runFlow:
+    file: subflows/tags/create-tag-from-transaction.flow.yaml
+    env:
+      TAG_NAME: 'E2E Txn Primary Tag'
+
+- tapOn:
+    id: 'TransactionForm.TagsSelector'
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- longPressOn:
+    id: 'TagPickerBottomSheet.Card.E2E Txn Primary Tag'
+- extendedWaitUntil:
+    visible:
+      id: 'tags-selector-modal-done-button'
+- tapOn:
+    id: 'tags-selector-modal-done-button'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TagPickerBottomSheet.Input'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Expense'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Test_Expense'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.Category.E2E_Txn_Category'
+- assertVisible:
+    id: 'TransactionCard.Tag.E2E_Txn_Primary_Tag'
+- assertVisible:
+    id: 'TransactionCard.TagSiblingsCount.E2E_Txn_Primary_Tag'
+    text: '+1'
+- assertVisible:
+    id: 'TransactionCard.Account.E2E_Txn_Account'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.58'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+# --- Edit Expense ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
+
+- runFlow:
+    file: subflows/categories/create-category-from-transaction.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Edited Category'
+
+- runFlow:
+    file: subflows/transactions/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Expense'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Edited_Expense'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.Category.E2E_Edited_Category'
+- assertVisible:
+    id: 'TransactionCard.Tag.E2E_Txn_Primary_Tag'
+- assertVisible:
+    id: 'TransactionCard.TagSiblingsCount.E2E_Txn_Primary_Tag'
+    text: '+1'
+- assertVisible:
+    id: 'TransactionCard.Account.E2E_Txn_Account'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Test_Expense'
+
+# --- Delete Expense ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Expense'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Edited_Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.100'

@@ -1,54 +1,53 @@
-import { AccountEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { TransactionAccountLine } from '../transaction-account-line/transaction-account-line';
+import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
-interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-}
+import type { TransactionCardAccountInfoPropsInterface } from '../../interface/transaction-card-account-info-props.interface';
 
-export const TransactionCardAccountInfo = ({ transaction }: Props) => {
+export const TransactionCardAccountInfo = ({ transaction }: TransactionCardAccountInfoPropsInterface) => {
     const { toAccount, fromAccount } = transaction;
 
     if (isDefined(fromAccount) && isDefined(toAccount)) {
         return (
             <View className="gap-y-xs flex-1">
-                <View className="flex-row items-center gap-x-sm" testID={TransactionCardSelectors.FromAccount(fromAccount.title)}>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>from</Trans>
-                    </Text>
-                    <Icon icon={fromAccount.icon} className="text-secondary-foreground" size={12} />
-                    <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
-                        {fromAccount.title}
-                    </Text>
-                </View>
-                <View className="flex-row items-center gap-x-sm" testID={TransactionCardSelectors.ToAccount(toAccount.title)}>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>to</Trans>
-                    </Text>
-                    <Icon icon={toAccount.icon} className="text-secondary-foreground" size={12} />
-                    <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
-                        {toAccount.title}
-                    </Text>
-                </View>
+                <TransactionAccountLine
+                    direction="from"
+                    icon={fromAccount.icon}
+                    title={fromAccount.title}
+                    testID={TransactionCardSelector.FromAccount(fromAccount.title)}
+                />
+                <TransactionAccountLine
+                    direction="to"
+                    icon={toAccount.icon}
+                    title={toAccount.title}
+                    testID={TransactionCardSelector.ToAccount(toAccount.title)}
+                />
             </View>
         );
     }
 
-    if (isDefined(fromAccount) || isDefined(toAccount)) {
-        const account = isDefined(fromAccount) ? fromAccount : (toAccount as AccountEntityInterface);
-
+    if (isDefined(fromAccount)) {
         return (
-            <View className="flex-row items-center gap-x-sm flex-1" testID={TransactionCardSelectors.Account(account.title)}>
-                <Icon icon={account.icon} className="text-secondary-foreground" size={12} />
-                <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
-                    {account.title}
-                </Text>
-            </View>
+            <TransactionAccountLine
+                direction="from"
+                icon={fromAccount.icon}
+                title={fromAccount.title}
+                testID={TransactionCardSelector.Account(fromAccount.title)}
+            />
+        );
+    }
+
+    if (isDefined(toAccount)) {
+        return (
+            <TransactionAccountLine
+                direction="to"
+                icon={toAccount.icon}
+                title={toAccount.title}
+                testID={TransactionCardSelector.Account(toAccount.title)}
+            />
         );
     }
 

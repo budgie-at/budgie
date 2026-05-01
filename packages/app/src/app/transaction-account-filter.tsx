@@ -2,53 +2,40 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFiltersSelectors } from '../@e2e/selectors/transaction-filters.selector';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
-import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
+import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
+import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
+import { FilterSheetSearchableDrawer } from '../@generic/component/filter-sheet/filter-sheet-searchable-drawer/filter-sheet-searchable-drawer';
+import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
-import { SearchableFilterControls } from '../transaction/components/searchable-filter-controls/searchable-filter-controls';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
-import { SearchableFilterFooter } from '../transaction/components/searchable-filter-footer/searchable-filter-footer';
 import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
-import { TransactionFilterHeader } from '../transaction/components/transaction-filter-header/transaction-filter-header';
+import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+
+// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
     const [, resolveTransactionAccountFilter, currentParams] = useTransactionAccountFilterModal();
-    const { backgroundColor } = useFormsheetListStyles();
 
-    const [localValue, setLocalValue, localValueRef] = useStateRef<number[] | null>(() => currentParams?.value ?? null);
-    const [search, setSearch] = useState('');
+    const state = useSearchableFilterState(currentParams?.value ?? null);
+    const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;
 
     const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);
 
-    const localSelectedCount = localValue?.length ?? 0;
-    const containerStyle = { flex: 1, backgroundColor };
     const showControls = !(isEmptyArray(accounts) && isEmptyString(search));
     const showEmptySearch = isNotEmptyString(search) && isPositiveNumber(total);
     const selectedIds = localValue ?? [];
-    /* jscpd:ignore-end */
 
-    const handleSelect = (...accountIds: number[]) => {
-        setLocalValue(prev => toggleFilterSelection(prev, accountIds));
-    };
-
-    const handleSelectAll = () => void setLocalValue(accounts.map(account => account.id));
-    const handleDeselectAll = () => void setLocalValue(null);
-    const handleClear = () => void setLocalValue(null);
-
-    const handleApply = () => {
-        resolveTransactionAccountFilter({ value: localValueRef.current });
-    };
+    const handleSelect = (...accountIds: number[]) => void setLocalValue(prev => toggleFilterSelection(prev, accountIds));
+    const handleSelectAll = () => void setLocalValue(() => accounts.map(account => account.id));
+    const handleApply = () => void resolveTransactionAccountFilter({ value: localValueRef.current });
 
     const handleNavigateToCreate = () => {
         resolveTransactionAccountFilter(null, { skipBack: true });
@@ -56,30 +43,21 @@ export default function TransactionAccountFilterModal() {
         router.push('/create-account');
     };
 
-    /* jscpd:ignore-start */
+    const buildApplyLabel = () => {
+        if (selectedCount === 0) {
+            return t`Show all accounts`;
+        }
+        if (selectedCount === 1) {
+            return t`Show 1 account`;
+        }
+
+        return t`Show ${selectedCount} accounts`;
+    };
+    const applyLabel = buildApplyLabel();
+
     return (
-        <View style={containerStyle}>
-            <TransactionFilterHeader
-                title={t`Accounts`}
-                icon={UserIconNameEnum.Wallet}
-                onClear={handleClear}
-                showClear={isPositiveNumber(localSelectedCount)}
-            />
-
-            <ScrollView contentContainerClassName="py-[40px] px-7xl gap-y-3xl">
-                <SearchableFilterControls
-                    search={search}
-                    onSearchChange={setSearch}
-                    placeholder={t`Search accounts...`}
-                    onSelectAll={handleSelectAll}
-                    onDeselectAll={handleDeselectAll}
-                    isVisible={showControls}
-                    searchInputTestID={TransactionFiltersSelectors.AccountSearchInput}
-                    selectAllButtonTestID={TransactionFiltersSelectors.AccountSelectAllButton}
-                    deselectAllButtonTestID={TransactionFiltersSelectors.AccountDeselectAllButton}
-                />
-                {/* jscpd:ignore-end */}
-
+        <FilterSheet>
+            <FilterSheetList alignToBottom={isNotEmptyString(search)}>
                 {isNotEmptyArray(accounts) ? (
                     <View className="gap-y-lg">
                         {isNotEmptyArray(accountsGrouped.BANK) ? (
@@ -117,13 +95,24 @@ export default function TransactionAccountFilterModal() {
                         description={t`Create your first account to start tracking your finances`}
                     />
                 ) : null}
-            </ScrollView>
+            </FilterSheetList>
 
-            <SearchableFilterFooter
-                selectedCount={localSelectedCount}
+            <FilterSheetSearchableDrawer
+                showControls={showControls}
+                searchValue={search}
+                searchPlaceholder={t`Search accounts...`}
+                onSearchChange={setSearch}
+                onSelectAll={handleSelectAll}
+                onDeselectAll={handleDeselectAll}
                 onApply={handleApply}
-                applyButtonTestID={TransactionFiltersSelectors.AccountApplyButton}
+                applyLabel={applyLabel}
+                selectedCount={selectedCount}
+                searchTestID={TransactionFiltersSelector.AccountSearchInput}
+                selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
+                deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
+                applyTestID={TransactionFiltersSelector.AccountApplyButton}
             />
-        </View>
+        </FilterSheet>
     );
 }
+/* jscpd:ignore-end */

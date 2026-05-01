@@ -1,19 +1,19 @@
+import { Log } from '@budgie/logger';
 import { eq, isNull, sql } from 'drizzle-orm';
 import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
-import { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
-import { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
-import { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
-import { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 import { DB } from '../type/db.type';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { transactionAsync } from '../util/transaction-async.util';
 
-export { isDefined } from '@rnw-community/shared';
+import type { CategoryScoreResultInterface } from '../interface/category-score-result.interface';
+import type { ReplaceEmbeddingTagsParamsInterface } from '../interface/replace-embedding-tags-params.interface';
+import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
+import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 
 export abstract class BaseEmbeddingRepository {
     constructor(
@@ -21,13 +21,21 @@ export abstract class BaseEmbeddingRepository {
         private readonly queryConfig: EmbeddingQueryConfigInterface
     ) {}
 
+    @Log(
+        (queryEmbedding, vecLimit, distanceThreshold, categoryLimit) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit}`,
+        (result, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
+        (error, ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} categoryLimit=${categoryLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarCategories(
         queryEmbedding: Uint8Array,
         vecLimit: number,
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        return this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+        return await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -35,10 +43,18 @@ export abstract class BaseEmbeddingRepository {
         ]);
     }
 
+    @Log(
+        (queryEmbedding, params) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit}`,
+        (result, queryEmbedding, params) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} tagIds=${result.map(row => row.tagId).join(',')}`,
+        (error, queryEmbedding, params) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} tagLimit=${params.tagLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
 
-        return this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
+        return await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -69,23 +85,22 @@ export abstract class BaseEmbeddingRepository {
         );
     }
 
-    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface): Promise<void> {
+    protected async replaceEmbeddingTags(params: ReplaceEmbeddingTagsParamsInterface, tx?: DB): Promise<void> {
         const { tagTable, foreignKeyColumn, embeddingId, tagIds, createTagRow } = params;
+        const runner = tx ?? this.db;
 
-        await transactionAsync(this.db, async txDb => {
-            await txDb.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
-
-            if (isNotEmptyArray(tagIds)) {
-                await txDb.insert(tagTable).values(tagIds.map(createTagRow));
-            }
-        });
+        await runner.delete(tagTable).where(eq(foreignKeyColumn, embeddingId));
+        if (isNotEmptyArray(tagIds)) {
+            await runner.insert(tagTable).values(tagIds.map(createTagRow));
+        }
     }
 
     protected async truncateWithTags(tagTable: SQLiteTable, embeddingTable: SQLiteTable): Promise<void> {
+        const { vecTableName } = this.queryConfig;
         await transactionAsync(this.db, async txDb => {
             await txDb.delete(tagTable);
             await txDb.delete(embeddingTable);
+            txDb.run(sql.raw(`DELETE FROM ${vecTableName}`));
         });
-        await this.db.$client.runAsync(`DELETE FROM ${this.queryConfig.vecTableName}`, []);
     }
 }

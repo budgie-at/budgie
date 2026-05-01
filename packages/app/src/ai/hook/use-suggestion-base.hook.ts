@@ -1,10 +1,15 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
-import { useAiEmbeddingProgress } from './use-ai-embedding-progress.hook';
+import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
+
+const logger = getLogger('useSuggestionBase');
+
+import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
@@ -37,7 +42,8 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { isIncomplete } = useAiEmbeddingProgress();
+    const { percent: progress } = useEmbeddingProgressSnapshot();
+    const isIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
@@ -52,23 +58,36 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
+        logger.log('hook:suggestion:base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
         if (!isReady) {
+            logger.log('hook:suggestion:base:effect:skip:not-ready', {
+                enabled,
+                readyChecks: [...readyChecks],
+                readyCheckFailAt: readyChecks.findIndex(check => !check)
+            });
+
             return emptyFn;
         }
 
         let cancelled = false;
 
         const suggest = async (): Promise<void> => {
+            logger.log('hook:suggestion:base:suggest:loading', { requestKey });
             setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();
 
                 if (!cancelled) {
+                    logger.log('hook:suggestion:base:suggest:success', { requestKey, resultCount: results.length });
                     setResult({ key: requestKey, status: 'success', suggestions: results });
                 }
-            } catch {
+            } catch (error: unknown) {
                 if (!cancelled) {
+                    logger.error('hook:suggestion:base:suggest:error', {
+                        requestKey,
+                        message: getErrorMessage(error)
+                    });
                     setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }
             }

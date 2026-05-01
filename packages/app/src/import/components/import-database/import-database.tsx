@@ -6,8 +6,8 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { databaseImportService } from '../../service/database-import.service';
 
@@ -47,7 +47,7 @@ export const ImportDatabase = () => {
             setIsLoading(true);
             await databaseImportService.importFromUri(uri);
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }
@@ -61,7 +61,7 @@ export const ImportDatabase = () => {
             icon={UserIconNameEnum.Database}
             variant="ghost"
             isLoading={isLoading}
-            testID={SettingsPageSelectors.ImportDatabaseCard}
+            testID={SettingsPageSelector.ImportDatabaseCard}
         />
     );
 };

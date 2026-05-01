@@ -10,9 +10,11 @@ import {
 import { useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useAudioManager } from './use-audio-manager.hook';
+
+import type { AudioBuffer } from 'react-native-audio-api';
 
 type RecordingStatus = 'idle' | 'recording';
 
@@ -101,6 +103,30 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
         }
     };
 
+    const getRecorderSamples = (buffer: AudioBuffer): Float32Array | null => {
+        if (buffer.sampleRate !== SAMPLE_RATE || !isPositiveNumber(buffer.numberOfChannels)) {
+            return null;
+        }
+        if (buffer.numberOfChannels === 1) {
+            return buffer.getChannelData(0);
+        }
+
+        const firstChannelSamples = buffer.getChannelData(0);
+        const samples = new Float32Array(firstChannelSamples.length);
+
+        for (let sampleIndex = 0; sampleIndex < firstChannelSamples.length; sampleIndex += 1) {
+            let sampleTotal = 0;
+
+            for (let channelIndex = 0; channelIndex < buffer.numberOfChannels; channelIndex += 1) {
+                sampleTotal += buffer.getChannelData(channelIndex)[sampleIndex];
+            }
+
+            samples[sampleIndex] = sampleTotal / buffer.numberOfChannels;
+        }
+
+        return samples;
+    };
+
     const initializeRecorder = (sessionId: number) => {
         recorderInitTimeoutRef.current = setTimeout(() => {
             if (sessionId !== sessionIdRef.current) {
@@ -113,7 +139,11 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                 if (sessionId !== sessionIdRef.current) {
                     return;
                 }
-                handleAudioBuffer(buffer.getChannelData(0), sessionId);
+                const samples = getRecorderSamples(buffer);
+
+                if (isDefined(samples)) {
+                    handleAudioBuffer(samples, sessionId);
+                }
             });
             recorder.start();
             resetSilenceTimeout(sessionId);

@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 
-import { AiSuggestionOrchestratorFacts } from '../interface/ai-suggestion-orchestrator.interface';
+import { AiSuggestionOrchestratorFacts } from '../interface/ai-suggestion-orchestrator-facts.type';
 import {
     AiSuggestionOrchestratorActionTypeEnum,
     aiSuggestionOrchestratorInitialState,

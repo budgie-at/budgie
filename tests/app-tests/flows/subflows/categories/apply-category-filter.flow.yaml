@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+env:
+  CATEGORY_NAME: ${CATEGORY_NAME}
+---
+- tapOn:
+    id: 'TransactionFilters.CategoryChip'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.CategorySearchInput'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.CategorySearchInput'
+- inputText: ${CATEGORY_NAME}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFilters.CategoryOption.${CATEGORY_NAME}'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionFilters.CategoryOption.${CATEGORY_NAME}'
+- tapOn:
+    id: 'TransactionFilters.CategoryApplyButton'
+

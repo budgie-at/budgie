@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { Code2, Eye, Github, Heart, Shield, Users } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
@@ -51,14 +52,20 @@ export const OpenSourceContent = () => (
         </div>
 
         <div className="hidden md:flex flex-wrap gap-4">
-            <Button className="rounded-full" size="lg">
-                <Github className="mr-2 size-5" />
-                <Trans>View on GitHub</Trans>
+            <Button asChild className="rounded-full" size="lg">
+                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                <Link href="https://github.com/budgie-at/budgie" rel="noopener noreferrer" target="_blank">
+                    <Github className="mr-2 size-5" />
+                    <Trans>View on GitHub</Trans>
+                </Link>
             </Button>
 
-            <Button className="rounded-full" size="lg" variant="outline">
-                <Heart className="mr-2 size-5" />
-                <Trans>Sponsor Project</Trans>
+            <Button asChild className="rounded-full" size="lg" variant="outline">
+                {/* eslint-disable-next-line lingui/no-unlocalized-strings */}
+                <Link href="https://github.com/sponsors/nickolay-ponomarev" rel="noopener noreferrer" target="_blank">
+                    <Heart className="mr-2 size-5" />
+                    <Trans>Sponsor Project</Trans>
+                </Link>
             </Button>
         </div>
     </Motion>

@@ -1,6 +1,7 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -12,6 +13,8 @@ import {
     REPEATED_TRANSACTION_TIME_WINDOW_MINUTES
 } from '../constant/repeated-transaction.constant';
 import { SuggestionsResultInterface } from '../interface/suggestions-result.interface';
+
+import { patternCacheService } from './pattern-cache/pattern-cache.service';
 
 interface GetSuggestionsParamsInterface {
     readonly currentTime: Date;
@@ -39,17 +42,29 @@ const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
 };
 
 class RepeatedTransactionService {
+    @Log(
+        params =>
+            `enter type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} categoryId=${params.categoryId ?? 0}`,
+        (result, params) =>
+            `done type=${params.type} accountId=${params.accountId ?? 0} timeCategoryIds=${result.timePatterns.map(pattern => pattern.categoryId).join(',')} amountCategoryIds=${result.amountPatterns.map(pattern => pattern.categoryId).join(',')}`,
+        (error, params) =>
+            `throw type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} error=${getErrorMessage(error)}`
+    )
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
 
-        const timeQuery = transactionPatternRepository.findRepeatedPatterns({
+        const repeatedQuery = {
             ...timeWindow,
             type,
             ...(isPositiveNumber(accountId) && { accountId }),
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-        });
+        };
+        const repeatedCacheKey = `repeated:${JSON.stringify(repeatedQuery)}`;
+        const timeQuery = patternCacheService.memoizeRepeated(repeatedCacheKey, () =>
+            transactionPatternRepository.findRepeatedPatterns(repeatedQuery)
+        );
 
         const amountQuery = this.buildAmountQuery(type, amount, accountId, categoryId);
 
@@ -85,14 +100,17 @@ class RepeatedTransactionService {
         const amountMicroUnits = convertToMicroUnits(amount);
         const tolerance = amountMicroUnits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
 
-        return transactionPatternRepository.findAmountBasedPatterns({
+        const amountQuery = {
             type,
             amountMin: amountMicroUnits - tolerance,
             amountMax: amountMicroUnits + tolerance,
             ...(isPositiveNumber(accountId) && { accountId }),
             ...(isPositiveNumber(categoryId) && { categoryId }),
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-        });
+        };
+        const amountCacheKey = `amount:${JSON.stringify(amountQuery)}`;
+
+        return patternCacheService.memoizeAmount(amountCacheKey, () => transactionPatternRepository.findAmountBasedPatterns(amountQuery));
     }
 }
 

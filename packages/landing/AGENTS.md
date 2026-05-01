@@ -324,19 +324,49 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
-## Blog (MDX)
+## SOTA Bar — Next.js 15+ / React 19+
 
-### Configuration
+**Server components are async functions.** A page is `export default async function Page(props)`. No HOF page builders, no service classes wrapping single helpers.
 
-MDX support enabled in `next.config.ts`:
+**Composition over configuration.** Prefer compound components, `children`/slots, and explicit JSX composition over giant prop bags.
 
-```typescript
-pageExtensions: ['mdx', 'ts', 'tsx']
+**Plain functions over class wrappers.** Default to `export function` for pure helpers. Classes only when grouping genuinely stateful operations.
+
+**No `.map()` for rendering fixed JSX arrays.** Extract a component and write explicit instances. `.map()` only for: (1) reusable template components receiving variable-length data via props, (2) data transformations (not JSX), (3) truly dynamic data filtered/computed at runtime.
+
+## Blog Article Pattern
+
+Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each article is a server component composing generic blog components.
+
+**No MDX.** Articles are pure TSX with `<Trans>` tags for all visible text. Lingui extracts strings to `.po` catalogs for translation.
+
+**No dynamic routes.** Each article has its own `page.tsx` — no `[slug]` pattern. All routes are fully SSG at build time.
+
+**Composition pattern:**
+
+```tsx
+<main className="flex-1">
+    <BlogPostingJsonLd ... />
+    <BlogArticleHero image="...">
+        <BlogBreadcrumbs> ... </BlogBreadcrumbs>
+        <h1><Trans>Article Title</Trans></h1>
+        <BlogArticleMeta date="..." author="..." locale={lang} />
+    </BlogArticleHero>
+    <BlogArticleContent>
+        <BlogArticleSection>
+            <BlogArticleHeading><Trans>Section</Trans></BlogArticleHeading>
+            <BlogArticleProse><Trans>Paragraph text...</Trans></BlogArticleProse>
+        </BlogArticleSection>
+    </BlogArticleContent>
+    <BlogArticleCta locale={lang} />
+</main>
 ```
 
-### Blog Posts
+**Article registry:** `src/blog/constant/article-registry.constant.ts` is the single source of truth for listing pages, sitemap, and blog section. Each entry stores slug, date, author, image, and Lingui `msg` descriptors for title/description.
 
-Blog content in `/app/[lang]/blog/[slug]/page.tsx` with dynamic routes.
+**SEO pages can use `/* eslint-disable max-lines-per-function */`** at the top since article pages are content-heavy.
+
+**i18n in articles:** `<Trans>` for all JSX content (headings, paragraphs, list items). `t(i18n)` only for string props (alt, title, placeholder, JSON-LD strings, metadata strings). Never thread `i18n` through props — server components use `setI18n` + React cache.
 
 ## Dependencies
 

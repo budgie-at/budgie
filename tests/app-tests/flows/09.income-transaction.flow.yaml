@@ -1,0 +1,104 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '09.db(, db)?'
+
+# --- Create Income ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Income'
+      FORM_TITLE: 'New Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Income'
+
+- tapOn: '1'
+- tapOn: '0'
+- tapOn: '0'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/categories/select-category.flow.yaml
+    env:
+      CATEGORY_NAME: 'E2E Txn Category'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Income'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Test_Income'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.200'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+# --- Edit Income ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Income'
+
+- runFlow:
+    file: subflows/transactions/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Income'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Edited_Income'
+    timeout: 5000
+
+# --- Delete Income ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Income'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Edited_Income'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+
+- assertVisible:
+    id: 'HomePage.NetWorthValue.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'

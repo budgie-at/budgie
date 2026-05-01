@@ -20,13 +20,14 @@ jobs:
     name: Code quality checks
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -53,7 +54,9 @@ jobs:
         run: yarn test:coverage
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
 
   eas-deploy:
     name: EAS Deploy
@@ -76,10 +79,10 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -127,7 +130,7 @@ jobs:
 
       - name: Create deployment environment
         if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
@@ -155,7 +158,7 @@ jobs:
 
       - name: Comment deployment URL on PR
         if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
@@ -194,9 +197,9 @@ jobs:
             }
 
 
-  e2e-ios:
+  build-ios-e2e-app:
     needs: [code-quality]
-    name: E2E Tests on iOS
+    name: Build iOS E2E app
     runs-on: self-hosted
     env:
       APP_VARIANT: e2e
@@ -209,7 +212,7 @@ jobs:
       CCACHE_MAXSIZE: 2G
       CCACHE_NOHASHDIR: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Runner diagnostics
         run: |
@@ -225,34 +228,13 @@ jobs:
           xcodebuild -version || true
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
 
       - name: Install dependencies
         run: yarn install
-
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const packageJsonPath = 'package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface'
-          ];
-
-          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
-          console.log('Applied expo.autolinking.exclude for e2e build');
-          NODE
 
       - name: Build internal workspace packages
         run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
@@ -281,7 +263,7 @@ jobs:
           xcodebuild -version
 
       - name: Restore CocoaPods cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -302,7 +284,7 @@ jobs:
           ccache --zero-stats || true
 
       - name: Restore ccache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
@@ -313,28 +295,124 @@ jobs:
       - name: Expo Prebuild
         working-directory: packages/app
         env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
-        run: npx expo prebuild -p ios
+        run: npx expo prebuild -p ios --clean
 
-      - name: Sync CocoaPods for E2E excludes
+      - name: Sync CocoaPods
         working-directory: packages/app/ios
-        run: |
-          APP_VARIANT=e2e pod install
-
-          if grep -En "expo-dev-client|expo-dev-launcher|expo-dev-menu|expo-dev-menu-interface" Podfile.lock Pods/Manifest.lock; then
-            echo "::error::E2E iOS pod graph still includes Expo dev client pods."
-            exit 1
-          fi
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
+        run: pod install
 
       - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ env.IOS_DERIVED_DATA }}
           key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
           restore-keys: |
             deriveddata-${{ runner.os }}-xcode26_3-e2e-release-
             deriveddata-${{ runner.os }}-xcode26_3-e2e-
+
+      - name: Build app
+        working-directory: packages/app
+        env:
+          APP_VARIANT: e2e
+          EXPO_PUBLIC_AI_DISABLE: "true"
+        run: |
+          cd ios
+          WORKSPACE=$(ls -d *.xcworkspace | head -1)
+          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
+          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
+          xcodebuild build \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath "$IOS_DERIVED_DATA" \
+            -destination "generic/platform=iOS Simulator" \
+            -jobs $(sysctl -n hw.ncpu) \
+            CODE_SIGN_IDENTITY="-" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=YES \
+            ARCHS=arm64 \
+            EXCLUDED_ARCHS=x86_64
+
+      - name: Package iOS E2E app
+        run: |
+          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::Built iOS app bundle was not found in $IOS_DERIVED_DATA."
+            find "$IOS_DERIVED_DATA" -maxdepth 6 -name "*.app" || true
+            exit 1
+          fi
+
+          ARTIFACT_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app"
+          APP_BUNDLE_NAME=$(basename "$APP_PATH")
+          mkdir -p "$ARTIFACT_DIR"
+          tar -C "$(dirname "$APP_PATH")" -czf "$ARTIFACT_DIR/$APP_BUNDLE_NAME.tar.gz" "$APP_BUNDLE_NAME"
+
+      - name: Upload iOS E2E app artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ios-e2e-app
+          path: .ci-artifacts/ios-e2e-app/*.tar.gz
+          if-no-files-found: error
+
+      - name: Save CocoaPods cache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+      - name: Save ccache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
+
+      - name: Save Xcode DerivedData cache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ env.IOS_DERIVED_DATA }}
+          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
+
+  e2e-ios:
+    needs: [build-ios-e2e-app]
+    name: E2E Tests on iOS
+    runs-on: self-hosted
+    env:
+      APP_VARIANT: e2e
+      EXPO_PUBLIC_AI_DISABLE: "true"
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26.3
+        run: |
+          if [ -d /Applications/Xcode_26.3.app ]; then
+            XCODE_APP=/Applications/Xcode_26.3.app
+          elif [ -d /Applications/Xcode.app ]; then
+            XCODE_APP=/Applications/Xcode.app
+          else
+            echo "::error::Xcode 26.3 is not installed on this runner."
+            ls -1 /Applications | grep -i Xcode || true
+            exit 1
+          fi
+
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          echo "Using Xcode at $XCODE_APP"
+          xcode-select -p || true
+          xcodebuild -version
 
       - name: Shutdown stale simulators
         run: xcrun simctl shutdown all || true
@@ -363,44 +441,42 @@ jobs:
           echo "Using simulator UDID: $SIMULATOR_UDID"
           xcrun simctl list devices booted
 
-      - name: Pre-copy vec.xcframework for ExpoSQLite
-        run: |
-          XCFW_DIR="$IOS_DERIVED_DATA/Build/Products/Release-iphonesimulator/XCFrameworkIntermediates/ExpoSQLite"
-          mkdir -p "$XCFW_DIR"
-          cp -R node_modules/expo-sqlite/ios/vec.xcframework/ios-arm64-simulator/vec.framework "$XCFW_DIR/"
+      - name: Download iOS E2E app artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: ios-e2e-app
+          path: .ci-artifacts/ios-e2e-app
 
-      - name: Build app
-        working-directory: packages/app
+      - name: Extract iOS E2E app artifact
         run: |
-          cd ios
-          WORKSPACE=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
-          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
-          xcodebuild build \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -sdk iphonesimulator \
-            -configuration Release \
-            -derivedDataPath "$IOS_DERIVED_DATA" \
-            -destination "id=$SIMULATOR_UDID" \
-            -jobs $(sysctl -n hw.ncpu) \
-            CODE_SIGN_IDENTITY="-" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            ONLY_ACTIVE_ARCH=YES \
-            ARCHS=arm64 \
-            EXCLUDED_ARCHS=x86_64
+          APP_ARCHIVE=$(find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -name "*.tar.gz" | head -1)
+          if [ -z "$APP_ARCHIVE" ]; then
+            echo "::error::iOS E2E app artifact was not downloaded."
+            find "$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app" -maxdepth 3 -type f || true
+            exit 1
+          fi
+
+          APP_DIR="$GITHUB_WORKSPACE/.ci-artifacts/ios-e2e-app/extracted"
+          mkdir -p "$APP_DIR"
+          tar -xzf "$APP_ARCHIVE" -C "$APP_DIR"
+          APP_PATH=$(find "$APP_DIR" -maxdepth 2 -name "*.app" | head -1)
+
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::Extracted iOS app bundle was not found."
+            find "$APP_DIR" -maxdepth 4 -type f || true
+            exit 1
+          fi
+
+          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
 
       - name: Install app on Simulator
         run: |
-          APP_PATH=$(find "$IOS_DERIVED_DATA" -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
           xcrun simctl install "$SIMULATOR_UDID" "$APP_PATH"
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Prepare iOS E2E artifact directories
@@ -415,18 +491,11 @@ jobs:
           xcrun simctl spawn "$SIMULATOR_UDID" log stream --style compact --level debug > "$ARTIFACT_DIR/simulator.log" 2>&1 &
           echo $! > "$ARTIFACT_DIR/simulator-log.pid"
 
-      - name: Start iOS Simulator video recording
-        run: |
-          ARTIFACT_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/simulator"
-          xcrun simctl io "$SIMULATOR_UDID" recordVideo "$ARTIFACT_DIR/simulator.mov" > "$ARTIFACT_DIR/record-video.log" 2>&1 &
-          echo $! > "$ARTIFACT_DIR/record-video.pid"
-
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         shell: bash
         run: |
           set -euo pipefail
-          sh ./scripts/setup-ios-simulator.sh "$SIMULATOR_UDID" com.vitalyiegorov.budgie.e2e
           sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e \
             --format junit \
             --output ./artifacts/maestro/report.xml \
@@ -441,11 +510,6 @@ jobs:
           DIAGNOSTIC_DIR="$GITHUB_WORKSPACE/tests/app-tests/artifacts/diagnostics"
           xcrun simctl io "$SIMULATOR_UDID" screenshot "$ARTIFACT_DIR/final-screen.png" || true
 
-          if [ -f "$ARTIFACT_DIR/record-video.pid" ]; then
-            kill -INT "$(cat "$ARTIFACT_DIR/record-video.pid")" || true
-            sleep 5
-          fi
-
           if [ -f "$ARTIFACT_DIR/simulator-log.pid" ]; then
             kill "$(cat "$ARTIFACT_DIR/simulator-log.pid")" || true
           fi
@@ -454,9 +518,9 @@ jobs:
             \( -name 'budgieE2E*' -o -name 'budgie*' -o -name 'JetsamEvent*' \) \
             -exec cp {} "$DIAGNOSTIC_DIR/" \; || true
 
-      - name: Upload Maestro artifacts (report, logs, videos, screenshots)
+      - name: Upload Maestro artifacts (report, logs, screenshots)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-ios-artifacts
           include-hidden-files: true
@@ -467,7 +531,7 @@ jobs:
 
       - name: Upload iOS simulator crash artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-ios-simulator-failure-artifacts
           include-hidden-files: true
@@ -476,36 +540,13 @@ jobs:
             tests/app-tests/artifacts/diagnostics/**
           if-no-files-found: warn
 
-      - name: Save CocoaPods cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-xcode26_3-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save ccache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ runner.os }}-xcode26_3-e2e-${{ hashFiles('yarn.lock', 'packages/app/package.json', 'packages/app/app.config.js', 'packages/app/ios/Podfile.properties.json') }}
-
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.IOS_DERIVED_DATA }}
-          key: deriveddata-${{ runner.os }}-xcode26_3-e2e-release-${{ hashFiles('packages/app/ios/Podfile.lock', 'packages/app/ios/Podfile.properties.json', 'packages/app/package.json', 'packages/app/app.config.js') }}
-
   e2e-android:
     if: false
     needs: [code-quality, eas-deploy]
     name: E2E Tests on Android
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Enable KVM group perms
         run: |
@@ -514,7 +555,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
@@ -529,33 +570,12 @@ jobs:
         run: |
           yarn install
 
-      - name: Apply E2E autolinking excludes
-        working-directory: packages/app
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const packageJsonPath = 'package.json';
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-
-          packageJson.expo ??= {};
-          packageJson.expo.autolinking ??= {};
-          packageJson.expo.autolinking.exclude = [
-            'expo-dev-client',
-            'expo-dev-launcher',
-            'expo-dev-menu',
-            'expo-dev-menu-interface'
-          ];
-
-          fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`);
-          console.log('Applied expo.autolinking.exclude for e2e build');
-          NODE
-
       - name: Expo Prebuild
         working-directory: packages/app
         run: npx expo prebuild -p android --clean
 
       - name: Cache Gradle
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.gradle/caches
@@ -564,7 +584,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: avd-cache
         with:
           path: |
@@ -579,7 +599,7 @@ jobs:
 
       - name: Install Maestro
         run: |
-          export MAESTRO_VERSION=2.3.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
+          export MAESTRO_VERSION=2.4.0; curl -fsSL "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
       - name: Сreate AVD and generate snapshot for caching
@@ -612,7 +632,7 @@ jobs:
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: maestro-android-artifacts
           include-hidden-files: true

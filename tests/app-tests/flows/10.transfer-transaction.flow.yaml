@@ -1,0 +1,128 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '10.db(, db)?'
+
+# --- Create Transfer ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Transfer'
+      FORM_TITLE: 'New Transfer'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Transfer'
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- assertVisible: 'New Transfer'
+
+- tapOn: '5'
+- tapOn: '0'
+
+- tapOn:
+    id: 'TransferForm.FromAccount'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Txn Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Txn Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- tapOn:
+    id: 'TransferForm.ToAccount'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Input'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: 'E2E Transfer Account'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountPickerBottomSheet.Option.E2E Transfer Account'
+- tapOn:
+    id: 'AccountPickerBottomSheet.Option.E2E Transfer Account'
+- extendedWaitUntil:
+    notVisible:
+      id: 'AccountPickerBottomSheet.Input'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Test Transfer'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Test_Transfer'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.50'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Transfer_Account.150'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+# --- Edit Transfer ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Test_Transfer'
+
+- runFlow:
+    file: subflows/transactions/edit-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Edited Transfer'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Edited_Transfer'
+    timeout: 5000
+
+# --- Delete Transfer ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Edited_Transfer'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Edited_Transfer'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Transfer_Account.100'

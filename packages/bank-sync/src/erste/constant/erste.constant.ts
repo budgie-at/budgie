@@ -1,14 +1,13 @@
 export const ERSTE_EXTERNAL_ID_LENGTH = 32;
 export const ERSTE_CURRENCY_CODE_EUR = 978;
+export const ERSTE_CURRENCY_ALPHA_EUR = 'EUR';
 
-export const ERSTE_IBAN_REGEX = /AT\d{18,20}/u;
-export const ERSTE_ACCOUNT_NUMBER_REGEX = /(\d{3}-\d{3}-\d{3}\/\d{2})/u;
+export const ERSTE_LAYOUT_Y_ROW_TOLERANCE = 3;
+export const ERSTE_LAYOUT_RIGHT_COLUMN_X_THRESHOLD = 250;
+export const ERSTE_LAYOUT_FOOTER_Y_THRESHOLD = 50;
 
-export const ERSTE_CLASSIC_TRANSACTION_TAIL_REGEX = /\s(\d{4})\s(\d[\d.,]*)(-)?$/u;
-export const ERSTE_CLASSIC_BALANCE_AMOUNT_REGEX = /(\d[\d.,]*)$/u;
-
-export const ERSTE_MODERN_FORMAT_MARKER = 'Buchungstext/Booking Text';
-export const ERSTE_MODERN_TRANSACTION_DATE_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+([\d.,]+)(-)?$/u;
-export const ERSTE_MODERN_END_MARKER = 'Neuer Kontostand/New Balance';
-export const ERSTE_MODERN_BALANCE_SEARCH_LINES_LIMIT = 3;
-export const ERSTE_MODERN_BALANCE_AMOUNT_REGEX = /^\d[\d.,]*$/u;
+export const ERSTE_PAGE_NOISE_PATTERNS: readonly RegExp[] = [
+    /^AT\d{18,20}\s+\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}\b/u,
+    /^IBAN\s+Datum\/Date\s+Uhrzeit\/Time/u,
+    /Auszug\/Statement\s+Seite\/Page/u
+];

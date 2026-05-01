@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 
 import { OnEventFn } from '@rnw-community/shared';
 
-import { AccountCardSelectors } from '../../../@e2e/selectors/account-card.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -14,10 +13,10 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+
+import { AccountCardBaseSelector } from './account-card-base.selector';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
@@ -57,19 +56,18 @@ export const AccountCardBase = (props: Props) => {
         onLongPress
     } = props;
 
-    const showCents = useSetting('showCents');
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const { balance } = useAccountBalanceQuery(id);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
     const accountBalance = formatDigits(balance, instrumentSymbol);
+    const accountBalanceTestValue = formatDigits(balance);
 
     return (
         <Card
-            testID={AccountCardSelectors.Card(title)}
+            testID={AccountCardBaseSelector.Card(title)}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
             className={cn(cardVariants({ deadlinePriority }), className)}
@@ -91,7 +89,10 @@ export const AccountCardBase = (props: Props) => {
                 </Text>
 
                 {balanceContent ?? (
-                    <ProtectedText className="text-primary font-medium" testID={AccountCardSelectors.Balance(title, balance)}>
+                    <ProtectedText
+                        className="text-primary font-medium"
+                        testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
+                    >
                         {accountBalance}
                     </ProtectedText>
                 )}

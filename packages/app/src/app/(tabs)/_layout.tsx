@@ -1,5 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,16 +7,21 @@ import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/ani
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
-import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-input-overlay';
-import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
+import { useAiAvailable } from '../../ai/hook/use-ai-available.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
+
+const LazyVoiceInputOverlay = lazy(async () => {
+    const { VoiceInputOverlay } = await import('../../ai/component/voice-input-overlay/voice-input-overlay');
+
+    return { default: VoiceInputOverlay };
+});
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
-    const { isAvailable: isAiAvailable } = useLlmContext();
+    const isAiAvailable = useAiAvailable();
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
@@ -72,7 +77,11 @@ export default function TabsLayout() {
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
             <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
-            {isAiAvailable ? <VoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} /> : null}
+            {isAiAvailable && isVoiceInputOpen ? (
+                <Suspense fallback={null}>
+                    <LazyVoiceInputOverlay onClose={handleCloseVoiceInput} />
+                </Suspense>
+            ) : null}
         </VoiceInputContext>
     );
 }

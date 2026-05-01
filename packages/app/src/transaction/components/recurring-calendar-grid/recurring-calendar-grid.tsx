@@ -9,9 +9,11 @@ import { isDefined } from '@rnw-community/shared';
 import { DatePicker } from '../../../@generic/component/date-picker/date-picker';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { dateTypeToDate } from '../../../@generic/utils/date/date-type-to-date.util';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { RecurringCalendarEntryInterface } from '../../interface/recurring-calendar-entry.interface';
 import { getMonthLabel } from '../../utils/get-month-label.util';
+import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringCalendarDay } from '../recurring-calendar-day/recurring-calendar-day';
 
 interface Props {
@@ -35,7 +37,8 @@ export const RecurringCalendarGrid = (props: Props) => {
 
     const monthLabel = getMonthLabel(displayYear, displayMonth, languageTag);
     const maxDate = new Date(currentYear, currentMonth + 1, 0);
-    const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay) : null;
+    const selectedDate = isDefined(selectedDay) ? new Date(displayYear, displayMonth, selectedDay, 12, 0, 0, 0) : null;
+    const datePickerKey = `${displayYear}-${displayMonth}-${selectedDay ?? 'none'}`;
 
     const isCurrentMonthDisplayed = displayMonth === currentMonth && displayYear === currentYear;
 
@@ -76,11 +79,11 @@ export const RecurringCalendarGrid = (props: Props) => {
     const components: CalendarComponents = { Day: renderDay };
 
     const handleDateChange = (value: { date: DateType }) => {
-        if (!isDefined(value.date)) {
+        const date = dateTypeToDate(value.date);
+
+        if (!isDefined(date)) {
             return;
         }
-
-        const date = new Date(value.date.toString());
 
         if (date.getFullYear() !== displayYear || date.getMonth() !== displayMonth) {
             return;
@@ -90,11 +93,11 @@ export const RecurringCalendarGrid = (props: Props) => {
     };
 
     const disabledDates = (value: DateType) => {
-        if (!isDefined(value)) {
+        const date = dateTypeToDate(value);
+
+        if (!isDefined(date)) {
             return false;
         }
-
-        const date = new Date(value.toString());
 
         return date.getFullYear() !== displayYear || date.getMonth() !== displayMonth;
     };
@@ -103,26 +106,40 @@ export const RecurringCalendarGrid = (props: Props) => {
         <GestureDetector gesture={swipeGesture}>
             <View className="gap-y-sm">
                 <View className="flex-row items-center justify-between">
-                    <HapticPressable onPress={handlePrevMonth} hitSlop={12} className="p-sm">
+                    <HapticPressable
+                        onPress={handlePrevMonth}
+                        hitSlop={12}
+                        className="p-sm"
+                        testID={RecurringCalendarSelector.PreviousMonthButton}
+                    >
                         <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={20} />
                     </HapticPressable>
-                    <Text className="text-primary text-sm font-semibold capitalize">{monthLabel}</Text>
-                    <HapticPressable onPress={handleNextMonth} hitSlop={12} className="p-sm" disabled={isCurrentMonthDisplayed}>
+                    <Text className="text-primary text-sm font-semibold capitalize" testID={RecurringCalendarSelector.MonthLabel}>
+                        {monthLabel}
+                    </Text>
+                    <HapticPressable
+                        onPress={handleNextMonth}
+                        hitSlop={12}
+                        className="p-sm"
+                        disabled={isCurrentMonthDisplayed}
+                        testID={RecurringCalendarSelector.NextMonthButton}
+                    >
                         <Icon icon={UserIconNameEnum.ChevronRight} className={nextChevronClassName} size={20} />
                     </HapticPressable>
                 </View>
 
                 <DatePicker
+                    key={datePickerKey}
                     mode="single"
                     hideHeader
                     showOutsideDays
-                    date={selectedDate}
                     month={displayMonth}
                     year={displayYear}
                     maxDate={maxDate}
                     onChange={handleDateChange}
                     disabledDates={disabledDates}
                     components={components}
+                    {...(isDefined(selectedDate) && { date: selectedDate })}
                 />
             </View>
         </GestureDetector>

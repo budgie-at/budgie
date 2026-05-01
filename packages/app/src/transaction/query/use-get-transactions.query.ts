@@ -1,11 +1,12 @@
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
-import { TransactionsByMonthSection } from '../interface/transactions-by-month-section.interface';
+import { TransactionsByMonthSection } from '../interface/transactions-by-month-section.type';
+import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
@@ -15,8 +16,13 @@ const DEFAULT_LIMIT = 20;
 export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) => {
     const { formatMonthAndYear } = useFormatDate();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
+    const filterKey = buildTransactionFilterKey(filters);
 
-    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filters]);
+    useEffect(() => {
+        setLoadedCount(DEFAULT_LIMIT);
+    }, [filterKey]);
+
+    const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filterKey]);
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;

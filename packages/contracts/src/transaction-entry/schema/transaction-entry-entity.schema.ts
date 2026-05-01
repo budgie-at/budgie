@@ -13,5 +13,9 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     mccCategoryId: schema => schema.positive().nullable().describe('Id of the MCC category the entry belongs to'),
     type: zodEnum(TransactionEntryTypeEnum).describe('Type of the entry'),
     amount: number().positive().describe('Amount of the entry'),
-    externalId: schema => schema.nullable().default(null).describe('External id of the entry')
+    externalId: schema => schema.nullable().default(null).describe('External id of the entry'),
+    exchangeRate: schema =>
+        schema.positive().default(1).describe('Exchange rate for this entry, defaults to 1 for same-currency transactions'),
+    toIban: schema => schema.max(34).nullable().default(null).describe('Counter-party IBAN, max 34 chars per ISO 13616'),
+    originalTransactionId: schema => schema.positive().nullable().describe('Original transaction id for moved consolidation source entries')
 });

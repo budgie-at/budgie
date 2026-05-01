@@ -10,7 +10,6 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
@@ -21,8 +20,12 @@ import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
-import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
+import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
+
+import { SimpleQuickFormSelector } from './simple-quick-form.selector';
+
+import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 
 type AccountFieldName = 'fromAccountId' | 'toAccountId';
 
@@ -86,7 +89,7 @@ export const SimpleQuickForm = (props: Props) => {
     const isAmountPositive = amount > 0;
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
-    const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
+    const fieldIconsRef = useRef<TransactionFieldIconsRefInterface>(null);
     const accountRowRef = useRef<TransactionAccountRowRef>(null);
 
     const handleSelectCategory = (selectedCategoryId: number) => {
@@ -217,7 +220,7 @@ export const SimpleQuickForm = (props: Props) => {
                     amount={displayValue}
                     currencySymbol={currencySymbol}
                     variant={variant}
-                    testID={TransactionFormSelectors.AmountInput}
+                    testID={SimpleQuickFormSelector.AmountInput}
                 />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
@@ -250,9 +253,9 @@ export const SimpleQuickForm = (props: Props) => {
                 onSplitPress={handleSplitIconPress}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
-                categoryTestID={TransactionFormSelectors.CategorySelector}
-                tagsTestID={TransactionFormSelectors.TagsSelector}
-                commentTestID={TransactionFormSelectors.CommentInput}
+                categoryTestID={SimpleQuickFormSelector.CategorySelector}
+                tagsTestID={SimpleQuickFormSelector.TagsSelector}
+                commentTestID={SimpleQuickFormSelector.CommentInput}
             />
 
             <View className="mb-xl">
@@ -260,7 +263,7 @@ export const SimpleQuickForm = (props: Props) => {
                     ref={accountRowRef}
                     variant={variant}
                     fieldName={accountFieldName}
-                    testID={TransactionFormSelectors.AccountSelector}
+                    testID={SimpleQuickFormSelector.AccountSelector}
                 />
             </View>
 
@@ -272,7 +275,7 @@ export const SimpleQuickForm = (props: Props) => {
                 onLongBackspace={keypadHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
-                confirmTestID={TransactionFormSelectors.SubmitButton}
+                confirmTestID={SimpleQuickFormSelector.SubmitButton}
             />
         </View>
     );

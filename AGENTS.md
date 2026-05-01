@@ -18,7 +18,6 @@ yarn ts                                   # TypeScript check
 yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
-yarn test                                 # Jest tests
 
 # IMPORTANT: After completing any task, ALWAYS run:
 # During debug sessions (when user says "skip lint"), only run: yarn ts
@@ -106,13 +105,29 @@ packages/
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
 17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
-19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
+19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
 22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
 23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
+26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
+27. **No unit tests** - This project does not use Jest or other unit testing frameworks. Do not add `.spec.ts` / `.test.ts` files, jest config files, or `test` scripts. E2E coverage lives in the `tests/` workspace via Maestro; verification at the code level is done via `yarn ts`, `yarn lint`, `yarn deadcode`, `yarn cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`.
+28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
+29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
+30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures.
+31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
+32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Free-function / component / hook logs use `getLogger(context)` from the same package. Do not import `console.log` / `console.debug` / `console.error` directly in service code — route through the transport so app builds can gate logging consistently.
+33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
+34. **No log-only abstractions.** Do not add helpers, wrapper decorators, or shared constants whose only purpose is to build or reuse lifecycle log strings. Keep `@Log` usage directly on the method so argument usage stays obvious.
+35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
+36. **Update inputs derive from entity types.** Use `Partial<Pick<*CreateEntityInterface, 'fieldA' | 'fieldB'>>` — never hand-write update field shapes. Pick from `*CreateEntityInterface` (already filtered to user-settable columns), not from `*EntityInterface` (which includes auto-managed fields like id/createdAt/deletedAt).
+37. **Service signatures encode invariants — no silent field-dropping.** If a method ignores or strips fields from its input before calling deeper, narrow the parameter type so dropped fields are unrepresentable. Never accept a wide input "for convenience" and quietly filter.
+38. **Class boundaries: cohesion over ceremony.** One-method classes are functions in disguise — keep them as free functions. Single-consumer free functions are methods in disguise — inline as private methods of the consumer class. Use a class when state is held, OR multiple cohesive methods share private helpers, OR two or more consumers share the same logic. When inlining produces a long file, prefer `// eslint-disable max-lines -- approved by <human>` with rationale over premature decomposition. Lint-disable additions of this kind require explicit human approval (see rule 4).
+39. **Class-owned constants are `private static readonly` fields**, not module-level. Module-level `const` is reserved for values shared by multiple classes/functions in the same file.
+40. **Domain-specific shapes carry the domain prefix.** Parser state, layout types, row interfaces specific to one bank/source/feature: `Erste*`, `Monobank*`. Bank-agnostic shapes (raw native-module output, generic transaction interfaces) stay neutral. Drop legacy qualifiers (`Modern`, `Classic`) once only one variant remains.
+41. **Don't double-log a flow.** If a service method already carries `@Log` (enter/done/throw), don't add `getLogger` calls in the hook/component that triggers it. Service-level decorators record the lifecycle; hook-level logs of the same flow are noise duplication.
 
 ### Naming Conventions
 
@@ -253,6 +268,24 @@ transaction/
     └── transaction-pattern.repository.ts   # Clean repository, imports from above
 ```
 
+### Canonical Mapping (Mandatory)
+
+| Manual pattern | Required guard | Lint |
+|---|---|---|
+| `x === null`, `x === undefined`, `x === null \|\| x === undefined` | `!isDefined(x)` | ✓ |
+| `x !== null`, `x !== undefined`, both combined | `isDefined(x)` | ✓ |
+| `typeof x === 'number'` | `isNumber(x)` | — |
+| `typeof x === 'string'` | `isString(x)` | — |
+| `Array.isArray(x) && x.length > 0` | `isNotEmptyArray(x)` | ✓ (length case) |
+| `x.length === 0` on array | `isEmptyArray(x)` | ✓ |
+| `typeof x === 'string' && x.length > 0`, `x !== ''` | `isNotEmptyString(x)` | ✓ (length case) |
+| `x === ''`, `x.length === 0` on string | `!isNotEmptyString(x)` | ✓ |
+| `typeof x === 'number' && x > 0`, `x > 0` on number | `isPositiveNumber(x)` | — |
+
+The "Lint" column marks rows enforced by `no-restricted-syntax` at `warn` severity in `eslint.config.mjs`. Un-linted rows must be caught at code review.
+
+**Gotcha:** `isEmptyString` in `@rnw-community/shared` has type predicate `value is string` — when used as an early-return guard on a string-typed local, it narrows the else branch to `never` and breaks downstream code. Use `!isNotEmptyString(x)` instead.
+
 ### i18n (Lingui) Usage
 
 **Use `t` macro for string props, `<Trans>` for JSX text children:**
@@ -301,6 +334,88 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 4. Run `yarn i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
+## Logging
+
+The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log`-decorated methods) or `[context]` (for `getLogger(context)`). Tags must not repeat that information.
+
+### `@Log` decorator (class methods)
+
+Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
+
+```ts
+import { Log } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
+
+class TransactionRepository {
+    @Log(
+        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        result => `done insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> { /* ... */ }
+}
+```
+
+Output:
+```
+[TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
+[TransactionRepository::bulkCreate] done insertedIds=42,43
+```
+
+**Static-tag shortcut.** When `enter` and/or `done` carry no dynamic data (no inputs, no result), pass strings directly — don't wrap in `() =>`:
+
+```ts
+// Good — static strings
+@Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+
+// Bad — needless arrow wrapping a static value
+@Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
+async start(): Promise<void> { /* ... */ }
+```
+
+Mix freely: any of the three hooks can independently be a string or a function.
+
+### Hook formatting rules
+
+1. **Tag prefix:** `enter` | `done` | `throw` only. No method name. The transport already shows `[Class::method]`.
+2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
+3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
+4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
+5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
+6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
+7. **Numbers / IDs** → output directly: `id=${row.id}`.
+8. **Arrays of entities** → `.map(item => item.<scalarField>).join(',')`. Pick the most identifying scalar (`id`, `externalId`, `title`). Never `.length` — the join makes the failing entries debuggable.
+9. **Arrays of primitives** (`string[]`, `number[]`) → `.join(',')`. Same reason.
+10. **`Map<K, V>`** → `[...map.keys()].join(',')`. Keys are usually the debuggable handle; `.size` loses information.
+11. **`Set<T>`** → `[...set].join(',')`.
+12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
+13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
+14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
+15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
+
+### `getLogger(context)` (free-form / non-class)
+
+```ts
+import { getLogger } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
+
+const logger = getLogger('useCategorySuggestion');
+
+logger.log('fired', { transactionTitle });
+logger.error('failed', { errorMessage: getErrorMessage(error) });
+```
+
+Free-form `context: string`. Convention: hook/file/component name. Instantiate once at module top.
+
+### Build-time gate
+
+`EXPO_PUBLIC_LOGGING_DISABLE=true` (e2e profile in `eas.json`) suppresses all output. Build-time only — flipping requires a rebuild.
+
+### `bank-sync` exception
+
+`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+
 ## Tech Stack
 
 | Package | Stack |
@@ -318,6 +433,31 @@ After modifying user-facing text, run `yarn i18n:sync` and commit both file type
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands
+
+## E2E Testing
+
+1. Prefer black-box E2E flows over app-owned test hooks.
+2. Use real user-visible import paths for database backups and bank PDFs.
+3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
+4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
+5. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
+6. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the app before rerunning the test.
+7. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+
+### Maestro Robustness
+
+1. Wait for the destination identity once, not container plus child plus redundant assert.
+2. After `scrollUntilVisible` on a tappable card inside a scroll view, let the list settle before tapping.
+3. Do not wrap ordinary taps in retry loops. If a tap is flaky, fix the state before the tap.
+4. Use retries only for real native edge cases like submit/relaunch, not as a generic band-aid.
+5. Keep flows state-driven: positive target checks beat blind waits and negative assertions.
+6. Date-sensitive fixtures must be refreshed before the suite so test time and app time stay aligned.
+7. Shared subflows must stay minimal and deterministic. Do not add recovery branches, retries, relaunches, or alternative navigation paths without explicit user approval.
+8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in Maestro.
+9. If a flow appears fundamentally broken, stop and ask the user before adding test-side workaround logic.
+10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
+11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
+12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
 
 ### Commit Format
 
@@ -361,6 +501,8 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 |------|-----------------|----------------------|
 | `max-statements` | Form orchestration components with multiple hooks/handlers | `-- Form orchestration component with multiple hooks and handlers` |
 | `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
+| `max-lines` | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
+| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape | `-- Existing public API and Log hooks intentionally keep positional arguments` |
 
 Example:
 ```typescript
@@ -370,4 +512,4 @@ export const MyFormComponent = (props: Props) => { ... };
 
 ## Local Documentation
 
-The `docs/plans/` folder contains design documents and implementation plans. This folder is gitignored for local-only usage - plans are working documents that don't need version control.
+The `docs/plans/` and `docs/superpowers/` folders contain design documents, specs, and implementation plans (including those produced by the superpowers brainstorming and writing-plans skills). These folders are gitignored for local-only usage — plans and specs are working documents that don't need version control.

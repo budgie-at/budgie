@@ -1,14 +1,16 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+const logger = getLogger('useRepeatedTransactionSuggestion');
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
-const DEBOUNCE_MS = 300;
+const DEBOUNCE_MS = 600;
 
 interface UseRepeatedTransactionSuggestionParams {
     readonly enabled: boolean;
@@ -65,6 +67,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
         const fetchSuggestions = async (): Promise<void> => {
             setInternalStatus('loading');
             currentTimeRef.current = new Date();
+            const startedAt = Date.now();
 
             try {
                 const queryParams = {
@@ -75,14 +78,24 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 };
 
+                logger.log('hook:pattern:fetch:begin', queryParams);
                 const result = await repeatedTransactionService.getSuggestions(queryParams);
+                logger.log('hook:pattern:fetch:done', {
+                    durationMs: Date.now() - startedAt,
+                    time: result.timePatterns.length,
+                    amount: result.amountPatterns.length
+                });
 
                 if (!cancelled) {
                     setTimePatterns(result.timePatterns);
                     setAmountPatterns(result.amountPatterns);
                     setInternalStatus('success');
                 }
-            } catch {
+            } catch (error: unknown) {
+                logger.error('hook:pattern:fetch:throw', {
+                    durationMs: Date.now() - startedAt,
+                    errorMessage: getErrorMessage(error)
+                });
                 if (!cancelled) {
                     setInternalStatus('error');
                 }

@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import type { Edge } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -18,7 +17,10 @@ import { toggleSetItem } from '../../util/toggle-set-item.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
+import { CreateFileBankAccountSelector } from './create-file-bank-account.selector';
+
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
+import type { Edge } from 'react-native-safe-area-context';
 
 type SetupStep = 'file' | 'accounts';
 const FORM_PAGE_SAFE_EDGES: Edge[] = ['bottom', 'top'];
@@ -95,9 +97,19 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             header={<PageHeader onGoBack={handleGoBack} title={config.title} description={config.description} />}
             footer={footer}
             safeEdges={FORM_PAGE_SAFE_EDGES}
+            scrollViewTestID={CreateFileBankAccountSelector.ScrollView}
         >
             <FormLayoutGroup>
-                {step === 'file' && <FileUploadStep instructionText={config.instructionText} selectFileText={config.selectFileText} />}
+                {step === 'file' && (
+                    <FileUploadStep
+                        steps={config.steps}
+                        fileIcon={config.fileIcon}
+                        fileTypeLabel={config.fileTypeLabel}
+                        selectFileText={config.selectFileText}
+                        onSelectFile={handleSelectFile}
+                        isLoading={isLoading}
+                    />
+                )}
 
                 {step === 'accounts' && (
                     <AccountSelectionStep

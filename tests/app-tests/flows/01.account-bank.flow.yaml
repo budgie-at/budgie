@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '01.db(, db)?'
+
+- runFlow:
+    file: subflows/accounts/create-liability-account.flow.yaml
+    env:
+      ACCOUNT_TYPE_ID: 'CreateAccount.BANK'
+      ACCOUNT_SCREEN_TITLE: 'Checking Account'
+      ACCOUNT_NAME: 'E2E Checking Account'
+      CURRENCY_CODE: 'EUR'
+      ACCOUNT_AMOUNT: '100'
+
+- runFlow:
+    file: subflows/accounts/exercise-liability-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Checking Account'
+      CURRENCY_CODE: 'EUR'
+      UPDATED_ACCOUNT_NAME: 'E2E Checking Account EUR'
+      INITIAL_AMOUNT: '100'
+      INCREASE_TO: '175'
+      INCREASE_DELTA: '75'
+      DECREASE_TO: '125'
+      DECREASE_DELTA: '50'

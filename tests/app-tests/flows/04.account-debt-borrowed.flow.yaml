@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '04.db(, db)?'
+
+- runFlow:
+    file: subflows/accounts/create-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Borrowed Account'
+      CURRENCY_CODE: 'CHF'
+      DEBT_TYPE: 'BORROW'
+      TARGET_BALANCE: '800'
+
+- extendedWaitUntil:
+    visible: 'You owe'
+    timeout: 10000
+
+- runFlow:
+    file: subflows/accounts/exercise-debt-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Borrowed Account'
+      CURRENCY_CODE: 'CHF'
+      CONTACT_NAME: 'Maestro E2E Contact'
+      CONTACT_NAME_ID: 'Maestro_E2E_Contact'
+      UPDATED_ACCOUNT_NAME: 'E2E Borrowed CHF'
+      RETURN_DAY: '18'
+      RETURN_DATE_LABEL: '.*18,.*'
+      INCREASE_TO: '300'
+      INCREASE_DELTA: '300'
+      DECREASE_TO: '175'
+      DECREASE_DELTA: '125'

@@ -106,6 +106,41 @@
       "when": 1771759615163,
       "tag": "0014_light_calypso",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1776196800000,
+      "tag": "0015_add_entry_exchange_rate_and_to_iban",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1776556800000,
+      "tag": "0016_add_needs_embedding",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1776775019000,
+      "tag": "0017_drop_unused_fts_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1777045034341,
+      "tag": "0018_add_transaction_tags_is_primary",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1777187048000,
+      "tag": "0019_add_consolidation_ledger",
+      "breakpoints": true
     }
   ]
 }

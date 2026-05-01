@@ -76,26 +76,18 @@ export const Footer = ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#features`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#features`}>
                                     <Trans>Features</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/#whitelist`}
-                                >
-                                    <Trans>Whitelist</Trans>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#faq`}>
+                                    <Trans>FAQ</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#download`}>
-                                    <Trans>Download</Trans>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#roadmap`}>
-                                    <Trans>Roadmap</Trans>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#waitlist`}>
+                                    <Trans>Join Waitlist</Trans>
                                 </Link>
                             </li>
                         </ul>
@@ -108,7 +100,7 @@ export const Footer = ({ lang }: Props) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href="/blog">
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/blog`}>
                                     <Trans>Blog</Trans>
                                 </Link>
                             </li>
@@ -118,6 +110,30 @@ export const Footer = ({ lang }: Props) => {
                                     href="https://github.com/budgie-at/budgie"
                                 >
                                     <Trans>Source Code</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/blog/ynab-alternatives-privacy`}
+                                >
+                                    <Trans>YNAB Alternatives</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/blog/mint-alternatives-developers`}
+                                >
+                                    <Trans>Mint Alternatives</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/blog/cloud-budgeting-privacy-risks`}
+                                >
+                                    <Trans>Privacy Guide</Trans>
                                 </Link>
                             </li>
                         </ul>

@@ -1,3 +1,4 @@
+import { Log } from '@budgie/logger';
 import { addSeconds } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
@@ -18,19 +19,18 @@ export class BaseBankSyncService {
         protected readonly options: BankSyncOptionsInterface
     ) {}
 
+    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
     async syncAccounts(): Promise<BankAccountInterface[]> {
-        const result = await this.client.getAccounts();
-
-        if (result.success) {
-            return result.data;
-        }
-
-        return [];
+        return this.fetchAccounts();
     }
 
+    @Log(
+        (accountId, from) => `enter accountId=${accountId} from=${from.toISOString()}`,
+        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
+    )
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
         const to = new Date();
-
         const transactions = await this.fetchTransactions(accountId, from, to);
 
         const oldestTransaction = transactions.at(-1);
@@ -47,9 +47,13 @@ export class BaseBankSyncService {
         return { nextFrom: to, nextTo: to, transactions, completed: true };
     }
 
+    @Log(
+        (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
+        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
+    )
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
-
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
 
@@ -70,18 +74,27 @@ export class BaseBankSyncService {
         };
     }
 
-    protected toSeconds(date: Date): number {
-        return Math.floor(date.getTime() / 1000);
+    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
+    private async fetchAccounts(): Promise<BankAccountInterface[]> {
+        const result = await this.client.getAccounts();
+
+        if (result.success) {
+            return result.data;
+        }
+
+        throw new Error(`Failed to fetch accounts: ${result.error.code} ${result.error.message}`);
     }
 
-    protected delay(ms: number): Promise<void> {
-        return new Promise(resolve => {
-            setTimeout(resolve, ms);
-        });
-    }
-
+    @Log(
+        (accountId, from, to) => `enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
+        result => `done count=${result.length}`,
+        (error, accountId, from, to) =>
+            `throw accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} error=${getErrorMessage(error)}`
+    )
     private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
-        const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
+        const fromTs = this.toSeconds(from);
+        const toTs = this.toSeconds(to);
+        const result = await this.client.getTransactions(accountId, fromTs, toTs);
 
         if (result.success) {
             return result.data;
@@ -92,6 +105,16 @@ export class BaseBankSyncService {
         }
 
         throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+    }
+
+    protected toSeconds(date: Date): number {
+        return Math.floor(date.getTime() / 1000);
+    }
+
+    protected delay(ms: number): Promise<void> {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
     }
 
     private hasMoreTransactions(transactions: BankTransactionInterface[]): boolean {

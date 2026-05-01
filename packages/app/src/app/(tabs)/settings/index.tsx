@@ -1,11 +1,10 @@
 import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -13,12 +12,15 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { useScrollToRef } from '../../../@generic/hook/use-scroll-to-ref.hook';
+import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { AiEmbeddingStatusCard } from '../../../ai/component/ai-embedding-status-card/ai-embedding-status-card';
+import { AiSystemStatusBanner } from '../../../ai/component/ai-system-status-banner/ai-system-status-banner';
+import { AiTranslationStatusCard } from '../../../ai/component/ai-translation-status-card/ai-translation-status-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
-import { AiDataCard } from '../../../settings/components/ai-data-card/ai-data-card';
+import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -31,10 +33,13 @@ import { TruncateData } from '../../../settings/components/truncate-data/truncat
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
+import { SettingsPageSelector } from './settings-page.selector';
+
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { scrollViewRef, anchorLayout, anchorHighlight } = useScrollToRef();
+    const { anchor } = useLocalSearchParams<{ anchor?: string }>();
+    const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -47,16 +52,16 @@ export default function SettingsPage() {
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
-
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page
-            testID={SettingsPageSelectors.Container}
-            header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}
-            withBlur
-        >
-            <ScrollView ref={scrollViewRef} contentContainerClassName="gap-y-7xl pt-16 pb-5xl" showsVerticalScrollIndicator={false}>
+        <Page testID={SettingsPageSelector.Container} header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
+            <ScrollView
+                ref={scrollViewRef}
+                onLayout={onScrollViewLayout}
+                contentContainerClassName="gap-y-7xl pt-16 pb-5xl"
+                showsVerticalScrollIndicator={false}
+            >
                 <SettingsGroup title={t`Privacy`}>
                     <SimpleHorizontalCell
                         left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
@@ -74,9 +79,11 @@ export default function SettingsPage() {
                                 variant="pink"
                                 title={t`Screenshot Protection`}
                                 description={t`Hide account balances and net worth when taking screenshots`}
+                                testID={SettingsPageSelector.ScreenshotProtectionCard}
                                 right={
                                     <ThemedSwitch
                                         className="my-auto"
+                                        testID={SettingsPageSelector.ScreenshotProtectionSwitch}
                                         onValueChange={handleToggle('isScreenshotProtectionEnabled')}
                                         value={isScreenshotProtectionEnabled}
                                     />
@@ -99,7 +106,9 @@ export default function SettingsPage() {
                 <View {...anchorLayout('ai')}>
                     <SettingsGroup title={t`AI`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiDataCard />
+                            <AiSystemStatusBanner />
+                            <AiTranslationStatusCard />
+                            <AiEmbeddingStatusCard />
                         </Animated.View>
                     </SettingsGroup>
                 </View>
@@ -113,7 +122,7 @@ export default function SettingsPage() {
                                 description={t`View and delete custom categories`}
                                 icon={UserIconNameEnum.Folder}
                                 variant="default"
-                                testID={SettingsPageSelectors.ManageCategoriesCard}
+                                testID={SettingsPageSelector.ManageCategoriesCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToTags}
@@ -121,7 +130,7 @@ export default function SettingsPage() {
                                 description={t`Create and organize transaction tags`}
                                 icon={UserIconNameEnum.Tag}
                                 variant="pink"
-                                testID={SettingsPageSelectors.ManageTagsCard}
+                                testID={SettingsPageSelector.ManageTagsCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToArchived}
@@ -129,7 +138,7 @@ export default function SettingsPage() {
                                 description={t`View and restore archived accounts`}
                                 icon={UserIconNameEnum.Archive}
                                 variant="dark-warning"
-                                testID={SettingsPageSelectors.ArchivedCard}
+                                testID={SettingsPageSelector.ArchivedCard}
                             />
                             <SettingsCard
                                 onPress={handleNavigateToInactive}
@@ -137,7 +146,7 @@ export default function SettingsPage() {
                                 description={t`View and activate hidden accounts`}
                                 icon={UserIconNameEnum.EyeOff}
                                 variant="dark-warning"
-                                testID={SettingsPageSelectors.InactiveCard}
+                                testID={SettingsPageSelector.InactiveCard}
                             />
                         </Animated.View>
                     </SettingsGroup>
@@ -146,12 +155,23 @@ export default function SettingsPage() {
                 <View {...anchorLayout('appearance')}>
                     <SettingsGroup title={t`Appearance`}>
                         <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
-                            <ThemeSwitch />
+                            <ThemeSwitch
+                                cardTestID={SettingsPageSelector.DarkModeCard}
+                                switchTestID={SettingsPageSelector.DarkModeSwitch}
+                            />
                             <SettingsCard
+                                testID={SettingsPageSelector.ShowCentsCard}
                                 title={t`Show Cents`}
                                 description={t`Show $1,234.56 instead of $1,235`}
                                 icon={UserIconNameEnum.DollarSign}
-                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        testID={SettingsPageSelector.ShowCentsSwitch}
+                                        onValueChange={handleToggle('showCents')}
+                                        value={showCents}
+                                    />
+                                }
                                 variant="positive"
                             />
                         </Animated.View>
@@ -165,8 +185,11 @@ export default function SettingsPage() {
                             <ExportCsv />
                             <ImportDatabase />
                             <ExportDatabase />
+                            <ConsolidateTransfers />
                             <RecalculateBalances />
-                            <TruncateData />
+                            <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>
+                                <TruncateData />
+                            </Animated.View>
                         </Animated.View>
                     </SettingsGroup>
                 </View>

@@ -1,13 +1,16 @@
-import { useBootstrapReset } from '../@generic/hook/use-bootstrap-reset.hook';
+import { disableLogging as disableBankSyncLogging } from '@budgie/bank-sync';
+import { disableLogging } from '@budgie/logger';
+import Constants from 'expo-constants';
 
 import { RootLayoutContent } from './root-layout-content';
 
+const loggingEnabledKey = 'loggingEnabled';
+
+if (Constants.expoConfig?.extra?.[loggingEnabledKey] !== true) {
+    disableLogging();
+    disableBankSyncLogging();
+}
+
 export default function RootLayout() {
-    const isBootstrapReady = useBootstrapReset();
-
-    if (!isBootstrapReady) {
-        return null;
-    }
-
     return <RootLayoutContent />;
 }

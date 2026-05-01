@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+
+- openLink: 'budgie://settings/archived'
+
+- runFlow:
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ArchivedAccountsPage.Container'
+    timeout: 10000

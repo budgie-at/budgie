@@ -5,9 +5,9 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { appResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const TruncateData = () => {
@@ -33,7 +33,7 @@ export const TruncateData = () => {
         } catch (error) {
             Toast.show({
                 type: 'error',
-                text1: t`Failed to clear data`,
+                text1: t`Could not clear data`,
                 text2: getErrorMessage(error)
             });
         } finally {
@@ -49,7 +49,7 @@ export const TruncateData = () => {
             icon={UserIconNameEnum.Trash2}
             variant="destructive"
             isLoading={isLoading}
-            testID={SettingsPageSelectors.ClearDataCard}
+            testID={SettingsPageSelector.ClearDataCard}
         />
     );
 };

@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
+import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useContactSelectorModal } from '../../context/contact-selector-modal.context';
 import { useContacts } from '../../hook/use-contacts.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -39,15 +39,15 @@ export const ContactSelector = ({ contactId, onSelect, testID, variant, emptyDes
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
     const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
     const description = isDefined(contact) ? selectedDescription : emptyDescription;
-    
-return (
+
+    return (
         <SimpleHorizontalCell
             title={title}
             description={description}
             left={<CircleIcon icon={UserIconNameEnum.User} variant={iconVariant} />}
             onPress={handleOpen}
             testID={testID}
-            {...(isDefined(contact) && { titleTestID: AccountFormSelectors.SelectedContact(contact.name) })}
+            {...(isDefined(contact) && { titleTestID: CreateAccountScreenSelector.SelectedContact(contact.name) })}
         />
     );
 };

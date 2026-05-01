@@ -3,13 +3,13 @@ import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { TransactionFiltersSelectors } from '../../../@e2e/selectors/transaction-filters.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 /* jscpd:ignore-end */
 
@@ -42,7 +42,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
         <HapticPressable
             onPress={handleSelect}
             className={accountVariants({ isSelected })}
-            testID={TransactionFiltersSelectors.AccountOption(account.title)}
+            testID={TransactionFiltersSelector.AccountOption(account.title)}
         >
             <CircleIcon icon={account.icon} variant="ghost" />
 
@@ -55,7 +55,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
                     icon={UserIconNameEnum.Check}
                     size={16}
                     className="text-primary"
-                    testID={TransactionFiltersSelectors.AccountOptionSelected(account.title)}
+                    testID={TransactionFiltersSelector.AccountOptionSelected(account.title)}
                 />
             ) : null}
         </HapticPressable>

@@ -1,12 +1,15 @@
 import { CurrencyEnum } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 import { z } from 'zod';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { LlmInterface } from '../../@generic/interface/llm.interface';
+import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
+
+const LOG_PREVIEW_LENGTH = 120;
 
 const ExtractedItemSchema = z.object({
     description: z.string(),
@@ -17,17 +20,27 @@ const ExtractedItemSchema = z.object({
 type ExtractedItemType = z.infer<typeof ExtractedItemSchema>;
 
 export class VoiceLlmService {
-    constructor(private readonly llm: LlmInterface) {}
+    constructor(private readonly chat: ChatInvokerInterface) {}
 
+    @Log(
+        text => `enter text="${text.slice(0, LOG_PREVIEW_LENGTH)}"`,
+        result => `done count=${result.length}`,
+        (error, text) => `throw text="${text.slice(0, LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
+    )
     async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
-        const translatedText = await this.translateToEnglish(text);
-        const response = await this.llm.generate(ITEM_EXTRACTION_PROMPT, translatedText);
+        const translatedText = await this.performTranslation(text);
+        const response = await this.chat.generate(ITEM_EXTRACTION_PROMPT, translatedText);
 
         return this.parseExtractionResponse(response);
     }
 
-    private async translateToEnglish(text: string): Promise<string> {
-        const translated = await this.llm.generate(VOICE_TRANSLATION_PROMPT, text);
+    @Log(
+        text => `enter text="${text.slice(0, LOG_PREVIEW_LENGTH)}"`,
+        result => `done translatedLen=${result.length}`,
+        (error, text) => `throw text="${text.slice(0, LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
+    )
+    private async performTranslation(text: string): Promise<string> {
+        const translated = await this.chat.generate(VOICE_TRANSLATION_PROMPT, text);
 
         return translated.trim();
     }

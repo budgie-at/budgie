@@ -1,14 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
+import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useExportAction } from '../../hook/use-export-action.hook';
 import { databaseExportService } from '../../service/database-export.service';
 
 export const ExportDatabase = () => {
     const { t } = useLingui();
-    const { isLoading, handleExport } = useExportAction(() => databaseExportService.exportAndShare());
+    const { isLoading, handleExport } = useExportAction({
+        exportAction: () => databaseExportService.exportAndShare(),
+        successTitle: t`Database exported`,
+        successMessage: t`Your database backup is ready to share.`,
+        errorTitle: t`Could not export database`
+    });
 
     return (
         <SettingsCard
@@ -18,7 +23,7 @@ export const ExportDatabase = () => {
             icon={UserIconNameEnum.Database}
             variant="default"
             isLoading={isLoading}
-            testID={SettingsPageSelectors.ExportDatabaseCard}
+            testID={SettingsPageSelector.ExportDatabaseCard}
         />
     );
 };

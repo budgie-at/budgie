@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
 import nodePlugin from 'eslint-plugin-n';
@@ -33,6 +34,7 @@ export default defineConfig(
             '**/messages.ts',
             '**/babel.config.js',
             '**/fingerprint.config.js',
+            'packages/app/scripts/**',
 
             'eslint.config.mjs'
         ]
@@ -40,6 +42,7 @@ export default defineConfig(
     {
         files: ['**/*.{ts,tsx}'],
         extends: [js.configs.all],
+        plugins: { '@stylistic': stylistic },
         rules: {
             camelcase: ['error', { properties: 'never' }],
             complexity: ['error', 25],
@@ -50,6 +53,7 @@ export default defineConfig(
             'one-var': 'off',
             'new-cap': 'off',
             'lines-between-class-members': 'off',
+            '@stylistic/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
             'no-duplicate-imports': 'off',
             'no-ternary': 'off',
             'no-void': 'off',
@@ -74,6 +78,8 @@ export default defineConfig(
             'no-empty-function': ['error', { allow: ['constructors'] }],
             'capitalized-comments': 'off',
             'arrow-body-style': ['error', 'as-needed'],
+            curly: ['error', 'all'],
+            'nonblock-statement-body-position': ['error', 'below'],
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
@@ -319,7 +325,17 @@ export default defineConfig(
                         { regex: { pattern: 'sizes', flags: 'i' } },
                         { regex: { pattern: '^d$', flags: '' } }
                     ],
-                    ignoreFunctions: ['format', 'cva']
+                    ignoreFunctions: [
+                        'format',
+                        'cva',
+                        'Log',
+                        'getLogger',
+                        'logger.log',
+                        'logger.error',
+                        'logger.debug',
+                        'syncLogger.log',
+                        'syncLogger.error'
+                    ]
                 }
             ],
             'lingui/t-call-in-function': 2,
@@ -327,6 +343,12 @@ export default defineConfig(
             'lingui/no-expression-in-message': 2,
             'lingui/no-single-tag-to-translate': 2,
             'lingui/no-trans-inside-trans': 2
+        }
+    },
+    {
+        files: ['packages/app/**/*.selector.ts'],
+        rules: {
+            'lingui/no-unlocalized-strings': 'off'
         }
     },
     {
@@ -391,6 +413,47 @@ export default defineConfig(
             'func-names': 'off',
             'promise/no-nesting': 'off',
             '@typescript-eslint/no-magic-numbers': 'warn'
+        }
+    },
+    {
+        files: [
+            'packages/app/src/**/*.{ts,tsx}',
+            'packages/contracts/src/**/*.ts',
+            'packages/ai/src/**/*.ts',
+            'packages/bank-sync/src/**/*.ts'
+        ],
+        rules: {
+            'no-restricted-syntax': [
+                'warn',
+                {
+                    selector: "BinaryExpression[operator='==='][right.raw='null']",
+                    message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
+                    message: 'Use !isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='!=='][right.raw='null']",
+                    message: 'Use isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
+                    message: 'Use isDefined(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+                    message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+                    message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
+                },
+                {
+                    selector: "BinaryExpression[operator='==='][right.value='']",
+                    message: 'Use isEmptyString(x) from @rnw-community/shared.'
+                }
+            ]
         }
     }
 );

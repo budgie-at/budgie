@@ -2,12 +2,13 @@ import ky, { HTTPError, TimeoutError } from 'ky';
 
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankSyncError } from '../error/bank-sync.error';
+import { syncLogger } from '../util/sync-logger.util';
 
 import type { BankProviderEnum } from '../enum/bank-provider.enum';
 import type { BankAccountInterface } from '../interface/bank-account.interface';
 import type { BankClientInfoInterface } from '../interface/bank-client-info.interface';
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
-import type { BankSyncResultInterface } from '../interface/bank-sync-result.interface';
+import type { BankSyncResultInterface } from '../interface/bank-sync-result.type';
 import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
 const HTTP_STATUS_BAD_REQUEST = 400;
@@ -61,8 +62,10 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
     }
 
     protected async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<BankSyncResultInterface<T>> {
+        const url = `${this.baseUrl}${endpoint}`;
+        syncLogger.log('http:request', { provider: this.provider, endpoint });
         try {
-            const data = await ky(`${this.baseUrl}${endpoint}`, {
+            const data = await ky(url, {
                 ...options,
                 headers: {
                     ...this.getDefaultHeaders(),
@@ -76,6 +79,12 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
                     statusCodes: this.retryStatusCodes
                 }
             }).json<T>();
+            syncLogger.log('http:response:ok', {
+                provider: this.provider,
+                endpoint,
+                isArray: Array.isArray(data),
+                ...(Array.isArray(data) && { size: data.length })
+            });
 
             return this.success(data);
         } catch (error) {
@@ -83,9 +92,11 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
         }
     }
 
+    // eslint-disable-next-line max-statements -- Instrumented with diagnostic logs (temporary)
     private handleError<T>(error: unknown): BankSyncResultInterface<T> {
         if (error instanceof HTTPError) {
             const { status, statusText } = error.response;
+            syncLogger.error('http:response:httpError', { provider: this.provider, status, statusText });
 
             if (status === HTTP_STATUS_UNAUTHORIZED) {
                 return this.failure(BankSyncError.unauthorized(this.provider));
@@ -103,8 +114,12 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
         }
 
         if (error instanceof TimeoutError) {
+            syncLogger.error('http:response:timeout', { provider: this.provider });
+
             return this.failure(new BankSyncError(BankSyncErrorCodeEnum.NETWORK_ERROR, 'Request timeout', this.provider));
         }
+
+        syncLogger.error('http:response:networkError', { provider: this.provider, error: String(error) });
 
         return this.failure(BankSyncError.networkError(this.provider, error));
     }

@@ -1,32 +1,36 @@
 declare module 'whisper.rn' {
     export interface TranscribeRealtimeEvent {
-        contextId: number;
-        jobId: number;
-        isCapturing: boolean;
-        isStoppedByAction: boolean;
-        code: number;
-        processTime: number;
-        recordingTime: number;
-        data?: {
-            result: string;
-            segments: Array<{
-                t0: number;
-                t1: number;
-                text: string;
-            }>;
+        readonly contextId: number;
+        readonly jobId: number;
+        readonly isCapturing: boolean;
+        readonly isStoppedByAction?: boolean;
+        readonly code: number;
+        readonly processTime: number;
+        readonly recordingTime: number;
+        readonly data?: {
+            readonly result: string;
+            readonly segments: readonly {
+                readonly t0: number;
+                readonly t1: number;
+                readonly text: string;
+            }[];
         };
-        sliceIndex: number;
+        readonly sliceIndex: number;
     }
 
     export class WhisperContext {
-        id: number;
-        transcribeRealtime(options: { language?: string; realtimeAudioSec?: number; realtimeAudioSliceSec?: number }): Promise<{
-            stop: () => Promise<void>;
-            subscribe: (callback: (event: TranscribeRealtimeEvent) => void) => void;
+        readonly id: number;
+        transcribeRealtime(options: {
+            readonly language?: string;
+            readonly realtimeAudioSec?: number;
+            readonly realtimeAudioSliceSec?: number;
+        }): Promise<{
+            readonly stop: () => Promise<void>;
+            readonly subscribe: (callback: (event: TranscribeRealtimeEvent) => void) => void;
         }>;
         release(): Promise<void>;
     }
 
-    export function initWhisper(options: { filePath: string }): Promise<WhisperContext>;
+    export function initWhisper(options: { readonly filePath: string }): Promise<WhisperContext>;
     export function releaseAllWhisper(): Promise<void>;
 }

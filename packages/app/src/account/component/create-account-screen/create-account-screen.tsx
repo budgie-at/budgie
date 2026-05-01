@@ -3,12 +3,13 @@ import { ReactNode } from 'react';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { AccountFormSelectors } from '../../../@e2e/selectors/account-form.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+
+import { CreateAccountScreenSelector } from './create-account-screen.selector';
 
 interface Props {
     readonly title: string;
@@ -27,6 +28,7 @@ export const CreateAccountScreen = (props: Props) => {
 
     return (
         <FormPage
+            scrollViewTestID={CreateAccountScreenSelector.ScrollView}
             header={
                 <PageHeader
                     title={title}
@@ -35,7 +37,7 @@ export const CreateAccountScreen = (props: Props) => {
                     description={description ?? t`Fill in the account details`}
                 />
             }
-            footer={<Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={AccountFormSelectors.SubmitButton} />}
+            footer={<Button variant={variant} onPress={onSubmit} content={t`Submit`} testID={CreateAccountScreenSelector.SubmitButton} />}
         >
             {children}
         </FormPage>

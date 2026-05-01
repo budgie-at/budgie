@@ -1,20 +1,18 @@
-import { and, desc, eq, isNotNull, isNull, lt, ne, sql } from 'drizzle-orm';
+import { Log } from '@budgie/logger';
 
-import { BaseEmbeddingRepository, isDefined } from '../../@generic/repository/base-embedding.repository';
+import { getErrorMessage } from '@rnw-community/shared';
+
+import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
-import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
-import { TagEntityTable } from '../../tag/table/tag-entity.table';
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
-import { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
-import { UnembeddedMerchantDataInterface } from '../interface/unembedded-merchant-data.interface';
-import { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
+import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
+
+import type { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import type { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
+import type { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
+import type { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 
 const SIMILAR_CATEGORIES_QUERY = `
     SELECT me.category_id as categoryId,
@@ -53,6 +51,48 @@ const SIMILAR_COMMENTS_QUERY = `
     LIMIT ?
 `;
 
+const PENDING_MERCHANT_CONTEXTS_BASE = `
+    SELECT
+        t.title AS title,
+        COALESCE(mcc.full_description, '') AS mccDescription,
+        te.category_id AS categoryId,
+        MAX(COALESCE(cat.title_en, cat.title)) AS categoryTitleEn,
+        MAX(t.comment) AS comment,
+        GROUP_CONCAT(DISTINCT t.id) AS transactionIdsCsv,
+        GROUP_CONCAT(DISTINCT tt.tag_id) AS tagIdsCsv,
+        MAX(t.operated_at) AS maxOperatedAt
+    FROM transactions t
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+    LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN transaction_tags tt ON tt.transaction_id = t.id
+    WHERE t.deleted_at IS NULL
+      AND t.needs_embedding = 1
+      AND t.title != ''
+      AND te.category_id IS NOT NULL
+    GROUP BY t.title, COALESCE(mcc.full_description, ''), te.category_id
+`;
+
+const PENDING_MERCHANT_CONTEXTS_QUERY = `
+    WITH pending_contexts AS (${PENDING_MERCHANT_CONTEXTS_BASE})
+    SELECT
+        pc.title AS title,
+        pc.mccDescription AS mccDescription,
+        pc.categoryId AS categoryId,
+        pc.categoryTitleEn AS categoryTitleEn,
+        pc.comment AS comment,
+        pc.transactionIdsCsv AS transactionIdsCsv,
+        pc.tagIdsCsv AS tagIdsCsv,
+        me.id AS existingEmbeddingId
+    FROM pending_contexts pc
+    LEFT JOIN merchant_embeddings me ON me.title = pc.title
+        AND me.mcc_description = pc.mccDescription
+        AND me.category_id = pc.categoryId
+        AND me.deleted_at IS NULL
+    ORDER BY pc.maxOperatedAt DESC
+    LIMIT ?
+`;
+
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     constructor(db: DB) {
         super(db, {
@@ -63,13 +103,21 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         });
     }
 
+    @Log(
+        (queryEmbedding, params) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit}`,
+        (result, queryEmbedding, params) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} count=${result.length}`,
+        (error, queryEmbedding, params) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} error=${getErrorMessage(error)}`
+    )
     async findSimilarComments(
         queryEmbedding: Uint8Array,
         params: SimilarCommentsParamsInterface
     ): Promise<CommentDistanceResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
-        return this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+        return await this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
             convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
@@ -98,92 +146,56 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: MerchantEmbeddingEntityTable.id });
 
+        await this.db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]);
         await this.db.$client.runAsync(
-            'INSERT OR REPLACE INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
             [row.id]
         );
 
         return row.id;
     }
 
-    async replaceTags(embeddingId: number, tagIds: number[]): Promise<void> {
-        return this.replaceEmbeddingTags({
-            tagTable: MerchantEmbeddingTagEntityTable,
-            foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
-            embeddingId,
-            tagIds,
-            createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
-        });
-    }
-
-    async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedMerchantDataInterface[]> {
-        const cursorCondition = isDefined(cursor) ? lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor) : null;
-
-        let query = this.db
-            .select({
-                title: TransactionEntityTable.title,
-                mccDescription: sql<string>`COALESCE(${MccCategoryEntityTable.fullDescription}, '')`,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagIds: sql<string | null>`GROUP_CONCAT(DISTINCT ${TagEntityTable.id})`,
-                comment: sql<string>`MAX(${TransactionEntityTable.comment})`,
-                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(
-                TransactionEntryEntityTable,
-                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
-            )
-            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
-            .where(
-                and(
-                    isNull(TransactionEntityTable.deletedAt),
-                    ne(TransactionEntityTable.title, ''),
-                    isNotNull(TransactionEntryEntityTable.categoryId)
-                )
-            )
-            .groupBy(TransactionEntityTable.title, MccCategoryEntityTable.fullDescription, TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit)
-            .$dynamic();
-
-        if (isDefined(cursorCondition)) {
-            query = query.having(cursorCondition);
-        }
-
-        const results = await query;
-
-        return results
-            .filter((row): row is typeof row & { categoryId: number } => isDefined(row.categoryId))
-            .map(row => ({
-                title: row.title,
-                mccDescription: row.mccDescription,
-                categoryId: row.categoryId,
-                categoryTitleEn: row.categoryTitleEn ?? null,
-                tagIds: row.tagIds ?? null,
-                comment: row.comment,
-                maxOperatedAt: row.maxOperatedAt
-            }));
+    async replaceTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
+        return this.replaceEmbeddingTags(
+            {
+                tagTable: MerchantEmbeddingTagEntityTable,
+                foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+                embeddingId,
+                tagIds,
+                createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
+            },
+            tx
+        );
     }
 
     async countAll(): Promise<number> {
         return this.countRows(MerchantEmbeddingEntityTable, MerchantEmbeddingEntityTable.deletedAt);
     }
 
-    async findAllContextKeys(): Promise<string[]> {
-        const results = await this.db
-            .select({
-                title: MerchantEmbeddingEntityTable.title,
-                mccDescription: MerchantEmbeddingEntityTable.mccDescription,
-                categoryId: MerchantEmbeddingEntityTable.categoryId
-            })
-            .from(MerchantEmbeddingEntityTable)
-            .where(isNull(MerchantEmbeddingEntityTable.deletedAt));
+    async findPendingMerchantContexts(limit: number): Promise<MerchantPendingContextInterface[]> {
+        const rows = await this.db.$client.getAllAsync<{
+            title: string;
+            mccDescription: string;
+            categoryId: number;
+            categoryTitleEn: string | null;
+            comment: string | null;
+            transactionIdsCsv: string;
+            tagIdsCsv: string | null;
+            existingEmbeddingId: number | null;
+        }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]);
 
-        return results.map(row => `${row.title}|${row.mccDescription}|${row.categoryId}`);
+        return rows.map(row => ({
+            title: row.title,
+            mccDescription: row.mccDescription,
+            comment: row.comment ?? '',
+            ...parsePendingContextBaseFields(row)
+        }));
+    }
+
+    async countPendingMerchantContexts(): Promise<number> {
+        const [row] = await this.db.$client.getAllAsync<{ c: number }>(`SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, []);
+
+        return row.c;
     }
 
     async rebuildVecIndex(): Promise<void> {

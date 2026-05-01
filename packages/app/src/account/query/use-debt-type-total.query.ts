@@ -2,8 +2,9 @@ import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
+
+import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
 export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
     const { defaultInstrument } = useSettingsContext();
@@ -11,6 +12,7 @@ export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
         defaultInstrument.id,
         debtType
     ]);
+    const total = useCachedMicroUnitQuery(data.at(0)?.total, [defaultInstrument.id, debtType]);
 
-    return convertFromMicroUnits(data.at(0)?.total ?? 0);
+    return total;
 };

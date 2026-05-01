@@ -131,6 +131,12 @@ export class AccountRepository {
         });
     }
 
+    findByIban(iban: string) {
+        return this.db.query.AccountEntityTable.findFirst({
+            where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
     async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ibans)) {
             return [];

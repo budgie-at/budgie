@@ -9,15 +9,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ActionButtonSelectors } from '../../../@e2e/selectors/action-button.selector';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
-import { useLlmContext } from '../../../ai/context/llm.context';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
+import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
+import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
+
+import { CreateTransactionMenuSelector } from './create-transaction-menu.selector';
 
 const CLOSE_ANIMATION_DURATION = 250;
 const BUTTON_ROTATION_ACTIVE = 45;
@@ -36,18 +38,15 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
-    const { isAvailable: isAiAvailable, llm, stt } = useLlmContext();
+    const snapshot = useAiSystemStatus();
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
-    const LLM_PROGRESS_WEIGHT = 0.97;
-    const STT_PROGRESS_WEIGHT = 0.03;
-
-    const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
-    const isAiInitializing = isAiAvailable && llm.isInitializing;
-    const aiDownloadProgress = isAiAvailable
-        ? llm.downloadProgress * LLM_PROGRESS_WEIGHT + (stt.downloadProgress / 100) * STT_PROGRESS_WEIGHT
-        : 0;
+    const isAiAvailable = snapshot.state !== AiSystemStateEnum.DISABLED;
+    const isAiLoading = isAiAvailable && snapshot.state !== AiSystemStateEnum.READY;
+    const isAiInitializing = snapshot.state === AiSystemStateEnum.BOOTING;
+    const PERCENT_TO_RATIO = 100;
+    const aiDownloadProgress = isAiAvailable ? snapshot.percent / PERCENT_TO_RATIO : 0;
 
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
@@ -92,28 +91,28 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         {
             icon: UserIconNameEnum.TrendingDown,
             label: t`Expense`,
-            testID: ActionButtonSelectors.Expense,
+            testID: CreateTransactionMenuSelector.Expense,
             variant: 'destructive',
             onPress: handleCreateExpense
         },
         {
             icon: UserIconNameEnum.TrendingUp,
             label: t`Income`,
-            testID: ActionButtonSelectors.Income,
+            testID: CreateTransactionMenuSelector.Income,
             variant: 'positive',
             onPress: handleCreateIncome
         },
         {
             icon: UserIconNameEnum.ArrowLeftRight,
             label: t`Transfer`,
-            testID: ActionButtonSelectors.Transfer,
+            testID: CreateTransactionMenuSelector.Transfer,
             variant: 'warning',
             onPress: handleCreateTransfer
         },
         {
             icon: UserIconNameEnum.Wallet,
             label: t`Account`,
-            testID: ActionButtonSelectors.AddAccount,
+            testID: CreateTransactionMenuSelector.AddAccount,
             variant: 'secondary',
             onPress: handleCreateAccount
         }

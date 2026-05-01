@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+---
+
+- runFlow: ../navigation/navigate-to-settings.flow.yaml
+
+- tapOn:
+    id: 'SettingsPage.MainCurrencyCard'
+- extendedWaitUntil:
+    visible:
+      id: 'CurrencySelector.SearchInput'
+    timeout: 3000
+- tapOn:
+    id: 'CurrencySelector.SearchInput'
+- inputText: ${CURRENCY_CODE}
+- tapOn:
+    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CurrencySelector.SearchInput'
+    timeout: 3000
+- tapOn:
+    id: 'TabBar.Home'

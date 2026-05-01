@@ -5,8 +5,8 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionsPageSelectors } from '../../../@e2e/selectors/transactions-page.selector';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
@@ -17,16 +17,9 @@ interface Props {
     readonly filters?: TransactionFilterInterface;
     readonly showFilters?: boolean;
     readonly footerSpacerMultiplier?: number;
-    readonly focusKey?: number;
 }
 
-export const TransactionList = ({
-    accountId = null,
-    filters: externalFilters,
-    showFilters = true,
-    footerSpacerMultiplier,
-    focusKey
-}: Props) => {
+export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true, footerSpacerMultiplier }: Props) => {
     const { t } = useLingui();
 
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
@@ -52,14 +45,14 @@ export const TransactionList = ({
             titleClassName="text-md text-primary font-semibold"
             description={emptyDescription}
             descriptionClassName="text-center max-w-[250px]"
-            testID={TransactionsPageSelectors.EmptyState}
+            testID={TransactionsPageSelector.EmptyState}
         />
     );
 
     const canShowFilters = showFilters && !externalFilters;
 
     return (
-        <View>
+        <View className="flex-1">
             {canShowFilters && (
                 <TransactionFilters
                     filters={activeFilters}
@@ -76,7 +69,6 @@ export const TransactionList = ({
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
                 footerSpacerMultiplier={footerSpacerMultiplier}
-                focusKey={focusKey}
             />
         </View>
     );

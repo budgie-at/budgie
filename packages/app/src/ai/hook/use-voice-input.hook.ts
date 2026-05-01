@@ -42,6 +42,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const [finalTranscription, setFinalTranscription] = useState('');
 
     const isProcessingRef = useRef(false);
+    const sessionIdRef = useRef(0);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
@@ -54,18 +55,27 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         onError?.(errorMessage);
     };
 
-    const processTranscription = async (): Promise<void> => {
-        if (isProcessingRef.current) {
+    const isCurrentSession = (sessionId: number): boolean => sessionId === sessionIdRef.current;
+
+    const markProcessingComplete = (): void => {
+        isProcessingRef.current = false;
+    };
+
+    const stopSttStream = async (): Promise<string> => {
+        try {
+            return await stt.stopStream();
+        } catch (error: unknown) {
+            markProcessingComplete();
+            throw error;
+        }
+    };
+
+    const handleTranscriptionText = (text: string, sessionId: number): void => {
+        if (!isCurrentSession(sessionId)) {
             return;
         }
 
-        isProcessingRef.current = true;
-        setState('transcribing');
-
-        const text = await stt.stopStream();
-
-        // eslint-disable-next-line require-atomic-updates
-        isProcessingRef.current = false;
+        markProcessingComplete();
 
         if (!isNotEmptyString(text)) {
             setState('idle');
@@ -75,6 +85,19 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
         setFinalTranscription(text);
         setState('confirming');
+    };
+
+    const processTranscription = async (): Promise<void> => {
+        if (isProcessingRef.current) {
+            return;
+        }
+
+        const sessionId = sessionIdRef.current;
+        isProcessingRef.current = true;
+        setState('transcribing');
+
+        const text = await stopSttStream();
+        handleTranscriptionText(text, sessionId);
     };
 
     const handleSilenceDetected = () => {
@@ -90,6 +113,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
     const start = () => {
+        sessionIdRef.current += 1;
         setError(null);
         setFinalTranscription('');
         isProcessingRef.current = false;
@@ -129,13 +153,14 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const cancel = () => {
+        sessionIdRef.current += 1;
         recording.cancel();
         stt.cancelStream();
         categorization.reset();
         setState('idle');
         setError(null);
         setFinalTranscription('');
-        isProcessingRef.current = false;
+        markProcessingComplete();
     };
 
     const transcription =

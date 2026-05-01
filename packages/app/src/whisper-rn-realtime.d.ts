@@ -32,6 +32,11 @@ declare module 'whisper.rn/realtime-transcription' {
         readonly isCapturing: boolean;
         readonly processTime: number;
         readonly recordingTime: number;
+        readonly memoryUsage?: {
+            readonly slicesInMemory: number;
+            readonly totalSamples: number;
+            readonly estimatedMB: number;
+        };
     }
 
     export interface RealtimeTranscriberResultEntry {
@@ -45,6 +50,7 @@ declare module 'whisper.rn/realtime-transcription' {
             options?: {
                 readonly audioSliceSec?: number;
                 readonly audioMinSec?: number;
+                readonly maxSlicesInMemory?: number;
                 readonly promptPreviousSlices?: boolean;
                 readonly audioStreamConfig?: AudioStreamConfig;
                 readonly transcribeOptions?: { readonly language?: string };

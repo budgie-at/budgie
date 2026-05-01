@@ -1,40 +1,69 @@
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { Log } from '@budgie/logger';
+
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
-import { LlmInterface } from '../../@generic/interface/llm.interface';
+import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 
 export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
     private static embeddingCache = new Map<string, Promise<Float32Array | null>>();
     private static EMBEDDING_CACHE_LIMIT = 50;
 
-    constructor(private readonly llm: LlmInterface) {}
+    constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
+    @Log(
+        text => `enter text="${text}"`,
+        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text) => `throw text="${text}" error=${getErrorMessage(error)}`
+    )
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
-            return cached;
+            return this.returnCachedEmbedding(text, cached);
         }
 
-        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
-        EmbeddingService.embeddingCache.set(text, promise);
-        EmbeddingService.evictOldestCacheEntry();
-
-        void promise.then(emptyFn, () => EmbeddingService.embeddingCache.delete(text));
-
-        return promise;
+        return this.enqueueEmbedding(text);
     }
 
+    @Log(
+        texts => `enter count=${texts.length}`,
+        result => `done resolved=${result.size}`,
+        (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
+    )
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
         return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
     }
 
+    @Log('enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
-        return this.llm.isEmbeddingReady;
+        return this.embedding.isReady;
+    }
+
+    @Log(
+        (text, cached) => `enter text="${text}" hasCached=${String(isDefined(cached))}`,
+        (result, text, cached) =>
+            `done text="${text}" hasCached=${String(isDefined(cached))} dimensions=${isDefined(result) ? result.length : 0}`,
+        (error, text, cached) => `throw text="${text}" hasCached=${String(isDefined(cached))} error=${getErrorMessage(error)}`
+    )
+    private async returnCachedEmbedding(text: string, cached: Promise<Float32Array | null>): Promise<Float32Array | null> {
+        void text;
+
+        return cached;
+    }
+
+    private async enqueueEmbedding(text: string): Promise<Float32Array | null> {
+        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
+        EmbeddingService.embeddingCache.set(text, promise);
+        EmbeddingService.evictOldestCacheEntry();
+
+        void promise.catch(() => EmbeddingService.embeddingCache.delete(text));
+
+        return promise;
     }
 
     private async executeEmbedding(text: string): Promise<Float32Array | null> {
-        const rawEmbedding = await this.llm.embedding(text);
+        const rawEmbedding = await this.embedding.embed(text);
 
         if (!isNotEmptyArray(rawEmbedding)) {
             return null;
@@ -45,7 +74,7 @@ export class EmbeddingService {
 
     private async executeBatchEmbedding(texts: string[]): Promise<Map<string, Float32Array>> {
         const batch = texts.slice(0, EMBEDDING_BATCH_LIMIT);
-        const rawResults = await this.llm.batchEmbedding(batch);
+        const rawResults = await this.embedding.batchEmbed(batch);
 
         const results = new Map<string, Float32Array>();
         for (const [text, embedding] of rawResults) {

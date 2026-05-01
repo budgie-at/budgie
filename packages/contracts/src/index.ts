@@ -3,12 +3,13 @@ export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
 export { CurrencyEnum } from './@generic/enum/currency.enum';
-export { LanguageEnum } from './@generic/enum/language.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
+export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
+export type { EmbeddingPendingContextBaseInterface } from './@generic/interface/embedding-pending-context-base.interface';
 export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
 export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
 export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
@@ -161,9 +162,11 @@ export { MccCategoryCreateEntitySchema } from './mcc-category/schema/mcc-categor
 export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
+export { TransactionConsolidationTypeEnum } from './transaction/enum/transaction-consolidation-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
+export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
@@ -188,7 +191,13 @@ export { TransactionCreateInputSchema } from './transaction/schema/transaction-c
 
 export type { TransactionCreateInputInterface } from './transaction/input/transaction-create-input.interface';
 
+export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
+export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
+
 export { TransactionRepository } from './transaction/repository/transaction.repository';
+
+export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
 
 export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
@@ -224,6 +233,14 @@ export type { MonthlyPatternRowInterface } from './transaction/interface/monthly
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
+
+export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
+export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
+export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
+export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
+export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
+
+export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
@@ -297,8 +314,8 @@ export { MerchantEmbeddingTagAssociationEnum } from './merchant-embedding/enum/m
 export type { MerchantEmbeddingEntityInterface } from './merchant-embedding/entity/merchant-embedding-entity.interface';
 
 export type { CommentDistanceResultInterface } from './merchant-embedding/interface/comment-distance-result.interface';
+export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
-export type { UnembeddedMerchantDataInterface } from './merchant-embedding/interface/unembedded-merchant-data.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
 
 export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
@@ -315,7 +332,7 @@ export { CommentEmbeddingTagAssociationEnum } from './comment-embedding/enum/com
 
 export type { CommentEmbeddingEntityInterface } from './comment-embedding/entity/comment-embedding-entity.interface';
 
-export type { UnembeddedCommentDataInterface } from './comment-embedding/interface/unembedded-comment-data.interface';
+export type { CommentPendingContextInterface } from './comment-embedding/interface/comment-pending-context.interface';
 export type { UpsertCommentEmbeddingParamsInterface } from './comment-embedding/interface/upsert-comment-embedding-params.interface';
 
 export { CommentEmbeddingRepository } from './comment-embedding/repository/comment-embedding.repository';

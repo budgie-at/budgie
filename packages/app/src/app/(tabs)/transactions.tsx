@@ -1,39 +1,41 @@
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { View } from 'react-native';
-import { Directions, Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { runOnJS } from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
 
-import { TransactionsPageSelectors } from '../../@e2e/selectors/transactions-page.selector';
 import { Page } from '../../@generic/component/page/page';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
+import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { RecurringCalendarContent } from '../../transaction/components/recurring-calendar-content/recurring-calendar-content';
 import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
 
+import { TransactionsPageSelector } from './transactions-page.selector';
+
 import type { TransactionsTabType } from '../../@generic/type/transactions-tab.type';
+
+const TABS: readonly TransactionsTabType[] = ['transactions', 'recurring'];
 
 export default function TransactionsPage() {
     const [activeTab, setActiveTab] = useState<TransactionsTabType>('transactions');
-    const focusKey = useFocusKey();
 
-    const handleSwipeLeft = () => void setActiveTab('recurring');
-    const handleSwipeRight = () => void setActiveTab('transactions');
-
-    const swipeLeft = Gesture.Fling()
-        .direction(Directions.LEFT)
-        .onEnd(() => void runOnJS(handleSwipeLeft)());
-    const swipeRight = Gesture.Fling()
-        .direction(Directions.RIGHT)
-        .onEnd(() => void runOnJS(handleSwipeRight)());
-    const swipeGesture = Gesture.Race(swipeLeft, swipeRight);
+    const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: setActiveTab });
 
     const header = <TransactionsPageHeader activeTab={activeTab} onChangeTab={setActiveTab} />;
 
+    const isTransactionsTab = activeTab === 'transactions';
+    const transactionsActivityMode = isTransactionsTab ? 'visible' : 'hidden';
+    const recurringActivityMode = isTransactionsTab ? 'hidden' : 'visible';
+
     return (
-        <Page testID={TransactionsPageSelectors.Container} header={header}>
+        <Page testID={TransactionsPageSelector.Container} header={header}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    {activeTab === 'transactions' ? <TransactionList focusKey={focusKey} accountId={null} /> : <RecurringCalendarContent />}
+                    <Activity mode={transactionsActivityMode}>
+                        <TransactionList accountId={null} />
+                    </Activity>
+
+                    <Activity mode={recurringActivityMode}>
+                        <RecurringCalendarContent />
+                    </Activity>
                 </View>
             </GestureDetector>
         </Page>

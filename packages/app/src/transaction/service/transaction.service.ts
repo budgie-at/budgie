@@ -1,65 +1,123 @@
-/* eslint-disable max-lines -- Transaction service contains related conversion methods */
-import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryCreateInputInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
-} from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
-import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
+import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
+import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
+import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
+import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
+import { unconsolidateByIdInTransaction } from '../utils/unconsolidate-by-id-in-transaction.util';
+import { upsertTransactionEntriesAndTags } from '../utils/upsert-transaction-entries-and-tags.util';
 
-import type { DB } from '@budgie/contracts';
+import { transactionBatchCreateService } from './transaction-batch-create.service';
+
+import type {
+    DB,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateInputInterface,
+    TransactionUpdateServiceInputInterface
+} from '@budgie/contracts';
 
 class TransactionService {
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
-        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
-    }
+    @Log(
+        (inputs, tx, batchSize) =>
+            `enter externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
+        (result, inputs, tx, batchSize) =>
+            `done externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs, tx, batchSize) =>
+            `throw externalIds=${inputs.map(input => input.externalId).join(',')} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(
+        inputs: TransactionCreateInputInterface[],
+        tx?: DB,
+        batchSize = TRANSACTION_BATCH_SIZE
+    ): Promise<TransactionEntityInterface[]> {
+        if (!isNotEmptyArray(inputs)) {
+            return [];
+        }
 
-    async deleteById(id: number) {
-        await transactionAsync(db, async tx => {
-            await transactionRepository.deleteById(id, tx);
-            await transactionTagsRepository.deleteByTransactionId(id, tx);
-            await transactionEntryRepository.deleteByTransactionId(id, tx);
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-        });
-    }
+        if (!isDefined(tx)) {
+            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
+        }
 
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-    }
-
-    async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        const [transaction] = await this.bulkCreate([input]);
-
-        return transaction;
-    }
-
-    async bulkCreate(inputs: TransactionCreateInputInterface[], tx?: DB, batchSize = 500): Promise<TransactionEntityInterface[]> {
-        const batchProcessor = isDefined(tx)
-            ? (batch: TransactionCreateInputInterface[]) => this.processBatchInner(batch, tx)
-            : this.processBatch.bind(this);
-
-        const transactions = await processInputWithBatches(inputs, batchSize, batchProcessor);
+        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
+            transactionBatchCreateService.create(batch, tx)
+        );
 
         if (isNotEmptyArray(transactions)) {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         }
 
         return transactions;
+    }
+
+    @Log(
+        input => `enter externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
+        (result, input) =>
+            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
+        (error, input) =>
+            `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async update(input: TransactionCreateInputInterface): Promise<void> {
+        await transactionAsync(db, async tx => this.updateImportedEntries(input.entries, input, tx));
+    }
+
+    @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
+    async deleteById(id: number): Promise<void> {
+        await transactionAsync(db, async tx => {
+            const transaction = await transactionRepository.getById(id, tx);
+
+            if (isDefined(transaction?.consolidationType)) {
+                await unconsolidateByIdInTransaction(id, tx);
+            } else {
+                await transactionRepository.deleteById(id, tx);
+                await transactionTagsRepository.deleteByTransactionId(id, tx);
+                await transactionEntryRepository.deleteByTransactionId(id, tx);
+            }
+
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        });
+    }
+
+    @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
+    async unconsolidateById(id: number): Promise<void> {
+        await transactionAsync(db, async tx => {
+            await unconsolidateByIdInTransaction(id, tx);
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        });
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
+        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
+    }
+
+    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
+        return transactionRepository.findIdMapByExternalSource(externalSource);
+    }
+
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    }
+
+    async updateAllBalances(tx?: DB): Promise<void> {
+        await accountBalanceIncrementalService.updateAllBalances(true, tx);
+    }
+
+    async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
+        return transactionAsync(db, async tx => {
+            const [transaction] = await this.bulkCreate([input], tx);
+
+            return transaction;
+        });
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
@@ -106,7 +164,9 @@ class TransactionService {
                         mccCategoryId: fromEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.CREDIT,
                         amount: fromAmountInMicroUnits,
-                        externalId: fromEntry.externalId ?? null
+                        externalId: fromEntry.externalId ?? null,
+                        exchangeRate: fromEntry.exchangeRate ?? 1,
+                        toIban: fromEntry.toIban ?? null
                     },
                     {
                         transactionId: transaction.id,
@@ -115,18 +175,17 @@ class TransactionService {
                         mccCategoryId: toEntry.mccCategoryId,
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: toAmount,
-                        externalId: toEntry.externalId ?? null
+                        externalId: toEntry.externalId ?? null,
+                        exchangeRate: toEntry.exchangeRate ?? 1,
+                        toIban: toEntry.toIban ?? null
                     },
-                    ...this.buildAdditionalEntries(input.entries, fromEntry, toEntry, transaction.id)
+                    ...buildAdditionalTransferEntries(input.entries, fromEntry, toEntry, transaction.id)
                 ],
                 tx
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await transactionTagsRepository.bulkCreate(
-                    input.tagIds.map(tagId => ({ transactionId: transaction.id, tagId })),
-                    tx
-                );
+                await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
             }
 
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
@@ -135,222 +194,31 @@ class TransactionService {
         });
     }
 
-    async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.updateById(id, input, tx);
+            const existingTransaction = await transactionRepository.getById(id, tx);
+            const isConsolidated = isDefined(existingTransaction?.consolidationType);
+            const transaction = await transactionRepository.updateById(
+                id,
+                {
+                    title: input.title,
+                    comment: input.comment,
+                    type: input.type,
+                    operatedAt: input.operatedAt,
+                    fromAccountId: input.fromAccountId,
+                    toAccountId: input.toAccountId,
+                    exchangeRate: input.exchangeRate
+                },
+                tx
+            );
 
-            await this.upsertEntriesAndTags(id, input, tx);
+            await upsertTransactionEntriesAndTags(id, input, tx, isConsolidated);
 
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
             return transaction;
         });
     }
-
-    /* jscpd:ignore-start */
-    async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
-        const { id, accountId: toAccountId, customExchangeRate } = params;
-
-        // eslint-disable-next-line max-statements
-        return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.getById(id);
-
-            if (!isDefined(transaction)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Transaction not found');
-            }
-
-            if (transaction.type !== TransactionTypeEnum.EXPENSE) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Only expense transactions can be converted');
-            }
-
-            if (!isDefined(transaction.fromAccountId)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Transaction must have a source account');
-            }
-
-            const { entries } = transaction;
-
-            if (entries.length !== 1) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Only single-entry expenses can be converted');
-            }
-
-            const [fromAccount, toAccount] = await Promise.all([
-                accountService.findByIdOrFail(transaction.fromAccountId),
-                accountService.findByIdOrFail(toAccountId)
-            ]);
-
-            const fromAmountInMicroUnits = entries[0].amount;
-
-            const { amount: autoToAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
-                fromAccount.instrumentId,
-                toAccount.instrumentId,
-                fromAmountInMicroUnits
-            );
-
-            const hasCustomRate = isPositiveNumber(customExchangeRate) && customExchangeRate !== 1;
-            const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
-            const toAmount = hasCustomRate ? fromAmountInMicroUnits / customExchangeRate : autoToAmount;
-
-            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
-
-            const updated = await transactionRepository.updateById(
-                id,
-                {
-                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : TransactionTypeEnum.TRANSFER,
-                    toAccountId,
-                    exchangeRate
-                },
-                tx
-            );
-
-            await transactionEntryRepository.deleteByTransactionId(id, tx);
-
-            await transactionEntryRepository.bulkCreate(
-                [
-                    {
-                        transactionId: id,
-                        accountId: transaction.fromAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: fromAmountInMicroUnits,
-                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-                        mccCategoryId: null,
-                        externalId: null
-                    },
-                    {
-                        transactionId: id,
-                        accountId: toAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: toAmount,
-                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-                        mccCategoryId: null,
-                        externalId: null
-                    }
-                ],
-                tx
-            );
-
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-
-            return updated;
-        });
-    }
-    /* jscpd:ignore-end */
-
-    /* jscpd:ignore-start */
-    async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
-        const { id, accountId: fromAccountId, customExchangeRate } = params;
-
-        // eslint-disable-next-line max-statements
-        return await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.getById(id);
-
-            if (!isDefined(transaction)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Transaction not found');
-            }
-
-            if (transaction.type !== TransactionTypeEnum.INCOME) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Only income transactions can be converted');
-            }
-
-            if (!isDefined(transaction.toAccountId)) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Transaction must have a destination account');
-            }
-
-            const { entries } = transaction;
-
-            if (entries.length !== 1) {
-                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-                throw new Error('Only single-entry incomes can be converted');
-            }
-
-            const [fromAccount, toAccount] = await Promise.all([
-                accountService.findByIdOrFail(fromAccountId),
-                accountService.findByIdOrFail(transaction.toAccountId)
-            ]);
-
-            const toAmountInMicroUnits = entries[0].amount;
-
-            const { amount: autoFromAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
-                toAccount.instrumentId,
-                fromAccount.instrumentId,
-                toAmountInMicroUnits
-            );
-
-            const hasCustomRate = isPositiveNumber(customExchangeRate) && customExchangeRate !== 1;
-            const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
-            const fromAmount = hasCustomRate ? toAmountInMicroUnits / customExchangeRate : autoFromAmount;
-
-            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
-
-            const updated = await transactionRepository.updateById(
-                id,
-                {
-                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : TransactionTypeEnum.TRANSFER,
-                    fromAccountId,
-                    exchangeRate
-                },
-                tx
-            );
-
-            await transactionEntryRepository.deleteByTransactionId(id, tx);
-
-            await transactionEntryRepository.bulkCreate(
-                [
-                    {
-                        transactionId: id,
-                        accountId: fromAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: fromAmount,
-                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-                        mccCategoryId: null,
-                        externalId: null
-                    },
-                    {
-                        transactionId: id,
-                        accountId: transaction.toAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: toAmountInMicroUnits,
-                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-                        mccCategoryId: null,
-                        externalId: null
-                    }
-                ],
-                tx
-            );
-
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-
-            return updated;
-        });
-    }
-    /* jscpd:ignore-end */
-
-    /* jscpd:ignore-start */
-    private buildAdditionalEntries(
-        entries: TransactionEntryCreateInputInterface[],
-        fromEntry: TransactionEntryCreateInputInterface,
-        toEntry: TransactionEntryCreateInputInterface,
-        transactionId: number
-    ): TransactionEntryCreateEntityInterface[] {
-        return entries
-            .filter(entry => entry !== fromEntry && entry !== toEntry)
-            .map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            }));
-    }
-    /* jscpd:ignore-end */
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
         const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
@@ -364,60 +232,59 @@ class TransactionService {
         return { fromEntry, toEntry };
     }
 
-    private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return transactionAsync(db, async tx => this.processBatchInner(batch, tx));
+    private async updateImportedEntries(
+        entries: readonly TransactionEntryCreateInputInterface[],
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<void> {
+        const [entry, ...remainingEntries] = entries;
+        if (!isDefined(entry)) {
+            return;
+        }
+
+        await this.updateImportedEntry(entry, input, tx);
+        await this.updateImportedEntries(remainingEntries, input, tx);
     }
 
-    private async processBatchInner(batch: TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
-        const transactions = await transactionRepository.bulkCreate(batch, tx);
+    private async updateImportedEntry(
+        entry: TransactionEntryCreateInputInterface,
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<void> {
+        if (!isDefined(entry.externalId)) {
+            return;
+        }
 
-        // HINT: This will work if bulkCreate will preserve the order of the inputs.
-        const batchEntries = transactions.flatMap((transaction, index) =>
-            batch[index].entries.map(entry => ({
-                transactionId: transaction.id,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
+        const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
+            entry.externalId,
+            entry.accountId,
+            {
                 amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            }))
-        );
-
-        const batchTags = transactions.flatMap((transaction, index) =>
-            batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
-        );
-
-        await Promise.all([transactionEntryRepository.bulkCreate(batchEntries, tx), transactionTagsRepository.bulkCreate(batchTags, tx)]);
-
-        return transactions;
-    }
-
-    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
-
-        await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({
-                transactionId,
-                accountId: entry.accountId,
-                categoryId: entry.categoryId,
-                mccCategoryId: entry.mccCategoryId,
-                type: entry.type,
-                amount: convertToMicroUnits(entry.amount),
-                externalId: entry.externalId ?? null
-            })),
+                exchangeRate: entry.exchangeRate,
+                toIban: entry.toIban
+            },
             tx
         );
 
-        await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
+        if (!isDefined(updatedEntry)) {
+            return;
+        }
 
-        if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(
-                input.tagIds.map(tagId => ({ transactionId, tagId })),
-                tx
-            );
+        const metadataTransactionId = updatedEntry.originalTransactionId ?? updatedEntry.transactionId;
+
+        await transactionRepository.updateById(
+            metadataTransactionId,
+            {
+                title: input.title,
+                comment: input.comment,
+                operatedAt: input.operatedAt
+            },
+            tx
+        );
+
+        if (isDefined(updatedEntry.originalTransactionId)) {
+            await unconsolidateByIdInTransaction(updatedEntry.transactionId, tx);
         }
     }
 }
-
 export const transactionService = new TransactionService();

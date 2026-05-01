@@ -31,7 +31,7 @@ src/
 │   │   ├── bank-account.interface.ts
 │   │   ├── bank-client-info.interface.ts
 │   │   ├── bank-provider-client.interface.ts
-│   │   ├── bank-sync-result.interface.ts
+│   │   ├── bank-sync-result.type.ts
 │   │   └── bank-transaction.interface.ts
 │   └── service/
 │       └── base-bank-sync.service.ts       # Abstract sync service
@@ -75,6 +75,34 @@ Each bank provider has:
 | Privatbank | 📋 Planned | - |
 | Revolut | 📋 Planned | - |
 | Wise | 📋 Planned | - |
+
+### Provider Parser Pattern
+
+For any provider that parses raw input (PDF, XLSX, etc.) into transactions, organize the work as cohesive singleton classes — not loose utilities — under `<provider>/parser/`.
+
+**Class shapes:**
+- **`<Provider>Parser`** — main entry. `@Log` on `parse()`. Holds per-call mutable state internally. Calls smaller classes for sub-steps.
+- **`<Provider>AccountInfoExtractor`** — single coherent unit (find IBAN, dates, balances). `@Log` on `extract()`. Private finders inside.
+- **`<Provider>RowGrouper`** (or analog) — groups raw items into provider-specific row shape. `@Log` on `group()`. Private comparator inside.
+- **`<Provider>ParserState`, `<Provider>TransactionAccumulator`, `<Provider>RowBucket`** — small mutable state classes used internally by the entry classes. No `@Log` (called many times per parse).
+
+Export each class via a singleton (`export const ersteParser = new ErsteParser()`). Don't export the class itself unless typing demands it. No thin `parse-<provider>-items.util.ts` wrapper.
+
+**Constants ownership:** layout constants used by multiple parser classes go in `<provider>/constant/<provider>.constant.ts`. Constants used by exactly one class live inside it as `private static readonly` (root rule 39).
+
+**Mappers — one class per integration.** A single `<Provider>Mapper` class consolidates all conversions from provider-specific shapes to generic shapes (account, transaction, currency code, anything else) as cohesive methods. Singleton-exported. Single-consumer helpers (e.g. external-id hashing) live as private methods of this class — not as separate files. New conversions become new methods on the same class.
+
+```ts
+class ErsteMapper {
+    mapAccount(info: ErsteAccountInfoInterface): BankAccountInterface { /* ... */ }
+    mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface { /* ... */ }
+    private generateExternalId(row, iban): string { /* ... */ }
+    private fnv1aHash(input: string): string { /* ... */ }
+}
+export const ersteMapper = new ErsteMapper();
+```
+
+**Helpers vs classes (root rule 38):** single-operation pure utilities with no shared state and 2+ callers (`parseErsteAmount`) stay as free functions in `util/`. Single-consumer helpers inline as private methods of the consumer class. Multi-step parsing/extraction work goes into a class.
 
 ## Base Bank Provider Client
 

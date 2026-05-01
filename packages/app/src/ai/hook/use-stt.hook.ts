@@ -5,8 +5,12 @@ import { useRef, useState } from 'react';
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
-import { useLlmContext } from '../context/llm.context';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
+
+import { useStartStopStt } from './use-start-stop-stt.hook';
+import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -22,58 +26,60 @@ interface UseSttReturn {
     readonly cancelStream: () => void;
 }
 
-// eslint-disable-next-line max-statements
+// eslint-disable-next-line max-statements, max-lines-per-function -- Hook manages streaming lifecycle with cleanup and error paths
 export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
-    const { stt } = useLlmContext();
+
+    useStartStopStt();
+    const sttSnapshot = useSttSnapshot();
 
     const [status, setStatus] = useState<SttStatus>('idle');
-    const [transcription, setTranscription] = useState('');
-    const [partialTranscription, setPartialTranscription] = useState('');
-
+    const [baseTranscription, setBaseTranscription] = useState('');
     const streamPromiseRef = useRef<Promise<string> | null>(null);
-    const baseTranscriptionRef = useRef('');
+    const streamGenerationRef = useRef(0);
 
-    const updateTranscription = () => {
-        const currentCommitted = stt.committedTranscription.startsWith(baseTranscriptionRef.current)
-            ? stt.committedTranscription.slice(baseTranscriptionRef.current.length)
-            : stt.committedTranscription;
-
-        setTranscription(filterTranscriptionTokens(currentCommitted));
-        setPartialTranscription(filterTranscriptionTokens(stt.nonCommittedTranscription));
-    };
+    const isCurrentStream = (generation: number): boolean => generation === streamGenerationRef.current;
 
     const resetState = () => {
         setStatus('idle');
-        setTranscription('');
-        setPartialTranscription('');
     };
 
-    const cleanupStream = async () => {
-        if (isDefined(streamPromiseRef.current)) {
+    const cleanupStream = async (generation: number) => {
+        const streamPromise = streamPromiseRef.current;
+
+        if (isDefined(streamPromise)) {
+            if (isCurrentStream(generation)) {
+                streamPromiseRef.current = null;
+            }
             try {
-                await stt.streamStop();
-                await streamPromiseRef.current;
+                await sttService.streamCancel();
+                await streamPromise;
             } catch {
                 emptyFn();
-            } finally {
-                // eslint-disable-next-line require-atomic-updates
-                streamPromiseRef.current = null;
             }
         }
     };
 
-    const initStream = () => {
+    const initStream = (generation: number) => {
+        if (!isCurrentStream(generation)) {
+            return;
+        }
+
         resetState();
-        baseTranscriptionRef.current = stt.committedTranscription;
+        setBaseTranscription(sttService.committedTranscription);
         const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
-        streamPromiseRef.current = stt.stream(streamOptions).catch(() => '');
+        streamPromiseRef.current = sttService.stream(streamOptions).catch(() => '');
         setStatus('streaming');
     };
 
     const startStream = () => {
-        cleanupStream().then(initStream).catch(emptyFn);
+        streamGenerationRef.current += 1;
+        const generation = streamGenerationRef.current;
+
+        cleanupStream(generation)
+            .then(() => void initStream(generation))
+            .catch(emptyFn);
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -81,45 +87,69 @@ export const useStt = (): UseSttReturn => {
             return;
         }
 
-        stt.streamInsert(samples);
-        updateTranscription();
+        sttService.streamInsert(samples);
     };
 
+    const finishStopStream = (finalText: string, generation: number): string => {
+        if (!isCurrentStream(generation)) {
+            return '';
+        }
+
+        setStatus('idle');
+
+        return finalText;
+    };
+
+    const handleStopStreamError = (generation: number): never => {
+        if (isCurrentStream(generation)) {
+            setStatus('idle');
+        }
+
+        throw new Error(t`Transcription failed`);
+    };
+
+    const committedTranscription = sttSnapshot.committedTranscription.startsWith(baseTranscription)
+        ? sttSnapshot.committedTranscription.slice(baseTranscription.length)
+        : sttSnapshot.committedTranscription;
+    const transcription = filterTranscriptionTokens(committedTranscription);
+    const partialTranscription = filterTranscriptionTokens(sttSnapshot.nonCommittedTranscription);
+
     const stopStream = async (): Promise<string> => {
-        if (!isDefined(streamPromiseRef.current)) {
+        const generation = streamGenerationRef.current;
+        const streamPromise = streamPromiseRef.current;
+
+        if (!isDefined(streamPromise)) {
             return transcription;
         }
 
+        streamPromiseRef.current = null;
         setStatus('processing');
 
         try {
-            await stt.streamStop();
-            const streamResult = await streamPromiseRef.current;
+            await sttService.streamStop();
+            const streamResult = await streamPromise;
             const finalText = filterTranscriptionTokens(streamResult).trim();
-            setTranscription(finalText);
-            setPartialTranscription('');
-            setStatus('idle');
 
-            return finalText;
+            return finishStopStream(finalText, generation);
         } catch {
-            setStatus('idle');
-            throw new Error(t`Transcription failed`);
-        } finally {
-            // eslint-disable-next-line require-atomic-updates
-            streamPromiseRef.current = null;
+            return handleStopStreamError(generation);
         }
     };
 
     const cancelStream = () => {
-        cleanupStream().then(resetState).catch(emptyFn);
+        streamGenerationRef.current += 1;
+        const generation = streamGenerationRef.current;
+
+        resetState();
+        cleanupStream(generation).catch(emptyFn);
     };
 
     return {
         status,
         transcription,
         partialTranscription,
-        isReady: stt.isReady,
-        downloadProgress: stt.downloadProgress,
+        isReady: sttSnapshot.status === AiSubsystemStatusEnum.READY,
+        downloadProgress: sttSnapshot.downloadProgress,
         startStream,
         insertAudio,
         stopStream,
