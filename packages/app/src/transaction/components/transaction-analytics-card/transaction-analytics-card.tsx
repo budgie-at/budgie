@@ -5,6 +5,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { HUNDRED_THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -25,7 +26,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
 
     const fullAmount = formatDigits(amount, defaultInstrument.symbol);
     const compactAmount = formatCompactDigits(amount, defaultInstrument.symbol);
-    const isAbbreviated = Math.abs(amount) >= 1e5;
+    const isAbbreviated = Math.abs(amount) >= HUNDRED_THOUSAND;
     const heroAmount = isAbbreviated ? compactAmount : fullAmount;
 
     return (
