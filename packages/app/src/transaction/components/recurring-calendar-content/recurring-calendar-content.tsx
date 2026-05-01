@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -31,7 +31,6 @@ export const RecurringCalendarContent = () => {
     const [displayYear, setDisplayYear] = useState(now.getFullYear());
     const { data } = useRecurringCalendar(displayYear, displayMonth);
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
-    const [displayedTotal, setDisplayedTotal] = useState(0);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -75,13 +74,7 @@ export const RecurringCalendarContent = () => {
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const formattedTotalAmount = formatDigits(totalAmount, defaultInstrument.symbol);
-    const headlineTotal = totalAmount + forecastedTotalAmount;
-
-    useEffect(() => {
-        if (isDefined(data)) {
-            setDisplayedTotal(headlineTotal);
-        }
-    }, [data, headlineTotal]);
+    const displayedTotal = isDefined(data) ? totalAmount + forecastedTotalAmount : 0;
 
     if (isDefined(data) && !hasEntries) {
         return (
