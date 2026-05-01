@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
@@ -21,11 +21,21 @@ export default function TransactionsPage() {
 
     const header = <TransactionsPageHeader activeTab={activeTab} onChangeTab={setActiveTab} />;
 
+    const isTransactionsTab = activeTab === 'transactions';
+    const transactionsActivityMode = isTransactionsTab ? 'visible' : 'hidden';
+    const recurringActivityMode = isTransactionsTab ? 'hidden' : 'visible';
+
     return (
         <Page testID={TransactionsPageSelector.Container} header={header}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    {activeTab === 'transactions' ? <TransactionList accountId={null} /> : <RecurringCalendarContent />}
+                    <Activity mode={transactionsActivityMode}>
+                        <TransactionList accountId={null} />
+                    </Activity>
+
+                    <Activity mode={recurringActivityMode}>
+                        <RecurringCalendarContent />
+                    </Activity>
                 </View>
             </GestureDetector>
         </Page>
