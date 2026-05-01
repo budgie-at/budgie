@@ -561,7 +561,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
-            ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
+            ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
 

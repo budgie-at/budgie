@@ -154,7 +154,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         const conditions = [
             ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
-            ...(isNotEmptyArray(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
+            ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
         ].filter(isDefined);
 
         // eslint-disable-next-line no-undefined
@@ -210,8 +210,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
-            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+            .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
