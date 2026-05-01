@@ -82,6 +82,7 @@ export const RecurringCalendarContent = () => {
     const formattedDayTotal = formatDigits(convertFromMicroUnits(selectedDayTotal), defaultInstrument.symbol);
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const formattedTotalAmount = formatDigits(totalAmount, defaultInstrument.symbol);
+    const headlineTotal = totalAmount + forecastedTotalAmount;
 
     if (!hasEntries) {
         return (
@@ -96,7 +97,7 @@ export const RecurringCalendarContent = () => {
             <View className="gap-y-xl pt-md">
                 <View className="items-center gap-y-lg">
                     <ProtectedMoney minFontSize={10} maxFontSize={32} instrumentSymbol={defaultInstrument.symbol}>
-                        {totalAmount}
+                        {headlineTotal}
                     </ProtectedMoney>
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
                         <Trans>Monthly Total</Trans>
