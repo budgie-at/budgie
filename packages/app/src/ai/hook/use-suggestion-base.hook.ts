@@ -1,11 +1,13 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger('useSuggestionBase');
 
 import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
 
@@ -56,9 +58,9 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
-        aiLog('hook:suggestion:base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
+        logger.log('hook:suggestion:base:effect:fire', { isReady, enabled, progress, isIncomplete, refreshVersion, requestKey });
         if (!isReady) {
-            aiLog('hook:suggestion:base:effect:skip:not-ready', {
+            logger.log('hook:suggestion:base:effect:skip:not-ready', {
                 enabled,
                 readyChecks: [...readyChecks],
                 readyCheckFailAt: readyChecks.findIndex(check => !check)
@@ -70,19 +72,19 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         let cancelled = false;
 
         const suggest = async (): Promise<void> => {
-            aiLog('hook:suggestion:base:suggest:loading', { requestKey });
+            logger.log('hook:suggestion:base:suggest:loading', { requestKey });
             setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();
 
                 if (!cancelled) {
-                    aiLog('hook:suggestion:base:suggest:success', { requestKey, resultCount: results.length });
+                    logger.log('hook:suggestion:base:suggest:success', { requestKey, resultCount: results.length });
                     setResult({ key: requestKey, status: 'success', suggestions: results });
                 }
             } catch (error: unknown) {
                 if (!cancelled) {
-                    aiLog('hook:suggestion:base:suggest:error', {
+                    logger.error('hook:suggestion:base:suggest:error', {
                         requestKey,
                         message: getErrorMessage(error)
                     });

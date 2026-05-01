@@ -2,6 +2,12 @@ const normalizePart = (value: string) => value.replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const SettingsPageSelector = {
     Container: 'SettingsPage.Container',
+    AppLockCard: 'SettingsPage.AppLockCard',
+    AppLockChangePinButton: 'SettingsPage.AppLockChangePinButton',
+    AppLockDisableButton: 'SettingsPage.AppLockDisableButton',
+    AppLockBiometricSwitch: 'SettingsPage.AppLockBiometricSwitch',
+    ScreenshotProtectionCard: 'SettingsPage.ScreenshotProtectionCard',
+    ScreenshotProtectionSwitch: 'SettingsPage.ScreenshotProtectionSwitch',
     LanguageCard: 'SettingsPage.LanguageCard',
     LanguageValue: (code: string) => `SettingsPage.LanguageValue.${normalizePart(code)}` as const,
     MainCurrencyCard: 'SettingsPage.MainCurrencyCard',
@@ -18,6 +24,7 @@ export const SettingsPageSelector = {
     InactiveCard: 'SettingsPage.InactiveCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
     ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
+    ConsolidateTransfersCard: 'SettingsPage.ConsolidateTransfersCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',
     ManageRulesCard: 'SettingsPage.ManageRulesCard'
 } as const;

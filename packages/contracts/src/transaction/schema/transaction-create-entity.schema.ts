@@ -6,4 +6,5 @@ import { TransactionEntitySchema } from './transaction-entity.schema';
 
 export const TransactionCreateEntitySchema = convertToCreateEntitySchema(TransactionEntitySchema)
     .omit({ operatedWeekday: true, operatedMinuteOfDay: true })
+    .partial({ consolidationParentTransactionId: true, consolidationType: true })
     .extend({ needsEmbedding: boolean().optional() });

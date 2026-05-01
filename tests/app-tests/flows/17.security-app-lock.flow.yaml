@@ -1,0 +1,191 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '17.db(, db)?'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockCard'
+      DESTINATION_ID: 'PinPage.Container'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      text: 'Enter your PIN'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Error'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockChangePinButton'
+      DESTINATION_ID: 'PinPage.Container'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      text: 'Enter your PIN'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Error'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- runFlow:
+    file: subflows/navigation/open-settings-card.flow.yaml
+    env:
+      CARD_ID: 'SettingsPage.AppLockDisableButton'
+      DESTINATION_ID: 'PinPage.Container'
+
+- extendedWaitUntil:
+    visible:
+      id: 'PinPage.Container'
+    timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.5'
+- tapOn:
+    id: 'PinPage.Digit.6'
+- tapOn:
+    id: 'PinPage.Digit.7'
+- tapOn:
+    id: 'PinPage.Digit.8'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+- stopApp
+- runFlow:
+    file: subflows/navigation/relaunch-app-and-wait.flow.yaml
+    env:
+      DESTINATION_ID: 'HomePage.TotalBalance'

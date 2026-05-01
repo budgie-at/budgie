@@ -1,11 +1,12 @@
+import { serializeEmbedding } from '@budgie/ai';
 import { EmbeddingPendingContextBaseInterface, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-import { aiLog } from '../utils/ai-log.util';
 
 import { BaseDrainerService } from './base-drainer.service';
 import { embeddingService } from './embedding.service';
@@ -27,22 +28,13 @@ export abstract class BaseEmbeddingSubDrainerService<
 
     private readonly pendingPersists: Array<PendingPersistInterface<TContext>> = [];
 
-    protected subscribeToSubsystem(listener: () => void): () => void {
-        return embeddingService.subscribe(listener);
-    }
-
-    protected isSubsystemReady(): boolean {
-        return embeddingService.isReady;
-    }
-
+    @Log(
+        context => `enter transactionIds=${context.transactionIds.join(',')} existingEmbeddingId=${String(context.existingEmbeddingId)}`,
+        'done',
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
     protected async processRow(context: TContext): Promise<void> {
-        this.logBegin(context);
         if (isDefined(context.existingEmbeddingId)) {
-            aiLog(`${this.logDomain}:context:skip`, {
-                reason: 'preflight-hit',
-                contextSize: context.transactionIds.length,
-                embeddingId: context.existingEmbeddingId
-            });
             this.pendingPersists.push({ context, embeddingId: context.existingEmbeddingId, skipped: true });
 
             return;
@@ -54,8 +46,9 @@ export abstract class BaseEmbeddingSubDrainerService<
         this.pendingPersists.push({ context, embeddingId, skipped: false });
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     protected override async afterBatch(): Promise<void> {
-        if (this.pendingPersists.length === 0) {
+        if (isEmptyArray(this.pendingPersists)) {
             return;
         }
         const batch = this.pendingPersists.splice(0);
@@ -70,18 +63,51 @@ export abstract class BaseEmbeddingSubDrainerService<
         });
 
         void embeddingProgressStore.refresh();
-
-        for (const persist of batch) {
-            aiLog(`${this.logDomain}:context:persisted`, {
-                embeddingId: persist.embeddingId,
-                contextSize: persist.context.transactionIds.length,
-                clearedFlags: persist.context.transactionIds.length,
-                skipped: persist.skipped
-            });
-        }
     }
 
-    protected abstract logBegin(context: TContext): void;
-    protected abstract runEmbedAndUpsert(context: TContext): Promise<number | null>;
+    @Log(
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done dimensions=${result.length}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    private async embedContext(context: TContext): Promise<number[]> {
+        return embeddingService.embed(this.buildPromptContext(context));
+    }
+
+    @Log(
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        result => `done embeddingId=${String(result)}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    private async upsertEmbedding(context: TContext, rawEmbedding: number[]): Promise<number | null> {
+        const serialized = serializeEmbedding(new Float32Array(rawEmbedding));
+
+        return this.persistEmbedding(context, serialized, rawEmbedding.length);
+    }
+
+    @Log(
+        context => `enter transactionIds=${context.transactionIds.join(',')}`,
+        (result, context) => `done transactionIds=${context.transactionIds.join(',')} embeddingId=${String(result)}`,
+        (error, context) => `throw transactionIds=${context.transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    private async runEmbedAndUpsert(context: TContext): Promise<number | null> {
+        const rawEmbedding = await this.embedContext(context);
+        if (!isNotEmptyArray(rawEmbedding)) {
+            return null;
+        }
+
+        return this.upsertEmbedding(context, rawEmbedding);
+    }
+
+    protected subscribeToSubsystem(listener: () => void): () => void {
+        return embeddingService.subscribe(listener);
+    }
+
+    protected isSubsystemReady(): boolean {
+        return embeddingService.isReady;
+    }
+
+    protected abstract buildPromptContext(context: TContext): string;
+    protected abstract persistEmbedding(context: TContext, embedding: Uint8Array, dimensions: number): Promise<number | null>;
     protected abstract replaceEmbeddingTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void>;
 }

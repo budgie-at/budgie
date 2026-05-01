@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
+
+### Features
+
+- add transfer consolidation with IBAN and amount matching ([16ee48c](https://github.com/budgie-at/budgie/commit/16ee48c355a6901251419d790d012e6795a3c79c))
+
+## [5.6.3](https://github.com/budgie-at/budgie/compare/v5.6.2...v5.6.3) (2026-04-30)
+
+### Bug Fixes
+
+- **app:** erste pdf positional parser + dedup-on-edit ([5c1474c](https://github.com/budgie-at/budgie/commit/5c1474c853ba654dd38f39f0ffd37d3e54b398d8))
+- erste import dedup-on-edit, multi-page parsing, merchant titles ([a403d67](https://github.com/budgie-at/budgie/commit/a403d67ba267023346f6f884a2e9b7373472551b))
+
+# [5.4.0](https://github.com/budgie-at/budgie/compare/v5.3.1...v5.4.0) (2026-04-25)
+
+### Bug Fixes
+
+- address log decorator migration review ([2e9c1c8](https://github.com/budgie-at/budgie/commit/2e9c1c897291f7d15b92c3b594bd8100b6dfc16d))
+
 # [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
 
 ### Bug Fixes

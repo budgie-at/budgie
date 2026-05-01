@@ -52,7 +52,7 @@ export const AiTranslationFieldsHeaderRight = (props: Props) => {
     const statusBadge = getStatusBadgeText(modelStatus, t);
 
     if (!modelStatus.isReady) {
-        if (statusBadge === null) {
+        if (!isDefined(statusBadge)) {
             return null;
         }
 

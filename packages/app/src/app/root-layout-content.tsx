@@ -13,12 +13,16 @@ import Toast from 'react-native-toast-message';
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
+import '../sync/task/monobank-sync.task';
+import '../sync/task/transfer-consolidation.task';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
 import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
+import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
+import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
@@ -113,6 +117,10 @@ export const RootLayoutContent = () => {
                                                             <Stack.Screen name="icon-selector" options={ICON_SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="split-entries" options={SPLIT_ENTRIES_MODAL_OPTIONS} />
                                                             <Stack.Screen
+                                                                name="consolidation-source"
+                                                                options={CONSOLIDATION_SOURCE_MODAL_OPTIONS}
+                                                            />
+                                                            <Stack.Screen
                                                                 name="account-type-selector"
                                                                 options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
                                                             />
@@ -142,7 +150,7 @@ export const RootLayoutContent = () => {
                                                             <Stack.Screen name="rule-mcc-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                         </Stack>
                                                     </ModalProvider>
-                                                    <Toast />
+                                                    <Toast config={APP_TOAST_CONFIG} />
                                                 </AiProvider>
                                             </CreateActionProvider>
                                         </AuthGuard>

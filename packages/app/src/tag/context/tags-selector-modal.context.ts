@@ -5,6 +5,7 @@ export interface TagsSelectorModalParams {
     readonly excludeTagIds?: number[];
     readonly description?: string;
     readonly singleSelect?: boolean;
+    readonly enablePrimarySelection?: boolean;
 }
 
 export type TagsSelectorResult = number[] | null;

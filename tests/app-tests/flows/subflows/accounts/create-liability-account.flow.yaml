@@ -1,51 +1,65 @@
 appId: ${APP_ID}
 ---
-
 - runFlow: open-new-account.flow.yaml
 
-- tapOn:
-    id: ${ACCOUNT_TYPE_ID}
 - extendedWaitUntil:
-    visible: 'ACCOUNT NAME & ICON'
+      visible:
+          id: ${ACCOUNT_TYPE_ID}
+      timeout: 3000
+- tapOn:
+      id: ${ACCOUNT_TYPE_ID}
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 3000
 
 - tapOn:
-    id: 'AccountForm.NameInput'
+      id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
-- tapOn: ${ACCOUNT_SCREEN_TITLE}
 
-- scrollUntilVisible:
-    element:
+- tapOn:
       id: 'AccountForm.CurrencySelector'
-    direction: DOWN
-    centerElement: true
-- tapOn:
-    id: 'AccountForm.CurrencySelector'
+- waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'CurrencySelector.SearchInput'
+      timeout: 3000
+
+- tapOn:
       id: 'CurrencySelector.SearchInput'
-- tapOn:
-    id: 'CurrencySelector.SearchInput'
 - inputText: ${CURRENCY_CODE}
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      timeout: 3000
 - tapOn:
-    id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+      id: 'AccountForm.CurrencyOption.${CURRENCY_CODE}'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      notVisible:
+          id: 'CurrencySelector.SearchInput'
+      timeout: 3000
 
 - extendedWaitUntil:
-    visible:
+      visible:
+          id: 'CreateAccount.Amount'
+      timeout: 3000
+- tapOn:
       id: 'CreateAccount.Amount'
-    timeout: 10000
-- tapOn:
-    id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
-
-- tapOn: ${ACCOUNT_SCREEN_TITLE}
 - tapOn:
-    id: 'AccountForm.SubmitButton'
+      text: 'ACCOUNT NAME & ICON'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.SubmitButton'
+      timeout: 3000
+
+- tapOn:
+      id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
-    visible:
-      id: 'HomePage.TotalBalance'
-
-- scrollUntilVisible:
-    element:
-      id: 'AccountCard.${ACCOUNT_NAME}'
-    direction: DOWN
+      visible:
+          id: 'AccountCard.${ACCOUNT_NAME}'
+      timeout: 10000

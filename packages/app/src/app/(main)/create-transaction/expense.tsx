@@ -9,7 +9,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
@@ -22,7 +21,6 @@ import { normalizeRouteParam } from '../../../transaction/utils/normalize-route-
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId, categoryId, amount, comment, aiContext } = useLocalSearchParams<{
         accountId?: string | string[];
         categoryId?: string | string[];
@@ -43,12 +41,7 @@ export default function CreateExpenseTransactionPage() {
     const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: async data => {
-            const result = await transactionService.createInternal(data);
-            markForEmbedding({ transactionId: result.id });
-
-            return result;
-        },
+        onSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
