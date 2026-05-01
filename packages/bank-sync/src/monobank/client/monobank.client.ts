@@ -2,7 +2,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { BaseBankProviderClient } from '../../core/client/base-bank-provider.client';
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
-import { bankSyncLog } from '../../core/util/bank-sync-log.util';
+import { syncLogger } from '../../core/util/sync-logger.util';
 import { MONOBANK_API_BASE_URL } from '../constant/monobank-api-base-url.constant';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
 import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper';
@@ -51,17 +51,17 @@ export class MonobankClient extends BaseBankProviderClient {
         const toTimestamp = to ?? Math.floor(Date.now() / 1000);
         const endpoint = `/personal/statement/${accountId}/${from}/${toTimestamp}`;
 
-        bankSyncLog('monobank:getTransactions:request', { accountId, from, toTimestamp, endpoint });
+        syncLogger.log('monobank:getTransactions:request', { accountId, from, toTimestamp, endpoint });
         const result = await this.fetchJson<MonobankTransactionApiInterface[]>(endpoint);
 
         if (!result.success) {
-            bankSyncLog('monobank:getTransactions:error', { accountId, code: result.error.code, message: result.error.message });
+            syncLogger.error('monobank:getTransactions:error', { accountId, code: result.error.code, message: result.error.message });
 
             return result;
         }
 
         const transactions = result.data.map(tx => monobankTransactionMapper(tx, accountId));
-        bankSyncLog('monobank:getTransactions:mapped', {
+        syncLogger.log('monobank:getTransactions:mapped', {
             accountId,
             rawCount: result.data.length,
             mappedCount: transactions.length,

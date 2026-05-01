@@ -124,15 +124,36 @@
         {
             "idx": 17,
             "version": "6",
-            "when": 1776596900000,
-            "tag": "0017_add_rules",
+            "when": 1776775019000,
+            "tag": "0017_drop_unused_fts_tables",
             "breakpoints": true
         },
         {
             "idx": 18,
             "version": "6",
-            "when": 1776597000000,
-            "tag": "0018_add_updated_by",
+            "when": 1777045034341,
+            "tag": "0018_add_transaction_tags_is_primary",
+            "breakpoints": true
+        },
+        {
+            "idx": 19,
+            "version": "6",
+            "when": 1777187048000,
+            "tag": "0019_add_consolidation_ledger",
+            "breakpoints": true
+        },
+        {
+            "idx": 20,
+            "version": "6",
+            "when": 1777596900000,
+            "tag": "0020_add_rules",
+            "breakpoints": true
+        },
+        {
+            "idx": 21,
+            "version": "6",
+            "when": 1777597000000,
+            "tag": "0021_add_updated_by",
             "breakpoints": true
         }
     ]

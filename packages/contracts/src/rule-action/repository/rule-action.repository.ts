@@ -2,10 +2,10 @@ import { eq } from 'drizzle-orm';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { DBOrTX } from '../../@generic/type/db.type';
 import { RuleActionCreateEntityInterface } from '../entity/rule-action-create-entity.interface';
 import { RuleActionEntityTable } from '../table/rule-action-entity.table';
 
+import type { DBOrTX } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { RuleActionEntityInterface } from '../entity/rule-action-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';

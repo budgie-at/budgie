@@ -207,7 +207,7 @@ class RuleEngineService {
                 case RuleActionTypeEnum.ADD_TAG:
                     if (isDefined(action.tagId)) {
                         // eslint-disable-next-line no-await-in-loop
-                        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId }], transaction);
+                        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId, isPrimary: false }], transaction);
                         // eslint-disable-next-line no-await-in-loop
                         await transactionRepository.touchUpdatedAt(transactionId, transaction);
                     }

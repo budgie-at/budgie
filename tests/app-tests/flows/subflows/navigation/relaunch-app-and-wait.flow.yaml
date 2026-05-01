@@ -1,0 +1,38 @@
+appId: ${APP_ID}
+env:
+    DESTINATION_ID: ${DESTINATION_ID}
+---
+- retry:
+      maxRetries: 2
+      commands:
+          - launchApp:
+                permissions:
+                    contacts: allow
+                    microphone: allow
+          - runFlow:
+                when:
+                    visible: 'budgie \(E2E\)'
+                commands:
+                    - tapOn:
+                          text: 'budgie \(E2E\)'
+                    - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible:
+                        id: 'PageHeader.BackButton'
+                commands:
+                    - tapOn:
+                          id: 'PageHeader.BackButton'
+                    - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible:
+                        id: 'TabBar.Home'
+                commands:
+                    - tapOn:
+                          id: 'TabBar.Home'
+                    - waitForAnimationToEnd
+          - extendedWaitUntil:
+                visible:
+                    id: '${DESTINATION_ID}'
+                timeout: 5000

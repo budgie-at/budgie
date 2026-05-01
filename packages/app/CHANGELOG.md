@@ -3,6 +3,154 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** correct recurring calendar day-cell lookups, key uniqueness, and headline total ([b390ce8](https://github.com/budgie-at/budgie/commit/b390ce85820df6b5e3e7cceda0bd785a3a8b26c1))
+- **app:** kill recurring empty-state flicker on first render ([d93208e](https://github.com/budgie-at/budgie/commit/d93208e05f53cd42064d6c9eebf84d78027c555a))
+- **app:** lock recurring total font size to stop vertical layout jump ([3f436ab](https://github.com/budgie-at/budgie/commit/3f436abc9466ce845164d5706d70909f16ca531b))
+- **app:** pin Ticker default fontSize to 28 to remove first-frame size flash ([60ea2a7](https://github.com/budgie-at/budgie/commit/60ea2a73b8361d93b62405105a453d95b796b831))
+- **app:** show Untagged title on drill-down and inline recurring total derive ([8881c52](https://github.com/budgie-at/budgie/commit/8881c52c4729a5ca30be2475299b66b2c8bff8c5))
+- **app:** unbreak transaction tile right column and extract compact thresholds ([d6c7430](https://github.com/budgie-at/budgie/commit/d6c74308f363dedc3dbc61f129eb469649af2f0e))
+
+### Features
+
+- **app:** redesign analytics tiles with compact amounts and editorial layout ([1b9b6dd](https://github.com/budgie-at/budgie/commit/1b9b6dd4694e8e5cfe547647db85c81f0e3316c8))
+- **app:** replace recurring loading spinner with skeleton scaffold ([e30734b](https://github.com/budgie-at/budgie/commit/e30734bf81d1008b392c5eca4d38285817afeb53))
+- **contracts,app:** surface untagged income/expense in analytics tag panel ([0d170b9](https://github.com/budgie-at/budgie/commit/0d170b9887476b828c93248a4d65a2ed284d003c))
+
+### Performance Improvements
+
+- **app:** use React 19 Activity to keep tab subtrees mounted on switch ([dbb2fee](https://github.com/budgie-at/budgie/commit/dbb2fee8140a65829f37d8347c0c3620976dfd61))
+
+## [5.7.2](https://github.com/budgie-at/budgie/compare/v5.7.1...v5.7.2) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** clarify max-statements disable rationale on PopoverMenu ([1dc8f06](https://github.com/budgie-at/budgie/commit/1dc8f06a6001903424bdb1b90a1dc4ace789567f))
+- **app:** flip popover menu above anchor when it overflows ([a08457c](https://github.com/budgie-at/budgie/commit/a08457c9d7cbaad261ccb02bd8a10209997423ca)), closes [#380](https://github.com/budgie-at/budgie/issues/380)
+- **app:** inline placement union to drop unused PopoverMenuPlacement export ([7a66206](https://github.com/budgie-at/budgie/commit/7a662065cc6ae7e973f560a70f0447dacac65143))
+
+## [5.7.1](https://github.com/budgie-at/budgie/compare/v5.7.0...v5.7.1) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** allow home header collapse with dense accounts ([cd37188](https://github.com/budgie-at/budgie/commit/cd371884044eb3dfaba8a3a78a3c4ab8542ec689))
+- **app:** correct export database toast copy ([1995328](https://github.com/budgie-at/budgie/commit/199532846b852cccdb469f3b940ef69f88c2dcd0))
+
+# [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
+
+### Features
+
+- add transfer consolidation with IBAN and amount matching ([16ee48c](https://github.com/budgie-at/budgie/commit/16ee48c355a6901251419d790d012e6795a3c79c))
+
+## [5.6.3](https://github.com/budgie-at/budgie/compare/v5.6.2...v5.6.3) (2026-04-30)
+
+### Bug Fixes
+
+- **app:** erste pdf positional parser + dedup-on-edit ([5c1474c](https://github.com/budgie-at/budgie/commit/5c1474c853ba654dd38f39f0ffd37d3e54b398d8))
+- erste import dedup-on-edit, multi-page parsing, merchant titles ([a403d67](https://github.com/budgie-at/budgie/commit/a403d67ba267023346f6f884a2e9b7373472551b))
+
+## [5.6.1](https://github.com/budgie-at/budgie/compare/v5.6.0...v5.6.1) (2026-04-26)
+
+### Bug Fixes
+
+- **app:** prevent tag cards collapse on sheet resize ([b191c51](https://github.com/budgie-at/budgie/commit/b191c51849e18dfe65d45b9a3329f986407f6309))
+
+# [5.6.0](https://github.com/budgie-at/budgie/compare/v5.5.1...v5.6.0) (2026-04-25)
+
+### Bug Fixes
+
+- **app:** bind LegendList viewport so long lists scroll ([1fa4967](https://github.com/budgie-at/budgie/commit/1fa4967178f74f2f568fe69e7e9b748600388997))
+- **app:** drop bottom margin on analytics transactions list ([26c7f80](https://github.com/budgie-at/budgie/commit/26c7f80da7914b20a7e8101953597e9c7c005bdd))
+- **app:** drop recycleItems and widen end-reached threshold ([9323f75](https://github.com/budgie-at/budgie/commit/9323f755866cbf8c100e954c6042b5fccc942a06))
+- **app:** give analytics list trailing scroll room ([6520ba8](https://github.com/budgie-at/budgie/commit/6520ba8aedc3a9171e0f1ed83e462a9ecbb8aa11))
+- **app:** give analytics transactions list breathing room at bottom ([1864d56](https://github.com/budgie-at/budgie/commit/1864d563bfebdf69eae97962c6905255691b2d9a))
+- **app:** make bottom transactions tappable on category drilldown ([49a704d](https://github.com/budgie-at/budgie/commit/49a704df04d9851962e8f0b16fd6616592435867))
+- **app:** move bottom spacer into contentContainerStyle so last item is reachable ([f294980](https://github.com/budgie-at/budgie/commit/f294980a1cf16d412bcabd872aaa3a333e194741))
+- **app:** unlock transaction list scroll on long lists ([0e679df](https://github.com/budgie-at/budgie/commit/0e679df9777b5de2ae2dd63067aeb2e05737aa3d))
+- **app:** widen analytics list trailing room and tighten estimate ([6f7c26e](https://github.com/budgie-at/budgie/commit/6f7c26e6f012e8d7f04bb602c94bfc42564dfe5d))
+
+### Features
+
+- **app:** split statistics into Categories and Tags tabs ([750fc35](https://github.com/budgie-at/budgie/commit/750fc3525a0f1f7e4c39d806056b0bd95adaa5fc))
+
+### Reverts
+
+- restore recycleItems and onEndReachedThreshold ([a9c41e1](https://github.com/budgie-at/budgie/commit/a9c41e1fab40540b51cdc4903f186bdd895f814d))
+
+## [5.5.1](https://github.com/budgie-at/budgie/compare/v5.5.0...v5.5.1) (2026-04-25)
+
+### Bug Fixes
+
+- **contracts,app:** suggest patterns for manual transactions on new expense ([d1c4964](https://github.com/budgie-at/budgie/commit/d1c4964b4e7c889a32602f8bd413b983fde2d41d))
+
+# [5.5.0](https://github.com/budgie-at/budgie/compare/v5.4.0...v5.5.0) (2026-04-25)
+
+### Bug Fixes
+
+- **app:** count distinct transactions in uncategorized count query ([1302f0e](https://github.com/budgie-at/budgie/commit/1302f0eb024900a012376daecdee6c656a19ed95))
+- **app:** preserve transactions-list scroll across navigation ([59cd17e](https://github.com/budgie-at/budgie/commit/59cd17e334352f802539b0965586f924d8740f33))
+- **app:** remove transaction tag layout animation ([52938b1](https://github.com/budgie-at/budgie/commit/52938b1563c7c2cb5a07d67f32a42dacaeccb350))
+- **app:** require done for tag selection ([fd782e0](https://github.com/budgie-at/budgie/commit/fd782e0073ca43e13ad68124649817a69e477bb7))
+- **app:** stop forcing transactions-list remount on focus ([6907c7c](https://github.com/budgie-at/budgie/commit/6907c7c48b6b202c168771bd07e5091a96aa9b69))
+- **app:** use full identifier names in sort comparator ([61d45e2](https://github.com/budgie-at/budgie/commit/61d45e283bc3e360b10399d355a10707477098b8))
+- **app:** use isNotEmptyArray canonical guard in primary-tag derivation ([e5d6b64](https://github.com/budgie-at/budgie/commit/e5d6b64d906f1dfbf5f2c56562affc2778a9e47d))
+- auto-save primary tag promotion ([5323f59](https://github.com/budgie-at/budgie/commit/5323f59355a204bb39d5bd2cc09359a7049c08b4))
+- improve primary tag picker interaction ([55e34b2](https://github.com/budgie-at/budgie/commit/55e34b20e6560e716610a3fed6bf1cc92fe06f21))
+- move primary tag selection to picker ([1c18a6f](https://github.com/budgie-at/budgie/commit/1c18a6f5266ab4a585d36d7125b20e2a4aa6c097))
+- remove duplicate uncategorized filter ([7cd64bb](https://github.com/budgie-at/budgie/commit/7cd64bbddaf3340b15b038a8288876145668ed72))
+
+### Features
+
+- **app:** add floating Done pill for tag selector ([e961dc5](https://github.com/budgie-at/budgie/commit/e961dc5dfce475fa1dcf3a6720d8292e841dc9b7))
+- **app:** add sortTransactionTagsByPrimary util ([a57ee30](https://github.com/budgie-at/budgie/commit/a57ee30b79dab894fa9253996e71c109656ee935))
+- **app:** add TransactionCardTagChip primitive ([c3e0466](https://github.com/budgie-at/budgie/commit/c3e046696fe6bacd1ab72917f1aecc48cc7b4adc))
+- **app:** add TransactionCardTags orchestrator with inline long-press promote ([7346393](https://github.com/budgie-at/budgie/commit/7346393c1253f9ccfa84c080fceacdddb3d466e6))
+- **app:** add TransactionCardTagsInlinePicker ([0d4f87e](https://github.com/budgie-at/budgie/commit/0d4f87ece7d8eca5299fa50ac3d174a81e7313b2))
+- **app:** add TransactionUncategorizedFilter chip ([b808111](https://github.com/budgie-at/budgie/commit/b808111aa296383731a92a217459e45cdb5de1c8))
+- **app:** add usePromotePrimaryTag hook ([077444b](https://github.com/budgie-at/budgie/commit/077444baf73d97aa74b601c2268dbb98a94d0122))
+- **app:** add useUncategorizedCountQuery live query ([3bc0da7](https://github.com/budgie-at/budgie/commit/3bc0da7726fa09ad8c46f821619901582cf252b9))
+- **app:** keep tag selector open across selections with Done commit ([26f240b](https://github.com/budgie-at/budgie/commit/26f240ba59ef69ab252e0d927c82e1bf9cb0ab69))
+- **app:** migrate transaction_tags with isPrimary column and backfill ([9e29f0d](https://github.com/budgie-at/budgie/commit/9e29f0d1136e0a4d15a1f9cd8990dfd0a33ad894))
+- **app:** pass null primary to batch create mapper ([6e4553e](https://github.com/budgie-at/budgie/commit/6e4553e46e01ef9b37ffcd128f9c1926014f9b9f))
+- **app:** preserve primary tag across transaction edits ([119cfb6](https://github.com/budgie-at/budgie/commit/119cfb6c9faf514e544ed3331af58d63476e7d30))
+- **app:** redesign primary tag badge with corner star ([7bf0128](https://github.com/budgie-at/budgie/commit/7bf012817a113b1fb8d31e3009cd71ad61247b0b))
+- **app:** show uncategorized filter as first chip ([0566596](https://github.com/budgie-at/budgie/commit/0566596a6669f93f07a8a0df115f8460bf6d4798))
+- **app:** teach tag-id mapper about existing primary preservation ([d4ddf71](https://github.com/budgie-at/budgie/commit/d4ddf714deecd2ec33649f873e64ba1e08e6de94))
+
+### Reverts
+
+- keep done button for primary tag changes ([fe6330c](https://github.com/budgie-at/budgie/commit/fe6330cc487ae5f86e40abbb2ed85061f7b70d23))
+
+# [5.4.0](https://github.com/budgie-at/budgie/compare/v5.3.1...v5.4.0) (2026-04-25)
+
+### Bug Fixes
+
+- address log decorator migration review ([2e9c1c8](https://github.com/budgie-at/budgie/commit/2e9c1c897291f7d15b92c3b594bd8100b6dfc16d))
+- simplify lifecycle logging ([d5ec1a6](https://github.com/budgie-at/budgie/commit/d5ec1a6f92ea64f1f8cc500696be1c7a53142ece))
+
+### Features
+
+- **contracts:** add @Log decorator + getLogger foundation ([0823d4e](https://github.com/budgie-at/budgie/commit/0823d4eefc91936575faa3cac8c909a232695684))
+
+## [5.3.1](https://github.com/budgie-at/budgie/compare/v5.3.0...v5.3.1) (2026-04-24)
+
+### Bug Fixes
+
+- **app:** avoid redundant expense embedding mark ([c31ccde](https://github.com/budgie-at/budgie/commit/c31ccdec67deda4b582dd8f8ade936c683fdcff4))
+- **app:** drop unused fts tables ([edacec3](https://github.com/budgie-at/budgie/commit/edacec36b18756d2ff52c42a348209dad2600b79))
+- **app:** pause ai runtime before database import reset ([21a61ee](https://github.com/budgie-at/budgie/commit/21a61eebdb8020d2de1db7eac0107bcaa43db686))
+- **app:** resolve e2e runtime typescript checks ([ee7ae40](https://github.com/budgie-at/budgie/commit/ee7ae4087ab951fca97490501dd63366d6c507af))
+- **app:** retry settings anchor scroll after layout ([5cb61b2](https://github.com/budgie-at/budgie/commit/5cb61b2482a9c6c4f6219fd71d4f868637ced4df))
+- **app:** stabilize maestro iOS bootstrap and csv flows ([ee3b26d](https://github.com/budgie-at/budgie/commit/ee3b26db11b2f2cdee14198ea1a3b5aa14368ff5))
+- centralize display cents formatting ([7ac96b4](https://github.com/budgie-at/budgie/commit/7ac96b420f94292bcd812b385ee42ff4bc271689))
+- resolve e2e runtime ci regressions ([35ae8a1](https://github.com/budgie-at/budgie/commit/35ae8a15bbd6500b0225196bc528d955b2749342))
+- resolve security CI lint and stabilize csv flow ([1e50d4c](https://github.com/budgie-at/budgie/commit/1e50d4c7761ffb107f75e4fd8a1c0bd9ceb25822))
+- stabilize maestro suite and security flows ([7bf2e9c](https://github.com/budgie-at/budgie/commit/7bf2e9c01026b521ae7a19eb8f610ec14d1ec39c))
+- stabilize recurring calendar selection states ([5115f84](https://github.com/budgie-at/budgie/commit/5115f8425fd34a023ae81d418588c59f628f34b4))
+
 # [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
 
 ### Bug Fixes

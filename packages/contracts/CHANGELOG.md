@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
+
+### Features
+
+- **contracts,app:** surface untagged income/expense in analytics tag panel ([0d170b9](https://github.com/budgie-at/budgie/commit/0d170b9887476b828c93248a4d65a2ed284d003c))
+
+# [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
+
+### Features
+
+- add transfer consolidation with IBAN and amount matching ([16ee48c](https://github.com/budgie-at/budgie/commit/16ee48c355a6901251419d790d012e6795a3c79c))
+
+## [5.6.3](https://github.com/budgie-at/budgie/compare/v5.6.2...v5.6.3) (2026-04-30)
+
+### Bug Fixes
+
+- **app:** erste pdf positional parser + dedup-on-edit ([5c1474c](https://github.com/budgie-at/budgie/commit/5c1474c853ba654dd38f39f0ffd37d3e54b398d8))
+- erste import dedup-on-edit, multi-page parsing, merchant titles ([a403d67](https://github.com/budgie-at/budgie/commit/a403d67ba267023346f6f884a2e9b7373472551b))
+
+## [5.5.1](https://github.com/budgie-at/budgie/compare/v5.5.0...v5.5.1) (2026-04-25)
+
+### Bug Fixes
+
+- **contracts,app:** suggest patterns for manual transactions on new expense ([d1c4964](https://github.com/budgie-at/budgie/commit/d1c4964b4e7c889a32602f8bd413b983fde2d41d))
+
+# [5.5.0](https://github.com/budgie-at/budgie/compare/v5.4.0...v5.5.0) (2026-04-25)
+
+### Bug Fixes
+
+- **contracts:** wait for sqlite transaction commit ([500d0bb](https://github.com/budgie-at/budgie/commit/500d0bbce4c08758f06bc87f3cfa023f2d9b298c))
+- move primary tag selection to picker ([1c18a6f](https://github.com/budgie-at/budgie/commit/1c18a6f5266ab4a585d36d7125b20e2a4aa6c097))
+- remove duplicate uncategorized filter ([7cd64bb](https://github.com/budgie-at/budgie/commit/7cd64bbddaf3340b15b038a8288876145668ed72))
+
+### Features
+
+- **contracts:** add isPrimary to transaction_tags table ([1946049](https://github.com/budgie-at/budgie/commit/1946049a91b9ee80f27448160bab58b1a16ee8a9))
+- **contracts:** add setPrimary and findPrimaryByTransactionId to TransactionTagsRepository ([2a98924](https://github.com/budgie-at/budgie/commit/2a98924b70c797c7043cb775687c8b53a6d43cdc))
+- **contracts:** include isPrimary in transaction tags create schema ([7819c88](https://github.com/budgie-at/budgie/commit/7819c88db42025d589cfb843f220a97ded78a98d))
+
+# [5.4.0](https://github.com/budgie-at/budgie/compare/v5.3.1...v5.4.0) (2026-04-25)
+
+### Bug Fixes
+
+- address log decorator migration review ([2e9c1c8](https://github.com/budgie-at/budgie/commit/2e9c1c897291f7d15b92c3b594bd8100b6dfc16d))
+
+### Features
+
+- **contracts:** add @Log decorator + getLogger foundation ([0823d4e](https://github.com/budgie-at/budgie/commit/0823d4eefc91936575faa3cac8c909a232695684))
+
 # [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
 
 ### Bug Fixes

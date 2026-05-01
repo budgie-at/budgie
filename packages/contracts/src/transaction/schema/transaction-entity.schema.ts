@@ -5,6 +5,7 @@ import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.con
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-max-length.constant';
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
+import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
@@ -21,6 +22,11 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.'),
     updatedBy: zodEnum(TransactionUpdatedByEnum).nullable().describe('Who last updated the transaction.'),
+    consolidationParentTransactionId: schema =>
+        schema.positive().nullable().describe('Canonical transaction id this source transaction belongs to.'),
+    consolidationType: zodEnum(TransactionConsolidationTypeEnum)
+        .nullable()
+        .describe('The consolidation pattern that created this transaction.'),
     operatedWeekday: schema => schema.optional(),
     operatedMinuteOfDay: schema => schema.optional()
 });
