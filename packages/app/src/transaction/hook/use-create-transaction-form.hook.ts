@@ -54,7 +54,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
         } catch {
             Toast.show({
                 type: 'error',
-                text1: t`Something went wrong.`,
+                text1: t`Could not create transaction`,
                 text2: t`Could not create transaction. Please try again later.`
             });
         }

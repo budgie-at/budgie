@@ -41,13 +41,13 @@ export const ResyncBankSyncAccount = ({ accountId }: ResyncBankSyncAccountPropsI
             });
             Toast.show({
                 type: 'success',
-                text1: t`Success`,
+                text1: t`Bank sync reset`,
                 text2: t`Bank sync has been reset. History will be re-synced on next sync.`
             });
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
-                text1: t`Something went wrong`,
+                text1: t`Could not reset bank sync`,
                 text2: getErrorMessage(error)
             });
         } finally {
