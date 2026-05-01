@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
+
+### Features
+
+- **contracts,app:** surface untagged income/expense in analytics tag panel ([0d170b9](https://github.com/budgie-at/budgie/commit/0d170b9887476b828c93248a4d65a2ed284d003c))
+
 # [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
 
 ### Features
