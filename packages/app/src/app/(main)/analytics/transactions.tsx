@@ -76,7 +76,8 @@ export default function AnalyticsTransactionsPage() {
 
     const handleGoBack = () => void router.back();
 
-    const isUncategorized = !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
+    const isUntagged = isUntaggedNav(params);
+    const isUncategorized = !isUntagged && !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
 
@@ -102,6 +103,7 @@ export default function AnalyticsTransactionsPage() {
                     startDate={params.startDate}
                     endDate={params.endDate}
                     isUncategorized={isUncategorized}
+                    isUntagged={isUntagged}
                     onGoBack={handleGoBack}
                 />
             }
