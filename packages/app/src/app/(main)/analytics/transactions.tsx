@@ -21,13 +21,33 @@ interface RouteParams {
     readonly type?: string;
 }
 
+const UNTAGGED_PARAM = 'untagged';
+
+const isUntaggedNav = (params: RouteParams): boolean => params.tagId === UNTAGGED_PARAM;
+
 const buildCategoryIds = (params: RouteParams): number[] | null => {
     if (isDefined(params.categoryId)) {
         return [Number(params.categoryId)];
     }
 
+    if (isUntaggedNav(params)) {
+        return null;
+    }
+
     if (isDefined(params.type) && !isDefined(params.tagId)) {
         return [];
+    }
+
+    return null;
+};
+
+const buildTagIds = (params: RouteParams): number[] | null => {
+    if (isUntaggedNav(params)) {
+        return [];
+    }
+
+    if (isDefined(params.tagId)) {
+        return [Number(params.tagId)];
     }
 
     return null;
@@ -40,7 +60,7 @@ const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
     categoryIds: buildCategoryIds(params),
-    tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null
+    tagIds: buildTagIds(params)
 });
 
 export default function AnalyticsTransactionsPage() {
@@ -50,7 +70,8 @@ export default function AnalyticsTransactionsPage() {
     const filters = buildFilters(params);
 
     const { category } = useGetCategoryByIdQuery(isDefined(params.categoryId) ? Number(params.categoryId) : 0);
-    const { tags } = useGetTagByIdsQuery(isDefined(params.tagId) ? [Number(params.tagId)] : []);
+    const tagIdsForLookup = isUntaggedNav(params) || !isDefined(params.tagId) ? [] : [Number(params.tagId)];
+    const { tags } = useGetTagByIdsQuery(tagIdsForLookup);
     const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
 
     const handleGoBack = () => void router.back();
