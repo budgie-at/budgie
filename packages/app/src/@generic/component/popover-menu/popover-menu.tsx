@@ -30,7 +30,7 @@ interface Props {
     readonly placement?: PopoverMenuPlacement;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Popover positioning derives many local values from layout, animation, and safe-area inputs
 export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor, placement = 'auto' }: Props) => {
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
