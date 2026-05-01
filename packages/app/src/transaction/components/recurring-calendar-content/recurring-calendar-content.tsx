@@ -30,7 +30,7 @@ export const RecurringCalendarContent = () => {
     const now = new Date();
     const [displayMonth, setDisplayMonth] = useState(now.getMonth());
     const [displayYear, setDisplayYear] = useState(now.getFullYear());
-    const { data, isLoading } = useRecurringCalendar(displayYear, displayMonth);
+    const { data } = useRecurringCalendar(displayYear, displayMonth);
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
     const [displayedTotal, setDisplayedTotal] = useState(0);
 
@@ -84,7 +84,7 @@ export const RecurringCalendarContent = () => {
         }
     }, [data, headlineTotal]);
 
-    if (isLoading && !isDefined(data)) {
+    if (!isDefined(data)) {
         return <RecurringCalendarSkeleton />;
     }
 
