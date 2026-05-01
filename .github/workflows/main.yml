@@ -85,6 +85,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Build internal workspace packages
+        run: yarn turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/bank-sync
+
       - name: Publish update
         working-directory: packages/app
         run: |
