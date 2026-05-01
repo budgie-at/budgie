@@ -62,3 +62,4 @@ tests/app-tests/artifacts/
 .worktrees
 nativewind-env.d.ts
 docs/plans
+docs/superpowers
