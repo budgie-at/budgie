@@ -12,8 +12,6 @@ const MENU_MARGIN = 16;
 const DEFAULT_MENU_TOP = 64;
 const ANCHOR_OFFSET = 8;
 
-export type PopoverMenuPlacement = 'bottom' | 'auto';
-
 export interface PopoverMenuAnchor {
     readonly x: number;
     readonly y: number;
@@ -27,7 +25,7 @@ interface Props {
     readonly onCloseComplete?: EmptyFn;
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
-    readonly placement?: PopoverMenuPlacement;
+    readonly placement?: 'bottom' | 'auto';
 }
 
 // eslint-disable-next-line max-statements -- Popover positioning derives many local values from layout, animation, and safe-area inputs
