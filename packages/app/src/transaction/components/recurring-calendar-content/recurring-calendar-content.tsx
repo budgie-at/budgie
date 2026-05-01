@@ -16,7 +16,6 @@ import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/rec
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
-import { RecurringCalendarSkeleton } from '../recurring-calendar-skeleton/recurring-calendar-skeleton';
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
@@ -84,11 +83,7 @@ export const RecurringCalendarContent = () => {
         }
     }, [data, headlineTotal]);
 
-    if (!isDefined(data)) {
-        return <RecurringCalendarSkeleton />;
-    }
-
-    if (!hasEntries) {
+    if (isDefined(data) && !hasEntries) {
         return (
             <ScrollView contentContainerClassName="py-5xl" showsVerticalScrollIndicator={false}>
                 <RecurringCalendarEmptyState />
