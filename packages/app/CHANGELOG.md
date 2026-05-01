@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.7.2](https://github.com/budgie-at/budgie/compare/v5.7.1...v5.7.2) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** clarify max-statements disable rationale on PopoverMenu ([1dc8f06](https://github.com/budgie-at/budgie/commit/1dc8f06a6001903424bdb1b90a1dc4ace789567f))
+- **app:** flip popover menu above anchor when it overflows ([a08457c](https://github.com/budgie-at/budgie/commit/a08457c9d7cbaad261ccb02bd8a10209997423ca)), closes [#380](https://github.com/budgie-at/budgie/issues/380)
+- **app:** inline placement union to drop unused PopoverMenuPlacement export ([7a66206](https://github.com/budgie-at/budgie/commit/7a662065cc6ae7e973f560a70f0447dacac65143))
+
 ## [5.7.1](https://github.com/budgie-at/budgie/compare/v5.7.0...v5.7.1) (2026-05-01)
 
 ### Bug Fixes
