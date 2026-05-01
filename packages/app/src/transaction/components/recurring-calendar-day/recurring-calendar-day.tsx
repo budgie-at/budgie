@@ -10,8 +10,8 @@ import { RecurringCalendarEntryInterface } from '../../interface/recurring-calen
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 const MAX_DOTS = 3;
-const DOT_STAGGER_MS = 10;
-const DOT_FADE_MS = 280;
+const DOT_STAGGER_MS = 4;
+const DOT_FADE_MS = 200;
 
 const circleVariants = cva('w-10 h-10 items-center justify-center rounded-full', {
     variants: {
