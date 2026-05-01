@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
+
+### Bug Fixes
+
+- **app:** correct recurring calendar day-cell lookups, key uniqueness, and headline total ([b390ce8](https://github.com/budgie-at/budgie/commit/b390ce85820df6b5e3e7cceda0bd785a3a8b26c1))
+- **app:** kill recurring empty-state flicker on first render ([d93208e](https://github.com/budgie-at/budgie/commit/d93208e05f53cd42064d6c9eebf84d78027c555a))
+- **app:** lock recurring total font size to stop vertical layout jump ([3f436ab](https://github.com/budgie-at/budgie/commit/3f436abc9466ce845164d5706d70909f16ca531b))
+- **app:** pin Ticker default fontSize to 28 to remove first-frame size flash ([60ea2a7](https://github.com/budgie-at/budgie/commit/60ea2a73b8361d93b62405105a453d95b796b831))
+- **app:** show Untagged title on drill-down and inline recurring total derive ([8881c52](https://github.com/budgie-at/budgie/commit/8881c52c4729a5ca30be2475299b66b2c8bff8c5))
+- **app:** unbreak transaction tile right column and extract compact thresholds ([d6c7430](https://github.com/budgie-at/budgie/commit/d6c74308f363dedc3dbc61f129eb469649af2f0e))
+
+### Features
+
+- **app:** redesign analytics tiles with compact amounts and editorial layout ([1b9b6dd](https://github.com/budgie-at/budgie/commit/1b9b6dd4694e8e5cfe547647db85c81f0e3316c8))
+- **app:** replace recurring loading spinner with skeleton scaffold ([e30734b](https://github.com/budgie-at/budgie/commit/e30734bf81d1008b392c5eca4d38285817afeb53))
+- **contracts,app:** surface untagged income/expense in analytics tag panel ([0d170b9](https://github.com/budgie-at/budgie/commit/0d170b9887476b828c93248a4d65a2ed284d003c))
+
+### Performance Improvements
+
+- **app:** use React 19 Activity to keep tab subtrees mounted on switch ([dbb2fee](https://github.com/budgie-at/budgie/commit/dbb2fee8140a65829f37d8347c0c3620976dfd61))
+
 ## [5.7.2](https://github.com/budgie-at/budgie/compare/v5.7.1...v5.7.2) (2026-05-01)
 
 ### Bug Fixes
