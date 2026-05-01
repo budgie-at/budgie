@@ -1,7 +1,6 @@
 import { Log } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 
-
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -121,10 +120,7 @@ class ErsteParser {
     }
 
     private isEndOfSection(leftText: string, rightText: string): boolean {
-        return (
-            leftText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX) ||
-            rightText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX)
-        );
+        return leftText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX) || rightText.startsWith(ErsteParser.NEW_BALANCE_INLINE_PREFIX);
     }
 
     private isPageNoise(text: string): boolean {

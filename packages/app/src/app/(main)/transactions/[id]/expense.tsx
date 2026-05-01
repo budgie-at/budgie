@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
@@ -22,14 +22,11 @@ import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-ge
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-interface UpdateExpenseFormProps {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly transactionId: number;
-}
+import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
-const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
+const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const { markForEmbedding } = useEmbeddingGenerator();
@@ -51,6 +48,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const sourceAccount = sourceEntry.account;
     const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
+    const isConsolidated = isDefined(transaction.consolidationType);
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -70,7 +68,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                         title={t`Edit Expense`}
                         onGoBack={handleGoBack}
                         right={
-                            <TransactionActionsMenu onDelete={handleDelete}>
+                            <TransactionActionsMenu onDelete={handleDelete} isConsolidated={isConsolidated}>
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }

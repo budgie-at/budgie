@@ -20,6 +20,7 @@ import m0015 from './0015_add_entry_exchange_rate_and_to_iban.sql';
 import m0016 from './0016_add_needs_embedding.sql';
 import m0017 from './0017_drop_unused_fts_tables.sql';
 import m0018 from './0018_add_transaction_tags_is_primary.sql';
+import m0019 from './0019_add_consolidation_ledger.sql';
 
 export default {
   journal,
@@ -42,6 +43,7 @@ m0014,
 m0015,
 m0016,
 m0017,
-m0018
+m0018,
+m0019
   }
 };

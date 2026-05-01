@@ -20,10 +20,12 @@ import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
-import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
+import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
+
+import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 
 type AccountFieldName = 'fromAccountId' | 'toAccountId';
 
@@ -87,7 +89,7 @@ export const SimpleQuickForm = (props: Props) => {
     const isAmountPositive = amount > 0;
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
-    const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
+    const fieldIconsRef = useRef<TransactionFieldIconsRefInterface>(null);
     const accountRowRef = useRef<TransactionAccountRowRef>(null);
 
     const handleSelectCategory = (selectedCategoryId: number) => {

@@ -15,6 +15,7 @@ export abstract class BaseTransactionFilterRepository {
     /* jscpd:ignore-start */
     protected buildFilterWhere({ tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
+            this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
@@ -67,13 +68,21 @@ export abstract class BaseTransactionFilterRepository {
         return isNotEmptyArray(parts) ? and(...parts) : undefined;
     }
 
+    protected buildVisibleTransactionCondition() {
+        return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
+    }
+
+    protected buildLedgerEntryCondition() {
+        return isNull(TransactionEntryEntityTable.originalTransactionId);
+    }
+
     private buildUncategorizedCondition() {
         return inArray(
             TransactionEntityTable.id,
             this.db
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
-                .where(isNull(TransactionEntryEntityTable.categoryId))
+                .where(and(isNull(TransactionEntryEntityTable.categoryId), this.buildLedgerEntryCondition()))
         );
     }
 
@@ -83,7 +92,7 @@ export abstract class BaseTransactionFilterRepository {
             this.db
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
-                .where(inArray(TransactionEntryEntityTable.categoryId, categoryIds))
+                .where(and(inArray(TransactionEntryEntityTable.categoryId, categoryIds), this.buildLedgerEntryCondition()))
         );
     }
 }

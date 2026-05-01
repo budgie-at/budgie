@@ -81,7 +81,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(baseWhere);
+            .where(and(baseWhere, this.buildLedgerEntryCondition()));
     }
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
@@ -117,7 +117,14 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, ne(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(TransactionEntityTable.type, type)));
+            .where(
+                and(
+                    baseWhere,
+                    this.buildLedgerEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    eq(TransactionEntityTable.type, type)
+                )
+            );
     }
 
     private buildStatisticsTransactionIdsQuery(filters: StatisticsFilterInterface) {
@@ -128,7 +135,14 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, ne(AccountEntityTable.type, AccountTypeEnum.DEBT), eq(TransactionEntityTable.type, filters.type)));
+            .where(
+                and(
+                    baseWhere,
+                    this.buildLedgerEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    eq(TransactionEntityTable.type, filters.type)
+                )
+            );
     }
     /* jscpd:ignore-end */
 
@@ -173,7 +187,13 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), ne(AccountEntityTable.type, AccountTypeEnum.DEBT)))
+            .where(
+                and(
+                    inArray(TransactionEntityTable.id, transactionIdsSubquery),
+                    this.buildLedgerEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                )
+            )
             .groupBy(TransactionEntryEntityTable.categoryId)
             .orderBy(desc(amountSql));
     }
@@ -192,7 +212,13 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
             .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), ne(AccountEntityTable.type, AccountTypeEnum.DEBT)))
+            .where(
+                and(
+                    inArray(TransactionEntityTable.id, transactionIdsSubquery),
+                    this.buildLedgerEntryCondition(),
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                )
+            )
             .groupBy(TagEntityTable.id)
             .orderBy(desc(amountSql));
     }

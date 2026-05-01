@@ -6,7 +6,10 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+
+import type { AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 
 export const TransactionEntityTable = sqliteTable(
     'transactions',
@@ -23,6 +26,13 @@ export const TransactionEntityTable = sqliteTable(
         exchangeRate: real('exchange_rate').notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         needsEmbedding: int('needs_embedding', { mode: 'boolean' }).notNull().default(false),
+        consolidationParentTransactionId: int('consolidation_parent_transaction_id', { mode: 'number' }).references(
+            (): AnySQLiteColumn => TransactionEntityTable.id,
+            { onDelete: 'set null' }
+        ),
+        consolidationType: text('consolidation_type', {
+            enum: convertEnumToDrizzleEnum(TransactionConsolidationTypeEnum)
+        }).$type<TransactionConsolidationTypeEnum>(),
         operatedWeekday: int('operated_weekday', { mode: 'number' })
             .generatedAlwaysAs(sql`CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER)`, { mode: 'virtual' })
             .notNull(),
@@ -38,6 +48,12 @@ export const TransactionEntityTable = sqliteTable(
         index('transactions_operated_at_idx')
             .on(table.operatedAt)
             .where(sql`${table.deletedAt} IS NULL`),
+        index('transactions_visible_operated_idx')
+            .on(table.operatedAt)
+            .where(sql`${table.deletedAt} IS NULL AND ${table.consolidationParentTransactionId} IS NULL`),
+        index('transactions_consolidation_parent_idx')
+            .on(table.consolidationParentTransactionId)
+            .where(sql`${table.consolidationParentTransactionId} IS NOT NULL`),
         index('transactions_type_operated_idx')
             .on(table.type, table.operatedAt)
             .where(sql`${table.deletedAt} IS NULL`),

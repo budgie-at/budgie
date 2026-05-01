@@ -131,6 +131,12 @@ export class AccountRepository {
         });
     }
 
+    findByIban(iban: string) {
+        return this.db.query.AccountEntityTable.findFirst({
+            where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
     async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ibans)) {
             return [];
@@ -146,10 +152,6 @@ export class AccountRepository {
             .insert(AccountEntityTable)
             .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
             .returning();
-    }
-
-    async touchUpdatedAt(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds));
     }
 
     async truncate(tx?: DB): Promise<void> {

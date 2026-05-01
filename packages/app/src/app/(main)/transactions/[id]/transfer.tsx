@@ -1,11 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    AccountTypeEnum,
-    TransactionEntryTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    TransferTransactionCreateInputSchema
-} from '@budgie/contracts';
+import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -23,25 +18,26 @@ import { useGetAccountByIdQuery } from '../../../../account/query/use-get-accoun
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransferQuickForm } from '../../../../transaction/components/transfer-quick-form/transfer-quick-form';
+import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-interface UpdateTransferFormProps {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly transactionId: number;
-}
+import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
-const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const { markForEmbedding } = useEmbeddingGenerator();
+    const [openConsolidationSource] = useConsolidationSourceModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
     const debitEntry = transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
     const initialDestinationAmount = isDefined(debitEntry) ? convertFromMicroUnits(debitEntry.amount) : 0;
+    const isConsolidated = isDefined(transaction.consolidationType);
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
@@ -60,6 +56,11 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const isDebtAccount = account?.type === AccountTypeEnum.DEBT;
     const exceedsDebtBalance = isDebtAccount && amount > balance;
 
+    const handleConsolidationPress = () => {
+        void openConsolidationSource({ transactionId });
+    };
+    const handleGoBack = () => void goBackOrReplace('/');
+
     useEffect(() => {
         if (exceedsDebtBalance) {
             form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
@@ -68,8 +69,6 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
         }
     }, [exceedsDebtBalance, form, t]);
 
-    const handleGoBack = () => void goBackOrReplace('/');
-
     return (
         <FormProvider {...form}>
             <FullPage
@@ -77,7 +76,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     <PageHeader
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
-                        right={<TransactionActionsMenu onDelete={handleDelete} />}
+                        right={<TransactionActionsMenu onDelete={handleDelete} isConsolidated={isConsolidated} />}
                     />
                 }
             >
@@ -86,6 +85,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
+                    {...(isConsolidated && { onConsolidationPress: handleConsolidationPress })}
                 />
             </FullPage>
         </FormProvider>

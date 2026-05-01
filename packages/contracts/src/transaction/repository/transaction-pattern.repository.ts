@@ -132,6 +132,8 @@ export class TransactionPatternRepository {
                 WHERE te2.category_id = ${TransactionEntryEntityTable.categoryId}
                   AND t2.title = ${TransactionEntityTable.title}
                   AND t2.deleted_at IS NULL
+                  AND t2.consolidation_parent_transaction_id IS NULL
+                  AND te2.original_transaction_id IS NULL
                 ORDER BY t2.operated_at DESC
                 LIMIT 1
             )`.as('latestAmount');
@@ -145,6 +147,8 @@ export class TransactionPatternRepository {
               AND t2.comment = ${TransactionEntityTable.comment}
               AND t2.title = ''
               AND t2.deleted_at IS NULL
+              AND t2.consolidation_parent_transaction_id IS NULL
+              AND te2.original_transaction_id IS NULL
             ORDER BY t2.operated_at DESC
             LIMIT 1
         )`.as('latestAmount');
@@ -189,7 +193,9 @@ export class TransactionPatternRepository {
         const conditions: SQL[] = [
             eq(TransactionEntityTable.type, query.type),
             isNull(TransactionEntityTable.deletedAt),
+            isNull(TransactionEntityTable.consolidationParentTransactionId),
             eq(TransactionEntryEntityTable.type, entryType),
+            isNull(TransactionEntryEntityTable.originalTransactionId),
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
             isNotNull(TransactionEntryEntityTable.categoryId)
         ];
@@ -288,7 +294,9 @@ export class TransactionPatternRepository {
                     inArray(TransactionEntryEntityTable.categoryId, categoryIds),
                     inArray(titleSource, titles),
                     titleScopeCondition,
-                    isNull(TransactionEntityTable.deletedAt)
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.consolidationParentTransactionId),
+                    isNull(TransactionEntryEntityTable.originalTransactionId)
                 )
             )
             .groupBy(TransactionEntryEntityTable.categoryId, titleSource, TransactionTagsEntityTable.tagId)
@@ -398,10 +406,10 @@ WITH groups AS (
            strftime('%Y-%m', t.operated_at + ?, 'unixepoch') AS year_month,
            t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
-    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
-    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.operated_at >= ?
       AND t.title = '' AND t.comment != '' AND te.category_id IS NOT NULL
 ),
@@ -443,10 +451,10 @@ all_time AS (
            cat.title AS cat_title, cat.icon AS cat_icon,
            t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
-    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
-    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT'
       AND t.title = '' AND t.comment != '' AND te.category_id IS NOT NULL
 ),

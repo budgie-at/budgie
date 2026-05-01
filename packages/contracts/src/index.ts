@@ -162,9 +162,11 @@ export { MccCategoryCreateEntitySchema } from './mcc-category/schema/mcc-categor
 export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
+export { TransactionConsolidationTypeEnum } from './transaction/enum/transaction-consolidation-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
+export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
@@ -191,6 +193,7 @@ export type { TransactionCreateInputInterface } from './transaction/input/transa
 
 export type { TransactionUpdateInputInterface } from './transaction/input/transaction-update-input.interface';
 export type { TransactionUpdateServiceInputInterface } from './transaction/input/transaction-update-service-input.interface';
+export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
@@ -230,6 +233,14 @@ export type { MonthlyPatternRowInterface } from './transaction/interface/monthly
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
+
+export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
+export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
+export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
+export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
+export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
+
+export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';

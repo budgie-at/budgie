@@ -14,5 +14,6 @@ export const transactionMapEntryInputToCreateEntity = (
     amount: convertToMicroUnits(entry.amount),
     externalId: entry.externalId ?? null,
     exchangeRate: entry.exchangeRate ?? 1,
-    toIban: entry.toIban ?? null
+    toIban: entry.toIban ?? null,
+    originalTransactionId: null
 });
