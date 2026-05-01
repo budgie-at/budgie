@@ -47,6 +47,8 @@ class SttService
 
     private stopStreamPromise: Promise<string> | null = null;
 
+    private shouldCommitActiveStream = false;
+
     private streamId = 0;
 
     constructor() {
@@ -167,11 +169,7 @@ class SttService
         return '';
     }
 
-    private async stopTranscriber(
-        transcriber: RealtimeTranscriber,
-        audioStream: ManualAudioStreamAdapter | null,
-        commitFinalText: boolean
-    ): Promise<string> {
+    private async stopTranscriber(transcriber: RealtimeTranscriber, audioStream: ManualAudioStreamAdapter | null): Promise<string> {
         if (audioStream?.isRecording() ?? false) {
             await transcriber.nextSlice();
         }
@@ -179,32 +177,37 @@ class SttService
         await transcriber.stop();
         await audioStream?.release();
 
-        return commitFinalText ? this.commitFinalState() : this.discardFinalState();
+        return this.shouldCommitActiveStream ? this.commitFinalState() : this.discardFinalState();
     }
 
     private stopActiveStream(commitFinalText: boolean): Promise<string> {
+        if (!commitFinalText) {
+            this.shouldCommitActiveStream = false;
+        }
         if (isDefined(this.stopStreamPromise)) {
             return this.stopStreamPromise;
         }
 
-        this.stopStreamPromise = this.executeStopActiveStream(commitFinalText).finally(() => {
+        this.shouldCommitActiveStream = commitFinalText;
+        this.stopStreamPromise = this.executeStopActiveStream().finally(() => {
             this.stopStreamPromise = null;
+            this.shouldCommitActiveStream = false;
         });
 
         return this.stopStreamPromise;
     }
 
-    private async executeStopActiveStream(commitFinalText: boolean): Promise<string> {
+    private async executeStopActiveStream(): Promise<string> {
         const { transcriber } = this;
         const { audioStream } = this;
 
         if (!isDefined(transcriber)) {
-            return commitFinalText ? this.snapshot.committedTranscription : '';
+            return this.shouldCommitActiveStream ? this.snapshot.committedTranscription : '';
         }
 
         try {
-            const finalText = await this.stopTranscriber(transcriber, audioStream, commitFinalText);
-            this.resolveStream?.(commitFinalText ? finalText : '');
+            const finalText = await this.stopTranscriber(transcriber, audioStream);
+            this.resolveStream?.(this.shouldCommitActiveStream ? finalText : '');
 
             return finalText;
         } catch (error: unknown) {
