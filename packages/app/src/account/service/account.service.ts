@@ -23,6 +23,7 @@ import {
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 
@@ -114,6 +115,8 @@ class AccountService {
 
     async archiveById(id: number): Promise<void> {
         return transactionAsync(db, async tx => {
+            await this.unconsolidateActiveAutoByAccountId(id, tx);
+
             await accountRepository.archiveById(id, tx);
             await transactionEntryRepository.archiveByAccountIds([id], tx);
             await transactionRepository.archiveByAccountIds([id], tx);
@@ -137,6 +140,7 @@ class AccountService {
 
     async deleteById(id: number): Promise<void> {
         return transactionAsync(db, async tx => {
+            await this.unconsolidateActiveAutoByAccountId(id, tx);
             await this.convertAccountTransfers(id, tx);
             await transactionEntryRepository.deleteByAccountId(id, tx);
             await transactionRepository.deleteByAccountId(id, tx);
@@ -155,6 +159,14 @@ class AccountService {
         await accountRepository.updateById(id, { isActive: true });
     }
 
+    private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
+        const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([id], tx);
+        for (const canonical of canonicals) {
+            // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must happen before account mutation
+            await unconsolidateByIdInTransaction(canonical.id, tx);
+        }
+    }
+
     private async convertAccountTransfers(accountId: number, tx: DB): Promise<void> {
         const transfers = await transactionRepository.findTransfersForConversion(accountId, tx);
 
@@ -170,7 +182,7 @@ class AccountService {
 
         await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
 
-        if (entriesToCreate.length > 0) {
+        if (isNotEmptyArray(entriesToCreate)) {
             await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
         }
     }
@@ -250,8 +262,6 @@ class AccountService {
             },
             tx
         );
-
-        await accountRepository.touchUpdatedAt([accountId], tx);
     }
 
     private async createLiabilityAccount(

@@ -5,5 +5,6 @@ import { TransactionEntryEntitySchema } from './transaction-entry-entity.schema'
 export const TransactionEntryCreateEntitySchema = convertToCreateEntitySchema(TransactionEntryEntitySchema).partial({
     externalId: true,
     exchangeRate: true,
-    toIban: true
+    toIban: true,
+    originalTransactionId: true
 });

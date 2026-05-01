@@ -54,6 +54,7 @@ export class AccountBalanceRepository {
             .where(
                 and(
                     isNull(TransactionEntryEntityTable.deletedAt),
+                    isNull(TransactionEntryEntityTable.originalTransactionId),
                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                     sql`(
                         NOT EXISTS (
@@ -90,6 +91,7 @@ export class AccountBalanceRepository {
                 FROM ${TransactionEntryEntityTable}
                 WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
                   AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                  AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL
             ), 0)`;
 
         return this.db
@@ -210,6 +212,7 @@ export class AccountBalanceRepository {
             FROM ${TransactionEntryEntityTable}
             WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference}
               AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+              AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL
               AND (
                   (${lastBalanceUpdatedAtSql}) IS NULL
                   OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql})

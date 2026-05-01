@@ -1,11 +1,10 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
+import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { DB, DBOrTX } from '../../@generic/type/db.type';
-import { bankSyncLog } from '../../@generic/util/bank-sync-log.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -13,16 +12,19 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
-import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
+import type { DB, DBOrTX } from '../../@generic/type/db.type';
+import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
+import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
+import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
@@ -33,12 +35,260 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
     } as const;
 
-    async touchUpdatedAt(id: number, tx?: DBOrTX): Promise<void> {
-        await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
+    @Log(
+        (inputs, tx) => `enter hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
+        (result, inputs, tx) =>
+            `done hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs, tx) =>
+            `throw hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionEntityInterface[]> {
+        if (isNotEmptyArray(inputs)) {
+            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+        }
+
+        return [];
     }
 
-    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                JOIN merchant_embeddings me
+                  ON me.title = transactions.title
+                  AND me.mcc_description = COALESCE(mcc.full_description, '')
+                  AND me.category_id = te.category_id
+                  AND me.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+    }
+
+    @Log(
+        tx => `enter hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
+        (tx ?? this.db).run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                JOIN comment_embeddings ce
+                  ON ce.comment = transactions.comment
+                  AND ce.category_id = te.category_id
+                  AND ce.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `);
+    }
+
+    @Log(
+        (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
+        (result, mccCategoryId, limit) =>
+            `done mccCategoryId=${mccCategoryId} limit=${limit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
+        (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
+    )
+    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
+        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
+            `WITH signals AS (
+                SELECT me.category_id AS category_id
+                FROM merchant_embeddings me
+                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                WHERE mcc.id = ? AND me.deleted_at IS NULL
+                UNION ALL
+                SELECT te.category_id
+                FROM transaction_entries te
+                INNER JOIN transactions t ON t.id = te.transaction_id
+                WHERE te.mcc_category_id = ?
+                  AND te.category_id IS NOT NULL
+                  AND t.deleted_at IS NULL
+                  AND te.deleted_at IS NULL
+            )
+            SELECT category_id AS categoryId, COUNT(*) AS count
+            FROM signals
+            WHERE category_id IS NOT NULL
+            GROUP BY category_id
+            ORDER BY COUNT(*) DESC
+            LIMIT ?`,
+            [mccCategoryId, mccCategoryId, limit]
+        );
+    }
+
+    @Log(
+        externalSource => `enter externalSource=${externalSource}`,
+        (result, externalSource) => `done externalSource=${externalSource} externalIds=${result.join(',')}`,
+        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
+    )
+    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
+        const results = await this.db
+            .select({ externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return results.map(row => row.externalId).filter(isDefined);
+    }
+
+    @Log(
+        canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
+        (result, canonicalTransactionId) =>
+            `done canonicalTransactionId=${canonicalTransactionId} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
+        (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
+    )
+    async findConsolidationSources(canonicalTransactionId: number): Promise<ConsolidationSourceRowInterface[]> {
+        return await this.db.$client.getAllAsync<ConsolidationSourceRowInterface>(
+            `SELECT
+                moved.transaction_id AS canonicalTransactionId,
+                moved.original_transaction_id AS sourceTransactionId,
+                source.type AS sourceType,
+                source.title AS sourceTitle,
+                source.comment AS sourceComment,
+                source.external_id AS sourceExternalId,
+                source.external_source AS sourceExternalSource,
+                source.operated_at * 1000 AS sourceOperatedAtMs,
+                moved.id AS entryId,
+                moved.type AS entryType,
+                moved.amount AS amount,
+                moved.exchange_rate AS exchangeRate,
+                account.id AS accountId,
+                account.title AS accountTitle,
+                account.icon AS accountIcon,
+                source_from_account.title AS sourceFromAccountTitle,
+                source_from_account.icon AS sourceFromAccountIcon,
+                source_to_account.title AS sourceToAccountTitle,
+                source_to_account.icon AS sourceToAccountIcon,
+                canonical_from_account.title AS canonicalFromAccountTitle,
+                canonical_from_account.icon AS canonicalFromAccountIcon,
+                canonical_to_account.title AS canonicalToAccountTitle,
+                canonical_to_account.icon AS canonicalToAccountIcon,
+                instrument.id AS instrumentId,
+                instrument.code AS currencyCode,
+                instrument.symbol AS currencySymbol,
+                category.title AS categoryTitle,
+                mcc.mcc AS mcc,
+                mcc.short_description AS mccDescription,
+                moved.to_iban AS toIban
+            FROM transaction_entries moved
+            INNER JOIN transactions source ON source.id = moved.original_transaction_id
+            INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
+            INNER JOIN accounts account ON account.id = moved.account_id
+            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+            LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
+            LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
+            LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
+            LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
+            LEFT JOIN categories category ON category.id = moved.category_id
+            LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
+            WHERE moved.transaction_id = ?
+              AND moved.original_transaction_id IS NOT NULL
+              AND moved.deleted_at IS NULL
+            ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
+            [canonicalTransactionId]
+        );
+    }
+
+    @Log(
+        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, accountIds, tx) =>
+            `done accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
+        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findActiveAutoConsolidatedByAccountIds(accountIds: number[], tx?: DB): Promise<{ id: number }[]> {
+        if (isEmptyArray(accountIds)) {
+            return [];
+        }
+
+        const runner = tx ?? this.db;
+        const movedSourceCanonicalIds = runner
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                    isNull(TransactionEntryEntityTable.deletedAt)
+                )
+            );
+
+        return await runner
+            .select({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    isNotNull(TransactionEntityTable.consolidationType),
+                    isNull(TransactionEntityTable.deletedAt),
+                    or(
+                        inArray(TransactionEntityTable.fromAccountId, accountIds),
+                        inArray(TransactionEntityTable.toAccountId, accountIds),
+                        inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+                    )
+                )
+            );
+    }
+
+    @Log(
+        (sourceTransactionIds, canonicalTransactionId, tx) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async setConsolidationParent(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
+        if (isEmptyArray(sourceTransactionIds)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ consolidationParentTransactionId: canonicalTransactionId })
+            .where(
+                and(
+                    inArray(TransactionEntityTable.id, sourceTransactionIds),
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.consolidationParentTransactionId)
+                )
+            );
+    }
+
+    @Log(
+        (canonicalTransactionId, tx) => `enter canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, canonicalTransactionId, tx) =>
+            `throw canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearConsolidationParent(canonicalTransactionId: number, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ consolidationParentTransactionId: null })
+            .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
+    }
+
+    async touchUpdatedAt(id: number, tx?: DBOrTX): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: DBOrTX): Promise<TransactionEntityInterface> {
@@ -47,33 +297,21 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionEntityInterface[]> {
-        if (isNotEmptyArray(inputs)) {
-            bankSyncLog('repo:transaction:bulkCreate', {
-                count: inputs.length,
-                externalSources: inputs.map(input => input.externalSource),
-                externalIds: inputs.map(input => input.externalId)
-            });
-            const results = await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
-            bankSyncLog('repo:transaction:bulkCreate:done', {
-                requested: inputs.length,
-                inserted: results.length,
-                insertedIds: results.map(row => row.id)
-            });
-
-            return results;
-        }
-
-        return [];
+    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: DBOrTX): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionUpdateInputInterface, tx?: DBOrTX): Promise<TransactionEntityInterface> {
         const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set(finalInput)
             .where(eq(TransactionEntityTable.id, id))
             .returning();
+
+        if (!isDefined(transaction)) {
+            throw new Error(`Transaction ${id} not found`);
+        }
 
         return transaction;
     }
@@ -101,11 +339,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     getAllAfter(cursorId: number | null, limit: number) {
-        const baseFilter = isNull(TransactionEntityTable.deletedAt);
+        const baseFilter = and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
         const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: { [TransactionAssociationEnum.ENTRIES]: true },
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                }
+            },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             where
@@ -206,105 +448,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
               AND deleted_at IS NULL
               AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
         `);
-    }
-
-    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
-        const start = Date.now();
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-                JOIN merchant_embeddings me
-                  ON me.title = transactions.title
-                  AND me.mcc_description = COALESCE(mcc.full_description, '')
-                  AND me.category_id = te.category_id
-                  AND me.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
-        bankSyncLog('repo:transaction:clearAlreadyIndexedMerchantFlags:done', { durationMs: Date.now() - start });
-    }
-
-    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
-        const start = Date.now();
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                JOIN comment_embeddings ce
-                  ON ce.comment = transactions.comment
-                  AND ce.category_id = te.category_id
-                  AND ce.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
-        bankSyncLog('repo:transaction:clearAlreadyIndexedCommentFlags:done', { durationMs: Date.now() - start });
-    }
-
-    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
-        const start = Date.now();
-        const rows = await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
-            `WITH signals AS (
-                SELECT me.category_id AS category_id
-                FROM merchant_embeddings me
-                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
-                WHERE mcc.id = ? AND me.deleted_at IS NULL
-                UNION ALL
-                SELECT te.category_id
-                FROM transaction_entries te
-                INNER JOIN transactions t ON t.id = te.transaction_id
-                WHERE te.mcc_category_id = ?
-                  AND te.category_id IS NOT NULL
-                  AND t.deleted_at IS NULL
-                  AND te.deleted_at IS NULL
-            )
-            SELECT category_id AS categoryId, COUNT(*) AS count
-            FROM signals
-            WHERE category_id IS NOT NULL
-            GROUP BY category_id
-            ORDER BY COUNT(*) DESC
-            LIMIT ?`,
-            [mccCategoryId, mccCategoryId, limit]
-        );
-
-        bankSyncLog('repo:transaction:findMccCategorySuggestions:done', {
-            mccCategoryId,
-            resultCount: rows.length,
-            durationMs: Date.now() - start,
-            topCategoryIds: rows.slice(0, 3).map(row => row.categoryId)
-        });
-
-        return rows;
-    }
-
-    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
-        const results = await this.db
-            .select({ externalId: TransactionEntityTable.externalId })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    isNotNull(TransactionEntityTable.externalId),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
-
-        const ids = results.map(row => row.externalId).filter((id): id is string => id !== null);
-        bankSyncLog('repo:transaction:findExternalIdsByExternalSource', { externalSource, count: ids.length });
-
-        return ids;
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
@@ -447,10 +590,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
+            this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
-            ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
+            ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
 
@@ -475,7 +619,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 this.db
                     .select({ transactionId: TransactionEntryEntityTable.transactionId })
                     .from(TransactionEntryEntityTable)
-                    .where(eq(TransactionEntryEntityTable.type, type))
+                    .where(and(eq(TransactionEntryEntityTable.type, type), this.buildLedgerEntryCondition()))
             )
         );
     }

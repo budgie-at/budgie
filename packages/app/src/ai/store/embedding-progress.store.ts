@@ -1,7 +1,10 @@
-import { emptyFn, getErrorMessage } from '@rnw-community/shared';
+import { getLogger } from '@budgie/logger';
+
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { aiLog } from '../utils/ai-log.util';
+
+const logger = getLogger('embeddingProgressStore');
 
 export interface EmbeddingProgressSnapshotInterface {
     readonly percent: number;
@@ -32,11 +35,11 @@ const runRefresh = async (): Promise<void> => {
         const prior = snapshot;
         snapshot = { percent, isEmbedding: pending > 0, pending, total };
         if (prior.percent !== percent || prior.isEmbedding !== snapshot.isEmbedding || prior.pending !== pending) {
-            aiLog('embed:progress:refresh', { total, pending, percent, isEmbedding: snapshot.isEmbedding });
+            logger.log('embed:progress:refresh', { total, pending, percent, isEmbedding: snapshot.isEmbedding });
         }
         notify();
     } catch (error: unknown) {
-        aiLog('embed:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
+        logger.error('embed:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
         emptyFn();
     }
 };
@@ -53,7 +56,7 @@ export const embeddingProgressStore = {
         return snapshot;
     },
     async refresh(force = false): Promise<void> {
-        if (pendingRefresh !== null) {
+        if (isDefined(pendingRefresh)) {
             await pendingRefresh;
 
             return;

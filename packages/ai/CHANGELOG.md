@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.6.3](https://github.com/budgie-at/budgie/compare/v5.6.2...v5.6.3) (2026-04-30)
+
+**Note:** Version bump only for package @budgie/ai
+
+## [5.5.1](https://github.com/budgie-at/budgie/compare/v5.5.0...v5.5.1) (2026-04-25)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.5.0](https://github.com/budgie-at/budgie/compare/v5.4.0...v5.5.0) (2026-04-25)
+
+**Note:** Version bump only for package @budgie/ai
+
+# [5.4.0](https://github.com/budgie-at/budgie/compare/v5.3.1...v5.4.0) (2026-04-25)
+
+### Bug Fixes
+
+- address log decorator migration review ([2e9c1c8](https://github.com/budgie-at/budgie/commit/2e9c1c897291f7d15b92c3b594bd8100b6dfc16d))
+- simplify lifecycle logging ([d5ec1a6](https://github.com/budgie-at/budgie/commit/d5ec1a6f92ea64f1f8cc500696be1c7a53142ece))
+
 # [5.3.0](https://github.com/budgie-at/budgie/compare/v5.2.3...v5.3.0) (2026-04-20)
 
 ### Bug Fixes

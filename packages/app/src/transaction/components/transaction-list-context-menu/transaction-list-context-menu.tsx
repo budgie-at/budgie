@@ -1,33 +1,24 @@
-import {
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    UserIconNameEnum,
-    isExpenseTransaction,
-    isIncomeTransaction
-} from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { useRef } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
+import { TransactionListConvertMenuItem } from '../transaction-list-convert-menu-item/transaction-list-convert-menu-item';
 
 import { TransactionListContextMenuSelector } from './transaction-list-context-menu.selector';
 
-interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface | null;
-    readonly anchor?: PopoverMenuAnchor;
-    readonly isOpen: boolean;
-    readonly onClose: EmptyFn;
-    readonly onCloseComplete: EmptyFn;
-}
+import type { TransactionListContextMenuPropsInterface } from '../../interface/transaction-list-context-menu-props.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { EmptyFn } from '@rnw-community/shared';
 
 const isConvertibleTransaction = (transaction: TransactionWithRelationsEntityInterface): boolean =>
     isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
@@ -38,18 +29,27 @@ const getConvertTransactionType = (
     isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
 // eslint-disable-next-line max-statements -- Context menu component with deferred action pattern and multiple handlers
-export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClose, onCloseComplete }: Props) => {
+export const TransactionListContextMenu = ({
+    transaction,
+    anchor,
+    isOpen,
+    onClose,
+    onCloseComplete
+}: TransactionListContextMenuPropsInterface) => {
     const { t } = useLingui();
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const pendingActionRef = useRef<EmptyFn | null>(null);
 
-    if (transaction === null) {
+    if (!isDefined(transaction)) {
         return null;
     }
 
-    const canConvert = isConvertibleTransaction(transaction);
+    const isConsolidated = isDefined(transaction.consolidationType);
+    const canConvert = !isConsolidated && isConvertibleTransaction(transaction);
+    const deleteLabel = isConsolidated ? t`Unconsolidate Transaction` : t`Delete Transaction`;
+    const deleteIcon = isConsolidated ? UserIconNameEnum.GitPullRequestClosed : UserIconNameEnum.Trash2;
 
     const closeMenu = (afterClose?: EmptyFn) => {
         pendingActionRef.current = afterClose ?? null;
@@ -76,7 +76,7 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
 
     const handleDeletePress = () => {
         closeMenu(() => {
-            deleteTransaction(transaction.id).catch(emptyFn);
+            deleteTransaction(transaction.id, { isConsolidated }).catch(emptyFn);
         });
     };
 
@@ -97,15 +97,6 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
         });
     };
 
-    const convertMenuItem = canConvert ? (
-        <PopoverMenuItem
-            icon={UserIconNameEnum.ArrowRightLeft}
-            label={t`Convert to Transfer`}
-            onPress={handleConvertPress}
-            testID={TransactionListContextMenuSelector.ConvertToTransferButton}
-        />
-    ) : null;
-
     return (
         <PopoverMenu isOpen={isOpen} onClose={handleDismiss} onCloseComplete={handleCloseComplete} anchor={anchor}>
             <View className="py-sm">
@@ -115,10 +106,10 @@ export const TransactionListContextMenu = ({ transaction, anchor, isOpen, onClos
                     onPress={handleEditPress}
                     testID={TransactionListContextMenuSelector.EditButton}
                 />
-                {convertMenuItem}
+                <TransactionListConvertMenuItem isVisible={canConvert} onConvert={handleConvertPress} />
                 <PopoverMenuItem
-                    icon={UserIconNameEnum.Trash2}
-                    label={t`Delete Transaction`}
+                    icon={deleteIcon}
+                    label={deleteLabel}
                     onPress={handleDeletePress}
                     variant="destructive"
                     testID={TransactionListContextMenuSelector.DeleteButton}

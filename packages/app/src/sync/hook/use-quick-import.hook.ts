@@ -26,7 +26,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
             setError(null);
 
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
-            const { uri } = result.assets?.at(0) ?? {};
+            const uri = result.assets?.at(0)?.uri;
 
             if (result.canceled || !isNotEmptyString(uri)) {
                 setIsLoading(false);

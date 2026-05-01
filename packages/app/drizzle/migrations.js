@@ -18,8 +18,11 @@ import m0013 from './0013_fat_wild_child.sql';
 import m0014 from './0014_light_calypso.sql';
 import m0015 from './0015_add_entry_exchange_rate_and_to_iban.sql';
 import m0016 from './0016_add_needs_embedding.sql';
-import m0017 from './0017_add_rules.sql';
-import m0018 from './0018_add_updated_by.sql';
+import m0017 from './0017_drop_unused_fts_tables.sql';
+import m0018 from './0018_add_transaction_tags_is_primary.sql';
+import m0019 from './0019_add_consolidation_ledger.sql';
+import m0020 from './0020_add_rules.sql';
+import m0021 from './0021_add_updated_by.sql';
 
 export default {
     journal,
@@ -42,6 +45,9 @@ export default {
         m0015,
         m0016,
         m0017,
-        m0018
+        m0018,
+        m0019,
+        m0020,
+        m0021
     }
 };

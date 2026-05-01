@@ -4,11 +4,15 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -24,7 +28,6 @@ interface Props {
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
     readonly footerSpacerMultiplier?: number;
-    readonly focusKey?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -33,6 +36,8 @@ const getItemType = (item: TransactionListItemType | undefined) => item?.type ??
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
+const LIST_STYLE = { flex: 1 };
+
 // eslint-disable-next-line max-statements, max-lines-per-function -- List orchestration component with context menu state management
 export const TransactionSectionsList = ({
     sections,
@@ -40,12 +45,12 @@ export const TransactionSectionsList = ({
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
-    footerSpacerMultiplier,
-    focusKey
+    footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
+    const { bottom } = useSafeAreaInsets();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuState, setMenuState] = useState<TransactionMenuStateInterface | null>(null);
@@ -98,29 +103,33 @@ export const TransactionSectionsList = ({
         }))
     ]);
 
-    const isEmpty = flatData.length === 0;
-    const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
-
-    const listFooter = <MenuSpacer multiplier={footerSpacerMultiplier} />;
+    const isEmpty = isEmptyArray(flatData);
+    const paddingBottom = (footerSpacerMultiplier ?? 0) * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
+    const contentContainerStyle = {
+        gap: 16,
+        paddingBottom,
+        ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const })
+    };
 
     return (
         <>
-            <LegendList
-                key={focusKey}
-                data={flatData}
-                keyExtractor={keyExtractor}
-                renderItem={renderItem}
-                estimatedItemSize={80}
-                stickyIndices={getStickyIndices(flatData)}
-                recycleItems
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.3}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={contentContainerStyle}
-                ListEmptyComponent={listEmptyState}
-                getItemType={getItemType}
-                ListFooterComponent={listFooter}
-            />
+            <View className="flex-1">
+                <LegendList
+                    style={LIST_STYLE}
+                    data={flatData}
+                    keyExtractor={keyExtractor}
+                    renderItem={renderItem}
+                    estimatedItemSize={TRANSACTION_LIST_ESTIMATED_ITEM_SIZE}
+                    stickyIndices={getStickyIndices(flatData)}
+                    recycleItems
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.3}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={contentContainerStyle}
+                    ListEmptyComponent={listEmptyState}
+                    getItemType={getItemType}
+                />
+            </View>
             <TransactionListContextMenu
                 transaction={menuTransaction}
                 isOpen={isMenuOpen}

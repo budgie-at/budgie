@@ -5,9 +5,16 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { useExportAction } from '../../hook/use-export-action.hook';
 import { exporterService } from '../../service/exporter.service';
 
+import { ExportCsvSelector } from './export-csv.selector';
+
 export const ExportCsv = () => {
     const { t } = useLingui();
-    const { isLoading, handleExport } = useExportAction(() => exporterService.saveAndShare());
+    const { isLoading, handleExport } = useExportAction({
+        exportAction: () => exporterService.saveAndShare(),
+        successTitle: t`CSV exported`,
+        successMessage: t`Your transaction file is ready to share.`,
+        errorTitle: t`Could not export CSV`
+    });
 
     return (
         <SettingsCard
@@ -17,6 +24,7 @@ export const ExportCsv = () => {
             icon={UserIconNameEnum.Download}
             variant="default"
             isLoading={isLoading}
+            testID={ExportCsvSelector.ExportCard}
         />
     );
 };

@@ -627,3 +627,59 @@ protected emptySnapshot(): AiSystemSnapshotInterface {
     return EMPTY_SNAPSHOT;
 }
 ```
+
+## Logging
+
+The library auto-derives `logContext = ClassName::methodName` for decorated methods, so there is no namespace argument. The transport prefixes every line as `[logContext]`.
+
+### Class methods — `@Log` decorator
+
+Every public service/repository method that warrants observability is decorated with the full lifecycle: `pre` (entry), `post` (success), `error` (catch). No inline `logger.log(...)` inside decorated method bodies.
+
+```ts
+import { Log } from '@budgie/logger';
+import { getErrorMessage } from '@rnw-community/shared';
+
+class SomeService {
+    @Log(
+        input => `enter input=${input}`,
+        (result, input) => `done input=${input} result=${result}`,
+        (error, input) => `throw input=${input} error=${getErrorMessage(error)}`
+    )
+    async doThing(input: string): Promise<number> {
+        // pure business logic
+    }
+}
+```
+
+Output:
+
+```
+[SomeService::doThing] doThing:enter input=hello
+[SomeService::doThing] doThing:done input=hello result=42
+```
+
+If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
+
+### Free-function / hook / component — `getLogger`
+
+```ts
+import { getLogger } from '@budgie/logger';
+
+const logger = getLogger('useSomething');
+
+export const useSomething = () => {
+    logger.log('fired', { foo, bar });
+    logger.error('failed', { errorMessage });
+};
+```
+
+Free-form `context: string`. Convention: hook/file/component name. No enum.
+
+### Build-time gate
+
+`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses app log output. App logging is enabled only for `APP_VARIANT=development` builds unless disabled explicitly. **Build-time only** — flipping it on a deployed binary requires a rebuild.
+
+### `packages/bank-sync` exception
+
+`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

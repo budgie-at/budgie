@@ -8,7 +8,7 @@ const HORIZONTAL_PADDING = 12;
 const BG_LIGHT = '#FFFFFF';
 const BG_DARK = '#000000';
 
-export const useFormsheetListStyles = () => {
+export const useFormsheetListStyles = (additionalBottomPadding = 0) => {
     const { bottom } = useSafeAreaInsets();
     const { isDarkColorSchema } = useThemeContext();
 
@@ -16,7 +16,12 @@ export const useFormsheetListStyles = () => {
 
     return {
         flatListStyle: [StyleSheet.absoluteFill, { backgroundColor }],
-        contentContainerStyle: { paddingTop: HEADER_OFFSET, paddingBottom: bottom, paddingHorizontal: HORIZONTAL_PADDING, flexGrow: 1 },
+        contentContainerStyle: {
+            paddingTop: HEADER_OFFSET,
+            paddingBottom: bottom + additionalBottomPadding,
+            paddingHorizontal: HORIZONTAL_PADDING,
+            flexGrow: 1
+        },
         backgroundColor
     };
 };

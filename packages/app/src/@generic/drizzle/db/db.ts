@@ -22,7 +22,8 @@ import {
     TransactionPatternRepository,
     TransactionRepository,
     TransactionRuleRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    TransferPairRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -169,3 +170,4 @@ export const transactionRuleRepository = new TransactionRuleRepository(db);
 export const ruleRepository = new RuleRepository(db);
 export const ruleConditionRepository = new RuleConditionRepository(db);
 export const ruleActionRepository = new RuleActionRepository(db);
+export const transferPairRepository = new TransferPairRepository(db);

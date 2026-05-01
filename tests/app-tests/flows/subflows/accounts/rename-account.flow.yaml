@@ -5,12 +5,16 @@ appId: ${APP_ID}
     id: 'AccountForm.NameInput'
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
-
-- tapOn: 'Account Settings'
+- tapOn:
+    id: 'AccountForm.ScrollView'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.SubmitButton'
+    timeout: 3000
 - tapOn:
     id: 'AccountForm.SubmitButton'
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
-    timeout: 10000
+      id: 'AccountCard.${UPDATED_ACCOUNT_NAME}'
+    timeout: 3000

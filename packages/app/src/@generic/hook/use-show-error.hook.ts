@@ -10,6 +10,6 @@ export const useShowError = () => {
         void Toast.show({
             type: 'error',
             text1: t`Something went wrong`,
-            text2: getErrorMessage(getErrorMessage(error))
+            text2: getErrorMessage(error)
         });
 };

@@ -1,17 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { EmptyFn } from '@rnw-community/shared';
-
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useTransactionActionsMenu } from '../transaction-actions-menu/transaction-actions-menu';
+import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 
-interface Props {
-    readonly onConvert: EmptyFn;
-}
+import type { ConvertToTransferMenuItemPropsInterface } from '../../interface/convert-to-transfer-menu-item-props.interface';
 
-export const ConvertToTransferMenuItem = ({ onConvert }: Props) => {
+export const ConvertToTransferMenuItem = ({ onConvert }: ConvertToTransferMenuItemPropsInterface) => {
     const { t } = useLingui();
     const closeMenu = useTransactionActionsMenu();
 

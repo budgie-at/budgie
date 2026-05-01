@@ -30,7 +30,7 @@ export const RecalculateBalances = () => {
         try {
             await accountBalanceIncrementalService.updateAllBalances(true);
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not recalculate balances`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }

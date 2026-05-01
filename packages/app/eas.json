@@ -35,6 +35,7 @@
             "env": {
                 "APP_VARIANT": "e2e",
                 "EXPO_PUBLIC_AI_DISABLE": "true",
+                "EXPO_PUBLIC_LOGGING_DISABLE": "true",
                 "USE_CCACHE": "1"
             },
             "ios": {

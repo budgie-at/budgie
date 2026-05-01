@@ -3,7 +3,6 @@ import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInA
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { DB, DBOrTX } from '../../@generic/type/db.type';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -14,6 +13,7 @@ import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
+import type { DB, DBOrTX } from '../../@generic/type/db.type';
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
 
 export class AccountRepository {
@@ -128,6 +128,12 @@ export class AccountRepository {
 
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    findByIban(iban: string) {
+        return this.db.query.AccountEntityTable.findFirst({
+            where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
         });
     }
 

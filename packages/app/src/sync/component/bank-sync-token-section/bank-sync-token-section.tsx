@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Input } from '../../../@generic/component/input/input';
@@ -52,7 +52,7 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
             setIsEditing(false);
             setNewToken('');
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Failed to update token`, text2: String(error) });
+            Toast.show({ type: 'error', text1: t`Could not update token`, text2: getErrorMessage(error) });
         } finally {
             setIsSaving(false);
         }

@@ -34,6 +34,7 @@ appId: ${APP_ID}
 - runFlow:
     file: update-account-balance.flow.yaml
     env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
       NEW_BALANCE: ${INCREASE_TO}
 
 - runFlow:
@@ -54,6 +55,7 @@ appId: ${APP_ID}
 - runFlow:
     file: update-account-balance.flow.yaml
     env:
+      ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
       NEW_BALANCE: ${DECREASE_TO}
 
 - runFlow:

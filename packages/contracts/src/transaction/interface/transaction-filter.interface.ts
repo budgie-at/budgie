@@ -2,9 +2,9 @@ import { DateRangeInterface } from '../../@generic/interface/date-range.interfac
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export interface TransactionFilterInterface {
-    types: TransactionTypeEnum[] | null;
-    date: DateRangeInterface | null;
-    categoryIds: number[] | null;
-    accountIds: number[] | null;
-    tagIds: number[] | null;
+    readonly types: TransactionTypeEnum[] | null;
+    readonly date: DateRangeInterface | null;
+    readonly categoryIds: number[] | null;
+    readonly accountIds: number[] | null;
+    readonly tagIds: number[] | null;
 }

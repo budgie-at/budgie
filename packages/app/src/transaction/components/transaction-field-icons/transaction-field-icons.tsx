@@ -1,13 +1,12 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useImperativeHandle, useRef } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
@@ -15,6 +14,7 @@ import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.c
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import {
     CATEGORY_ANIMATION_DELAY,
+    CONSOLIDATION_ANIMATION_DELAY,
     DATE_ANIMATION_DELAY,
     NOTE_ANIMATION_DELAY,
     SPLIT_ANIMATION_DELAY,
@@ -24,26 +24,12 @@ import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
-export interface TransactionFieldIconsRef {
-    shakeCategory: () => void;
-}
+import { TransactionFieldIconsSelector } from './transaction-field-icons.selector';
 
-interface Props {
-    readonly ref?: RefObject<TransactionFieldIconsRef | null>;
-    readonly variant: ColorPaletteVariant;
-    readonly transactionType: TransactionTypeEnum;
-    readonly splitEntryCount?: number;
-    readonly isAmountPositive?: boolean;
-    readonly onCommentPress: () => void;
-    readonly onDatePress: () => void;
-    readonly onSplitPress?: () => void;
-    readonly categoryTestID?: string;
-    readonly tagsTestID?: string;
-    readonly commentTestID?: string;
-}
+import type { TransactionFieldIconsPropsInterface } from '../../interface/transaction-field-icons-props.interface';
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
-export const TransactionFieldIcons = (props: Props) => {
+export const TransactionFieldIcons = (props: TransactionFieldIconsPropsInterface) => {
     const {
         ref,
         variant,
@@ -52,6 +38,7 @@ export const TransactionFieldIcons = (props: Props) => {
         isAmountPositive = false,
         onCommentPress,
         onDatePress,
+        onConsolidationPress,
         onSplitPress,
         categoryTestID,
         tagsTestID,
@@ -86,7 +73,7 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const handleTagsPress = async () => {
-        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds });
+        const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds, enablePrimarySelection: true });
 
         if (isDefined(selectedTagIds)) {
             setValue('tagIds', selectedTagIds);
@@ -105,8 +92,10 @@ export const TransactionFieldIcons = (props: Props) => {
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
 
     const showSplitIcon = isDefined(onSplitPress);
+    const showConsolidationIcon = isDefined(onConsolidationPress);
     const splitValue = isSplitActive ? t`${splitEntryCount} items` : void 0;
     const splitEnabled = isAmountPositive || isSplitActive;
+    const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
 
     const splitOpacityStyle = useAnimatedStyle(() => ({
         opacity: withTiming(splitEnabled ? 1 : 0.3, { duration: 200 })
@@ -148,6 +137,17 @@ export const TransactionFieldIcons = (props: Props) => {
                 testID={commentTestID}
             />
 
+            {showConsolidationIcon ? (
+                <TransactionFieldIcon
+                    icon={UserIconNameEnum.GitMerge}
+                    label={t`Sources`}
+                    variant={variant}
+                    onPress={onConsolidationPress}
+                    animationDelay={CONSOLIDATION_ANIMATION_DELAY}
+                    testID={TransactionFieldIconsSelector.Sources}
+                />
+            ) : null}
+
             {isTransfer ? null : (
                 <TransactionFieldIcon
                     icon={UserIconNameEnum.Tag}
@@ -163,7 +163,7 @@ export const TransactionFieldIcons = (props: Props) => {
             {isTransfer ? null : (
                 <TransactionFieldIcon
                     ref={categoryIconRef}
-                    icon={category?.icon ?? UserIconNameEnum.Folder}
+                    icon={categoryIcon}
                     label={t`Category`}
                     value={category?.title}
                     variant={variant}

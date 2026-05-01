@@ -1,9 +1,9 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -23,14 +23,12 @@ import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-ge
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-interface UpdateIncomeFormProps {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly transactionId: number;
-}
+import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
-const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const { markForEmbedding } = useEmbeddingGenerator();
@@ -44,7 +42,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         onAfterSubmit: () => void markForEmbedding({ transactionId })
     });
 
-    const toAccountId = form.watch('toAccountId');
+    const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
 
     const {
         mode: ruleDetectionMode,
@@ -64,6 +62,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const sourceAccount = sourceEntry.account;
     const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
+    const isConsolidated = isDefined(transaction.consolidationType);
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -83,7 +82,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                         title={t`Edit Income`}
                         onGoBack={handleGoBack}
                         right={
-                            <TransactionActionsMenu onDelete={handleDelete}>
+                            <TransactionActionsMenu onDelete={handleDelete} isConsolidated={isConsolidated}>
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }

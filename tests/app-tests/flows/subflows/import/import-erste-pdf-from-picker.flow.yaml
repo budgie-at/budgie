@@ -4,23 +4,16 @@ env:
 ---
 - extendedWaitUntil:
     visible:
-      text: 'Select File|Datei auswählen'
+      text: 'Select File'
     timeout: 10000
 
 - tapOn:
-    text: 'Select File|Datei auswählen'
+    text: 'Select File'
 
 - runFlow:
     file: select-file-from-app-provider.flow.yaml
     env:
       FILE_ROW_ID_MATCH: ${PDF_ROW_ID_MATCH}
-
-- runFlow:
-    when:
-      visible: 'Open|Öffnen'
-    commands:
-      - tapOn:
-          text: 'Open|Öffnen'
 
 - extendedWaitUntil:
     visible:
@@ -32,15 +25,15 @@ env:
 
 - extendedWaitUntil:
     visible:
-      text: 'Start Sync|Synchronisation starten'
+      text: 'Start Sync'
     timeout: 15000
 
 - tapOn:
-      text: 'Start Sync|Synchronisation starten'
+      text: 'Start Sync'
 
 - runFlow:
       when:
-          visible: 'Already syncing|Synchronisiert bereits'
+          visible: 'Already syncing'
       commands:
           - tapOn:
                 id: 'PageHeader.BackButton'
@@ -48,4 +41,4 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'HomePage.TotalBalance'
-      timeout: 30000
+      timeout: 3000

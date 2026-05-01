@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, createContext, use, useState } from 'react';
+import { useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
-import { EmptyFn, emptyFn } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -11,25 +11,25 @@ import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popo
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useDeferredMenuClose } from '../../../@generic/hook/use-deferred-menu-close.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 
 import { TransactionActionsMenuSelector } from './transaction-actions-menu.selector';
 
-type CloseMenuFn = (afterClose?: EmptyFn) => void;
+import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
-const TransactionActionsMenuContext = createContext<CloseMenuFn>(emptyFn);
 const TRIGGER_SIZE = 40;
 
-export const useTransactionActionsMenu = () => use(TransactionActionsMenuContext);
-
-interface Props {
-    readonly onDelete: () => Promise<void> | void;
-    readonly children?: ReactNode;
-}
-
-export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
+export const TransactionActionsMenu = ({ onDelete, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
     const { t } = useLingui();
     const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
+    const deleteLabel = isConsolidated ? t`Unconsolidate Transaction` : t`Delete Transaction`;
+    const confirmTitle = isConsolidated ? t`Unconsolidate transaction?` : t`Are you sure?`;
+    const confirmMessage = isConsolidated
+        ? t`Original imported transactions will be restored and the consolidated transaction will be removed.`
+        : t`This action cannot be undone.`;
+    const confirmText = isConsolidated ? t`Unconsolidate` : t`Delete`;
+    const deleteIcon = isConsolidated ? UserIconNameEnum.GitPullRequestClosed : UserIconNameEnum.Trash2;
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
@@ -57,9 +57,9 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
         closeMenu(
             () =>
                 void confirmAlert({
-                    title: t`Are you sure?`,
-                    message: t`This action cannot be undone.`,
-                    confirmText: t`Delete`,
+                    title: confirmTitle,
+                    message: confirmMessage,
+                    confirmText,
                     cancelText: t`Cancel`,
                     isDestructive: true
                 }).then(confirmed => confirmed && onDelete())
@@ -86,8 +86,8 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
                         {children}
 
                         <PopoverMenuItem
-                            icon={UserIconNameEnum.Trash2}
-                            label={t`Delete Transaction`}
+                            icon={deleteIcon}
+                            label={deleteLabel}
                             onPress={handleDeletePress}
                             variant="destructive"
                             testID={TransactionActionsMenuSelector.DeleteButton}

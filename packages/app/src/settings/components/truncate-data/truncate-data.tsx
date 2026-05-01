@@ -33,7 +33,7 @@ export const TruncateData = () => {
         } catch (error) {
             Toast.show({
                 type: 'error',
-                text1: t`Failed to clear data`,
+                text1: t`Could not clear data`,
                 text2: getErrorMessage(error)
             });
         } finally {

@@ -7,11 +7,11 @@ export const PATTERN_GROUPS_CTE = `
            strftime('%Y-%m', t.operated_at + ?, 'unixepoch') AS year_month,
            t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
-    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
     LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.operated_at >= ? AND t.title != ''
 `;
 
@@ -62,11 +62,11 @@ export const PATTERN_ALL_TIME_CTE = `
            mcc.short_description AS mcc_short_description,
            a.instrument_id, t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
-    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL
+    INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
     LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL
+    WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.title != ''
 `;
 

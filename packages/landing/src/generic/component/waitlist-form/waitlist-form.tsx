@@ -57,6 +57,15 @@ const disclaimerVariants = cva('text-xs', {
     }
 });
 
+const errorVariants = cva('text-sm', {
+    variants: {
+        variant: {
+            hero: 'text-red-500',
+            cta: 'text-white-500'
+        }
+    }
+});
+
 export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount = 0 }: Props) => {
     const { t } = useLingui();
 
@@ -120,7 +129,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
                 </Button>
             </form>
 
-            {isNotEmptyString(error) && <p className="text-red-500 text-sm">{error}</p>}
+            {isNotEmptyString(error) && <p className={errorVariants({ variant })}>{error}</p>}
 
             {showCount && initialCount > 0 && (
                 <div className={countTextVariants({ variant })}>

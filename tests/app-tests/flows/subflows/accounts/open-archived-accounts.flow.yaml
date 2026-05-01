@@ -1,9 +1,15 @@
 appId: ${APP_ID}
 ---
 
-- runFlow: ../navigation/navigate-to-settings.flow.yaml
+- openLink: 'budgie://settings/archived'
+
 - runFlow:
-    file: ../navigation/open-settings-card.flow.yaml
-    env:
-      CARD_ID: 'SettingsPage.ArchivedCard'
-      DESTINATION_ID: 'ArchivedAccountsPage.Container'
+    when:
+      visible: 'Open'
+    commands:
+      - tapOn: 'Open'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ArchivedAccountsPage.Container'
+    timeout: 10000

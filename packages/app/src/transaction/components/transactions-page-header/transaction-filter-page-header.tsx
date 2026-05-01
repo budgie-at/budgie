@@ -9,6 +9,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 
 interface Props {
     readonly isUncategorized?: boolean;
+    readonly isUntagged?: boolean;
     readonly type?: string;
     readonly startDate?: string;
     readonly endDate?: string;
@@ -17,12 +18,13 @@ interface Props {
     readonly onGoBack: () => void;
 }
 
-export const TransactionFilterPageHeader = ({ isUncategorized, category, tag, type, startDate, endDate, onGoBack }: Props) => {
+export const TransactionFilterPageHeader = ({ isUncategorized, isUntagged, category, tag, type, startDate, endDate, onGoBack }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
 
     const categoryName = isUncategorized ? t`Uncategorized` : category?.title;
-    const filterName = categoryName ?? tag?.title;
+    const tagName = isUntagged ? t`Untagged` : tag?.title;
+    const filterName = categoryName ?? tagName;
 
     const periodText =
         isDefined(startDate) && isDefined(endDate)

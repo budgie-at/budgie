@@ -1,15 +1,14 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
-import { StatsByCategories } from '../../../category/components/stats-by-categories/stats-by-categories';
-import { StatsByTags } from '../../../tag/components/stats-by-tags/stats-by-tags';
+import { StatsByCategoriesPanel } from '../../../category/components/stats-by-categories-panel/stats-by-categories-panel';
+import { StatsByTagsPanel } from '../../../tag/components/stats-by-tags-panel/stats-by-tags-panel';
 import { useGetExpenseByCategoryQuery } from '../../query/use-get-expense-by-category.query';
 import { useGetExpenseByTagQuery } from '../../query/use-get-expense-by-tag.query';
 import { useGetIncomeByCategoryQuery } from '../../query/use-get-income-by-category.query';
@@ -19,7 +18,11 @@ import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.ut
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
-export const StatisticsContent = () => {
+interface Props {
+    readonly activeTab: AnalyticsTabType;
+}
+
+export const StatisticsContent = ({ activeTab }: Props) => {
     const { t } = useLingui();
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -33,6 +36,10 @@ export const StatisticsContent = () => {
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
+
+    const isCategoriesTab = activeTab === 'categories';
+    const categoriesActivityMode = isCategoriesTab ? 'visible' : 'hidden';
+    const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
     return (
         <>
@@ -64,49 +71,26 @@ export const StatisticsContent = () => {
                     </View>
                 </View>
 
-                {isNotEmptyArray(incomeByCategory) && (
-                    <StatsByCategories
-                        variant="positive"
-                        title={t`Income by category`}
-                        stats={incomeByCategory}
-                        totalAmount={income}
+                <Activity mode={categoriesActivityMode}>
+                    <StatsByCategoriesPanel
                         filters={filters}
-                        isIncome
+                        income={income}
+                        expense={expense}
+                        incomeByCategory={incomeByCategory}
+                        expenseByCategory={expenseByCategory}
                     />
-                )}
+                </Activity>
 
-                {isNotEmptyArray(expenseByCategory) && (
-                    <StatsByCategories
-                        variant="destructive"
-                        title={t`Spending by Category`}
-                        stats={expenseByCategory}
-                        totalAmount={expense}
+                <Activity mode={tagsActivityMode}>
+                    <StatsByTagsPanel
                         filters={filters}
-                        isIncome={false}
+                        income={income}
+                        expense={expense}
+                        incomeByTag={incomeByTag}
+                        expenseByTag={expenseByTag}
                     />
-                )}
+                </Activity>
 
-                {isNotEmptyArray(incomeByTag) && (
-                    <StatsByTags
-                        variant="positive"
-                        title={t`Income by Tag`}
-                        stats={incomeByTag}
-                        totalAmount={income}
-                        filters={filters}
-                        isIncome
-                    />
-                )}
-
-                {isNotEmptyArray(expenseByTag) && (
-                    <StatsByTags
-                        variant="destructive"
-                        title={t`Spending by Tag`}
-                        stats={expenseByTag}
-                        totalAmount={expense}
-                        filters={filters}
-                        isIncome={false}
-                    />
-                )}
                 <MenuSpacer />
             </ScrollView>
         </>

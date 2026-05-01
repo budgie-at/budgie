@@ -1,11 +1,11 @@
 import { and, asc, eq, isNull } from 'drizzle-orm';
 
-import { DBOrTX } from '../../@generic/type/db.type';
 import { RuleCreateEntityInterface } from '../entity/rule-create-entity.interface';
 import { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interface';
 import { RuleAssociationEnum } from '../enum/rule-association.enum';
 import { RuleEntityTable } from '../table/rule-entity.table';
 
+import type { DBOrTX } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { RuleEntityInterface } from '../entity/rule-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';

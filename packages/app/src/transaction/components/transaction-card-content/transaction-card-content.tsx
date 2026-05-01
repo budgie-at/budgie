@@ -9,7 +9,7 @@ import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
-import { TransactionCardTag } from '../transaction-card-tag/transaction-card-tag';
+import { TransactionCardTags } from '../transaction-card-tags/transaction-card-tags';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 interface Props {
@@ -51,11 +51,13 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                 <TransactionAmount transaction={transaction} />
             </View>
 
-            <View className="flex-row justify-between items-end flex-1 gap-x-lg">
-                <TransactionCardAccountInfo transaction={transaction} />
+            <View className="flex-row items-end flex-1 gap-x-lg">
+                <View className="flex-1 min-w-0">
+                    <TransactionCardAccountInfo transaction={transaction} />
+                </View>
 
-                <View className="items-end gap-y-xs">
-                    <TransactionCardTag transaction={transaction} />
+                <View className="items-end gap-y-xs shrink-0">
+                    <TransactionCardTags transaction={transaction} />
                     <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
                 </View>
             </View>
