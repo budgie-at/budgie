@@ -89,7 +89,7 @@ interface Props {
 // eslint-disable-next-line max-statements -- Calendar day with actual + forecasted dot rendering and conditional styles
 export const RecurringCalendarDay = (props: Props) => {
     const { day, entriesByDay, forecastedEntriesByDay } = props;
-    const dayOfMonth = day.dayOfMonth ?? day.number;
+    const dayOfMonth = day.number;
 
     const entries = day.isCurrentMonth ? entriesByDay.get(dayOfMonth) : null;
     const forecastedEntries = day.isCurrentMonth ? forecastedEntriesByDay.get(dayOfMonth) : null;
