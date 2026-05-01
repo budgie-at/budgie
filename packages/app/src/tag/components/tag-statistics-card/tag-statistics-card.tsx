@@ -4,6 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { StatsBar } from '../../../@generic/component/stats-bar/stats-bar';
 import { statsAmountVariants } from '../../../@generic/constant/stats-variants.constant';
@@ -13,7 +15,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
-    readonly tag: TagEntityInterface;
+    readonly tag: Pick<TagEntityInterface, 'title'> & { id: TagEntityInterface['id'] | null };
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;
@@ -32,11 +34,12 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
 
     /* jscpd:ignore-start */
     const handlePress = () => {
+        const tagIdParam = isDefined(tag.id) ? String(tag.id) : 'untagged';
         router.push({
             pathname: '/analytics/transactions',
             params: {
                 type: isIncome ? 'INCOME' : 'EXPENSE',
-                tagId: String(tag.id),
+                tagId: tagIdParam,
                 ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
                 ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
             }
