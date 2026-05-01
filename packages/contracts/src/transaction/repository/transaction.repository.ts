@@ -22,6 +22,7 @@ import type { TransactionCreateEntityInterface } from '../entity/transaction-cre
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
+import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
@@ -144,6 +145,140 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return results.map(row => row.externalId).filter(isDefined);
     }
 
+    @Log(
+        canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
+        (result, canonicalTransactionId) =>
+            `done canonicalTransactionId=${canonicalTransactionId} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
+        (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
+    )
+    async findConsolidationSources(canonicalTransactionId: number): Promise<ConsolidationSourceRowInterface[]> {
+        return await this.db.$client.getAllAsync<ConsolidationSourceRowInterface>(
+            `SELECT
+                moved.transaction_id AS canonicalTransactionId,
+                moved.original_transaction_id AS sourceTransactionId,
+                source.type AS sourceType,
+                source.title AS sourceTitle,
+                source.comment AS sourceComment,
+                source.external_id AS sourceExternalId,
+                source.external_source AS sourceExternalSource,
+                source.operated_at * 1000 AS sourceOperatedAtMs,
+                moved.id AS entryId,
+                moved.type AS entryType,
+                moved.amount AS amount,
+                moved.exchange_rate AS exchangeRate,
+                account.id AS accountId,
+                account.title AS accountTitle,
+                account.icon AS accountIcon,
+                source_from_account.title AS sourceFromAccountTitle,
+                source_from_account.icon AS sourceFromAccountIcon,
+                source_to_account.title AS sourceToAccountTitle,
+                source_to_account.icon AS sourceToAccountIcon,
+                canonical_from_account.title AS canonicalFromAccountTitle,
+                canonical_from_account.icon AS canonicalFromAccountIcon,
+                canonical_to_account.title AS canonicalToAccountTitle,
+                canonical_to_account.icon AS canonicalToAccountIcon,
+                instrument.id AS instrumentId,
+                instrument.code AS currencyCode,
+                instrument.symbol AS currencySymbol,
+                category.title AS categoryTitle,
+                mcc.mcc AS mcc,
+                mcc.short_description AS mccDescription,
+                moved.to_iban AS toIban
+            FROM transaction_entries moved
+            INNER JOIN transactions source ON source.id = moved.original_transaction_id
+            INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
+            INNER JOIN accounts account ON account.id = moved.account_id
+            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+            LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
+            LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
+            LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
+            LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
+            LEFT JOIN categories category ON category.id = moved.category_id
+            LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
+            WHERE moved.transaction_id = ?
+              AND moved.original_transaction_id IS NOT NULL
+              AND moved.deleted_at IS NULL
+            ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
+            [canonicalTransactionId]
+        );
+    }
+
+    @Log(
+        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))}`,
+        (result, accountIds, tx) =>
+            `done accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
+        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findActiveAutoConsolidatedByAccountIds(accountIds: number[], tx?: DB): Promise<{ id: number }[]> {
+        if (isEmptyArray(accountIds)) {
+            return [];
+        }
+
+        const runner = tx ?? this.db;
+        const movedSourceCanonicalIds = runner
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                    isNull(TransactionEntryEntityTable.deletedAt)
+                )
+            );
+
+        return await runner
+            .select({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    isNotNull(TransactionEntityTable.consolidationType),
+                    isNull(TransactionEntityTable.deletedAt),
+                    or(
+                        inArray(TransactionEntityTable.fromAccountId, accountIds),
+                        inArray(TransactionEntityTable.toAccountId, accountIds),
+                        inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+                    )
+                )
+            );
+    }
+
+    @Log(
+        (sourceTransactionIds, canonicalTransactionId, tx) =>
+            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
+            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async setConsolidationParent(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
+        if (isEmptyArray(sourceTransactionIds)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ consolidationParentTransactionId: canonicalTransactionId })
+            .where(
+                and(
+                    inArray(TransactionEntityTable.id, sourceTransactionIds),
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.consolidationParentTransactionId)
+                )
+            );
+    }
+
+    @Log(
+        (canonicalTransactionId, tx) => `enter canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, canonicalTransactionId, tx) =>
+            `throw canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearConsolidationParent(canonicalTransactionId: number, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ consolidationParentTransactionId: null })
+            .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
+    }
+
     async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
@@ -162,6 +297,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(eq(TransactionEntityTable.id, id))
             .returning();
 
+        if (!isDefined(transaction)) {
+            throw new Error(`Transaction ${id} not found`);
+        }
+
         return transaction;
     }
 
@@ -177,11 +316,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     getAllAfter(cursorId: number | null, limit: number) {
-        const baseFilter = isNull(TransactionEntityTable.deletedAt);
+        const baseFilter = and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
         const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: { [TransactionAssociationEnum.ENTRIES]: true },
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                }
+            },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             where
@@ -414,6 +557,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
+            this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
@@ -442,7 +586,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 this.db
                     .select({ transactionId: TransactionEntryEntityTable.transactionId })
                     .from(TransactionEntryEntityTable)
-                    .where(eq(TransactionEntryEntityTable.type, type))
+                    .where(and(eq(TransactionEntryEntityTable.type, type), this.buildLedgerEntryCondition()))
             )
         );
     }

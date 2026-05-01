@@ -32,11 +32,12 @@ interface Props {
     readonly isSubmitting?: boolean;
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
+    readonly onConsolidationPress?: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Transfer form orchestrates multiple hooks and display computations
 export const TransferQuickForm = (props: Props) => {
-    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel } = props;
+    const { variant, initialDestinationAmount, isSubmitting, onSubmit, onCancel, onConsolidationPress } = props;
 
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -192,6 +193,7 @@ export const TransferQuickForm = (props: Props) => {
                 transactionType={TransactionTypeEnum.TRANSFER}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
+                onConsolidationPress={onConsolidationPress}
                 commentTestID={SimpleQuickFormSelector.CommentInput}
             />
 

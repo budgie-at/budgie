@@ -180,5 +180,116 @@ const generateRecurringFixture = () => {
     );
 };
 
+const generateConsolidationFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '21.db');
+
+    const now = Math.floor(Date.now() / 1000);
+    const tOpening = now - 24 * 60 * 60;
+    const tFastExpense = now - 30;
+    const tFastIncome = now - 25;
+    const tCross = now - 60 * 60;
+    const tAtm = now - 90 * 60;
+    const tUntouched = now - 5 * 60;
+
+    const uahId = 33;
+    const usdId = 1;
+    const eurId = 2;
+
+    const u200 = 200_000_000;
+    const u100 = 100_000_000;
+    const u92 = 92_000_000;
+    const u500 = 500_000_000;
+    const u50 = 50_000_000;
+    const u1000 = 1_000_000_000;
+
+    const balanceA = u1000 - u200 - u50;
+    const balanceB = u200;
+    const balanceUsd = 0;
+    const balanceEur = u92;
+    const balanceCard = u1000 - u500;
+
+    backupFixture(sourcePath, targetPath);
+
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM transaction_tags;
+        DELETE FROM account_balances;
+        DELETE FROM accounts;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, external_source, iban, is_active, include_in_net_worth)
+        VALUES
+            (1, ${now}, ${now}, 'Wallet',     1, 'E2E Consolidation A',          'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000A1', 1, 1),
+            (2, ${now}, ${now}, 'Wallet',     2, 'E2E Consolidation B',          'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000B1', 1, 1),
+            (3, ${now}, ${now}, 'Wallet',     3, 'E2E Consolidation USD',        'BANK_SYNC', 'ASSET', ${usdId}, 'MONOBANK', 'UA000000000000000000000000U1', 1, 1),
+            (4, ${now}, ${now}, 'Wallet',     4, 'E2E Consolidation EUR',        'BANK_SYNC', 'ASSET', ${eurId}, 'MONOBANK', 'UA000000000000000000000000E1', 1, 1),
+            (5, ${now}, ${now}, 'CreditCard', 5, 'E2E Consolidation Card',       'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000C1', 1, 1),
+            (6, ${now}, ${now}, 'Wallet',     6, 'E2E Consolidation Cash',       'CASH',      'ASSET', ${uahId}, NULL,       NULL,                            1, 1),
+            (7, ${now}, ${now}, 'Wallet',     7, 'E2E Consolidation Untouched',  'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000T1', 1, 1);
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (2, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (3, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (4, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (5, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now}),
+            (7, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
+        VALUES
+            (1, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 1,    NULL,       NULL),
+            (2, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 3,    NULL,       NULL),
+            (3, ${tOpening},     ${tOpening},     'ADJUSTMENT', '',                              '', ${tOpening},     1.0, NULL, 5,    NULL,       NULL),
+            (4, ${tFastExpense}, ${tFastExpense}, 'EXPENSE',    'E2E Consolidation P1 Out',     '', ${tFastExpense}, 1.0, 1,    NULL, 'MONOBANK', 'e2e-p1-out'),
+            (5, ${tFastIncome},  ${tFastIncome},  'INCOME',     'E2E Consolidation P1 In',      '', ${tFastIncome},  1.0, NULL, 2,    'MONOBANK', 'e2e-p1-in'),
+            (6, ${tCross},       ${tCross},       'EXPENSE',    'E2E Consolidation P2 Out',     '', ${tCross},       1.0, 3,    NULL, 'MONOBANK', 'e2e-p2-out'),
+            (7, ${tCross},       ${tCross},       'INCOME',     'E2E Consolidation P2 In',      '', ${tCross},       1.0, NULL, 4,    'MONOBANK', 'e2e-p2-in'),
+            (8, ${tAtm},         ${tAtm},         'EXPENSE',    'E2E Consolidation ATM Out',    '', ${tAtm},         1.0, 5,    NULL, 'MONOBANK', 'e2e-atm-out'),
+            (9, ${tUntouched},   ${tUntouched},   'EXPENSE',    'E2E Consolidation Untouched',  '', ${tUntouched},   1.0, 1,    NULL, NULL,        NULL);
+
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id, mcc_category_id, created_at, updated_at)
+        VALUES
+            (1, 1, 'DEBIT',  ${u1000}, NULL,                NULL,                                                       ${tOpening},     ${tOpening}),
+            (2, 3, 'DEBIT',  ${u100},  NULL,                NULL,                                                       ${tOpening},     ${tOpening}),
+            (3, 5, 'DEBIT',  ${u1000}, NULL,                NULL,                                                       ${tOpening},     ${tOpening}),
+            (4, 1, 'CREDIT', ${u200},  'e2e-p1-out-entry',  (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), ${tFastExpense}, ${tFastExpense}),
+            (5, 2, 'DEBIT',  ${u200},  'e2e-p1-in-entry',   (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), ${tFastIncome},  ${tFastIncome}),
+            (6, 3, 'CREDIT', ${u100},  'e2e-p2-out-entry',  NULL,                                                       ${tCross},       ${tCross}),
+            (7, 4, 'DEBIT',  ${u92},   'e2e-p2-in-entry',   NULL,                                                       ${tCross},       ${tCross}),
+            (8, 5, 'CREDIT', ${u500},  'e2e-atm-out-entry', (SELECT id FROM mcc_categories WHERE mcc = '6011' LIMIT 1), ${tAtm},         ${tAtm}),
+            (9, 1, 'CREDIT', ${u50},   NULL,                NULL,                                                       ${tUntouched},   ${tUntouched});
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES
+            (1, ${balanceA},     ${now}, ${now}),
+            (2, ${balanceB},     ${now}, ${now}),
+            (3, ${balanceUsd},   ${now}, ${now}),
+            (4, ${balanceEur},   ${now}, ${now}),
+            (5, ${balanceCard},  ${now}, ${now}),
+            (6, 0,               ${now}, ${now}),
+            (7, 0,               ${now}, ${now});
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = ${uahId},
+            language = 'en',
+            show_cents = 0,
+            updated_at = ${now};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 shiftTransactionsFixtureToNow();
 generateRecurringFixture();
+generateConsolidationFixture();
