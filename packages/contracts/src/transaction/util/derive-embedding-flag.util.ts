@@ -1,7 +1,9 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+
+import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
+import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 
 const EMBEDDING_SEMANTIC_FIELDS = [
     'title',
@@ -15,7 +17,7 @@ const NON_INDEXABLE_TYPES: readonly TransactionTypeEnum[] = [TransactionTypeEnum
 
 type EmbeddingFlagPatch = Partial<Pick<TransactionCreateEntityInterface, 'needsEmbedding'>>;
 
-export const deriveEmbeddingFlag = (input: Partial<TransactionCreateEntityInterface>): EmbeddingFlagPatch => {
+export const deriveEmbeddingFlag = (input: TransactionUpdateInputInterface): EmbeddingFlagPatch => {
     if ('needsEmbedding' in input) {
         return {};
     }

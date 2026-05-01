@@ -24,5 +24,6 @@ export const SettingsPageSelector = {
     InactiveCard: 'SettingsPage.InactiveCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
     ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
+    ConsolidateTransfersCard: 'SettingsPage.ConsolidateTransfersCard',
     ClearDataCard: 'SettingsPage.ClearDataCard'
 } as const;

@@ -16,5 +16,6 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     externalId: schema => schema.nullable().default(null).describe('External id of the entry'),
     exchangeRate: schema =>
         schema.positive().default(1).describe('Exchange rate for this entry, defaults to 1 for same-currency transactions'),
-    toIban: schema => schema.nullable().default(null).describe('Counter-party IBAN from bank sync data')
+    toIban: schema => schema.max(34).nullable().default(null).describe('Counter-party IBAN, max 34 chars per ISO 13616'),
+    originalTransactionId: schema => schema.positive().nullable().describe('Original transaction id for moved consolidation source entries')
 });

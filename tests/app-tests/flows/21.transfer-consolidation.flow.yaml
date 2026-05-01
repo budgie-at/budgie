@@ -1,0 +1,227 @@
+appId: ${APP_ID}
+---
+
+# 1. Import seed
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '21.db(, db)?'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+
+# 2. Sanity: source EXPENSEs/INCOMEs visible
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Untouched'
+
+# 3. Trigger consolidation from Settings
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ConsolidateTransfersCard'
+    direction: DOWN
+- tapOn:
+    id: 'SettingsPage.ConsolidateTransfersCard'
+- extendedWaitUntil:
+    visible: 'Consolidate Transfers'
+    timeout: 10000
+- tapOn: 'Consolidate'
+
+# 4. Wait for the success toast
+- extendedWaitUntil:
+    visible: 'Transfers consolidated'
+    timeout: 10000
+
+# 5. Verify canonicals exist on the transactions list
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_B'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_USD'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_EUR'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_Card'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
+
+# 6. INCOME-side source titles are now hidden (consolidationParent != NULL)
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
+
+# 7. Untouched survives
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_Untouched'
+
+# 8. Open canonical 1 -> Sources sheet -> 2 rows -> close
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionFieldIcon.Sources'
+    timeout: 10000
+- tapOn:
+    id: 'TransactionFieldIcon.Sources'
+- extendedWaitUntil:
+    visible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 10000
+- assertVisible:
+    id: 'ConsolidationSourceModal.Row.1'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowTitle.0.E2E_Consolidation_P1_Out'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowAmount.0.CREDIT.200000000'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowTitle.1.E2E_Consolidation_P1_In'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowAmount.1.DEBIT.200000000'
+- tapOn:
+    id: 'ConsolidationSourceModal.DoneButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    timeout: 3000
+
+# 9. Delete canonical 1 -> INCOME source reappears, canonical card gone
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+- tapOn:
+    id: 'TransactionActionsMenu.TriggerButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.DeleteButton'
+    timeout: 3000
+- tapOn:
+    id: 'TransactionActionsMenu.DeleteButton'
+- extendedWaitUntil:
+    visible: 'Unconsolidate transaction?'
+    timeout: 10000
+- tapOn: 'Unconsolidate'
+- extendedWaitUntil:
+    notVisible: 'Unconsolidate transaction?'
+    timeout: 15000
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
+- assertNotVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
+
+# 10. Archive E2E Consolidation USD -> unconsolidate canonical 2 first, then archive
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.E2E Consolidation USD'
+    direction: DOWN
+- waitForAnimationToEnd
+- tapOn:
+    id: 'AccountCard.E2E Consolidation USD'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountDetails.EditButton'
+    timeout: 10000
+- tapOn:
+    id: 'AccountDetails.EditButton'
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
+- tapOn:
+    id: 'AccountDetails.ArchiveButton'
+- extendedWaitUntil:
+    visible: 'Archive Account?'
+    timeout: 10000
+- tapOn: 'Archive'
+- extendedWaitUntil:
+    notVisible: 'Archive Account?'
+    timeout: 10000
+
+# 11. Permanently delete the archived USD account after unconsolidation
+- runFlow: subflows/accounts/open-archived-accounts.flow.yaml
+- extendedWaitUntil:
+    visible:
+      id: 'ArchivedAccountCard.E2E Consolidation USD'
+    timeout: 10000
+- swipe:
+    from:
+      id: 'ArchivedAccountCard.E2E Consolidation USD'
+    direction: LEFT
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'DeletableRow.DeleteButton'
+    timeout: 10000
+- tapOn:
+    id: 'DeletableRow.DeleteButton'
+- extendedWaitUntil:
+    visible: 'Delete Account Permanently?'
+    timeout: 10000
+- tapOn: 'Delete Permanently'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ArchivedAccountCard.E2E Consolidation USD'
+    timeout: 10000
+
+# 12. After archive/delete: USD source EXPENSE gone, EUR source INCOME reappears, canonical 2 gone
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
+- assertNotVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_USD'
+
+# 13. Final balance assertions on home (UAH-only)
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.Balance.E2E_Consolidation_Cash.500'
+    direction: DOWN
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Consolidation_Cash.500'
+- scrollUntilVisible:
+    element:
+      id: 'AccountCard.Balance.E2E_Consolidation_A.750'
+    direction: DOWN
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Consolidation_A.750'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Consolidation_B.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Consolidation_Untouched.0'
