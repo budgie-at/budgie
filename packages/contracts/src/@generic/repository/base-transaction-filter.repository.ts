@@ -1,4 +1,4 @@
-import { SQL, and, gte, inArray, isNull, lte } from 'drizzle-orm';
+import { SQL, and, gte, inArray, isNull, lte, notInArray } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -18,7 +18,7 @@ export abstract class BaseTransactionFilterRepository {
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
             ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
-            ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
+            ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
 
@@ -36,13 +36,11 @@ export abstract class BaseTransactionFilterRepository {
     }
 
     protected buildTagCondition(tagIds: number[]) {
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionTagsEntityTable.transactionId })
-                .from(TransactionTagsEntityTable)
-                .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
-        );
+        if (isEmptyArray(tagIds)) {
+            return this.buildUntaggedCondition();
+        }
+
+        return this.buildSelectedTagCondition(tagIds);
     }
 
     protected buildAccountCondition(accountIds: number[] | null): SQL[] {
@@ -93,6 +91,23 @@ export abstract class BaseTransactionFilterRepository {
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
                 .where(and(inArray(TransactionEntryEntityTable.categoryId, categoryIds), this.buildLedgerEntryCondition()))
+        );
+    }
+
+    private buildUntaggedCondition() {
+        return notInArray(
+            TransactionEntityTable.id,
+            this.db.select({ transactionId: TransactionTagsEntityTable.transactionId }).from(TransactionTagsEntityTable)
+        );
+    }
+
+    private buildSelectedTagCondition(tagIds: number[]) {
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionTagsEntityTable.transactionId })
+                .from(TransactionTagsEntityTable)
+                .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
         );
     }
 }
