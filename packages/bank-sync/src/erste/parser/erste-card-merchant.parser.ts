@@ -24,11 +24,7 @@ class ErsteCardMerchantParser {
         const tokens = line.trim().split(/\s+/u);
         const countryNumeric = tokens.at(-1);
 
-        if (
-            tokens.length < 3 ||
-            !isNotEmptyString(countryNumeric) ||
-            !ErsteCardMerchantParser.COUNTRY_NUMERIC_REGEX.test(countryNumeric)
-        ) {
+        if (tokens.length < 3 || !isNotEmptyString(countryNumeric) || !ErsteCardMerchantParser.COUNTRY_NUMERIC_REGEX.test(countryNumeric)) {
             return null;
         }
 

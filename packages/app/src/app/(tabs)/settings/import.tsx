@@ -108,7 +108,7 @@ export default function ImportScreen() {
                 setHeaders(parsedHeaders);
                 setRowCount(count);
             } catch (error) {
-                Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+                Toast.show({ type: 'error', text1: t`Could not read CSV file`, text2: getErrorMessage(error) });
                 router.back();
             }
 
@@ -139,7 +139,7 @@ export default function ImportScreen() {
 
             router.back();
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not import CSV file`, text2: getErrorMessage(error) });
         }
 
         setIsLoading(false);
@@ -150,127 +150,124 @@ export default function ImportScreen() {
     const buttonContent = hasErrors ? t`Fix Errors` : t`Start Import`;
 
     return (
-        <>
-            <Page
-                header={
-                    <PageHeader
-                        title={t`Map CSV Columns`}
-                        description={t`Match each field to a column from your CSV file`}
-                        right={
-                            <View className="bg-primary px-3xl py-md rounded-full">
-                                <Text className="text-primary-reverse text-sm font-medium">{rowCount}</Text>
-                            </View>
-                        }
-                    />
-                }
-                safeEdges={SAFE_EDGES}
-            >
-                <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerClassName="gap-y-xl pb-5xl pt-3xl">
-                    <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
-                    <ImportColumnMapField
-                        control={control}
-                        name="toAccount"
-                        label={t`To Account`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="category"
-                        label={t`Category`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="operatedAt"
-                        label={t`Date`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="toAmount"
-                        label={t`Amount`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="toCurrency"
-                        label={t`To Currency`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="externalId"
-                        label={t`External ID`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="fromAccount"
-                        label={t`From Account`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="fromCurrency"
-                        label={t`From Currency`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="fromAmount"
-                        label={t`From Amount`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="comment"
-                        label={t`Comment`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                    <ImportColumnMapField
-                        control={control}
-                        name="isPlanned"
-                        label={t`Is Planned`}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                    />
-                </ScrollView>
+        <Page
+            header={
+                <PageHeader
+                    title={t`Map CSV Columns`}
+                    description={t`Match each field to a column from your CSV file`}
+                    right={
+                        <View className="bg-primary px-3xl py-md rounded-full">
+                            <Text className="text-primary-reverse text-sm font-medium">{rowCount}</Text>
+                        </View>
+                    }
+                />
+            }
+            safeEdges={SAFE_EDGES}
+        >
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerClassName="gap-y-xl pb-5xl pt-3xl">
+                <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
+                <ImportColumnMapField
+                    control={control}
+                    name="toAccount"
+                    label={t`To Account`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="category"
+                    label={t`Category`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="operatedAt"
+                    label={t`Date`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="toAmount"
+                    label={t`Amount`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="toCurrency"
+                    label={t`To Currency`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                    isRequired
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="externalId"
+                    label={t`External ID`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="fromAccount"
+                    label={t`From Account`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="fromCurrency"
+                    label={t`From Currency`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="fromAmount"
+                    label={t`From Amount`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="comment"
+                    label={t`Comment`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+                <ImportColumnMapField
+                    control={control}
+                    name="isPlanned"
+                    label={t`Is Planned`}
+                    headers={headers}
+                    selectedHeaders={selectedHeaders}
+                />
+            </ScrollView>
 
-                <View className="pt-xl pb-xl flex-row gap-x-md">
-                    <View className="flex-1">
-                        <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
-                    </View>
-                    <View className="flex-2 align-middle justify-center ">
-                        {isLoading ? (
-                            <ActivityIndicator size="small" />
-                        ) : (
-                            <Button
-                                content={buttonContent}
-                                variant="positive"
-                                onPress={handleSubmit(handleStartImport)}
-                                leftIcon={UserIconNameEnum.Database}
-                                testID={ImportScreenSelector.StartImportButton}
-                            />
-                        )}
-                    </View>
+            <View className="pt-xl pb-xl flex-row gap-x-md">
+                <View className="flex-1">
+                    <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
                 </View>
-            </Page>
-            <Toast />
-        </>
+                <View className="flex-2 align-middle justify-center ">
+                    {isLoading ? (
+                        <ActivityIndicator size="small" />
+                    ) : (
+                        <Button
+                            content={buttonContent}
+                            variant="positive"
+                            onPress={handleSubmit(handleStartImport)}
+                            leftIcon={UserIconNameEnum.Database}
+                            testID={ImportScreenSelector.StartImportButton}
+                        />
+                    )}
+                </View>
+            </View>
+        </Page>
     );
 }

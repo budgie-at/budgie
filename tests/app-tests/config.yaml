@@ -24,6 +24,7 @@ executionOrder:
         - 18.security-screenshot-protection.flow
         - 19.csv-import-export.flow
         - 20.recurring-calendar.flow
+        - 21.transfer-consolidation.flow
 
 platform:
     ios:
