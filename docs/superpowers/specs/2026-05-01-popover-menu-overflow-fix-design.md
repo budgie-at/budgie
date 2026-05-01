@@ -6,13 +6,7 @@
 
 ## Problem
 
-`PopoverMenu` (`packages/app/src/@generic/component/popover-menu/popover-menu.tsx`) always positions the menu **below** the anchor:
-
-```ts
-const menuTop = anchor ? anchor.y + anchor.height + ANCHOR_OFFSET : DEFAULT_MENU_TOP;
-```
-
-There is no awareness of the menu's height, the screen height, or safe-area insets. When the long-pressed card sits near the bottom of the screen, the menu overflows and gets clipped.
+`PopoverMenu` (`packages/app/src/@generic/component/popover-menu/popover-menu.tsx:34`) always positions the menu **below** the anchor with no awareness of the menu's height, the screen height, or safe-area insets. When the long-pressed card sits near the bottom of the screen, the menu overflows.
 
 ## Fix
 
@@ -27,28 +21,34 @@ interface Props {
 }
 ```
 
-- `'bottom'` — preserves today's behavior (open below, no flip).
-- `'auto'` (default) — open below if it fits, otherwise flip above.
+- `'bottom'` — preserve today's behavior (open below, no flip).
+- `'auto'` (default) — open below if the menu fits; flip above otherwise.
 
 ### Algorithm
 
-1. Add `menuHeight` state, initialized to `0`.
-2. `onLayout` on the existing `Animated.View` writes `event.nativeEvent.layout.height` into `menuHeight`.
-3. Read `useSafeAreaInsets()` for `safeTop` and `safeBottom`.
-4. Compute placement:
+1. Add `menuHeight` state, initialized to `0`. Update via `onLayout` on the existing `Animated.View` (`event.nativeEvent.layout.height`).
+2. Read `useSafeAreaInsets()` for `safeBottom`.
+3. Derive placement during render (no effect):
    - `spaceBelow = screenHeight - safeBottom - (anchor.y + anchor.height) - ANCHOR_OFFSET`
-   - When `placement === 'auto'` and `menuHeight > spaceBelow`, place above:
+   - When `placement === 'auto'` and `menuHeight > 0` and `menuHeight > spaceBelow`:
      `menuTop = anchor.y - menuHeight - ANCHOR_OFFSET`
    - Otherwise: today's `menuTop = anchor.y + anchor.height + ANCHOR_OFFSET`.
-5. Until `menuHeight > 0` on the first open, hide the menu container with a local `opacity: 0` style override so the user never sees a frame rendered at the wrong position. The override is dropped on the second render once `onLayout` populates `menuHeight`. The existing animation runs as normal — it just begins from the correct (possibly flipped) coordinates. (`useAnimatedStyle` returns a style object for `Animated.View`; passing the array `[menuStyle, isMeasuring ? { opacity: 0 } : null]` lets the literal override the animated opacity for the single pre-measure frame.)
-6. When `isOpen` flips from `true` to `false`, reset `menuHeight` to `0` so the next open re-measures (anchor and content may differ).
+4. While `menuHeight === 0` on the first open under `placement === 'auto'`, hide the container with a local `opacity: 0` style override (ternary, not `&&`) so the user never sees the pre-measure frame. The override drops on the next render once `onLayout` populates `menuHeight`. The existing scale/opacity animation runs as normal — it just begins from the correct (possibly flipped) coordinates.
 
-`anchor === undefined` keeps the existing fallback (`top = DEFAULT_MENU_TOP`, `right = MENU_MARGIN`); flipping is a no-op in that path.
+`anchor === undefined` keeps the existing fallback (`top = DEFAULT_MENU_TOP`); the flip is a no-op in that branch.
+
+### Why these choices
+
+- `onLayout`, not `measure()` — matches Vercel RN guidance (`ui-measure-views`); also faster and synchronous with paint.
+- Position derived during render, not in a `useEffect` — matches `rerender-derived-state-no-effect`.
+- No `useMemo` / `useCallback` — React 19 Compiler handles memoization.
+- Ternary opacity gate, not `&&` — matches `rendering-no-falsy-and`.
+- Animation untouched — only `transform` and `opacity` (`animation-gpu-properties`).
 
 ### Call sites
 
-- `TransactionCard` long-press path → no change required; it inherits `'auto'`.
-- `TransactionActionsMenu` (`⋮` in the transaction detail header) → no change; either `'auto'` or `'bottom'` produces the same result because the trigger is at the top of the screen.
+- `TransactionCard` long-press path → no change required; inherits `'auto'`.
+- `TransactionActionsMenu` (`⋮` in transaction detail header) → no change; the trigger is at the top of the screen so `'auto'` collapses to `'bottom'` behavior.
 
 ## Validation
 
