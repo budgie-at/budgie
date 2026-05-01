@@ -10,12 +10,12 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+import { buildBankSyncStatusLabel } from '../../utils/build-bank-sync-status-label.util';
 import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token-section';
+import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
-interface Props {
-    readonly accountId: number;
-}
+import type { AccountBankSyncCardPropsInterface } from '../../interface/account-bank-sync-card-props.interface';
 
 const statusTextVariants = cva('text-xs font-medium', {
     variants: {
@@ -27,7 +27,7 @@ const statusTextVariants = cva('text-xs font-medium', {
     }
 });
 
-export const AccountBankSyncCard = ({ accountId }: Props) => {
+export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInterface) => {
     const { t } = useLingui();
     const { bankSync, hasBankSync } = useAccountBankSync(accountId);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
@@ -38,20 +38,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
 
     const isForwardMode = bankSync.mode === BankSyncModeEnum.FORWARD;
     const isSyncing = bankSync.status === BankSyncStatusEnum.SYNCING;
-
-    const getStatusLabel = (): string => {
-        if (bankSync.status === BankSyncStatusEnum.FAILED) {
-            return t`Sync Failed`;
-        }
-        if (isSyncing) {
-            return isForwardMode ? t`Fetching new...` : t`Syncing history...`;
-        }
-        if (isForwardMode) {
-            return t`Up to date`;
-        }
-
-        return t`Waiting`;
-    };
+    const statusLabel = buildBankSyncStatusLabel({ status: bankSync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {
         void monobankSyncService.setAccountSyncEnabled(accountId, enabled);
@@ -59,14 +46,17 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
 
     return (
         <Card className="p-4xl gap-y-lg">
-            <View className="flex-row items-center justify-between">
-                <View className="flex-1 mr-md">
+            <View className="flex-row items-center justify-between gap-2">
+                <ResyncBankSyncAccount accountId={accountId} />
+                <View className="content-center items-center">
                     <Text className="text-primary font-semibold text-base">
                         <Trans>Bank Sync</Trans>
                     </Text>
-                    <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
+                    <Text className={statusTextVariants({ status: bankSync.status })}>{statusLabel}</Text>
                 </View>
-                <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                <View className="content-center">
+                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                </View>
             </View>
 
             <View className="gap-y-sm border-t border-secondary-corner pt-lg">

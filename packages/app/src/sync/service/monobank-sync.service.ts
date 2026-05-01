@@ -1,11 +1,11 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -14,15 +14,17 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
+import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
+
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 
-const aiLogger = getLogger('AppMonobankSyncService');
 const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
 class AppMonobankSyncService {
@@ -131,7 +133,8 @@ class AppMonobankSyncService {
     @Log(
         (sync, result) =>
             `enter syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
-        'done',
+        (doneResult, sync, result) =>
+            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
         (error, sync, result) =>
             `throw syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
     )
@@ -184,11 +187,10 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        const existingIds = await transactionService.findByExternalSource(this.provider);
-        const newTransactions = result.transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
+        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id);
 
-        if (isNotEmptyArray(newTransactions)) {
-            await this.createBatchTransactions(newTransactions, account.id);
+        if (isPositiveNumber(changedTransactionCount)) {
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
         }
 
         await microPause();
@@ -197,22 +199,18 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        (newTransactions, accountId) => `enter transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId}`,
+        (newTransactions, accountId) =>
+            `enter provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} count=${newTransactions.length}`,
         (result, newTransactions, accountId) =>
-            `done transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId} insertedIds=${result.map(row => row.id).join(',')}`,
+            `done provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
         (error, newTransactions, accountId) =>
-            `throw transactionIds=${newTransactions.map(t => t.id).join(',')} accountId=${accountId} error=${getErrorMessage(error)}`
+            `throw provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async createBatchTransactions(
         newTransactions: BankSyncBatchResultInterface['transactions'],
         accountId: number
     ): Promise<TransactionEntityInterface[]> {
-        aiLogger.log('embed:defer:bank-sync:batch:begin', {
-            provider: this.provider,
-            accountId,
-            count: newTransactions.length
-        });
-        const created = await transactionService.bulkCreate(
+        return await transactionService.bulkCreate(
             newTransactions.map(bankTransaction =>
                 mapBankTransactionToCreateInput(
                     bankTransaction,
@@ -222,13 +220,6 @@ class AppMonobankSyncService {
                 )
             )
         );
-        aiLogger.log('embed:defer:bank-sync:batch:complete', {
-            provider: this.provider,
-            accountId,
-            inserted: created.length
-        });
-
-        return created;
     }
 
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
@@ -274,7 +265,6 @@ class AppMonobankSyncService {
         if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
             return;
         }
-        TaskManager.defineTask(MONOBANK_SYNC_TASK, () => this.sync());
         await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, { minimumInterval: FIFTEEN_MINUTES_IN_SECONDS });
     }
 
@@ -289,6 +279,61 @@ class AppMonobankSyncService {
         await microPause(MONOBANK_RATE_LIMIT_MS);
 
         return await this.executeSyncLoop();
+    }
+
+    private async processFetchedTransactions(
+        transactions: BankSyncBatchResultInterface['transactions'],
+        accountId: number
+    ): Promise<number> {
+        if (!isNotEmptyArray(transactions)) {
+            return 0;
+        }
+
+        const existingIds = await transactionService.findByExternalSource(this.provider);
+        const validTransactions = transactions.filter(bankTransaction => !bankTransaction.hold);
+        const newTransactions = validTransactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
+        const existingTransactions = validTransactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
+
+        const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId);
+        const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
+
+        if (isPositiveNumber(updatedTransactionCount)) {
+            await transactionService.updateAllBalances();
+        }
+
+        return createdTransactionCount + updatedTransactionCount;
+    }
+
+    private async createNewTransactions(newTransactions: BankSyncBatchResultInterface['transactions'], accountId: number): Promise<number> {
+        if (!isNotEmptyArray(newTransactions)) {
+            return 0;
+        }
+
+        const createdTransactions = await this.createBatchTransactions(newTransactions, accountId);
+
+        return createdTransactions.length;
+    }
+
+    private async updateExistingTransactions(
+        existingTransactions: BankSyncBatchResultInterface['transactions'],
+        accountId: number
+    ): Promise<number> {
+        if (!isNotEmptyArray(existingTransactions)) {
+            return 0;
+        }
+
+        for (const bankTransaction of existingTransactions) {
+            await transactionService.update(
+                mapBankTransactionToCreateInput(
+                    bankTransaction,
+                    accountId,
+                    this.mccCategoryIdMap.get(String(bankTransaction.mcc)) ?? null,
+                    this.provider
+                )
+            );
+        }
+
+        return existingTransactions.length;
     }
 
     private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
