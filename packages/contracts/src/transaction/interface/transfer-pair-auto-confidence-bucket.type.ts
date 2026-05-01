@@ -1,0 +1,5 @@
+export type TransferPairAutoConfidenceBucket =
+    | 'AUTO_IBAN_AMOUNT'
+    | 'AUTO_SAME_CURRENCY_FAST'
+    | 'AUTO_CROSS_CURRENCY_OPERATION'
+    | 'AUTO_CROSS_CURRENCY_IMPLIED_RATE';
