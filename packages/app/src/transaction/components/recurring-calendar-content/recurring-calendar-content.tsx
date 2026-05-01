@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro';
-import { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -16,6 +16,7 @@ import { RecurringCalendarDayDetail } from '../recurring-calendar-day-detail/rec
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
+import { RecurringCalendarSkeleton } from '../recurring-calendar-skeleton/recurring-calendar-skeleton';
 
 import { RecurringCalendarSelector } from './recurring-calendar.selector';
 
@@ -31,6 +32,7 @@ export const RecurringCalendarContent = () => {
     const [displayYear, setDisplayYear] = useState(now.getFullYear());
     const { data, isLoading } = useRecurringCalendar(displayYear, displayMonth);
     const [selectedDay, setSelectedDay] = useState<number | undefined>();
+    const [displayedTotal, setDisplayedTotal] = useState(0);
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -68,14 +70,6 @@ export const RecurringCalendarContent = () => {
         setSelectedDay(undefined); // eslint-disable-line no-undefined -- Reset selection on month change
     };
 
-    if (isLoading && !isDefined(data)) {
-        return (
-            <View className="flex-1 items-center justify-center">
-                <ActivityIndicator />
-            </View>
-        );
-    }
-
     const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
 
     const selectedDayTotal = hasSelectedEntries ? selectedEntries.reduce((sum, entry) => sum + entry.latestAmount, 0) : 0;
@@ -83,6 +77,16 @@ export const RecurringCalendarContent = () => {
     const formattedForecastedTotal = formatDigits(forecastedTotalAmount, defaultInstrument.symbol);
     const formattedTotalAmount = formatDigits(totalAmount, defaultInstrument.symbol);
     const headlineTotal = totalAmount + forecastedTotalAmount;
+
+    useEffect(() => {
+        if (isDefined(data)) {
+            setDisplayedTotal(headlineTotal);
+        }
+    }, [data, headlineTotal]);
+
+    if (isLoading && !isDefined(data)) {
+        return <RecurringCalendarSkeleton />;
+    }
 
     if (!hasEntries) {
         return (
@@ -97,7 +101,7 @@ export const RecurringCalendarContent = () => {
             <View className="gap-y-xl pt-md">
                 <View className="items-center gap-y-lg">
                     <ProtectedMoney minFontSize={10} maxFontSize={32} instrumentSymbol={defaultInstrument.symbol}>
-                        {headlineTotal}
+                        {displayedTotal}
                     </ProtectedMoney>
                     <Text className="font-medium text-xs uppercase text-secondary-foreground">
                         <Trans>Monthly Total</Trans>
