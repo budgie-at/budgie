@@ -49,7 +49,7 @@ export const ConsolidateTransfers = () => {
         } catch (error) {
             const errorMessage = getErrorMessage(error);
             logger.error('failed', { errorMessage });
-            Toast.show({ type: 'error', text1: t`Error`, text2: errorMessage });
+            Toast.show({ type: 'error', text1: t`Could not consolidate transfers`, text2: errorMessage });
         } finally {
             setIsLoading(false);
         }

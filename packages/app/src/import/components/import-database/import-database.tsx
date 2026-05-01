@@ -47,7 +47,7 @@ export const ImportDatabase = () => {
             setIsLoading(true);
             await databaseImportService.importFromUri(uri);
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }

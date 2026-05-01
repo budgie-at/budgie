@@ -1,15 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 import { toggleSetItem } from '../../util/toggle-set-item.util';
@@ -38,7 +38,7 @@ export const CreateMonobankAccount = () => {
         const trimmedToken = token.trim();
 
         if (!isNotEmptyString(trimmedToken)) {
-            Toast.show({ type: 'error', text1: t`Token required`, text2: t`Please enter your Monobank API token` });
+            showErrorToast(t`Token required`, t`Please enter your Monobank API token`);
 
             return;
         }
@@ -50,7 +50,7 @@ export const CreateMonobankAccount = () => {
             setSelectedAccounts(new Set(previews.filter(acc => acc.hasBankSync).map(acc => acc.externalId)));
             setStep('accounts');
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Failed to fetch accounts`, text2: String(error) });
+            showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
         } finally {
             setIsLoading(false);
         }
@@ -66,7 +66,7 @@ export const CreateMonobankAccount = () => {
             await monobankSyncService.setupAccountSyncBatch(token.trim(), [...selectedAccounts]);
             router.replace('/');
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Failed to setup sync`, text2: String(error) });
+            showErrorToast(t`Could not set up sync`, getErrorMessage(error));
         } finally {
             setIsLoading(false);
         }

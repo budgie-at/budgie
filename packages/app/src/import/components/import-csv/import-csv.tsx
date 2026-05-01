@@ -29,7 +29,7 @@ export const ImportCsv = () => {
 
             router.push({ pathname: '/settings/import', params: { fileUri: uri } });
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not select CSV file`, text2: getErrorMessage(error) });
         } finally {
             setIsLoading(false);
         }

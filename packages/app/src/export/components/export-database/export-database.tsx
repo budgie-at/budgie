@@ -8,7 +8,12 @@ import { databaseExportService } from '../../service/database-export.service';
 
 export const ExportDatabase = () => {
     const { t } = useLingui();
-    const { isLoading, handleExport } = useExportAction(() => databaseExportService.exportAndShare());
+    const { isLoading, handleExport } = useExportAction({
+        exportAction: () => databaseExportService.exportAndShare(),
+        successTitle: t`Database exported`,
+        successMessage: t`Your database backup is ready to share.`,
+        errorTitle: t`Could not export database`
+    });
 
     return (
         <SettingsCard

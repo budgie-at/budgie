@@ -108,7 +108,7 @@ export default function ImportScreen() {
                 setHeaders(parsedHeaders);
                 setRowCount(count);
             } catch (error) {
-                Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
+                Toast.show({ type: 'error', text1: t`Could not read CSV file`, text2: getErrorMessage(error) });
                 router.back();
             }
 
@@ -139,7 +139,7 @@ export default function ImportScreen() {
 
             router.back();
         } catch (error) {
-            Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not import CSV file`, text2: getErrorMessage(error) });
         }
 
         setIsLoading(false);
