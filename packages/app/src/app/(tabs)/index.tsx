@@ -14,7 +14,9 @@ import { AccountGridItem } from '../../account/component/account-grid-item/accou
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { BankProviderSectionHeader } from '../../account/component/bank-provider-section-header/bank-provider-section-header';
+import { CollapsibleNetWorthHeaderScrollSpacer } from '../../account/component/collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { DebtSectionHeader } from '../../account/component/debt-section-header/debt-section-header';
+import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../account/constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { AccountRowInterface } from '../../account/interface/account-row.interface';
 import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
 import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
@@ -48,6 +50,10 @@ export default function HomePage() {
 
     const activeAccounts = accounts.filter(account => account.isActive);
     const sections = buildHomePageSections(activeAccounts);
+    const listFooterComponent =
+        activeAccounts.length > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
+            <CollapsibleNetWorthHeaderScrollSpacer />
+        ) : null;
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => {
         if (isBankProviderSection(section)) {
@@ -87,6 +93,7 @@ export default function HomePage() {
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
+                    ListFooterComponent={listFooterComponent}
                 />
             ) : (
                 <View className="flex-1 px-5xl" style={emptyStateStyle}>
