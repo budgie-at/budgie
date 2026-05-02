@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType } from '../../harness/fetch-canonicals';
-import { seedBankExpense, seedBankIncome } from '../../harness/seed-bank-pair';
-import { seedAccountPair } from '../../harness/seed-transfer-pair-fixture';
-import { setupScenario } from '../../harness/setup-scenario';
+import { fetchCanonicalsOfType, seedAccountPair, seedBankExpense, seedBankIncome, setupScenario } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
