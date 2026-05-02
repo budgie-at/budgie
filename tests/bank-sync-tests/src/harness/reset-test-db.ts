@@ -17,6 +17,8 @@ export const resetTestDb = (): void => {
     for (const tableName of MUTABLE_TABLES) {
         testDb.run(sql.raw(`DELETE FROM "${tableName}"`));
     }
-    testDb.run(sql`DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')`);
+    testDb.run(
+        sql`DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')`
+    );
     testDb.run(sql`PRAGMA foreign_keys = ON`);
 };

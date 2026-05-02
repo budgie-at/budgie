@@ -61,7 +61,9 @@ export const seed = {
             errorCount: input.errorCount ?? 0,
             lastError: input.lastError ?? null
         } satisfies BankSyncCreateEntityInterface),
-    mccCategory: (input: Partial<MccCategoryCreateEntityInterface> & Pick<MccCategoryCreateEntityInterface, 'mcc'>): MccCategoryEntityInterface =>
+    mccCategory: (
+        input: Partial<MccCategoryCreateEntityInterface> & Pick<MccCategoryCreateEntityInterface, 'mcc'>
+    ): MccCategoryEntityInterface =>
         insertOne(MccCategoryEntityTable, {
             mcc: input.mcc,
             mccGroupId: input.mccGroupId ?? 1,
