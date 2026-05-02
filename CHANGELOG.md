@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.8.1](https://github.com/budgie-at/budgie/compare/v5.8.0...v5.8.1) (2026-05-02)
+
+### Bug Fixes
+
+- **app:** stabilize useLiveQuery deps in statistics transactions query ([a028a5c](https://github.com/budgie-at/budgie/commit/a028a5c578be1de97c5e15b6a05f63c67b859496)), closes [#395](https://github.com/budgie-at/budgie/issues/395)
+- **ci:** build workspace packages before eas update ([9617ca0](https://github.com/budgie-at/budgie/commit/9617ca066d9890de188e58e39ebe7b725aee85ad))
+
 # [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
 
 ### Bug Fixes
