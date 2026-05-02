@@ -36,18 +36,18 @@ export const seedTransferPairFixture = (input: TransferPairFixtureInput = {}): T
     const { fromAccount, toAccount } = seedAccountPair({ fromIban: 'UA-FROM', toIban: 'UA-TO' });
 
     const operatedAt = input.operatedAt ?? new Date(2026, 0, 15, 12, 0, 0);
-    const amountMicro = (input.amount ?? 100) * PRECISION;
+    const amount = (input.amount ?? 100) * PRECISION;
 
     const expense = seedBankExpense({
         accountId: fromAccount.id,
-        amountMicro,
+        amount,
         operatedAt,
         externalId: 'tx-expense',
-        counterIban: 'UA-TO'
+        toIban: 'UA-TO'
     });
     const income = seedBankIncome({
         accountId: toAccount.id,
-        amountMicro,
+        amount,
         operatedAt,
         externalId: 'tx-income'
     });
