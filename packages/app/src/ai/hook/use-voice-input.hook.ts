@@ -1,4 +1,5 @@
 import { AITransactionInterface } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 import { useRef, useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -6,6 +7,8 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
+
+const logger = getLogger('useVoiceInput');
 
 type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
 
@@ -49,6 +52,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
     const handleError = (e: unknown) => {
         const errorMessage = getErrorMessage(e);
+        logger.error('error', { errorMessage, sessionId: sessionIdRef.current });
         setError(errorMessage);
         setState('error');
         isProcessingRef.current = false;
@@ -63,8 +67,13 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
     const stopSttStream = async (): Promise<string> => {
         try {
-            return await stt.stopStream();
+            logger.log('stt:stop:start', { sessionId: sessionIdRef.current });
+            const text = await stt.stopStream();
+            logger.log('stt:stop:done', { sessionId: sessionIdRef.current, textLen: text.length });
+
+            return text;
         } catch (error: unknown) {
+            logger.error('stt:stop:throw', { sessionId: sessionIdRef.current, errorMessage: getErrorMessage(error) });
             markProcessingComplete();
             throw error;
         }
@@ -78,11 +87,13 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         markProcessingComplete();
 
         if (!isNotEmptyString(text)) {
+            logger.log('transcription:empty', { sessionId });
             setState('idle');
 
             return;
         }
 
+        logger.log('transcription:ready', { sessionId, textLen: text.length });
         setFinalTranscription(text);
         setState('confirming');
     };
@@ -94,6 +105,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
         const sessionId = sessionIdRef.current;
         isProcessingRef.current = true;
+        logger.log('process:start', { sessionId });
         setState('transcribing');
 
         const text = await stopSttStream();
@@ -101,6 +113,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const handleSilenceDetected = () => {
+        logger.log('silence:detected', { sessionId: sessionIdRef.current });
         processTranscription().catch(handleError);
     };
 
@@ -114,16 +127,26 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
     const start = () => {
         sessionIdRef.current += 1;
+        logger.log('start', {
+            sessionId: sessionIdRef.current,
+            sttReady: stt.isReady,
+            categorizationReady: categorization.isReady
+        });
         setError(null);
         setFinalTranscription('');
         isProcessingRef.current = false;
         categorization.reset();
         stt.startStream();
+        logger.log('stt:stream:start', { sessionId: sessionIdRef.current });
         recording.start();
         setState('recording');
     };
 
     const stop = () => {
+        logger.log('stop', {
+            sessionId: sessionIdRef.current,
+            isProcessing: isProcessingRef.current
+        });
         recording.stop();
 
         if (isProcessingRef.current) {
@@ -133,6 +156,12 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const confirm = () => {
+        logger.log('confirm', {
+            sessionId: sessionIdRef.current,
+            state,
+            cachedTransactionCount: categorization.transactions.length,
+            finalTranscriptionLen: finalTranscription.length
+        });
         if (state !== 'confirming') {
             return;
         }
@@ -154,6 +183,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
     const cancel = () => {
         sessionIdRef.current += 1;
+        logger.log('cancel', { sessionId: sessionIdRef.current });
         recording.cancel();
         stt.cancelStream();
         categorization.reset();

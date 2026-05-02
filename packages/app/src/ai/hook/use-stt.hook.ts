@@ -1,8 +1,9 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
+import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
@@ -11,6 +12,8 @@ import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language
 
 import { useStartStt } from './use-start-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
+
+const logger = getLogger('useStt');
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -49,13 +52,16 @@ export const useStt = (): UseSttReturn => {
         const streamPromise = streamPromiseRef.current;
 
         if (isDefined(streamPromise)) {
+            logger.log('stream:cleanup:start', { generation, isCurrentStream: isCurrentStream(generation) });
             if (isCurrentStream(generation)) {
                 streamPromiseRef.current = null;
             }
             try {
                 await sttService.streamCancel();
                 await streamPromise;
+                logger.log('stream:cleanup:done', { generation });
             } catch {
+                logger.log('stream:cleanup:swallow', { generation });
                 emptyFn();
             }
         }
@@ -69,6 +75,7 @@ export const useStt = (): UseSttReturn => {
         resetState();
         setBaseTranscription(sttService.committedTranscription);
         const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
+        logger.log('stream:init', { generation, language: streamOptions.language ?? 'default' });
         streamPromiseRef.current = sttService.stream(streamOptions).catch(() => '');
         setStatus('streaming');
     };
@@ -76,10 +83,14 @@ export const useStt = (): UseSttReturn => {
     const startStream = () => {
         streamGenerationRef.current += 1;
         const generation = streamGenerationRef.current;
+        logger.log('stream:start', { generation, status });
 
         cleanupStream(generation)
             .then(() => void initStream(generation))
-            .catch(emptyFn);
+            .catch((error: unknown) => {
+                logger.error('stream:start:throw', { generation, errorMessage: getErrorMessage(error) });
+                emptyFn();
+            });
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -92,10 +103,13 @@ export const useStt = (): UseSttReturn => {
 
     const finishStopStream = (finalText: string, generation: number): string => {
         if (!isCurrentStream(generation)) {
+            logger.log('stream:stop:stale', { generation, finalTextLen: finalText.length });
+
             return '';
         }
 
         setStatus('idle');
+        logger.log('stream:stop:finish', { generation, finalTextLen: finalText.length });
 
         return finalText;
     };
@@ -105,6 +119,7 @@ export const useStt = (): UseSttReturn => {
             setStatus('idle');
         }
 
+        logger.log('stream:stop:error', { generation });
         throw new Error(t`Transcription failed`);
     };
 
@@ -114,23 +129,36 @@ export const useStt = (): UseSttReturn => {
     const transcription = filterTranscriptionTokens(committedTranscription);
     const partialTranscription = filterTranscriptionTokens(sttSnapshot.nonCommittedTranscription);
 
+    const resolveStoppedStream = async (streamPromise: Promise<string>, generation: number): Promise<string> => {
+        await sttService.streamStop();
+        logger.log('stream:stop:service-done', { generation });
+        const streamResult = await streamPromise;
+        const finalText = filterTranscriptionTokens(streamResult).trim();
+        logger.log('stream:stop:promise-done', {
+            generation,
+            streamResultLen: streamResult.length,
+            finalTextLen: finalText.length
+        });
+
+        return finishStopStream(finalText, generation);
+    };
+
     const stopStream = async (): Promise<string> => {
         const generation = streamGenerationRef.current;
         const streamPromise = streamPromiseRef.current;
 
         if (!isDefined(streamPromise)) {
+            logger.log('stream:stop:no-active-stream', { generation, transcriptionLen: transcription.length });
+
             return transcription;
         }
 
         streamPromiseRef.current = null;
         setStatus('processing');
+        logger.log('stream:stop:start', { generation });
 
         try {
-            await sttService.streamStop();
-            const streamResult = await streamPromise;
-            const finalText = filterTranscriptionTokens(streamResult).trim();
-
-            return finishStopStream(finalText, generation);
+            return await resolveStoppedStream(streamPromise, generation);
         } catch {
             return handleStopStreamError(generation);
         }
@@ -141,7 +169,11 @@ export const useStt = (): UseSttReturn => {
         const generation = streamGenerationRef.current;
 
         resetState();
-        cleanupStream(generation).catch(emptyFn);
+        logger.log('stream:cancel', { generation });
+        cleanupStream(generation).catch((error: unknown) => {
+            logger.error('stream:cancel:throw', { generation, errorMessage: getErrorMessage(error) });
+            emptyFn();
+        });
     };
 
     return {
