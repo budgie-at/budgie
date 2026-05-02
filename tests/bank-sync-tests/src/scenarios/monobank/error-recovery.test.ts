@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
+import { http, HttpResponse } from 'msw';
 
 import { BankSyncEntityTable } from '@budgie/contracts';
 
-import { setupMonobankFixture, setupScenario, stubStatementError, testDb } from '../../harness';
+import { setupMonobankFixture, setupScenario, testDb } from '../../harness';
+import { monobankServer } from '../../harness/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
@@ -20,7 +22,9 @@ describe('monobank/error-recovery', () => {
     for (const { label, status } of cases) {
         it(`marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive ${label} errors`, async () => {
             const { bankSync } = setupMonobankFixture();
-            stubStatementError(status);
+            monobankServer.use(
+                http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => new HttpResponse(null, { status }))
+            );
 
             await monobankSyncService.sync();
 
