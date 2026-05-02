@@ -10,6 +10,7 @@
         "ts": "tsc --noEmit"
     },
     "dependencies": {
+        "@budgie/bank-sync": "workspace:*",
         "@budgie/contracts": "workspace:*",
         "better-sqlite3": "^11.7.0",
         "drizzle-orm": "^0.45.2",
