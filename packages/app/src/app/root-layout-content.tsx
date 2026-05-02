@@ -102,6 +102,7 @@ export const RootLayoutContent = () => {
                                                             <Stack.Screen name="account-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="currency-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="language-selector" options={SELECTOR_MODAL_OPTIONS} />
+                                                            <Stack.Screen name="resync-window-picker" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="contact-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="category-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
