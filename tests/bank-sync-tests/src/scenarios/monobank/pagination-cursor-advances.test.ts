@@ -5,19 +5,17 @@ import { http, HttpResponse } from 'msw';
 import { BankSyncEntityTable, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, testDb } from '../../harness';
+import { buildMonobank, setupMonobankFixture, testDb } from '../../harness';
 import { monobankServer } from '../../harness/monobank/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 const PAGE_SIZE = 500;
 
 const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
     Array.from({ length: PAGE_SIZE }, (_, index) => {
         const ordinal = offset + index;
-        return buildMonobankTx({
+        return buildMonobank.transaction({
             id: `tx-page-${ordinal}`,
             amount: -1000,
             hold: false,

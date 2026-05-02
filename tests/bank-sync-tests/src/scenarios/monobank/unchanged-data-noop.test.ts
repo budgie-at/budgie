@@ -3,18 +3,16 @@ import { eq } from 'drizzle-orm';
 
 import { BankSyncEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatement, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 describe('monobank/unchanged-data-noop', () => {
     it('re-sync of identical data does not touch updatedAt on transactions or entries', async () => {
         const { bankSync } = setupMonobankFixture();
 
-        const txPayload = buildMonobankTx({ id: 'tx-stable', amount: -2500, hold: false });
-        stubStatement([txPayload]);
+        const txPayload = buildMonobank.transaction({ id: 'tx-stable', amount: -2500, hold: false });
+        monobankStub.statement([txPayload]);
         await monobankSyncService.sync();
 
         const txAfterFirst = testDb
@@ -28,14 +26,13 @@ describe('monobank/unchanged-data-noop', () => {
             .where(eq(TransactionEntryEntityTable.externalId, 'tx-stable'))
             .all()[0];
 
-        // Rewind cursor so the second sync re-fetches the same row
         testDb
             .update(BankSyncEntityTable)
             .set({ forwardSyncFromAt: new Date(2026, 0, 1) } as never)
             .where(eq(BankSyncEntityTable.id, bankSync.id))
             .run();
 
-        stubStatement([txPayload]);
+        monobankStub.statement([txPayload]);
         await monobankSyncService.sync();
 
         const txAfterSecond = testDb
