@@ -4,7 +4,9 @@ import { http, HttpResponse } from 'msw';
 
 import { BankSyncEntityTable } from '@budgie/contracts';
 
-import { setupMonobankFixture, setupScenario, testDb } from '../../harness';
+import { setupMonobankFixture } from '../../harness/setup-monobank-fixture';
+import { setupScenario } from '../../harness/setup-scenario';
+import { testDb } from '../../harness/setup';
 import { monobankServer } from '../../harness/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
