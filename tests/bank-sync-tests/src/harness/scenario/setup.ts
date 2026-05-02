@@ -1,6 +1,7 @@
-import { vi, afterAll, afterEach, beforeAll } from 'vitest';
+import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { buildTestDb } from '../db/build-test-db';
+import { resetTestDb } from '../db/reset-test-db';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { enqueue: vi.fn() }
@@ -51,6 +52,12 @@ import { monobankServer } from '../monobank/monobank-server';
 
 beforeAll(() => {
     monobankServer.listen({ onUnhandledRequest: 'error' });
+});
+
+beforeEach(async () => {
+    resetTestDb(testDb);
+    const { resetSingletons } = await import('./reset-singletons');
+    resetSingletons();
 });
 
 afterEach(() => {

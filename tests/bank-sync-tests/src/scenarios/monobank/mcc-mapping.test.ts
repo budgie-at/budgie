@@ -3,11 +3,9 @@ import { eq } from 'drizzle-orm';
 
 import { MccCategoryEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatement, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 describe('monobank/mcc-mapping', () => {
     it('resolves the MCC code to the matching mcc_categories row id on insert', async () => {
@@ -15,7 +13,7 @@ describe('monobank/mcc-mapping', () => {
         expect(groceryRow).toBeDefined();
 
         setupMonobankFixture();
-        stubStatement([buildMonobankTx({ id: 'tx-grocery', amount: -2500, hold: false, mcc: 5411, originalMcc: 5411 })]);
+        monobankStub.statement([buildMonobank.transaction({ id: 'tx-grocery', amount: -2500, hold: false, mcc: 5411, originalMcc: 5411 })]);
 
         await monobankSyncService.sync();
 
@@ -29,7 +27,7 @@ describe('monobank/mcc-mapping', () => {
 
     it('leaves mccCategoryId null when the MCC is unknown', async () => {
         setupMonobankFixture();
-        stubStatement([buildMonobankTx({ id: 'tx-unknown-mcc', amount: -2500, hold: false, mcc: 99999, originalMcc: 99999 })]);
+        monobankStub.statement([buildMonobank.transaction({ id: 'tx-unknown-mcc', amount: -2500, hold: false, mcc: 99999, originalMcc: 99999 })]);
 
         await monobankSyncService.sync();
 
