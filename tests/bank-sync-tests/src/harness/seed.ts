@@ -1,6 +1,6 @@
 import { AccountEntityTable, BankSyncEntityTable, InstrumentEntityTable, MccCategoryEntityTable } from '@budgie/contracts';
 
-import { testDb } from './setup';
+import { insertOne } from './insert-one';
 
 import type {
     AccountEntityInterface,
@@ -17,6 +17,7 @@ interface AccountSeedInput {
     readonly instrumentId?: number;
     readonly externalId?: string | null;
     readonly externalSource?: string | null;
+    readonly iban?: string | null;
 }
 
 interface BankSyncSeedInput {
@@ -47,16 +48,6 @@ interface InstrumentSeedInput {
     readonly type?: string;
 }
 
-const insertOne = <T>(table: unknown, values: Record<string, unknown>): T => {
-    const rows = (
-        testDb
-            .insert(table as never)
-            .values(values as never)
-            .returning() as unknown as { all: () => T[] }
-    ).all();
-    return rows[0];
-};
-
 export const seed = {
     instrument: (input: InstrumentSeedInput = {}): InstrumentEntityInterface =>
         insertOne<InstrumentEntityInterface>(InstrumentEntityTable, {
@@ -75,7 +66,8 @@ export const seed = {
             icon: input.icon ?? 'Wallet',
             instrumentId: input.instrumentId ?? 1,
             externalId: input.externalId ?? null,
-            externalSource: input.externalSource ?? null
+            externalSource: input.externalSource ?? null,
+            iban: input.iban ?? null
         }),
     bankSync: (input: BankSyncSeedInput): BankSyncEntityInterface =>
         insertOne<BankSyncEntityInterface>(BankSyncEntityTable, {
