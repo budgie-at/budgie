@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.10.0](https://github.com/budgie-at/budgie/compare/v5.9.0...v5.10.0) (2026-05-02)
+
+### Features
+
+- **app:** vertically stack analytics overview tiles for long labels ([3107d7e](https://github.com/budgie-at/budgie/commit/3107d7ea9634eba91be02bef030bdb4b060479b3))
+
 # [5.9.0](https://github.com/budgie-at/budgie/compare/v5.8.1...v5.9.0) (2026-05-02)
 
 ### Features
