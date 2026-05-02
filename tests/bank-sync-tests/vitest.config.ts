@@ -3,23 +3,26 @@ import { resolve } from 'node:path';
 
 const here = (relative: string) => resolve(__dirname, relative);
 
+const VIRTUAL_PREFIX = '\0virtual:';
+
 const VIRTUAL_SHIMS: Record<string, string> = {
     'drizzle-orm/expo-sqlite': 'export const drizzle = () => ({});',
     'expo-secure-store': 'export const getItem = () => null;'
 };
 
+// enforce 'pre' so we resolve before vite's alias plugin and node_modules
 const inlineShimPlugin = (): Plugin => ({
     name: 'inline-shim',
     enforce: 'pre',
     resolveId(id) {
         if (Object.hasOwn(VIRTUAL_SHIMS, id)) {
-            return `\0virtual:${id}`;
+            return `${VIRTUAL_PREFIX}${id}`;
         }
         return null;
     },
     load(id) {
-        if (id.startsWith('\0virtual:')) {
-            const key = id.slice('\0virtual:'.length);
+        if (id.startsWith(VIRTUAL_PREFIX)) {
+            const key = id.slice(VIRTUAL_PREFIX.length);
             return VIRTUAL_SHIMS[key] ?? null;
         }
         return null;
