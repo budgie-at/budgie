@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.11.0](https://github.com/budgie-at/budgie/compare/v5.10.0...v5.11.0) (2026-05-02)
+
+### Bug Fixes
+
+- **app,contracts:** trigger immediate sync after windowed reset; fix lint+cpd ([100e684](https://github.com/budgie-at/budgie/commit/100e684c211902a514ea94696e66e5a1085ad91e)), closes [#32](https://github.com/budgie-at/budgie/issues/32) [#35](https://github.com/budgie-at/budgie/issues/35)
+- **app,contracts:** unbreak monobank sync hold + consolidation churn ([0861b18](https://github.com/budgie-at/budgie/commit/0861b18ea5c4f451c8b0f516ae6085fa976c284c))
+- **app:** inline t-macro calls in picker, reorder for thumb-zone safety ([14efa59](https://github.com/budgie-at/budgie/commit/14efa5944319daf9ebeb28712970557cc8b9be19))
+- **app:** make resync-window-picker labels visible and translate strings ([a483345](https://github.com/budgie-at/budgie/commit/a4833452be29ff58960a094b0eec75dccb9864c7))
+
+### Features
+
+- **app:** add re-sync window picker route and modal context ([42d66cc](https://github.com/budgie-at/budgie/commit/42d66ccec4dd52de46a55b7188f26adc3547b244))
+- **app:** add resyncBankSyncService and window option constants ([24888d7](https://github.com/budgie-at/budgie/commit/24888d7aefc7a31ed8d2f771070adf441ddc9971))
+- **app:** rewire ResyncBankSyncAccount to open the window picker ([44b5a93](https://github.com/budgie-at/budgie/commit/44b5a93adcf108f7d166d1e7a76d33b16a51dfb2))
+
 # [5.10.0](https://github.com/budgie-at/budgie/compare/v5.9.0...v5.10.0) (2026-05-02)
 
 ### Features
