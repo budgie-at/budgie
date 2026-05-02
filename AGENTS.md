@@ -128,6 +128,7 @@ packages/
 39. **Class-owned constants are `private static readonly` fields**, not module-level. Module-level `const` is reserved for values shared by multiple classes/functions in the same file.
 40. **Domain-specific shapes carry the domain prefix.** Parser state, layout types, row interfaces specific to one bank/source/feature: `Erste*`, `Monobank*`. Bank-agnostic shapes (raw native-module output, generic transaction interfaces) stay neutral. Drop legacy qualifiers (`Modern`, `Classic`) once only one variant remains.
 41. **Don't double-log a flow.** If a service method already carries `@Log` (enter/done/throw), don't add `getLogger` calls in the hook/component that triggers it. Service-level decorators record the lifecycle; hook-level logs of the same flow are noise duplication.
+42. **Do not create single-use utilities to appease lint.** PR review fixes should address the root design issue, not move code into one-off `.util.ts` files, one-off interfaces, or wrappers used by a single service. Keep service-owned orchestration as private methods on the service, keep reusable pure helpers in `/utils`, and get explicit human approval before using a targeted lint disable when a cohesive service legitimately exceeds a size rule.
 
 ### Naming Conventions
 
@@ -475,6 +476,7 @@ Conventional commits: `type(scope): description`
 - **Only address human reviewer feedback** - Never fix comments from AI assistants without human confirmation
 - **Validate all AI suggestions** - AI-generated review comments may be incorrect
 - **Review all changes before finishing** - Check for unused imports and unnecessary code
+- **Fix review feedback without utility sprawl** - Do not resolve review findings by creating single-consumer utility files. Inline service-specific logic as private methods, preserve class-owned logging with `@Log`, and keep only genuinely shared helpers in `/utils`.
 
 ## Important Notes
 

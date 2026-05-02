@@ -9,7 +9,7 @@ import type { TranscribeOptions } from 'whisper.rn';
 
 export const buildSttTranscribeOptions = (options: SttStreamOptionsInterface | null): TranscribeOptions => ({
     ...(isDefined(options?.language) && { language: options.language }),
-    prompt: t`Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро.`,
+    ...(options?.language === 'uk' && { prompt: t`Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро.` }),
     maxThreads: STT_MAX_THREADS,
     temperature: STT_TEMPERATURE,
     temperatureInc: STT_TEMPERATURE,

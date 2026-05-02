@@ -4,7 +4,7 @@ import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice
 
 import { normalizeVoiceCurrency } from './normalize-voice-currency.util';
 
-const AMOUNT_PATTERN = /(\d+(?:[.,]\d+)?)\s*(грн|гривень|гривня|uah|₴|usd|\$|eur|€)?/iu;
+const AMOUNT_PATTERN = /(\d+(?:[.,]\d+)?)\s*(грн|гривень|гривня|uah|₴|usd|\$|eur|€|євро)?/iu;
 
 export const parseVoiceSegment = (segment: string): ExtractedVoiceTransactionInterface | null => {
     const match = segment.match(AMOUNT_PATTERN);

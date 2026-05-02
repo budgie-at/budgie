@@ -1,4 +1,6 @@
 declare module 'whisper.rn/src/realtime-transcription' {
+    import type { TranscribeOptions, TranscribeResult } from 'whisper.rn';
+
     export interface AudioStreamData {
         readonly data: Uint8Array;
         readonly sampleRate: number;
@@ -28,7 +30,7 @@ declare module 'whisper.rn/src/realtime-transcription' {
     export interface RealtimeTranscribeEvent {
         readonly type: 'start' | 'transcribe' | 'end' | 'error';
         readonly sliceIndex: number;
-        readonly data?: { readonly result?: string };
+        readonly data?: TranscribeResult;
         readonly isCapturing: boolean;
         readonly processTime: number;
         readonly recordingTime: number;
@@ -39,31 +41,45 @@ declare module 'whisper.rn/src/realtime-transcription' {
         };
     }
 
-    export interface RealtimeTranscriberResultEntry {
-        readonly slice: { readonly index: number };
-        readonly transcribeEvent: RealtimeTranscribeEvent;
+    export interface RealtimeOptions {
+        readonly audioSliceSec?: number;
+        readonly audioMinSec?: number;
+        readonly maxSlicesInMemory?: number;
+        readonly transcribeOptions?: TranscribeOptions;
+        readonly initialPrompt?: string;
+        readonly promptPreviousSlices?: boolean;
+        readonly audioStreamConfig?: AudioStreamConfig;
+        readonly logger?: (message: string) => void;
+    }
+
+    export interface RealtimeTranscriberCallbacks {
+        readonly onTranscribe?: (event: RealtimeTranscribeEvent) => void;
+        readonly onError?: (error: string) => void;
+        readonly onStatusChange?: (isActive: boolean) => void;
+    }
+
+    export interface WhisperContextLike {
+        transcribeData(
+            data: ArrayBuffer,
+            options: TranscribeOptions
+        ): {
+            readonly stop: () => Promise<void>;
+            readonly promise: Promise<TranscribeResult>;
+        };
+    }
+
+    export interface RealtimeTranscriberDependencies {
+        readonly whisperContext: WhisperContextLike;
+        readonly audioStream: AudioStreamInterface;
     }
 
     export class RealtimeTranscriber {
-        constructor(
-            dependencies: { readonly whisperContext: unknown; readonly audioStream: AudioStreamInterface },
-            options?: {
-                readonly audioSliceSec?: number;
-                readonly audioMinSec?: number;
-                readonly maxSlicesInMemory?: number;
-                readonly promptPreviousSlices?: boolean;
-                readonly audioStreamConfig?: AudioStreamConfig;
-                readonly transcribeOptions?: { readonly language?: string };
-            },
-            callbacks?: {
-                readonly onTranscribe?: (event: RealtimeTranscribeEvent) => void;
-                readonly onError?: (error: string) => void;
-            }
-        );
-
+        constructor(dependencies: RealtimeTranscriberDependencies, options?: RealtimeOptions, callbacks?: RealtimeTranscriberCallbacks);
         start(): Promise<void>;
         stop(): Promise<void>;
-        nextSlice(): Promise<void>;
-        getTranscriptionResults(): RealtimeTranscriberResultEntry[];
+        release(): Promise<void>;
+        getTranscriptionResults(): {
+            readonly transcribeEvent: RealtimeTranscribeEvent;
+        }[];
     }
 }

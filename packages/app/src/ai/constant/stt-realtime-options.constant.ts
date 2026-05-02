@@ -14,3 +14,9 @@ export const STT_AUDIO_STREAM_CONFIG = {
     bitsPerSample: 16,
     bufferSize: BUFFER_LENGTH * 10
 } as const;
+
+export const STT_REALTIME_AUDIO_MIN_SEC = 1;
+
+export const STT_REALTIME_AUDIO_SLICE_SEC = 2;
+
+export const STT_REALTIME_MAX_SLICES_IN_MEMORY = 2;

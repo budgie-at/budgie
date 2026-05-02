@@ -17,7 +17,7 @@ export const normalizeVoiceCurrency = (currency: string | undefined): CurrencyEn
         return CurrencyEnum.USD;
     }
 
-    if (normalized === 'eur' || normalized === '€') {
+    if (normalized === 'eur' || normalized === '€' || normalized === 'євро') {
         return CurrencyEnum.EUR;
     }
 

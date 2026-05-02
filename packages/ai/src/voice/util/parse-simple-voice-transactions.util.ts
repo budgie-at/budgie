@@ -4,7 +4,7 @@ import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice
 
 import { parseVoiceSegment } from './parse-voice-segment.util';
 
-const ITEM_SEPARATOR_PATTERN = /[,;]+|\s+(?:і|та|and)\s+/iu;
+const ITEM_SEPARATOR_PATTERN = /[;]+|,(?!\d)|\s+(?:і|та|and)\s+/iu;
 
 export const parseSimpleVoiceTransactions = (text: string): ExtractedVoiceTransactionInterface[] =>
     text
