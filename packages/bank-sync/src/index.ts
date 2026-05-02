@@ -21,6 +21,10 @@ export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
+export type { MonobankAccountApiInterface } from './monobank/interface/monobank-account-api.interface';
+export type { MonobankClientInfoApiInterface } from './monobank/interface/monobank-client-info-api.interface';
+export type { MonobankJarApiInterface } from './monobank/interface/monobank-jar-api.interface';
+export type { MonobankTransactionApiInterface } from './monobank/interface/monobank-transaction-api.type';
 
 export { PRIVATBANK_CATEGORY_TO_MCC_CODE } from './privatbank/constant/privatbank-category-to-mcc-code.constant';
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
