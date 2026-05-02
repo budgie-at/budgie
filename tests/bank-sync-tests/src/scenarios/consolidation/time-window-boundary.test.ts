@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, seedAccountPair, seedBankExpense, seedBankIncome } from '../../harness';
+import { fetchCanonicalsOfType, seedAccountPair, seedBankPair } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
@@ -12,19 +12,14 @@ const seedTimeWindowPair = (incomeOffsetSeconds: number): void => {
     const { fromAccount, toAccount } = seedAccountPair('UA-FROM', 'UA-TO');
     const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
 
-    seedBankExpense({
-        accountId: fromAccount.id,
-        amount: 100 * PRECISION,
-        operatedAt,
-        externalId: 'tx-expense',
-        toIban: 'UA-TO'
-    });
-    seedBankIncome({
-        accountId: toAccount.id,
-        amount: 100 * PRECISION,
-        operatedAt: new Date(operatedAt.getTime() + incomeOffsetSeconds * 1000),
-        externalId: 'tx-income'
-    });
+    seedBankPair.expense(
+        { externalId: 'tx-expense', operatedAt },
+        { accountId: fromAccount.id, amount: 100 * PRECISION, toIban: 'UA-TO' }
+    );
+    seedBankPair.income(
+        { externalId: 'tx-income', operatedAt: new Date(operatedAt.getTime() + incomeOffsetSeconds * 1000) },
+        { accountId: toAccount.id, amount: 100 * PRECISION }
+    );
 };
 
 describe('consolidation/time-window-boundary', () => {

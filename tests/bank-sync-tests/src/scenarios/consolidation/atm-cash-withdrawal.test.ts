@@ -2,20 +2,17 @@ import { describe, expect, it } from 'vitest';
 
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankExpense } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 const PRECISION = 1_000_000;
 
 const seedAtmExpense = (bankAccountId: number) =>
-    seedBankExpense({
-        accountId: bankAccountId,
-        amount: 500 * PRECISION,
-        operatedAt: new Date(2026, 0, 15, 12, 0, 0),
-        externalId: 'tx-atm',
-        mccCategoryId: findMccByCode('6011').id
-    });
+    seedBankPair.expense(
+        { externalId: 'tx-atm', operatedAt: new Date(2026, 0, 15, 12, 0, 0) },
+        { accountId: bankAccountId, amount: 500 * PRECISION, mccCategoryId: findMccByCode('6011').id }
+    );
 
 describe('consolidation/atm-cash-withdrawal', () => {
     it('promotes an MCC=6011 expense into a TRANSFER to the unique cash account in the same currency', async () => {

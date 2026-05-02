@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, findMccByCode, seedAccountPair, seedBankExpense, seedBankIncome } from '../../harness';
+import { fetchCanonicalsOfType, findMccByCode, seedAccountPair, seedBankPair } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
@@ -17,20 +17,14 @@ describe('consolidation/manual-review-classification', () => {
         const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
         const slow = new Date(operatedAt.getTime() + SLOW_WINDOW_OFFSET_SECONDS * 1000);
 
-        seedBankExpense({
-            accountId: fromAccount.id,
-            amount: 250 * PRECISION,
-            operatedAt,
-            externalId: 'tx-expense',
-            mccCategoryId: transferMcc.id
-        });
-        seedBankIncome({
-            accountId: toAccount.id,
-            amount: 250 * PRECISION,
-            operatedAt: slow,
-            externalId: 'tx-income',
-            mccCategoryId: transferMcc.id
-        });
+        seedBankPair.expense(
+            { externalId: 'tx-expense', operatedAt },
+            { accountId: fromAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
+        );
+        seedBankPair.income(
+            { externalId: 'tx-income', operatedAt: slow },
+            { accountId: toAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
+        );
 
         const consolidateResult = await transferConsolidationService.consolidate();
         expect(consolidateResult.consolidated).toBe(0);

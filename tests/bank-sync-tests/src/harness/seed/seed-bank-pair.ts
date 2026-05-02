@@ -14,60 +14,59 @@ import type {
     TransactionEntryCreateEntityInterface
 } from '@budgie/contracts';
 
-type BankSideInput = Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'amount'> & {
-    readonly externalId: string;
-    readonly operatedAt: Date;
-    readonly mccCategoryId?: number | null;
-    readonly exchangeRate?: number;
-    readonly toIban?: string | null;
-};
-
-interface SeedBankSideShape {
-    readonly type: TransactionTypeEnum;
-    readonly entryType: TransactionEntryTypeEnum;
-    readonly fromAccountId: number | null;
-    readonly toAccountId: number | null;
-}
-
-const seedBankSide = (input: BankSideInput, shape: SeedBankSideShape): TransactionEntityInterface => {
-    const transaction = insertOne(TransactionEntityTable, {
-        type: shape.type,
-        title: `${shape.type} ${input.externalId}`,
-        externalId: input.externalId,
+const seedBankSide = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>,
+    entry: Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'amount'> & {
+        readonly mccCategoryId?: number | null;
+        readonly exchangeRate?: number;
+        readonly toIban?: string | null;
+    }
+): TransactionEntityInterface => {
+    const entryType = type === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+    const fromAccountId = type === TransactionTypeEnum.EXPENSE ? entry.accountId : null;
+    const toAccountId = type === TransactionTypeEnum.INCOME ? entry.accountId : null;
+    const inserted = insertOne(TransactionEntityTable, {
+        type,
+        title: `${type} ${transaction.externalId}`,
+        externalId: transaction.externalId,
         externalSource: ExternalSourceEnum.MONOBANK,
-        operatedAt: input.operatedAt,
-        exchangeRate: input.exchangeRate ?? 1,
-        fromAccountId: shape.fromAccountId,
-        toAccountId: shape.toAccountId,
+        operatedAt: transaction.operatedAt,
+        exchangeRate: entry.exchangeRate ?? 1,
+        fromAccountId,
+        toAccountId,
         comment: ''
     } satisfies TransactionCreateEntityInterface);
     insertOne(TransactionEntryEntityTable, {
-        transactionId: transaction.id,
-        accountId: input.accountId,
-        type: shape.entryType,
-        amount: input.amount,
-        externalId: input.externalId,
-        exchangeRate: input.exchangeRate ?? 1,
-        toIban: input.toIban ?? null,
+        transactionId: inserted.id,
+        accountId: entry.accountId,
+        type: entryType,
+        amount: entry.amount,
+        externalId: transaction.externalId,
+        exchangeRate: entry.exchangeRate ?? 1,
+        toIban: entry.toIban ?? null,
         categoryId: null,
-        mccCategoryId: input.mccCategoryId ?? null,
+        mccCategoryId: entry.mccCategoryId ?? null,
         originalTransactionId: null
     } satisfies TransactionEntryCreateEntityInterface);
-    return transaction;
+    return inserted;
 };
 
-export const seedBankExpense = (input: BankSideInput): TransactionEntityInterface =>
-    seedBankSide(input, {
-        type: TransactionTypeEnum.EXPENSE,
-        entryType: TransactionEntryTypeEnum.CREDIT,
-        fromAccountId: input.accountId,
-        toAccountId: null
-    });
-
-export const seedBankIncome = (input: BankSideInput): TransactionEntityInterface =>
-    seedBankSide(input, {
-        type: TransactionTypeEnum.INCOME,
-        entryType: TransactionEntryTypeEnum.DEBIT,
-        fromAccountId: null,
-        toAccountId: input.accountId
-    });
+export const seedBankPair = {
+    expense: (
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>,
+        entry: Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'amount'> & {
+            readonly mccCategoryId?: number | null;
+            readonly exchangeRate?: number;
+            readonly toIban?: string | null;
+        }
+    ): TransactionEntityInterface => seedBankSide(TransactionTypeEnum.EXPENSE, transaction, entry),
+    income: (
+        transaction: Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>,
+        entry: Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'amount'> & {
+            readonly mccCategoryId?: number | null;
+            readonly exchangeRate?: number;
+            readonly toIban?: string | null;
+        }
+    ): TransactionEntityInterface => seedBankSide(TransactionTypeEnum.INCOME, transaction, entry)
+};
