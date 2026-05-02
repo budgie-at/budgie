@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
 import { Log } from '@budgie/logger';
-import { AppState, InteractionManager } from 'react-native';
+import { AppState } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
@@ -196,7 +197,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         const delay = this.snapshot.pending === 0 ? IDLE_INTERVAL_MS : this.relaxedIntervalMs;
         this.timer = setTimeout(() => {
             this.timer = null;
-            void InteractionManager.runAfterInteractions(() => {
+            scheduleIdleCallback(() => {
                 this.queueRelaxedTick();
             });
         }, delay);

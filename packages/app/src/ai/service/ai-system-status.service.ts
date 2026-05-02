@@ -201,8 +201,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         const chat = chatService.getSnapshot();
         const embedding = embeddingService.getSnapshot();
-        const stt = sttService.getSnapshot();
-        const bootText = this.describeBoot(chat.status, embedding.status, stt.status);
+        const bootText = this.describeBoot(chat.status, embedding.status);
         if (isNotEmptyString(bootText)) {
             return {
                 state: AiSystemStateEnum.BOOTING,
@@ -215,7 +214,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             };
         }
 
-        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
+        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status);
         if (isDefined(suspendedOrIdle)) {
             const statusText = suspendedOrIdle === AiSystemStateEnum.SUSPENDED ? t`Resuming AI…` : t`AI idle`;
 
@@ -296,25 +295,21 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         };
     }
 
-    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
-        const statuses = [chat, embedding, stt] as const;
+    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum): string | null {
+        const statuses = [chat, embedding] as const;
         const booting = statuses.some(
             status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING
         );
         if (!booting) {
             return null;
         }
-        const downloading = [chat, embedding].some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
+        const downloading = statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
 
         return downloading ? t`Downloading models` : t`Loading models`;
     }
 
-    private firstSuspendedOrIdle(
-        chat: AiSubsystemStatusEnum,
-        embedding: AiSubsystemStatusEnum,
-        stt: AiSubsystemStatusEnum
-    ): SuspendedOrIdleState | null {
-        const statuses = [chat, embedding, stt] as const;
+    private firstSuspendedOrIdle(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum): SuspendedOrIdleState | null {
+        const statuses = [chat, embedding] as const;
         if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
             return AiSystemStateEnum.SUSPENDED;
         }
