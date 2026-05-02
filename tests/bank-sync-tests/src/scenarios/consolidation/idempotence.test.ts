@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, seedTransferPairFixture, setupScenario } from '../../harness';
+import { fetchCanonicalsOfType } from '../../harness/fetch-canonicals';
+import { seedTransferPairFixture } from '../../harness/seed-transfer-pair-fixture';
+import { setupScenario } from '../../harness/setup-scenario';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 

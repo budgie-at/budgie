@@ -3,7 +3,11 @@ import { eq } from 'drizzle-orm';
 
 import { AccountTypeEnum, BankSyncModeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { buildMonobankClientInfoWith, buildMonobankTx, seed, setupScenario, stubClientInfo, stubStatement, testDb } from '../../harness';
+import { buildMonobankClientInfoWith, buildMonobankTx } from '../../harness/monobank-fixtures';
+import { stubClientInfo, stubStatement } from '../../harness/monobank-server';
+import { seed } from '../../harness/seed';
+import { setupScenario } from '../../harness/setup-scenario';
+import { testDb } from '../../harness/setup';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
