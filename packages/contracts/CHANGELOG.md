@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.9.0](https://github.com/budgie-at/budgie/compare/v5.8.1...v5.9.0) (2026-05-02)
+
+### Features
+
+- **app,contracts:** add Last Week and Last Month date filter presets ([5a2a673](https://github.com/budgie-at/budgie/commit/5a2a673e90f671257caf97288d90afac5f619d5e))
+
 # [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
 
 ### Features
