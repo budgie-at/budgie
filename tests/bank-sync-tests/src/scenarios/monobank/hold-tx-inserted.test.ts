@@ -3,16 +3,14 @@ import { eq } from 'drizzle-orm';
 
 import { TransactionEntityTable } from '@budgie/contracts';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatement, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 describe('monobank/hold-tx-inserted', () => {
     it('inserts a held transaction (regression: !hold filter must not drop it)', async () => {
         setupMonobankFixture();
-        stubStatement([buildMonobankTx({ id: 'tx-hold-1', amount: -2500, hold: true })]);
+        monobankStub.statement([buildMonobank.transaction({ id: 'tx-hold-1', amount: -2500, hold: true })]);
 
         await monobankSyncService.sync();
 

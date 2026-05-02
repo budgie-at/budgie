@@ -2,11 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankExpense, setupScenario } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankExpense } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
-setupScenario();
 
 const PRECISION = 1_000_000;
 

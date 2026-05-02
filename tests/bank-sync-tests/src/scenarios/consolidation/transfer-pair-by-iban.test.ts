@@ -3,11 +3,9 @@ import { eq } from 'drizzle-orm';
 
 import { TransactionConsolidationTypeEnum, TransactionEntryEntityTable, TransactionTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, seedTransferPairFixture, setupScenario, testDb } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, seedTransferPairFixture, testDb } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
-setupScenario();
 
 describe('consolidation/transfer-pair-by-iban', () => {
     it('promotes EXPENSE+INCOME with matching counterIban into a canonical TRANSFER', async () => {

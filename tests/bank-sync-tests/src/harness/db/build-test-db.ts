@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 import * as schema from '@app/@generic/drizzle/db/schema';
 
+import type { ExpoLikeApiInterface } from './expo-like-api.interface';
+
 const here = resolve(fileURLToPath(import.meta.url), '..');
 const migrationsFolder = resolve(here, '../../../../../packages/app/drizzle');
 
@@ -16,15 +18,7 @@ export const buildTestDb = (): TestDb => {
     sqlite.pragma('journal_mode = WAL');
     sqlite.pragma('foreign_keys = ON');
 
-    interface ExpoLikeApi {
-        getAllAsync: <T>(sql: string, params?: unknown[]) => Promise<T[]>;
-        getFirstAsync: <T>(sql: string, params?: unknown[]) => Promise<T | undefined>;
-        runAsync: (sql: string, params?: unknown[]) => Promise<unknown>;
-        execAsync: (sql: string) => Promise<void>;
-        withExclusiveTransactionAsync: (cb: (tx: unknown) => Promise<void>) => Promise<void>;
-    }
-
-    const expoLike: ExpoLikeApi = {
+    const expoLike: ExpoLikeApiInterface = {
         getAllAsync: async <T>(sqlText: string, params: unknown[] = []) => sqlite.prepare(sqlText).all(...(params as never[])) as T[],
         getFirstAsync: async <T>(sqlText: string, params: unknown[] = []) =>
             sqlite.prepare(sqlText).get(...(params as never[])) as T | undefined,

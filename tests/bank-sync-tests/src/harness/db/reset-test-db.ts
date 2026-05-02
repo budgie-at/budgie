@@ -1,24 +1,30 @@
-import { getTableName, is, sql } from 'drizzle-orm';
-import { SQLiteTable } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import type { SQLWrapper } from 'drizzle-orm';
 
-import * as schema from '@app/@generic/drizzle/db/schema';
+const MUTABLE_TABLES = [
+    'accounts',
+    'account_balances',
+    'transactions',
+    'transaction_entries',
+    'transaction_tags',
+    'tags',
+    'bank_syncs',
+    'exchange_rates',
+    'merchant_embeddings',
+    'merchant_embedding_tags',
+    'comment_embeddings',
+    'comment_embedding_tags'
+] as const;
 
-import { testDb } from '../scenario/setup';
+interface RunnerInterface {
+    readonly run: (query: string | SQLWrapper) => void;
+}
 
-const REFERENCE_TABLES = new Set(['instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings']);
-
-const MUTABLE_TABLES = Object.values(schema)
-    .filter(value => is(value, SQLiteTable))
-    .map(getTableName)
-    .filter(name => !REFERENCE_TABLES.has(name));
-
-export const resetTestDb = (): void => {
-    testDb.run(sql`PRAGMA foreign_keys = OFF`);
+export const resetTestDb = (db: RunnerInterface): void => {
+    db.run(sql`PRAGMA foreign_keys = OFF`);
     for (const tableName of MUTABLE_TABLES) {
-        testDb.run(sql.raw(`DELETE FROM "${tableName}"`));
+        db.run(sql.raw(`DELETE FROM "${tableName}"`));
     }
-    testDb.run(
-        sql`DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')`
-    );
-    testDb.run(sql`PRAGMA foreign_keys = ON`);
+    db.run(sql`DELETE FROM sqlite_sequence WHERE name NOT IN ('instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings')`);
+    db.run(sql`PRAGMA foreign_keys = ON`);
 };

@@ -2,11 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, seedTransferPairFixture, setupScenario } from '../../harness';
+import { fetchCanonicalsOfType, seedTransferPairFixture } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
-setupScenario();
 
 describe('consolidation/idempotence', () => {
     it('running consolidate twice on the same dataset only creates one canonical TRANSFER', async () => {

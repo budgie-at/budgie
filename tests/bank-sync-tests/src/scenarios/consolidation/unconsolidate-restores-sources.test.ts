@@ -3,12 +3,10 @@ import { eq } from 'drizzle-orm';
 
 import { TransactionConsolidationTypeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, seedTransferPairFixture, setupScenario, testDb } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, seedTransferPairFixture, testDb } from '../../harness';
 
 import { transactionService } from '@app/transaction/service/transaction.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
-setupScenario();
 
 describe('consolidation/unconsolidate-restores-sources', () => {
     it('unconsolidateById deletes the canonical and restores source transactions to their original ledger entries', async () => {
@@ -49,7 +47,6 @@ describe('consolidation/unconsolidate-restores-sources', () => {
             .all();
         expect(leftover).toHaveLength(0);
 
-        // Re-running consolidate after unconsolidate finds the pair again
         const reResult = await transferConsolidationService.consolidate();
         expect(reResult.consolidated).toBe(1);
 

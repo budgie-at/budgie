@@ -3,11 +3,9 @@ import { eq } from 'drizzle-orm';
 
 import { AccountTypeEnum, BankSyncModeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { buildMonobankClientInfoWith, buildMonobankTx, seed, setupScenario, stubClientInfo, stubStatement, testDb } from '../../harness';
+import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {
@@ -119,8 +117,8 @@ describe('monobank/consolidation-survives-resync', () => {
             .where(eq(TransactionEntityTable.id, sourceIncome.id))
             .run();
 
-        stubClientInfo(buildMonobankClientInfoWith(['mono-acc-1']));
-        stubStatement([buildMonobankTx({ id: 'tx-expense-1', amount: -25000, hold: false })]);
+        monobankStub.clientInfo(buildMonobank.clientInfoWith(['mono-acc-1']));
+        monobankStub.statement([buildMonobank.transaction({ id: 'tx-expense-1', amount: -25000, hold: false })]);
 
         await monobankSyncService.sync();
 

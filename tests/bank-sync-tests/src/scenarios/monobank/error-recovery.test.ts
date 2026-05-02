@@ -4,12 +4,10 @@ import { http, HttpResponse } from 'msw';
 
 import { BankSyncEntityTable } from '@budgie/contracts';
 
-import { setupMonobankFixture, setupScenario, testDb } from '../../harness';
+import { setupMonobankFixture, testDb } from '../../harness';
 import { monobankServer } from '../../harness/monobank/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-
-setupScenario();
 
 const SYNC_ERROR_THRESHOLD = 3;
 
