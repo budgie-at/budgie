@@ -1,6 +1,6 @@
 import { Log } from '@budgie/logger';
 import { WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
-import { RealtimeTranscriber } from 'whisper.rn/realtime-transcription';
+import { RealtimeTranscriber } from 'whisper.rn/src/realtime-transcription';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -22,7 +22,7 @@ import { downloadWhisperModel } from '../util/download-whisper-model.util';
 import { BaseSubsystemService } from './base-subsystem.service';
 
 import type { SttStreamOptionsInterface } from '../interface/stt-stream-options.interface';
-import type { RealtimeTranscribeEvent } from 'whisper.rn/realtime-transcription';
+import type { RealtimeTranscribeEvent } from 'whisper.rn/src/realtime-transcription';
 
 class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
     private context: WhisperContext | null = null;

@@ -2,7 +2,7 @@ import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import type { AudioStreamConfig, AudioStreamData, AudioStreamInterface } from 'whisper.rn/realtime-transcription';
+import type { AudioStreamConfig, AudioStreamData, AudioStreamInterface } from 'whisper.rn/src/realtime-transcription';
 
 const PCM_NEGATIVE_SCALE = 32768;
 const PCM_POSITIVE_SCALE = 32767;
