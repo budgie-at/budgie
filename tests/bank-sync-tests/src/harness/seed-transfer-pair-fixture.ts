@@ -3,6 +3,21 @@ import { seedBankExpense, seedBankIncome } from './seed-bank-pair';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
+interface AccountPairInput {
+    readonly fromIban?: string | null;
+    readonly toIban?: string | null;
+}
+
+interface AccountPair {
+    readonly fromAccount: AccountEntityInterface;
+    readonly toAccount: AccountEntityInterface;
+}
+
+export const seedAccountPair = (input: AccountPairInput = {}): AccountPair => ({
+    fromAccount: seed.account({ externalId: 'mono-from', type: 'BANK_SYNC', instrumentId: 1, iban: input.fromIban ?? null }),
+    toAccount: seed.account({ externalId: 'mono-to', type: 'BANK_SYNC', instrumentId: 1, iban: input.toIban ?? null })
+});
+
 const PRECISION = 1_000_000;
 
 interface TransferPairFixtureInput {
@@ -18,8 +33,7 @@ interface TransferPairFixture {
 }
 
 export const seedTransferPairFixture = (input: TransferPairFixtureInput = {}): TransferPairFixture => {
-    const fromAccount = seed.account({ externalId: 'mono-from', type: 'BANK_SYNC', instrumentId: 1, iban: 'UA-FROM' });
-    const toAccount = seed.account({ externalId: 'mono-to', type: 'BANK_SYNC', instrumentId: 1, iban: 'UA-TO' });
+    const { fromAccount, toAccount } = seedAccountPair({ fromIban: 'UA-FROM', toIban: 'UA-TO' });
 
     const operatedAt = input.operatedAt ?? new Date(2026, 0, 15, 12, 0, 0);
     const amountMicro = (input.amount ?? 100) * PRECISION;
