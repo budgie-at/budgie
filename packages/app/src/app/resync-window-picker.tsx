@@ -19,38 +19,6 @@ const SEVEN_DAYS = 7;
 const THIRTY_DAYS = 30;
 const NINETY_DAYS = 90;
 
-const getOptionLabel = (option: ResyncWindowOptionInterface, t: (strings: TemplateStringsArray) => string): string => {
-    if (option.sinceDays === SEVEN_DAYS) {
-        return t`Last 7 days`;
-    }
-
-    if (option.sinceDays === THIRTY_DAYS) {
-        return t`Last 30 days`;
-    }
-
-    if (option.sinceDays === NINETY_DAYS) {
-        return t`Last 90 days`;
-    }
-
-    return t`Re-sync entire history`;
-};
-
-const getSuccessMessage = (option: ResyncWindowOptionInterface, t: (strings: TemplateStringsArray) => string): string => {
-    if (option.sinceDays === SEVEN_DAYS) {
-        return t`Re-sync of last 7 days will start on next sync.`;
-    }
-
-    if (option.sinceDays === THIRTY_DAYS) {
-        return t`Re-sync of last 30 days will start on next sync.`;
-    }
-
-    if (option.sinceDays === NINETY_DAYS) {
-        return t`Re-sync of last 90 days will start on next sync.`;
-    }
-
-    return t`Entire history will be re-synced on next sync.`;
-};
-
 export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
     const [, resolveResyncWindowPicker, currentParams] = useResyncWindowPickerModal();
@@ -59,12 +27,32 @@ export default function ResyncWindowPickerModal() {
     const accountId = currentParams?.accountId ?? 0;
     const containerStyle = { flex: 1, backgroundColor };
 
+    const labelByDays: Record<number, string> = {
+        [SEVEN_DAYS]: t`Last 7 days`,
+        [THIRTY_DAYS]: t`Last 30 days`,
+        [NINETY_DAYS]: t`Last 90 days`
+    };
+    const fullHistoryLabel = t`Re-sync entire history`;
+
+    const successMessageByDays: Record<number, string> = {
+        [SEVEN_DAYS]: t`Re-sync of last 7 days will start on next sync.`,
+        [THIRTY_DAYS]: t`Re-sync of last 30 days will start on next sync.`,
+        [NINETY_DAYS]: t`Re-sync of last 90 days will start on next sync.`
+    };
+    const fullHistorySuccessMessage = t`Entire history will be re-synced on next sync.`;
+
+    const resolveLabel = (option: ResyncWindowOptionInterface): string =>
+        isDefined(option.sinceDays) ? labelByDays[option.sinceDays] : fullHistoryLabel;
+
+    const resolveSuccessMessage = (option: ResyncWindowOptionInterface): string =>
+        isDefined(option.sinceDays) ? successMessageByDays[option.sinceDays] : fullHistorySuccessMessage;
+
     const handlePartialOptionPress = (option: ResyncWindowOptionInterface) => async () => {
         resolveResyncWindowPicker(null);
 
         try {
             await resyncBankSyncService.resync({ accountId, sinceDays: option.sinceDays });
-            Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: getSuccessMessage(option, t) });
+            Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: resolveSuccessMessage(option) });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });
         }
@@ -86,7 +74,7 @@ export default function ResyncWindowPickerModal() {
 
         try {
             await resyncBankSyncService.resync({ accountId, sinceDays: null });
-            Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: t`Entire history will be re-synced on next sync.` });
+            Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: fullHistorySuccessMessage });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });
         }
@@ -104,24 +92,25 @@ export default function ResyncWindowPickerModal() {
         <View style={containerStyle}>
             <FormsheetHeader size="md" title={t`Re-sync transactions`} description={t`Pick a window. Existing data is preserved.`} />
 
-            <ScrollView contentContainerClassName="px-3xl gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
                 {RESYNC_WINDOW_OPTIONS.map(option => {
-                    const label = getOptionLabel(option, t);
+                    const label = resolveLabel(option);
                     const { isDestructive } = option;
                     const labelClassName = isDestructive
-                        ? 'text-base font-semibold text-destructive-foreground'
-                        : 'text-base font-semibold text-foreground';
+                        ? 'text-md font-semibold text-destructive-foreground'
+                        : 'text-md font-semibold text-primary';
                     const iconVariant = isDestructive ? 'destructive' : 'primary';
 
                     return (
                         <HorizontalCell
                             key={String(option.sinceDays)}
+                            size="md"
                             onPress={handleOptionPress(option)}
                             left={<CircleIcon icon={option.icon} variant={iconVariant} size={40} iconSize={18} />}
                         >
                             <Text className={labelClassName}>{label}</Text>
                             {isDestructive ? (
-                                <Text className="text-sm text-secondary-foreground">
+                                <Text className="mt-1 text-sm text-secondary-foreground">
                                     <Trans>Resets all sync state</Trans>
                                 </Text>
                             ) : null}

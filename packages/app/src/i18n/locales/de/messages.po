@@ -289,8 +289,8 @@ msgstr "Bank-Synchronisation"
 msgid "Bank Sync"
 msgstr "Bank-Synchronisation"
 
-#: src/app/resync-window-picker.tsx:67
-#: src/app/resync-window-picker.tsx:89
+#: src/app/resync-window-picker.tsx:55
+#: src/app/resync-window-picker.tsx:77
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
 
@@ -322,7 +322,7 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
-#: src/app/resync-window-picker.tsx:80
+#: src/app/resync-window-picker.tsx:68
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
@@ -569,8 +569,8 @@ msgstr "Tag konnte nicht neu zugewiesen werden"
 msgid "Could not recalculate balances"
 msgstr "Salden konnten nicht neu berechnet werden"
 
-#: src/app/resync-window-picker.tsx:69
-#: src/app/resync-window-picker.tsx:91
+#: src/app/resync-window-picker.tsx:57
+#: src/app/resync-window-picker.tsx:79
 msgid "Could not reset bank sync"
 msgstr "Bank-Synchronisation konnte nicht zurückgesetzt werden"
 
@@ -899,7 +899,7 @@ msgstr "Geben Sie Ihren Monobank API-Token ein"
 msgid "Enter your PIN"
 msgstr "Geben Sie Ihre PIN ein"
 
-#: src/app/resync-window-picker.tsx:89
+#: src/app/resync-window-picker.tsx:42
 msgid "Entire history will be re-synced on next sync."
 msgstr "Gesamter Verlauf wird beim nächsten Sync neu synchronisiert."
 
@@ -1137,6 +1137,18 @@ msgstr "Italienisch (Italien)"
 #: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
 msgstr "Sprache"
+
+#: src/app/resync-window-picker.tsx:32
+msgid "Last 30 days"
+msgstr "Letzte 30 Tage"
+
+#: src/app/resync-window-picker.tsx:31
+msgid "Last 7 days"
+msgstr "Letzte 7 Tage"
+
+#: src/app/resync-window-picker.tsx:33
+msgid "Last 90 days"
+msgstr "Letzte 90 Tage"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
 msgid "Last error"
@@ -1471,7 +1483,7 @@ msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
 msgid "Physical cash on hand"
 msgstr "Physisches Bargeld"
 
-#: src/app/resync-window-picker.tsx:105
+#: src/app/resync-window-picker.tsx:93
 msgid "Pick a window. Existing data is preserved."
 msgstr "Wählen Sie einen Zeitraum. Vorhandene Daten bleiben erhalten."
 
@@ -1531,15 +1543,31 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
 
-#: src/app/resync-window-picker.tsx:77
+#: src/app/resync-window-picker.tsx:65
 msgid "Re-sync Bank Account?"
 msgstr "Bankkonto erneut synchronisieren?"
 
-#: src/app/resync-window-picker.tsx:79
+#: src/app/resync-window-picker.tsx:35
+msgid "Re-sync entire history"
+msgstr "Gesamten Verlauf neu synchronisieren"
+
+#: src/app/resync-window-picker.tsx:67
 msgid "Re-sync History"
 msgstr "Verlauf erneut synchronisieren"
 
-#: src/app/resync-window-picker.tsx:105
+#: src/app/resync-window-picker.tsx:39
+msgid "Re-sync of last 30 days will start on next sync."
+msgstr "Letzte 30 Tage werden beim nächsten Sync neu synchronisiert."
+
+#: src/app/resync-window-picker.tsx:38
+msgid "Re-sync of last 7 days will start on next sync."
+msgstr "Letzte 7 Tage werden beim nächsten Sync neu synchronisiert."
+
+#: src/app/resync-window-picker.tsx:40
+msgid "Re-sync of last 90 days will start on next sync."
+msgstr "Letzte 90 Tage werden beim nächsten Sync neu synchronisiert."
+
+#: src/app/resync-window-picker.tsx:93
 msgid "Re-sync transactions"
 msgstr "Transaktionen neu synchronisieren"
 
@@ -1584,7 +1612,7 @@ msgstr "Wiederkehrend"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
 
-#: src/app/resync-window-picker.tsx:125
+#: src/app/resync-window-picker.tsx:114
 msgid "Resets all sync state"
 msgstr "Setzt alle Sync-Daten zurück"
 
@@ -2022,7 +2050,7 @@ msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
 
-#: src/app/resync-window-picker.tsx:78
+#: src/app/resync-window-picker.tsx:66
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Dadurch wird der Synchronisationsverlauf zurückgesetzt und alle Transaktionen dieses Bankkontos erneut synchronisiert. Ihre bestehenden Transaktionen, Tags und Kategorien bleiben erhalten und werden mit neuen Daten aktualisiert."
 
