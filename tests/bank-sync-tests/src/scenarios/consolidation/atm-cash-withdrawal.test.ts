@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankExpense, setupScenario } from '../../harness';
 
@@ -13,7 +13,7 @@ const PRECISION = 1_000_000;
 const seedAtmExpense = (bankAccountId: number) =>
     seedBankExpense({
         accountId: bankAccountId,
-        amountMicro: 500 * PRECISION,
+        amount: 500 * PRECISION,
         operatedAt: new Date(2026, 0, 15, 12, 0, 0),
         externalId: 'tx-atm',
         mccCategoryId: findMccByCode('6011').id
@@ -21,8 +21,8 @@ const seedAtmExpense = (bankAccountId: number) =>
 
 describe('consolidation/atm-cash-withdrawal', () => {
     it('promotes an MCC=6011 expense into a TRANSFER to the unique cash account in the same currency', async () => {
-        const bankAccount = seed.account({ externalId: 'mono-bank', type: 'BANK_SYNC', instrumentId: 1 });
-        const cashAccount = seed.account({ title: 'Cash', type: 'CASH', instrumentId: 1 });
+        const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+        const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         const expense = seedAtmExpense(bankAccount.id);
 
         const result = await transferConsolidationService.consolidate();
@@ -38,9 +38,9 @@ describe('consolidation/atm-cash-withdrawal', () => {
     });
 
     it('does NOT auto-consolidate when more than one cash account shares the currency', async () => {
-        const bankAccount = seed.account({ externalId: 'mono-bank', type: 'BANK_SYNC', instrumentId: 1 });
-        seed.account({ title: 'Cash 1', type: 'CASH', instrumentId: 1 });
-        seed.account({ title: 'Cash 2', type: 'CASH', instrumentId: 1 });
+        const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+        seed.account({ title: 'Cash 1', type: AccountTypeEnum.CASH, instrumentId: 1 });
+        seed.account({ title: 'Cash 2', type: AccountTypeEnum.CASH, instrumentId: 1 });
         seedAtmExpense(bankAccount.id);
 
         const result = await transferConsolidationService.consolidate();

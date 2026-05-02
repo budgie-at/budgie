@@ -1,54 +1,73 @@
-import { TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import {
+    ExternalSourceEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { insertOne } from './insert-one';
 
-import type { TransactionEntityInterface } from '@budgie/contracts';
+import type {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface
+} from '@budgie/contracts';
 
-interface BankSideInput {
-    readonly accountId: number;
-    readonly amountMicro: number;
-    readonly operatedAt: Date;
+type BankSideInput = Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'amount'> & {
     readonly externalId: string;
-    readonly counterIban?: string | null;
+    readonly operatedAt: Date;
     readonly mccCategoryId?: number | null;
     readonly exchangeRate?: number;
-}
+    readonly toIban?: string | null;
+};
 
 interface SeedBankSideShape {
-    readonly type: 'EXPENSE' | 'INCOME';
-    readonly entryType: 'CREDIT' | 'DEBIT';
+    readonly type: TransactionTypeEnum;
+    readonly entryType: TransactionEntryTypeEnum;
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
 }
 
 const seedBankSide = (input: BankSideInput, shape: SeedBankSideShape): TransactionEntityInterface => {
-    const transaction = insertOne<TransactionEntityInterface>(TransactionEntityTable, {
+    const transaction = insertOne(TransactionEntityTable, {
         type: shape.type,
         title: `${shape.type} ${input.externalId}`,
         externalId: input.externalId,
-        externalSource: 'MONOBANK',
+        externalSource: ExternalSourceEnum.MONOBANK,
         operatedAt: input.operatedAt,
         exchangeRate: input.exchangeRate ?? 1,
         fromAccountId: shape.fromAccountId,
         toAccountId: shape.toAccountId,
         comment: ''
-    });
+    } satisfies TransactionCreateEntityInterface);
     insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
         accountId: input.accountId,
         type: shape.entryType,
-        amount: input.amountMicro,
+        amount: input.amount,
         externalId: input.externalId,
         exchangeRate: input.exchangeRate ?? 1,
-        toIban: input.counterIban ?? null,
+        toIban: input.toIban ?? null,
+        categoryId: null,
         mccCategoryId: input.mccCategoryId ?? null,
         originalTransactionId: null
-    });
+    } satisfies TransactionEntryCreateEntityInterface);
     return transaction;
 };
 
 export const seedBankExpense = (input: BankSideInput): TransactionEntityInterface =>
-    seedBankSide(input, { type: 'EXPENSE', entryType: 'CREDIT', fromAccountId: input.accountId, toAccountId: null });
+    seedBankSide(input, {
+        type: TransactionTypeEnum.EXPENSE,
+        entryType: TransactionEntryTypeEnum.CREDIT,
+        fromAccountId: input.accountId,
+        toAccountId: null
+    });
 
 export const seedBankIncome = (input: BankSideInput): TransactionEntityInterface =>
-    seedBankSide(input, { type: 'INCOME', entryType: 'DEBIT', fromAccountId: null, toAccountId: input.accountId });
+    seedBankSide(input, {
+        type: TransactionTypeEnum.INCOME,
+        entryType: TransactionEntryTypeEnum.DEBIT,
+        fromAccountId: null,
+        toAccountId: input.accountId
+    });

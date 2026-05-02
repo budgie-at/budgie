@@ -21,14 +21,14 @@ describe('consolidation/manual-review-classification', () => {
 
         seedBankExpense({
             accountId: fromAccount.id,
-            amountMicro: 250 * PRECISION,
+            amount: 250 * PRECISION,
             operatedAt,
             externalId: 'tx-expense',
             mccCategoryId: transferMcc.id
         });
         seedBankIncome({
             accountId: toAccount.id,
-            amountMicro: 250 * PRECISION,
+            amount: 250 * PRECISION,
             operatedAt: slow,
             externalId: 'tx-income',
             mccCategoryId: transferMcc.id
