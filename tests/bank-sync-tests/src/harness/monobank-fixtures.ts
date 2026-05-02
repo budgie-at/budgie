@@ -1,28 +1,22 @@
-interface MonobankAccountStub {
-    readonly id: string;
-    readonly sendId: string;
-    readonly currencyCode: number;
-    readonly cashbackType: string;
-    readonly balance: number;
-    readonly creditLimit: number;
-    readonly maskedPan: string[];
-    readonly type: string;
-    readonly iban: string;
-}
+import { MonobankAccountTypeEnum, MonobankCashbackTypeEnum } from '@budgie/bank-sync';
 
-const buildMonobankAccount = (overrides: Partial<MonobankAccountStub> & Pick<MonobankAccountStub, 'id'>): MonobankAccountStub => ({
+import type { MonobankAccountApiInterface, MonobankClientInfoApiInterface, MonobankTransactionApiInterface } from '@budgie/bank-sync';
+
+const buildMonobankAccount = (
+    overrides: Partial<MonobankAccountApiInterface> & Pick<MonobankAccountApiInterface, 'id'>
+): MonobankAccountApiInterface => ({
     sendId: 'send-1',
     currencyCode: 980,
-    cashbackType: 'None',
+    cashbackType: MonobankCashbackTypeEnum.NONE,
     balance: 0,
     creditLimit: 0,
     maskedPan: ['*1234'],
-    type: 'black',
+    type: MonobankAccountTypeEnum.BLACK,
     iban: 'UA000000000000000000000000000',
     ...overrides
 });
 
-export const buildMonobankClientInfoWith = (accountIds: string[]) => ({
+export const buildMonobankClientInfoWith = (accountIds: string[]): MonobankClientInfoApiInterface => ({
     clientId: 'c1',
     name: 'Test',
     webHookUrl: '',
@@ -31,13 +25,9 @@ export const buildMonobankClientInfoWith = (accountIds: string[]) => ({
     jars: []
 });
 
-interface MonobankTxRequired {
-    readonly id: string;
-    readonly amount: number;
-    readonly hold: boolean;
-}
+type MonobankTxOverrides = Partial<MonobankTransactionApiInterface> & Pick<MonobankTransactionApiInterface, 'id' | 'amount' | 'hold'>;
 
-export const buildMonobankTx = (overrides: MonobankTxRequired & Record<string, unknown>): Record<string, unknown> => ({
+export const buildMonobankTx = (overrides: MonobankTxOverrides): MonobankTransactionApiInterface => ({
     time: Math.floor(Date.now() / 1000),
     description: 'Test transaction',
     mcc: 5411,
