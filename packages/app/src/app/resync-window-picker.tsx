@@ -109,8 +109,8 @@ export default function ResyncWindowPickerModal() {
                     const label = getOptionLabel(option, t);
                     const { isDestructive } = option;
                     const labelClassName = isDestructive
-                        ? 'text-destructive-foreground text-md font-semibold'
-                        : 'text-primary text-md font-semibold';
+                        ? 'text-base font-semibold text-destructive-foreground'
+                        : 'text-base font-semibold text-foreground';
                     const iconVariant = isDestructive ? 'destructive' : 'primary';
 
                     return (
@@ -121,7 +121,7 @@ export default function ResyncWindowPickerModal() {
                         >
                             <Text className={labelClassName}>{label}</Text>
                             {isDestructive ? (
-                                <Text className="text-secondary-foreground text-sm">
+                                <Text className="text-sm text-secondary-foreground">
                                     <Trans>Resets all sync state</Trans>
                                 </Text>
                             ) : null}

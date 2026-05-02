@@ -289,11 +289,8 @@ msgstr "Синхронізація банку"
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:45
-msgid "Bank sync has been reset. History will be re-synced on next sync."
-msgstr "Синхронізацію з банком скинуто. Історію буде повторно синхронізовано під час наступної синхронізації."
-
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:44
+#: src/app/resync-window-picker.tsx:67
+#: src/app/resync-window-picker.tsx:89
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
 
@@ -325,12 +322,12 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
+#: src/app/resync-window-picker.tsx:80
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:24
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:63
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 msgid "Cancel"
@@ -572,7 +569,8 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:50
+#: src/app/resync-window-picker.tsx:69
+#: src/app/resync-window-picker.tsx:91
 msgid "Could not reset bank sync"
 msgstr "Не вдалося скинути синхронізацію з банком"
 
@@ -900,6 +898,10 @@ msgstr "Введіть ваш API-токен Монобанку"
 #: src/app/(main)/pin.tsx:116
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
+
+#: src/app/resync-window-picker.tsx:89
+msgid "Entire history will be re-synced on next sync."
+msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
 msgid "Errors"
@@ -1469,6 +1471,10 @@ msgstr "Відмовлено в доступі до контактів."
 msgid "Physical cash on hand"
 msgstr "Фізична готівка"
 
+#: src/app/resync-window-picker.tsx:105
+msgid "Pick a window. Existing data is preserved."
+msgstr "Оберіть період. Наявні дані буде збережено."
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1525,13 +1531,17 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:21
+#: src/app/resync-window-picker.tsx:77
 msgid "Re-sync Bank Account?"
 msgstr "Повторно синхронізувати банківський рахунок?"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:23
+#: src/app/resync-window-picker.tsx:79
 msgid "Re-sync History"
 msgstr "Повторно синхронізувати історію"
+
+#: src/app/resync-window-picker.tsx:105
+msgid "Re-sync transactions"
+msgstr "Повторна синхронізація транзакцій"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
@@ -1573,6 +1583,10 @@ msgstr "Регулярні"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
+
+#: src/app/resync-window-picker.tsx:125
+msgid "Resets all sync state"
+msgstr "Скидає весь стан синхронізації"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Restore"
@@ -2008,7 +2022,7 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:22
+#: src/app/resync-window-picker.tsx:78
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
 
