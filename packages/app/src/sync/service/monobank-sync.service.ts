@@ -290,9 +290,8 @@ class AppMonobankSyncService {
         }
 
         const existingIds = await transactionService.findByExternalSource(this.provider);
-        const validTransactions = transactions.filter(bankTransaction => !bankTransaction.hold);
-        const newTransactions = validTransactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
-        const existingTransactions = validTransactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
+        const newTransactions = transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
+        const existingTransactions = transactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
 
         const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId);
         const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
