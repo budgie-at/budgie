@@ -26,7 +26,8 @@
         "packages/app/src/category/enum/system-category-id.enum.ts",
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
-        "packages/app/scripts/snapshot-monthly-patterns.ts"
+        "packages/app/scripts/snapshot-monthly-patterns.ts",
+        "tests/bank-sync-tests/src/harness/__shims__/**"
     ],
     "ignoreDependencies": [
         "husky",
