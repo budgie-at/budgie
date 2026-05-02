@@ -3,18 +3,15 @@ import { eq } from 'drizzle-orm';
 
 import { TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatement, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
-setupScenario();
-
 describe('monobank/cross-currency-exchange-rate', () => {
     it('computes exchangeRate as amount/operationAmount when currencies differ', async () => {
-        // 100 USD spent in card currency = 4100 UAH at the bank's rate ⇒ rate 41
         setupMonobankFixture();
-        stubStatement([
-            buildMonobankTx({
+        monobankStub.statement([
+            buildMonobank.transaction({
                 id: 'tx-fx',
                 amount: -410000,
                 operationAmount: -10000,
@@ -34,7 +31,7 @@ describe('monobank/cross-currency-exchange-rate', () => {
 
     it('keeps exchangeRate=1 when amount equals operationAmount', async () => {
         setupMonobankFixture();
-        stubStatement([buildMonobankTx({ id: 'tx-same-currency', amount: -10000, operationAmount: -10000, hold: false })]);
+        monobankStub.statement([buildMonobank.transaction({ id: 'tx-same-currency', amount: -10000, operationAmount: -10000, hold: false })]);
 
         await monobankSyncService.sync();
 
