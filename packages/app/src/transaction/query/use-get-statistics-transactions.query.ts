@@ -15,8 +15,9 @@ const DEFAULT_LIMIT = 20;
 export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
     const { formatMonthAndYear } = useFormatDate();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
+    const filterKey = JSON.stringify(filters);
 
-    const { data, error, updatedAt } = useLiveQuery(statisticsRepository.getTransactions(filters, loadedCount + 1), [loadedCount, filters]);
+    const { data, error, updatedAt } = useLiveQuery(statisticsRepository.getTransactions(filters, loadedCount + 1), [loadedCount, filterKey]);
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
