@@ -160,10 +160,6 @@ export class BankSyncRepository {
         await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({
-                mode: BankSyncModeEnum.FORWARD,
-                status: BankSyncStatusEnum.IDLE,
-                backwardSyncFromAt: since,
-                backwardSyncedAt: since,
                 forwardSyncFromAt: since,
                 forwardSyncedAt: null
             })
