@@ -186,7 +186,7 @@ msgstr "Усі"
 msgid "All columns have been assigned"
 msgstr "Усі стовпці було призначено"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:161
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:154
 msgid "All Recurring"
 msgstr "Усі регулярні"
 
@@ -271,7 +271,7 @@ msgstr "Доступні стовпці"
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/app/(main)/analytics/transactions.tsx:80
+#: src/app/(main)/analytics/transactions.tsx:81
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
@@ -341,7 +341,7 @@ msgid "Cash"
 msgstr "Готівка"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:81
+#: src/app/(main)/analytics/transactions.tsx:82
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -717,7 +717,7 @@ msgstr "Базу даних експортовано"
 msgid "Date"
 msgstr "Дата"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:124
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:117
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
 
@@ -930,7 +930,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Expenses"
 msgstr "Витрати"
 
@@ -1098,7 +1098,7 @@ msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
@@ -1140,9 +1140,17 @@ msgstr "Мова"
 msgid "Last error"
 msgstr "Остання помилка"
 
+#: src/@generic/constant/date-period.constant.ts:11
+msgid "Last Month"
+msgstr "Минулого місяця"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Last sync"
 msgstr "Остання синхронізація"
+
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "Last Week"
+msgstr "Минулого тижня"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
@@ -1225,7 +1233,7 @@ msgstr "Монобанк"
 msgid "Monthly Costs"
 msgstr "Місячні витрати"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:102
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:95
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
 
@@ -1324,12 +1332,12 @@ msgstr "Жоден неактивний рахунок не відповідає
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/app/(main)/analytics/transactions.tsx:88
+#: src/app/(main)/analytics/transactions.tsx:89
 #: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:138
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:131
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
 msgid "No recurring payments detected"
 msgstr "Повторювані платежі не виявлено"
@@ -1964,7 +1972,7 @@ msgstr "Ця категорія має транзакції. Виберіть і
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
-#: src/@generic/constant/date-period.constant.ts:9
+#: src/@generic/constant/date-period.constant.ts:10
 msgid "This Month"
 msgstr "Цього місяця"
 
@@ -2004,7 +2012,7 @@ msgstr "Це конвертує дохід у переказ між рахунк
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
 
-#: src/@generic/constant/date-period.constant.ts:10
+#: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
 msgstr "Цього року"
 
@@ -2063,7 +2071,7 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -2113,7 +2121,7 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/app/(main)/analytics/transactions.tsx:90
+#: src/app/(main)/analytics/transactions.tsx:91
 #: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
@@ -2136,7 +2144,7 @@ msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -2160,6 +2168,7 @@ msgid "Unknown"
 msgstr "Невідомо"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Untagged"
 msgstr "Без тегу"
 
@@ -2167,7 +2176,7 @@ msgstr "Без тегу"
 msgid "Up to date"
 msgstr "Актуальний"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:150
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:143
 msgid "Upcoming"
 msgstr "Незабаром"
 
