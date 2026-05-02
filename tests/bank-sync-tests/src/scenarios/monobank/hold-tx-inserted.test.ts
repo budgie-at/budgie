@@ -3,11 +3,7 @@ import { eq } from 'drizzle-orm';
 
 import { TransactionEntityTable } from '@budgie/contracts';
 
-import { buildMonobankTx } from '../../harness/monobank-fixtures';
-import { stubStatement } from '../../harness/monobank-server';
-import { setupMonobankFixture } from '../../harness/setup-monobank-fixture';
-import { setupScenario } from '../../harness/setup-scenario';
-import { testDb } from '../../harness/setup';
+import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatement, testDb } from '../../harness';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
