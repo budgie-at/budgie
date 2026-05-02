@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.11.0](https://github.com/budgie-at/budgie/compare/v5.10.0...v5.11.0) (2026-05-02)
+
+### Bug Fixes
+
+- **app,contracts:** trigger immediate sync after windowed reset; fix lint+cpd ([100e684](https://github.com/budgie-at/budgie/commit/100e684c211902a514ea94696e66e5a1085ad91e)), closes [#32](https://github.com/budgie-at/budgie/issues/32) [#35](https://github.com/budgie-at/budgie/issues/35)
+- **app,contracts:** unbreak monobank sync hold + consolidation churn ([0861b18](https://github.com/budgie-at/budgie/commit/0861b18ea5c4f451c8b0f516ae6085fa976c284c))
+- **contracts:** windowed resync only moves forwardSyncFromAt backwards ([6594603](https://github.com/budgie-at/budgie/commit/659460327bc898e56e503137bffaee6e1716c69d))
+
+### Features
+
+- **contracts:** add windowed resync helpers for bank-sync ([c572a93](https://github.com/budgie-at/budgie/commit/c572a93115c7959badd511b540158ad17d3286b6))
+
 # [5.9.0](https://github.com/budgie-at/budgie/compare/v5.8.1...v5.9.0) (2026-05-02)
 
 ### Features
