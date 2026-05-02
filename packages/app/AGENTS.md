@@ -458,6 +458,19 @@ const { data, error, updatedAt } = useLiveQuery(
 );
 ```
 
+**`useLiveQuery` deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
+
+```typescript
+// Bad — filters is a fresh object each render → query re-runs every render
+useLiveQuery(repo.find(filters, limit), [limit, filters]);
+
+// Good — derive a stable key (string or primitive) from filters
+const filterKey = JSON.stringify(filters); // or a dedicated buildXxxFilterKey util
+useLiveQuery(repo.find(filters, limit), [limit, filterKey]);
+```
+
+If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding a `buildXxxFilterKey` util alongside it (mirrors `buildTransactionFilterKey`) so callers can't forget.
+
 ### Drizzle ORM
 
 - **Prefer**: `db.query.[Entity].findMany/findFirst`
