@@ -150,6 +150,26 @@ export class BankSyncRepository {
             .where(eq(BankSyncEntityTable.accountId, accountId));
     }
 
+    @Log(
+        (accountId, since, tx) => `enter accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (_result, accountId, since, tx) => `done accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (error, accountId, since, tx) =>
+            `throw accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async resetForWindowedResync(accountId: number, since: Date, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(BankSyncEntityTable)
+            .set({
+                mode: BankSyncModeEnum.FORWARD,
+                status: BankSyncStatusEnum.IDLE,
+                backwardSyncFromAt: since,
+                backwardSyncedAt: since,
+                forwardSyncFromAt: since,
+                forwardSyncedAt: null
+            })
+            .where(eq(BankSyncEntityTable.accountId, accountId));
+    }
+
     async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(BankSyncEntityTable);
     }
