@@ -255,22 +255,34 @@ class TransactionService {
             return;
         }
 
-        const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
+        const existingEntry = await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx);
+
+        if (!isDefined(existingEntry)) {
+            return;
+        }
+
+        const nextAmount = convertToMicroUnits(entry.amount);
+
+        if (
+            existingEntry.amount === nextAmount &&
+            existingEntry.exchangeRate === entry.exchangeRate &&
+            existingEntry.toIban === entry.toIban
+        ) {
+            return;
+        }
+
+        await transactionEntryRepository.updateByExternalIdAndAccountId(
             entry.externalId,
             entry.accountId,
             {
-                amount: convertToMicroUnits(entry.amount),
+                amount: nextAmount,
                 exchangeRate: entry.exchangeRate,
                 toIban: entry.toIban
             },
             tx
         );
 
-        if (!isDefined(updatedEntry)) {
-            return;
-        }
-
-        const metadataTransactionId = updatedEntry.originalTransactionId ?? updatedEntry.transactionId;
+        const metadataTransactionId = existingEntry.originalTransactionId ?? existingEntry.transactionId;
 
         await transactionRepository.updateById(
             metadataTransactionId,
@@ -281,10 +293,6 @@ class TransactionService {
             },
             tx
         );
-
-        if (isDefined(updatedEntry.originalTransactionId)) {
-            await unconsolidateByIdInTransaction(updatedEntry.transactionId, tx);
-        }
     }
 }
 export const transactionService = new TransactionService();
