@@ -254,29 +254,22 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         if (isEmptyArray(accountIds)) {
             return [];
         }
-
         const runner = tx ?? this.db;
-        const movedSourceCanonicalIds = runner
-            .select({ transactionId: TransactionEntryEntityTable.transactionId })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.originalTransactionId, TransactionEntityTable.id))
-            .where(
-                and(
-                    inArray(TransactionEntryEntityTable.accountId, accountIds),
-                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    gte(TransactionEntityTable.operatedAt, since)
-                )
-            );
-
         return await runner
-            .select({ id: TransactionEntityTable.id })
+            .selectDistinct({ id: TransactionEntityTable.id })
             .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .where(
                 and(
                     isNotNull(TransactionEntityTable.consolidationType),
                     isNull(TransactionEntityTable.deletedAt),
-                    inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    gte(
+                        sql<Date>`(SELECT operated_at FROM ${TransactionEntityTable} WHERE id = ${TransactionEntryEntityTable.originalTransactionId})`,
+                        since
+                    )
                 )
             );
     }

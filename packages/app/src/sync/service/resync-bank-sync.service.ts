@@ -1,13 +1,15 @@
 import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { bankSyncRepository, db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
-import type { DB } from '@budgie/contracts';
+import { monobankSyncService } from './monobank-sync.service';
+
 import type { ResyncBankSyncInputInterface } from '../interface/resync-bank-sync-input.interface';
+import type { DB } from '@budgie/contracts';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -25,6 +27,8 @@ class ResyncBankSyncService {
                 await this.resyncFull(input.accountId, tx);
             }
         });
+
+        monobankSyncService.sync().catch(emptyFn);
     }
 
     private async resyncFull(accountId: number, tx: DB): Promise<void> {
