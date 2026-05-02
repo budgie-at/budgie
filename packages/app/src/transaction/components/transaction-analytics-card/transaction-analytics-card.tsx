@@ -51,11 +51,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
                     {heroAmount}
                 </ProtectedText>
                 {isAbbreviated ? (
-                    <ProtectedText
-                        numberOfLines={1}
-                        style={TABULAR_NUMS_STYLE}
-                        className="text-secondary-foreground text-xxs text-center"
-                    >
+                    <ProtectedText numberOfLines={1} style={TABULAR_NUMS_STYLE} className="text-secondary-foreground text-xxs text-center">
                         {fullAmount}
                     </ProtectedText>
                 ) : null}
