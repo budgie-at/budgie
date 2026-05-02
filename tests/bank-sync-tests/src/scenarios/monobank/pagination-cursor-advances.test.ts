@@ -6,7 +6,7 @@ import { BankSyncEntityTable, ExternalSourceEnum, TransactionEntityTable } from 
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
 import { buildMonobankTx, setupMonobankFixture, setupScenario, testDb } from '../../harness';
-import { monobankServer } from '../../harness/monobank-server';
+import { monobankServer } from '../../harness/monobank/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
@@ -27,11 +27,9 @@ const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
 
 describe('monobank/pagination-cursor-advances', () => {
     it('processes a 500-row page, advances the cursor, and continues until the next page is empty', async () => {
-        const { bankSync } = setupMonobankFixture({ forwardSyncFromAt: new Date(2025, 0, 1) });
+        const { bankSync } = setupMonobankFixture(undefined, undefined, new Date(2025, 0, 1));
 
         const batches = [buildBatch(0)];
-        // msw applies handlers in reverse-registration order, so register the default first
-        // and then push each one-shot batch on top so they fire in caller order
         monobankServer.use(http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => HttpResponse.json([])));
         for (const batch of [...batches].reverse()) {
             monobankServer.use(

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import * as schema from '@app/@generic/drizzle/db/schema';
 
 const here = resolve(fileURLToPath(import.meta.url), '..');
-const migrationsFolder = resolve(here, '../../../../packages/app/drizzle');
+const migrationsFolder = resolve(here, '../../../../../packages/app/drizzle');
 
 type TestDb = BetterSQLite3Database<typeof schema>;
 

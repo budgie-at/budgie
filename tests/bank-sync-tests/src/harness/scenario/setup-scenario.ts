@@ -1,7 +1,7 @@
 import { beforeEach } from 'vitest';
 
-import { resetSingletons } from './reset-singletons';
-import { resetTestDb } from './reset-test-db';
+import { resetSingletons } from '../db/reset-singletons';
+import { resetTestDb } from '../db/reset-test-db';
 
 export const setupScenario = (): void => {
     beforeEach(() => {

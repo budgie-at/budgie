@@ -11,7 +11,7 @@ setupScenario();
 const PRECISION = 1_000_000;
 
 const seedTimeWindowPair = (incomeOffsetSeconds: number): void => {
-    const { fromAccount, toAccount } = seedAccountPair({ fromIban: 'UA-FROM', toIban: 'UA-TO' });
+    const { fromAccount, toAccount } = seedAccountPair('UA-FROM', 'UA-TO');
     const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
 
     seedBankExpense({

@@ -1,6 +1,6 @@
 import { vi, afterAll, afterEach, beforeAll } from 'vitest';
 
-import { buildTestDb } from './build-test-db';
+import { buildTestDb } from '../db/build-test-db';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { enqueue: vi.fn() }
@@ -47,7 +47,7 @@ vi.mock('@budgie/contracts', async importOriginal => {
     };
 });
 
-import { monobankServer } from './monobank-server';
+import { monobankServer } from '../monobank/monobank-server';
 
 beforeAll(() => {
     monobankServer.listen({ onUnhandledRequest: 'error' });

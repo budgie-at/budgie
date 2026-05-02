@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { insertOne } from './insert-one';
+import { insertOne } from '../db/insert-one';
 
 import type {
     TransactionCreateEntityInterface,
