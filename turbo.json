@@ -23,8 +23,11 @@
             "dependsOn": ["^build"],
             "outputs": ["dist/**", ".next/**"]
         },
-        "test": {},
+        "test": {
+            "dependsOn": ["^build"]
+        },
         "test:coverage": {
+            "dependsOn": ["^build"],
             "outputs": ["coverage/**"]
         },
         "//#cpd": {
