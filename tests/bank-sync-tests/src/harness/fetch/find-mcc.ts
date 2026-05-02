@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 
 import { MccCategoryEntityTable } from '@budgie/contracts';
 
-import { testDb } from './setup';
+import { testDb } from '../scenario/setup';
 
 import type { MccCategoryEntityInterface } from '@budgie/contracts';
 

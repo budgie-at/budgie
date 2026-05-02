@@ -6,11 +6,32 @@ const here = (relative: string) => resolve(__dirname, relative);
 const VIRTUAL_PREFIX = '\0virtual:';
 
 const VIRTUAL_SHIMS: Record<string, string> = {
-    'drizzle-orm/expo-sqlite': 'export const drizzle = () => ({});',
-    'expo-secure-store': 'export const getItem = () => null;'
+    'drizzle-orm/expo-sqlite': `export const drizzle = () => ({});`,
+    'expo-secure-store': `export const getItem = () => null;`,
+    'expo-sqlite': `
+        export const openDatabaseSync = () => ({});
+        export const deleteDatabaseAsync = async () => undefined;
+        export const bundledExtensions = {};
+    `,
+    'expo-background-task': `
+        export const BackgroundTaskResult = Object.freeze({ Success: 'success', Failed: 'failed' });
+        export const registerTaskAsync = async () => undefined;
+    `,
+    'expo-task-manager': `
+        export const isTaskRegisteredAsync = async () => true;
+        export const defineTask = () => undefined;
+        export const unregisterTaskAsync = async () => undefined;
+    `,
+    'react-native': `
+        export const InteractionManager = {
+            runAfterInteractions(cb) {
+                cb();
+                return { cancel: () => undefined };
+            }
+        };
+    `
 };
 
-// enforce 'pre' so we resolve before vite's alias plugin and node_modules
 const inlineShimPlugin = (): Plugin => ({
     name: 'inline-shim',
     enforce: 'pre',
@@ -32,18 +53,12 @@ const inlineShimPlugin = (): Plugin => ({
 export default defineConfig({
     plugins: [inlineShimPlugin()],
     resolve: {
-        alias: [
-            { find: /^@app\/(.*)$/, replacement: here('../../packages/app/src/$1') },
-            { find: /^expo-sqlite$/, replacement: here('src/harness/shims/expo-sqlite.ts') },
-            { find: /^expo-background-task$/, replacement: here('src/harness/shims/expo-background-task.ts') },
-            { find: /^expo-task-manager$/, replacement: here('src/harness/shims/expo-task-manager.ts') },
-            { find: /^react-native$/, replacement: here('src/harness/shims/react-native.ts') }
-        ]
+        alias: [{ find: /^@app\/(.*)$/, replacement: here('../../packages/app/src/$1') }]
     },
     test: {
         environment: 'node',
         globals: false,
-        setupFiles: [here('src/harness/setup.ts')],
+        setupFiles: [here('src/harness/scenario/setup.ts')],
         include: ['src/scenarios/**/*.test.ts'],
         pool: 'forks',
         poolOptions: { forks: { singleFork: true } }

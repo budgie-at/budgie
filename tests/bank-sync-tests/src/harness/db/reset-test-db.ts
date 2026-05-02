@@ -3,7 +3,7 @@ import { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
 import * as schema from '@app/@generic/drizzle/db/schema';
 
-import { testDb } from './setup';
+import { testDb } from '../scenario/setup';
 
 const REFERENCE_TABLES = new Set(['instruments', 'mcc_groups', 'mcc_categories', 'categories', 'settings']);
 

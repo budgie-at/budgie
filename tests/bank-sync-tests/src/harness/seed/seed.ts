@@ -12,7 +12,7 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 
-import { insertOne } from './insert-one';
+import { insertOne } from '../db/insert-one';
 
 import type {
     AccountCreateEntityInterface,
