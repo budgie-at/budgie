@@ -1,4 +1,4 @@
-declare module 'whisper.rn/realtime-transcription' {
+declare module 'whisper.rn/src/realtime-transcription' {
     export interface AudioStreamData {
         readonly data: Uint8Array;
         readonly sampleRate: number;

@@ -2,7 +2,7 @@ import { BUFFER_LENGTH, SAMPLE_RATE } from '@budgie/ai';
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
-import { RealtimeTranscribeEvent, RealtimeTranscriber } from 'whisper.rn/realtime-transcription';
+import { RealtimeTranscribeEvent, RealtimeTranscriber } from 'whisper.rn/src/realtime-transcription';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
