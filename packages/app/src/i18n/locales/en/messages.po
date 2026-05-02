@@ -188,7 +188,7 @@ msgstr "All"
 msgid "All columns have been assigned"
 msgstr "All columns have been assigned"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:161
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:154
 msgid "All Recurring"
 msgstr "All Recurring"
 
@@ -273,7 +273,7 @@ msgstr "Available Columns"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/app/(main)/analytics/transactions.tsx:80
+#: src/app/(main)/analytics/transactions.tsx:81
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
@@ -343,7 +343,7 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:81
+#: src/app/(main)/analytics/transactions.tsx:82
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -719,7 +719,7 @@ msgstr "Database exported"
 msgid "Date"
 msgstr "Date"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:124
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:117
 msgid "Day {selectedDay}"
 msgstr "Day {selectedDay}"
 
@@ -932,7 +932,7 @@ msgstr "Expected Return Date (Optional)"
 msgid "Expense"
 msgstr "Expense"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Expenses"
 msgstr "Expenses"
 
@@ -1100,7 +1100,7 @@ msgstr "Include in Net Worth"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Income"
@@ -1142,9 +1142,17 @@ msgstr "Language"
 msgid "Last error"
 msgstr "Last error"
 
+#: src/@generic/constant/date-period.constant.ts:11
+msgid "Last Month"
+msgstr "Last Month"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Last sync"
 msgstr "Last sync"
+
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "Last Week"
+msgstr "Last Week"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
@@ -1227,7 +1235,7 @@ msgstr "Monobank"
 msgid "Monthly Costs"
 msgstr "Monthly Costs"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:102
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:95
 msgid "Monthly Total"
 msgstr "Monthly Total"
 
@@ -1326,12 +1334,12 @@ msgstr "No inactive accounts match your search"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/app/(main)/analytics/transactions.tsx:88
+#: src/app/(main)/analytics/transactions.tsx:89
 #: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:138
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:131
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
 msgid "No recurring payments detected"
 msgstr "No recurring payments detected"
@@ -1966,7 +1974,7 @@ msgstr "This category has transactions. Select another category to reassign them
 msgid "This consolidated transfer has no moved source entries."
 msgstr "This consolidated transfer has no moved source entries."
 
-#: src/@generic/constant/date-period.constant.ts:9
+#: src/@generic/constant/date-period.constant.ts:10
 msgid "This Month"
 msgstr "This Month"
 
@@ -2006,7 +2014,7 @@ msgstr "This will convert the income to a transfer between accounts."
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 
-#: src/@generic/constant/date-period.constant.ts:10
+#: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
 msgstr "This Year"
 
@@ -2065,7 +2073,7 @@ msgid "Transaction not found"
 msgstr "Transaction not found"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
 msgid "Transactions"
 msgstr "Transactions"
 
@@ -2115,7 +2123,7 @@ msgstr "Try a different search term"
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
-#: src/app/(main)/analytics/transactions.tsx:90
+#: src/app/(main)/analytics/transactions.tsx:91
 #: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
@@ -2138,7 +2146,7 @@ msgid "Ukrainian"
 msgstr "Ukrainian"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
@@ -2162,6 +2170,7 @@ msgid "Unknown"
 msgstr "Unknown"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Untagged"
 msgstr "Untagged"
 
@@ -2169,7 +2178,7 @@ msgstr "Untagged"
 msgid "Up to date"
 msgstr "Up to date"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:150
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:143
 msgid "Upcoming"
 msgstr "Upcoming"
 

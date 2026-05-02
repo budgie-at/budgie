@@ -186,7 +186,7 @@ msgstr "Todos"
 msgid "All columns have been assigned"
 msgstr "Todas las columnas han sido asignadas"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:161
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:154
 msgid "All Recurring"
 msgstr "Todos los recurrentes"
 
@@ -271,7 +271,7 @@ msgstr "Columnas disponibles"
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/app/(main)/analytics/transactions.tsx:80
+#: src/app/(main)/analytics/transactions.tsx:81
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
@@ -341,7 +341,7 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:81
+#: src/app/(main)/analytics/transactions.tsx:82
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -717,7 +717,7 @@ msgstr "Base de datos exportada"
 msgid "Date"
 msgstr "Fecha"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:124
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:117
 msgid "Day {selectedDay}"
 msgstr "Día {selectedDay}"
 
@@ -930,7 +930,7 @@ msgstr "Fecha de devolución esperada (Opcional)"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:37
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Expenses"
 msgstr "Gastos"
 
@@ -1098,7 +1098,7 @@ msgstr "Incluir en patrimonio neto"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:34
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
@@ -1140,9 +1140,17 @@ msgstr "Idioma"
 msgid "Last error"
 msgstr "Último error"
 
+#: src/@generic/constant/date-period.constant.ts:11
+msgid "Last Month"
+msgstr "Mes pasado"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Last sync"
 msgstr "Última sincronización"
+
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "Last Week"
+msgstr "Semana pasada"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
@@ -1225,7 +1233,7 @@ msgstr "Monobank"
 msgid "Monthly Costs"
 msgstr "Costes mensuales"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:102
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:95
 msgid "Monthly Total"
 msgstr "Total mensual"
 
@@ -1324,12 +1332,12 @@ msgstr "Ninguna cuenta inactiva coincide con tu búsqueda"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
-#: src/app/(main)/analytics/transactions.tsx:88
+#: src/app/(main)/analytics/transactions.tsx:89
 #: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:138
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:131
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:61
 msgid "No recurring payments detected"
 msgstr "No se detectaron pagos recurrentes"
@@ -1964,7 +1972,7 @@ msgstr "Esta categoría tiene transacciones. Selecciona otra categoría para rea
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
-#: src/@generic/constant/date-period.constant.ts:9
+#: src/@generic/constant/date-period.constant.ts:10
 msgid "This Month"
 msgstr "Este mes"
 
@@ -2004,7 +2012,7 @@ msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Esto restablecerá el historial de sincronización y volverá a sincronizar todas las transacciones de esta cuenta bancaria. Tus transacciones, etiquetas y categorías existentes se conservarán y se actualizarán con cualquier dato nuevo."
 
-#: src/@generic/constant/date-period.constant.ts:10
+#: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
 msgstr "Este año"
 
@@ -2063,7 +2071,7 @@ msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:40
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
 msgid "Transactions"
 msgstr "Transacciones"
 
@@ -2113,7 +2121,7 @@ msgstr "Prueba con un término de búsqueda diferente"
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
-#: src/app/(main)/analytics/transactions.tsx:90
+#: src/app/(main)/analytics/transactions.tsx:91
 #: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
@@ -2136,7 +2144,7 @@ msgid "Ukrainian"
 msgstr "Ucraniano"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:24
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Sin categoría"
 
@@ -2160,6 +2168,7 @@ msgid "Unknown"
 msgstr "Desconocido"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Untagged"
 msgstr "Sin etiqueta"
 
@@ -2167,7 +2176,7 @@ msgstr "Sin etiqueta"
 msgid "Up to date"
 msgstr "Actualizado"
 
-#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:150
+#: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx:143
 msgid "Upcoming"
 msgstr "Próximos"
 
