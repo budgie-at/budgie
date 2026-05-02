@@ -289,8 +289,8 @@ msgstr "Synchronisation bancaire"
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
-#: src/app/resync-window-picker.tsx:67
-#: src/app/resync-window-picker.tsx:89
+#: src/app/resync-window-picker.tsx:55
+#: src/app/resync-window-picker.tsx:77
 msgid "Bank sync reset"
 msgstr "Synchronisation bancaire réinitialisée"
 
@@ -322,7 +322,7 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
-#: src/app/resync-window-picker.tsx:80
+#: src/app/resync-window-picker.tsx:68
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
@@ -569,8 +569,8 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not recalculate balances"
 msgstr "Impossible de recalculer les soldes"
 
-#: src/app/resync-window-picker.tsx:69
-#: src/app/resync-window-picker.tsx:91
+#: src/app/resync-window-picker.tsx:57
+#: src/app/resync-window-picker.tsx:79
 msgid "Could not reset bank sync"
 msgstr "Impossible de réinitialiser la synchronisation bancaire"
 
@@ -899,7 +899,7 @@ msgstr "Entrez votre jeton API Monobank"
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/app/resync-window-picker.tsx:89
+#: src/app/resync-window-picker.tsx:42
 msgid "Entire history will be re-synced on next sync."
 msgstr "L'historique complet sera resynchronisé lors de la prochaine synchronisation."
 
@@ -1137,6 +1137,18 @@ msgstr "Italien (Italie)"
 #: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
 msgstr "Langue"
+
+#: src/app/resync-window-picker.tsx:32
+msgid "Last 30 days"
+msgstr "30 derniers jours"
+
+#: src/app/resync-window-picker.tsx:31
+msgid "Last 7 days"
+msgstr "7 derniers jours"
+
+#: src/app/resync-window-picker.tsx:33
+msgid "Last 90 days"
+msgstr "90 derniers jours"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
 msgid "Last error"
@@ -1471,7 +1483,7 @@ msgstr "La permission d'accéder aux contacts a été refusée."
 msgid "Physical cash on hand"
 msgstr "Argent liquide physique"
 
-#: src/app/resync-window-picker.tsx:105
+#: src/app/resync-window-picker.tsx:93
 msgid "Pick a window. Existing data is preserved."
 msgstr "Choisissez une période. Les données existantes sont préservées."
 
@@ -1531,15 +1543,31 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/app/resync-window-picker.tsx:77
+#: src/app/resync-window-picker.tsx:65
 msgid "Re-sync Bank Account?"
 msgstr "Resynchroniser le compte bancaire ?"
 
-#: src/app/resync-window-picker.tsx:79
+#: src/app/resync-window-picker.tsx:35
+msgid "Re-sync entire history"
+msgstr "Resynchroniser tout l'historique"
+
+#: src/app/resync-window-picker.tsx:67
 msgid "Re-sync History"
 msgstr "Resynchroniser l'historique"
 
-#: src/app/resync-window-picker.tsx:105
+#: src/app/resync-window-picker.tsx:39
+msgid "Re-sync of last 30 days will start on next sync."
+msgstr "Les 30 derniers jours seront resynchronisés lors de la prochaine synchronisation."
+
+#: src/app/resync-window-picker.tsx:38
+msgid "Re-sync of last 7 days will start on next sync."
+msgstr "Les 7 derniers jours seront resynchronisés lors de la prochaine synchronisation."
+
+#: src/app/resync-window-picker.tsx:40
+msgid "Re-sync of last 90 days will start on next sync."
+msgstr "Les 90 derniers jours seront resynchronisés lors de la prochaine synchronisation."
+
+#: src/app/resync-window-picker.tsx:93
 msgid "Re-sync transactions"
 msgstr "Resynchroniser les transactions"
 
@@ -1584,7 +1612,7 @@ msgstr "Récurrents"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
 
-#: src/app/resync-window-picker.tsx:125
+#: src/app/resync-window-picker.tsx:114
 msgid "Resets all sync state"
 msgstr "Réinitialise tout l'état de synchronisation"
 
@@ -2022,7 +2050,7 @@ msgstr "Cela convertira la dépense en un transfert entre comptes."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Cela convertira le revenu en un transfert entre comptes."
 
-#: src/app/resync-window-picker.tsx:78
+#: src/app/resync-window-picker.tsx:66
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Cela réinitialisera l'historique de synchronisation et resynchronisera toutes les transactions de ce compte bancaire. Vos transactions, étiquettes et catégories existantes seront conservées et mises à jour avec les nouvelles données."
 
