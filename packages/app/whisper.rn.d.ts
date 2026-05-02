@@ -18,8 +18,37 @@ declare module 'whisper.rn' {
         readonly sliceIndex: number;
     }
 
+    export interface TranscribeResult {
+        readonly result: string;
+        readonly language: string;
+        readonly isAborted: boolean;
+        readonly segments: readonly {
+            readonly t0: number;
+            readonly t1: number;
+            readonly text: string;
+        }[];
+    }
+
+    export interface TranscribeOptions {
+        readonly language?: string;
+        readonly maxThreads?: number;
+        readonly maxLen?: number;
+        readonly temperature?: number;
+        readonly temperatureInc?: number;
+        readonly beamSize?: number;
+        readonly bestOf?: number;
+        readonly prompt?: string;
+    }
+
     export class WhisperContext {
         readonly id: number;
+        transcribeData(
+            data: string | ArrayBuffer,
+            options?: TranscribeOptions
+        ): {
+            readonly stop: () => Promise<void>;
+            readonly promise: Promise<TranscribeResult>;
+        };
         transcribeRealtime(options: {
             readonly language?: string;
             readonly realtimeAudioSec?: number;

@@ -136,7 +136,9 @@ export const useStt = (): UseSttReturn => {
         const finalText = filterTranscriptionTokens(streamResult).trim();
         logger.log('stream:stop:promise-done', {
             generation,
+            streamResultPreview: streamResult.slice(0, 80),
             streamResultLen: streamResult.length,
+            finalTextPreview: finalText.slice(0, 80),
             finalTextLen: finalText.length
         });
 

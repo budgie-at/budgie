@@ -63,7 +63,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async bootModels(): Promise<void> {
-        await Promise.all([chatService.start(), embeddingService.start()]);
+        await Promise.all([chatService.start(), embeddingService.start(), sttService.start()]);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)

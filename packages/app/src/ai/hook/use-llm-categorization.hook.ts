@@ -50,6 +50,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
 
     // eslint-disable-next-line max-statements -- Extract, map, and surface extraction errors with structured logs
     const categorize = async (text: string): Promise<AITransactionInterface[]> => {
+        const startedAt = Date.now();
         logger.log('voice:categorize:start', { textLen: text.length });
         setStatus('processing');
         setError(null);
@@ -57,7 +58,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
 
         try {
             const extracted = await voiceService.extractTransactions(text);
-            logger.log('voice:categorize:extracted', { count: extracted.length });
+            logger.log('voice:categorize:extracted', { count: extracted.length, durationMs: Date.now() - startedAt });
 
             if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
@@ -65,13 +66,13 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             }
 
             const results = mapExtractedToTransactions(extracted, accounts);
-            logger.log('voice:categorize:mapped', { count: results.length });
+            logger.log('voice:categorize:mapped', { count: results.length, durationMs: Date.now() - startedAt });
             setTransactions(results);
             setStatus('done');
 
             return results;
         } catch (err: unknown) {
-            logger.error('voice:categorize:throw', { errorMessage: getErrorMessage(err) });
+            logger.error('voice:categorize:throw', { errorMessage: getErrorMessage(err), durationMs: Date.now() - startedAt });
             setError(getErrorMessage(err));
             setStatus('error');
             throw err;

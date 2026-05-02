@@ -31,7 +31,7 @@ const logger = getLogger('AiSystemStatusService');
 
 const FULL_PERCENT = 100;
 const TRUNCATE_LEN = 80;
-const HALF = 2;
+const SUBSYSTEM_COUNT = 3;
 
 interface ErrorSourceInterface {
     readonly source: string;
@@ -201,11 +201,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         const chat = chatService.getSnapshot();
         const embedding = embeddingService.getSnapshot();
-        const bootText = this.describeBoot(chat.status, embedding.status);
+        const stt = sttService.getSnapshot();
+        const bootText = this.describeBoot(chat.status, embedding.status, stt.status);
         if (isNotEmptyString(bootText)) {
             return {
                 state: AiSystemStateEnum.BOOTING,
-                percent: Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF),
+                percent: Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT),
                 action: AiSystemActionEnum.NONE,
                 statusText: bootText,
                 translationPending,
@@ -214,7 +215,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             };
         }
 
-        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status);
+        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
         if (isDefined(suspendedOrIdle)) {
             const statusText = suspendedOrIdle === AiSystemStateEnum.SUSPENDED ? t`Resuming AI…` : t`AI idle`;
 
@@ -295,8 +296,8 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         };
     }
 
-    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum): string | null {
-        const statuses = [chat, embedding] as const;
+    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
+        const statuses = [chat, embedding, stt] as const;
         const booting = statuses.some(
             status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING
         );
@@ -308,8 +309,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         return downloading ? t`Downloading models` : t`Loading models`;
     }
 
-    private firstSuspendedOrIdle(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum): SuspendedOrIdleState | null {
-        const statuses = [chat, embedding] as const;
+    private firstSuspendedOrIdle(
+        chat: AiSubsystemStatusEnum,
+        embedding: AiSubsystemStatusEnum,
+        stt: AiSubsystemStatusEnum
+    ): SuspendedOrIdleState | null {
+        const statuses = [chat, embedding, stt] as const;
         if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
             return AiSystemStateEnum.SUSPENDED;
         }

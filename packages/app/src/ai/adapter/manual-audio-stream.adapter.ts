@@ -53,6 +53,10 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
 
     private pendingAudioBytes = 0;
 
+    private capturedAudioChunks: Uint8Array[] = [];
+
+    private capturedAudioBytes = 0;
+
     async initialize(config: AudioStreamConfig): Promise<void> {
         this.config = config;
         this.initialized = true;
@@ -97,9 +101,24 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         await this.stop();
         this.initialized = false;
         this.clearPendingAudio();
+        this.clearCapturedAudio();
         this.dataCallback = null;
         this.errorCallback = null;
         this.statusCallback = null;
+    }
+
+    getCapturedAudio(): Uint8Array {
+        this.flushPendingAudio();
+
+        const data = new Uint8Array(this.capturedAudioBytes);
+        let offset = 0;
+
+        for (const chunk of this.capturedAudioChunks) {
+            data.set(chunk, offset);
+            offset += chunk.byteLength;
+        }
+
+        return data;
     }
 
     push(samples: Float32Array): void {
@@ -108,10 +127,18 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         }
 
         try {
-            this.enqueueAudioChunk(encodePcm16(samples));
+            const chunk = encodePcm16(samples);
+
+            this.captureAudioChunk(chunk);
+            this.enqueueAudioChunk(chunk);
         } catch (error) {
             this.errorCallback?.(getErrorMessage(error));
         }
+    }
+
+    private captureAudioChunk(chunk: Uint8Array): void {
+        this.capturedAudioChunks.push(chunk);
+        this.capturedAudioBytes += chunk.byteLength;
     }
 
     private enqueueAudioChunk(chunk: Uint8Array): void {
@@ -165,6 +192,11 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
     private clearPendingAudio(): void {
         this.pendingAudioChunks = [];
         this.pendingAudioBytes = 0;
+    }
+
+    private clearCapturedAudio(): void {
+        this.capturedAudioChunks = [];
+        this.capturedAudioBytes = 0;
     }
 
     private getFlushByteSize(): number {
