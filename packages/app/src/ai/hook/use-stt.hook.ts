@@ -9,7 +9,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
-import { useStartStopStt } from './use-start-stop-stt.hook';
+import { useStartStt } from './use-start-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
@@ -31,7 +31,7 @@ export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
 
-    useStartStopStt();
+    useStartStt();
     const sttSnapshot = useSttSnapshot();
 
     const [status, setStatus] = useState<SttStatus>('idle');
