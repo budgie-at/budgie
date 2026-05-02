@@ -27,7 +27,7 @@
         "packages/app/scripts/bench-queries.ts",
         "packages/app/scripts/seed-bench-db.ts",
         "packages/app/scripts/snapshot-monthly-patterns.ts",
-        "tests/bank-sync-tests/src/harness/__shims__/**"
+        "tests/bank-sync-tests/src/harness/shims/**"
     ],
     "ignoreDependencies": [
         "husky",
