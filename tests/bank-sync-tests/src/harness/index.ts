@@ -7,5 +7,5 @@ export { seedAccountPair, seedTransferPairFixture } from './seed-transfer-pair-f
 export { fetchTransactionById } from './fetch-by-id';
 export { fetchCanonicalsOfType } from './fetch-canonicals';
 export { findMccByCode } from './find-mcc';
-export { stubStatement, stubStatementSequence, stubStatementError, stubClientInfo } from './monobank-server';
+export { stubStatement, stubClientInfo } from './monobank-server';
 export { buildMonobankClientInfoWith, buildMonobankTx } from './monobank-fixtures';

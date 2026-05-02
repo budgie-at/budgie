@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
+import { http, HttpResponse } from 'msw';
 
 import { BankSyncEntityTable, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
-import { buildMonobankTx, setupMonobankFixture, setupScenario, stubStatementSequence, testDb } from '../../harness';
+import { buildMonobankTx, setupMonobankFixture, setupScenario, testDb } from '../../harness';
+import { monobankServer } from '../../harness/monobank-server';
 
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 
@@ -11,7 +14,7 @@ setupScenario();
 
 const PAGE_SIZE = 500;
 
-const buildBatch = (offset: number): unknown[] =>
+const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
     Array.from({ length: PAGE_SIZE }, (_, index) => {
         const ordinal = offset + index;
         return buildMonobankTx({
@@ -26,7 +29,15 @@ describe('monobank/pagination-cursor-advances', () => {
     it('processes a 500-row page, advances the cursor, and continues until the next page is empty', async () => {
         const { bankSync } = setupMonobankFixture({ forwardSyncFromAt: new Date(2025, 0, 1) });
 
-        stubStatementSequence(buildBatch(0));
+        const batches = [buildBatch(0)];
+        // msw applies handlers in reverse-registration order, so register the default first
+        // and then push each one-shot batch on top so they fire in caller order
+        monobankServer.use(http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => HttpResponse.json([])));
+        for (const batch of [...batches].reverse()) {
+            monobankServer.use(
+                http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => HttpResponse.json(batch), { once: true })
+            );
+        }
 
         await monobankSyncService.sync();
 
