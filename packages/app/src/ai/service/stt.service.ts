@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
 import { RealtimeTranscriber } from 'whisper.rn/src/realtime-transcription';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
 import {
@@ -31,7 +31,7 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
     private resolveStream: ((text: string) => void) | null = null;
     private rejectStream: ((error: unknown) => void) | null = null;
     private stopStreamPromise: Promise<string> | null = null;
-    private streamOptions: SttStreamOptionsInterface | null = null;
+    private sliceTexts: Map<number, string> = new Map();
 
     constructor() {
         super('stt', {
@@ -136,14 +136,14 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
     }
 
     private async executeStopActiveStream(commitFinalText: boolean): Promise<string> {
-        const { audioStream, realtimeTranscriber } = this;
+        const { realtimeTranscriber } = this;
 
-        if (!isDefined(audioStream) || !isDefined(realtimeTranscriber)) {
+        if (!isDefined(realtimeTranscriber)) {
             return commitFinalText ? this.snapshot.committedTranscription : '';
         }
 
         try {
-            const finalText = await this.finishRealtimeTranscriber(audioStream, realtimeTranscriber, commitFinalText);
+            const finalText = await this.finishRealtimeTranscriber(realtimeTranscriber, commitFinalText);
             this.resolveStream?.(finalText);
 
             return finalText;
@@ -155,40 +155,23 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         }
     }
 
-    private async finishRealtimeTranscriber(
-        audioStream: ManualAudioStreamAdapter,
-        realtimeTranscriber: RealtimeTranscriber,
-        commitFinalText: boolean
-    ): Promise<string> {
+    private async finishRealtimeTranscriber(realtimeTranscriber: RealtimeTranscriber, commitFinalText: boolean): Promise<string> {
         await realtimeTranscriber.stop();
+        await realtimeTranscriber.release();
 
-        try {
-            if (!commitFinalText) {
-                this.setSnapshot({ committedTranscription: '', nonCommittedTranscription: '' });
+        const finalText = commitFinalText ? this.assembleSliceText() : '';
+        this.setSnapshot({ committedTranscription: finalText, nonCommittedTranscription: '' });
 
-                return '';
-            }
-            const finalText = await this.transcribeCapturedAudio(audioStream);
-            this.setSnapshot({ committedTranscription: finalText, nonCommittedTranscription: '' });
-
-            return finalText;
-        } finally {
-            await realtimeTranscriber.release();
-        }
+        return finalText;
     }
 
-    private async transcribeCapturedAudio(audioStream: ManualAudioStreamAdapter): Promise<string> {
-        const audioData = audioStream.getCapturedAudio();
-
-        if (!isPositiveNumber(audioData.byteLength)) {
-            return this.snapshot.committedTranscription.trim();
-        }
-        const audioBuffer = new ArrayBuffer(audioData.byteLength);
-        new Uint8Array(audioBuffer).set(audioData);
-        const { promise } = this.getContext().transcribeData(audioBuffer, buildSttTranscribeOptions(this.streamOptions));
-        const result = await promise;
-
-        return result.result.trim();
+    private assembleSliceText(): string {
+        return [...this.sliceTexts.entries()]
+            .sort(([firstIndex], [secondIndex]) => firstIndex - secondIndex)
+            .map(([, text]) => text)
+            .filter(isNotEmptyString)
+            .join(' ')
+            .trim();
     }
 
     private createStreamPromise(): Promise<string> {
@@ -208,7 +191,8 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
             return;
         }
 
-        this.setSnapshot({ nonCommittedTranscription: text });
+        this.sliceTexts.set(event.sliceIndex, text);
+        this.setSnapshot({ nonCommittedTranscription: text, committedTranscription: this.assembleSliceText() });
     }
 
     private getContext(): WhisperContext {
@@ -244,9 +228,9 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         const realtimeTranscriber = this.createRealtimeTranscriber(audioStream, options);
 
         this.setSnapshot({ errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
+        this.sliceTexts = new Map();
         this.audioStream = audioStream;
         this.realtimeTranscriber = realtimeTranscriber;
-        this.streamOptions = options ?? null;
         await realtimeTranscriber.start().catch((error: unknown) => {
             this.clearStreamRefs();
             throw error;
@@ -256,11 +240,11 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
     }
 
     private clearStreamRefs(): void {
-        this.streamOptions = null;
         this.resolveStream = null;
         this.rejectStream = null;
         this.audioStream = null;
         this.realtimeTranscriber = null;
+        this.sliceTexts = new Map();
     }
 }
 

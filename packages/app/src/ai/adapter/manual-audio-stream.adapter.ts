@@ -37,8 +37,6 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
 
     private static readonly MAX_PENDING_AUDIO_SEC = 2;
 
-    private static readonly MAX_CAPTURED_AUDIO_SEC = 60;
-
     private config: AudioStreamConfig = {};
 
     private dataCallback: ((data: AudioStreamData) => void) | null = null;
@@ -54,10 +52,6 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
     private pendingAudioChunks: Uint8Array[] = [];
 
     private pendingAudioBytes = 0;
-
-    private capturedAudioChunks: Uint8Array[] = [];
-
-    private capturedAudioBytes = 0;
 
     async initialize(config: AudioStreamConfig): Promise<void> {
         this.config = config;
@@ -103,24 +97,9 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         await this.stop();
         this.initialized = false;
         this.clearPendingAudio();
-        this.clearCapturedAudio();
         this.dataCallback = null;
         this.errorCallback = null;
         this.statusCallback = null;
-    }
-
-    getCapturedAudio(): Uint8Array {
-        this.flushPendingAudio();
-
-        const data = new Uint8Array(this.capturedAudioBytes);
-        let offset = 0;
-
-        for (const chunk of this.capturedAudioChunks) {
-            data.set(chunk, offset);
-            offset += chunk.byteLength;
-        }
-
-        return data;
     }
 
     push(samples: Float32Array): void {
@@ -129,40 +108,10 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         }
 
         try {
-            const chunk = encodePcm16(samples);
-
-            this.captureAudioChunk(chunk);
-            this.enqueueAudioChunk(chunk);
+            this.enqueueAudioChunk(encodePcm16(samples));
         } catch (error) {
             this.errorCallback?.(getErrorMessage(error));
         }
-    }
-
-    private captureAudioChunk(chunk: Uint8Array): void {
-        this.capturedAudioChunks.push(chunk);
-        this.capturedAudioBytes += chunk.byteLength;
-        this.trimCapturedAudio();
-    }
-
-    private trimCapturedAudio(): void {
-        const maxCapturedBytes = this.getMaxCapturedBytes();
-
-        while (this.capturedAudioBytes > maxCapturedBytes && isNotEmptyArray(this.capturedAudioChunks)) {
-            const chunk = this.capturedAudioChunks.shift();
-
-            if (isDefined(chunk)) {
-                this.capturedAudioBytes -= chunk.byteLength;
-            }
-        }
-    }
-
-    private clearCapturedAudio(): void {
-        this.capturedAudioChunks = [];
-        this.capturedAudioBytes = 0;
-    }
-
-    private getMaxCapturedBytes(): number {
-        return this.getSampleRate() * this.getChannels() * PCM_BYTES_PER_SAMPLE * ManualAudioStreamAdapter.MAX_CAPTURED_AUDIO_SEC;
     }
 
     private enqueueAudioChunk(chunk: Uint8Array): void {
