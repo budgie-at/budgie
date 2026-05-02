@@ -2,7 +2,7 @@ import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import type { AudioStreamConfig, AudioStreamData, AudioStreamInterface } from 'whisper.rn/src/realtime-transcription';
+import type { AudioStreamConfig, AudioStreamData, AudioStreamInterface } from 'whisper.rn/realtime-transcription';
 
 const PCM_NEGATIVE_SCALE = 32768;
 const PCM_POSITIVE_SCALE = 32767;
@@ -53,10 +53,6 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
 
     private pendingAudioBytes = 0;
 
-    private capturedAudioChunks: Uint8Array[] = [];
-
-    private capturedAudioBytes = 0;
-
     async initialize(config: AudioStreamConfig): Promise<void> {
         this.config = config;
         this.initialized = true;
@@ -101,24 +97,9 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         await this.stop();
         this.initialized = false;
         this.clearPendingAudio();
-        this.clearCapturedAudio();
         this.dataCallback = null;
         this.errorCallback = null;
         this.statusCallback = null;
-    }
-
-    getCapturedAudio(): Uint8Array {
-        this.flushPendingAudio();
-
-        const data = new Uint8Array(this.capturedAudioBytes);
-        let offset = 0;
-
-        for (const chunk of this.capturedAudioChunks) {
-            data.set(chunk, offset);
-            offset += chunk.byteLength;
-        }
-
-        return data;
     }
 
     push(samples: Float32Array): void {
@@ -127,18 +108,10 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
         }
 
         try {
-            const chunk = encodePcm16(samples);
-
-            this.captureAudioChunk(chunk);
-            this.enqueueAudioChunk(chunk);
+            this.enqueueAudioChunk(encodePcm16(samples));
         } catch (error) {
             this.errorCallback?.(getErrorMessage(error));
         }
-    }
-
-    private captureAudioChunk(chunk: Uint8Array): void {
-        this.capturedAudioChunks.push(chunk);
-        this.capturedAudioBytes += chunk.byteLength;
     }
 
     private enqueueAudioChunk(chunk: Uint8Array): void {
@@ -192,11 +165,6 @@ export class ManualAudioStreamAdapter implements AudioStreamInterface {
     private clearPendingAudio(): void {
         this.pendingAudioChunks = [];
         this.pendingAudioBytes = 0;
-    }
-
-    private clearCapturedAudio(): void {
-        this.capturedAudioChunks = [];
-        this.capturedAudioBytes = 0;
     }
 
     private getFlushByteSize(): number {

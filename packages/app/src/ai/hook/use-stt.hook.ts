@@ -1,9 +1,8 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
@@ -12,8 +11,6 @@ import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language
 
 import { useStartStt } from './use-start-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
-
-const logger = getLogger('useStt');
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -44,26 +41,20 @@ export const useStt = (): UseSttReturn => {
 
     const isCurrentStream = (generation: number): boolean => generation === streamGenerationRef.current;
 
-    const resetState = () => {
-        setStatus('idle');
-    };
-
     const cleanupStream = async (generation: number) => {
         const streamPromise = streamPromiseRef.current;
 
-        if (isDefined(streamPromise)) {
-            logger.log('stream:cleanup:start', { generation, isCurrentStream: isCurrentStream(generation) });
-            if (isCurrentStream(generation)) {
-                streamPromiseRef.current = null;
-            }
-            try {
-                await sttService.streamCancel();
-                await streamPromise;
-                logger.log('stream:cleanup:done', { generation });
-            } catch {
-                logger.log('stream:cleanup:swallow', { generation });
-                emptyFn();
-            }
+        if (!isDefined(streamPromise)) {
+            return;
+        }
+        if (isCurrentStream(generation)) {
+            streamPromiseRef.current = null;
+        }
+        try {
+            await sttService.streamCancel();
+            await streamPromise;
+        } catch {
+            emptyFn();
         }
     };
 
@@ -72,25 +63,20 @@ export const useStt = (): UseSttReturn => {
             return;
         }
 
-        resetState();
+        setStatus('idle');
         setBaseTranscription(sttService.committedTranscription);
         const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
-        logger.log('stream:init', { generation, language: streamOptions.language ?? 'default' });
-        streamPromiseRef.current = sttService.stream(streamOptions).catch(() => '');
+        streamPromiseRef.current = sttService.stream(streamOptions);
         setStatus('streaming');
     };
 
     const startStream = () => {
         streamGenerationRef.current += 1;
         const generation = streamGenerationRef.current;
-        logger.log('stream:start', { generation, status });
 
         cleanupStream(generation)
             .then(() => void initStream(generation))
-            .catch((error: unknown) => {
-                logger.error('stream:start:throw', { generation, errorMessage: getErrorMessage(error) });
-                emptyFn();
-            });
+            .catch(emptyFn);
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -101,28 +87,6 @@ export const useStt = (): UseSttReturn => {
         sttService.streamInsert(samples);
     };
 
-    const finishStopStream = (finalText: string, generation: number): string => {
-        if (!isCurrentStream(generation)) {
-            logger.log('stream:stop:stale', { generation, finalTextLen: finalText.length });
-
-            return '';
-        }
-
-        setStatus('idle');
-        logger.log('stream:stop:finish', { generation, finalTextLen: finalText.length });
-
-        return finalText;
-    };
-
-    const handleStopStreamError = (generation: number): never => {
-        if (isCurrentStream(generation)) {
-            setStatus('idle');
-        }
-
-        logger.log('stream:stop:error', { generation });
-        throw new Error(t`Transcription failed`);
-    };
-
     const committedTranscription = sttSnapshot.committedTranscription.startsWith(baseTranscription)
         ? sttSnapshot.committedTranscription.slice(baseTranscription.length)
         : sttSnapshot.committedTranscription;
@@ -131,18 +95,16 @@ export const useStt = (): UseSttReturn => {
 
     const resolveStoppedStream = async (streamPromise: Promise<string>, generation: number): Promise<string> => {
         await sttService.streamStop();
-        logger.log('stream:stop:service-done', { generation });
         const streamResult = await streamPromise;
         const finalText = filterTranscriptionTokens(streamResult).trim();
-        logger.log('stream:stop:promise-done', {
-            generation,
-            streamResultPreview: streamResult.slice(0, 80),
-            streamResultLen: streamResult.length,
-            finalTextPreview: finalText.slice(0, 80),
-            finalTextLen: finalText.length
-        });
 
-        return finishStopStream(finalText, generation);
+        if (!isCurrentStream(generation)) {
+            return '';
+        }
+
+        setStatus('idle');
+
+        return finalText;
     };
 
     const stopStream = async (): Promise<string> => {
@@ -150,19 +112,19 @@ export const useStt = (): UseSttReturn => {
         const streamPromise = streamPromiseRef.current;
 
         if (!isDefined(streamPromise)) {
-            logger.log('stream:stop:no-active-stream', { generation, transcriptionLen: transcription.length });
-
             return transcription;
         }
 
         streamPromiseRef.current = null;
         setStatus('processing');
-        logger.log('stream:stop:start', { generation });
 
         try {
             return await resolveStoppedStream(streamPromise, generation);
         } catch {
-            return handleStopStreamError(generation);
+            if (isCurrentStream(generation)) {
+                setStatus('idle');
+            }
+            throw new Error(t`Transcription failed`);
         }
     };
 
@@ -170,12 +132,8 @@ export const useStt = (): UseSttReturn => {
         streamGenerationRef.current += 1;
         const generation = streamGenerationRef.current;
 
-        resetState();
-        logger.log('stream:cancel', { generation });
-        cleanupStream(generation).catch((error: unknown) => {
-            logger.error('stream:cancel:throw', { generation, errorMessage: getErrorMessage(error) });
-            emptyFn();
-        });
+        setStatus('idle');
+        cleanupStream(generation).catch(emptyFn);
     };
 
     return {

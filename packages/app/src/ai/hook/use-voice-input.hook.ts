@@ -36,7 +36,7 @@ export interface UseVoiceInputReturn {
     readonly retry: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recording, STT, categorization, and confirmation lifecycle
 export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
     const { onDone, onError } = callbacks;
 

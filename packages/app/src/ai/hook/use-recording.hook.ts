@@ -36,7 +36,7 @@ interface UseRecordingReturn {
     readonly cancel: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recorder lifecycle, silence detection, and audio buffer logging
 export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingReturn => {
     useAudioManager();
 

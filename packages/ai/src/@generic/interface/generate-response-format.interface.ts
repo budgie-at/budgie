@@ -1,4 +1,4 @@
-export interface GenerateJsonSchemaInterface {
+interface GenerateJsonSchemaInterface {
     readonly schema: object;
     readonly strict?: boolean;
 }
