@@ -16,14 +16,14 @@ const seedTimeWindowPair = (incomeOffsetSeconds: number): void => {
 
     seedBankExpense({
         accountId: fromAccount.id,
-        amountMicro: 100 * PRECISION,
+        amount: 100 * PRECISION,
         operatedAt,
         externalId: 'tx-expense',
-        counterIban: 'UA-TO'
+        toIban: 'UA-TO'
     });
     seedBankIncome({
         accountId: toAccount.id,
-        amountMicro: 100 * PRECISION,
+        amount: 100 * PRECISION,
         operatedAt: new Date(operatedAt.getTime() + incomeOffsetSeconds * 1000),
         externalId: 'tx-income'
     });

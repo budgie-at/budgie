@@ -18,14 +18,14 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
         const expense = seedBankExpense({
             accountId: fromAccount.id,
-            amountMicro: 250 * PRECISION,
+            amount: 250 * PRECISION,
             operatedAt,
             externalId: 'tx-expense',
             mccCategoryId: transferMcc.id
         });
         const income = seedBankIncome({
             accountId: toAccount.id,
-            amountMicro: 250 * PRECISION,
+            amount: 250 * PRECISION,
             operatedAt: new Date(operatedAt.getTime() + 5_000),
             externalId: 'tx-income',
             mccCategoryId: transferMcc.id
@@ -45,8 +45,8 @@ describe('consolidation/transfer-pair-by-amount', () => {
     it('does NOT consolidate when amounts match but neither IBAN nor transfer-MCC is present', async () => {
         const { fromAccount, toAccount } = seedAccountPair();
         const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
-        seedBankExpense({ accountId: fromAccount.id, amountMicro: 250 * PRECISION, operatedAt, externalId: 'tx-expense' });
-        seedBankIncome({ accountId: toAccount.id, amountMicro: 250 * PRECISION, operatedAt, externalId: 'tx-income' });
+        seedBankExpense({ accountId: fromAccount.id, amount: 250 * PRECISION, operatedAt, externalId: 'tx-expense' });
+        seedBankIncome({ accountId: toAccount.id, amount: 250 * PRECISION, operatedAt, externalId: 'tx-income' });
 
         const result = await transferConsolidationService.consolidate();
         expect(result.consolidated).toBe(0);

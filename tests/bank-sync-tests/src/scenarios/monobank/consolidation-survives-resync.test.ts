@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { AccountTypeEnum, BankSyncModeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 
 import { buildMonobankClientInfoWith, buildMonobankTx, seed, setupScenario, stubClientInfo, stubStatement, testDb } from '../../harness';
 
@@ -11,9 +11,9 @@ setupScenario();
 
 describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {
-        const fromAccount = seed.account({ externalId: 'mono-acc-1', type: 'BANK_SYNC' });
-        const toAccount = seed.account({ externalId: 'mono-acc-2', type: 'BANK_SYNC' });
-        seed.bankSync({ accountId: fromAccount.id, mode: 'FORWARD', forwardSyncFromAt: new Date(2026, 0, 1) });
+        const fromAccount = seed.account({ externalId: 'mono-acc-1', type: AccountTypeEnum.BANK_SYNC });
+        const toAccount = seed.account({ externalId: 'mono-acc-2', type: AccountTypeEnum.BANK_SYNC });
+        seed.bankSync({ accountId: fromAccount.id, mode: BankSyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
 
         const operatedAt = new Date(2026, 0, 15);
 
