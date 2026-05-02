@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
 
-import { MccCategoryEntityTable, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, seed, seedBankExpense, setupScenario, testDb } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankExpense, setupScenario } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
@@ -11,15 +10,13 @@ setupScenario();
 
 const PRECISION = 1_000_000;
 
-const findCashierMccId = (): number => testDb.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, '6011')).all()[0].id;
-
 const seedAtmExpense = (bankAccountId: number) =>
     seedBankExpense({
         accountId: bankAccountId,
         amountMicro: 500 * PRECISION,
         operatedAt: new Date(2026, 0, 15, 12, 0, 0),
         externalId: 'tx-atm',
-        mccCategoryId: findCashierMccId()
+        mccCategoryId: findMccByCode('6011').id
     });
 
 describe('consolidation/atm-cash-withdrawal', () => {
