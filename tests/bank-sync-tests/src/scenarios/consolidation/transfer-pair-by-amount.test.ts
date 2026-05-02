@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seedAccountPair, seedBankExpense, seedBankIncome, setupScenario } from '../../harness';
+import { fetchCanonicalsOfType } from '../../harness/fetch-canonicals';
+import { fetchTransactionById } from '../../harness/fetch-by-id';
+import { findMccByCode } from '../../harness/find-mcc';
+import { seedBankExpense, seedBankIncome } from '../../harness/seed-bank-pair';
+import { seedAccountPair } from '../../harness/seed-transfer-pair-fixture';
+import { setupScenario } from '../../harness/setup-scenario';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
