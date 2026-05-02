@@ -1322,6 +1322,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/bank-sync-tests@workspace:tests/bank-sync-tests"
   dependencies:
+    "@budgie/bank-sync": "workspace:*"
     "@budgie/contracts": "workspace:*"
     "@types/better-sqlite3": "npm:^7.6.12"
     "@types/node": "npm:^22.0.0"
