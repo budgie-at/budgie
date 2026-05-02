@@ -17,7 +17,11 @@ describe('monobank/unchanged-data-noop', () => {
         stubStatement([txPayload]);
         await monobankSyncService.sync();
 
-        const txAfterFirst = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-stable')).all()[0];
+        const txAfterFirst = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, 'tx-stable'))
+            .all()[0];
         const entryAfterFirst = testDb
             .select()
             .from(TransactionEntryEntityTable)
@@ -34,7 +38,11 @@ describe('monobank/unchanged-data-noop', () => {
         stubStatement([txPayload]);
         await monobankSyncService.sync();
 
-        const txAfterSecond = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-stable')).all()[0];
+        const txAfterSecond = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, 'tx-stable'))
+            .all()[0];
         const entryAfterSecond = testDb
             .select()
             .from(TransactionEntryEntityTable)
