@@ -19,6 +19,7 @@ const SEVEN_DAYS = 7;
 const THIRTY_DAYS = 30;
 const NINETY_DAYS = 90;
 
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple handlers, label/message lookup tables, and FlatList-style row rendering
 export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
     const [, resolveResyncWindowPicker, currentParams] = useResyncWindowPickerModal();
