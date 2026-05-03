@@ -114,7 +114,7 @@ export default function AnalyticsTransactionsPage() {
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
-                footerSpacerMultiplier={2}
+                footerSpacerMultiplier={0}
             />
         </Page>
     );

@@ -57,7 +57,7 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/ai/service/ai-umbrella-status.service.ts:74
+#: src/ai/service/ai-umbrella-status.service.ts:82
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
@@ -161,12 +161,12 @@ msgid "AI disabled"
 msgstr "ШІ вимкнено"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:114
+#: src/ai/service/ai-umbrella-status.service.ts:124
 msgid "AI idle"
 msgstr "ШІ неактивний"
 
-#: src/ai/service/ai-umbrella-status.service.ts:59
-#: src/ai/service/ai-umbrella-status.service.ts:121
+#: src/ai/service/ai-umbrella-status.service.ts:65
+#: src/ai/service/ai-umbrella-status.service.ts:131
 msgid "AI off"
 msgstr "ШІ вимкнено"
 
@@ -259,10 +259,6 @@ msgstr "Ви впевнені, що хочете видалити всі сво�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/ai/adapter/manual-audio-stream.adapter.ts:62
-msgid "Audio stream not initialized"
-msgstr "Аудіопотік не ініціалізовано"
-
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Автоматична синхронізація рахунків та транзакцій з Монобанку"
@@ -293,11 +289,8 @@ msgstr "Синхронізація банку"
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:45
-msgid "Bank sync has been reset. History will be re-synced on next sync."
-msgstr "Синхронізацію з банком скинуто. Історію буде повторно синхронізовано під час наступної синхронізації."
-
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:44
+#: src/app/resync-window-picker.tsx:56
+#: src/app/resync-window-picker.tsx:78
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
 
@@ -329,12 +322,12 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
+#: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:24
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:63
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 msgid "Cancel"
@@ -576,7 +569,8 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:50
+#: src/app/resync-window-picker.tsx:58
+#: src/app/resync-window-picker.tsx:80
 msgid "Could not reset bank sync"
 msgstr "Не вдалося скинути синхронізацію з банком"
 
@@ -783,7 +777,7 @@ msgstr "Готово ({count})"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:87
+#: src/ai/service/ai-umbrella-status.service.ts:97
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
@@ -904,6 +898,10 @@ msgstr "Введіть ваш API-токен Монобанку"
 #: src/app/(main)/pin.tsx:116
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
+
+#: src/app/resync-window-picker.tsx:43
+msgid "Entire history will be re-synced on next sync."
+msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
 msgid "Errors"
@@ -1140,13 +1138,33 @@ msgstr "Італійська (Італія)"
 msgid "Language"
 msgstr "Мова"
 
+#: src/app/resync-window-picker.tsx:33
+msgid "Last 30 days"
+msgstr "Останні 30 днів"
+
+#: src/app/resync-window-picker.tsx:32
+msgid "Last 7 days"
+msgstr "Останні 7 днів"
+
+#: src/app/resync-window-picker.tsx:34
+msgid "Last 90 days"
+msgstr "Останні 90 днів"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
 msgid "Last error"
 msgstr "Остання помилка"
 
+#: src/@generic/constant/date-period.constant.ts:11
+msgid "Last Month"
+msgstr "Минулого місяця"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Last sync"
 msgstr "Остання синхронізація"
+
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "Last Week"
+msgstr "Минулого тижня"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
@@ -1465,6 +1483,10 @@ msgstr "Відмовлено в доступі до контактів."
 msgid "Physical cash on hand"
 msgstr "Фізична готівка"
 
+#: src/app/resync-window-picker.tsx:94
+msgid "Pick a window. Existing data is preserved."
+msgstr "Оберіть період. Наявні дані буде збережено."
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1521,13 +1543,33 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:21
+#: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
 msgstr "Повторно синхронізувати банківський рахунок?"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:23
+#: src/app/resync-window-picker.tsx:36
+msgid "Re-sync entire history"
+msgstr "Повторно синхронізувати всю історію"
+
+#: src/app/resync-window-picker.tsx:68
 msgid "Re-sync History"
 msgstr "Повторно синхронізувати історію"
+
+#: src/app/resync-window-picker.tsx:40
+msgid "Re-sync of last 30 days will start on next sync."
+msgstr "Останні 30 днів буде повторно синхронізовано під час наступної синхронізації."
+
+#: src/app/resync-window-picker.tsx:39
+msgid "Re-sync of last 7 days will start on next sync."
+msgstr "Останні 7 днів буде повторно синхронізовано під час наступної синхронізації."
+
+#: src/app/resync-window-picker.tsx:41
+msgid "Re-sync of last 90 days will start on next sync."
+msgstr "Останні 90 днів буде повторно синхронізовано під час наступної синхронізації."
+
+#: src/app/resync-window-picker.tsx:94
+msgid "Re-sync transactions"
+msgstr "Повторна синхронізація транзакцій"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
@@ -1570,6 +1612,10 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
+#: src/app/resync-window-picker.tsx:115
+msgid "Resets all sync state"
+msgstr "Скидає весь стан синхронізації"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Restore"
 msgstr "Відновити"
@@ -1583,7 +1629,7 @@ msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:105
+#: src/ai/service/ai-umbrella-status.service.ts:115
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
@@ -1866,7 +1912,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/ai/service/ai-umbrella-status.service.ts:96
+#: src/ai/service/ai-umbrella-status.service.ts:106
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
@@ -1968,7 +2014,7 @@ msgstr "Ця категорія має транзакції. Виберіть і
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
-#: src/@generic/constant/date-period.constant.ts:9
+#: src/@generic/constant/date-period.constant.ts:10
 msgid "This Month"
 msgstr "Цього місяця"
 
@@ -2004,11 +2050,11 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:22
+#: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
 
-#: src/@generic/constant/date-period.constant.ts:10
+#: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
 msgstr "Цього року"
 
@@ -2075,7 +2121,7 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/ai/hook/use-stt.hook.ts:137
+#: src/ai/hook/use-stt.hook.ts:127
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
@@ -2213,13 +2259,9 @@ msgstr "Очікування"
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
-#: src/ai/service/stt.service.ts:174
+#: src/ai/util/download-whisper-model.util.ts:65
 msgid "Whisper model download failed"
 msgstr "Не вдалося завантажити модель Whisper"
-
-#: src/ai/service/stt.service.ts:358
-msgid "Whisper transcription failed"
-msgstr "Не вдалося виконати транскрипцію Whisper"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
 msgid "Who do you owe?"
@@ -2261,3 +2303,7 @@ msgstr "Ваш токен зберігається в безпечній баз�
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Ваш файл транзакцій готовий до поширення."
+
+#: src/ai/util/build-stt-transcribe-options.util.ts:12
+msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
+msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."

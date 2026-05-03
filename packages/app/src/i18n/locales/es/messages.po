@@ -57,7 +57,7 @@ msgstr "{percentage}% de gastos"
 msgid "{percentage}% of income"
 msgstr "{percentage}% de ingresos"
 
-#: src/ai/service/ai-umbrella-status.service.ts:74
+#: src/ai/service/ai-umbrella-status.service.ts:82
 msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
 
@@ -161,12 +161,12 @@ msgid "AI disabled"
 msgstr "IA desactivada"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:114
+#: src/ai/service/ai-umbrella-status.service.ts:124
 msgid "AI idle"
 msgstr "IA inactiva"
 
-#: src/ai/service/ai-umbrella-status.service.ts:59
-#: src/ai/service/ai-umbrella-status.service.ts:121
+#: src/ai/service/ai-umbrella-status.service.ts:65
+#: src/ai/service/ai-umbrella-status.service.ts:131
 msgid "AI off"
 msgstr "IA desactivada"
 
@@ -259,10 +259,6 @@ msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
-#: src/ai/adapter/manual-audio-stream.adapter.ts:62
-msgid "Audio stream not initialized"
-msgstr "Flujo de audio no inicializado"
-
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
@@ -293,11 +289,8 @@ msgstr "Sincronización bancaria"
 msgid "Bank Sync"
 msgstr "Sincronización bancaria"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:45
-msgid "Bank sync has been reset. History will be re-synced on next sync."
-msgstr "Se ha restablecido la sincronización bancaria. El historial se volverá a sincronizar en la próxima sincronización."
-
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:44
+#: src/app/resync-window-picker.tsx:56
+#: src/app/resync-window-picker.tsx:78
 msgid "Bank sync reset"
 msgstr "Sincronización bancaria restablecida"
 
@@ -329,12 +322,12 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
+#: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:24
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:63
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 msgid "Cancel"
@@ -576,7 +569,8 @@ msgstr "No se pudo reasignar la etiqueta"
 msgid "Could not recalculate balances"
 msgstr "No se pudieron recalcular los saldos"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:50
+#: src/app/resync-window-picker.tsx:58
+#: src/app/resync-window-picker.tsx:80
 msgid "Could not reset bank sync"
 msgstr "No se pudo restablecer la sincronización bancaria"
 
@@ -783,7 +777,7 @@ msgstr "Listo ({count})"
 msgid "Download your statement as PDF"
 msgstr "Descarga tu extracto en PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:87
+#: src/ai/service/ai-umbrella-status.service.ts:97
 msgid "Downloading AI models…"
 msgstr "Descargando modelos de IA…"
 
@@ -904,6 +898,10 @@ msgstr "Ingrese su token API de Monobank"
 #: src/app/(main)/pin.tsx:116
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
+
+#: src/app/resync-window-picker.tsx:43
+msgid "Entire history will be re-synced on next sync."
+msgstr "Todo el historial se volverá a sincronizar en la próxima sincronización."
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
 msgid "Errors"
@@ -1140,13 +1138,33 @@ msgstr "Italiano (Italia)"
 msgid "Language"
 msgstr "Idioma"
 
+#: src/app/resync-window-picker.tsx:33
+msgid "Last 30 days"
+msgstr "Últimos 30 días"
+
+#: src/app/resync-window-picker.tsx:32
+msgid "Last 7 days"
+msgstr "Últimos 7 días"
+
+#: src/app/resync-window-picker.tsx:34
+msgid "Last 90 days"
+msgstr "Últimos 90 días"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
 msgid "Last error"
 msgstr "Último error"
 
+#: src/@generic/constant/date-period.constant.ts:11
+msgid "Last Month"
+msgstr "Mes pasado"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Last sync"
 msgstr "Última sincronización"
+
+#: src/@generic/constant/date-period.constant.ts:9
+msgid "Last Week"
+msgstr "Semana pasada"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx:18
 msgid "Learning"
@@ -1465,6 +1483,10 @@ msgstr "Se denegó el permiso para acceder a los contactos."
 msgid "Physical cash on hand"
 msgstr "Efectivo físico disponible"
 
+#: src/app/resync-window-picker.tsx:94
+msgid "Pick a window. Existing data is preserved."
+msgstr "Elige un período. Los datos existentes se conservan."
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1521,13 +1543,33 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:21
+#: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
 msgstr "¿Volver a sincronizar la cuenta bancaria?"
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:23
+#: src/app/resync-window-picker.tsx:36
+msgid "Re-sync entire history"
+msgstr "Volver a sincronizar todo el historial"
+
+#: src/app/resync-window-picker.tsx:68
 msgid "Re-sync History"
 msgstr "Volver a sincronizar historial"
+
+#: src/app/resync-window-picker.tsx:40
+msgid "Re-sync of last 30 days will start on next sync."
+msgstr "Los últimos 30 días se sincronizarán en la próxima sincronización."
+
+#: src/app/resync-window-picker.tsx:39
+msgid "Re-sync of last 7 days will start on next sync."
+msgstr "Los últimos 7 días se sincronizarán en la próxima sincronización."
+
+#: src/app/resync-window-picker.tsx:41
+msgid "Re-sync of last 90 days will start on next sync."
+msgstr "Los últimos 90 días se sincronizarán en la próxima sincronización."
+
+#: src/app/resync-window-picker.tsx:94
+msgid "Re-sync transactions"
+msgstr "Volver a sincronizar transacciones"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:52
 msgid "Rebuild"
@@ -1570,6 +1612,10 @@ msgstr "Recurrentes"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Los pagos recurrentes aparecerán aquí cuando se detecten patrones en tus transacciones"
 
+#: src/app/resync-window-picker.tsx:115
+msgid "Resets all sync state"
+msgstr "Restablece todo el estado de sincronización"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Restore"
 msgstr "Restaurar"
@@ -1583,7 +1629,7 @@ msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:105
+#: src/ai/service/ai-umbrella-status.service.ts:115
 msgid "Resuming AI…"
 msgstr "Reanudando IA…"
 
@@ -1866,7 +1912,7 @@ msgstr "Iniciar sincronización"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
-#: src/ai/service/ai-umbrella-status.service.ts:96
+#: src/ai/service/ai-umbrella-status.service.ts:106
 msgid "Starting up AI…"
 msgstr "Iniciando IA…"
 
@@ -1968,7 +2014,7 @@ msgstr "Esta categoría tiene transacciones. Selecciona otra categoría para rea
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
-#: src/@generic/constant/date-period.constant.ts:9
+#: src/@generic/constant/date-period.constant.ts:10
 msgid "This Month"
 msgstr "Este mes"
 
@@ -2004,11 +2050,11 @@ msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
-#: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:22
+#: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Esto restablecerá el historial de sincronización y volverá a sincronizar todas las transacciones de esta cuenta bancaria. Tus transacciones, etiquetas y categorías existentes se conservarán y se actualizarán con cualquier dato nuevo."
 
-#: src/@generic/constant/date-period.constant.ts:10
+#: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
 msgstr "Este año"
 
@@ -2075,7 +2121,7 @@ msgstr "Transacciones"
 msgid "Transactions synced"
 msgstr "Transacciones sincronizadas"
 
-#: src/ai/hook/use-stt.hook.ts:137
+#: src/ai/hook/use-stt.hook.ts:127
 msgid "Transcription failed"
 msgstr "Error de transcripción"
 
@@ -2213,13 +2259,9 @@ msgstr "Esperando"
 msgid "When should it be returned?"
 msgstr "¿Cuándo debería ser devuelto?"
 
-#: src/ai/service/stt.service.ts:174
+#: src/ai/util/download-whisper-model.util.ts:65
 msgid "Whisper model download failed"
 msgstr "Error al descargar el modelo de Whisper"
-
-#: src/ai/service/stt.service.ts:358
-msgid "Whisper transcription failed"
-msgstr "Error en la transcripción de Whisper"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
 msgid "Who do you owe?"
@@ -2261,3 +2303,7 @@ msgstr "Su token se almacena de forma segura en la base de datos. La sincronizac
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Tu archivo de transacciones está listo para compartir."
+
+#: src/ai/util/build-stt-transcribe-options.util.ts:12
+msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
+msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
