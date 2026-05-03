@@ -14,6 +14,7 @@ export interface ArticleRegistryEntryInterface {
     readonly tags: readonly string[];
     readonly seoKeywords: readonly string[];
     readonly seoDescription: MessageDescriptor;
+    readonly relatedFeatureSlugs: readonly string[];
 }
 
 export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
@@ -27,7 +28,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`,
         tags: ['privacy', 'security', 'architecture', 'encryption', 'open-source', 'offline-first'],
         seoKeywords: ['offline expense tracker', 'private finance app', 'local budget app', 'SQLite expense tracker'],
-        seoDescription: msg`Discover exactly how Budgie keeps your financial data off the cloud. Learn about our SQLite architecture, AES-256 encryption, device-to-device sync, and open-source transparency.`
+        seoDescription: msg`Discover exactly how Budgie keeps your financial data off the cloud. Learn about our SQLite architecture, AES-256 encryption, device-to-device sync, and open-source transparency.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'pin-app-lock', 'database-backup', 'biometric-authentication']
     },
     {
         slug: 'cloud-budgeting-privacy-risks',
@@ -39,7 +41,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation.`,
         tags: ['privacy', 'security', 'cloud-security', 'data-breaches', 'plaid', 'financial-privacy', 'fintech'],
         seoKeywords: ['cloud budget app privacy', 'Plaid data risks', 'financial app data breaches'],
-        seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`
+        seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'screenshot-protection']
     },
     {
         slug: 'local-first-movement-developers',
@@ -51,7 +54,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`Explore the local-first movement, CRDTs, sync engines, and why developers are choosing offline-first architecture for privacy-sensitive applications.`,
         tags: ['local-first', 'offline-first', 'CRDTs', 'sync-engines', 'software-architecture', 'privacy', 'developers'],
         seoKeywords: ['local-first software', 'CRDTs', 'offline-first architecture', 'sync engines'],
-        seoDescription: msg`Explore the local-first movement: CRDTs, sync engines, real-world examples, and why developers are building offline-first apps for better privacy and performance.`
+        seoDescription: msg`Explore the local-first movement: CRDTs, sync engines, real-world examples, and why developers are building offline-first apps for better privacy and performance.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'database-backup', 'data-export']
     },
     {
         slug: 'mint-alternatives-developers',
@@ -63,7 +67,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more.`,
         tags: ['mint-alternatives', 'budget-apps', 'developer-tools', 'open-source', 'privacy', 'personal-finance'],
         seoKeywords: ['Mint alternatives', 'developer budget app', 'Mint shutdown replacement'],
-        seoDescription: msg`Comprehensive developer's guide to Mint alternatives: detailed comparison of privacy-focused budget apps including Budgie, Actual Budget, Firefly III, and more.`
+        seoDescription: msg`Comprehensive developer's guide to Mint alternatives: detailed comparison of privacy-focused budget apps including Budgie, Actual Budget, Firefly III, and more.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'csv-import', 'monobank-sync', 'multi-currency']
     },
     {
         slug: 'offline-first-privacy-financial-app',
@@ -75,7 +80,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`Discover why offline-first architecture is the only truly private approach for financial apps. Learn about data risks, privacy by design, and how Budgie keeps your finances secure.`,
         tags: ['privacy', 'security', 'offline-first', 'financial-privacy', 'data-protection'],
         seoKeywords: ['offline-first privacy', 'financial app security', 'private budget app'],
-        seoDescription: msg`Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data.`
+        seoDescription: msg`Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'pin-app-lock', 'screenshot-protection']
     },
     {
         slug: 'open-source-budgeting-transparency',
@@ -87,7 +93,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`Learn why open-source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data.`,
         tags: ['open-source', 'transparency', 'security', 'privacy', 'community'],
         seoKeywords: ['open source budget app', 'transparent finance app', 'open source security'],
-        seoDescription: msg`Learn why open-source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data.`
+        seoDescription: msg`Learn why open-source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'data-export', 'database-backup']
     },
     {
         slug: 'ynab-alternatives-privacy',
@@ -99,7 +106,8 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         description: msg`Comprehensive comparison of privacy-focused YNAB alternatives. Detailed reviews of Budgie, Actual Budget, Firefly III, and more with migration guide.`,
         tags: ['ynab', 'alternatives', 'privacy', 'comparison', 'budgeting', 'offline-first', 'open-source'],
         seoKeywords: ['YNAB alternatives', 'privacy budget app', 'YNAB replacement'],
-        seoDescription: msg`Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide.`
+        seoDescription: msg`Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'custom-categories', 'transaction-tags', 'recurring-payments-calendar']
     }
 ];
 /* eslint-enable lingui/no-unlocalized-strings */
