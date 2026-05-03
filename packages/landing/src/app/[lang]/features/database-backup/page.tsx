@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function, lingui/no-unlocalized-strings */
+/* eslint-disable max-lines-per-function */
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -21,6 +20,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -57,7 +57,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -72,7 +72,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Database Backup &amp; Restore</Trans>}
@@ -107,11 +109,21 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Single encrypted file holds every transaction, account, category, tag, and setting</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Backup file is your SQLCipher database — no vendor format conversion</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Restore is a one-tap flow on a fresh install — pick the file, enter your PIN</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Migrate to a new phone in under a minute, no account required</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -128,9 +140,42 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>How do I restore on a new device?</Trans>}
+                    answer={
+                        <Trans>
+                            Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud /
+                            Drive. Enter your original PIN. Done.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — the file is SQLCipher-encrypted with your PIN-derived key. Cloud providers see encrypted bytes, not your
+                            transactions.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I have multiple backups?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for
+                            rollback.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Does Budgie auto-backup?</Trans>}
+                    answer={
+                        <Trans>
+                            Manual backups only by default — for the privacy-first crowd that doesn&apos;t want surprise file writes. You
+                            can schedule reminders in Settings.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />

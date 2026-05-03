@@ -22,13 +22,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'no account budget app',
             'local-first expense tracker'
         ],
-        heroBenefits: [
-            msg`Works in airplane mode, tunnels, and rural areas — every feature, every time`,
-            msg`No sign-up, no email, no account — install and start logging`,
-            msg`AES-256 encrypted SQLite database, key derived from your PIN`,
-            msg`No backend means no breach surface — there is nothing to leak`,
-            msg`Optional bank sync uses your own API tokens — never a third-party aggregator`
-        ],
         relatedFeatureSlugs: ['monobank-sync', 'ai-auto-categorization', 'pin-app-lock', 'database-backup'],
         relatedArticleSlugs: ['offline-first-privacy-financial-app', 'budgie-offline-financial-data'],
         faqs: [
@@ -62,13 +55,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaDescription: msg`Connect your Monobank account directly via personal API token. Full transaction history, FX rates, and counter-IBANs synced straight to your device — never via Plaid.`,
         primaryKeyword: 'monobank expense tracker',
         seoKeywords: ['monobank sync', 'monobank api', 'monobank expense tracker', 'monobank transaction import', 'monobank budget app'],
-        heroBenefits: [
-            msg`Direct Monobank Personal API — your token, your call`,
-            msg`Full historical sync on first connect, then incremental every 30 minutes`,
-            msg`Cross-currency transactions preserve original FX rate per leg`,
-            msg`Counter-IBAN stored, enabling smart transfer-pair consolidation`,
-            msg`Windowed re-sync to fix drift without losing manual edits`
-        ],
         relatedFeatureSlugs: [
             'offline-first-expense-tracker',
             'transfer-pair-detection',
@@ -113,13 +99,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'private AI finance',
             'local LLM expense tracker',
             'machine learning expense categorization'
-        ],
-        heroBenefits: [
-            msg`Qwen3 1.7B Q4 model runs entirely on your phone after a one-time download`,
-            msg`Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search`,
-            msg`Two complementary signals: vector lookup over your history plus a generative tag suggestion`,
-            msg`Every confirmation updates the embedding index instantly — accuracy improves as you use it`,
-            msg`Statements never leave the device — no OpenAI, no remote inference, ever`
         ],
         relatedFeatureSlugs: [
             'offline-first-expense-tracker',
@@ -166,13 +145,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'voice transaction logging',
             'on-device whisper'
         ],
-        heroBenefits: [
-            msg`Whisper-small runs locally for accurate, multilingual transcription`,
-            msg`On-device LLM extracts amount, merchant, date, and category from natural speech`,
-            msg`Audio never leaves the device — no Siri-style cloud round-trip`,
-            msg`Pre-fills the same quick-entry form you would use by typing — confirm or correct`,
-            msg`Works during the AI model loading phase too — visual progress indicator built-in`
-        ],
         relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-merchant-translation'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
         faqs: [
@@ -212,13 +184,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'crypto net worth tracker',
             'mobile net worth app'
         ],
-        heroBenefits: [
-            msg`Per-account "include in net worth" toggle — partial-truth balance is your call`,
-            msg`Daily background FX-rate refresh converts every account to your base currency`,
-            msg`Liability and debt accounts subtract automatically; receivables add`,
-            msg`Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX`,
-            msg`Tap any aggregated number to drill into the per-leg native amounts`
-        ],
         relatedFeatureSlugs: ['account-management', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -257,13 +222,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'log expenses fast',
             'mobile expense logger',
             'expense tracker bottom sheet'
-        ],
-        heroBenefits: [
-            msg`Two-tap entry: smart defaults for account, category, and date pick the right values out of the box`,
-            msg`Three first-class transaction types: expense, income, transfer — never confused, never miscounted`,
-            msg`Long-press any row for context actions: edit, delete, split, convert to transfer`,
-            msg`MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries`,
-            msg`Comments grow vertically up to two lines so receipts and references fit without truncation`
         ],
         relatedFeatureSlugs: [
             'voice-transaction-entry',
@@ -310,13 +268,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'crypto and bank tracker',
             'mobile money manager'
         ],
-        heroBenefits: [
-            msg`Unlimited accounts: Bank, Cash, Crypto, Stocks, Debt — each with its own currency and balance`,
-            msg`Bank-synced accounts auto-group by provider on the home screen`,
-            msg`Liability and debt accounts support negative balances and a target return date`,
-            msg`Archive without deleting — old accounts disappear from the home but stay searchable`,
-            msg`"Include in net worth" toggle per account for partial-truth balance sheets`
-        ],
         relatedFeatureSlugs: ['net-worth-tracker', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
         faqs: [
@@ -355,13 +306,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'category breakdown chart',
             'tag analytics',
             'mobile finance dashboard'
-        ],
-        heroBenefits: [
-            msg`Categories tab: per-category totals, with drill-down to every transaction in the slice`,
-            msg`Tags tab: per-tag income and expense, plus an "Untagged" bucket for the gaps`,
-            msg`Recurring tab: subscription cadence and forecasted upcoming bills`,
-            msg`Eight date presets: Today through All Time, plus a custom range fallback`,
-            msg`Compact tile mode shows weekly/monthly net flow alongside category totals`
         ],
         relatedFeatureSlugs: ['tag-analytics', 'custom-categories', 'date-filter-presets', 'recurring-payments-calendar'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
@@ -402,13 +346,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'reassign transactions categories',
             'budget category tree'
         ],
-        heroBenefits: [
-            msg`Create unlimited categories with custom names, icons, and colors`,
-            msg`Merge two categories into one with mass-reassignment of transactions`,
-            msg`Selector reorders by your usage frequency — the categories you tap most surface first`,
-            msg`MCC mapping pre-fills bank-synced transactions; AI suggestions cover manual ones`,
-            msg`Safe deletion: prompts you to migrate or wipe transactions, never silently orphans`
-        ],
         relatedFeatureSlugs: ['ai-auto-categorization', 'mcc-auto-category', 'expense-tracking', 'transaction-tags'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -447,13 +384,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'tag transactions',
             'project expense tags',
             'shared expense tracker'
-        ],
-        heroBenefits: [
-            msg`Tags are flat, reusable, and combine freely — no rigid hierarchy`,
-            msg`One tag per transaction can be promoted to "primary" with a corner-star badge`,
-            msg`Selector stays open across multi-selections; commit with a Done pill`,
-            msg`Merge tags across the database — same mass-reassignment story as categories`,
-            msg`Tag-based analytics: per-tag totals plus an "Untagged" bucket`
         ],
         relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
@@ -494,13 +424,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'dual-amount transfer',
             'FX transfer tracking'
         ],
-        heroBenefits: [
-            msg`First-class Transfer transaction type — never confused with expense or income`,
-            msg`Cross-currency dual-amount display: pin send or receive, system computes the other`,
-            msg`Original FX rate stored per leg for exact balance reconciliation`,
-            msg`Currency-mode pill switches whether you drive from send or receive direction`,
-            msg`Convert any expense or income to a transfer retroactively — no re-entry needed`
-        ],
         relatedFeatureSlugs: ['transfer-pair-detection', 'convert-to-transfer', 'multi-currency', 'expense-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
         faqs: [
@@ -539,13 +462,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'flexible CSV column mapping',
             'CSV import preset',
             'bank statement importer'
-        ],
-        heroBenefits: [
-            msg`Map columns flexibly: Date, Amount, Description, Counterparty — your bank's order, not ours`,
-            msg`Save a per-bank preset and never re-map again`,
-            msg`Decimal separator and date format options handle US, EU, and ISO variants`,
-            msg`Re-import detects duplicates by externalId — safe to re-pull the same statement`,
-            msg`Preview every row before write so you can spot mis-mappings instantly`
         ],
         relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'mcc-auto-category'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
@@ -586,13 +502,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'Austrian bank statement import',
             'Erste statement to budget app'
         ],
-        heroBenefits: [
-            msg`Both Erste statement layouts supported: classic and the 2026 modern format`,
-            msg`Account holder, IBAN, opening and closing balances all extracted automatically`,
-            msg`Booking date and value date both captured per transaction`,
-            msg`MCC inferred from booking-text patterns where present`,
-            msg`Preview every parsed transaction before write — no surprises`
-        ],
         relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
         faqs: [
@@ -631,13 +540,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'PrivatBank to budget app',
             'Ukrainian bank import',
             'PrivatBank statement parser'
-        ],
-        heroBenefits: [
-            msg`Native PrivatBank24 XLSX schema parser — no manual column mapping`,
-            msg`PrivatBank's proprietary MCC labels map to ISO MCC codes automatically`,
-            msg`Long-press a PrivatBank account card on the home screen for a one-tap re-import`,
-            msg`Currency, FX, and counterparty fields all preserved`,
-            msg`Dedupes against existing transactions on re-import`
         ],
         relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'mcc-auto-category'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
@@ -678,13 +580,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'PIN-protected expense tracker',
             'finance app screen lock'
         ],
-        heroBenefits: [
-            msg`PIN derives the SQLCipher database encryption key — not just a screen guard`,
-            msg`4 to 6 digit PIN, configurable in Settings`,
-            msg`App-background timer re-locks automatically`,
-            msg`Optional biometric unlock binds to the same encryption key`,
-            msg`No "forgot PIN" recovery — that's the privacy guarantee`
-        ],
         relatedFeatureSlugs: ['biometric-authentication', 'screenshot-protection', 'offline-first-expense-tracker', 'database-backup'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
         faqs: [
@@ -723,13 +618,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'biometric finance app',
             'Secure Enclave expense tracker',
             'biometric unlock finance'
-        ],
-        heroBenefits: [
-            msg`Face ID and Touch ID supported on every modern iOS and Android device`,
-            msg`Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data`,
-            msg`Falls back to PIN if biometrics are disabled or unavailable`,
-            msg`Respects OS lockout policy — five strikes prompts the device passcode`,
-            msg`No additional friction at app open — same speed as your bank app`
         ],
         relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'offline-first-expense-tracker'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
@@ -770,13 +658,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'database backup expense tracker',
             'budget app data export'
         ],
-        heroBenefits: [
-            msg`CSV export with date, account, category, tags, amount, currency, comment columns`,
-            msg`Encrypted database backup file for full restore on any device`,
-            msg`Filter by date range before exporting — last month, this year, or anything custom`,
-            msg`Save through the OS share sheet — Files, iCloud, Drive, anything`,
-            msg`No vendor account required — your data, your storage of choice`
-        ],
         relatedFeatureSlugs: ['database-backup', 'csv-import'],
         relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
         faqs: [
@@ -816,13 +697,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'restore expense data',
             'no-account backup app'
         ],
-        heroBenefits: [
-            msg`Single encrypted file holds every transaction, account, category, tag, and setting`,
-            msg`Backup file is your SQLCipher database — no vendor format conversion`,
-            msg`Restore is a one-tap flow on a fresh install — pick the file, enter your PIN`,
-            msg`Migrate to a new phone in under a minute, no account required`,
-            msg`Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice`
-        ],
         relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'offline-first-expense-tracker'],
         relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
         faqs: [
@@ -861,13 +735,6 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'budget app date filter',
             'monthly view expense app',
             'date preset filter'
-        ],
-        heroBenefits: [
-            msg`Eight presets cover the windows you actually use, from Today to All Time`,
-            msg`Custom range fallback for anything else`,
-            msg`Same picker across analytics, transactions, and recurring screens`,
-            msg`Locale-aware week start (Monday in EU, Sunday in en-US)`,
-            msg`"Last Month" always means the most-recent COMPLETED month — never the half-finished current one`
         ],
         relatedFeatureSlugs: ['spending-analytics', 'recurring-payments-calendar', 'tag-analytics'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],

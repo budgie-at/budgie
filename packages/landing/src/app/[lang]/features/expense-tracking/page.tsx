@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -21,6 +20,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -57,7 +57,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -72,7 +72,9 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Expense Tracking, Reimagined</Trans>}
@@ -107,11 +109,21 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Two-tap entry: smart defaults for account, category, and date pick the right values out of the box</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Long-press any row for context actions: edit, delete, split, convert to transfer</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Comments grow vertically up to two lines so receipts and references fit without truncation</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -128,9 +140,42 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>How fast is the quick-entry form?</Trans>}
+                    answer={
+                        <Trans>
+                            Open the sheet, type the amount, tap save — that&apos;s the typical flow once defaults are tuned to your habits.
+                            The form picks your default account, the most-likely category, and today&apos;s date automatically.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I edit a transaction after saving?</Trans>}
+                    answer={
+                        <Trans>
+                            Always. Long-press the row in the list for a context menu with Edit, Delete, Split, and Convert to Transfer
+                            actions.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Does Budgie distinguish transfers from expenses?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Transfer is a first-class transaction type with explicit source and destination accounts; it never inflates
+                            your spending stats.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What about recurring purchases?</Trans>}
+                    answer={
+                        <Trans>
+                            Budgie auto-detects recurring patterns and surfaces them on a dedicated calendar tab. See the Recurring Payments
+                            Calendar feature for details.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />

@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -21,6 +20,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -57,7 +57,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -72,7 +72,9 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Spending Analytics That Actually Help</Trans>}
@@ -109,11 +111,21 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Categories tab: per-category totals, with drill-down to every transaction in the slice</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Recurring tab: subscription cadence and forecasted upcoming bills</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Eight date presets: Today through All Time, plus a custom range fallback</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Compact tile mode shows weekly/monthly net flow alongside category totals</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -130,9 +142,38 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>Can I drill down from a chart to the transactions?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Tap any category or tag slice to see every transaction that contributed to it during the current period.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What&apos;s an &ldquo;Untagged&rdquo; bucket?</Trans>}
+                    answer={
+                        <Trans>
+                            A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps
+                            and tighten them up.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I compare months?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Switch the date filter between presets like This Month, Last Month, This Year. Compact tile mode also shows
+                            period-over-period deltas.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Are charts rendered offline?</Trans>}
+                    answer={
+                        <Trans>Yes. Analytics reads directly from your local SQLite database — every chart works without internet.</Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />

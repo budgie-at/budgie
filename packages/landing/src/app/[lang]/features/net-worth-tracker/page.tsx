@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageNetWorthCoverageTable } from '../../../../feature/component/feature-page-net-worth-coverage-table/feature-page-net-worth-coverage-table';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
@@ -22,6 +21,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -58,7 +58,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -73,7 +73,9 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Net Worth Tracker for Mobile</Trans>}
@@ -109,11 +111,21 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Per-account &ldquo;include in net worth&rdquo; toggle — partial-truth balance is your call</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Daily background FX-rate refresh converts every account to your base currency</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Tap any aggregated number to drill into the per-leg native amounts</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -138,9 +150,42 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>Where do exchange rates come from?</Trans>}
+                    answer={
+                        <Trans>
+                            A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device. No
+                            live rate broker is queried at render time.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I exclude an account from net worth?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Each account has an &ldquo;Include in net worth&rdquo; toggle so you can keep, say, a business escrow
+                            account separate from your personal balance sheet.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>How do crypto and stock holdings price?</Trans>}
+                    answer={
+                        <Trans>
+                            Either by manual price update or by importing your brokerage&apos;s CSV export. Live ticker integration is
+                            opt-in to keep the offline-first guarantee.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Is the home screen number always accurate?</Trans>}
+                    answer={
+                        <Trans>
+                            As accurate as your most-recent balance + FX rate. Manual accounts hold whatever balance you set; bank-synced
+                            accounts reconcile every sync.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />

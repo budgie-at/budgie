@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -21,6 +20,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -57,7 +57,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -72,7 +72,9 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Account Transfers — Done Right</Trans>}
@@ -108,11 +110,21 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>First-class Transfer transaction type — never confused with expense or income</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Cross-currency dual-amount display: pin send or receive, system computes the other</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Original FX rate stored per leg for exact balance reconciliation</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Currency-mode pill switches whether you drive from send or receive direction</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Convert any expense or income to a transfer retroactively — no re-entry needed</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -129,9 +141,42 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>Why is &ldquo;transfer&rdquo; a separate type?</Trans>}
+                    answer={
+                        <Trans>
+                            Money moved between your own accounts is not income or expense. Treating transfers as expenses double-counts
+                            your spending. Budgie&apos;s first-class Transfer type keeps your stats accurate.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What about cross-currency transfers?</Trans>}
+                    answer={
+                        <Trans>
+                            Dual-amount input shows both legs (e.g. $1000 → €925). Pin either side; the FX rate is preserved per leg so
+                            reconciliation across currencies stays exact.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I auto-link transfers from my bank?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — see Smart Transfer Consolidation. Bank-synced debits and credits matching by amount, time window, and
+                            counter-IBAN auto-merge into a single transfer.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I undo a transfer?</Trans>}
+                    answer={
+                        <Trans>
+                            Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays
+                            linked and updates with you.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />

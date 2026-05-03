@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function, lingui/no-unlocalized-strings */
+/* eslint-disable max-lines-per-function */
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -12,7 +12,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -21,6 +20,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -57,7 +57,7 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -72,7 +72,9 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>PrivatBank XLSX Import</Trans>}
@@ -108,11 +110,21 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Native PrivatBank24 XLSX schema parser — no manual column mapping</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>PrivatBank&apos;s proprietary MCC labels map to ISO MCC codes automatically</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Long-press a PrivatBank account card on the home screen for a one-tap re-import</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Currency, FX, and counterparty fields all preserved</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Dedupes against existing transactions on re-import</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -129,9 +141,38 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>How do I export the XLSX from PrivatBank24?</Trans>}
+                    answer={
+                        <Trans>
+                            Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the
+                            file and import via Budgie&apos;s Import → PrivatBank flow.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What about PrivatBank&apos;s custom MCC labels?</Trans>}
+                    answer={
+                        <Trans>
+                            Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips,
+                            and analytics all work the same as with other bank-synced data.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Is the long-press shortcut destructive?</Trans>}
+                    answer={
+                        <Trans>No. Re-import always dedupes by transaction ID, so re-pulling the same file is safe and idempotent.</Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Does it work offline?</Trans>}
+                    answer={
+                        <Trans>
+                            The parsing step is on-device. You only need internet to download the XLSX from PrivatBank24 in the first place.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />
