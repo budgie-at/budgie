@@ -28,7 +28,7 @@ export const TokenInputStep = ({ token, onTokenChange }: Props) => {
             />
 
             <View className="gap-y-md">
-                <Text className="text-primary text-muted-foreground text-sm px-md">
+                <Text className="text-secondary-foreground text-sm px-md">
                     <Trans>Paste your API token below:</Trans>
                 </Text>
 
