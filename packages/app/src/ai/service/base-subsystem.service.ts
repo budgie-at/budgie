@@ -76,6 +76,7 @@ export abstract class ScheduledSnapshotStore<TSnapshot> extends SnapshotStore<TS
 
 interface SnapshotWithStatus {
     readonly status: AiSubsystemStatusEnum;
+    readonly errorMessage: string | null;
 }
 
 export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus> extends SnapshotStore<TSnapshot> {
@@ -117,7 +118,16 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
         await this.pendingOperation;
     }
 
-    abstract retry(): Promise<void>;
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async retry(): Promise<void> {
+        await this.beforeRetry();
+        this.setSnapshot({ ...this.getSnapshot(), status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
+        await this.start();
+    }
+
+    protected beforeRetry(): Promise<void> {
+        return Promise.resolve();
+    }
 
     protected abstract runStart(): Promise<void>;
     protected abstract runStop(): Promise<void>;
@@ -136,12 +146,6 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
 
     constructor(logDomain: AiSubsystemNameEnum) {
         super(logDomain, { status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null });
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async retry(): Promise<void> {
-        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-        await this.start();
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -180,6 +184,13 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
         } catch {
             this.context = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
+        }
+    }
+
+    protected override async beforeRetry(): Promise<void> {
+        if (isDefined(this.context)) {
+            await this.context.release().catch(emptyFn);
+            this.context = null;
         }
     }
 

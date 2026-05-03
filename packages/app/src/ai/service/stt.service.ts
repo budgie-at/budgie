@@ -17,8 +17,6 @@ import { whisperModelService } from './whisper-model.service';
 class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
     private context: WhisperContext | null = null;
     private audioStream: ManualAudioStreamAdapter | null = null;
-    private resolveStream: ((text: string) => void) | null = null;
-    private rejectStream: ((error: unknown) => void) | null = null;
     private stopStreamPromise: Promise<string> | null = null;
     private streamLanguage: string | null = null;
 
@@ -36,12 +34,8 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         return this.snapshot.committedTranscription;
     }
 
-    @Log(
-        language => `enter language=${language ?? 'default'}`,
-        (result, language) => `done language=${language ?? 'default'} committedLen=${result.length}`,
-        (error, language) => `throw language=${language ?? 'default'} error=${getErrorMessage(error)}`
-    )
-    async stream(language: string | null = null): Promise<string> {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async streamStart(language: string | null = null): Promise<void> {
         if (!this.isReady || !isDefined(this.context)) {
             throw new AiNotReadyError(AiSubsystemNameEnum.STT);
         }
@@ -49,18 +43,14 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
             await this.stopActiveStream(false).catch(emptyFn);
         }
 
-        return this.startFreshStream(language);
+        this.setSnapshot({ errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
+        this.audioStream = new ManualAudioStreamAdapter();
+        this.streamLanguage = language;
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async retry(): Promise<void> {
-        this.resetRetryState();
-        await this.start();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async streamStop(): Promise<void> {
-        await this.stopActiveStream(true);
+    @Log('enter', result => `done committedLen=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
+    async streamStop(): Promise<string> {
+        return this.stopActiveStream(true);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -99,7 +89,8 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
             });
         } catch {
             this.context = null;
-            this.clearStreamRefs();
+            this.audioStream = null;
+            this.streamLanguage = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
         }
     }
@@ -108,8 +99,8 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         this.audioStream?.push(waveform);
     }
 
-    private resetRetryState(): void {
-        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
+    protected override async beforeRetry(): Promise<void> {
+        await this.streamCancel().catch(emptyFn);
     }
 
     private stopActiveStream(commitFinalText: boolean): Promise<string> {
@@ -134,14 +125,11 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         try {
             const finalText = commitFinalText ? await this.transcribeCapturedAudio(audioStream) : '';
             this.setSnapshot({ committedTranscription: finalText, nonCommittedTranscription: '' });
-            this.resolveStream?.(finalText);
 
             return finalText;
-        } catch (error: unknown) {
-            this.rejectStream?.(error);
-            throw error;
         } finally {
-            this.clearStreamRefs();
+            this.audioStream = null;
+            this.streamLanguage = null;
         }
     }
 
@@ -171,13 +159,6 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         };
     }
 
-    private createStreamPromise(): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            this.resolveStream = resolve;
-            this.rejectStream = reject;
-        });
-    }
-
     private getContext(): WhisperContext {
         const { context } = this;
 
@@ -186,23 +167,6 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         }
 
         return context;
-    }
-
-    private startFreshStream(language: string | null): Promise<string> {
-        const streamPromise = this.createStreamPromise();
-
-        this.setSnapshot({ errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
-        this.audioStream = new ManualAudioStreamAdapter();
-        this.streamLanguage = language;
-
-        return streamPromise;
-    }
-
-    private clearStreamRefs(): void {
-        this.streamLanguage = null;
-        this.resolveStream = null;
-        this.rejectStream = null;
-        this.audioStream = null;
     }
 }
 

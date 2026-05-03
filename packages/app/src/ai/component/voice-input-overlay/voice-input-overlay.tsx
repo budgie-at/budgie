@@ -8,7 +8,6 @@ import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
 import { VoiceInputStateEnum } from '../../enum/voice-input-state.enum';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
-import { VoiceInputOverlayPropsInterface } from '../../interface/voice-input-overlay-props.interface';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 interface CollectedVoiceInputInterface {
@@ -16,7 +15,7 @@ interface CollectedVoiceInputInterface {
     readonly originalText: string;
 }
 
-export const VoiceInputOverlay = ({ onClose }: VoiceInputOverlayPropsInterface) => {
+export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void }) => {
     const [openVoiceReview] = useVoiceReviewModal();
     const voiceInput = useVoiceInput();
     const contentOpacity = useSharedValue(1);
