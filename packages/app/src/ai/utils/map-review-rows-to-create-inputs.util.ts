@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 
@@ -9,11 +9,11 @@ const DEFAULT_EXCHANGE_RATE = 1;
 export const mapReviewRowsToCreateInputs = (
     rows: VoiceReviewRowInterface[],
     operatedAt: Date,
-    fallbackAccountId: number,
-    fallbackCategoryId: number
+    fallbackAccountId: number
 ): TransactionCreateInputInterface[] =>
     rows.map(row => {
         const accountId = isDefined(row.accountId) ? row.accountId : fallbackAccountId;
+        const categoryId = isPositiveNumber(row.categoryId) ? row.categoryId : 0;
         const title = isNotEmptyString(row.description) ? row.description : '';
 
         return {
@@ -34,7 +34,7 @@ export const mapReviewRowsToCreateInputs = (
             entries: [
                 {
                     accountId,
-                    categoryId: fallbackCategoryId,
+                    categoryId,
                     amount: row.amountMicroUnits,
                     type: TransactionEntryTypeEnum.CREDIT,
                     mccCategoryId: null,

@@ -735,7 +735,6 @@ msgid "Default Account"
 msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/ai/component/voice-review-row/voice-review-row.tsx:111
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -762,11 +761,7 @@ msgstr "Dauerhaft löschen"
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
-#: src/ai/component/voice-review-row/voice-review-row.tsx:139
-msgid "Description"
-msgstr "Beschreibung"
-
-#: src/app/voice-review.tsx:68
+#: src/app/voice-review.tsx:63
 msgid "Detected items: {itemCount}"
 msgstr "Erkannte Einträge: {itemCount}"
 
@@ -1352,7 +1347,7 @@ msgstr "Keine inaktiven Konten"
 msgid "No inactive accounts match your search"
 msgstr "Keine inaktiven Konten entsprechen deiner Suche"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:21
+#: src/app/voice-review.tsx:72
 msgid "No items to save"
 msgstr "Keine Einträge zum Speichern"
 
@@ -1500,10 +1495,6 @@ msgstr "Physisches Bargeld"
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Wählen Sie einen Zeitraum. Vorhandene Daten bleiben erhalten."
-
-#: src/app/voice-review.tsx:66
-msgid "Pick category"
-msgstr "Kategorie wählen"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
@@ -2010,7 +2001,7 @@ msgstr "Tags"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:22
+#: src/app/voice-review.tsx:73
 msgid "Tap re-record to try again"
 msgstr "Tippe „Erneut aufnehmen\", um es noch einmal zu versuchen"
 
@@ -2285,7 +2276,7 @@ msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
-#: src/app/voice-review.tsx:72
+#: src/app/voice-review.tsx:67
 msgid "Voice import"
 msgstr "Sprachimport"
 

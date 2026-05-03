@@ -2,7 +2,7 @@ import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { useReducer, useState } from 'react';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
 import { db } from '../../@generic/drizzle/db/db';
 import { transactionBatchCreateService } from '../../transaction/service/transaction-batch-create.service';
@@ -10,16 +10,16 @@ import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface
 import { mapReviewRowsToCreateInputs } from '../utils/map-review-rows-to-create-inputs.util';
 
 type ReviewAction =
-    | {
-          readonly type: 'EDIT';
-          readonly id: string;
-          readonly patch: Partial<Pick<VoiceReviewRowInterface, 'amountMicroUnits' | 'description'>>;
-      }
+    | { readonly type: 'EDIT_AMOUNT'; readonly id: string; readonly amountMicroUnits: number }
+    | { readonly type: 'SET_CATEGORY'; readonly id: string; readonly categoryId: number }
     | { readonly type: 'DELETE'; readonly id: string };
 
 const reducer = (state: VoiceReviewRowInterface[], action: ReviewAction): VoiceReviewRowInterface[] => {
-    if (action.type === 'EDIT') {
-        return state.map(row => (row.id === action.id ? { ...row, ...action.patch } : row));
+    if (action.type === 'EDIT_AMOUNT') {
+        return state.map(row => (row.id === action.id ? { ...row, amountMicroUnits: action.amountMicroUnits } : row));
+    }
+    if (action.type === 'SET_CATEGORY') {
+        return state.map(row => (row.id === action.id ? { ...row, categoryId: action.categoryId } : row));
     }
 
     return state.filter(row => row.id !== action.id);
@@ -28,19 +28,21 @@ const reducer = (state: VoiceReviewRowInterface[], action: ReviewAction): VoiceR
 interface UseVoiceReviewReturnInterface {
     readonly rows: VoiceReviewRowInterface[];
     readonly isSaving: boolean;
-    readonly editRow: (id: string, patch: Partial<Pick<VoiceReviewRowInterface, 'amountMicroUnits' | 'description'>>) => void;
+    readonly canSave: boolean;
+    readonly editAmount: (id: string, amountMicroUnits: number) => void;
+    readonly setCategory: (id: string, categoryId: number) => void;
     readonly deleteRow: (id: string) => void;
-    readonly saveAll: (params: { readonly accountId: number; readonly categoryId: number }) => Promise<boolean>;
+    readonly saveAll: (accountId: number) => Promise<boolean>;
 }
 
 class VoiceReviewSaver {
     @Log(
-        params => `enter count=${params.rows.length} accountId=${params.accountId} categoryId=${params.categoryId}`,
+        params => `enter count=${params.rows.length} accountId=${params.accountId}`,
         (result, params) => `done count=${params.rows.length} insertedIds=${result.map(row => row.id).join(',')}`,
         (error, params) => `throw count=${params.rows.length} error=${getErrorMessage(error)}`
     )
-    async saveBatch(params: { readonly rows: VoiceReviewRowInterface[]; readonly accountId: number; readonly categoryId: number }) {
-        const inputs = mapReviewRowsToCreateInputs(params.rows, new Date(), params.accountId, params.categoryId);
+    async saveBatch(params: { readonly rows: VoiceReviewRowInterface[]; readonly accountId: number }) {
+        const inputs = mapReviewRowsToCreateInputs(params.rows, new Date(), params.accountId);
 
         return transactionAsync(db, async txDb => transactionBatchCreateService.create(inputs, txDb));
     }
@@ -52,18 +54,22 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
     const [rows, dispatch] = useReducer(reducer, initialRows);
     const [isSaving, setIsSaving] = useState(false);
 
-    const editRow = (id: string, patch: Partial<Pick<VoiceReviewRowInterface, 'amountMicroUnits' | 'description'>>) => {
-        dispatch({ type: 'EDIT', id, patch });
+    const editAmount = (id: string, amountMicroUnits: number) => {
+        dispatch({ type: 'EDIT_AMOUNT', id, amountMicroUnits });
     };
-
+    const setCategory = (id: string, categoryId: number) => {
+        dispatch({ type: 'SET_CATEGORY', id, categoryId });
+    };
     const deleteRow = (id: string) => {
         dispatch({ type: 'DELETE', id });
     };
 
-    const saveAll = async (params: { readonly accountId: number; readonly categoryId: number }): Promise<boolean> => {
+    const canSave = rows.length > 0 && rows.every(row => isPositiveNumber(row.categoryId) && row.amountMicroUnits > 0);
+
+    const saveAll = async (accountId: number): Promise<boolean> => {
         setIsSaving(true);
         try {
-            await voiceReviewSaver.saveBatch({ rows, accountId: params.accountId, categoryId: params.categoryId });
+            await voiceReviewSaver.saveBatch({ rows, accountId });
 
             return true;
         } catch {
@@ -73,5 +79,5 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
         }
     };
 
-    return { rows, isSaving, editRow, deleteRow, saveAll };
+    return { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll };
 };

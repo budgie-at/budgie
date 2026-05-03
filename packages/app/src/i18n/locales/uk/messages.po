@@ -735,7 +735,6 @@ msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/ai/component/voice-review-row/voice-review-row.tsx:111
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -762,11 +761,7 @@ msgstr "Видалити назавжди"
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
-#: src/ai/component/voice-review-row/voice-review-row.tsx:139
-msgid "Description"
-msgstr "Опис"
-
-#: src/app/voice-review.tsx:68
+#: src/app/voice-review.tsx:63
 msgid "Detected items: {itemCount}"
 msgstr "Виявлено елементів: {itemCount}"
 
@@ -1352,7 +1347,7 @@ msgstr "Немає неактивних рахунків"
 msgid "No inactive accounts match your search"
 msgstr "Жоден неактивний рахунок не відповідає вашому запиту"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:21
+#: src/app/voice-review.tsx:72
 msgid "No items to save"
 msgstr "Немає елементів для збереження"
 
@@ -1500,10 +1495,6 @@ msgstr "Фізична готівка"
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Оберіть період. Наявні дані буде збережено."
-
-#: src/app/voice-review.tsx:66
-msgid "Pick category"
-msgstr "Оберіть категорію"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
@@ -2010,7 +2001,7 @@ msgstr "Теги"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:22
+#: src/app/voice-review.tsx:73
 msgid "Tap re-record to try again"
 msgstr "Натисніть «Перезаписати», щоб спробувати ще раз"
 
@@ -2285,7 +2276,7 @@ msgstr "Перегляд та видалення власних категорі
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
-#: src/app/voice-review.tsx:72
+#: src/app/voice-review.tsx:67
 msgid "Voice import"
 msgstr "Голосовий імпорт"
 

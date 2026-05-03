@@ -735,7 +735,6 @@ msgid "Default Account"
 msgstr "Compte par défaut"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/ai/component/voice-review-row/voice-review-row.tsx:111
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -762,11 +761,7 @@ msgstr "Supprimer définitivement"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/ai/component/voice-review-row/voice-review-row.tsx:139
-msgid "Description"
-msgstr "Description"
-
-#: src/app/voice-review.tsx:68
+#: src/app/voice-review.tsx:63
 msgid "Detected items: {itemCount}"
 msgstr "Éléments détectés : {itemCount}"
 
@@ -1352,7 +1347,7 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:21
+#: src/app/voice-review.tsx:72
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -1500,10 +1495,6 @@ msgstr "Argent liquide physique"
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Choisissez une période. Les données existantes sont préservées."
-
-#: src/app/voice-review.tsx:66
-msgid "Pick category"
-msgstr "Choisir une catégorie"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
@@ -2010,7 +2001,7 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/ai/component/voice-review-list/voice-review-list.tsx:22
+#: src/app/voice-review.tsx:73
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -2285,7 +2276,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/app/voice-review.tsx:72
+#: src/app/voice-review.tsx:67
 msgid "Voice import"
 msgstr "Importation vocale"
 

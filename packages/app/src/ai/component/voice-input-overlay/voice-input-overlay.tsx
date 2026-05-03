@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
@@ -13,68 +13,59 @@ interface Props {
 
 export const VoiceInputOverlay = ({ onClose }: Props) => {
     const [openVoiceReview] = useVoiceReviewModal();
-
-    const hasAutoStartedRef = useRef(false);
+    const voiceInput = useVoiceInput();
     const contentOpacity = useSharedValue(1);
 
-    const voiceInput = useVoiceInput();
-    const { isReady, start } = voiceInput;
+    const isLiveRef = useRef<boolean>(true);
+    const { isReady, startAndCollect, cancel, state, stop, data } = voiceInput;
 
     useEffect(() => {
-        if (isReady && !hasAutoStartedRef.current) {
-            hasAutoStartedRef.current = true;
-            start();
-        }
-    }, [isReady, start]);
-
-    useEffect(
-        () => () => {
-            voiceInput.cancel();
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- Cancel only on unmount; capturing voiceInput.cancel each render would re-fire the cleanup
-        []
-    );
-
-    const handleConfirm = async () => {
-        const originalText = voiceInput.data.transcription.committed;
-        const transactions = await voiceInput.confirmAndCategorize();
-
-        if (!isNotEmptyArray(transactions)) {
-            onClose();
-
-            return;
+        if (!isReady) {
+            return emptyFn;
         }
 
-        const result = await openVoiceReview({ transactions, originalText });
+        isLiveRef.current = true;
 
-        if (result === 're-record') {
-            voiceInput.start();
+        const runOnce = async (): Promise<void> => {
+            const transactions = await startAndCollect().catch(() => null);
+            if (!isLiveRef.current) {
+                return;
+            }
+            if (transactions === null || !isNotEmptyArray(transactions)) {
+                onClose();
 
-            return;
-        }
+                return;
+            }
+            const result = await openVoiceReview({ transactions, originalText: data.transcription.committed });
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Ref value can flip during the awaited modal flow; analyzer can't see across async boundary
+            if (!isLiveRef.current) {
+                return;
+            }
+            if (result !== 're-record') {
+                onClose();
 
-        onClose();
-    };
+                return;
+            }
+            await runOnce();
+        };
+
+        void runOnce();
+
+        return () => {
+            isLiveRef.current = false;
+            cancel();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- Single mount-bound lifecycle: starts when ready, recurses on re-record, cancels on unmount
+    }, [isReady]);
 
     const handleRecord = () => {
-        switch (voiceInput.state) {
-            case 'recording':
-                voiceInput.stop();
-                break;
-            case 'confirming':
-                void handleConfirm();
-                break;
-            case 'idle':
-            case 'error':
-                voiceInput.start();
-                break;
-            default:
-                break;
+        if (state === 'recording') {
+            stop();
         }
     };
 
     const handleCancel = () => {
-        voiceInput.cancel();
+        cancel();
         onClose();
     };
 

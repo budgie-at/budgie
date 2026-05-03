@@ -30,14 +30,14 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
     const closeButtonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }] }));
 
     const buttonState: RecordButtonStateType = voiceInput.isReady ? VOICE_INPUT_STATE_TO_BUTTON[voiceInput.state] : 'loading';
-    const showBubble = voiceInput.state === 'recording' || voiceInput.state === 'transcribing' || voiceInput.state === 'confirming';
+    const showBubble = voiceInput.state === 'recording' || voiceInput.state === 'transcribing';
     const hasError = voiceInput.state === 'error' && isNotEmptyString(voiceInput.data.error);
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };
     const closeContainerStyle = { paddingBottom: bottom };
 
     return (
         <Animated.View className="absolute inset-0" style={contentAnimatedStyle} pointerEvents="box-none">
-            {hasError && <VoiceInputError message={voiceInput.data.error} onDismiss={voiceInput.retry} />}
+            {hasError ? <VoiceInputError message={voiceInput.data.error} onDismiss={onCancel} /> : null}
 
             <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={micContainerStyle} pointerEvents="box-none">
                 <VoiceInputBubble

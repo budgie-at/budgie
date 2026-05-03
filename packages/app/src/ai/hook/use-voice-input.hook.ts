@@ -1,13 +1,13 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useRef, useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
 
-type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
+type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'processing' | 'done' | 'error';
 
 interface VoiceInputData {
     readonly transcription: { readonly committed: string; readonly partial: string };
@@ -21,71 +21,74 @@ export interface UseVoiceInputReturn {
     readonly data: VoiceInputData;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly start: () => void;
+    readonly startAndCollect: () => Promise<AITransactionInterface[]>;
     readonly stop: () => void;
-    readonly confirmAndCategorize: () => Promise<AITransactionInterface[]>;
     readonly cancel: () => void;
-    readonly retry: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recording, STT, categorization, and confirmation lifecycle
+class CancelledError extends Error {
+    constructor() {
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal flow control, not user-facing
+        super('Voice input cancelled');
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Error class name, not user-facing
+        this.name = 'CancelledError';
+    }
+}
+
+// eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
 export const useVoiceInput = (): UseVoiceInputReturn => {
     const [state, setState] = useState<VoiceInputState>('idle');
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
 
-    const isProcessingRef = useRef(false);
-    const sessionIdRef = useRef(0);
+    const resolverRef = useRef<((transactions: AITransactionInterface[]) => void) | null>(null);
+    const rejecterRef = useRef<((reason: unknown) => void) | null>(null);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
 
-    const handleError = (e: unknown) => {
-        const errorMessage = getErrorMessage(e);
-
-        setError(errorMessage);
-        setState('error');
-        isProcessingRef.current = false;
+    const settle = (transactions: AITransactionInterface[]) => {
+        const resolver = resolverRef.current;
+        resolverRef.current = null;
+        rejecterRef.current = null;
+        resolver?.(transactions);
     };
 
-    const isCurrentSession = (sessionId: number): boolean => sessionId === sessionIdRef.current;
+    const reject = (reason: unknown) => {
+        const rejecter = rejecterRef.current;
+        resolverRef.current = null;
+        rejecterRef.current = null;
+        rejecter?.(reason);
+    };
 
-    const handleTranscriptionText = (text: string, sessionId: number): void => {
-        if (!isCurrentSession(sessionId)) {
-            return;
-        }
+    const handleError = (e: unknown) => {
+        setError(getErrorMessage(e));
+        setState('error');
+        reject(e);
+    };
 
-        isProcessingRef.current = false;
+    const runPipeline = async (): Promise<void> => {
+        setState('transcribing');
+        const text = await stt.stopStream();
 
         if (!isNotEmptyString(text)) {
             setState('idle');
+            settle([]);
 
             return;
         }
 
         setFinalTranscription(text);
-        setState('confirming');
-    };
+        setState('processing');
 
-    const processTranscription = async (): Promise<void> => {
-        if (isProcessingRef.current) {
-            return;
-        }
+        const transactions = await categorization.categorize(text);
 
-        const sessionId = sessionIdRef.current;
-        isProcessingRef.current = true;
-        setState('transcribing');
-
-        const text = await stt.stopStream().catch((error: unknown) => {
-            isProcessingRef.current = false;
-            throw error;
-        });
-
-        handleTranscriptionText(text, sessionId);
+        setState('done');
+        settle(transactions);
     };
 
     const handleSilenceDetected = () => {
-        processTranscription().catch(handleError);
+        runPipeline().catch(handleError);
     };
 
     const recording = useRecording({
@@ -96,64 +99,44 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
     const isReady = stt.isReady && categorization.isReady;
     const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
-    const start = () => {
-        sessionIdRef.current += 1;
+    const startAndCollect = (): Promise<AITransactionInterface[]> => {
+        if (isDefined(rejecterRef.current)) {
+            rejecterRef.current(new CancelledError());
+        }
+
         setError(null);
         setFinalTranscription('');
-        isProcessingRef.current = false;
         categorization.reset();
         stt.startStream();
         recording.start();
         setState('recording');
+
+        return new Promise<AITransactionInterface[]>((resolve, reject) => {
+            resolverRef.current = resolve;
+            rejecterRef.current = reject;
+        });
     };
 
     const stop = () => {
-        recording.stop();
-
-        if (isProcessingRef.current) {
+        if (state !== 'recording') {
             return;
         }
-        processTranscription().catch(handleError);
-    };
-
-    const confirmAndCategorize = async (): Promise<AITransactionInterface[]> => {
-        if (state !== 'confirming') {
-            return [];
-        }
-
-        if (isNotEmptyArray(categorization.transactions)) {
-            setState('done');
-
-            return categorization.transactions;
-        }
-
-        setState('processing');
-
-        try {
-            const results = await categorization.categorize(finalTranscription);
-
-            setState('done');
-
-            return results;
-        } catch (categorizeError: unknown) {
-            handleError(categorizeError);
-            throw categorizeError;
-        }
+        recording.stop();
+        runPipeline().catch(handleError);
     };
 
     const cancel = () => {
-        sessionIdRef.current += 1;
         recording.cancel();
         stt.cancelStream();
         categorization.reset();
         setState('idle');
         setError(null);
         setFinalTranscription('');
-        isProcessingRef.current = false;
+        reject(new CancelledError());
     };
 
     const transcription =
-        state === 'confirming' || state === 'processing' || state === 'done'
+        state === 'processing' || state === 'done'
             ? { committed: finalTranscription, partial: '' }
             : { committed: stt.transcription, partial: stt.partialTranscription };
 
@@ -167,10 +150,8 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
         },
         isReady,
         downloadProgress,
-        start,
+        startAndCollect,
         stop,
-        confirmAndCategorize,
-        cancel,
-        retry: start
+        cancel
     };
 };

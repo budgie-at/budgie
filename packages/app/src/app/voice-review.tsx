@@ -1,20 +1,18 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../@generic/component/button/button';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
-import { VoiceReviewList } from '../ai/component/voice-review-list/voice-review-list';
 import { useVoiceReviewModal } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { mapExtractedToReviewRows } from '../ai/utils/map-extracted-to-review-rows.util';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
-import { useGetCategoryByIdQuery } from '../category/query/use-get-category-by-id.query';
 import { useSettingsContext } from '../settings/context/settings.context';
+import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
 const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
@@ -22,7 +20,7 @@ const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 const sumMicroUnits = (rows: { readonly amountMicroUnits: number }[]): number =>
     rows.reduce((accumulator, row) => accumulator + row.amountMicroUnits, 0);
 
-// eslint-disable-next-line max-statements -- Form-sheet route orchestrates list, category picker, save, and re-record
+// eslint-disable-next-line max-statements -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
@@ -31,30 +29,29 @@ export default function VoiceReviewModal() {
     const { backgroundColor } = useFormsheetListStyles();
 
     const initialRows = isDefined(currentParams) ? mapExtractedToReviewRows(currentParams.transactions) : [];
-    const { rows, isSaving, editRow, deleteRow, saveAll } = useVoiceReview(initialRows);
-
-    const [categoryId, setCategoryId] = useState<number | null>(null);
-    const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
+    const { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll } = useVoiceReview(initialRows);
 
     const totalMicroUnits = sumMicroUnits(rows);
     const accountId = defaultAccount?.id ?? null;
-    const canSave = isNotEmptyArray(rows) && isPositiveNumber(categoryId) && isPositiveNumber(accountId);
+    const { account: accountWithInstrument } = useGetAccountByIdQuery(accountId ?? 0);
+    const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
+    const canDelete = rows.length > 1;
 
-    const handleCategoryPress = async () => {
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant: 'destructive' });
+    const handleCategoryPress = async (rowId: string, currentCategoryId: number | null) => {
+        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, variant: 'destructive' });
 
         if (isDefined(selectedCategoryId)) {
-            setCategoryId(selectedCategoryId);
+            setCategory(rowId, selectedCategoryId);
         }
     };
 
     const handleCancel = () => void resolveVoiceReview('cancelled');
     const handleReRecord = () => void resolveVoiceReview('re-record');
     const handleSave = async () => {
-        if (!isPositiveNumber(categoryId) || !isPositiveNumber(accountId)) {
+        if (!isPositiveNumber(accountId)) {
             return;
         }
-        const success = await saveAll({ accountId, categoryId });
+        const success = await saveAll(accountId);
         if (!success) {
             return;
         }
@@ -62,8 +59,6 @@ export default function VoiceReviewModal() {
     };
 
     const containerStyle = { flex: 1, backgroundColor };
-    const categoryButtonVariant = isDefined(category) ? 'destructive' : 'secondary';
-    const categoryButtonContent = isDefined(category) ? category.title : t`Pick category`;
     const itemCount = rows.length;
     const description = t`Detected items: ${itemCount}`;
 
@@ -72,11 +67,35 @@ export default function VoiceReviewModal() {
             <FormsheetHeader size="md" title={t`Voice import`} description={description} />
 
             <ScrollView className="flex-1" contentContainerStyle={SCROLL_CONTENT_STYLE} keyboardShouldPersistTaps="handled">
-                <View className="px-lg pb-md">
-                    <Button variant={categoryButtonVariant} content={categoryButtonContent} onPress={handleCategoryPress} />
-                </View>
+                {isEmptyArray(rows) ? (
+                    <View className="items-center px-lg py-3xl">
+                        <Text className="text-md text-secondary-foreground">{t`No items to save`}</Text>
+                        <Text className="mt-xs text-sm text-secondary-foreground opacity-60">{t`Tap re-record to try again`}</Text>
+                    </View>
+                ) : (
+                    <View className="gap-y-md px-lg">
+                        {rows.map(row => {
+                            const handleAmount = (amount: number) => void editAmount(row.id, amount);
+                            const handleCategory = () => void handleCategoryPress(row.id, row.categoryId);
+                            const handleDelete = () => void deleteRow(row.id);
 
-                <VoiceReviewList rows={rows} onEdit={editRow} onDelete={deleteRow} />
+                            return (
+                                <SplitEntryRow
+                                    key={row.id}
+                                    categoryId={row.categoryId ?? 0}
+                                    amount={row.amountMicroUnits}
+                                    currencySymbol={currencySymbol}
+                                    variant="destructive"
+                                    canDelete={canDelete}
+                                    autoFocus={false}
+                                    onAmountChange={handleAmount}
+                                    onCategoryPress={handleCategory}
+                                    onDelete={handleDelete}
+                                />
+                            );
+                        })}
+                    </View>
+                )}
             </ScrollView>
 
             <VoiceReviewFooter

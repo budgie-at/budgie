@@ -9,5 +9,6 @@ export const mapExtractedToReviewRows = (transactions: AITransactionInterface[])
         amountMicroUnits: convertToMicroUnits(transaction.amount),
         currency: transaction.currency,
         description: transaction.comment,
-        accountId: transaction.account?.id ?? null
+        accountId: transaction.account?.id ?? null,
+        categoryId: null
     }));
