@@ -17,8 +17,8 @@ import { SplitEntryRow } from '../transaction/components/split-entry-row/split-e
 const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 
-const sumMicroUnits = (rows: { readonly amountMicroUnits: number }[]): number =>
-    rows.reduce((accumulator, row) => accumulator + row.amountMicroUnits, 0);
+const sumAmounts = (rows: { readonly amount: number }[]): number =>
+    rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
 // eslint-disable-next-line max-statements -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
@@ -31,7 +31,7 @@ export default function VoiceReviewModal() {
     const initialRows = isDefined(currentParams) ? mapExtractedToReviewRows(currentParams.transactions) : [];
     const { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll } = useVoiceReview(initialRows);
 
-    const totalMicroUnits = sumMicroUnits(rows);
+    const totalAmount = sumAmounts(rows);
     const accountId = defaultAccount?.id ?? null;
     const { account: accountWithInstrument } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = accountWithInstrument?.instrument.symbol ?? '';
@@ -83,7 +83,7 @@ export default function VoiceReviewModal() {
                                 <SplitEntryRow
                                     key={row.id}
                                     categoryId={row.categoryId ?? 0}
-                                    amount={row.amountMicroUnits}
+                                    amount={row.amount}
                                     currencySymbol={currencySymbol}
                                     variant="destructive"
                                     canDelete={canDelete}
@@ -100,7 +100,8 @@ export default function VoiceReviewModal() {
 
             <VoiceReviewFooter
                 count={rows.length}
-                totalMicroUnits={totalMicroUnits}
+                totalAmount={totalAmount}
+                currencySymbol={currencySymbol}
                 canSave={canSave}
                 isSaving={isSaving}
                 onCancel={handleCancel}

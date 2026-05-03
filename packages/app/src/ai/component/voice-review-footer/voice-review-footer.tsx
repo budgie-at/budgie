@@ -6,13 +6,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 interface Props {
     readonly count: number;
-    readonly totalMicroUnits: number;
+    readonly totalAmount: number;
+    readonly currencySymbol: string;
     readonly canSave: boolean;
     readonly isSaving: boolean;
     readonly onCancel: () => void;
@@ -20,13 +22,16 @@ interface Props {
     readonly onSave: () => void;
 }
 
-export const VoiceReviewFooter = ({ count, totalMicroUnits, canSave, isSaving, onCancel, onReRecord, onSave }: Props) => {
+export const VoiceReviewFooter = (props: Props) => {
+    const { count, totalAmount, currencySymbol, canSave, isSaving, onCancel, onReRecord, onSave } = props;
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
-    const total = convertFromMicroUnits(totalMicroUnits).toFixed(0);
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
     const containerStyle = { paddingBottom: bottom };
     const saveLabel = t`Save ${count}`;
     const isSaveDisabled = !canSave || isSaving;
+    const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
         <View className="border-t border-secondary-background bg-background px-lg pt-md" style={containerStyle}>
@@ -34,7 +39,7 @@ export const VoiceReviewFooter = ({ count, totalMicroUnits, canSave, isSaving, o
                 <View className="mb-md flex-row items-baseline justify-between">
                     <Text className="text-sm uppercase tracking-wider text-secondary-foreground">{t`Total`}</Text>
                     <Text className="text-2xl font-bold text-primary" style={TABULAR_NUMS_STYLE}>
-                        {total}
+                        {totalLabel}
                     </Text>
                 </View>
             ) : null}

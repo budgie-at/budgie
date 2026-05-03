@@ -32,6 +32,7 @@ import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-
 import { DATE_FILTER_SHEET_OPTIONS, UNIFIED_FILTER_SHEET_OPTIONS } from '../@generic/constant/searchable-filter-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { SPLIT_ENTRIES_MODAL_OPTIONS } from '../@generic/constant/split-entries-modal-options.constant';
+import { VOICE_REVIEW_MODAL_OPTIONS } from '../@generic/constant/voice-review-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
@@ -105,7 +106,7 @@ export const RootLayoutContent = () => {
                                                             <Stack.Screen name="resync-window-picker" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="contact-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             <Stack.Screen name="tags-selector" options={SELECTOR_MODAL_OPTIONS} />
-                                                            <Stack.Screen name="voice-review" options={SELECTOR_MODAL_OPTIONS} />
+                                                            <Stack.Screen name="voice-review" options={VOICE_REVIEW_MODAL_OPTIONS} />
                                                             <Stack.Screen name="category-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
                                                             <Stack.Screen name="tag-form" options={CATEGORY_EDIT_MODAL_OPTIONS} />
                                                             <Stack.Screen name="date-picker" options={DATE_PICKER_MODAL_OPTIONS} />

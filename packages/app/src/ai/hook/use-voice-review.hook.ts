@@ -10,13 +10,13 @@ import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface
 import { mapReviewRowsToCreateInputs } from '../utils/map-review-rows-to-create-inputs.util';
 
 type ReviewAction =
-    | { readonly type: 'EDIT_AMOUNT'; readonly id: string; readonly amountMicroUnits: number }
+    | { readonly type: 'EDIT_AMOUNT'; readonly id: string; readonly amount: number }
     | { readonly type: 'SET_CATEGORY'; readonly id: string; readonly categoryId: number }
     | { readonly type: 'DELETE'; readonly id: string };
 
 const reducer = (state: VoiceReviewRowInterface[], action: ReviewAction): VoiceReviewRowInterface[] => {
     if (action.type === 'EDIT_AMOUNT') {
-        return state.map(row => (row.id === action.id ? { ...row, amountMicroUnits: action.amountMicroUnits } : row));
+        return state.map(row => (row.id === action.id ? { ...row, amount: action.amount } : row));
     }
     if (action.type === 'SET_CATEGORY') {
         return state.map(row => (row.id === action.id ? { ...row, categoryId: action.categoryId } : row));
@@ -29,7 +29,7 @@ interface UseVoiceReviewReturnInterface {
     readonly rows: VoiceReviewRowInterface[];
     readonly isSaving: boolean;
     readonly canSave: boolean;
-    readonly editAmount: (id: string, amountMicroUnits: number) => void;
+    readonly editAmount: (id: string, amount: number) => void;
     readonly setCategory: (id: string, categoryId: number) => void;
     readonly deleteRow: (id: string) => void;
     readonly saveAll: (accountId: number) => Promise<boolean>;
@@ -54,8 +54,8 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
     const [rows, dispatch] = useReducer(reducer, initialRows);
     const [isSaving, setIsSaving] = useState(false);
 
-    const editAmount = (id: string, amountMicroUnits: number) => {
-        dispatch({ type: 'EDIT_AMOUNT', id, amountMicroUnits });
+    const editAmount = (id: string, amount: number) => {
+        dispatch({ type: 'EDIT_AMOUNT', id, amount });
     };
     const setCategory = (id: string, categoryId: number) => {
         dispatch({ type: 'SET_CATEGORY', id, categoryId });
@@ -64,7 +64,7 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
         dispatch({ type: 'DELETE', id });
     };
 
-    const canSave = rows.length > 0 && rows.every(row => isPositiveNumber(row.categoryId) && row.amountMicroUnits > 0);
+    const canSave = rows.length > 0 && rows.every(row => isPositiveNumber(row.categoryId) && row.amount > 0);
 
     const saveAll = async (accountId: number): Promise<boolean> => {
         setIsSaving(true);
