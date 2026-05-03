@@ -161,9 +161,7 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     question={<Trans>Is the primary tag preserved across edits?</Trans>}
                     answer={
-                        <Trans>
-                            Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it.
-                        </Trans>
+                        <Trans>Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it.</Trans>
                     }
                 />
                 <FeaturePageFaqItem

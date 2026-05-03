@@ -162,8 +162,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>How is this different from a portfolio tracker?</Trans>}
                     answer={
                         <Trans>
-                            Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio
-                            trackers don&apos;t model fiat side-by-side.
+                            Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most
+                            portfolio trackers don&apos;t model fiat side-by-side.
                         </Trans>
                     }
                 />

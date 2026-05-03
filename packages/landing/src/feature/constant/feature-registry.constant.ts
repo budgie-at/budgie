@@ -1152,7 +1152,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Screenshot Protection — Budgie`,
         metaDescription: msg`Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen.`,
         primaryKeyword: 'hide bank balance screenshot',
-        seoKeywords: ['hide bank balance screenshot', 'screenshot protection finance app', 'app switcher blur', 'private balance app', 'no-screenshot finance app'],
+        seoKeywords: [
+            'hide bank balance screenshot',
+            'screenshot protection finance app',
+            'app switcher blur',
+            'private balance app',
+            'no-screenshot finance app'
+        ],
         relatedFeatureSlugs: ['pin-app-lock', 'biometric-authentication'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
         faqs: [
@@ -1185,7 +1191,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Crypto & Investment Tracking — Budgie`,
         metaDescription: msg`Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Each holding is an instrument + quantity + price.`,
         primaryKeyword: 'crypto portfolio tracker app',
-        seoKeywords: ['crypto portfolio tracker app', 'crypto + bank tracker', 'investment tracker mobile', 'ETF portfolio app', 'multi-asset net worth'],
+        seoKeywords: [
+            'crypto portfolio tracker app',
+            'crypto + bank tracker',
+            'investment tracker mobile',
+            'ETF portfolio app',
+            'multi-asset net worth'
+        ],
         relatedFeatureSlugs: ['net-worth-tracker', 'account-management', 'multi-currency'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -1218,7 +1230,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Dark Mode — Budgie`,
         metaDescription: msg`System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility.`,
         primaryKeyword: 'dark mode expense tracker',
-        seoKeywords: ['dark mode expense tracker', 'OLED budget app', 'system theme finance app', 'dark mode finance app', 'true black expense app'],
+        seoKeywords: [
+            'dark mode expense tracker',
+            'OLED budget app',
+            'system theme finance app',
+            'dark mode finance app',
+            'true black expense app'
+        ],
         relatedFeatureSlugs: ['multi-language-app'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -1251,7 +1269,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Multi-Language App — Budgie`,
         metaDescription: msg`Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app — no reinstall, no relaunch.`,
         primaryKeyword: 'multilingual budget app',
-        seoKeywords: ['multilingual budget app', '5 languages expense tracker', 'localized finance app', 'i18n budget app', 'language switcher expense app'],
+        seoKeywords: [
+            'multilingual budget app',
+            '5 languages expense tracker',
+            'localized finance app',
+            'i18n budget app',
+            'language switcher expense app'
+        ],
         relatedFeatureSlugs: ['ai-merchant-translation', 'dark-mode'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -1284,7 +1308,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Primary Tag — Budgie`,
         metaDescription: msg`Promote one tag per transaction to "primary" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows.`,
         primaryKeyword: 'label transactions quickly',
-        seoKeywords: ['label transactions quickly', 'primary tag finance app', 'visual transaction tag', 'corner star badge expense', 'primary tag picker'],
+        seoKeywords: [
+            'label transactions quickly',
+            'primary tag finance app',
+            'visual transaction tag',
+            'corner star badge expense',
+            'primary tag picker'
+        ],
         relatedFeatureSlugs: ['transaction-tags', 'tag-analytics'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
