@@ -2,6 +2,8 @@
 
 import { Trans } from '@lingui/react/macro';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { FEATURE_REGISTRY } from '../../constant/feature-registry.constant';
 import { FeatureTierEnum } from '../../constant/feature-tier.enum';
 import { FeatureCard } from '../feature-card/feature-card';
@@ -18,7 +20,7 @@ export const FeaturesHubGrid = ({ locale }: Props) => {
 
     return (
         <div className="space-y-12">
-            {heroFeatures.length > 0 && (
+            {isNotEmptyArray(heroFeatures) && (
                 <section>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
                         <Trans>Headline Features</Trans>
@@ -30,7 +32,7 @@ export const FeaturesHubGrid = ({ locale }: Props) => {
                     </div>
                 </section>
             )}
-            {coreFeatures.length > 0 && (
+            {isNotEmptyArray(coreFeatures) && (
                 <section>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
                         <Trans>Core Features</Trans>
@@ -42,7 +44,7 @@ export const FeaturesHubGrid = ({ locale }: Props) => {
                     </div>
                 </section>
             )}
-            {powerFeatures.length > 0 && (
+            {isNotEmptyArray(powerFeatures) && (
                 <section>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
                         <Trans>Power-User Features</Trans>
@@ -54,7 +56,7 @@ export const FeaturesHubGrid = ({ locale }: Props) => {
                     </div>
                 </section>
             )}
-            {nicheFeatures.length > 0 && (
+            {isNotEmptyArray(nicheFeatures) && (
                 <section>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">
                         <Trans>More Features</Trans>
