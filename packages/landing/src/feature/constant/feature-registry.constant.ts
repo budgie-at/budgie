@@ -768,14 +768,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Recurring Payments Calendar — Budgie`,
         metaDescription: msg`Budgie auto-detects subscription and recurring-payment patterns from your history, plots them on a month calendar, and forecasts what's coming in the next 60 days.`,
         primaryKeyword: 'recurring payment tracker',
-        seoKeywords: ['recurring payment tracker', 'subscription tracker app', 'monthly bill calendar', 'forecast bills budget app', 'recurring expense detector'],
+        seoKeywords: [
+            'recurring payment tracker',
+            'subscription tracker app',
+            'monthly bill calendar',
+            'forecast bills budget app',
+            'recurring expense detector'
+        ],
         relatedFeatureSlugs: ['spending-analytics', 'ai-auto-categorization', 'date-filter-presets', 'expense-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`How does Budgie know what's recurring?`, answer: msg`A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches.` },
-            { question: msg`What about cross-currency subscriptions?`, answer: msg`Recurring entries show in your home currency on the calendar; tap any entry to see the original amount and currency.` },
-            { question: msg`Can I edit a detected pattern?`, answer: msg`Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects them.` },
-            { question: msg`How far does the forecast go?`, answer: msg`60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy.` }
+            {
+                question: msg`How does Budgie know what's recurring?`,
+                answer: msg`A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches.`
+            },
+            {
+                question: msg`What about cross-currency subscriptions?`,
+                answer: msg`Recurring entries show in your home currency on the calendar; tap any entry to see the original amount and currency.`
+            },
+            {
+                question: msg`Can I edit a detected pattern?`,
+                answer: msg`Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects them.`
+            },
+            {
+                question: msg`How far does the forecast go?`,
+                answer: msg`60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy.`
+            }
         ],
         publishedAt: '2026-02-22',
         updatedAt: '2026-05-03',
@@ -789,14 +807,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Smart Transfer Consolidation — Budgie`,
         metaDescription: msg`When the same amount leaves account A and arrives at account B, Budgie merges them into one transfer. Counter-IBAN matching plus cross-currency tolerance.`,
         primaryKeyword: 'duplicate transaction merger',
-        seoKeywords: ['duplicate transaction merger', 'transfer pair detection', 'auto-merge transfers', 'IBAN match transfer', 'cross-currency transfer detection'],
+        seoKeywords: [
+            'duplicate transaction merger',
+            'transfer pair detection',
+            'auto-merge transfers',
+            'IBAN match transfer',
+            'cross-currency transfer detection'
+        ],
         relatedFeatureSlugs: ['account-transfers', 'monobank-sync', 'convert-to-transfer'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`What if the algorithm misidentifies a transfer?`, answer: msg`Manual override is one tap. Tap the auto-merged transaction, choose "Split back into two", and it reverts to two separate entries with their original categories.` },
-            { question: msg`Does this work across two different banks?`, answer: msg`Yes — that's the whole point. As long as both banks store the counter-IBAN on their side, Budgie can match them. Monobank, PrivatBank, and Erste all do.` },
-            { question: msg`What about cross-currency transfers?`, answer: msg`Pairs match if the FX rate is plausible within a 3-day window. The original amounts in both currencies are preserved.` },
-            { question: msg`Will old (already-imported) transactions get re-matched?`, answer: msg`Yes. Each new sync rescans recent entries against existing ones, so old debits-and-credits that didn't have counter-IBAN can still match retroactively when the matching info arrives.` }
+            {
+                question: msg`What if the algorithm misidentifies a transfer?`,
+                answer: msg`Manual override is one tap. Tap the auto-merged transaction, choose "Split back into two", and it reverts to two separate entries with their original categories.`
+            },
+            {
+                question: msg`Does this work across two different banks?`,
+                answer: msg`Yes — that's the whole point. As long as both banks store the counter-IBAN on their side, Budgie can match them. Monobank, PrivatBank, and Erste all do.`
+            },
+            {
+                question: msg`What about cross-currency transfers?`,
+                answer: msg`Pairs match if the FX rate is plausible within a 3-day window. The original amounts in both currencies are preserved.`
+            },
+            {
+                question: msg`Will old (already-imported) transactions get re-matched?`,
+                answer: msg`Yes. Each new sync rescans recent entries against existing ones, so old debits-and-credits that didn't have counter-IBAN can still match retroactively when the matching info arrives.`
+            }
         ],
         publishedAt: '2026-05-01',
         updatedAt: '2026-05-03',
@@ -810,14 +846,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Split Transactions — Budgie`,
         metaDescription: msg`Divide a single transaction across multiple categories with a remaining-budget indicator. Each split keeps its own tags and comment.`,
         primaryKeyword: 'split transaction by category',
-        seoKeywords: ['split transaction by category', 'split expense app', 'multi-category transaction', 'receipt split tracker', 'split bill app'],
+        seoKeywords: [
+            'split transaction by category',
+            'split expense app',
+            'multi-category transaction',
+            'receipt split tracker',
+            'split bill app'
+        ],
         relatedFeatureSlugs: ['expense-tracking', 'custom-categories', 'transaction-tags'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`How many splits can I make per transaction?`, answer: msg`No limit. Add as many split rows as you need; the total must equal the original transaction amount.` },
-            { question: msg`Can splits have different tags?`, answer: msg`Yes. Each split row keeps its own tags and comment, fully independent of the others.` },
-            { question: msg`Does split mode work for income too?`, answer: msg`Yes. Switch to split inside the income form just like the expense form.` },
-            { question: msg`What happens to analytics after splitting?`, answer: msg`Each split row counts toward its own category in analytics — the parent transaction itself becomes invisible to category sums (it's just the wrapper).` }
+            {
+                question: msg`How many splits can I make per transaction?`,
+                answer: msg`No limit. Add as many split rows as you need; the total must equal the original transaction amount.`
+            },
+            {
+                question: msg`Can splits have different tags?`,
+                answer: msg`Yes. Each split row keeps its own tags and comment, fully independent of the others.`
+            },
+            {
+                question: msg`Does split mode work for income too?`,
+                answer: msg`Yes. Switch to split inside the income form just like the expense form.`
+            },
+            {
+                question: msg`What happens to analytics after splitting?`,
+                answer: msg`Each split row counts toward its own category in analytics — the parent transaction itself becomes invisible to category sums (it's just the wrapper).`
+            }
         ],
         publishedAt: '2026-02-01',
         updatedAt: '2026-05-03',
@@ -831,14 +885,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`AI Merchant Translation — Budgie`,
         metaDescription: msg`Travel statements full of "АТБ" or "Καρρέ"? The on-device LLM normalizes non-Latin merchant names and adds searchable English keywords.`,
         primaryKeyword: 'multilingual expense tracker',
-        seoKeywords: ['multilingual expense tracker', 'merchant name translation', 'cyrillic budget app', 'transliterate transactions', 'multi-script expense app'],
+        seoKeywords: [
+            'multilingual expense tracker',
+            'merchant name translation',
+            'cyrillic budget app',
+            'transliterate transactions',
+            'multi-script expense app'
+        ],
         relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'multi-language-app'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
         faqs: [
-            { question: msg`Which scripts are supported?`, answer: msg`Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, CJK (Chinese / Japanese / Korean), Thai, and more — any script the on-device LLM understands.` },
-            { question: msg`Are the original merchant strings kept?`, answer: msg`Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit.` },
-            { question: msg`What if the LLM mistranslates?`, answer: msg`Tap edit on any transaction and override the translated name manually. Your override is permanent for that merchant.` },
-            { question: msg`Does this run on every transaction?`, answer: msg`Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry.` }
+            {
+                question: msg`Which scripts are supported?`,
+                answer: msg`Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, CJK (Chinese / Japanese / Korean), Thai, and more — any script the on-device LLM understands.`
+            },
+            {
+                question: msg`Are the original merchant strings kept?`,
+                answer: msg`Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit.`
+            },
+            {
+                question: msg`What if the LLM mistranslates?`,
+                answer: msg`Tap edit on any transaction and override the translated name manually. Your override is permanent for that merchant.`
+            },
+            {
+                question: msg`Does this run on every transaction?`,
+                answer: msg`Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry.`
+            }
         ],
         publishedAt: '2026-02-07',
         updatedAt: '2026-05-03',
@@ -852,14 +924,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Multi-Currency Accounts — Budgie`,
         metaDescription: msg`Hold accounts in any currency. A nightly background task fetches fresh FX rates so dashboards always show in your home currency. Cross-currency transfers preserve both legs.`,
         primaryKeyword: 'multi currency expense tracker',
-        seoKeywords: ['multi currency expense tracker', 'multi-currency budget app', 'FX-aware expense tracker', 'mobile currency conversion app', 'foreign currency tracker'],
+        seoKeywords: [
+            'multi currency expense tracker',
+            'multi-currency budget app',
+            'FX-aware expense tracker',
+            'mobile currency conversion app',
+            'foreign currency tracker'
+        ],
         relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'account-transfers', 'crypto-investment-tracking'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`How often do FX rates refresh?`, answer: msg`Daily, in the background. Each day gets its own snapshot stored on-device for accurate historical conversion.` },
-            { question: msg`Where do the rates come from?`, answer: msg`A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device.` },
-            { question: msg`Can I see the original currency?`, answer: msg`Always. Tap any aggregated number to drill into the per-leg native amounts.` },
-            { question: msg`What happens during a cross-currency transfer?`, answer: msg`Both legs are preserved (e.g. $1000 → €925) along with the FX rate at transfer time. See Account Transfers for details.` }
+            {
+                question: msg`How often do FX rates refresh?`,
+                answer: msg`Daily, in the background. Each day gets its own snapshot stored on-device for accurate historical conversion.`
+            },
+            {
+                question: msg`Where do the rates come from?`,
+                answer: msg`A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device.`
+            },
+            {
+                question: msg`Can I see the original currency?`,
+                answer: msg`Always. Tap any aggregated number to drill into the per-leg native amounts.`
+            },
+            {
+                question: msg`What happens during a cross-currency transfer?`,
+                answer: msg`Both legs are preserved (e.g. $1000 → €925) along with the FX rate at transfer time. See Account Transfers for details.`
+            }
         ],
         publishedAt: '2025-12-19',
         updatedAt: '2026-05-03',
