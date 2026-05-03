@@ -15,11 +15,6 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx en file d'attente"
 
-#. placeholder {0}: rows.length
-#: src/app/voice-review.tsx:68
-msgid "{0, plural, one {# item detected} other {# items detected}}"
-msgstr "{0, plural, one {# élément détecté} other {# éléments détectés}}"
-
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} comptes"
@@ -39,10 +34,6 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
-
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:29
-msgid "{count, plural, one {Save # expense} other {Save # expenses}}"
-msgstr "{count, plural, one {Enregistrer # dépense} other {Enregistrer # dépenses}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -329,7 +320,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:44
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:43
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -744,7 +735,7 @@ msgid "Default Account"
 msgstr "Compte par défaut"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/ai/component/voice-review-row/voice-review-row.tsx:108
+#: src/ai/component/voice-review-row/voice-review-row.tsx:111
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -771,9 +762,13 @@ msgstr "Supprimer définitivement"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/ai/component/voice-review-row/voice-review-row.tsx:136
+#: src/ai/component/voice-review-row/voice-review-row.tsx:139
 msgid "Description"
 msgstr "Description"
+
+#: src/app/voice-review.tsx:68
+msgid "Detected items: {itemCount}"
+msgstr "Éléments détectés : {itemCount}"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
@@ -1506,7 +1501,7 @@ msgstr "Argent liquide physique"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Choisissez une période. Les données existantes sont préservées."
 
-#: src/app/voice-review.tsx:67
+#: src/app/voice-review.tsx:66
 msgid "Pick category"
 msgstr "Choisir une catégorie"
 
@@ -1566,7 +1561,7 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:48
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:47
 msgid "Re-record"
 msgstr "Réenregistrer"
 
@@ -1664,6 +1659,10 @@ msgstr "Reprise de l'IA…"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
 msgstr "Enregistrer"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:28
+msgid "Save {count}"
+msgstr "Enregistrer {count}"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -2114,7 +2113,7 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:35
 msgid "Total"
 msgstr "Total"
 

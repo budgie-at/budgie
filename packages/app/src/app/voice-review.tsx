@@ -1,4 +1,3 @@
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
@@ -65,7 +64,8 @@ export default function VoiceReviewModal() {
     const containerStyle = { flex: 1, backgroundColor };
     const categoryButtonVariant = isDefined(category) ? 'destructive' : 'secondary';
     const categoryButtonContent = isDefined(category) ? category.title : t`Pick category`;
-    const description = plural(rows.length, { one: '# item detected', other: '# items detected' });
+    const itemCount = rows.length;
+    const description = t`Detected items: ${itemCount}`;
 
     return (
         <View style={containerStyle} collapsable={false}>

@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,7 +25,7 @@ export const VoiceReviewFooter = ({ count, totalMicroUnits, canSave, isSaving, o
     const { bottom } = useSafeAreaInsets();
     const total = convertFromMicroUnits(totalMicroUnits).toFixed(0);
     const containerStyle = { paddingBottom: bottom };
-    const saveLabel = plural(count, { one: 'Save # expense', other: 'Save # expenses' });
+    const saveLabel = t`Save ${count}`;
     const isSaveDisabled = !canSave || isSaving;
 
     return (
