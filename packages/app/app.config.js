@@ -7,9 +7,6 @@ const IS_PREVIEW = APP_VARIANT === 'preview';
 const IS_AI_DISABLED = process.env.EXPO_PUBLIC_AI_DISABLE === 'true';
 const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
 const IS_LOGGING_ENABLED = IS_DEV && !IS_LOGGING_DISABLED;
-// Fingerprint inputs must be identical locally and on EAS workers.
-// Drive ccache from an explicit env var that can be set in eas.json instead of CI.
-const IS_CCACHE_ENABLED = process.env.USE_CCACHE === '1';
 
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
@@ -118,7 +115,7 @@ export default ({ config }) => ({
                 buildReactNativeFromSource: true,
                 useHermesV1: true,
                 ios: {
-                    ccacheEnabled: IS_CCACHE_ENABLED
+                    ccacheEnabled: true
                 }
             }
         ],
