@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.12.0](https://github.com/budgie-at/budgie/compare/v5.11.2...v5.12.0) (2026-05-03)
+
+### Features
+
+- **app:** grow comment input vertically up to two lines ([232be48](https://github.com/budgie-at/budgie/commit/232be48a6386a7664dc315f7637a809bd449b37f))
+
+## [5.11.2](https://github.com/budgie-at/budgie/compare/v5.11.1...v5.11.2) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** hardcode ccacheEnabled to stop EAS fingerprint drift ([e41d48c](https://github.com/budgie-at/budgie/commit/e41d48c9e7d359ec8e47537dab1a7a69a8085f7d))
+
 ## [5.11.1](https://github.com/budgie-at/budgie/compare/v5.11.0...v5.11.1) (2026-05-03)
 
 **Note:** Version bump only for package @budgie-at/app
