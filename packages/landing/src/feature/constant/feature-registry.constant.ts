@@ -22,7 +22,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'no account budget app',
             'local-first expense tracker'
         ],
-        relatedFeatureSlugs: ['monobank-sync', 'ai-auto-categorization', 'pin-app-lock', 'database-backup'],
+        relatedFeatureSlugs: ['monobank-sync', 'ai-auto-categorization', 'pin-app-lock', 'database-backup', 'biometric-authentication'],
         relatedArticleSlugs: ['offline-first-privacy-financial-app', 'budgie-offline-financial-data'],
         faqs: [
             {
@@ -57,10 +57,10 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         seoKeywords: ['monobank sync', 'monobank api', 'monobank expense tracker', 'monobank transaction import', 'monobank budget app'],
         relatedFeatureSlugs: [
             'offline-first-expense-tracker',
-            'transfer-pair-detection',
             'bank-resync-window',
-            'mcc-auto-category',
-            'csv-import'
+            'csv-import',
+            'erste-bank-pdf-import',
+            'privatbank-import'
         ],
         relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data'],
         faqs: [
@@ -103,9 +103,9 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         relatedFeatureSlugs: [
             'offline-first-expense-tracker',
             'voice-transaction-entry',
-            'ai-merchant-translation',
             'mcc-auto-category',
-            'custom-categories'
+            'custom-categories',
+            'recurring-payments-calendar'
         ],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
         faqs: [
@@ -228,7 +228,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'custom-categories',
             'transaction-tags',
             'split-transactions',
-            'account-transfers'
+            'recurring-payments-calendar'
         ],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
@@ -307,7 +307,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'tag analytics',
             'mobile finance dashboard'
         ],
-        relatedFeatureSlugs: ['tag-analytics', 'custom-categories', 'date-filter-presets', 'recurring-payments-calendar'],
+        relatedFeatureSlugs: ['tag-analytics', 'custom-categories', 'date-filter-presets', 'recurring-payments-calendar', 'ai-merchant-translation'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -346,7 +346,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'reassign transactions categories',
             'budget category tree'
         ],
-        relatedFeatureSlugs: ['ai-auto-categorization', 'mcc-auto-category', 'expense-tracking', 'transaction-tags'],
+        relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'transaction-tags', 'spending-analytics', 'split-transactions'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -385,7 +385,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'project expense tags',
             'shared expense tracker'
         ],
-        relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking'],
+        relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking', 'split-transactions'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -424,7 +424,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'dual-amount transfer',
             'FX transfer tracking'
         ],
-        relatedFeatureSlugs: ['transfer-pair-detection', 'convert-to-transfer', 'multi-currency', 'expense-tracking'],
+        relatedFeatureSlugs: ['transfer-pair-detection', 'convert-to-transfer', 'multi-currency', 'bank-resync-window'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
         faqs: [
             {
@@ -463,7 +463,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'CSV import preset',
             'bank statement importer'
         ],
-        relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'mcc-auto-category'],
+        relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'data-export', 'bank-resync-window'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
         faqs: [
             {
@@ -502,7 +502,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'Austrian bank statement import',
             'Erste statement to budget app'
         ],
-        relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync'],
+        relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync', 'mcc-auto-category'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
         faqs: [
             {
@@ -736,7 +736,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'monthly view expense app',
             'date preset filter'
         ],
-        relatedFeatureSlugs: ['spending-analytics', 'recurring-payments-calendar', 'tag-analytics'],
+        relatedFeatureSlugs: ['spending-analytics', 'recurring-payments-calendar', 'tag-analytics', 'mcc-auto-category'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -814,7 +814,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'IBAN match transfer',
             'cross-currency transfer detection'
         ],
-        relatedFeatureSlugs: ['account-transfers', 'monobank-sync', 'convert-to-transfer'],
+        relatedFeatureSlugs: ['account-transfers', 'bank-resync-window', 'convert-to-transfer'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -892,7 +892,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'transliterate transactions',
             'multi-script expense app'
         ],
-        relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'multi-language-app'],
+        relatedFeatureSlugs: ['spending-analytics', 'voice-transaction-entry', 'multi-language-app'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
         faqs: [
             {
@@ -1003,7 +1003,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'edited transaction conflict',
             'bank statement diff'
         ],
-        relatedFeatureSlugs: ['monobank-sync', 'csv-import'],
+        relatedFeatureSlugs: ['monobank-sync', 'csv-import', 'account-transfers', 'transfer-pair-detection'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -1042,7 +1042,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'MCC mapping budget app',
             'bank-issued category codes'
         ],
-        relatedFeatureSlugs: ['csv-import', 'ai-auto-categorization', 'custom-categories', 'monobank-sync', 'privatbank-import'],
+        relatedFeatureSlugs: ['ai-auto-categorization', 'privatbank-import', 'erste-bank-pdf-import', 'date-filter-presets'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
         faqs: [
             {
