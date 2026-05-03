@@ -81,8 +81,8 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically —
-                        first import, no setup.
+                        Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first
+                        import, no setup.
                     </Trans>
                 }
             />
@@ -99,8 +99,8 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your &quot;Commute&quot;
-                        category instead of &quot;Travel&quot; once and never touch it again.
+                        Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your &quot;Commute&quot; category
+                        instead of &quot;Travel&quot; once and never touch it again.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -171,9 +171,7 @@ export default async function MccAutoCategoryFeaturePage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     question={<Trans>Can I see the MCC on a transaction?</Trans>}
                     answer={
-                        <Trans>
-                            Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row.
-                        </Trans>
+                        <Trans>Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row.</Trans>
                     }
                 />
             </FeaturePageFaqSection>

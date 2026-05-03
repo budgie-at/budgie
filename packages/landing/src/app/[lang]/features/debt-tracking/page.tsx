@@ -99,8 +99,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer
-                        to or from the debt account; balance hits zero, you can archive.
+                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to
+                        or from the debt account; balance hits zero, you can archive.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -145,8 +145,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
                     answer={
                         <Trans>
-                            Direction. &quot;I owe&quot; is a liability — your net worth subtracts it. &quot;Owes me&quot; is a receivable
-                            — your net worth adds it. Same account type, opposite sign.
+                            Direction. &quot;I owe&quot; is a liability — your net worth subtracts it. &quot;Owes me&quot; is a receivable —
+                            your net worth adds it. Same account type, opposite sign.
                         </Trans>
                     }
                 />
