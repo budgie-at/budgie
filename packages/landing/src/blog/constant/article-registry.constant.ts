@@ -1,21 +1,8 @@
 import { msg } from '@lingui/core/macro';
 
-import type { MessageDescriptor } from '@lingui/core';
+import type { ArticleRegistryEntryInterface } from '../interface/article-registry-entry.interface';
 
 /* eslint-disable lingui/no-unlocalized-strings */
-export interface ArticleRegistryEntryInterface {
-    readonly slug: string;
-    readonly date: string;
-    readonly author: string;
-    readonly image: string;
-    readonly readingTimeMinutes: number;
-    readonly title: MessageDescriptor;
-    readonly description: MessageDescriptor;
-    readonly tags: readonly string[];
-    readonly seoKeywords: readonly string[];
-    readonly seoDescription: MessageDescriptor;
-    readonly relatedFeatureSlugs: readonly string[];
-}
 
 export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     {
