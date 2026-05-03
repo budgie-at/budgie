@@ -1,8 +1,9 @@
 import { useFocusEffect } from 'expo-router';
 import { useRef, useState } from 'react';
-import { InteractionManager } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
+
+import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
 export const useFocusKey = (): number => {
     const [focusKey, setFocusKey] = useState(0);
@@ -15,11 +16,11 @@ export const useFocusKey = (): number => {
             return emptyFn;
         }
 
-        const task = InteractionManager.runAfterInteractions(() => {
+        const cancelIdleCallback = scheduleIdleCallback(() => {
             setFocusKey(prev => prev + 1);
         });
 
-        return () => void task.cancel();
+        return cancelIdleCallback;
     });
 
     return focusKey;

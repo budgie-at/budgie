@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/ai/service/ai-system-status.service.ts:241
+#: src/ai/service/ai-system-status.service.ts:227
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx en file d'attente"
 
@@ -39,11 +39,11 @@ msgstr "{availableCount} colonnes disponibles"
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -57,11 +57,11 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/ai/service/ai-umbrella-status.service.ts:74
+#: src/ai/service/ai-umbrella-status.service.ts:75
 msgid "{source} error · {message}"
 msgstr "Erreur {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:195
+#: src/ai/service/ai-system-status.service.ts:179
 msgid "{source} failed: {message}"
 msgstr "Échec de {source} : {message}"
 
@@ -85,7 +85,7 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:114
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:115
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
 msgid "Account"
 msgstr "Compte"
@@ -132,7 +132,7 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/app/note-input.tsx:33
+#: src/app/note-input.tsx:39
 msgid "Add a note..."
 msgstr "Ajouter une note..."
 
@@ -156,17 +156,17 @@ msgstr "Ajustement"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/service/ai-system-status.service.ts:182
+#: src/ai/service/ai-system-status.service.ts:166
 msgid "AI disabled"
 msgstr "IA désactivée"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:114
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:117
 msgid "AI idle"
 msgstr "IA inactive"
 
-#: src/ai/service/ai-umbrella-status.service.ts:59
-#: src/ai/service/ai-umbrella-status.service.ts:121
+#: src/ai/service/ai-umbrella-status.service.ts:58
+#: src/ai/service/ai-umbrella-status.service.ts:124
 msgid "AI off"
 msgstr "IA désactivée"
 
@@ -190,7 +190,7 @@ msgstr "Toutes les colonnes ont été assignées"
 msgid "All Recurring"
 msgstr "Tous les récurrents"
 
-#: src/ai/service/ai-system-status.service.ts:274
+#: src/ai/service/ai-system-status.service.ts:260
 msgid "All set"
 msgstr "Tout est prêt"
 
@@ -232,7 +232,7 @@ msgstr "Version de l'application"
 msgid "Appearance"
 msgstr "Apparence"
 
-#: src/app/note-input.tsx:47
+#: src/app/note-input.tsx:54
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -289,8 +289,8 @@ msgstr "Synchronisation bancaire"
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
-#: src/app/resync-window-picker.tsx:55
-#: src/app/resync-window-picker.tsx:77
+#: src/app/resync-window-picker.tsx:56
+#: src/app/resync-window-picker.tsx:78
 msgid "Bank sync reset"
 msgstr "Synchronisation bancaire réinitialisée"
 
@@ -320,9 +320,10 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
-#: src/app/resync-window-picker.tsx:68
+#: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
@@ -425,7 +426,7 @@ msgstr "Commentaire"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
@@ -569,8 +570,8 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not recalculate balances"
 msgstr "Impossible de recalculer les soldes"
 
-#: src/app/resync-window-picker.tsx:57
-#: src/app/resync-window-picker.tsx:79
+#: src/app/resync-window-picker.tsx:58
+#: src/app/resync-window-picker.tsx:80
 msgid "Could not reset bank sync"
 msgstr "Impossible de réinitialiser la synchronisation bancaire"
 
@@ -777,11 +778,11 @@ msgstr "Terminé ({count})"
 msgid "Download your statement as PDF"
 msgstr "Téléchargez votre relevé au format PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:87
+#: src/ai/service/ai-umbrella-status.service.ts:90
 msgid "Downloading AI models…"
 msgstr "Téléchargement des modèles d'IA…"
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Downloading models"
 msgstr "Téléchargement des modèles"
 
@@ -866,6 +867,10 @@ msgstr "Traduction anglaise"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:37
+msgid "Enter all amounts"
+msgstr "Saisir tous les montants"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:36
 #: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
@@ -899,7 +904,7 @@ msgstr "Entrez votre jeton API Monobank"
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/app/resync-window-picker.tsx:42
+#: src/app/resync-window-picker.tsx:43
 msgid "Entire history will be re-synced on next sync."
 msgstr "L'historique complet sera resynchronisé lors de la prochaine synchronisation."
 
@@ -927,7 +932,7 @@ msgstr "Date de retour prévue"
 msgid "Expected Return Date (Optional)"
 msgstr "Date de retour prévue (optionnel)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Dépense"
@@ -973,7 +978,7 @@ msgstr "Échec du chargement des contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
 
-#: src/ai/service/ai-system-status.service.ts:292
+#: src/ai/service/ai-system-status.service.ts:278
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexation rapide {done} sur {total} • touchez pour mettre en pause"
 
@@ -1098,7 +1103,7 @@ msgstr "Comptes inactifs"
 msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1118,7 +1123,7 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/ai/service/ai-system-status.service.ts:263
+#: src/ai/service/ai-system-status.service.ts:249
 msgid "Indexing {done} of {total}"
 msgstr "Indexation {done} sur {total}"
 
@@ -1138,15 +1143,15 @@ msgstr "Italien (Italie)"
 msgid "Language"
 msgstr "Langue"
 
-#: src/app/resync-window-picker.tsx:32
+#: src/app/resync-window-picker.tsx:33
 msgid "Last 30 days"
 msgstr "30 derniers jours"
 
-#: src/app/resync-window-picker.tsx:31
+#: src/app/resync-window-picker.tsx:32
 msgid "Last 7 days"
 msgstr "7 derniers jours"
 
-#: src/app/resync-window-picker.tsx:33
+#: src/app/resync-window-picker.tsx:34
 msgid "Last 90 days"
 msgstr "90 derniers jours"
 
@@ -1194,7 +1199,7 @@ msgstr "Modèle IA non disponible"
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Loading models"
 msgstr "Chargement des modèles"
 
@@ -1342,6 +1347,10 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
+#: src/app/voice-review.tsx:118
+msgid "No items to save"
+msgstr "Aucun élément à enregistrer"
+
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "Aucune langue trouvée"
@@ -1483,7 +1492,7 @@ msgstr "La permission d'accéder aux contacts a été refusée."
 msgid "Physical cash on hand"
 msgstr "Argent liquide physique"
 
-#: src/app/resync-window-picker.tsx:93
+#: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Choisissez une période. Les données existantes sont préservées."
 
@@ -1543,31 +1552,35 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/app/resync-window-picker.tsx:65
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:59
+msgid "Re-record"
+msgstr "Réenregistrer"
+
+#: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
 msgstr "Resynchroniser le compte bancaire ?"
 
-#: src/app/resync-window-picker.tsx:35
+#: src/app/resync-window-picker.tsx:36
 msgid "Re-sync entire history"
 msgstr "Resynchroniser tout l'historique"
 
-#: src/app/resync-window-picker.tsx:67
+#: src/app/resync-window-picker.tsx:68
 msgid "Re-sync History"
 msgstr "Resynchroniser l'historique"
 
-#: src/app/resync-window-picker.tsx:39
+#: src/app/resync-window-picker.tsx:40
 msgid "Re-sync of last 30 days will start on next sync."
 msgstr "Les 30 derniers jours seront resynchronisés lors de la prochaine synchronisation."
 
-#: src/app/resync-window-picker.tsx:38
+#: src/app/resync-window-picker.tsx:39
 msgid "Re-sync of last 7 days will start on next sync."
 msgstr "Les 7 derniers jours seront resynchronisés lors de la prochaine synchronisation."
 
-#: src/app/resync-window-picker.tsx:40
+#: src/app/resync-window-picker.tsx:41
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "Les 90 derniers jours seront resynchronisés lors de la prochaine synchronisation."
 
-#: src/app/resync-window-picker.tsx:93
+#: src/app/resync-window-picker.tsx:94
 msgid "Re-sync transactions"
 msgstr "Resynchroniser les transactions"
 
@@ -1612,7 +1625,7 @@ msgstr "Récurrents"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
 
-#: src/app/resync-window-picker.tsx:114
+#: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
 msgstr "Réinitialise tout l'état de synchronisation"
 
@@ -1628,8 +1641,8 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:105
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:108
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
 
@@ -1637,6 +1650,10 @@ msgstr "Reprise de l'IA…"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
 msgstr "Enregistrer"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+msgid "Save {count}"
+msgstr "Enregistrer {count}"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1744,7 +1761,8 @@ msgstr "Sélectionner un compte"
 msgid "Select accounts to sync:"
 msgstr "Sélectionner les comptes à synchroniser :"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
@@ -1912,7 +1930,7 @@ msgstr "Démarrer la synchronisation"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
-#: src/ai/service/ai-umbrella-status.service.ts:96
+#: src/ai/service/ai-umbrella-status.service.ts:99
 msgid "Starting up AI…"
 msgstr "Démarrage de l'IA…"
 
@@ -1984,6 +2002,10 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
+#: src/app/voice-review.tsx:119
+msgid "Tap re-record to try again"
+msgstr "Appuyez sur réenregistrer pour réessayer"
+
 #: src/app/import-column-mapper.tsx:62
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
@@ -2050,7 +2072,7 @@ msgstr "Cela convertira la dépense en un transfert entre comptes."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Cela convertira le revenu en un transfert entre comptes."
 
-#: src/app/resync-window-picker.tsx:66
+#: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Cela réinitialisera l'historique de synchronisation et resynchronisera toutes les transactions de ce compte bancaire. Vos transactions, étiquettes et catégories existantes seront conservées et mises à jour avec les nouvelles données."
 
@@ -2082,6 +2104,10 @@ msgstr "Aujourd'hui"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
 msgid "Token required"
 msgstr "Jeton requis"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:47
+msgid "Total"
+msgstr "Total"
 
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:101
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:114
@@ -2121,11 +2147,11 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
-#: src/ai/hook/use-stt.hook.ts:125
+#: src/ai/hook/use-stt.hook.ts:72
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:107
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Virement"
@@ -2134,7 +2160,7 @@ msgstr "Virement"
 msgid "Transfers consolidated"
 msgstr "Virements consolidés"
 
-#: src/ai/service/ai-system-status.service.ts:247
+#: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Traduction {translationPending} sur {total}{trailer}"
 
@@ -2258,6 +2284,10 @@ msgstr "En attente"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:31
 msgid "When should it be returned?"
 msgstr "Quand devrait-il être retourné ?"
+
+#: src/ai/service/whisper-model.service.ts:90
+msgid "Whisper model download failed"
+msgstr "Échec du téléchargement du modèle Whisper"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
 msgid "Who do you owe?"

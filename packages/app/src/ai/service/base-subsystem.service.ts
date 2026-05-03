@@ -4,8 +4,11 @@ import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { LlamaConfigInterface } from '../interface/llama-config.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
+import { SnapshotWithStatusInterface } from '../interface/snapshot-with-status.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
 
 export abstract class SnapshotStore<TSnapshot> {
@@ -73,15 +76,11 @@ export abstract class ScheduledSnapshotStore<TSnapshot> extends SnapshotStore<TS
     protected abstract recompute(): void;
 }
 
-interface SnapshotWithStatus {
-    readonly status: AiSubsystemStatusEnum;
-}
-
-export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus> extends SnapshotStore<TSnapshot> {
+export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatusInterface> extends SnapshotStore<TSnapshot> {
     protected pendingOperation: Promise<unknown> = Promise.resolve();
 
     constructor(
-        protected readonly logDomain: string,
+        protected readonly logDomain: AiSubsystemNameEnum,
         initialSnapshot: TSnapshot
     ) {
         super(initialSnapshot);
@@ -116,31 +115,26 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
         await this.pendingOperation;
     }
 
-    abstract retry(): Promise<void>;
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async retry(): Promise<void> {
+        await this.beforeRetry();
+        this.setSnapshot({ ...this.getSnapshot(), status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
+        await this.start();
+    }
+
+    protected beforeRetry(): Promise<void> {
+        return Promise.resolve();
+    }
 
     protected abstract runStart(): Promise<void>;
     protected abstract runStop(): Promise<void>;
 }
 
-interface LlamaConfigInterface {
-    readonly modelUrl: string;
-    readonly modelFilename: string;
-    readonly contextSize: number;
-    readonly embedding: boolean;
-    readonly poolingType?: 'mean' | 'none' | 'cls' | 'last';
-}
-
 export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<LlamaSubsystemSnapshotInterface> {
     protected context: LlamaContext | null = null;
 
-    constructor(logDomain: string) {
+    constructor(logDomain: AiSubsystemNameEnum) {
         super(logDomain, { status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null });
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async retry(): Promise<void> {
-        this.setSnapshot({ status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-        await this.start();
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -179,6 +173,13 @@ export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<Lla
         } catch {
             this.context = null;
             this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
+        }
+    }
+
+    protected override async beforeRetry(): Promise<void> {
+        if (isDefined(this.context)) {
+            await this.context.release().catch(emptyFn);
+            this.context = null;
         }
     }
 
