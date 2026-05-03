@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -254,11 +255,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             return [];
         }
         const runner = tx ?? this.db;
+        const sourceTransaction = alias(TransactionEntityTable, 'source_tx');
 
         return await runner
             .selectDistinct({ id: TransactionEntityTable.id })
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(sourceTransaction, eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId))
             .where(
                 and(
                     isNotNull(TransactionEntityTable.consolidationType),
@@ -266,10 +269,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                     isNotNull(TransactionEntryEntityTable.originalTransactionId),
                     isNull(TransactionEntryEntityTable.deletedAt),
-                    gte(
-                        sql<Date>`(SELECT operated_at FROM ${TransactionEntityTable} WHERE id = ${TransactionEntryEntityTable.originalTransactionId})`,
-                        since
-                    )
+                    gte(sourceTransaction.operatedAt, since)
                 )
             );
     }
