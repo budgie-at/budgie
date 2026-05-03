@@ -10,15 +10,15 @@ interface StateVisualInterface {
 
 export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInterface> = {
     [AiSystemStateEnum.DISABLED]: {
-        colorClass: 'text-muted-foreground',
-        stripClass: 'bg-muted-foreground',
+        colorClass: 'text-secondary-foreground',
+        stripClass: 'bg-secondary-foreground',
         pulsePeriodMs: null,
         shakeOnEnter: false,
         glow: false
     },
     [AiSystemStateEnum.BOOTING]: {
-        colorClass: 'text-primary-foreground',
-        stripClass: 'bg-primary-foreground',
+        colorClass: 'text-primary',
+        stripClass: 'bg-primary',
         pulsePeriodMs: 1200,
         shakeOnEnter: false,
         glow: false
@@ -31,8 +31,8 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
         glow: false
     },
     [AiSystemStateEnum.IDLE]: {
-        colorClass: 'text-muted-foreground',
-        stripClass: 'bg-muted-foreground',
+        colorClass: 'text-secondary-foreground',
+        stripClass: 'bg-secondary-foreground',
         pulsePeriodMs: null,
         shakeOnEnter: false,
         glow: false
@@ -45,8 +45,8 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
         glow: false
     },
     [AiSystemStateEnum.INDEXING]: {
-        colorClass: 'text-primary-foreground',
-        stripClass: 'bg-primary-foreground',
+        colorClass: 'text-primary',
+        stripClass: 'bg-primary',
         pulsePeriodMs: 700,
         shakeOnEnter: false,
         glow: false
