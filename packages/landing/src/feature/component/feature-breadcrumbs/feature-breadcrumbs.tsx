@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const FeatureBreadcrumbs = ({ locale, current }: Props) => (
-    <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+    <nav aria-label="breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap items-center gap-1.5">
             <li>
                 <Link className="hover:text-foreground transition-colors" href={`/${locale}`}>
