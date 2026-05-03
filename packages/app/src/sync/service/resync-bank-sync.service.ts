@@ -11,9 +11,9 @@ import { monobankSyncService } from './monobank-sync.service';
 import type { ResyncBankSyncInputInterface } from '../interface/resync-bank-sync-input.interface';
 import type { DB } from '@budgie/contracts';
 
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-
 class ResyncBankSyncService {
+    private static readonly MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
     @Log(
         input => `enter accountId=${input.accountId} sinceDays=${String(input.sinceDays)}`,
         (_, input) => `done accountId=${input.accountId} sinceDays=${String(input.sinceDays)}`,
@@ -41,7 +41,7 @@ class ResyncBankSyncService {
     }
 
     private async resyncWindowed(accountId: number, sinceDays: number, tx: DB): Promise<void> {
-        const since = new Date(Date.now() - sinceDays * MILLISECONDS_PER_DAY);
+        const since = new Date(Date.now() - sinceDays * ResyncBankSyncService.MILLISECONDS_PER_DAY);
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIdsSince([accountId], since, tx);
         for (const canonical of canonicals) {
             // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must precede the resync reset

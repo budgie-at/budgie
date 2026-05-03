@@ -1,156 +1,98 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useRef, useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+
+import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
+import { UseVoiceInputReturnInterface } from '../interface/use-voice-input-return.interface';
 
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
 
-type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
-
-interface VoiceInputData {
-    readonly transcription: { readonly committed: string; readonly partial: string };
-    readonly transactions: AITransactionInterface[];
-    readonly error: string | null;
-    readonly audioLevel: number;
-}
-
-interface VoiceInputCallbacks {
-    readonly onDone?: (transactions: AITransactionInterface[]) => void;
-    readonly onError?: (error: string) => void;
-}
-
-export interface UseVoiceInputReturn {
-    readonly state: VoiceInputState;
-    readonly data: VoiceInputData;
-    readonly isReady: boolean;
-    readonly downloadProgress: number;
-    readonly start: () => void;
-    readonly stop: () => void;
-    readonly confirm: () => void;
-    readonly cancel: () => void;
-    readonly retry: () => void;
-}
-
-// eslint-disable-next-line max-lines-per-function, max-statements
-export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
-    const { onDone, onError } = callbacks;
-
-    const [state, setState] = useState<VoiceInputState>('idle');
+// eslint-disable-next-line max-statements -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
+export const useVoiceInput = (): UseVoiceInputReturnInterface => {
+    const [state, setState] = useState<VoiceInputStateEnum>(VoiceInputStateEnum.IDLE);
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
 
-    const isProcessingRef = useRef(false);
+    const resultRef = useRef<Parameters<UseVoiceInputReturnInterface['startAndCollect']>[0] | null>(null);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
 
-    const handleError = (e: unknown) => {
-        const errorMessage = getErrorMessage(e);
-        setError(errorMessage);
-        setState('error');
-        isProcessingRef.current = false;
-        onError?.(errorMessage);
+    const settle = (transactions: AITransactionInterface[], originalText: string) => {
+        const callback = resultRef.current;
+        resultRef.current = null;
+        callback?.(transactions, originalText);
     };
 
-    const processTranscription = async (): Promise<void> => {
-        if (isProcessingRef.current) {
-            return;
-        }
+    const handleError = (e: unknown) => {
+        setError(getErrorMessage(e));
+        setState(VoiceInputStateEnum.ERROR);
+        settle([], '');
+    };
 
-        isProcessingRef.current = true;
-        setState('transcribing');
-
+    const runPipeline = async (): Promise<void> => {
+        setState(VoiceInputStateEnum.TRANSCRIBING);
         const text = await stt.stopStream();
 
-        // eslint-disable-next-line require-atomic-updates
-        isProcessingRef.current = false;
-
         if (!isNotEmptyString(text)) {
-            setState('idle');
+            setState(VoiceInputStateEnum.IDLE);
+            settle([], '');
 
             return;
         }
 
         setFinalTranscription(text);
-        setState('confirming');
-    };
+        setState(VoiceInputStateEnum.PROCESSING);
 
-    const handleSilenceDetected = () => {
-        processTranscription().catch(handleError);
+        const transactions = await categorization.categorize(text);
+
+        setState(VoiceInputStateEnum.DONE);
+        settle(transactions, text);
     };
 
     const recording = useRecording({
         onAudioBuffer: stt.insertAudio,
-        onSilenceDetected: handleSilenceDetected
+        onSilenceDetected: () => void runPipeline().catch(handleError)
     });
 
     const isReady = stt.isReady && categorization.isReady;
     const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
-    const start = () => {
+    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult => {
         setError(null);
         setFinalTranscription('');
-        isProcessingRef.current = false;
         categorization.reset();
         stt.startStream();
         recording.start();
-        setState('recording');
+        setState(VoiceInputStateEnum.RECORDING);
+        resultRef.current = onResult;
     };
 
     const stop = () => {
+        if (state !== VoiceInputStateEnum.RECORDING) {
+            return;
+        }
         recording.stop();
-
-        if (isProcessingRef.current) {
-            return;
-        }
-
-        const currentText = stt.transcription + stt.partialTranscription;
-
-        if (isNotEmptyString(currentText)) {
-            setFinalTranscription(currentText);
-            setState('confirming');
-            stt.cancelStream();
-        } else {
-            processTranscription().catch(handleError);
-        }
-    };
-
-    const confirm = () => {
-        if (state !== 'confirming') {
-            return;
-        }
-
-        if (isNotEmptyArray(categorization.transactions)) {
-            setState('done');
-            onDone?.(categorization.transactions);
-        } else {
-            setState('processing');
-
-            void categorization.categorize(finalTranscription).then((results: AITransactionInterface[]) => {
-                setState('done');
-                onDone?.(results);
-
-                return results;
-            }, handleError);
-        }
+        runPipeline().catch(handleError);
     };
 
     const cancel = () => {
         recording.cancel();
         stt.cancelStream();
         categorization.reset();
-        setState('idle');
+        resultRef.current = null;
+        setState(VoiceInputStateEnum.IDLE);
         setError(null);
         setFinalTranscription('');
-        isProcessingRef.current = false;
     };
 
-    const transcription =
-        state === 'confirming' || state === 'processing' || state === 'done'
-            ? { committed: finalTranscription, partial: '' }
-            : { committed: stt.transcription, partial: stt.partialTranscription };
+    const isPipelineFinishing = state === VoiceInputStateEnum.PROCESSING || state === VoiceInputStateEnum.DONE;
+    const transcription = isPipelineFinishing
+        ? { committed: finalTranscription, partial: '' }
+        : { committed: stt.transcription, partial: stt.partialTranscription };
 
     return {
         state,
@@ -162,10 +104,8 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         },
         isReady,
         downloadProgress,
-        start,
+        startAndCollect,
         stop,
-        confirm,
-        cancel,
-        retry: start
+        cancel
     };
 };

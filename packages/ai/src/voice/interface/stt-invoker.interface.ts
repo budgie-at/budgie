@@ -3,6 +3,7 @@ export interface SttInvokerInterface {
     readonly committedTranscription: string;
     readonly nonCommittedTranscription: string;
     stream(options?: { readonly language?: string }): Promise<string>;
-    streamStop(): void;
-    streamInsert(waveform: Float32Array | number[]): void;
+    streamStop(): Promise<void>;
+    streamCancel(): Promise<void>;
+    streamInsert(waveform: Float32Array): void;
 }

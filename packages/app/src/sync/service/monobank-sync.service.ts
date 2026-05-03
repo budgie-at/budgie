@@ -25,9 +25,9 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 
-const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
-
 class AppMonobankSyncService {
+    private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
+
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
     private mccCategoryIdMap = new Map<string, number>();
@@ -120,7 +120,10 @@ class AppMonobankSyncService {
 
     @Log('enter', result => `done found=${isDefined(result)}`, error => `throw error=${getErrorMessage(error)}`)
     private async findNextForwardSync(): Promise<BankSyncEntityInterface | null> {
-        const forwardSyncs = await bankSyncRepository.getPendingForwardSync(this.provider, FORWARD_SYNC_STALE_THRESHOLD_MS);
+        const forwardSyncs = await bankSyncRepository.getPendingForwardSync(
+            this.provider,
+            AppMonobankSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
+        );
         if (!isNotEmptyArray(forwardSyncs)) {
             return null;
         }

@@ -30,13 +30,12 @@ interface Props {
     readonly entryType: TransactionEntryTypeEnum;
     readonly currencySymbol: string;
     readonly totalAmount: number;
-    readonly onEntriesChange: (entries: TransactionEntryCreateInputInterface[]) => void;
-    readonly onConfirm: () => void;
+    readonly onConfirm: (entries: TransactionEntryCreateInputInterface[]) => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Modal content orchestrating entries list and category selection
 export const SplitEntriesModalContent = (props: Props) => {
-    const { initialEntries, variant, entryType, currencySymbol, totalAmount, onEntriesChange, onConfirm } = props;
+    const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -47,17 +46,6 @@ export const SplitEntriesModalContent = (props: Props) => {
     const [autoFocusIndex, setAutoFocusIndex] = useState(-1);
 
     const previouslyFullySplitRef = useRef(false);
-    const isInitialRenderRef = useRef(true);
-
-    useEffect(() => {
-        if (isInitialRenderRef.current) {
-            isInitialRenderRef.current = false;
-
-            return;
-        }
-
-        onEntriesChange(entries.map(stripLocalId));
-    }, [entries, onEntriesChange]);
 
     const entriesTotal = sumEntryAmounts(entries);
     const remainingAmount = totalAmount - entriesTotal;
@@ -85,7 +73,11 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const handleCategoryPress = async (index: number) => {
         const currentCategoryId = entries[index]?.categoryId ?? null;
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, variant });
+        const excludeCategoryIds = entries
+            .filter((_, entryIndex) => entryIndex !== index)
+            .map(entry => entry.categoryId)
+            .filter(isPositiveNumber);
+        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, excludeCategoryIds, variant });
 
         if (isDefined(selectedCategoryId)) {
             setEntries(previous =>
@@ -103,6 +95,10 @@ export const SplitEntriesModalContent = (props: Props) => {
     const handleRemoveEntry = (index: number) => {
         setEntries(previous => previous.filter((_, entryIndex) => entryIndex !== index));
         setAutoFocusIndex(-1);
+    };
+
+    const handleConfirm = () => {
+        onConfirm(entries.map(stripLocalId));
     };
 
     const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
@@ -149,7 +145,13 @@ export const SplitEntriesModalContent = (props: Props) => {
             />
 
             <View className="px-xl pb-xl">
-                <Button content={confirmButtonLabel} variant={confirmButtonVariant} size="md" disabled={!canConfirm} onPress={onConfirm} />
+                <Button
+                    content={confirmButtonLabel}
+                    variant={confirmButtonVariant}
+                    size="md"
+                    disabled={!canConfirm}
+                    onPress={handleConfirm}
+                />
             </View>
         </View>
     );

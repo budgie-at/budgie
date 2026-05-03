@@ -77,6 +77,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     };
 
     const handleAiPress = () => {
+        onClose();
         openVoiceInput();
     };
 

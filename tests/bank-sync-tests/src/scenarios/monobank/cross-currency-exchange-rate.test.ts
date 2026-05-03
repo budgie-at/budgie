@@ -31,7 +31,9 @@ describe('monobank/cross-currency-exchange-rate', () => {
 
     it('keeps exchangeRate=1 when amount equals operationAmount', async () => {
         setupMonobankFixture();
-        monobankStub.statement([buildMonobank.transaction({ id: 'tx-same-currency', amount: -10000, operationAmount: -10000, hold: false })]);
+        monobankStub.statement([
+            buildMonobank.transaction({ id: 'tx-same-currency', amount: -10000, operationAmount: -10000, hold: false })
+        ]);
 
         await monobankSyncService.sync();
 

@@ -27,7 +27,9 @@ describe('monobank/mcc-mapping', () => {
 
     it('leaves mccCategoryId null when the MCC is unknown', async () => {
         setupMonobankFixture();
-        monobankStub.statement([buildMonobank.transaction({ id: 'tx-unknown-mcc', amount: -2500, hold: false, mcc: 99999, originalMcc: 99999 })]);
+        monobankStub.statement([
+            buildMonobank.transaction({ id: 'tx-unknown-mcc', amount: -2500, hold: false, mcc: 99999, originalMcc: 99999 })
+        ]);
 
         await monobankSyncService.sync();
 

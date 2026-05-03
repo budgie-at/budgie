@@ -13,7 +13,10 @@
     "moduleResolution": "bundler",
     "customConditions": [
       "react-native"
-    ]
+    ],
+    "paths": {
+      "whisper.rn": ["../../node_modules/whisper.rn/lib/typescript/index.d.ts"]
+    }
   },
   "exclude": [
     "dist",

@@ -1,5 +1,5 @@
-import { Log, getLogger } from '@budgie/logger';
-import { AppState, AppStateStatus } from 'react-native';
+import { Log } from '@budgie/logger';
+import { AppState } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -18,7 +18,8 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
-const logger = getLogger('AiCoordinatorService');
+
+import type { AppStateStatus } from 'react-native';
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
     private started = false;
@@ -39,7 +40,9 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
             return;
         }
 
-        this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
+        this.appStateSubscription = AppState.addEventListener('change', state => {
+            this.handleAppStateChange(state);
+        });
 
         const { currentState } = AppState;
         if (currentState === 'active' || currentState === 'unknown') {
@@ -63,7 +66,7 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async bootModels(): Promise<void> {
-        await Promise.all([chatService.start(), embeddingService.start()]);
+        await Promise.all([chatService.start(), embeddingService.start(), sttService.start()]);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -71,12 +74,14 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
     }
 
-    // eslint-disable-next-line max-statements -- AppState handler: foreground/background branches with timer control
-    private readonly handleAppStateChange = (state: AppStateStatus): void => {
-        logger.log('appstate:change', { to: state });
+    @Log(
+        state => `enter state=${state}`,
+        (result, state) => `done state=${state} result=${String(result)}`,
+        (error, state) => `throw state=${state} error=${getErrorMessage(error)}`
+    )
+    private handleAppStateChange(state: AppStateStatus): void {
         if (state === 'active') {
             if (isDefined(this.releaseTimer)) {
-                logger.log('release:cancel');
                 this.clearReleaseTimer();
             }
             if (this.snapshot.isSuspended) {
@@ -90,14 +95,17 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         if (isDefined(this.releaseTimer)) {
             return;
         }
-        logger.log('release:schedule', { delayMs: BACKGROUND_RELEASE_DELAY_MS });
         this.releaseTimer = setTimeout(() => {
-            this.releaseTimer = null;
-            logger.log('release:fire');
-            this.setSnapshot({ isSuspended: true });
-            void this.stopSubsystems().catch(emptyFn);
+            this.handleReleaseTimer();
         }, BACKGROUND_RELEASE_DELAY_MS);
-    };
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private handleReleaseTimer(): void {
+        this.releaseTimer = null;
+        this.setSnapshot({ isSuspended: true });
+        void this.stopSubsystems().catch(emptyFn);
+    }
 
     private async startSubsystems(): Promise<void> {
         await this.bootModels();

@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/member-ordering, max-lines -- Abstract drainer base co-locates lifecycle, boost, and internal batch loops for readability */
 import { Log } from '@budgie/logger';
-import { AppState, InteractionManager } from 'react-native';
+import { AppState } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
@@ -14,14 +15,14 @@ import { drainerMutex } from './drainer-mutex.service';
 
 import type { AppStateStatus } from 'react-native';
 
-const MAX_CONSECUTIVE_FAILURES = 5;
-const PROGRESS_LOG_EVERY = 25;
-const IDLE_INTERVAL_MS = 10_000;
-const MUTEX_BUSY_RESCHEDULE_MS = 1_000;
-const ERROR_AUTO_RETRY_MS = 30_000;
-const SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
-
 export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnapshotInterface> {
+    private static readonly MAX_CONSECUTIVE_FAILURES = 5;
+    private static readonly PROGRESS_LOG_EVERY = 25;
+    private static readonly IDLE_INTERVAL_MS = 10_000;
+    private static readonly MUTEX_BUSY_RESCHEDULE_MS = 1_000;
+    private static readonly ERROR_AUTO_RETRY_MS = 30_000;
+    private static readonly SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
+
     protected abstract readonly kind: DrainerKindEnum;
     protected abstract readonly relaxedIntervalMs: number;
     protected abstract readonly relaxedBatchSize: number;
@@ -193,10 +194,10 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             return;
         }
         this.haltTimer();
-        const delay = this.snapshot.pending === 0 ? IDLE_INTERVAL_MS : this.relaxedIntervalMs;
+        const delay = this.snapshot.pending === 0 ? BaseDrainerService.IDLE_INTERVAL_MS : this.relaxedIntervalMs;
         this.timer = setTimeout(() => {
             this.timer = null;
-            void InteractionManager.runAfterInteractions(() => {
+            scheduleIdleCallback(() => {
                 this.queueRelaxedTick();
             });
         }, delay);
@@ -215,7 +216,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             return;
         }
         if (!drainerMutex.acquire(this.kind)) {
-            this.scheduleDrainAfter(MUTEX_BUSY_RESCHEDULE_MS);
+            this.scheduleDrainAfter(BaseDrainerService.MUTEX_BUSY_RESCHEDULE_MS);
 
             return;
         }
@@ -283,7 +284,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                     if (rowIndex % this.yieldEveryRows === 0) {
                         await microPause();
                     }
-                    if (processed % PROGRESS_LOG_EVERY === 0) {
+                    if (processed % BaseDrainerService.PROGRESS_LOG_EVERY === 0) {
                         await this.refreshPending();
                     }
                 }
@@ -306,11 +307,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     @Log(error => `enter errorMessage=${getErrorMessage(error)}`, 'done', error => `throw error=${getErrorMessage(error)}`)
     private handleRowFailure(error: unknown): void {
         const message = getErrorMessage(error);
-        if (SQLITE_BUSY_PATTERN.test(message)) {
+        if (BaseDrainerService.SQLITE_BUSY_PATTERN.test(message)) {
             return;
         }
         this.consecutiveFailures += 1;
-        if (this.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
+        if (this.consecutiveFailures < BaseDrainerService.MAX_CONSECUTIVE_FAILURES) {
             return;
         }
         this.enterErrorState(message);
@@ -322,7 +323,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.haltTimer();
         setTimeout(() => {
             this.onAutoRetry();
-        }, ERROR_AUTO_RETRY_MS);
+        }, BaseDrainerService.ERROR_AUTO_RETRY_MS);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
