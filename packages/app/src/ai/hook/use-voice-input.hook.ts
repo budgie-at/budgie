@@ -53,13 +53,9 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         settle(transactions, text);
     };
 
-    const handleSilenceDetected = () => {
-        runPipeline().catch(handleError);
-    };
-
     const recording = useRecording({
         onAudioBuffer: stt.insertAudio,
-        onSilenceDetected: handleSilenceDetected
+        onSilenceDetected: () => void runPipeline().catch(handleError)
     });
 
     const isReady = stt.isReady && categorization.isReady;

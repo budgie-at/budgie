@@ -39,15 +39,12 @@ export const useStt = (): UseSttReturn => {
 
     const startStream = () => {
         streamGenerationRef.current += 1;
-        const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
         sttService.streamCancel().catch(emptyFn);
         setBaseTranscription(sttService.committedTranscription);
         sttService.streamStart(language).catch(emptyFn);
-        if (isCurrentStream(generation)) {
-            setStatus('streaming');
-        }
+        setStatus('streaming');
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -70,17 +67,13 @@ export const useStt = (): UseSttReturn => {
         setStatus('processing');
 
         try {
-            const finalText = filterTranscriptionTokens(await sttService.streamStop()).trim();
-            if (isCurrentStream(generation)) {
-                setStatus('idle');
-            }
-
-            return finalText;
+            return filterTranscriptionTokens(await sttService.streamStop()).trim();
         } catch {
+            throw new Error(t`Transcription failed`);
+        } finally {
             if (isCurrentStream(generation)) {
                 setStatus('idle');
             }
-            throw new Error(t`Transcription failed`);
         }
     };
 
