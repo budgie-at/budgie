@@ -7,7 +7,7 @@ interface Props {
 export const FeaturePageJsonLd = ({ schemas }: Props) => (
     <>
         {schemas.map((schema, index) => (
-            <JsonLd key={`${schema['@type']}-${index}`} data={schema} />
+            <JsonLd key={`schema-${index}`} data={schema} />
         ))}
     </>
 );
