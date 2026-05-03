@@ -93,8 +93,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        One careless screenshot of your transactions is a privacy leak. Budgie applies platform screenshot-prevention APIs to
-                        balance fields and amount cells, plus a blur in the iOS/Android task switcher preview.
+                        One careless screenshot of your transactions is a privacy leak. Budgie applies platform screenshot-prevention APIs
+                        to balance fields and amount cells, plus a blur in the iOS/Android task switcher preview.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -131,8 +131,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and
-                        a blur layer on iOS in app-switcher state.
+                        Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android
+                        and a blur layer on iOS in app-switcher state.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -142,8 +142,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     question={<Trans>What does screenshot protection actually do?</Trans>}
                     answer={
                         <Trans>
-                            On Android, FLAG_SECURE prevents the OS from capturing screenshots. On iOS, sensitive views render a blur overlay
-                            in the app-switcher preview when Budgie goes to background.
+                            On Android, FLAG_SECURE prevents the OS from capturing screenshots. On iOS, sensitive views render a blur
+                            overlay in the app-switcher preview when Budgie goes to background.
                         </Trans>
                     }
                 />
@@ -151,8 +151,8 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                     question={<Trans>Can I disable it for receipts I want to share?</Trans>}
                     answer={
                         <Trans>
-                            Yes — Settings → Privacy → Screenshot protection. Toggle individual screens. The transaction-list screen and home
-                            screen are the typical &quot;always on&quot; candidates.
+                            Yes — Settings → Privacy → Screenshot protection. Toggle individual screens. The transaction-list screen and
+                            home screen are the typical &quot;always on&quot; candidates.
                         </Trans>
                     }
                 />

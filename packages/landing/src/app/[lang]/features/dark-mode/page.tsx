@@ -144,8 +144,8 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     question={<Trans>Is it true black or just dark gray?</Trans>}
                     answer={
                         <Trans>
-                            OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels are
-                            off — saves battery on OLED screens.
+                            OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels
+                            are off — saves battery on OLED screens.
                         </Trans>
                     }
                 />
