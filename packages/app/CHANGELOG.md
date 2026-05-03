@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.12.1](https://github.com/budgie-at/budgie/compare/v5.12.0...v5.12.1) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** prevent split modal double back ([e8bf142](https://github.com/budgie-at/budgie/commit/e8bf142116281862caef1d2fb15fe4ac5ed01399))
+
 # [5.12.0](https://github.com/budgie-at/budgie/compare/v5.11.2...v5.12.0) (2026-05-03)
 
 ### Features
