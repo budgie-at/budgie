@@ -1,5 +1,6 @@
 import { CurrencyEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -47,13 +48,15 @@ interface Props {
     readonly onDelete: (id: string) => void;
 }
 
-const formatAmount = (amountMicroUnits: number): string => convertFromMicroUnits(amountMicroUnits).toFixed(0);
+const formatAmount = (amountMicroUnits: number): string => String(convertFromMicroUnits(amountMicroUnits));
 
 export const VoiceReviewRow = ({ row, index, onEdit, onDelete }: Props) => {
     const { t } = useLingui();
     const translateX = useSharedValue(0);
+    const [draftAmount, setDraftAmount] = useState(() => formatAmount(row.amountMicroUnits));
 
     const handleAmountChange = (text: string) => {
+        setDraftAmount(text);
         const numeric = Number(text.replace(',', '.'));
         if (!Number.isFinite(numeric) || numeric < 0) {
             return;
@@ -122,7 +125,7 @@ export const VoiceReviewRow = ({ row, index, onEdit, onDelete }: Props) => {
                         </View>
 
                         <TextInput
-                            value={formatAmount(row.amountMicroUnits)}
+                            value={draftAmount}
                             onChangeText={handleAmountChange}
                             keyboardType="decimal-pad"
                             className="min-w-[64px] text-2xl font-semibold text-primary"

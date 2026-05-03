@@ -1,11 +1,10 @@
-import { AITransactionInterface } from '@budgie/ai';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
-import { UseVoiceInputReturn, useVoiceInput } from '../../hook/use-voice-input.hook';
+import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 interface Props {
@@ -16,33 +15,10 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
     const [openVoiceReview] = useVoiceReviewModal();
 
     const hasAutoStartedRef = useRef(false);
-    const originalTextRef = useRef('');
-    const voiceInputRef = useRef<UseVoiceInputReturn | null>(null);
     const contentOpacity = useSharedValue(1);
 
-    const handleDone = (transactions: AITransactionInterface[]): void => {
-        if (!isNotEmptyArray(transactions)) {
-            return;
-        }
-
-        const handleResult = (result: 'saved' | 're-record' | 'cancelled'): void => {
-            if (result === 're-record') {
-                voiceInputRef.current?.start();
-
-                return;
-            }
-            onClose();
-        };
-
-        void openVoiceReview({ transactions, originalText: originalTextRef.current }).then(handleResult, () => void onClose());
-    };
-
-    const voiceInput = useVoiceInput({ onDone: handleDone });
+    const voiceInput = useVoiceInput();
     const { isReady, start } = voiceInput;
-
-    useLayoutEffect(() => {
-        voiceInputRef.current = voiceInput;
-    });
 
     useEffect(() => {
         if (isReady && !hasAutoStartedRef.current) {
@@ -53,10 +29,32 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
 
     useEffect(
         () => () => {
-            voiceInputRef.current?.cancel();
+            voiceInput.cancel();
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- Cancel only on unmount; capturing voiceInput.cancel each render would re-fire the cleanup
         []
     );
+
+    const handleConfirm = async () => {
+        const originalText = voiceInput.data.transcription.committed;
+        const transactions = await voiceInput.confirmAndCategorize();
+
+        if (!isNotEmptyArray(transactions)) {
+            onClose();
+
+            return;
+        }
+
+        const result = await openVoiceReview({ transactions, originalText });
+
+        if (result === 're-record') {
+            voiceInput.start();
+
+            return;
+        }
+
+        onClose();
+    };
 
     const handleRecord = () => {
         switch (voiceInput.state) {
@@ -64,8 +62,7 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
                 voiceInput.stop();
                 break;
             case 'confirming':
-                originalTextRef.current = voiceInput.data.transcription.committed;
-                voiceInput.confirm();
+                void handleConfirm();
                 break;
             case 'idle':
             case 'error':

@@ -16,11 +16,6 @@ interface VoiceInputData {
     readonly audioLevel: number;
 }
 
-interface VoiceInputCallbacks {
-    readonly onDone?: (transactions: AITransactionInterface[]) => void;
-    readonly onError?: (error: string) => void;
-}
-
 export interface UseVoiceInputReturn {
     readonly state: VoiceInputState;
     readonly data: VoiceInputData;
@@ -28,15 +23,13 @@ export interface UseVoiceInputReturn {
     readonly downloadProgress: number;
     readonly start: () => void;
     readonly stop: () => void;
-    readonly confirm: () => void;
+    readonly confirmAndCategorize: () => Promise<AITransactionInterface[]>;
     readonly cancel: () => void;
     readonly retry: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Hook orchestrates recording, STT, categorization, and confirmation lifecycle
-export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
-    const { onDone, onError } = callbacks;
-
+export const useVoiceInput = (): UseVoiceInputReturn => {
     const [state, setState] = useState<VoiceInputState>('idle');
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
@@ -53,7 +46,6 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         setError(errorMessage);
         setState('error');
         isProcessingRef.current = false;
-        onError?.(errorMessage);
     };
 
     const isCurrentSession = (sessionId: number): boolean => sessionId === sessionIdRef.current;
@@ -124,23 +116,28 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         processTranscription().catch(handleError);
     };
 
-    const confirm = () => {
+    const confirmAndCategorize = async (): Promise<AITransactionInterface[]> => {
         if (state !== 'confirming') {
-            return;
+            return [];
         }
 
         if (isNotEmptyArray(categorization.transactions)) {
             setState('done');
-            onDone?.(categorization.transactions);
-        } else {
-            setState('processing');
 
-            void categorization.categorize(finalTranscription).then((results: AITransactionInterface[]) => {
-                setState('done');
-                onDone?.(results);
+            return categorization.transactions;
+        }
 
-                return results;
-            }, handleError);
+        setState('processing');
+
+        try {
+            const results = await categorization.categorize(finalTranscription);
+
+            setState('done');
+
+            return results;
+        } catch (categorizeError: unknown) {
+            handleError(categorizeError);
+            throw categorizeError;
         }
     };
 
@@ -172,7 +169,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         downloadProgress,
         start,
         stop,
-        confirm,
+        confirmAndCategorize,
         cancel,
         retry: start
     };
