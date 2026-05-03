@@ -2,6 +2,8 @@ import { Stack, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
 import { useSplitEntriesModal } from '../transaction/context/split-entries-modal.context';
@@ -17,6 +19,7 @@ export default function SplitEntriesModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     const entriesRef = useRef<TransactionEntryCreateInputInterface[]>(currentParams?.entries ?? []);
+    const hadParamsRef = useRef(isDefined(currentParams));
 
     const handleEntriesChange = (entries: TransactionEntryCreateInputInterface[]) => {
         entriesRef.current = entries;
@@ -35,7 +38,13 @@ export default function SplitEntriesModal() {
     );
 
     useEffect(() => {
-        if (!currentParams) {
+        if (isDefined(currentParams)) {
+            hadParamsRef.current = true;
+
+            return;
+        }
+
+        if (!hadParamsRef.current) {
             router.back();
         }
     }, [currentParams, router]);
