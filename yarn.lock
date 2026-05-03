@@ -1300,7 +1300,6 @@ __metadata:
     react-native: "npm:0.83.4"
     react-native-audio-api: "npm:^0.10.3"
     react-native-css: "patch:react-native-css@3.0.1#patches/react-native-css.patch"
-    react-native-executorch: "npm:^0.6.0"
     react-native-gesture-handler: "npm:~2.30.0"
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-reanimated: "npm:~4.2.1"
@@ -1314,6 +1313,7 @@ __metadata:
     react-native-worklets: "npm:0.7.2"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.14"
+    whisper.rn: "npm:^0.5.5"
     zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
@@ -3043,13 +3043,6 @@ __metadata:
   peerDependencies:
     react-hook-form: ^7.55.0
   checksum: 10/93447287dc89827c517c72dc61e3be0217d3a5d9cbdb532317e5f5fd176c3eedb2ccd62d3c51fb403812939c9b7a4ebcaca35659a9bfb90e16ec38a2092d13a2
-  languageName: node
-  linkType: hard
-
-"@huggingface/jinja@npm:^0.5.0":
-  version: 0.5.3
-  resolution: "@huggingface/jinja@npm:0.5.3"
-  checksum: 10/2797550d8400495facec93c00051ddba17df8849250a0ad61dfc3cd84b05c4013c852a0580e3fa8cf2fd153c9fbe35af2ced5409b1b23effd639f0a03a4c16b4
   languageName: node
   linkType: hard
 
@@ -14623,22 +14616,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonrepair@npm:^3.12.0":
-  version: 3.13.1
-  resolution: "jsonrepair@npm:3.13.1"
-  bin:
-    jsonrepair: bin/cli.js
-  checksum: 10/cea418eeafe60ebbbf57207d2029fab7be229814c21dacca8380b3da331bc441ddd575cb2e1b533d0e0402e7291b18576686b7c96e6bc31547b8d996fde0001d
-  languageName: node
-  linkType: hard
-
-"jsonschema@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "jsonschema@npm:1.5.0"
-  checksum: 10/46bf49b388ba922073bcb3c8d5e90af9d29fc8303dc866fd440182c88d6b4fd2807679fd39cdefb4113156d104ea47da9c0ff4bbcb0032c9fa29461cb1a92182
-  languageName: node
-  linkType: hard
-
 "jstransformer@npm:1.0.0":
   version: 1.0.0
   resolution: "jstransformer@npm:1.0.0"
@@ -18815,24 +18792,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-executorch@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "react-native-executorch@npm:0.6.0"
-  dependencies:
-    "@huggingface/jinja": "npm:^0.5.0"
-    jsonrepair: "npm:^3.12.0"
-    jsonschema: "npm:^1.5.0"
-    zod: "npm:^3.25.0"
-  peerDependencies:
-    expo: ">=54.0.0"
-    expo-asset: ^12.0.0
-    expo-file-system: ^19.0.0
-    react: "*"
-    react-native: "*"
-  checksum: 10/6d4a5ced5172d394b1f23b18e15b1c4fd9d24338557ab0be898abd57ae48c7355f32439835c42086f689dc5416a63ddb31e861123d8d2b72f4f65a8b0d8623ae
-  languageName: node
-  linkType: hard
-
 "react-native-gesture-handler@npm:~2.30.0":
   version: 2.30.0
   resolution: "react-native-gesture-handler@npm:2.30.0"
@@ -19793,7 +19752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 10/32872cd0ff68a3ddade7a7617b8f4c2ae8764d8b7d884c651b74457967a9e0e886267d3ecc781220629c44a865167b61c375d2da6c720c840ecd73f45d5d9451
@@ -22461,6 +22420,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"whisper.rn@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "whisper.rn@npm:0.5.5"
+  dependencies:
+    safe-buffer: "npm:^5.2.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/7fddde95fb9a9928b4d11beac4d061f229f8c093632b1c85332203b54dbd86aeb19e6fd05d62e625a977a52d1c51792eebce485798a66d01e0bf84d2f302978d
+  languageName: node
+  linkType: hard
+
 "why-is-node-running@npm:^2.3.0":
   version: 2.3.0
   resolution: "why-is-node-running@npm:2.3.0"
@@ -22860,7 +22831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.25.0, zod@npm:^3.25.76":
+"zod@npm:^3.25.76":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995

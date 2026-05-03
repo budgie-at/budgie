@@ -11,10 +11,7 @@ export const seedTransferPairFixture = (amount: number = 100, operatedAt: Date =
         { externalId: 'tx-expense', operatedAt },
         { accountId: fromAccount.id, amount: microAmount, toIban: 'UA-TO' }
     );
-    const income = seedBankPair.income(
-        { externalId: 'tx-income', operatedAt },
-        { accountId: toAccount.id, amount: microAmount }
-    );
+    const income = seedBankPair.income({ externalId: 'tx-income', operatedAt }, { accountId: toAccount.id, amount: microAmount });
 
     return { fromAccount, toAccount, expense, income };
 };

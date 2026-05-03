@@ -13,17 +13,17 @@ import { chatService } from './chat.service';
 import type { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
 import type { TranslationResultInterface } from '@budgie/ai';
 
-const RELAXED_INTERVAL_MS = 5000;
-const RELAXED_BATCH_SIZE = 3;
-const BOOST_BATCH_SIZE = 5;
-const YIELD_EVERY_ROWS = 2;
-
 class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
+    private static readonly RELAXED_INTERVAL_MS = 5000;
+    private static readonly RELAXED_BATCH_SIZE = 3;
+    private static readonly BOOST_BATCH_SIZE = 5;
+    private static readonly YIELD_EVERY_ROWS = 2;
+
     protected readonly kind = DrainerKindEnum.TRANSLATION;
-    protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
-    protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;
-    protected readonly boostBatchSize = BOOST_BATCH_SIZE;
-    protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
+    protected readonly relaxedIntervalMs = TranslationDrainerService.RELAXED_INTERVAL_MS;
+    protected readonly relaxedBatchSize = TranslationDrainerService.RELAXED_BATCH_SIZE;
+    protected readonly boostBatchSize = TranslationDrainerService.BOOST_BATCH_SIZE;
+    protected readonly yieldEveryRows = TranslationDrainerService.YIELD_EVERY_ROWS;
 
     @Log(
         row => `enter kind=${row.kind} id=${row.id} title="${row.title}"`,

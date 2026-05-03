@@ -2,7 +2,6 @@ import type { FormFieldStatus } from '../../../type/form-field-status.type';
 import type { ComponentProps, RefObject } from 'react';
 import type { TextInput } from 'react-native';
 
-
 type BaseTextInputProps = Omit<ComponentProps<typeof TextInput>, 'multiline' | 'style' | 'ref'>;
 
 export interface TextAreaProps extends BaseTextInputProps {

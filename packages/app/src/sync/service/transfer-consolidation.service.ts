@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Consolidation orchestration owns multiple candidate execution paths */
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum, transactionAsync } from '@budgie/contracts';
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -32,8 +32,6 @@ import type {
     TransferPairReviewCandidateInterface
 } from '@budgie/contracts';
 
-const performanceLogger = getLogger('TransferConsolidationPerformance');
-
 class TransferConsolidationService {
     private isRunning = false;
 
@@ -54,14 +52,11 @@ class TransferConsolidationService {
         error => `throw error=${getErrorMessage(error)}`
     )
     async preview(): Promise<ConsolidationPreviewInterface> {
-        const previewStartedAt = Date.now();
         const pairCandidates = await this.findPairCandidates();
         const manualReviewCandidates = await this.findManualReviewCandidates();
         const atmCashWithdrawalCandidates = await this.findAtmCashWithdrawalCandidates();
         const atmCashWithdrawalReviewCandidates = await this.findAtmCashWithdrawalReviewCandidates();
         const ibanBridgeTransferCandidates = await this.findIbanBridgeTransferCandidates();
-
-        performanceLogger.log('preview:done', { durationMs: Date.now() - previewStartedAt });
 
         return {
             autoCandidateCount: pairCandidates.length + atmCashWithdrawalCandidates.length + ibanBridgeTransferCandidates.length,
@@ -184,8 +179,12 @@ class TransferConsolidationService {
         await transactionAsync(db, async tx => this.consolidateIbanBridgeTransferInner(candidate, tx));
     }
 
+    @Log(
+        'enter',
+        result => `done found=${result.found} consolidated=${result.consolidated}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async runConsolidation(): Promise<ConsolidationResultInterface> {
-        const consolidationStartedAt = Date.now();
         const candidates = await this.findConsolidationCandidateGroups();
         const pairConsolidated = await this.processPairCandidates(candidates.pairCandidates);
         const bridgeConsolidated = await this.processIbanBridgeTransferCandidates(candidates.ibanBridgeTransferCandidates);
@@ -204,17 +203,15 @@ class TransferConsolidationService {
             consolidated
         };
 
-        performanceLogger.log('consolidate:done', {
-            found: result.found,
-            consolidated: result.consolidated,
-            manualPairCount: candidates.manualReviewCandidates.length,
-            manualAtmCount: candidates.atmCashWithdrawalReviewCandidates.length,
-            durationMs: Date.now() - consolidationStartedAt
-        });
-
         return result;
     }
 
+    @Log(
+        'enter',
+        result =>
+            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findConsolidationCandidateGroups(): Promise<ConsolidationCandidateGroupsInterface> {
         const manualReviewCandidates = await this.findManualReviewCandidates();
         const atmCashWithdrawalReviewCandidates = await this.findAtmCashWithdrawalReviewCandidates();
@@ -231,49 +228,49 @@ class TransferConsolidationService {
         };
     }
 
+    @Log(
+        'enter',
+        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findPairCandidates(): Promise<TransferPairCandidateInterface[]> {
-        const startedAt = Date.now();
-        performanceLogger.log('query:pair-auto:begin');
-        const candidates = await transferPairRepository.findCandidates();
-        performanceLogger.log('query:pair-auto:done', { count: candidates.length, durationMs: Date.now() - startedAt });
-
-        return candidates;
+        return transferPairRepository.findCandidates();
     }
 
+    @Log(
+        'enter',
+        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
-        const startedAt = Date.now();
-        performanceLogger.log('query:pair-manual:begin');
-        const candidates = await transferPairRepository.findManualReviewCandidates();
-        performanceLogger.log('query:pair-manual:done', { count: candidates.length, durationMs: Date.now() - startedAt });
-
-        return candidates;
+        return transferPairRepository.findManualReviewCandidates();
     }
 
+    @Log(
+        'enter',
+        result => `done transactionIds=${result.map(candidate => candidate.transactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findAtmCashWithdrawalCandidates(): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        const startedAt = Date.now();
-        performanceLogger.log('query:atm-auto:begin');
-        const candidates = await transferPairRepository.findAtmCashWithdrawalCandidates();
-        performanceLogger.log('query:atm-auto:done', { count: candidates.length, durationMs: Date.now() - startedAt });
-
-        return candidates;
+        return transferPairRepository.findAtmCashWithdrawalCandidates();
     }
 
+    @Log(
+        'enter',
+        result => `done transactionIds=${result.map(candidate => candidate.transactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findAtmCashWithdrawalReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
-        const startedAt = Date.now();
-        performanceLogger.log('query:atm-manual:begin');
-        const candidates = await transferPairRepository.findAtmCashWithdrawalReviewCandidates();
-        performanceLogger.log('query:atm-manual:done', { count: candidates.length, durationMs: Date.now() - startedAt });
-
-        return candidates;
+        return transferPairRepository.findAtmCashWithdrawalReviewCandidates();
     }
 
+    @Log(
+        'enter',
+        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findIbanBridgeTransferCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
-        const startedAt = Date.now();
-        performanceLogger.log('query:iban-bridge-auto:begin');
-        const candidates = await transferPairRepository.findIbanBridgeTransferCandidates();
-        performanceLogger.log('query:iban-bridge-auto:done', { count: candidates.length, durationMs: Date.now() - startedAt });
-
-        return candidates;
+        return transferPairRepository.findIbanBridgeTransferCandidates();
     }
 
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {

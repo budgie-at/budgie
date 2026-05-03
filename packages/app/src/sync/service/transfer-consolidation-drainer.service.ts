@@ -1,9 +1,9 @@
 /* eslint-disable no-await-in-loop -- Single-flight drainer intentionally serializes consolidation scans */
 import { Log } from '@budgie/logger';
-import { InteractionManager } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
 import { transferConsolidationService } from './transfer-consolidation.service';
@@ -64,7 +64,7 @@ class TransferConsolidationDrainerService {
         this.timer = setTimeout(() => {
             this.timer = null;
             this.timerFiresAt = null;
-            InteractionManager.runAfterInteractions(() => {
+            scheduleIdleCallback(() => {
                 this.run().catch(emptyFn);
             });
         }, delay);

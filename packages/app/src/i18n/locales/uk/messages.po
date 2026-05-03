@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/ai/service/ai-system-status.service.ts:241
+#: src/ai/service/ai-system-status.service.ts:227
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} транзакц. у черзі"
 
@@ -39,11 +39,11 @@ msgstr "{availableCount} стовпців доступно"
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
@@ -57,11 +57,11 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/ai/service/ai-umbrella-status.service.ts:74
+#: src/ai/service/ai-umbrella-status.service.ts:75
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:195
+#: src/ai/service/ai-system-status.service.ts:179
 msgid "{source} failed: {message}"
 msgstr "Не вдалося виконати {source}: {message}"
 
@@ -85,7 +85,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:114
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:115
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
 msgid "Account"
 msgstr "Рахунок"
@@ -132,7 +132,7 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/app/note-input.tsx:33
+#: src/app/note-input.tsx:39
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
@@ -156,17 +156,17 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/service/ai-system-status.service.ts:182
+#: src/ai/service/ai-system-status.service.ts:166
 msgid "AI disabled"
 msgstr "ШІ вимкнено"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:114
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:117
 msgid "AI idle"
 msgstr "ШІ неактивний"
 
-#: src/ai/service/ai-umbrella-status.service.ts:59
-#: src/ai/service/ai-umbrella-status.service.ts:121
+#: src/ai/service/ai-umbrella-status.service.ts:58
+#: src/ai/service/ai-umbrella-status.service.ts:124
 msgid "AI off"
 msgstr "ШІ вимкнено"
 
@@ -190,7 +190,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Recurring"
 msgstr "Усі регулярні"
 
-#: src/ai/service/ai-system-status.service.ts:274
+#: src/ai/service/ai-system-status.service.ts:260
 msgid "All set"
 msgstr "Усе готово"
 
@@ -232,7 +232,7 @@ msgstr "Версія застосунку"
 msgid "Appearance"
 msgstr "Вигляд"
 
-#: src/app/note-input.tsx:47
+#: src/app/note-input.tsx:54
 msgid "Apply"
 msgstr "Застосувати"
 
@@ -289,8 +289,8 @@ msgstr "Синхронізація банку"
 msgid "Bank Sync"
 msgstr "Синхронізація з банком"
 
-#: src/app/resync-window-picker.tsx:55
-#: src/app/resync-window-picker.tsx:77
+#: src/app/resync-window-picker.tsx:56
+#: src/app/resync-window-picker.tsx:78
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
 
@@ -320,9 +320,10 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
-#: src/app/resync-window-picker.tsx:68
+#: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
@@ -425,7 +426,7 @@ msgstr "Коментар"
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Confirm Split"
 msgstr "Підтвердити розділення"
 
@@ -569,8 +570,8 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not recalculate balances"
 msgstr "Не вдалося перерахувати баланси"
 
-#: src/app/resync-window-picker.tsx:57
-#: src/app/resync-window-picker.tsx:79
+#: src/app/resync-window-picker.tsx:58
+#: src/app/resync-window-picker.tsx:80
 msgid "Could not reset bank sync"
 msgstr "Не вдалося скинути синхронізацію з банком"
 
@@ -777,11 +778,11 @@ msgstr "Готово ({count})"
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:87
+#: src/ai/service/ai-umbrella-status.service.ts:90
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Downloading models"
 msgstr "Завантаження моделей"
 
@@ -866,6 +867,10 @@ msgstr "Англійський переклад"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Введіть {PIN_LENGTH}-значний PIN-код"
 
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:37
+msgid "Enter all amounts"
+msgstr "Введіть усі суми"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:36
 #: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
@@ -899,7 +904,7 @@ msgstr "Введіть ваш API-токен Монобанку"
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
-#: src/app/resync-window-picker.tsx:42
+#: src/app/resync-window-picker.tsx:43
 msgid "Entire history will be re-synced on next sync."
 msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
 
@@ -927,7 +932,7 @@ msgstr "Очікувана дата повернення"
 msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
@@ -973,7 +978,7 @@ msgstr "Не вдалося завантажити контакти."
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
-#: src/ai/service/ai-system-status.service.ts:292
+#: src/ai/service/ai-system-status.service.ts:278
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
 
@@ -1098,7 +1103,7 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1118,7 +1123,7 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/ai/service/ai-system-status.service.ts:263
+#: src/ai/service/ai-system-status.service.ts:249
 msgid "Indexing {done} of {total}"
 msgstr "Індексування {done} з {total}"
 
@@ -1138,15 +1143,15 @@ msgstr "Італійська (Італія)"
 msgid "Language"
 msgstr "Мова"
 
-#: src/app/resync-window-picker.tsx:32
+#: src/app/resync-window-picker.tsx:33
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
 
-#: src/app/resync-window-picker.tsx:31
+#: src/app/resync-window-picker.tsx:32
 msgid "Last 7 days"
 msgstr "Останні 7 днів"
 
-#: src/app/resync-window-picker.tsx:33
+#: src/app/resync-window-picker.tsx:34
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
@@ -1194,7 +1199,7 @@ msgstr "Модель ШІ не готова"
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Loading models"
 msgstr "Завантаження моделей"
 
@@ -1342,6 +1347,10 @@ msgstr "Немає неактивних рахунків"
 msgid "No inactive accounts match your search"
 msgstr "Жоден неактивний рахунок не відповідає вашому запиту"
 
+#: src/app/voice-review.tsx:118
+msgid "No items to save"
+msgstr "Немає елементів для збереження"
+
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "Мов не знайдено"
@@ -1483,7 +1492,7 @@ msgstr "Відмовлено в доступі до контактів."
 msgid "Physical cash on hand"
 msgstr "Фізична готівка"
 
-#: src/app/resync-window-picker.tsx:93
+#: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Оберіть період. Наявні дані буде збережено."
 
@@ -1543,31 +1552,35 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/app/resync-window-picker.tsx:65
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:59
+msgid "Re-record"
+msgstr "Перезаписати"
+
+#: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
 msgstr "Повторно синхронізувати банківський рахунок?"
 
-#: src/app/resync-window-picker.tsx:35
+#: src/app/resync-window-picker.tsx:36
 msgid "Re-sync entire history"
 msgstr "Повторно синхронізувати всю історію"
 
-#: src/app/resync-window-picker.tsx:67
+#: src/app/resync-window-picker.tsx:68
 msgid "Re-sync History"
 msgstr "Повторно синхронізувати історію"
 
-#: src/app/resync-window-picker.tsx:39
+#: src/app/resync-window-picker.tsx:40
 msgid "Re-sync of last 30 days will start on next sync."
 msgstr "Останні 30 днів буде повторно синхронізовано під час наступної синхронізації."
 
-#: src/app/resync-window-picker.tsx:38
+#: src/app/resync-window-picker.tsx:39
 msgid "Re-sync of last 7 days will start on next sync."
 msgstr "Останні 7 днів буде повторно синхронізовано під час наступної синхронізації."
 
-#: src/app/resync-window-picker.tsx:40
+#: src/app/resync-window-picker.tsx:41
 msgid "Re-sync of last 90 days will start on next sync."
 msgstr "Останні 90 днів буде повторно синхронізовано під час наступної синхронізації."
 
-#: src/app/resync-window-picker.tsx:93
+#: src/app/resync-window-picker.tsx:94
 msgid "Re-sync transactions"
 msgstr "Повторна синхронізація транзакцій"
 
@@ -1612,7 +1625,7 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
-#: src/app/resync-window-picker.tsx:114
+#: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
 msgstr "Скидає весь стан синхронізації"
 
@@ -1628,8 +1641,8 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:105
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:108
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
@@ -1637,6 +1650,10 @@ msgstr "Відновлення ШІ…"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
 msgstr "Зберегти"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+msgid "Save {count}"
+msgstr "Зберегти {count}"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1744,7 +1761,8 @@ msgstr "Виберіть рахунок"
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
@@ -1912,7 +1930,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/ai/service/ai-umbrella-status.service.ts:96
+#: src/ai/service/ai-umbrella-status.service.ts:99
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
@@ -1984,6 +2002,10 @@ msgstr "Теги"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
+#: src/app/voice-review.tsx:119
+msgid "Tap re-record to try again"
+msgstr "Натисніть «Перезаписати», щоб спробувати ще раз"
+
 #: src/app/import-column-mapper.tsx:62
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
@@ -2050,7 +2072,7 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
-#: src/app/resync-window-picker.tsx:66
+#: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
 
@@ -2082,6 +2104,10 @@ msgstr "Сьогодні"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
 msgid "Token required"
 msgstr "Потрібен токен"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:47
+msgid "Total"
+msgstr "Усього"
 
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:101
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:114
@@ -2121,11 +2147,11 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/ai/hook/use-stt.hook.ts:125
+#: src/ai/hook/use-stt.hook.ts:72
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:107
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
@@ -2134,7 +2160,7 @@ msgstr "Переказ"
 msgid "Transfers consolidated"
 msgstr "Перекази об'єднано"
 
-#: src/ai/service/ai-system-status.service.ts:247
+#: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Переклад {translationPending} з {total}{trailer}"
 
@@ -2258,6 +2284,10 @@ msgstr "Очікування"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:31
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
+
+#: src/ai/service/whisper-model.service.ts:90
+msgid "Whisper model download failed"
+msgstr "Не вдалося завантажити модель Whisper"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:18
 msgid "Who do you owe?"
