@@ -10,7 +10,5 @@ export const getRelatedFeatures = (slug: string): readonly FeatureRegistryEntryI
         return [];
     }
 
-    return entry.relatedFeatureSlugs
-        .map(relatedSlug => FEATURE_REGISTRY.find(item => item.slug === relatedSlug))
-        .filter(isDefined);
+    return entry.relatedFeatureSlugs.map(relatedSlug => FEATURE_REGISTRY.find(item => item.slug === relatedSlug)).filter(isDefined);
 };

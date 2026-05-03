@@ -79,8 +79,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        One-tap CSV export of all transactions, plus a full encrypted database backup file you can save
-                        to iCloud, Drive, or anywhere.
+                        One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or
+                        anywhere.
                     </Trans>
                 }
             />
@@ -91,15 +91,14 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a full SQLCipher
-                        database file for full restore. Both are user-initiated and saved through the OS share sheet.
+                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a full SQLCipher database file for
+                        full restore. Both are user-initiated and saved through the OS share sheet.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        CSV columns map cleanly to most spreadsheet pivots: date, account, category, tags, amount,
-                        currency, comment. The database backup carries the SQLCipher key wrapped in your PIN — restore
-                        on any device.
+                        CSV columns map cleanly to most spreadsheet pivots: date, account, category, tags, amount, currency, comment. The
+                        database backup carries the SQLCipher key wrapped in your PIN — restore on any device.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,19 +122,15 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Settings → Export. Pick CSV or Database. Pick a date range. Save through the OS share sheet to
-                        Files, iCloud Drive, Google Drive, or any storage app.
+                        Settings → Export. Pick CSV or Database. Pick a date range. Save through the OS share sheet to Files, iCloud Drive,
+                        Google Drive, or any storage app.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

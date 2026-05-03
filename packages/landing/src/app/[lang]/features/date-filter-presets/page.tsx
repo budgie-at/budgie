@@ -79,8 +79,8 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every
-                        screen with a list, two taps to the right window.
+                        Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two
+                        taps to the right window.
                     </Trans>
                 }
             />
@@ -91,15 +91,14 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Manual date pickers are slow. Budgie wraps them with the eight presets you actually use, plus a
-                        custom-range fallback. Every transaction list, every analytics tab, every recurring view shares
-                        the same picker.
+                        Manual date pickers are slow. Budgie wraps them with the eight presets you actually use, plus a custom-range
+                        fallback. Every transaction list, every analytics tab, every recurring view shares the same picker.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The picker is locale-aware. Week-start day comes from your device locale. Last Week always means
-                        &quot;the most recent completed Monday-to-Sunday&quot; (or Sunday-to-Saturday for en-US users).
+                        The picker is locale-aware. Week-start day comes from your device locale. Last Week always means &quot;the most
+                        recent completed Monday-to-Sunday&quot; (or Sunday-to-Saturday for en-US users).
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,19 +122,15 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        One picker component, used across analytics, transactions, and recurring screens. Customize the
-                        start-of-week in Settings if your locale default doesn&apos;t match.
+                        One picker component, used across analytics, transactions, and recurring screens. Customize the start-of-week in
+                        Settings if your locale default doesn&apos;t match.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 
