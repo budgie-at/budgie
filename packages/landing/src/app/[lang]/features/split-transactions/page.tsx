@@ -81,8 +81,8 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        That €87 supermarket bill was groceries and a phone charger. Split into multiple categories with a
-                        remaining-budget indicator.
+                        That €87 supermarket bill was groceries and a phone charger. Split into multiple categories with a remaining-budget
+                        indicator.
                     </Trans>
                 }
             />
@@ -93,8 +93,8 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie&apos;s
-                        split modal lets you allocate fractions of the same transaction across as many categories as you like.
+                        Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown.
+                        Budgie&apos;s split modal lets you allocate fractions of the same transaction across as many categories as you like.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -144,16 +144,12 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 <FeaturePageFaqItem
                     question={<Trans>How many splits can I make per transaction?</Trans>}
                     answer={
-                        <Trans>
-                            No limit. Add as many split rows as you need; the total must equal the original transaction amount.
-                        </Trans>
+                        <Trans>No limit. Add as many split rows as you need; the total must equal the original transaction amount.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can splits have different tags?</Trans>}
-                    answer={
-                        <Trans>Yes. Each split row keeps its own tags and comment, fully independent of the others.</Trans>
-                    }
+                    answer={<Trans>Yes. Each split row keeps its own tags and comment, fully independent of the others.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does split mode work for income too?</Trans>}

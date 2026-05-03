@@ -81,8 +81,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        When the same amount leaves account A and arrives at account B, Budgie merges them into one transfer —
-                        IBAN-aware, cross-currency-aware.
+                        When the same amount leaves account A and arrives at account B, Budgie merges them into one transfer — IBAN-aware,
+                        cross-currency-aware.
                     </Trans>
                 }
             />
