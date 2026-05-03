@@ -307,7 +307,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'tag analytics',
             'mobile finance dashboard'
         ],
-        relatedFeatureSlugs: ['tag-analytics', 'custom-categories', 'date-filter-presets', 'recurring-payments-calendar', 'ai-merchant-translation'],
+        relatedFeatureSlugs: [
+            'tag-analytics',
+            'custom-categories',
+            'date-filter-presets',
+            'recurring-payments-calendar',
+            'ai-merchant-translation'
+        ],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
