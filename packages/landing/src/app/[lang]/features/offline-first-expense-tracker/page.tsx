@@ -13,7 +13,6 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageJsonLd } from '../../../../feature/component/feature-page-json-ld/feature-page-json-ld';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -22,6 +21,7 @@ import { buildFeaturePageJsonLd } from '../../../../feature/util/build-feature-p
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getFeatureBySlug } from '../../../../feature/util/get-feature-by-slug.util';
 import { getRelatedFeatures } from '../../../../feature/util/get-related-features.util';
+import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -58,7 +58,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
     }
 
     const related = getRelatedFeatures(SLUG);
-    const schemas = buildFeaturePageJsonLd({
+    const [breadcrumbSchema, webPageSchema, faqSchema] = buildFeaturePageJsonLd({
         locale: lang,
         slug: SLUG,
         title: i18n._(entry.metaTitle),
@@ -73,7 +73,9 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
 
     return (
         <main className="flex-1">
-            <FeaturePageJsonLd schemas={schemas} />
+            <JsonLd data={breadcrumbSchema} />
+            <JsonLd data={webPageSchema} />
+            {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
                 heading={<Trans>Offline-First Expense Tracker</Trans>}
@@ -110,11 +112,21 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
-                    {entry.heroBenefits.map((benefit, index) => (
-                        <FeaturePageBenefitGridItem index={index} key={`benefit-${index}`}>
-                            {i18n._(benefit)}
-                        </FeaturePageBenefitGridItem>
-                    ))}
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Works in airplane mode, tunnels, and rural areas — every feature, every time</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>No sign-up, no email, no account — install and start logging</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>AES-256 encrypted SQLite database, key derived from your PIN</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>No backend means no breach surface — there is nothing to leak</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Optional bank sync uses your own API tokens — never a third-party aggregator</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -140,9 +152,43 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
-                {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
-                ))}
+                <FeaturePageFaqItem
+                    question={<Trans>Does Budgie work without internet?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes, fully. Every core feature — logging expenses, viewing analytics, managing categories — runs entirely on
+                            your device. Internet is only used when you opt in to bank sync, AI model downloads, or exchange-rate updates.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What happens if I lose my phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Without a backup file, your data is gone — that&apos;s the privacy trade-off. Budgie offers a one-tap encrypted
+                            database backup you can save to iCloud Drive, Google Drive, or anywhere else. Restore on a new device with one
+                            tap.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Is bank sync still offline?</Trans>}
+                    answer={
+                        <Trans>
+                            Bank sync requires internet to fetch new transactions, but everything else continues working offline. Once
+                            synced, your bank data lives on-device alongside manual entries.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What&apos;s the catch with offline-first?</Trans>}
+                    answer={
+                        <Trans>
+                            The trade-off is multi-device sync — there&apos;s no automatic sync via our servers because we don&apos;t have
+                            any. Use a backup file copied through your own cloud storage if you need to move between devices.
+                        </Trans>
+                    }
+                />
             </FeaturePageFaqSection>
 
             <FeaturePageRelated features={related} locale={lang} />
