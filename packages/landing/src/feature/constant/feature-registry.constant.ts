@@ -4,7 +4,7 @@ import { FeatureTierEnum } from './feature-tier.enum';
 
 import type { FeatureRegistryEntryInterface } from '../interface/feature-registry-entry.interface';
 
-/* eslint-disable lingui/no-unlocalized-strings, max-lines */
+/* eslint-disable lingui/no-unlocalized-strings */
 export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
     {
         slug: 'offline-first-expense-tracker',
@@ -235,6 +235,202 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         publishedAt: '2026-01-03',
         updatedAt: '2026-05-03',
         ogTags: ['net worth', 'multi-currency', 'dashboard']
+    },
+    {
+        slug: 'expense-tracking',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Expense Tracking, Reimagined`,
+        tagline: msg`Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use.`,
+        metaTitle: msg`Expense Tracking, Reimagined — Budgie`,
+        metaDescription: msg`Log expenses, income, and transfers in seconds with a quick-entry bottom sheet that picks the right account, category, and date by default. Edit, split, or convert from the list.`,
+        primaryKeyword: 'personal expense tracker',
+        seoKeywords: ['personal expense tracker', 'expense tracking app', 'log expenses fast', 'mobile expense logger', 'expense tracker bottom sheet'],
+        heroBenefits: [
+            msg`Two-tap entry: smart defaults for account, category, and date pick the right values out of the box`,
+            msg`Three first-class transaction types: expense, income, transfer — never confused, never miscounted`,
+            msg`Long-press any row for context actions: edit, delete, split, convert to transfer`,
+            msg`MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries`,
+            msg`Comments grow vertically up to two lines so receipts and references fit without truncation`
+        ],
+        relatedFeatureSlugs: ['voice-transaction-entry', 'custom-categories', 'transaction-tags', 'split-transactions', 'account-transfers'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            { question: msg`How fast is the quick-entry form?`, answer: msg`Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically.` },
+            { question: msg`Can I edit a transaction after saving?`, answer: msg`Always. Long-press the row in the list for a context menu with Edit, Delete, Split, and Convert to Transfer actions.` },
+            { question: msg`Does Budgie distinguish transfers from expenses?`, answer: msg`Yes. Transfer is a first-class transaction type with explicit source and destination accounts; it never inflates your spending stats.` },
+            { question: msg`What about recurring purchases?`, answer: msg`Budgie auto-detects recurring patterns and surfaces them on a dedicated calendar tab. See the Recurring Payments Calendar feature for details.` }
+        ],
+        publishedAt: '2025-12-14',
+        updatedAt: '2026-05-03',
+        ogTags: ['expense tracking', 'transactions', 'mobile']
+    },
+    {
+        slug: 'account-management',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Multi-Account Money Management`,
+        tagline: msg`Bank, cash, savings, crypto, stocks, debt — all on one home screen.`,
+        metaTitle: msg`Multi-Account Money Management — Budgie`,
+        metaDescription: msg`Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want. Each account is a first-class entity with its own currency.`,
+        primaryKeyword: 'money management app',
+        seoKeywords: ['money management app', 'multi-account budget app', 'unlimited accounts tracker', 'crypto and bank tracker', 'mobile money manager'],
+        heroBenefits: [
+            msg`Unlimited accounts: Bank, Cash, Crypto, Stocks, Debt — each with its own currency and balance`,
+            msg`Bank-synced accounts auto-group by provider on the home screen`,
+            msg`Liability and debt accounts support negative balances and a target return date`,
+            msg`Archive without deleting — old accounts disappear from the home but stay searchable`,
+            msg`"Include in net worth" toggle per account for partial-truth balance sheets`
+        ],
+        relatedFeatureSlugs: ['net-worth-tracker', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+        faqs: [
+            { question: msg`Is there a limit on the number of accounts?`, answer: msg`No. Add as many as you need — the home screen organizes them by type and provider so the list stays scannable.` },
+            { question: msg`Can I track an account in a different currency?`, answer: msg`Yes. Each account has a fixed currency. Daily exchange-rate snapshots convert everything to your base currency for net worth.` },
+            { question: msg`What happens to transactions when I delete an account?`, answer: msg`Budgie prompts you to migrate them to another account or wipe them. Archiving is the safer alternative — it hides the account from the home but keeps the data.` },
+            { question: msg`Can I track loans I owe or money owed to me?`, answer: msg`Yes. Debt is a dedicated account type with explicit "I owe" / "owes me" direction. See Debt & Loan Tracking for details.` }
+        ],
+        publishedAt: '2025-11-17',
+        updatedAt: '2026-05-03',
+        ogTags: ['accounts', 'management', 'multi-account']
+    },
+    {
+        slug: 'spending-analytics',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Spending Analytics That Actually Help`,
+        tagline: msg`Category breakdown, tag breakdown, monthly trends — drill into any chart slice.`,
+        metaTitle: msg`Spending Analytics & Charts — Budgie`,
+        metaDescription: msg`Category and tag breakdown charts, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions. Analytics that find your gaps.`,
+        primaryKeyword: 'spending tracker with charts',
+        seoKeywords: ['spending tracker with charts', 'expense analytics app', 'category breakdown chart', 'tag analytics', 'mobile finance dashboard'],
+        heroBenefits: [
+            msg`Categories tab: per-category totals, with drill-down to every transaction in the slice`,
+            msg`Tags tab: per-tag income and expense, plus an "Untagged" bucket for the gaps`,
+            msg`Recurring tab: subscription cadence and forecasted upcoming bills`,
+            msg`Eight date presets: Today through All Time, plus a custom range fallback`,
+            msg`Compact tile mode shows weekly/monthly net flow alongside category totals`
+        ],
+        relatedFeatureSlugs: ['tag-analytics', 'custom-categories', 'date-filter-presets', 'recurring-payments-calendar'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            { question: msg`Can I drill down from a chart to the transactions?`, answer: msg`Yes. Tap any category or tag slice to see every transaction that contributed to it during the current period.` },
+            { question: msg`What's an "Untagged" bucket?`, answer: msg`A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up.` },
+            { question: msg`Can I compare months?`, answer: msg`Yes. Switch the date filter between presets like This Month, Last Month, This Year. Compact tile mode also shows period-over-period deltas.` },
+            { question: msg`Are charts rendered offline?`, answer: msg`Yes. Analytics reads directly from your local SQLite database — every chart works without internet.` }
+        ],
+        publishedAt: '2025-12-19',
+        updatedAt: '2026-05-03',
+        ogTags: ['analytics', 'charts', 'drill-down']
+    },
+    {
+        slug: 'custom-categories',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Custom Spending Categories That Bend To You`,
+        tagline: msg`Create, merge, reassign, and reorder until the tree matches how you actually think about money.`,
+        metaTitle: msg`Custom Spending Categories — Budgie`,
+        metaDescription: msg`Build, merge, and reassign your own spending categories with mass-migration. Popularity-sorted selectors and MCC pre-fill keep the right category one tap away.`,
+        primaryKeyword: 'custom budget categories',
+        seoKeywords: ['custom budget categories', 'custom expense categories', 'merge categories app', 'reassign transactions categories', 'budget category tree'],
+        heroBenefits: [
+            msg`Create unlimited categories with custom names, icons, and colors`,
+            msg`Merge two categories into one with mass-reassignment of transactions`,
+            msg`Selector reorders by your usage frequency — the categories you tap most surface first`,
+            msg`MCC mapping pre-fills bank-synced transactions; AI suggestions cover manual ones`,
+            msg`Safe deletion: prompts you to migrate or wipe transactions, never silently orphans`
+        ],
+        relatedFeatureSlugs: ['ai-auto-categorization', 'mcc-auto-category', 'expense-tracking', 'transaction-tags'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            { question: msg`Can I rename categories without losing data?`, answer: msg`Yes. Rename is non-destructive — every transaction in the category keeps its link via the category ID, not the name.` },
+            { question: msg`What does merging two categories do?`, answer: msg`The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually.` },
+            { question: msg`How does the popularity sort work?`, answer: msg`The selector tracks how often each category is picked and reorders the list so the top tappers stay near the top. The order is per-device.` },
+            { question: msg`Can I import a pre-built category tree?`, answer: msg`Not directly, but CSV import with column mapping can populate categories on first import. After that, edit them like any other.` }
+        ],
+        publishedAt: '2025-11-19',
+        updatedAt: '2026-05-03',
+        ogTags: ['categories', 'custom', 'organization']
+    },
+    {
+        slug: 'transaction-tags',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Transaction Tags for Multi-Dimensional Tracking`,
+        tagline: msg`Layer tags on top of categories — one transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
+        metaTitle: msg`Transaction Tags — Budgie`,
+        metaDescription: msg`Tags answer "for which project, person, or purpose" — separate from categories. Multi-select fast, promote a primary tag for at-a-glance scanning, and slice analytics per tag.`,
+        primaryKeyword: 'transaction labels app',
+        seoKeywords: ['transaction labels app', 'expense tagging app', 'tag transactions', 'project expense tags', 'shared expense tracker'],
+        heroBenefits: [
+            msg`Tags are flat, reusable, and combine freely — no rigid hierarchy`,
+            msg`One tag per transaction can be promoted to "primary" with a corner-star badge`,
+            msg`Selector stays open across multi-selections; commit with a Done pill`,
+            msg`Merge tags across the database — same mass-reassignment story as categories`,
+            msg`Tag-based analytics: per-tag totals plus an "Untagged" bucket`
+        ],
+        relatedFeatureSlugs: ['tag-analytics', 'primary-tag', 'custom-categories', 'expense-tracking'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            { question: msg`How are tags different from categories?`, answer: msg`Categories answer "what kind of expense"; tags answer "for which project, person, or purpose." Use both together — one transaction can be Groceries (category) AND #vacation #shared (tags).` },
+            { question: msg`How many tags can I add to a transaction?`, answer: msg`No limit. Layer as many as you need; one of them can be promoted to "primary" for the at-a-glance badge on the transaction list.` },
+            { question: msg`What does "primary tag" mean?`, answer: msg`The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary.` },
+            { question: msg`Can I rename or merge tags?`, answer: msg`Both. Same flow as categories — rename is non-destructive; merge mass-reassigns the transactions and removes the source tag.` }
+        ],
+        publishedAt: '2025-11-19',
+        updatedAt: '2026-05-03',
+        ogTags: ['tags', 'organization', 'analytics']
+    },
+    {
+        slug: 'account-transfers',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Account Transfers — Done Right`,
+        tagline: msg`Cross-currency, dual-amount, exact — money between your own accounts is never an expense.`,
+        metaTitle: msg`Account Transfers — Budgie`,
+        metaDescription: msg`Transfer between your own accounts as a first-class transaction type with automatic FX conversion and dual-amount display. Spending stats stay clean; balance reconciliation stays exact.`,
+        primaryKeyword: 'transfer between accounts app',
+        seoKeywords: ['transfer between accounts app', 'cross-currency transfer tracker', 'first-class transfers app', 'dual-amount transfer', 'FX transfer tracking'],
+        heroBenefits: [
+            msg`First-class Transfer transaction type — never confused with expense or income`,
+            msg`Cross-currency dual-amount display: pin send or receive, system computes the other`,
+            msg`Original FX rate stored per leg for exact balance reconciliation`,
+            msg`Currency-mode pill switches whether you drive from send or receive direction`,
+            msg`Convert any expense or income to a transfer retroactively — no re-entry needed`
+        ],
+        relatedFeatureSlugs: ['transfer-pair-detection', 'convert-to-transfer', 'multi-currency', 'expense-tracking'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+        faqs: [
+            { question: msg`Why is "transfer" a separate type?`, answer: msg`Money moved between your own accounts is not income or expense. Treating transfers as expenses double-counts your spending. Budgie's first-class Transfer type keeps your stats accurate.` },
+            { question: msg`What about cross-currency transfers?`, answer: msg`Dual-amount input shows both legs (e.g. $1000 → €925). Pin either side; the FX rate is preserved per leg so reconciliation across currencies stays exact.` },
+            { question: msg`Can I auto-link transfers from my bank?`, answer: msg`Yes — see Smart Transfer Consolidation. Bank-synced debits and credits matching by amount, time window, and counter-IBAN auto-merge into a single transfer.` },
+            { question: msg`Can I undo a transfer?`, answer: msg`Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you.` }
+        ],
+        publishedAt: '2025-12-19',
+        updatedAt: '2026-05-03',
+        ogTags: ['transfers', 'multi-currency', 'accounts']
+    },
+    {
+        slug: 'csv-import',
+        tier: FeatureTierEnum.CORE,
+        title: msg`CSV Bank Statement Import`,
+        tagline: msg`Any bank, any column order — set it up once per source, then it's two taps from there.`,
+        metaTitle: msg`CSV Bank Statement Import — Budgie`,
+        metaDescription: msg`Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API.`,
+        primaryKeyword: 'import bank statement CSV',
+        seoKeywords: ['import bank statement CSV', 'CSV bank import app', 'flexible CSV column mapping', 'CSV import preset', 'bank statement importer'],
+        heroBenefits: [
+            msg`Map columns flexibly: Date, Amount, Description, Counterparty — your bank's order, not ours`,
+            msg`Save a per-bank preset and never re-map again`,
+            msg`Decimal separator and date format options handle US, EU, and ISO variants`,
+            msg`Re-import detects duplicates by externalId — safe to re-pull the same statement`,
+            msg`Preview every row before write so you can spot mis-mappings instantly`
+        ],
+        relatedFeatureSlugs: ['erste-bank-pdf-import', 'privatbank-import', 'monobank-sync', 'mcc-auto-category'],
+        relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
+        faqs: [
+            { question: msg`Will it work with my bank?`, answer: msg`If your bank exports CSV, yes. The flexible column mapper accommodates any column order, separator, and date format — set up once, save as a preset.` },
+            { question: msg`What happens if I import the same file twice?`, answer: msg`Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe.` },
+            { question: msg`Does CSV import preserve the original transaction date?`, answer: msg`Yes. The mapper captures both booking date and value date when both are present in the CSV; transactions sort by your preference.` },
+            { question: msg`Can I edit transactions after CSV import?`, answer: msg`Always. Imported transactions are normal Budgie transactions — edit, split, tag, or convert to transfer just like manual entries.` }
+        ],
+        publishedAt: '2025-12-21',
+        updatedAt: '2026-05-03',
+        ogTags: ['csv', 'import', 'bank statement']
     }
 ] as const;
-/* eslint-enable lingui/no-unlocalized-strings, max-lines */
+/* eslint-enable lingui/no-unlocalized-strings */
