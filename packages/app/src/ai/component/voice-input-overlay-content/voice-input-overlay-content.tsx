@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
-import { VOICE_INPUT_STATE_TO_BUTTON } from '../../constant/voice-input-state-mapping.constant';
 import { VoiceInputStateEnum } from '../../enum/voice-input-state.enum';
 import { UseVoiceInputReturnInterface } from '../../interface/use-voice-input-return.interface';
 import { RecordButtonStateType } from '../../type/record-button-state.type';
@@ -16,6 +15,15 @@ import { VoiceInputError } from '../voice-input-error/voice-input-error';
 
 const MIC_BOTTOM_OFFSET = -16;
 const CLOSE_BUTTON_ROTATION = 45;
+
+const STATE_TO_BUTTON: Record<VoiceInputStateEnum, RecordButtonStateType> = {
+    [VoiceInputStateEnum.IDLE]: 'idle',
+    [VoiceInputStateEnum.RECORDING]: 'recording',
+    [VoiceInputStateEnum.TRANSCRIBING]: 'transcribing',
+    [VoiceInputStateEnum.PROCESSING]: 'thinking',
+    [VoiceInputStateEnum.DONE]: 'thinking',
+    [VoiceInputStateEnum.ERROR]: 'idle'
+};
 
 interface Props {
     readonly voiceInput: UseVoiceInputReturnInterface;
@@ -30,7 +38,7 @@ export const VoiceInputOverlayContent = ({ voiceInput, contentOpacity, onRecord,
     const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
     const closeButtonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }] }));
 
-    const buttonState: RecordButtonStateType = voiceInput.isReady ? VOICE_INPUT_STATE_TO_BUTTON[voiceInput.state] : 'loading';
+    const buttonState: RecordButtonStateType = voiceInput.isReady ? STATE_TO_BUTTON[voiceInput.state] : 'loading';
     const showBubble = voiceInput.state === VoiceInputStateEnum.RECORDING || voiceInput.state === VoiceInputStateEnum.TRANSCRIBING;
     const hasError = voiceInput.state === VoiceInputStateEnum.ERROR && isNotEmptyString(voiceInput.data.error);
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };

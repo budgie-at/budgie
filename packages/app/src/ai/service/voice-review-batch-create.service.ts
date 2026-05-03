@@ -14,8 +14,6 @@ import { transactionBatchCreateService } from '../../transaction/service/transac
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 
 class VoiceReviewBatchCreateService {
-    private static readonly DEFAULT_EXCHANGE_RATE = 1;
-
     @Log(
         (rows, accountId) => `enter count=${rows.length} accountId=${accountId}`,
         (result, rows, accountId) => `done count=${rows.length} accountId=${accountId} insertedIds=${result.map(row => row.id).join(',')}`,
@@ -45,7 +43,7 @@ class VoiceReviewBatchCreateService {
             externalSource: null,
             fromAccountId: accountId,
             toAccountId: null,
-            exchangeRate: VoiceReviewBatchCreateService.DEFAULT_EXCHANGE_RATE,
+            exchangeRate: 1,
             consolidationParentTransactionId: null,
             consolidationType: null,
             needsEmbedding: false,

@@ -10,15 +10,13 @@ import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
 
-type VoiceInputResultCallback = (transactions: AITransactionInterface[], originalText: string) => void;
-
 // eslint-disable-next-line max-statements -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
 export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     const [state, setState] = useState<VoiceInputStateEnum>(VoiceInputStateEnum.IDLE);
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
 
-    const resultRef = useRef<VoiceInputResultCallback | null>(null);
+    const resultRef = useRef<Parameters<UseVoiceInputReturnInterface['startAndCollect']>[0] | null>(null);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
@@ -67,7 +65,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     const isReady = stt.isReady && categorization.isReady;
     const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
-    const startAndCollect = (onResult: VoiceInputResultCallback): void => {
+    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult => {
         setError(null);
         setFinalTranscription('');
         categorization.reset();

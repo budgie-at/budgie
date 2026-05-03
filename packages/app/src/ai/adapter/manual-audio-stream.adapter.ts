@@ -38,11 +38,6 @@ export class ManualAudioStreamAdapter {
         return this.encodePcm16(trimmed);
     }
 
-    reset(): void {
-        this.capturedChunks = [];
-        this.capturedSampleCount = 0;
-    }
-
     private mergeChunks(): Float32Array {
         const merged = new Float32Array(this.capturedSampleCount);
         let offset = 0;
