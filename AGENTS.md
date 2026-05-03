@@ -503,6 +503,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 | `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
 | `max-lines` | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
 | `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape | `-- Existing public API and Log hooks intentionally keep positional arguments` |
+| `func-style` | Next.js `generateMetadata` requires `export async function`, not `const` | `-- Next.js generateMetadata must be a function declaration` |
 
 Example:
 ```typescript
