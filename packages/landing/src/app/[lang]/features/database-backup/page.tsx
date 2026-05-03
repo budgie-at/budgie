@@ -79,8 +79,7 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Capture your entire Budgie database in one encrypted file. Restore on any device in seconds —
-                        no account, no upload.
+                        Capture your entire Budgie database in one encrypted file. Restore on any device in seconds — no account, no upload.
                     </Trans>
                 }
             />
@@ -91,14 +90,14 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud apps do &quot;backups&quot; by holding all your data on their servers. Budgie does backups
-                        by giving you an encrypted file. Where you put that file is your business.
+                        Cloud apps do &quot;backups&quot; by holding all your data on their servers. Budgie does backups by giving you an
+                        encrypted file. Where you put that file is your business.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Restore is a single tap on a fresh install — pick the file, enter the original PIN, the
-                        database is back. Migrate to a new phone in under a minute without an account.
+                        Restore is a single tap on a fresh install — pick the file, enter the original PIN, the database is back. Migrate to
+                        a new phone in under a minute without an account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -122,20 +121,15 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To
-                        restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file,
-                        enter the PIN.
+                        Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on
+                        the new device, tap Restore on the welcome screen, point at the file, enter the PIN.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

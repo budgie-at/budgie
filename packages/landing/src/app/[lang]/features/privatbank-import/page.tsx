@@ -79,8 +79,8 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank&apos;s own
-                        MCC categories mapped automatically.
+                        Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank&apos;s own MCC categories mapped
+                        automatically.
                     </Trans>
                 }
             />
@@ -91,15 +91,14 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both,
-                        mapping each PrivatBank category to the equivalent ISO MCC code so AI categorization downstream
-                        still works.
+                        PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank
+                        category to the equivalent ISO MCC code so AI categorization downstream still works.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Long-press a PrivatBank account card on the home screen for a one-tap re-import — Budgie
-                        remembers the file and the column mapping.
+                        Long-press a PrivatBank account card on the home screen for a one-tap re-import — Budgie remembers the file and the
+                        column mapping.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,20 +122,15 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Export the XLSX from your PrivatBank24 statements page. Open Budgie, tap Import → PrivatBank.
-                        Budgie validates the format, parses the rows, and writes them to your selected PrivatBank
-                        account.
+                        Export the XLSX from your PrivatBank24 statements page. Open Budgie, tap Import → PrivatBank. Budgie validates the
+                        format, parses the rows, and writes them to your selected PrivatBank account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

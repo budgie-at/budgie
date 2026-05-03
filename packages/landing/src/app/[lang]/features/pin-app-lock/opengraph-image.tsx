@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`PIN App Lock`,
-        t(i18n)`One PIN. Real encryption.`,
-        [t(i18n)`security`, t(i18n)`pin`, t(i18n)`encryption`]
-    );
+    return createFeatureOgImage(t(i18n)`PIN App Lock`, t(i18n)`One PIN. Real encryption.`, [
+        t(i18n)`security`,
+        t(i18n)`pin`,
+        t(i18n)`encryption`
+    ]);
 };
 
 export default OgImage;

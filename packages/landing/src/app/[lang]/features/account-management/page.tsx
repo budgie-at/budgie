@@ -79,8 +79,8 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped,
-                        archived, and renamed however you want.
+                        Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed
+                        however you want.
                     </Trans>
                 }
             />
@@ -91,15 +91,15 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a
-                        parental loan. Budgie treats each as a first-class account with its own currency, type, balance,
-                        and &ldquo;include in net worth&rdquo; toggle.
+                        Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a parental loan.
+                        Budgie treats each as a first-class account with its own currency, type, balance, and &ldquo;include in net
+                        worth&rdquo; toggle.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts
-                        support negative balances. Archived accounts disappear from the home but stay searchable.
+                        Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts support negative
+                        balances. Archived accounts disappear from the home but stay searchable.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,19 +123,15 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Crypto,
-                        Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page.
+                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Crypto, Stocks, Debt.
+                        Reorder, rename, archive, or permanently delete from the account detail page.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

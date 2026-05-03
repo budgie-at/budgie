@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Multi-Account Management`,
-        t(i18n)`Bank, cash, crypto — all on one screen.`,
-        [t(i18n)`accounts`, t(i18n)`management`, t(i18n)`multi-account`]
-    );
+    return createFeatureOgImage(t(i18n)`Multi-Account Management`, t(i18n)`Bank, cash, crypto — all on one screen.`, [
+        t(i18n)`accounts`,
+        t(i18n)`management`,
+        t(i18n)`multi-account`
+    ]);
 };
 
 export default OgImage;

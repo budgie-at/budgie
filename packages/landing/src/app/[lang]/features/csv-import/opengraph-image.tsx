@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`CSV Import`,
-        t(i18n)`Any bank, any column order — once and done.`,
-        [t(i18n)`csv`, t(i18n)`import`, t(i18n)`bank statement`]
-    );
+    return createFeatureOgImage(t(i18n)`CSV Import`, t(i18n)`Any bank, any column order — once and done.`, [
+        t(i18n)`csv`,
+        t(i18n)`import`,
+        t(i18n)`bank statement`
+    ]);
 };
 
 export default OgImage;
