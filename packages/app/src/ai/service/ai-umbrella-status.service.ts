@@ -4,6 +4,7 @@ import { t } from '@lingui/core/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
@@ -143,15 +144,15 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         );
     }
 
-    private getErrorSource(chatError: string | null, embeddingError: string | null): string {
+    private getErrorSource(chatError: string | null, embeddingError: string | null): AiSubsystemNameEnum {
         if (isDefined(chatError)) {
-            return 'chat';
+            return AiSubsystemNameEnum.CHAT;
         }
         if (isDefined(embeddingError)) {
-            return 'embedding';
+            return AiSubsystemNameEnum.EMBEDDING;
         }
 
-        return 'stt';
+        return AiSubsystemNameEnum.STT;
     }
 }
 

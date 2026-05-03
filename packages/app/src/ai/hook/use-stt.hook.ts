@@ -9,7 +9,6 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
-import { useStartStt } from './use-start-stt.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
@@ -31,7 +30,6 @@ export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
 
-    useStartStt();
     const sttSnapshot = useSttSnapshot();
 
     const [status, setStatus] = useState<SttStatus>('idle');
@@ -65,8 +63,8 @@ export const useStt = (): UseSttReturn => {
 
         setStatus('idle');
         setBaseTranscription(sttService.committedTranscription);
-        const streamOptions = isSpeechToTextLanguage(locale.languageCode) ? { language: locale.languageCode } : {};
-        streamPromiseRef.current = sttService.stream(streamOptions);
+        const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
+        streamPromiseRef.current = sttService.stream(language);
         setStatus('streaming');
     };
 

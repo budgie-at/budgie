@@ -4,6 +4,7 @@ import { LlamaContext } from 'llama.rn';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
@@ -81,7 +82,7 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
     protected pendingOperation: Promise<unknown> = Promise.resolve();
 
     constructor(
-        protected readonly logDomain: string,
+        protected readonly logDomain: AiSubsystemNameEnum,
         initialSnapshot: TSnapshot
     ) {
         super(initialSnapshot);
@@ -133,7 +134,7 @@ interface LlamaConfigInterface {
 export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<LlamaSubsystemSnapshotInterface> {
     protected context: LlamaContext | null = null;
 
-    constructor(logDomain: string) {
+    constructor(logDomain: AiSubsystemNameEnum) {
         super(logDomain, { status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null });
     }
 

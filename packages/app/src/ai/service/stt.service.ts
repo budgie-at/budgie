@@ -4,6 +4,7 @@ import { WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
@@ -14,18 +15,16 @@ import { downloadWhisperModel } from '../util/download-whisper-model.util';
 
 import { BaseSubsystemService } from './base-subsystem.service';
 
-import type { SttStreamOptionsInterface } from '../interface/stt-stream-options.interface';
-
 class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
     private context: WhisperContext | null = null;
     private audioStream: ManualAudioStreamAdapter | null = null;
     private resolveStream: ((text: string) => void) | null = null;
     private rejectStream: ((error: unknown) => void) | null = null;
     private stopStreamPromise: Promise<string> | null = null;
-    private streamOptions: SttStreamOptionsInterface | null = null;
+    private streamLanguage: string | null = null;
 
     constructor() {
-        super('stt', {
+        super(AiSubsystemNameEnum.STT, {
             status: AiSubsystemStatusEnum.IDLE,
             downloadProgress: 0,
             errorMessage: null,
@@ -39,19 +38,19 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
     }
 
     @Log(
-        options => `enter language=${options?.language ?? 'default'}`,
-        (result, options) => `done language=${options?.language ?? 'default'} committedLen=${result.length}`,
-        (error, options) => `throw language=${options?.language ?? 'default'} error=${getErrorMessage(error)}`
+        language => `enter language=${language ?? 'default'}`,
+        (result, language) => `done language=${language ?? 'default'} committedLen=${result.length}`,
+        (error, language) => `throw language=${language ?? 'default'} error=${getErrorMessage(error)}`
     )
-    async stream(options?: SttStreamOptionsInterface): Promise<string> {
+    async stream(language: string | null = null): Promise<string> {
         if (!this.isReady || !isDefined(this.context)) {
-            throw new AiNotReadyError('stt');
+            throw new AiNotReadyError(AiSubsystemNameEnum.STT);
         }
         if (isDefined(this.audioStream)) {
             await this.stopActiveStream(false).catch(emptyFn);
         }
 
-        return this.startFreshStream(options);
+        return this.startFreshStream(language);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -155,7 +154,7 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         }
         const audioBuffer = new ArrayBuffer(audioData.byteLength);
         new Uint8Array(audioBuffer).set(audioData);
-        const { promise } = this.getContext().transcribeData(audioBuffer, buildSttTranscribeOptions(this.streamOptions));
+        const { promise } = this.getContext().transcribeData(audioBuffer, buildSttTranscribeOptions(this.streamLanguage));
         const result = await promise;
 
         return result.result.trim();
@@ -172,24 +171,24 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         const { context } = this;
 
         if (!isDefined(context)) {
-            throw new AiNotReadyError('stt');
+            throw new AiNotReadyError(AiSubsystemNameEnum.STT);
         }
 
         return context;
     }
 
-    private startFreshStream(options?: SttStreamOptionsInterface): Promise<string> {
+    private startFreshStream(language: string | null): Promise<string> {
         const streamPromise = this.createStreamPromise();
 
         this.setSnapshot({ errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
         this.audioStream = new ManualAudioStreamAdapter();
-        this.streamOptions = options ?? null;
+        this.streamLanguage = language;
 
         return streamPromise;
     }
 
     private clearStreamRefs(): void {
-        this.streamOptions = null;
+        this.streamLanguage = null;
         this.resolveStream = null;
         this.rejectStream = null;
         this.audioStream = null;

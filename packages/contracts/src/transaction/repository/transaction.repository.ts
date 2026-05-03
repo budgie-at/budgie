@@ -243,8 +243,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     @Log(
-        (accountIds, since, tx) =>
-            `enter accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (accountIds, since, tx) => `enter accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
         (result, accountIds, since, tx) =>
             `done accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
         (error, accountIds, since, tx) =>
@@ -255,6 +254,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             return [];
         }
         const runner = tx ?? this.db;
+
         return await runner
             .selectDistinct({ id: TransactionEntityTable.id })
             .from(TransactionEntityTable)

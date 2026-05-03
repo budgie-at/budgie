@@ -8,17 +8,18 @@ import {
     WHISPER_MODEL_DIRECTORY,
     WHISPER_MODEL_FILENAME,
     WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS,
-    WHISPER_MODEL_SIZE_BYTES,
     WHISPER_MODEL_TEMP_FILENAME,
     WHISPER_MODEL_URL
 } from '../constant/whisper-model.constant';
 
-const isValidWhisperModelFile = (file: File): boolean => file.exists && file.size === WHISPER_MODEL_SIZE_BYTES;
+const isExistingWhisperModelFile = (file: File): boolean => file.exists && isPositiveNumber(file.size);
 
 const calculateWhisperDownloadProgress = (bytesWritten: number, expectedBytes: number): number => {
-    const totalBytes = isPositiveNumber(expectedBytes) ? expectedBytes : WHISPER_MODEL_SIZE_BYTES;
+    if (!isPositiveNumber(expectedBytes)) {
+        return 0;
+    }
 
-    return Math.min(WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS, Math.max(0, bytesWritten / totalBytes));
+    return Math.min(WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS, Math.max(0, bytesWritten / expectedBytes));
 };
 
 const ensureWhisperModelDirectory = (modelDirectory: Directory): void => {
@@ -36,7 +37,7 @@ const deleteWhisperFileIfExists = (file: File): void => {
 const migrateLegacyWhisperModel = (modelFile: File): void => {
     const legacyFile = new File(Paths.document, WHISPER_MODEL_FILENAME);
 
-    if (!isValidWhisperModelFile(legacyFile) || modelFile.exists) {
+    if (!isExistingWhisperModelFile(legacyFile) || modelFile.exists) {
         return;
     }
 
@@ -49,18 +50,15 @@ const prepareWhisperModelFiles = (modelDirectory: Directory, modelFile: File, te
     deleteWhisperFileIfExists(tempFile);
 };
 
-const deleteInvalidWhisperModelFiles = (modelFile: File, tempFile: File): void => {
-    deleteWhisperFileIfExists(modelFile);
-    deleteWhisperFileIfExists(tempFile);
-};
-
 const downloadWhisperModelToTempFile = async (tempFile: File, onDownloadProgress: (downloadProgress: number) => void): Promise<void> => {
+    let expectedBytes = 0;
     const download = createDownloadResumable(WHISPER_MODEL_URL, tempFile.uri, {}, progress => {
-        onDownloadProgress(calculateWhisperDownloadProgress(progress.totalBytesWritten, progress.totalBytesExpectedToWrite));
+        expectedBytes = progress.totalBytesExpectedToWrite;
+        onDownloadProgress(calculateWhisperDownloadProgress(progress.totalBytesWritten, expectedBytes));
     });
     const result = await download.downloadAsync();
 
-    if (!isDefined(result?.uri) || !isValidWhisperModelFile(tempFile)) {
+    if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
         deleteWhisperFileIfExists(tempFile);
         throw new Error(t`Whisper model download failed`);
     }
@@ -80,13 +78,14 @@ export const downloadWhisperModel = async (onDownloadProgress: (downloadProgress
 
     prepareWhisperModelFiles(modelDirectory, modelFile, tempFile);
 
-    if (isValidWhisperModelFile(modelFile)) {
+    if (isExistingWhisperModelFile(modelFile)) {
         onDownloadProgress(1);
 
         return modelFile.uri;
     }
 
-    deleteInvalidWhisperModelFiles(modelFile, tempFile);
+    deleteWhisperFileIfExists(modelFile);
+    deleteWhisperFileIfExists(tempFile);
     await downloadWhisperModelToTempFile(tempFile, onDownloadProgress);
 
     return moveWhisperModelToFinalPath(tempFile, modelFile, onDownloadProgress);

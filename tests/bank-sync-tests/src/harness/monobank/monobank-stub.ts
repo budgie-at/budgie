@@ -9,8 +9,6 @@ export const monobankStub = {
         monobankServer.use(http.get('https://api.monobank.ua/personal/client-info', () => HttpResponse.json(info)));
     },
     statement: (txs: MonobankTransactionApiInterface[]): void => {
-        monobankServer.use(
-            http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => HttpResponse.json(txs))
-        );
+        monobankServer.use(http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => HttpResponse.json(txs)));
     }
 };
