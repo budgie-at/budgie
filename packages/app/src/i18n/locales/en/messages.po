@@ -17,6 +17,11 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx queued"
 
+#. placeholder {0}: rows.length
+#: src/app/voice-review.tsx:68
+msgid "{0, plural, one {# item detected} other {# items detected}}"
+msgstr "{0, plural, one {# item detected} other {# items detected}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -36,6 +41,10 @@ msgstr "{accountTitle} will be restored to your main view."
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:29
+msgid "{count, plural, one {Save # expense} other {Save # expenses}}"
+msgstr "{count, plural, one {Save # expense} other {Save # expenses}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -59,7 +68,7 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
-#: src/ai/service/ai-umbrella-status.service.ts:82
+#: src/ai/service/ai-umbrella-status.service.ts:83
 msgid "{source} error · {message}"
 msgstr "{source} error · {message}"
 
@@ -163,12 +172,12 @@ msgid "AI disabled"
 msgstr "AI disabled"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:124
+#: src/ai/service/ai-umbrella-status.service.ts:125
 msgid "AI idle"
 msgstr "AI idle"
 
-#: src/ai/service/ai-umbrella-status.service.ts:65
-#: src/ai/service/ai-umbrella-status.service.ts:131
+#: src/ai/service/ai-umbrella-status.service.ts:66
+#: src/ai/service/ai-umbrella-status.service.ts:132
 msgid "AI off"
 msgstr "AI off"
 
@@ -322,6 +331,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:44
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -736,6 +746,7 @@ msgid "Default Account"
 msgstr "Default Account"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
+#: src/ai/component/voice-review-row/voice-review-row.tsx:108
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -762,6 +773,10 @@ msgstr "Delete Permanently"
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
+#: src/ai/component/voice-review-row/voice-review-row.tsx:136
+msgid "Description"
+msgstr "Description"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
@@ -779,7 +794,7 @@ msgstr "Done ({count})"
 msgid "Download your statement as PDF"
 msgstr "Download your statement as PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:97
+#: src/ai/service/ai-umbrella-status.service.ts:98
 msgid "Downloading AI models…"
 msgstr "Downloading AI models…"
 
@@ -1344,6 +1359,10 @@ msgstr "No Inactive Accounts"
 msgid "No inactive accounts match your search"
 msgstr "No inactive accounts match your search"
 
+#: src/ai/component/voice-review-list/voice-review-list.tsx:21
+msgid "No items to save"
+msgstr "No items to save"
+
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "No languages found"
@@ -1489,6 +1508,10 @@ msgstr "Physical cash on hand"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Pick a window. Existing data is preserved."
 
+#: src/app/voice-review.tsx:67
+msgid "Pick category"
+msgstr "Pick category"
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1544,6 +1567,10 @@ msgstr "PrivatBank"
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:48
+msgid "Re-record"
+msgstr "Re-record"
 
 #: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
@@ -1631,7 +1658,7 @@ msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:115
+#: src/ai/service/ai-umbrella-status.service.ts:116
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
 
@@ -1914,7 +1941,7 @@ msgstr "Start Sync"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
-#: src/ai/service/ai-umbrella-status.service.ts:106
+#: src/ai/service/ai-umbrella-status.service.ts:107
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
 
@@ -1985,6 +2012,10 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/ai/component/voice-review-list/voice-review-list.tsx:22
+msgid "Tap re-record to try again"
+msgstr "Tap re-record to try again"
 
 #: src/app/import-column-mapper.tsx:62
 msgid "Tap to clear"
@@ -2085,6 +2116,10 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+msgid "Total"
+msgstr "Total"
+
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:101
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:114
 msgid "Total Balance"
@@ -2123,7 +2158,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/ai/hook/use-stt.hook.ts:127
+#: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
@@ -2253,6 +2288,10 @@ msgstr "View and delete custom categories"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
+#: src/app/voice-review.tsx:72
+msgid "Voice import"
+msgstr "Voice import"
+
 #: src/sync/utils/build-bank-sync-status-label.util.ts:19
 msgid "Waiting"
 msgstr "Waiting"
@@ -2261,7 +2300,7 @@ msgstr "Waiting"
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
 
-#: src/ai/util/download-whisper-model.util.ts:65
+#: src/ai/util/download-whisper-model.util.ts:63
 msgid "Whisper model download failed"
 msgstr "Whisper model download failed"
 
@@ -2306,6 +2345,6 @@ msgstr "Your token is stored securely in the database. Sync continues in the bac
 msgid "Your transaction file is ready to share."
 msgstr "Your transaction file is ready to share."
 
-#: src/ai/util/build-stt-transcribe-options.util.ts:12
+#: src/ai/util/build-stt-transcribe-options.util.ts:11
 msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
 msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."

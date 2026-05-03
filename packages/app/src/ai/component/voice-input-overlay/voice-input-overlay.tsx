@@ -1,13 +1,11 @@
-import { AITransactionInterface, groupVoiceTransactions } from '@budgie/ai';
-import { router } from 'expo-router';
+import { AITransactionInterface } from '@budgie/ai';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useVoiceInput } from '../../hook/use-voice-input.hook';
-import { buildExpenseUrl } from '../../utils/build-expense-url.util';
+import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
+import { UseVoiceInputReturn, useVoiceInput } from '../../hook/use-voice-input.hook';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 interface Props {
@@ -15,31 +13,32 @@ interface Props {
 }
 
 export const VoiceInputOverlay = ({ onClose }: Props) => {
-    const { defaultAccount } = useSettingsContext();
+    const [openVoiceReview] = useVoiceReviewModal();
 
     const hasAutoStartedRef = useRef(false);
     const originalTextRef = useRef('');
+    const voiceInputRef = useRef<UseVoiceInputReturn | null>(null);
     const contentOpacity = useSharedValue(1);
 
-    const handleDone = (transactions: AITransactionInterface[]) => {
+    const handleDone = (transactions: AITransactionInterface[]): void => {
         if (!isNotEmptyArray(transactions)) {
             return;
         }
 
-        const groupedTransaction = groupVoiceTransactions(transactions, originalTextRef.current);
-        if (!isDefined(groupedTransaction)) {
-            return;
-        }
+        const handleResult = (result: 'saved' | 're-record' | 'cancelled'): void => {
+            if (result === 're-record') {
+                voiceInputRef.current?.start();
 
-        const url = buildExpenseUrl(groupedTransaction, defaultAccount?.id);
-        onClose();
-        router.push(url);
+                return;
+            }
+            onClose();
+        };
+
+        void openVoiceReview({ transactions, originalText: originalTextRef.current }).then(handleResult, () => void onClose());
     };
 
     const voiceInput = useVoiceInput({ onDone: handleDone });
     const { isReady, start } = voiceInput;
-
-    const voiceInputRef = useRef(voiceInput);
 
     useLayoutEffect(() => {
         voiceInputRef.current = voiceInput;
@@ -54,7 +53,7 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
 
     useEffect(
         () => () => {
-            voiceInputRef.current.cancel();
+            voiceInputRef.current?.cancel();
         },
         []
     );

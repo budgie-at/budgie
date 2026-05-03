@@ -7,5 +7,4 @@ export const WHISPER_MODEL_TEMP_FILENAME = 'ggml-small.bin.download';
 
 export const WHISPER_MODEL_DIRECTORY = 'ai-models';
 
- 
 export const WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS = 0.99;

@@ -38,7 +38,6 @@ export { TranslationLlmService } from './suggestion/service/translation-llm.serv
 
 export type { AITransactionInterface } from './voice/interface/ai-transaction.interface';
 export type { ExtractedVoiceTransactionInterface } from './voice/interface/extracted-voice-transaction.interface';
-export type { GroupedVoiceTransactionInterface } from './voice/interface/grouped-voice-transaction.interface';
 
 export {
     AUDIO_LEVEL_MULTIPLIER,
@@ -53,4 +52,3 @@ export { VoiceLlmService } from './voice/service/voice-llm.service';
 export { calculateRMS } from './voice/util/calculate-rms.util';
 export { filterTranscriptionTokens } from './voice/util/filter-transcription-tokens.util';
 export { findAccountByCurrency } from './voice/util/find-account-by-currency.util';
-export { groupVoiceTransactions } from './voice/util/group-voice-transactions.util';

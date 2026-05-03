@@ -15,6 +15,11 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} Tx ausstehend"
 
+#. placeholder {0}: rows.length
+#: src/app/voice-review.tsx:68
+msgid "{0, plural, one {# item detected} other {# items detected}}"
+msgstr "{0, plural, one {# Eintrag erkannt} other {# Einträge erkannt}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx:73
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
@@ -34,6 +39,10 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} Spalten verfügbar"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:29
+msgid "{count, plural, one {Save # expense} other {Save # expenses}}"
+msgstr "{count, plural, one {# Ausgabe speichern} other {# Ausgaben speichern}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -57,7 +66,7 @@ msgstr "{percentage}% der Ausgaben"
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
 
-#: src/ai/service/ai-umbrella-status.service.ts:82
+#: src/ai/service/ai-umbrella-status.service.ts:83
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
 
@@ -161,12 +170,12 @@ msgid "AI disabled"
 msgstr "KI deaktiviert"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:124
+#: src/ai/service/ai-umbrella-status.service.ts:125
 msgid "AI idle"
 msgstr "KI inaktiv"
 
-#: src/ai/service/ai-umbrella-status.service.ts:65
-#: src/ai/service/ai-umbrella-status.service.ts:131
+#: src/ai/service/ai-umbrella-status.service.ts:66
+#: src/ai/service/ai-umbrella-status.service.ts:132
 msgid "AI off"
 msgstr "KI aus"
 
@@ -320,6 +329,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:44
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -734,6 +744,7 @@ msgid "Default Account"
 msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
+#: src/ai/component/voice-review-row/voice-review-row.tsx:108
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -760,6 +771,10 @@ msgstr "Dauerhaft löschen"
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
+#: src/ai/component/voice-review-row/voice-review-row.tsx:136
+msgid "Description"
+msgstr "Beschreibung"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
@@ -777,7 +792,7 @@ msgstr "Fertig ({count})"
 msgid "Download your statement as PDF"
 msgstr "Kontoauszug als PDF herunterladen"
 
-#: src/ai/service/ai-umbrella-status.service.ts:97
+#: src/ai/service/ai-umbrella-status.service.ts:98
 msgid "Downloading AI models…"
 msgstr "KI-Modelle werden heruntergeladen…"
 
@@ -1342,6 +1357,10 @@ msgstr "Keine inaktiven Konten"
 msgid "No inactive accounts match your search"
 msgstr "Keine inaktiven Konten entsprechen deiner Suche"
 
+#: src/ai/component/voice-review-list/voice-review-list.tsx:21
+msgid "No items to save"
+msgstr "Keine Einträge zum Speichern"
+
 #: src/app/language-selector.tsx:62
 msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
@@ -1487,6 +1506,10 @@ msgstr "Physisches Bargeld"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Wählen Sie einen Zeitraum. Vorhandene Daten bleiben erhalten."
 
+#: src/app/voice-review.tsx:67
+msgid "Pick category"
+msgstr "Kategorie wählen"
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:111
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1542,6 +1565,10 @@ msgstr "PrivatBank"
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
+
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:48
+msgid "Re-record"
+msgstr "Erneut aufnehmen"
 
 #: src/app/resync-window-picker.tsx:66
 msgid "Re-sync Bank Account?"
@@ -1629,7 +1656,7 @@ msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
 #: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:115
+#: src/ai/service/ai-umbrella-status.service.ts:116
 msgid "Resuming AI…"
 msgstr "KI wird fortgesetzt…"
 
@@ -1912,7 +1939,7 @@ msgstr "Synchronisation starten"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
-#: src/ai/service/ai-umbrella-status.service.ts:106
+#: src/ai/service/ai-umbrella-status.service.ts:107
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
 
@@ -1983,6 +2010,10 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/ai/component/voice-review-list/voice-review-list.tsx:22
+msgid "Tap re-record to try again"
+msgstr "Tippe „Erneut aufnehmen\", um es noch einmal zu versuchen"
 
 #: src/app/import-column-mapper.tsx:62
 msgid "Tap to clear"
@@ -2083,6 +2114,10 @@ msgstr "Heute"
 msgid "Token required"
 msgstr "Token erforderlich"
 
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+msgid "Total"
+msgstr "Gesamt"
+
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:101
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:114
 msgid "Total Balance"
@@ -2121,7 +2156,7 @@ msgstr "Transaktionen"
 msgid "Transactions synced"
 msgstr "Transaktionen synchronisiert"
 
-#: src/ai/hook/use-stt.hook.ts:127
+#: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Transkription fehlgeschlagen"
 
@@ -2251,6 +2286,10 @@ msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
+#: src/app/voice-review.tsx:72
+msgid "Voice import"
+msgstr "Sprachimport"
+
 #: src/sync/utils/build-bank-sync-status-label.util.ts:19
 msgid "Waiting"
 msgstr "Warten"
@@ -2259,7 +2298,7 @@ msgstr "Warten"
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
 
-#: src/ai/util/download-whisper-model.util.ts:65
+#: src/ai/util/download-whisper-model.util.ts:63
 msgid "Whisper model download failed"
 msgstr "Download des Whisper-Modells fehlgeschlagen"
 
@@ -2304,6 +2343,6 @@ msgstr "Ihr Token wird sicher in der Datenbank gespeichert. Die Synchronisation 
 msgid "Your transaction file is ready to share."
 msgstr "Ihre Transaktionsdatei kann geteilt werden."
 
-#: src/ai/util/build-stt-transcribe-options.util.ts:12
+#: src/ai/util/build-stt-transcribe-options.util.ts:11
 msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
 msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."

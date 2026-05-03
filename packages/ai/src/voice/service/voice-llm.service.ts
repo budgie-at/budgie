@@ -183,7 +183,10 @@ const ITEM_SEPARATORS_BY_LANGUAGE: Record<LanguageEnum, readonly string[]> = {
 const escapeRegex = (term: string): string => term.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 
 const buildAlternation = (terms: readonly string[]): string =>
-    [...terms].sort((firstTerm, secondTerm) => secondTerm.length - firstTerm.length).map(escapeRegex).join('|');
+    [...terms]
+        .sort((firstTerm, secondTerm) => secondTerm.length - firstTerm.length)
+        .map(escapeRegex)
+        .join('|');
 
 const ALL_CURRENCY_TERMS = Object.values(CURRENCY_TERMS_BY_LANGUAGE).flatMap(byLanguage => Object.values(byLanguage).flat());
 const ALL_NUMBER_WORDS = Object.values(NUMBER_WORDS_BY_LANGUAGE).flat();
