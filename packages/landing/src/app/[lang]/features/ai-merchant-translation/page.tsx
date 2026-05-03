@@ -100,8 +100,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Original strings stay intact for receipt-matching; the translated form is what your search queries hit.
-                        Multi-script — Cyrillic, Greek, Arabic, CJK — all supported.
+                        Original strings stay intact for receipt-matching; the translated form is what your search queries hit. Multi-script
+                        — Cyrillic, Greek, Arabic, CJK — all supported.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -173,8 +173,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Does this run on every transaction?</Trans>}
                     answer={
                         <Trans>
-                            Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically
-                            after sync or manual entry.
+                            Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue
+                            automatically after sync or manual entry.
                         </Trans>
                     }
                 />
