@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Biometric Auth`,
-        t(i18n)`Face ID drives the encryption key.`,
-        [t(i18n)`biometric`, t(i18n)`face id`, t(i18n)`security`]
-    );
+    return createFeatureOgImage(t(i18n)`Biometric Auth`, t(i18n)`Face ID drives the encryption key.`, [
+        t(i18n)`biometric`,
+        t(i18n)`face id`,
+        t(i18n)`security`
+    ]);
 };
 
 export default OgImage;

@@ -80,8 +80,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your
-                        home screen, with multi-currency conversion baked in.
+                        Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your home screen, with
+                        multi-currency conversion baked in.
                     </Trans>
                 }
             />
@@ -92,16 +92,14 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most expense apps stop at &ldquo;this month&apos;s spending.&rdquo; Budgie gives you the full
-                        balance-sheet view — assets, liabilities, and the line they form between them — without
-                        spreadsheets.
+                        Most expense apps stop at &ldquo;this month&apos;s spending.&rdquo; Budgie gives you the full balance-sheet view —
+                        assets, liabilities, and the line they form between them — without spreadsheets.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Toggle &ldquo;include in net worth&rdquo; per account. A daily background task pulls fresh
-                        exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show
-                        in your home currency.
+                        Toggle &ldquo;include in net worth&rdquo; per account. A daily background task pulls fresh exchange rates so a Euro
+                        savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -125,9 +123,9 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Each account carries a type (Bank, Cash, Crypto, Stocks, Debt), a currency, and an &ldquo;include
-                        in net worth&rdquo; toggle. The home screen sums every included account&apos;s balance, converts
-                        to your base currency, and shows the trendline alongside.
+                        Each account carries a type (Bank, Cash, Crypto, Stocks, Debt), a currency, and an &ldquo;include in net
+                        worth&rdquo; toggle. The home screen sums every included account&apos;s balance, converts to your base currency, and
+                        shows the trendline alongside.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -141,11 +139,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

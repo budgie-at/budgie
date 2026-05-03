@@ -80,8 +80,8 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Connect your Monobank account, pull a full transaction history straight to your device, and keep
-                        working offline. No third-party aggregator in between.
+                        Connect your Monobank account, pull a full transaction history straight to your device, and keep working offline. No
+                        third-party aggregator in between.
                     </Trans>
                 }
             />
@@ -92,16 +92,15 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your
-                        token — no Plaid, no data broker. Every transaction lands in your local SQLite database the
-                        moment it arrives.
+                        Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no
+                        data broker. Every transaction lands in your local SQLite database the moment it arrives.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Cross-currency transactions carry their original FX rate. Counter-party IBANs are stored, which
-                        lets Budgie auto-merge transfer pairs across two accounts you own. The optional re-sync window
-                        lets you re-pull just the last N days when your data drifts — without nuking manual edits.
+                        Cross-currency transactions carry their original FX rate. Counter-party IBANs are stored, which lets Budgie
+                        auto-merge transfer pairs across two accounts you own. The optional re-sync window lets you re-pull just the last N
+                        days when your data drifts — without nuking manual edits.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -125,9 +124,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Generate a personal API token from the Monobank app, paste it into Budgie, choose which
-                        Monobank accounts to import, and select an initial sync window. A background task syncs every
-                        30 minutes when you&apos;re online; you control the cadence and can pause anytime.
+                        Generate a personal API token from the Monobank app, paste it into Budgie, choose which Monobank accounts to import,
+                        and select an initial sync window. A background task syncs every 30 minutes when you&apos;re online; you control the
+                        cadence and can pause anytime.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -141,11 +140,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

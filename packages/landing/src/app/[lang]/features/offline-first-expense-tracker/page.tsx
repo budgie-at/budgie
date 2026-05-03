@@ -80,8 +80,8 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 locale={lang}
                 tagline={
                     <Trans>
-                        Every transaction lives on your device. No cloud account, no sign-up — your finances stay in
-                        your pocket, even on a plane or in a tunnel.
+                        Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a
+                        plane or in a tunnel.
                     </Trans>
                 }
             />
@@ -92,17 +92,15 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most budgeting apps push every swipe and balance to a remote server. That makes them fragile
-                        when the internet drops, and risky when those servers leak. Budgie inverts the model: an
-                        encrypted SQLite database lives on your phone, and that&apos;s the whole story. There is no
-                        backend reading your statements.
+                        Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet
+                        drops, and risky when those servers leak. Budgie inverts the model: an encrypted SQLite database lives on your
+                        phone, and that&apos;s the whole story. There is no backend reading your statements.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        You can log an expense at 30,000 feet, walk through a Tube tunnel, or work a week off-grid —
-                        Budgie just keeps working. When you are back online, optional bank sync fills in the gaps you
-                        missed; manual edits are never blocked.
+                        You can log an expense at 30,000 feet, walk through a Tube tunnel, or work a week off-grid — Budgie just keeps
+                        working. When you are back online, optional bank sync fills in the gaps you missed; manual edits are never blocked.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -126,11 +124,10 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On first launch, Budgie creates an encrypted SQLite database in your app sandbox. Every
-                        transaction, category, account, and tag becomes a row in that file. The optional bank sync
-                        fetches statements directly from your bank&apos;s API to your device — never via a third-party
-                        data aggregator. AI category suggestions run on a 1.7B-parameter model loaded into memory on
-                        your phone.
+                        On first launch, Budgie creates an encrypted SQLite database in your app sandbox. Every transaction, category,
+                        account, and tag becomes a row in that file. The optional bank sync fetches statements directly from your
+                        bank&apos;s API to your device — never via a third-party data aggregator. AI category suggestions run on a
+                        1.7B-parameter model loaded into memory on your phone.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -144,11 +141,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

@@ -79,8 +79,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 locale={lang}
                 tagline={
                     <Trans>
-                        A 1.7B-parameter model runs on your phone and suggests categories and tags for new transactions
-                        — your statements never touch a server.
+                        A 1.7B-parameter model runs on your phone and suggests categories and tags for new transactions — your statements
+                        never touch a server.
                     </Trans>
                 }
             />
@@ -91,16 +91,15 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud &ldquo;AI&rdquo; budgeting apps stream every merchant string to a remote LLM, which often
-                        means OpenAI sees your supermarket habits. Budgie loads the model once, then keeps every
-                        inference local — same accuracy, zero data exfiltration.
+                        Cloud &ldquo;AI&rdquo; budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees
+                        your supermarket habits. Budgie loads the model once, then keeps every inference local — same accuracy, zero data
+                        exfiltration.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The system blends two signals: a vector-search lookup against your past categorizations and a
-                        small generative pass that proposes a tag. As you confirm or correct, the index updates
-                        instantly — fully on-device.
+                        The system blends two signals: a vector-search lookup against your past categorizations and a small generative pass
+                        that proposes a tag. As you confirm or correct, the index updates instantly — fully on-device.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,9 +123,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On first run, Budgie downloads a Qwen3 1.7B Q4 model and a Nomic embedding model directly from
-                        the Hugging Face hub. Both are stored in your app sandbox. Inference uses ONNX Runtime +
-                        sqlite-vec for SIMD-accelerated vector search.
+                        On first run, Budgie downloads a Qwen3 1.7B Q4 model and a Nomic embedding model directly from the Hugging Face hub.
+                        Both are stored in your app sandbox. Inference uses ONNX Runtime + sqlite-vec for SIMD-accelerated vector search.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -143,20 +141,14 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         <Trans>Amount-pattern recurrence — €4.20 every Tuesday morning is probably your coffee</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2} key="signal-2">
-                        <Trans>
-                            Merchant-name fuzzy match — handles typos, abbreviations, and translated variants
-                        </Trans>
+                        <Trans>Merchant-name fuzzy match — handles typos, abbreviations, and translated variants</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

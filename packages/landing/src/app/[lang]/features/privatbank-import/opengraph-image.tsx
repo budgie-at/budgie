@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`PrivatBank Import`,
-        t(i18n)`XLSX, MCC-mapped, two taps.`,
-        [t(i18n)`privatbank`, t(i18n)`xlsx`, t(i18n)`import`]
-    );
+    return createFeatureOgImage(t(i18n)`PrivatBank Import`, t(i18n)`XLSX, MCC-mapped, two taps.`, [
+        t(i18n)`privatbank`,
+        t(i18n)`xlsx`,
+        t(i18n)`import`
+    ]);
 };
 
 export default OgImage;
