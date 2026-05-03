@@ -14,19 +14,13 @@ export default function SplitEntriesModal() {
     const router = useRouter();
     const [, resolveSplitEntries, currentParams] = useSplitEntriesModal();
     const { backgroundColor } = useFormsheetListStyles();
+    const hadParamsRef = useRef(isDefined(currentParams));
 
     const screenOptions = { contentStyle: { backgroundColor } };
     const containerStyle = { flex: 1, backgroundColor };
 
-    const entriesRef = useRef<TransactionEntryCreateInputInterface[]>(currentParams?.entries ?? []);
-    const hadParamsRef = useRef(isDefined(currentParams));
-
-    const handleEntriesChange = (entries: TransactionEntryCreateInputInterface[]) => {
-        entriesRef.current = entries;
-    };
-
-    const handleConfirm = () => {
-        resolveSplitEntries(entriesRef.current);
+    const handleConfirm = (entries: TransactionEntryCreateInputInterface[]) => {
+        resolveSplitEntries(entries);
     };
 
     useEffect(
@@ -62,7 +56,6 @@ export default function SplitEntriesModal() {
                 entryType={currentParams.entryType}
                 currencySymbol={currentParams.currencySymbol}
                 totalAmount={currentParams.totalAmount}
-                onEntriesChange={handleEntriesChange}
                 onConfirm={handleConfirm}
             />
         </View>

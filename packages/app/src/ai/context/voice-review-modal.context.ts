@@ -8,7 +8,7 @@ export interface VoiceReviewModalParams {
 }
 
 export type VoiceReviewModalResult =
-    | { readonly kind: 'saved'; readonly transactionIds: number[] }
+    | { readonly kind: 'saved'; readonly transactionIds: number[]; readonly accountId: number }
     | { readonly kind: 're-record' }
     | { readonly kind: 'cancelled' };
 

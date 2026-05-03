@@ -22,6 +22,8 @@ type ExtractedItemType = z.infer<typeof ExtractedItemSchema>;
 
 type SupportedVoiceCurrency = CurrencyEnum.UAH | CurrencyEnum.USD | CurrencyEnum.EUR;
 
+const SUPPORTED_VOICE_CURRENCIES: readonly SupportedVoiceCurrency[] = [CurrencyEnum.UAH, CurrencyEnum.USD, CurrencyEnum.EUR];
+
 const CURRENCY_TERMS_BY_LANGUAGE: Record<SupportedVoiceCurrency, Record<LanguageEnum, readonly string[]>> = {
     [CurrencyEnum.UAH]: {
         [LanguageEnum.UK]: ['грн', 'гривень', 'гривня', 'гривні', 'гривен', '₴'],
@@ -200,13 +202,15 @@ const DIGIT_PATTERN = /\d/u;
 
 const NUMBER_WORD_PATTERN = new RegExp(String.raw`\b(${buildAlternation(ALL_NUMBER_WORDS)})\b`, 'iu');
 
+const CURRENCY_TERM_PATTERN = new RegExp(String.raw`(^|\s+)(${buildAlternation(ALL_CURRENCY_TERMS)})(?=$|\s+|[.,!?])`, 'giu');
+
 const findCurrencyByTerm = (term: string): SupportedVoiceCurrency | null => {
     const normalized = term.toLowerCase();
 
-    for (const [currency, byLanguage] of Object.entries(CURRENCY_TERMS_BY_LANGUAGE)) {
-        const allTerms = Object.values(byLanguage).flat();
+    for (const currency of SUPPORTED_VOICE_CURRENCIES) {
+        const allTerms = Object.values(CURRENCY_TERMS_BY_LANGUAGE[currency]).flat();
         if (allTerms.includes(normalized)) {
-            return currency as SupportedVoiceCurrency;
+            return currency;
         }
     }
 
@@ -271,7 +275,7 @@ export class VoiceLlmService {
 
         const beforeAmount = segment.slice(0, match.index).trim();
         const afterAmount = segment.slice(match.index + match[0].length).trim();
-        const description = [beforeAmount, afterAmount].filter(isNotEmptyString).join(' ').trim();
+        const description = this.cleanVoiceDescription([beforeAmount, afterAmount].filter(isNotEmptyString).join(' '));
 
         if (!isNotEmptyString(description)) {
             return null;
@@ -279,9 +283,25 @@ export class VoiceLlmService {
 
         return {
             amount,
-            currency: this.normalizeVoiceCurrency(match[2]),
+            currency: this.normalizeVoiceCurrency(match[2]) ?? this.findCurrencyInSegment(segment),
             description
         };
+    }
+
+    private cleanVoiceDescription(description: string): string {
+        return description
+            .replace(CURRENCY_TERM_PATTERN, ' ')
+            .replace(/(?:^|\s)[-–—−]+(?:\s|$)/gu, ' ')
+            .replace(/\s+/gu, ' ')
+            .replace(/^[-–—−.,!?\s]+|[-–—−.,!?\s]+$/gu, '')
+            .trim();
+    }
+
+    private findCurrencyInSegment(segment: string): CurrencyEnum | null {
+        const match = segment.match(CURRENCY_TERM_PATTERN);
+        const currencyTerm = match?.at(0)?.trim();
+
+        return isNotEmptyString(currencyTerm) ? findCurrencyByTerm(currencyTerm) : null;
     }
 
     private normalizeVoiceCurrency(currency: string | undefined): CurrencyEnum | null {
@@ -307,7 +327,7 @@ export class VoiceLlmService {
         const jsonStr = this.fixMalformedJson(response);
 
         try {
-            const parsed = JSON.parse(jsonStr) as unknown;
+            const parsed: unknown = JSON.parse(jsonStr);
 
             if (Array.isArray(parsed)) {
                 return parsed

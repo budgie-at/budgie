@@ -54,8 +54,14 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
                 return;
             }
             if (result.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
+                const hasSingleSavedTransaction = result.transactionIds.length === 1;
                 onClose();
-                router.push(`/transactions/${result.transactionIds[0]}/expense`);
+                if (hasSingleSavedTransaction) {
+                    router.push(`/transactions/${result.transactionIds[0]}/expense`);
+
+                    return;
+                }
+                router.push(`/account/${result.accountId}/details`);
 
                 return;
             }

@@ -1,7 +1,7 @@
 import { TransactionEntityInterface } from '@budgie/contracts';
 import { useReducer, useState } from 'react';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
@@ -34,7 +34,9 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
         dispatch({ type: VoiceReviewActionTypeEnum.DELETE, id });
     };
 
-    const canSave = rows.length > 0 && rows.every(row => isPositiveNumber(row.categoryId) && row.amount > 0);
+    const hasInvalidAmounts = rows.some(row => !isPositiveNumber(row.amount));
+    const hasMissingCategories = rows.some(row => !isPositiveNumber(row.categoryId));
+    const canSave = isNotEmptyArray(rows) && !hasInvalidAmounts && !hasMissingCategories;
 
     const saveAll = async (accountId: number): Promise<TransactionEntityInterface[] | null> => {
         setIsSaving(true);
@@ -47,5 +49,5 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
         }
     };
 
-    return { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll };
+    return { rows, isSaving, canSave, hasInvalidAmounts, hasMissingCategories, editAmount, setCategory, deleteRow, saveAll };
 };

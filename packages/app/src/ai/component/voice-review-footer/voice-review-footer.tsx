@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
@@ -16,6 +17,8 @@ interface Props {
     readonly totalAmount: number;
     readonly currencySymbol: string;
     readonly canSave: boolean;
+    readonly hasInvalidAmounts: boolean;
+    readonly hasMissingCategories: boolean;
     readonly isSaving: boolean;
     readonly onCancel: () => void;
     readonly onReRecord: () => void;
@@ -23,13 +26,17 @@ interface Props {
 }
 
 export const VoiceReviewFooter = (props: Props) => {
-    const { count, totalAmount, currencySymbol, canSave, isSaving, onCancel, onReRecord, onSave } = props;
+    const { count, totalAmount, currencySymbol, canSave, hasInvalidAmounts, hasMissingCategories, isSaving, onCancel, onReRecord, onSave } =
+        props;
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const containerStyle = { paddingBottom: bottom };
-    const saveLabel = t`Save ${count}`;
+    const validSaveLabel = t`Save ${count}`;
+    const amountAwareSaveLabel = hasInvalidAmounts ? t`Enter all amounts` : validSaveLabel;
+    const saveLabel = hasMissingCategories ? t`Select all categories` : amountAwareSaveLabel;
+    const saveVariant: ColorPaletteVariant = canSave ? 'cta' : 'secondary';
     const isSaveDisabled = !canSave || isSaving;
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
@@ -57,7 +64,7 @@ export const VoiceReviewFooter = (props: Props) => {
 
             {isPositiveNumber(count) ? (
                 <View className="mt-md">
-                    <Button variant="cta" content={saveLabel} onPress={onSave} disabled={isSaveDisabled} isLoading={isSaving} />
+                    <Button variant={saveVariant} content={saveLabel} onPress={onSave} disabled={isSaveDisabled} isLoading={isSaving} />
                 </View>
             ) : null}
         </View>

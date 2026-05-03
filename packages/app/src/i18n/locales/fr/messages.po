@@ -39,11 +39,11 @@ msgstr "{availableCount} colonnes disponibles"
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -85,7 +85,7 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:114
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:115
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
 msgid "Account"
 msgstr "Compte"
@@ -132,7 +132,7 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/app/note-input.tsx:33
+#: src/app/note-input.tsx:39
 msgid "Add a note..."
 msgstr "Ajouter une note..."
 
@@ -232,7 +232,7 @@ msgstr "Version de l'application"
 msgid "Appearance"
 msgstr "Apparence"
 
-#: src/app/note-input.tsx:47
+#: src/app/note-input.tsx:54
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -320,7 +320,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:48
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:53
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -426,7 +426,7 @@ msgstr "Commentaire"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:163
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
@@ -522,7 +522,7 @@ msgid "Could not delete tag"
 msgstr "Impossible de supprimer le tag"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts:21
-#: src/transaction/hook/use-update-transaction-form.hook.ts:57
+#: src/transaction/hook/use-update-transaction-form.hook.ts:82
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
@@ -607,7 +607,7 @@ msgstr "Impossible de déconsolider la transaction."
 msgid "Could not update token"
 msgstr "Impossible de mettre à jour le jeton"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:44
+#: src/transaction/hook/use-update-transaction-form.hook.ts:69
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
@@ -867,6 +867,10 @@ msgstr "Traduction anglaise"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+msgid "Enter all amounts"
+msgstr "Saisir tous les montants"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:36
 #: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
@@ -928,7 +932,7 @@ msgstr "Date de retour prévue"
 msgid "Expected Return Date (Optional)"
 msgstr "Date de retour prévue (optionnel)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Dépense"
@@ -1099,7 +1103,7 @@ msgstr "Comptes inactifs"
 msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1343,7 +1347,7 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
-#: src/app/voice-review.tsx:82
+#: src/app/voice-review.tsx:119
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -1548,7 +1552,7 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:52
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:57
 msgid "Re-record"
 msgstr "Réenregistrer"
 
@@ -1647,7 +1651,7 @@ msgstr "Reprise de l'IA…"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:32
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
 msgid "Save {count}"
 msgstr "Enregistrer {count}"
 
@@ -1757,7 +1761,8 @@ msgstr "Sélectionner un compte"
 msgid "Select accounts to sync:"
 msgstr "Sélectionner les comptes à synchroniser :"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:132
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:163
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
@@ -1997,7 +2002,7 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:83
+#: src/app/voice-review.tsx:120
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -2100,7 +2105,7 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:40
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:45
 msgid "Total"
 msgstr "Total"
 
@@ -2142,15 +2147,15 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
-#: src/app/voice-review.tsx:64
+#: src/app/voice-review.tsx:101
 msgid "Transactions: {transactionCount}"
 msgstr "Transactions : {transactionCount}"
 
-#: src/ai/hook/use-stt.hook.ts:125
+#: src/ai/hook/use-stt.hook.ts:72
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:107
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Virement"
@@ -2276,7 +2281,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/app/voice-review.tsx:68
+#: src/app/voice-review.tsx:105
 msgid "Voice import"
 msgstr "Importation vocale"
 
@@ -2288,7 +2293,7 @@ msgstr "En attente"
 msgid "When should it be returned?"
 msgstr "Quand devrait-il être retourné ?"
 
-#: src/ai/util/download-whisper-model.util.ts:63
+#: src/ai/service/whisper-model.service.ts:90
 msgid "Whisper model download failed"
 msgstr "Échec du téléchargement du modèle Whisper"
 
@@ -2321,7 +2326,7 @@ msgstr "Vous devez"
 msgid "You received money"
 msgstr "Vous avez reçu de l'argent"
 
-#: src/app/voice-review.tsx:72
+#: src/app/voice-review.tsx:109
 msgid "You said"
 msgstr "Vous avez dit"
 

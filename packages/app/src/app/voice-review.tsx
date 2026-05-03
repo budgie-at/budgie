@@ -21,15 +21,27 @@ const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 
 const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
-const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): VoiceReviewRowInterface[] =>
-    transactions.map((transaction, index) => ({
-        id: `voice-row-${Date.now()}-${index}`,
-        amount: transaction.amount,
-        currency: transaction.currency,
-        description: transaction.comment,
-        accountId: transaction.account?.id ?? null,
-        categoryId: transaction.category?.id ?? null
-    }));
+const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): VoiceReviewRowInterface[] => {
+    const usedCategoryIds = new Set<number>();
+
+    return transactions.map((transaction, index) => {
+        const suggestedCategoryId = transaction.category?.id ?? null;
+        const categoryId = isPositiveNumber(suggestedCategoryId) && !usedCategoryIds.has(suggestedCategoryId) ? suggestedCategoryId : null;
+
+        if (isPositiveNumber(categoryId)) {
+            usedCategoryIds.add(categoryId);
+        }
+
+        return {
+            id: `voice-row-${Date.now()}-${index}`,
+            amount: transaction.amount,
+            currency: transaction.currency,
+            description: transaction.comment,
+            accountId: transaction.account?.id ?? null,
+            categoryId
+        };
+    });
+};
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
@@ -41,7 +53,8 @@ export default function VoiceReviewModal() {
 
     const initialRows = isDefined(currentParams) ? mapExtractedToReviewRows(currentParams.transactions) : [];
     const originalText = currentParams?.originalText ?? '';
-    const { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll } = useVoiceReview(initialRows);
+    const { rows, isSaving, canSave, hasInvalidAmounts, hasMissingCategories, editAmount, setCategory, deleteRow, saveAll } =
+        useVoiceReview(initialRows);
 
     const totalAmount = sumAmounts(rows);
     const accountId = defaultAccount?.id ?? null;
@@ -50,7 +63,15 @@ export default function VoiceReviewModal() {
     const canDelete = rows.length > 1;
 
     const handleCategoryPress = async (rowId: string, currentCategoryId: number | null) => {
-        const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, variant: 'destructive' });
+        const excludeCategoryIds = rows
+            .filter(row => row.id !== rowId)
+            .map(row => row.categoryId)
+            .filter(isPositiveNumber);
+        const selectedCategoryId = await openCategorySelector({
+            initialCategoryId: currentCategoryId,
+            excludeCategoryIds,
+            variant: 'destructive'
+        });
 
         if (isDefined(selectedCategoryId)) {
             setCategory(rowId, selectedCategoryId);
@@ -69,10 +90,10 @@ export default function VoiceReviewModal() {
             return;
         }
         const saved = await saveAll(accountId);
-        if (saved === null) {
+        if (!isDefined(saved)) {
             return;
         }
-        resolveVoiceReview({ kind: 'saved', transactionIds: saved.map(transaction => transaction.id) });
+        resolveVoiceReview({ kind: 'saved', transactionIds: saved.map(transaction => transaction.id), accountId });
     };
 
     const containerStyle = { flex: 1, backgroundColor };
@@ -129,6 +150,8 @@ export default function VoiceReviewModal() {
                 totalAmount={totalAmount}
                 currencySymbol={currencySymbol}
                 canSave={canSave}
+                hasInvalidAmounts={hasInvalidAmounts}
+                hasMissingCategories={hasMissingCategories}
                 isSaving={isSaving}
                 onCancel={handleCancel}
                 onReRecord={handleReRecord}
