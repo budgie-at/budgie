@@ -7,12 +7,12 @@ import { isDefined } from '@rnw-community/shared';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
+import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageNetWorthCoverageTable } from '../../../../feature/component/feature-page-net-worth-coverage-table/feature-page-net-worth-coverage-table';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -25,9 +25,33 @@ import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
+import type { ComparisonRowInterface } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import type { Metadata } from 'next';
 
 const SLUG = 'net-worth-tracker';
+
+const COMPARISON_ROWS: ComparisonRowInterface[] = [
+    {
+        concern: <Trans>Asset coverage</Trans>,
+        rival: <Trans>Bank only</Trans>,
+        budgie: <Trans>Bank + cash + crypto + stocks + ETFs + debt</Trans>
+    },
+    {
+        concern: <Trans>FX support</Trans>,
+        rival: <Trans>One currency, often hardcoded</Trans>,
+        budgie: <Trans>Per-account currency, daily auto-conversion</Trans>
+    },
+    {
+        concern: <Trans>Liability accounts</Trans>,
+        rival: <Trans>Treated as expenses</Trans>,
+        budgie: <Trans>First-class — subtract from net worth</Trans>
+    },
+    {
+        concern: <Trans>Time series</Trans>,
+        rival: <Trans>Spending only</Trans>,
+        budgie: <Trans>Net worth trendline alongside</Trans>
+    }
+];
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -146,7 +170,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 <FeaturePageHeading>
                     <Trans>Most expense apps vs. Budgie</Trans>
                 </FeaturePageHeading>
-                <FeaturePageNetWorthCoverageTable />
+                <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>} rows={COMPARISON_ROWS} />
             </FeaturePageSection>
 
             <FeaturePageFaqSection>

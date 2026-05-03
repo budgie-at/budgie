@@ -7,12 +7,12 @@ import { isDefined } from '@rnw-community/shared';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
+import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePagePlaidVsMonobankTable } from '../../../../feature/component/feature-page-plaid-vs-monobank-table/feature-page-plaid-vs-monobank-table';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
@@ -25,9 +25,33 @@ import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
+import type { ComparisonRowInterface } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import type { Metadata } from 'next';
 
 const SLUG = 'monobank-sync';
+
+const COMPARISON_ROWS: ComparisonRowInterface[] = [
+    {
+        concern: <Trans>Token control</Trans>,
+        rival: <Trans>Plaid-managed credential vault</Trans>,
+        budgie: <Trans>Your token, in your keystore</Trans>
+    },
+    {
+        concern: <Trans>FX preserved</Trans>,
+        rival: <Trans>Often dropped or recomputed</Trans>,
+        budgie: <Trans>Original FX kept per leg</Trans>
+    },
+    {
+        concern: <Trans>Counter-IBAN stored</Trans>,
+        rival: <Trans>Rarely surfaced</Trans>,
+        budgie: <Trans>Yes — enables transfer-pair detection</Trans>
+    },
+    {
+        concern: <Trans>Aggregator middleman</Trans>,
+        rival: <Trans>Plaid (or similar) sees every transaction</Trans>,
+        budgie: <Trans>None — Budgie talks to Monobank directly</Trans>
+    }
+];
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -147,7 +171,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageHeading>
                     <Trans>Plaid-based apps vs. Budgie + Monobank</Trans>
                 </FeaturePageHeading>
-                <FeaturePagePlaidVsMonobankTable />
+                <FeaturePageComparisonTable rivalLabel={<Trans>Plaid-based app</Trans>} rows={COMPARISON_ROWS} />
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
