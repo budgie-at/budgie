@@ -1,12 +1,11 @@
+import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { RecordButtonStateType } from '../type/record-button-state.type';
 
-type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'processing' | 'done' | 'error';
-
-export const VOICE_INPUT_STATE_TO_BUTTON: Record<VoiceInputState, RecordButtonStateType> = {
-    idle: 'idle',
-    recording: 'recording',
-    transcribing: 'transcribing',
-    processing: 'thinking',
-    done: 'thinking',
-    error: 'idle'
+export const VOICE_INPUT_STATE_TO_BUTTON: Record<VoiceInputStateEnum, RecordButtonStateType> = {
+    [VoiceInputStateEnum.IDLE]: 'idle',
+    [VoiceInputStateEnum.RECORDING]: 'recording',
+    [VoiceInputStateEnum.TRANSCRIBING]: 'transcribing',
+    [VoiceInputStateEnum.PROCESSING]: 'thinking',
+    [VoiceInputStateEnum.DONE]: 'thinking',
+    [VoiceInputStateEnum.ERROR]: 'idle'
 };

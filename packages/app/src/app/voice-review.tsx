@@ -1,3 +1,4 @@
+import { AITransactionInterface } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -10,7 +11,7 @@ import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.q
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { useVoiceReviewModal } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
-import { mapExtractedToReviewRows } from '../ai/utils/map-extracted-to-review-rows.util';
+import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useSettingsContext } from '../settings/context/settings.context';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
@@ -19,6 +20,16 @@ const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 
 const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
+
+const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): VoiceReviewRowInterface[] =>
+    transactions.map((transaction, index) => ({
+        id: `voice-row-${Date.now()}-${index}`,
+        amount: transaction.amount,
+        currency: transaction.currency,
+        description: transaction.comment,
+        accountId: transaction.account?.id ?? null,
+        categoryId: transaction.category?.id ?? null
+    }));
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {

@@ -1,19 +1,18 @@
 import { Log } from '@budgie/logger';
-import { WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
+import { TranscribeOptions, WhisperContext, initWhisper, releaseAllWhisper } from 'whisper.rn';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
+import { STT_BEAM_SIZE, STT_MAX_THREADS, STT_MAX_TRANSCRIPTION_LEN, STT_TEMPERATURE } from '../constant/stt-realtime-options.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
-import { buildSttTranscribeOptions } from '../util/build-stt-transcribe-options.util';
-import { deleteWhisperModel } from '../util/delete-whisper-model.util';
-import { downloadWhisperModel } from '../util/download-whisper-model.util';
 
 import { BaseSubsystemService } from './base-subsystem.service';
+import { whisperModelService } from './whisper-model.service';
 
 class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
     private context: WhisperContext | null = null;
@@ -73,7 +72,7 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
     protected async runStart(): Promise<void> {
         try {
             this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-            const modelPath = await downloadWhisperModel(downloadProgress => {
+            const modelPath = await whisperModelService.download(downloadProgress => {
                 this.setSnapshot({ downloadProgress });
             });
             this.setSnapshot({ status: AiSubsystemStatusEnum.INITIALIZING });
@@ -81,7 +80,7 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
             this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
         } catch (error: unknown) {
             this.context = null;
-            deleteWhisperModel();
+            whisperModelService.delete();
             this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: getErrorMessage(error) });
         }
     }
@@ -154,10 +153,22 @@ class SttService extends BaseSubsystemService<SttSnapshotInterface> implements A
         }
         const audioBuffer = new ArrayBuffer(audioData.byteLength);
         new Uint8Array(audioBuffer).set(audioData);
-        const { promise } = this.getContext().transcribeData(audioBuffer, buildSttTranscribeOptions(this.streamLanguage));
+        const { promise } = this.getContext().transcribeData(audioBuffer, this.buildTranscribeOptions(this.streamLanguage));
         const result = await promise;
 
         return result.result.trim();
+    }
+
+    private buildTranscribeOptions(language: string | null): TranscribeOptions {
+        return {
+            ...(isDefined(language) && { language }),
+            translate: false,
+            maxThreads: STT_MAX_THREADS,
+            temperature: STT_TEMPERATURE,
+            temperatureInc: STT_TEMPERATURE,
+            maxLen: STT_MAX_TRANSCRIPTION_LEN,
+            beamSize: STT_BEAM_SIZE
+        };
     }
 
     private createStreamPromise(): Promise<string> {

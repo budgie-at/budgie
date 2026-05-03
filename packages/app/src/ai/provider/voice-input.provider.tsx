@@ -1,13 +1,8 @@
-import { type PropsWithChildren, Suspense, lazy, useState } from 'react';
+import { type PropsWithChildren, Suspense, useState } from 'react';
 
+import { LazyVoiceInputOverlay } from '../component/lazy-voice-input-overlay/lazy-voice-input-overlay';
 import { VoiceInputContext } from '../context/voice-input.context';
 import { useAiAvailable } from '../hook/use-ai-available.hook';
-
-const LazyVoiceInputOverlay = lazy(async () => {
-    const { VoiceInputOverlay } = await import('../component/voice-input-overlay/voice-input-overlay');
-
-    return { default: VoiceInputOverlay };
-});
 
 export const VoiceInputProvider = ({ children }: PropsWithChildren) => {
     const isAiAvailable = useAiAvailable();
