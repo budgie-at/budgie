@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/ai/service/ai-system-status.service.ts:241
+#: src/ai/service/ai-system-status.service.ts:227
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} tx en file d'attente"
 
@@ -39,11 +39,11 @@ msgstr "{availableCount} colonnes disponibles"
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -57,11 +57,11 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/ai/service/ai-umbrella-status.service.ts:83
+#: src/ai/service/ai-umbrella-status.service.ts:75
 msgid "{source} error · {message}"
 msgstr "Erreur {source} · {message}"
 
-#: src/ai/service/ai-system-status.service.ts:195
+#: src/ai/service/ai-system-status.service.ts:179
 msgid "{source} failed: {message}"
 msgstr "Échec de {source} : {message}"
 
@@ -156,17 +156,17 @@ msgstr "Ajustement"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/service/ai-system-status.service.ts:182
+#: src/ai/service/ai-system-status.service.ts:166
 msgid "AI disabled"
 msgstr "IA désactivée"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:125
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:117
 msgid "AI idle"
 msgstr "IA inactive"
 
-#: src/ai/service/ai-umbrella-status.service.ts:66
-#: src/ai/service/ai-umbrella-status.service.ts:132
+#: src/ai/service/ai-umbrella-status.service.ts:58
+#: src/ai/service/ai-umbrella-status.service.ts:124
 msgid "AI off"
 msgstr "IA désactivée"
 
@@ -190,7 +190,7 @@ msgstr "Toutes les colonnes ont été assignées"
 msgid "All Recurring"
 msgstr "Tous les récurrents"
 
-#: src/ai/service/ai-system-status.service.ts:274
+#: src/ai/service/ai-system-status.service.ts:260
 msgid "All set"
 msgstr "Tout est prêt"
 
@@ -320,7 +320,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:53
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -426,7 +426,7 @@ msgstr "Commentaire"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:163
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
@@ -522,7 +522,7 @@ msgid "Could not delete tag"
 msgstr "Impossible de supprimer le tag"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts:21
-#: src/transaction/hook/use-update-transaction-form.hook.ts:82
+#: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
@@ -607,7 +607,7 @@ msgstr "Impossible de déconsolider la transaction."
 msgid "Could not update token"
 msgstr "Impossible de mettre à jour le jeton"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:69
+#: src/transaction/hook/use-update-transaction-form.hook.ts:44
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
@@ -778,11 +778,11 @@ msgstr "Terminé ({count})"
 msgid "Download your statement as PDF"
 msgstr "Téléchargez votre relevé au format PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts:98
+#: src/ai/service/ai-umbrella-status.service.ts:90
 msgid "Downloading AI models…"
 msgstr "Téléchargement des modèles d'IA…"
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Downloading models"
 msgstr "Téléchargement des modèles"
 
@@ -867,7 +867,7 @@ msgstr "Traduction anglaise"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:37
 msgid "Enter all amounts"
 msgstr "Saisir tous les montants"
 
@@ -978,7 +978,7 @@ msgstr "Échec du chargement des contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
 
-#: src/ai/service/ai-system-status.service.ts:292
+#: src/ai/service/ai-system-status.service.ts:278
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Indexation rapide {done} sur {total} • touchez pour mettre en pause"
 
@@ -1123,7 +1123,7 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/ai/service/ai-system-status.service.ts:263
+#: src/ai/service/ai-system-status.service.ts:249
 msgid "Indexing {done} of {total}"
 msgstr "Indexation {done} sur {total}"
 
@@ -1199,7 +1199,7 @@ msgstr "Modèle IA non disponible"
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
 
-#: src/ai/service/ai-system-status.service.ts:309
+#: src/ai/service/ai-system-status.service.ts:295
 msgid "Loading models"
 msgstr "Chargement des modèles"
 
@@ -1347,7 +1347,7 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
-#: src/app/voice-review.tsx:119
+#: src/app/voice-review.tsx:118
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -1552,7 +1552,7 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:57
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:59
 msgid "Re-record"
 msgstr "Réenregistrer"
 
@@ -1641,8 +1641,8 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
-#: src/ai/service/ai-system-status.service.ts:220
-#: src/ai/service/ai-umbrella-status.service.ts:116
+#: src/ai/service/ai-system-status.service.ts:206
+#: src/ai/service/ai-umbrella-status.service.ts:108
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
 
@@ -1761,8 +1761,8 @@ msgstr "Sélectionner un compte"
 msgid "Select accounts to sync:"
 msgstr "Sélectionner les comptes à synchroniser :"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:36
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:163
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
@@ -1930,7 +1930,7 @@ msgstr "Démarrer la synchronisation"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
-#: src/ai/service/ai-umbrella-status.service.ts:107
+#: src/ai/service/ai-umbrella-status.service.ts:99
 msgid "Starting up AI…"
 msgstr "Démarrage de l'IA…"
 
@@ -2002,7 +2002,7 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:120
+#: src/app/voice-review.tsx:119
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -2105,7 +2105,7 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:45
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:47
 msgid "Total"
 msgstr "Total"
 
@@ -2147,10 +2147,6 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
-#: src/app/voice-review.tsx:101
-msgid "Transactions: {transactionCount}"
-msgstr "Transactions : {transactionCount}"
-
 #: src/ai/hook/use-stt.hook.ts:72
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
@@ -2164,7 +2160,7 @@ msgstr "Virement"
 msgid "Transfers consolidated"
 msgstr "Virements consolidés"
 
-#: src/ai/service/ai-system-status.service.ts:247
+#: src/ai/service/ai-system-status.service.ts:233
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Traduction {translationPending} sur {total}{trailer}"
 
@@ -2281,10 +2277,6 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/app/voice-review.tsx:105
-msgid "Voice import"
-msgstr "Importation vocale"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts:19
 msgid "Waiting"
 msgstr "En attente"
@@ -2325,10 +2317,6 @@ msgstr "Vous devez"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "Vous avez reçu de l'argent"
-
-#: src/app/voice-review.tsx:109
-msgid "You said"
-msgstr "Vous avez dit"
 
 #: src/export/components/export-database/export-database.tsx:14
 msgid "Your database backup is ready to share."

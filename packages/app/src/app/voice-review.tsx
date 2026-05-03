@@ -5,7 +5,6 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
@@ -82,7 +81,9 @@ export default function VoiceReviewModal() {
     const handleReRecord = () => void resolveVoiceReview({ kind: 're-record' });
 
     const resolveRef = useRef(resolveVoiceReview);
-    resolveRef.current = resolveVoiceReview;
+    useEffect(() => {
+        resolveRef.current = resolveVoiceReview;
+    });
 
     useEffect(() => () => void resolveRef.current({ kind: 're-record' }, { skipBack: true }), []);
     const handleSave = async () => {
@@ -101,18 +102,14 @@ export default function VoiceReviewModal() {
     };
 
     const containerStyle = { flex: 1, backgroundColor };
-    const transactionCount = rows.length;
-    const description = t`Transactions: ${transactionCount}`;
 
     return (
         <View style={containerStyle} collapsable={false}>
-            <FormsheetHeader size="md" title={t`Voice import`} description={description} />
-
             {isNotEmptyString(originalText) ? (
-                <View className="mx-lg mb-lg items-center rounded-2xl border border-secondary-corner bg-secondary-background px-lg py-lg">
-                    <Text className="text-xs uppercase tracking-wider text-secondary-foreground opacity-60">{t`You said`}</Text>
-                    <Text className="mt-md text-md italic text-primary text-center" numberOfLines={3}>
-                        “{originalText}”
+                <View className="mx-lg mb-lg mt-2xl flex-row gap-x-md rounded-2xl bg-secondary-background px-lg py-md">
+                    <View className="w-[2px] rounded-full bg-secondary-foreground/30" />
+                    <Text className="flex-1 text-lg leading-snug text-primary" numberOfLines={4}>
+                        {originalText}
                     </Text>
                 </View>
             ) : null}
