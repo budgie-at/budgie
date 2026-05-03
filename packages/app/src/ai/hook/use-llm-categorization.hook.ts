@@ -1,11 +1,13 @@
 import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
-import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
+import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 import { voiceService } from '../service/voice.service';
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
@@ -23,21 +25,37 @@ interface UseLlmCategorizationReturnInterface {
     readonly reset: () => void;
 }
 
-const mapExtractedToTransactions = (
+const suggestCategoryFor = async (
+    description: string,
+    categories: CategoryEntityInterface[]
+): Promise<CategoryEntityInterface | null> => {
+    if (!isNotEmptyArray(categories)) {
+        return null;
+    }
+    const suggestions = await embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null);
+
+    return suggestions[0] ?? null;
+};
+
+const mapExtractedToTransactions = async (
     extracted: ExtractedVoiceTransactionInterface[],
-    accounts: AccountWithInstrumentEntityInterface[]
-): AITransactionInterface[] =>
-    extracted.map(item => ({
-        category: null,
-        amount: item.amount,
-        currency: item.currency,
-        account: findAccountByCurrency(accounts, item.currency),
-        type: TransactionTypeEnum.EXPENSE,
-        comment: item.description
-    }));
+    accounts: AccountWithInstrumentEntityInterface[],
+    categories: CategoryEntityInterface[]
+): Promise<AITransactionInterface[]> =>
+    Promise.all(
+        extracted.map(async item => ({
+            category: await suggestCategoryFor(item.description, categories),
+            amount: item.amount,
+            currency: item.currency,
+            account: findAccountByCurrency(accounts, item.currency),
+            type: TransactionTypeEnum.EXPENSE,
+            comment: item.description
+        }))
+    );
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
+    const { categories } = useAllCategoriesQuery();
     const { status: chatStatus } = useChat();
     const downloadProgress = useAiDownloadProgress();
 
@@ -58,7 +76,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
                 throw new Error('Failed to extract transactions from text');
             }
 
-            const results = mapExtractedToTransactions(extracted, accounts);
+            const results = await mapExtractedToTransactions(extracted, accounts, categories);
             setTransactions(results);
             setStatus('done');
 

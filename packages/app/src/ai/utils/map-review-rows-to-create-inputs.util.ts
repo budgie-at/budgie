@@ -2,7 +2,6 @@ import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionT
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 
 const DEFAULT_EXCHANGE_RATE = 1;
@@ -16,7 +15,6 @@ export const mapReviewRowsToCreateInputs = (
         const accountId = isDefined(row.accountId) ? row.accountId : fallbackAccountId;
         const categoryId = isPositiveNumber(row.categoryId) ? row.categoryId : 0;
         const title = isNotEmptyString(row.description) ? row.description : '';
-        const amountMicroUnits = convertToMicroUnits(row.amount);
 
         return {
             type: TransactionTypeEnum.EXPENSE,
@@ -31,13 +29,13 @@ export const mapReviewRowsToCreateInputs = (
             consolidationParentTransactionId: null,
             consolidationType: null,
             needsEmbedding: false,
-            amount: amountMicroUnits,
+            amount: row.amount,
             tagIds: [],
             entries: [
                 {
                     accountId,
                     categoryId,
-                    amount: amountMicroUnits,
+                    amount: row.amount,
                     type: TransactionEntryTypeEnum.CREDIT,
                     mccCategoryId: null,
                     externalId: null

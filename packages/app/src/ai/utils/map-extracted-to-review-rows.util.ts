@@ -9,5 +9,5 @@ export const mapExtractedToReviewRows = (transactions: AITransactionInterface[])
         currency: transaction.currency,
         description: transaction.comment,
         accountId: transaction.account?.id ?? null,
-        categoryId: null
+        categoryId: transaction.category?.id ?? null
     }));
