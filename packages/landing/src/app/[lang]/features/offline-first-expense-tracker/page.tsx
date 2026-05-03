@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageCloudVsBudgieTable } from '../../../../feature/component/feature-page-cloud-vs-budgie-table/feature-page-cloud-vs-budgie-table';
+import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/feature-page-cta';
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
@@ -25,9 +25,33 @@ import { JsonLd } from '../../../../generic/component/json-ld/json-ld';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
+import type { ComparisonRowInterface } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
 import type { Metadata } from 'next';
 
 const SLUG = 'offline-first-expense-tracker';
+
+const COMPARISON_ROWS: ComparisonRowInterface[] = [
+    {
+        concern: <Trans>Data location</Trans>,
+        rival: <Trans>Vendor servers + Plaid</Trans>,
+        budgie: <Trans>Your device only</Trans>
+    },
+    {
+        concern: <Trans>Works offline</Trans>,
+        rival: <Trans>Read-only at best</Trans>,
+        budgie: <Trans>Yes, fully</Trans>
+    },
+    {
+        concern: <Trans>Account required</Trans>,
+        rival: <Trans>Yes</Trans>,
+        budgie: <Trans>No</Trans>
+    },
+    {
+        concern: <Trans>Subpoena risk</Trans>,
+        rival: <Trans>Vendor can be compelled</Trans>,
+        budgie: <Trans>None — no servers</Trans>
+    }
+];
 
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: PageLangParam): Promise<Metadata> {
@@ -148,7 +172,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 <FeaturePageHeading>
                     <Trans>Cloud apps vs. Budgie</Trans>
                 </FeaturePageHeading>
-                <FeaturePageCloudVsBudgieTable />
+                <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>} rows={COMPARISON_ROWS} />
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
