@@ -25,10 +25,7 @@ interface UseLlmCategorizationReturnInterface {
     readonly reset: () => void;
 }
 
-const suggestCategoryFor = async (
-    description: string,
-    categories: CategoryEntityInterface[]
-): Promise<CategoryEntityInterface | null> => {
+const suggestCategoryFor = async (description: string, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface | null> => {
     if (!isNotEmptyArray(categories)) {
         return null;
     }

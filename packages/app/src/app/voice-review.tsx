@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { useEffect, useRef } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -17,8 +18,7 @@ import { SplitEntryRow } from '../transaction/components/split-entry-row/split-e
 const SCROLL_BOTTOM_PADDING = 16;
 const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 
-const sumAmounts = (rows: { readonly amount: number }[]): number =>
-    rows.reduce((accumulator, row) => accumulator + row.amount, 0);
+const sumAmounts = (rows: { readonly amount: number }[]): number => rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
@@ -48,6 +48,11 @@ export default function VoiceReviewModal() {
 
     const handleCancel = () => void resolveVoiceReview({ kind: 'cancelled' });
     const handleReRecord = () => void resolveVoiceReview({ kind: 're-record' });
+
+    const resolveRef = useRef(resolveVoiceReview);
+    resolveRef.current = resolveVoiceReview;
+
+    useEffect(() => () => void resolveRef.current({ kind: 're-record' }, { skipBack: true }), []);
     const handleSave = async () => {
         if (!isPositiveNumber(accountId)) {
             return;
@@ -60,17 +65,17 @@ export default function VoiceReviewModal() {
     };
 
     const containerStyle = { flex: 1, backgroundColor };
-    const itemCount = rows.length;
-    const description = t`Detected items: ${itemCount}`;
+    const transactionCount = rows.length;
+    const description = t`Transactions: ${transactionCount}`;
 
     return (
         <View style={containerStyle} collapsable={false}>
             <FormsheetHeader size="md" title={t`Voice import`} description={description} />
 
             {isNotEmptyString(originalText) ? (
-                <View className="mx-lg mb-md rounded-2xl border border-secondary-corner bg-secondary-background px-lg py-md">
+                <View className="mx-lg mb-lg items-center rounded-2xl border border-secondary-corner bg-secondary-background px-lg py-lg">
                     <Text className="text-xs uppercase tracking-wider text-secondary-foreground opacity-60">{t`You said`}</Text>
-                    <Text className="mt-xs text-md italic text-primary" numberOfLines={3}>
+                    <Text className="mt-md text-md italic text-primary text-center" numberOfLines={3}>
                         “{originalText}”
                     </Text>
                 </View>

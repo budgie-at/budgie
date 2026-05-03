@@ -763,10 +763,6 @@ msgstr "Delete Permanently"
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
-#: src/app/voice-review.tsx:64
-msgid "Detected items: {itemCount}"
-msgstr "Detected items: {itemCount}"
-
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
@@ -2148,6 +2144,10 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
+#: src/app/voice-review.tsx:64
+msgid "Transactions: {transactionCount}"
+msgstr "Transactions: {transactionCount}"
+
 #: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Transcription failed"
@@ -2338,7 +2338,3 @@ msgstr "Your token is stored securely in the database. Sync continues in the bac
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Your transaction file is ready to share."
-
-#: src/ai/util/build-stt-transcribe-options.util.ts:11
-msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
-msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."

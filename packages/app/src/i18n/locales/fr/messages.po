@@ -761,10 +761,6 @@ msgstr "Supprimer définitivement"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/app/voice-review.tsx:64
-msgid "Detected items: {itemCount}"
-msgstr "Éléments détectés : {itemCount}"
-
 #: src/settings/components/security-settings/pin-enabled-card.tsx:95
 msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
@@ -2146,6 +2142,10 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
+#: src/app/voice-review.tsx:64
+msgid "Transactions: {transactionCount}"
+msgstr "Transactions : {transactionCount}"
+
 #: src/ai/hook/use-stt.hook.ts:125
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
@@ -2336,7 +2336,3 @@ msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Your transaction file is ready to share."
 msgstr "Votre fichier de transactions est prêt à être partagé."
-
-#: src/ai/util/build-stt-transcribe-options.util.ts:11
-msgid "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."
-msgstr "Коротка витрата українською. Приклади: ресторан 200 євро, кава 5 євро, таксі 12 євро."

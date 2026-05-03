@@ -3,6 +3,8 @@ import { useRef, useState } from 'react';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { VoiceInputCollectionInterface } from '../interface/voice-input-collection.interface';
+
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
@@ -21,7 +23,7 @@ export interface UseVoiceInputReturn {
     readonly data: VoiceInputData;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startAndCollect: () => Promise<AITransactionInterface[]>;
+    readonly startAndCollect: () => Promise<VoiceInputCollectionInterface>;
     readonly stop: () => void;
     readonly cancel: () => void;
 }
@@ -41,17 +43,17 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
 
-    const resolverRef = useRef<((transactions: AITransactionInterface[]) => void) | null>(null);
+    const resolverRef = useRef<((value: VoiceInputCollectionInterface) => void) | null>(null);
     const rejecterRef = useRef<((reason: unknown) => void) | null>(null);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
 
-    const settle = (transactions: AITransactionInterface[]) => {
+    const settle = (transactions: AITransactionInterface[], originalText: string) => {
         const resolver = resolverRef.current;
         resolverRef.current = null;
         rejecterRef.current = null;
-        resolver?.(transactions);
+        resolver?.({ transactions, originalText });
     };
 
     const reject = (reason: unknown) => {
@@ -73,7 +75,7 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
 
         if (!isNotEmptyString(text)) {
             setState('idle');
-            settle([]);
+            settle([], '');
 
             return;
         }
@@ -84,7 +86,7 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
         const transactions = await categorization.categorize(text);
 
         setState('done');
-        settle(transactions);
+        settle(transactions, text);
     };
 
     const handleSilenceDetected = () => {
@@ -99,7 +101,7 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
     const isReady = stt.isReady && categorization.isReady;
     const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
-    const startAndCollect = (): Promise<AITransactionInterface[]> => {
+    const startAndCollect = (): Promise<VoiceInputCollectionInterface> => {
         if (isDefined(rejecterRef.current)) {
             rejecterRef.current(new CancelledError());
         }
@@ -111,7 +113,7 @@ export const useVoiceInput = (): UseVoiceInputReturn => {
         recording.start();
         setState('recording');
 
-        return new Promise<AITransactionInterface[]>((resolve, reject) => {
+        return new Promise<VoiceInputCollectionInterface>((resolve, reject) => {
             resolverRef.current = resolve;
             rejecterRef.current = reject;
         });

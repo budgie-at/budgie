@@ -18,7 +18,7 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
     const contentOpacity = useSharedValue(1);
 
     const isLiveRef = useRef<boolean>(true);
-    const { isReady, startAndCollect, cancel, state, stop, data } = voiceInput;
+    const { isReady, startAndCollect, cancel, state, stop } = voiceInput;
 
     useEffect(() => {
         if (!isReady) {
@@ -29,16 +29,16 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
 
         // eslint-disable-next-line max-statements -- Single async lifecycle: collect, route on result kind, recurse on re-record
         const runOnce = async (): Promise<void> => {
-            const transactions = await startAndCollect().catch(() => null);
+            const collection = await startAndCollect().catch(() => null);
             if (!isLiveRef.current) {
                 return;
             }
-            if (transactions === null || !isNotEmptyArray(transactions)) {
+            if (collection === null || !isNotEmptyArray(collection.transactions)) {
                 onClose();
 
                 return;
             }
-            const result = await openVoiceReview({ transactions, originalText: data.transcription.committed });
+            const result = await openVoiceReview({ transactions: collection.transactions, originalText: collection.originalText });
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Ref value can flip during the awaited modal flow; analyzer can't see across async boundary
             if (!isLiveRef.current) {
                 return;
