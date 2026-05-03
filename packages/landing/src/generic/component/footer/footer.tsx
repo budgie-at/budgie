@@ -140,10 +140,7 @@ export const Footer = ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/features`}>
                                     <Trans>All Features</Trans>
                                 </Link>
                             </li>
