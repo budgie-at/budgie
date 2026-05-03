@@ -79,8 +79,8 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import your full Erste Bank account statement straight from the PDF — including the new modern
-                        layout introduced in 2026.
+                        Import your full Erste Bank account statement straight from the PDF — including the new modern layout introduced in
+                        2026.
                     </Trans>
                 }
             />
@@ -91,16 +91,14 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Erste Bank does not expose a public API for personal accounts. PDF statements are the only
-                        export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and
-                        the new 2026 modern format.
+                        Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a
+                        parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The parser extracts account holder, IBAN, opening/closing balances, and every transaction line
-                        including value date, booking date, and reference text. MCC is inferred from booking-text
-                        patterns where present.
+                        The parser extracts account holder, IBAN, opening/closing balances, and every transaction line including value date,
+                        booking date, and reference text. MCC is inferred from booking-text patterns where present.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,19 +122,15 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview,
-                        and inserts every transaction into a new or existing Erste account.
+                        Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every
+                        transaction into a new or existing Erste account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

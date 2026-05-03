@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Custom Categories`,
-        t(i18n)`Build a tree that fits your life.`,
-        [t(i18n)`categories`, t(i18n)`custom`, t(i18n)`organization`]
-    );
+    return createFeatureOgImage(t(i18n)`Custom Categories`, t(i18n)`Build a tree that fits your life.`, [
+        t(i18n)`categories`,
+        t(i18n)`custom`,
+        t(i18n)`organization`
+    ]);
 };
 
 export default OgImage;

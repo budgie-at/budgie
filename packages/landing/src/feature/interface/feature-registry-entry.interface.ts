@@ -1,7 +1,6 @@
-import type { MessageDescriptor } from '@lingui/core';
-
-import type { FeatureTierEnum } from '../constant/feature-tier.enum';
 import type { FeatureFaqInterface } from './feature-faq.interface';
+import type { FeatureTierEnum } from '../constant/feature-tier.enum';
+import type { MessageDescriptor } from '@lingui/core';
 
 export interface FeatureRegistryEntryInterface {
     readonly slug: string;

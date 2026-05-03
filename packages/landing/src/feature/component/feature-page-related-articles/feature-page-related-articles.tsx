@@ -1,8 +1,9 @@
 'use client';
 
 import { Trans, useLingui } from '@lingui/react/macro';
-import { isDefined } from '@rnw-community/shared';
 import Link from 'next/link';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
 import { Motion } from '../../../generic/component/motion/motion';
@@ -16,9 +17,7 @@ interface Props {
 
 export const FeaturePageRelatedArticles = ({ locale, slugs }: Props) => {
     const { i18n } = useLingui();
-    const articles = slugs
-        .map(slug => ARTICLE_REGISTRY.find(entry => entry.slug === slug))
-        .filter(isDefined);
+    const articles = slugs.map(slug => ARTICLE_REGISTRY.find(entry => entry.slug === slug)).filter(isDefined);
 
     if (articles.length === 0) {
         return null;

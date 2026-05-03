@@ -78,10 +78,7 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 heading={<Trans>Custom Spending Categories That Bend To You</Trans>}
                 locale={lang}
                 tagline={
-                    <Trans>
-                        Create, merge, reassign, and reorder categories until they match how you actually think about
-                        money.
-                    </Trans>
+                    <Trans>Create, merge, reassign, and reorder categories until they match how you actually think about money.</Trans>
                 }
             />
 
@@ -91,14 +88,14 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one
-                        (with mass-reassignment), and delete with safe transaction migration.
+                        Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one (with
+                        mass-reassignment), and delete with safe transaction migration.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The category selector reorders by popularity over time, so the categories you use most surface
-                        first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time.
+                        The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced
+                        transactions can pre-fill via MCC mapping; you can override at any time.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -122,20 +119,15 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen
-                        in Settings supports drag-to-reorder and bulk merge. Deleting a category prompts you to migrate
-                        its transactions or wipe them.
+                        Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports
+                        drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

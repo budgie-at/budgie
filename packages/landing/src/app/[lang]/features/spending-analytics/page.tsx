@@ -79,8 +79,8 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Category breakdown, tag breakdown, monthly trends, and balance timelines — with drill-down from
-                        any chart slice to the underlying transactions.
+                        Category breakdown, tag breakdown, monthly trends, and balance timelines — with drill-down from any chart slice to
+                        the underlying transactions.
                     </Trans>
                 }
             />
@@ -91,16 +91,15 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen splits into
-                        Categories, Tags, and Recurring tabs, each with drill-down: tap a category to see every
-                        transaction in it for the current period.
+                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen splits into Categories, Tags, and
+                        Recurring tabs, each with drill-down: tap a category to see every transaction in it for the current period.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Date filters cover Today, Yesterday, This/Last Week, This/Last Month, This Year, and All Time.
-                        The &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your
-                        bookkeeping so you can tighten them up.
+                        Date filters cover Today, Yesterday, This/Last Week, This/Last Month, This Year, and All Time. The
+                        &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your bookkeeping so you can
+                        tighten them up.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,20 +123,15 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Analytics renders directly from the transaction table — no separate aggregation pipeline.
-                        Filters apply to all tabs simultaneously. Compact tile mode shows weekly/monthly net flow
-                        alongside category totals.
+                        Analytics renders directly from the transaction table — no separate aggregation pipeline. Filters apply to all tabs
+                        simultaneously. Compact tile mode shows weekly/monthly net flow alongside category totals.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

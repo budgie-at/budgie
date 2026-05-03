@@ -79,8 +79,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Layer tags on top of categories — one transaction can be both Groceries (category) and
-                        #vacation, #shared, and #reimbursable (tags).
+                        Layer tags on top of categories — one transaction can be both Groceries (category) and #vacation, #shared, and
+                        #reimbursable (tags).
                     </Trans>
                 }
             />
@@ -91,16 +91,15 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project,
-                        person, or purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab
-                        gives you a per-tag P&amp;L without rebuilding the category tree.
+                        Categories answer &ldquo;what kind of expense&rdquo;; tags answer &ldquo;for which project, person, or
+                        purpose.&rdquo; Tag a stretch of transactions #vacation-2026 and the analytics tab gives you a per-tag P&amp;L
+                        without rebuilding the category tree.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a corner badge on the
-                        transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which
-                        one is primary.
+                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a corner badge on the transaction list so you
+                        can scan at a glance. Long-press a tag chip on the card to rotate which one is primary.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,20 +123,16 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tags are flat (no hierarchy), reusable across all transactions, and merge-able like categories.
-                        The tag selector stays open across multi-selections; commit with a Done pill. Tag-based analytics
-                        shows totals by tag plus an &ldquo;Untagged&rdquo; bucket.
+                        Tags are flat (no hierarchy), reusable across all transactions, and merge-able like categories. The tag selector
+                        stays open across multi-selections; commit with a Done pill. Tag-based analytics shows totals by tag plus an
+                        &ldquo;Untagged&rdquo; bucket.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

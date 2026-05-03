@@ -1,4 +1,3 @@
- 
 import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -62,8 +61,8 @@ export default async function FeaturesHubPage(props: PageLangParam) {
                     </h1>
                     <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
                         <Trans>
-                            Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI
-                            categorization — in one place.
+                            Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization —
+                            in one place.
                         </Trans>
                     </p>
                 </div>

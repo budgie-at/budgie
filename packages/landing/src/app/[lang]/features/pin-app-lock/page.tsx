@@ -79,8 +79,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        A 4–6 digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the
-                        database file is unreadable — even with full filesystem access.
+                        A 4–6 digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable
+                        — even with full filesystem access.
                     </Trans>
                 }
             />
@@ -91,15 +91,14 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most app locks are decoration — a screen you can bypass by reading the storage layer.
-                        Budgie&apos;s PIN is wired to SQLCipher, so the same digits that pass the lock screen also
-                        derive the database encryption key.
+                        Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie&apos;s PIN is wired to
+                        SQLCipher, so the same digits that pass the lock screen also derive the database encryption key.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        App goes to background → lock kicks in. Wrong PIN doesn&apos;t lock you out forever, but a
-                        forgotten one is a real wipe (your call: keep the PIN safe).
+                        App goes to background → lock kicks in. Wrong PIN doesn&apos;t lock you out forever, but a forgotten one is a real
+                        wipe (your call: keep the PIN safe).
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,20 +122,15 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Setup in Settings → PIN. Choose 4-6 digits. Optional biometric unlock binds Face ID / Touch ID
-                        to the same encryption key. The lock screen appears every cold launch and after a configurable
-                        inactivity window.
+                        Setup in Settings → PIN. Choose 4-6 digits. Optional biometric unlock binds Face ID / Touch ID to the same
+                        encryption key. The lock screen appears every cold launch and after a configurable inactivity window.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

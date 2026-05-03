@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Erste Bank PDF Import`,
-        t(i18n)`Classic and modern PDF formats supported.`,
-        [t(i18n)`erste`, t(i18n)`pdf`, t(i18n)`import`]
-    );
+    return createFeatureOgImage(t(i18n)`Erste Bank PDF Import`, t(i18n)`Classic and modern PDF formats supported.`, [
+        t(i18n)`erste`,
+        t(i18n)`pdf`,
+        t(i18n)`import`
+    ]);
 };
 
 export default OgImage;

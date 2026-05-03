@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Monobank Bank Sync`,
-        t(i18n)`Direct API. No aggregator. Yours forever.`,
-        [t(i18n)`monobank`, t(i18n)`privacy`, t(i18n)`bank sync`]
-    );
+    return createFeatureOgImage(t(i18n)`Monobank Bank Sync`, t(i18n)`Direct API. No aggregator. Yours forever.`, [
+        t(i18n)`monobank`,
+        t(i18n)`privacy`,
+        t(i18n)`bank sync`
+    ]);
 };
 
 export default OgImage;

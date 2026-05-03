@@ -79,8 +79,8 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Import any bank&apos;s CSV with flexible column mapping and reusable presets. Set it up once per
-                        bank, then it&apos;s two taps from there.
+                        Import any bank&apos;s CSV with flexible column mapping and reusable presets. Set it up once per bank, then
+                        it&apos;s two taps from there.
                     </Trans>
                 }
             />
@@ -91,16 +91,15 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Not every bank has an API. CSV is the universal escape hatch — and Budgie supports it without
-                        forcing you into a specific column order. Map &ldquo;Date&rdquo;, &ldquo;Amount&rdquo;,
-                        &ldquo;Description&rdquo; to whichever columns your bank uses, save the preset, and never touch
-                        the mapping again.
+                        Not every bank has an API. CSV is the universal escape hatch — and Budgie supports it without forcing you into a
+                        specific column order. Map &ldquo;Date&rdquo;, &ldquo;Amount&rdquo;, &ldquo;Description&rdquo; to whichever columns
+                        your bank uses, save the preset, and never touch the mapping again.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Smart presets remember your column choices, date format, decimal separator, and account
-                        assignment per source. Re-imports detect duplicates so you can re-pull the same statement safely.
+                        Smart presets remember your column choices, date format, decimal separator, and account assignment per source.
+                        Re-imports detect duplicates so you can re-pull the same statement safely.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,19 +123,15 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap Import → CSV. Pick the file. Map columns. Save the mapping as a preset. The importer
-                        parses, dedupes against existing rows by externalId, and shows a preview before write.
+                        Tap Import → CSV. Pick the file. Map columns. Save the mapping as a preset. The importer parses, dedupes against
+                        existing rows by externalId, and shows a preview before write.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

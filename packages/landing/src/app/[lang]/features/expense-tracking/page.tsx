@@ -79,8 +79,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for
-                        one-handed use.
+                        Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use.
                     </Trans>
                 }
             />
@@ -91,16 +90,14 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet picks the
-                        right account, the most-likely category, and the current date by default — typically two taps to
-                        a saved transaction.
+                        An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet picks the right account, the
+                        most-likely category, and the current date by default — typically two taps to a saved transaction.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Every entry is amount + account + category + tags + comment + date. Long-press any transaction in
-                        the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the
-                        screen.
+                        Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a
+                        context menu. Edit, delete, split, or convert to a transfer without leaving the screen.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,20 +121,15 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Three transaction types: expense (debits an account), income (credits an account), transfer
-                        (moves between two of your accounts). Categories are user-defined, optionally MCC-backed when
-                        imported via bank sync.
+                        Three transaction types: expense (debits an account), income (credits an account), transfer (moves between two of
+                        your accounts). Categories are user-defined, optionally MCC-backed when imported via bank sync.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Voice Transaction Entry`,
-        t(i18n)`Speak it. Budgie logs it. Audio never leaves your phone.`,
-        [t(i18n)`voice`, t(i18n)`on-device`, t(i18n)`ai`]
-    );
+    return createFeatureOgImage(t(i18n)`Voice Transaction Entry`, t(i18n)`Speak it. Budgie logs it. Audio never leaves your phone.`, [
+        t(i18n)`voice`,
+        t(i18n)`on-device`,
+        t(i18n)`ai`
+    ]);
 };
 
 export default OgImage;

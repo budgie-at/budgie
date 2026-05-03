@@ -79,8 +79,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. Whisper STT and the
-                        on-device LLM both run locally — no audio leaves your phone.
+                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. Whisper STT and the on-device LLM both run
+                        locally — no audio leaves your phone.
                     </Trans>
                 }
             />
@@ -91,15 +91,15 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Voice is the fastest input mode for an expense — but every voice budgeting app today streams
-                        microphone data to a vendor server. Budgie keeps the audio stream entirely on the device, then
-                        runs Whisper-small for transcription and a local LLM for entity extraction.
+                        Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a
+                        vendor server. Budgie keeps the audio stream entirely on the device, then runs Whisper-small for transcription and a
+                        local LLM for entity extraction.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The result is a pre-filled transaction form: amount, category, account, and merchant — with the
-                        same AI category suggestion pill you get for typed entries. Confirm, edit if needed, save.
+                        The result is a pre-filled transaction form: amount, category, account, and merchant — with the same AI category
+                        suggestion pill you get for typed entries. Confirm, edit if needed, save.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -123,9 +123,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap the mic in the quick-entry sheet. Whisper transcribes locally. The local LLM extracts
-                        amount + merchant + date hints from the transcription and applies the same on-device category
-                        suggestion pipeline used for typed transactions.
+                        Tap the mic in the quick-entry sheet. Whisper transcribes locally. The local LLM extracts amount + merchant + date
+                        hints from the transcription and applies the same on-device category suggestion pipeline used for typed
+                        transactions.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -149,11 +149,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

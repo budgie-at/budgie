@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Spending Analytics & Charts`,
-        t(i18n)`Category, tag, trend — drill into anything.`,
-        [t(i18n)`analytics`, t(i18n)`charts`, t(i18n)`drill-down`]
-    );
+    return createFeatureOgImage(t(i18n)`Spending Analytics & Charts`, t(i18n)`Category, tag, trend — drill into anything.`, [
+        t(i18n)`analytics`,
+        t(i18n)`charts`,
+        t(i18n)`drill-down`
+    ]);
 };
 
 export default OgImage;

@@ -79,8 +79,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and
-                        uncompromising.
+                        Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising.
                     </Trans>
                 }
             />
@@ -91,14 +90,14 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into
-                        the platform Secure Enclave / TEE so the device, not Budgie, vouches for you.
+                        Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure
+                        Enclave / TEE so the device, not Budgie, vouches for you.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy —
-                        five strikes and you&apos;re prompted for the device passcode, not just our PIN.
+                        Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy — five strikes and
+                        you&apos;re prompted for the device passcode, not just our PIN.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -122,20 +121,15 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Enable in Settings → PIN → &quot;Unlock with biometrics&quot;. The platform stores a
-                        biometric-bound key fragment in the Secure Enclave/Keystore; Budgie combines it with your
-                        PIN-derived key to unlock SQLCipher.
+                        Enable in Settings → PIN → &quot;Unlock with biometrics&quot;. The platform stores a biometric-bound key fragment in
+                        the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

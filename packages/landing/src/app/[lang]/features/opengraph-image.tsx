@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`All Budgie Features`,
-        t(i18n)`Offline-first. Private. AI-powered.`,
-        [t(i18n)`features`, t(i18n)`offline-first`, t(i18n)`privacy`]
-    );
+    return createFeatureOgImage(t(i18n)`All Budgie Features`, t(i18n)`Offline-first. Private. AI-powered.`, [
+        t(i18n)`features`,
+        t(i18n)`offline-first`,
+        t(i18n)`privacy`
+    ]);
 };
 
 export default OgImage;

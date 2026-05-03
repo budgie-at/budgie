@@ -1,4 +1,3 @@
-
 import { Trans } from '@lingui/react/macro';
 
 export const FeaturePagePlaidVsMonobankTable = () => (

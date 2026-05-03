@@ -79,8 +79,8 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        Move money between your own accounts with automatic FX conversion and dual-amount display for
-                        cross-currency transfers.
+                        Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency
+                        transfers.
                     </Trans>
                 }
             />
@@ -91,16 +91,14 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Transfers between your accounts are not income or expenses — and an app that treats them as such
-                        will mis-state your spending. Budgie has a first-class Transfer transaction type with explicit
-                        source and destination accounts.
+                        Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state your
+                        spending. Budgie has a first-class Transfer transaction type with explicit source and destination accounts.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        For cross-currency transfers (e.g. USD to EUR), Budgie shows both amounts side by side and lets
-                        you pin either side. Switch the &ldquo;currency mode&rdquo; pill to drive the conversion from
-                        send or receive direction.
+                        For cross-currency transfers (e.g. USD to EUR), Budgie shows both amounts side by side and lets you pin either side.
+                        Switch the &ldquo;currency mode&rdquo; pill to drive the conversion from send or receive direction.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -124,20 +122,15 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Pick source account, pick destination account, enter amount. If currencies differ, the
-                        dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation
-                        stays exact.
+                        Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens
+                        automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
                 {entry.faqs.map((faq, index) => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={`faq-${index}`}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={`faq-${index}`} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

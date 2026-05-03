@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Date Filter Presets`,
-        t(i18n)`Eight presets. Locale-aware.`,
-        [t(i18n)`filters`, t(i18n)`dates`, t(i18n)`presets`]
-    );
+    return createFeatureOgImage(t(i18n)`Date Filter Presets`, t(i18n)`Eight presets. Locale-aware.`, [
+        t(i18n)`filters`,
+        t(i18n)`dates`,
+        t(i18n)`presets`
+    ]);
 };
 
 export default OgImage;

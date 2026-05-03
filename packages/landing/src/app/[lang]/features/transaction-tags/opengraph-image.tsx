@@ -12,11 +12,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(
-        t(i18n)`Transaction Tags`,
-        t(i18n)`Multi-dimensional tracking without spreadsheets.`,
-        [t(i18n)`tags`, t(i18n)`organization`, t(i18n)`analytics`]
-    );
+    return createFeatureOgImage(t(i18n)`Transaction Tags`, t(i18n)`Multi-dimensional tracking without spreadsheets.`, [
+        t(i18n)`tags`,
+        t(i18n)`organization`,
+        t(i18n)`analytics`
+    ]);
 };
 
 export default OgImage;
