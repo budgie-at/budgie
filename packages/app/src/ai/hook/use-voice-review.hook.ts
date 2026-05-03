@@ -1,4 +1,3 @@
-import { TransactionEntityInterface } from '@budgie/contracts';
 import { useReducer, useState } from 'react';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -6,6 +5,7 @@ import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 import { VoiceReviewActionInterface } from '../interface/voice-review-action.interface';
+import { VoiceReviewCreateResultInterface } from '../interface/voice-review-create-result.interface';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 import { voiceReviewBatchCreateService } from '../service/voice-review-batch-create.service';
 
@@ -38,7 +38,7 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
     const hasMissingCategories = rows.some(row => !isPositiveNumber(row.categoryId));
     const canSave = isNotEmptyArray(rows) && !hasInvalidAmounts && !hasMissingCategories;
 
-    const saveAll = async (accountId: number): Promise<TransactionEntityInterface[] | null> => {
+    const saveAll = async (accountId: number): Promise<VoiceReviewCreateResultInterface | null> => {
         setIsSaving(true);
         try {
             return await voiceReviewBatchCreateService.create(rows, accountId);

@@ -89,11 +89,15 @@ export default function VoiceReviewModal() {
         if (!isPositiveNumber(accountId)) {
             return;
         }
-        const saved = await saveAll(accountId);
-        if (!isDefined(saved)) {
+        const result = await saveAll(accountId);
+        if (!isDefined(result)) {
             return;
         }
-        resolveVoiceReview({ kind: 'saved', transactionIds: saved.map(transaction => transaction.id), accountId });
+        resolveVoiceReview({
+            kind: 'saved',
+            transactionIds: result.transactions.map(transaction => transaction.id),
+            accountId: result.destinationAccountId
+        });
     };
 
     const containerStyle = { flex: 1, backgroundColor };
