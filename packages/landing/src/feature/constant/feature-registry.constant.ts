@@ -1143,6 +1143,171 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         publishedAt: '2026-01-05',
         updatedAt: '2026-05-03',
         ogTags: ['transfer', 'convert', 'reclassify']
+    },
+    {
+        slug: 'screenshot-protection',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`Screenshot Protection`,
+        tagline: msg`Accidental shares stay private — balances blur in screenshots and the app switcher.`,
+        metaTitle: msg`Screenshot Protection — Budgie`,
+        metaDescription: msg`Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen.`,
+        primaryKeyword: 'hide bank balance screenshot',
+        seoKeywords: ['hide bank balance screenshot', 'screenshot protection finance app', 'app switcher blur', 'private balance app', 'no-screenshot finance app'],
+        relatedFeatureSlugs: ['pin-app-lock', 'biometric-authentication'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'cloud-budgeting-privacy-risks'],
+        faqs: [
+            {
+                question: msg`What does screenshot protection actually do?`,
+                answer: msg`On Android, FLAG_SECURE prevents the OS from capturing screenshots. On iOS, sensitive views render a blur overlay in the app-switcher preview when Budgie goes to background.`
+            },
+            {
+                question: msg`Can I disable it for receipts I want to share?`,
+                answer: msg`Yes — Settings → Privacy → Screenshot protection. Toggle individual screens. The transaction-list screen and home screen are the typical "always on" candidates.`
+            },
+            {
+                question: msg`Does it survive screen-recording apps?`,
+                answer: msg`On Android, FLAG_SECURE blocks screen recording too. On iOS, the OS-level recording bypasses app-switcher blur, so this is more of a "passersby" defense than a "rootkit" defense.`
+            },
+            {
+                question: msg`Will Face ID still work with the blur on?`,
+                answer: msg`Yes. The blur applies to the app-switcher preview, not the foreground rendering. Face ID continues to work normally.`
+            }
+        ],
+        publishedAt: '2025-12-23',
+        updatedAt: '2026-05-03',
+        ogTags: ['privacy', 'screenshots', 'security']
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`Crypto, Stocks, ETFs — All In One Place`,
+        tagline: msg`Bitcoin to ETFs in one dashboard, alongside your bank accounts.`,
+        metaTitle: msg`Crypto & Investment Tracking — Budgie`,
+        metaDescription: msg`Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Each holding is an instrument + quantity + price.`,
+        primaryKeyword: 'crypto portfolio tracker app',
+        seoKeywords: ['crypto portfolio tracker app', 'crypto + bank tracker', 'investment tracker mobile', 'ETF portfolio app', 'multi-asset net worth'],
+        relatedFeatureSlugs: ['net-worth-tracker', 'account-management', 'multi-currency'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            {
+                question: msg`Which assets can I track?`,
+                answer: msg`Crypto (Bitcoin, Ethereum, others), stocks (any ticker), ETFs, and commodities. Each holding is a row of (instrument, quantity, price).`
+            },
+            {
+                question: msg`Where do prices come from?`,
+                answer: msg`Manual update or imported brokerage CSV. Live ticker feeds are opt-in to keep the offline-first guarantee — no telemetry needed.`
+            },
+            {
+                question: msg`How is this different from a portfolio tracker?`,
+                answer: msg`Budgie integrates investment holdings into the same net-worth view as your bank accounts and debt. Most portfolio trackers don't model fiat side-by-side.`
+            },
+            {
+                question: msg`Can I record buy / sell history?`,
+                answer: msg`Yes — buys are inflows to the holding account; sells are outflows with the realized FX. P&L drilling on the way for a future release.`
+            }
+        ],
+        publishedAt: '2025-11-17',
+        updatedAt: '2026-05-03',
+        ogTags: ['crypto', 'stocks', 'etf']
+    },
+    {
+        slug: 'dark-mode',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`True Dark Mode (Not Just Dimmed)`,
+        tagline: msg`OLED-friendly black, locale-aware, no white flash on cold launch.`,
+        metaTitle: msg`Dark Mode — Budgie`,
+        metaDescription: msg`System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility.`,
+        primaryKeyword: 'dark mode expense tracker',
+        seoKeywords: ['dark mode expense tracker', 'OLED budget app', 'system theme finance app', 'dark mode finance app', 'true black expense app'],
+        relatedFeatureSlugs: ['multi-language-app'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            {
+                question: msg`Is it true black or just dark gray?`,
+                answer: msg`OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels are off — saves battery on OLED screens.`
+            },
+            {
+                question: msg`Does it switch automatically?`,
+                answer: msg`Yes — system theme by default. Override to Light or Dark in Settings if you prefer.`
+            },
+            {
+                question: msg`Why no white flash on cold launch?`,
+                answer: msg`The native splash screen reads the OS theme directly so the transition into the React Native app stays in dark mode without an intermediate light state.`
+            },
+            {
+                question: msg`Do charts recolor?`,
+                answer: msg`Yes. Chart palettes recompute for legibility — emerald accents shift slightly for contrast on a dark canvas.`
+            }
+        ],
+        publishedAt: '2025-11-17',
+        updatedAt: '2026-05-03',
+        ogTags: ['dark mode', 'ui', 'theme']
+    },
+    {
+        slug: 'multi-language-app',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`Budgie in Five Languages`,
+        tagline: msg`English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting.`,
+        metaTitle: msg`Multi-Language App — Budgie`,
+        metaDescription: msg`Full UI in English, Ukrainian, French, German, and Spanish. Auto-detected from device locale, switchable in-app — no reinstall, no relaunch.`,
+        primaryKeyword: 'multilingual budget app',
+        seoKeywords: ['multilingual budget app', '5 languages expense tracker', 'localized finance app', 'i18n budget app', 'language switcher expense app'],
+        relatedFeatureSlugs: ['ai-merchant-translation', 'dark-mode'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            {
+                question: msg`Which languages are supported?`,
+                answer: msg`English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes translations.`
+            },
+            {
+                question: msg`How does language detection work?`,
+                answer: msg`Auto-detected from device locale on first launch. Override anytime in Settings → Language.`
+            },
+            {
+                question: msg`Does it require a relaunch?`,
+                answer: msg`No. Switching language re-renders the UI in-place, no reinstall or relaunch.`
+            },
+            {
+                question: msg`What about number / date formats?`,
+                answer: msg`Numbers, dates, and currency formats follow the device locale even when the UI language differs. Set them independently in Settings if you prefer.`
+            }
+        ],
+        publishedAt: '2025-11-17',
+        updatedAt: '2026-05-03',
+        ogTags: ['i18n', 'languages', 'multilingual']
+    },
+    {
+        slug: 'primary-tag',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`Primary Tag — Scan Your Transactions At A Glance`,
+        tagline: msg`One badge. Scan a long list at a glance.`,
+        metaTitle: msg`Primary Tag — Budgie`,
+        metaDescription: msg`Promote one tag per transaction to "primary" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows.`,
+        primaryKeyword: 'label transactions quickly',
+        seoKeywords: ['label transactions quickly', 'primary tag finance app', 'visual transaction tag', 'corner star badge expense', 'primary tag picker'],
+        relatedFeatureSlugs: ['transaction-tags', 'tag-analytics'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            {
+                question: msg`What does "primary" actually do?`,
+                answer: msg`Visual emphasis. The primary tag renders as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening any row.`
+            },
+            {
+                question: msg`How do I set a primary tag?`,
+                answer: msg`Long-press a tag chip on the transaction card. The tap rotates which of that transaction's tags is primary.`
+            },
+            {
+                question: msg`Is the primary tag preserved across edits?`,
+                answer: msg`Yes. Editing a transaction keeps its primary-tag designation; bank-sync re-imports also preserve it.`
+            },
+            {
+                question: msg`Can a transaction have no primary tag?`,
+                answer: msg`Yes — by default, none is primary. The badge appears only when you explicitly promote one.`
+            }
+        ],
+        publishedAt: '2026-04-24',
+        updatedAt: '2026-05-03',
+        ogTags: ['tags', 'ui', 'scanning']
     }
 ] as const;
 /* eslint-enable lingui/no-unlocalized-strings */
