@@ -13,7 +13,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`Offline-First Expense Tracker`,
         tagline: msg`Every transaction lives on your device. No cloud account, no sign-up.`,
         metaTitle: msg`Offline-First Expense Tracker — Budgie`,
-        metaDescription: msg`Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted SQLite, no servers, no account required.`,
+        metaDescription: msg`Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted SQLite, no cloud servers, no account required to start.`,
         primaryKeyword: 'offline expense tracker app',
         seoKeywords: [
             'offline expense tracker',
@@ -52,7 +52,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`Monobank Bank Sync`,
         tagline: msg`Direct API. No aggregator. Full transaction history to your device.`,
         metaTitle: msg`Monobank Auto-Sync — Budgie`,
-        metaDescription: msg`Connect your Monobank account directly via personal API token. Full transaction history, FX rates, and counter-IBANs synced straight to your device — never via Plaid.`,
+        metaDescription: msg`Connect your Monobank account with a personal API token. Full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid.`,
         primaryKeyword: 'monobank expense tracker',
         seoKeywords: ['monobank sync', 'monobank api', 'monobank expense tracker', 'monobank transaction import', 'monobank budget app'],
         relatedFeatureSlugs: [
@@ -91,7 +91,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`On-Device AI Auto-Categorization`,
         tagline: msg`A 1.7B-parameter model on your phone — never a remote server.`,
         metaTitle: msg`On-Device AI Auto-Categorization — Budgie`,
-        metaDescription: msg`Budgie's on-device 1.7B LLM and embedding model categorize new transactions privately. Your statements never touch a server. Vector search plus a generative pass.`,
+        metaDescription: msg`Budgie's on-device 1.7B LLM and embedding model categorize transactions privately. Your statements never leave the phone — no cloud, no API keys needed.`,
         primaryKeyword: 'AI expense categorization',
         seoKeywords: [
             'AI expense categorization',
