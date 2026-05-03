@@ -6,7 +6,9 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { LlamaConfigInterface } from '../interface/llama-config.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
+import { SnapshotWithStatusInterface } from '../interface/snapshot-with-status.interface';
 import { loadLlamaContext } from '../util/load-llama-context.util';
 
 export abstract class SnapshotStore<TSnapshot> {
@@ -74,12 +76,7 @@ export abstract class ScheduledSnapshotStore<TSnapshot> extends SnapshotStore<TS
     protected abstract recompute(): void;
 }
 
-interface SnapshotWithStatus {
-    readonly status: AiSubsystemStatusEnum;
-    readonly errorMessage: string | null;
-}
-
-export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus> extends SnapshotStore<TSnapshot> {
+export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatusInterface> extends SnapshotStore<TSnapshot> {
     protected pendingOperation: Promise<unknown> = Promise.resolve();
 
     constructor(
@@ -131,14 +128,6 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatus>
 
     protected abstract runStart(): Promise<void>;
     protected abstract runStop(): Promise<void>;
-}
-
-interface LlamaConfigInterface {
-    readonly modelUrl: string;
-    readonly modelFilename: string;
-    readonly contextSize: number;
-    readonly embedding: boolean;
-    readonly poolingType?: 'mean' | 'none' | 'cls' | 'last';
 }
 
 export abstract class BaseLlamaSubsystemService extends BaseSubsystemService<LlamaSubsystemSnapshotInterface> {

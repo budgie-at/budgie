@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- State machine service co-locates recompute, derivation, and action dispatcher */
-import { Log, getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -16,6 +16,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemActionEnum } from '../enum/ai-system-action.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
+import { AiErrorSourceInterface } from '../interface/ai-error-source.interface';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
@@ -27,35 +28,25 @@ import { embeddingDrainerService } from './embedding-drainer.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
-const logger = getLogger('AiSystemStatusService');
-
-const FULL_PERCENT = 100;
-const TRUNCATE_LEN = 80;
-const SUBSYSTEM_COUNT = 3;
-
-interface ErrorSourceInterface {
-    readonly source: string;
-    readonly message: string;
-}
-
-type SuspendedOrIdleState = AiSystemStateEnum.SUSPENDED | AiSystemStateEnum.IDLE;
-
-const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
-    state: AiSystemStateEnum.DISABLED,
-    percent: 0,
-    statusText: '',
-    action: AiSystemActionEnum.NONE,
-    translationPending: 0,
-    embeddingPending: 0,
-    errorMessage: null
-};
 
 class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInterface> {
+    private static readonly FULL_PERCENT = 100;
+    private static readonly TRUNCATE_LEN = 80;
+    private static readonly SUBSYSTEM_COUNT = 3;
+    private static readonly EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
+        state: AiSystemStateEnum.DISABLED,
+        percent: 0,
+        statusText: '',
+        action: AiSystemActionEnum.NONE,
+        translationPending: 0,
+        embeddingPending: 0,
+        errorMessage: null
+    };
+
     private lastState: AiSystemStateEnum = AiSystemStateEnum.DISABLED;
-    private lastStateAt = Date.now();
 
     constructor() {
-        super(EMPTY_SNAPSHOT);
+        super(AiSystemStatusService.EMPTY_SNAPSHOT);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -133,7 +124,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     }
 
     protected emptySnapshot(): AiSystemSnapshotInterface {
-        return { ...EMPTY_SNAPSHOT };
+        return { ...AiSystemStatusService.EMPTY_SNAPSHOT };
     }
 
     protected recompute(): void {
@@ -142,14 +133,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             return;
         }
         if (next.state !== this.lastState) {
-            const now = Date.now();
-            logger.log('system:state:transition', {
-                from: this.lastState,
-                to: next.state,
-                durationMs: now - this.lastStateAt
-            });
             this.lastState = next.state;
-            this.lastStateAt = now;
         }
         this.setSnapshot(next);
     }
@@ -179,14 +163,14 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const embeddingPending = embeddingDrainerService.getSnapshot().pending;
 
         if (!isAiEnabled()) {
-            return { ...EMPTY_SNAPSHOT, statusText: t`AI disabled` };
+            return { ...AiSystemStatusService.EMPTY_SNAPSHOT, statusText: t`AI disabled` };
         }
 
         const subsystemError = this.firstSubsystemError();
         const drainerError = this.firstDrainerError();
         if (isDefined(subsystemError) || isDefined(drainerError)) {
             const source = subsystemError?.source ?? drainerError?.source ?? 'unknown';
-            const message = (subsystemError?.message ?? drainerError?.message ?? '').slice(0, TRUNCATE_LEN);
+            const message = (subsystemError?.message ?? drainerError?.message ?? '').slice(0, AiSystemStatusService.TRUNCATE_LEN);
 
             return {
                 state: AiSystemStateEnum.ERROR,
@@ -206,7 +190,9 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         if (isNotEmptyString(bootText)) {
             return {
                 state: AiSystemStateEnum.BOOTING,
-                percent: Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT),
+                percent: Math.round(
+                    (chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / AiSystemStatusService.SUBSYSTEM_COUNT
+                ),
                 action: AiSystemActionEnum.NONE,
                 statusText: bootText,
                 translationPending,
@@ -269,7 +255,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
         return {
             state: AiSystemStateEnum.READY,
-            percent: FULL_PERCENT,
+            percent: AiSystemStatusService.FULL_PERCENT,
             action: AiSystemActionEnum.NONE,
             statusText: t`All set`,
             translationPending,
@@ -313,7 +299,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         chat: AiSubsystemStatusEnum,
         embedding: AiSubsystemStatusEnum,
         stt: AiSubsystemStatusEnum
-    ): SuspendedOrIdleState | null {
+    ): AiSystemStateEnum.SUSPENDED | AiSystemStateEnum.IDLE | null {
         const statuses = [chat, embedding, stt] as const;
         if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
             return AiSystemStateEnum.SUSPENDED;
@@ -326,7 +312,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     }
 
     /* eslint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */
-    private firstSubsystemError(): ErrorSourceInterface | null {
+    private firstSubsystemError(): AiErrorSourceInterface | null {
         const chatError = chatService.getSnapshot().errorMessage;
         if (isNotEmptyString(chatError)) {
             return { source: 'chat', message: chatError };
@@ -343,7 +329,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         return null;
     }
 
-    private firstDrainerError(): ErrorSourceInterface | null {
+    private firstDrainerError(): AiErrorSourceInterface | null {
         const translation = translationDrainerService.getSnapshot();
         if (translation.state === DrainerStateEnum.ERROR && isNotEmptyString(translation.errorMessage)) {
             return { source: 'translation drainer', message: translation.errorMessage };
