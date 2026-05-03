@@ -102,7 +102,7 @@ export interface RefundCandidateInterface {
 
 // refund-review-candidate.interface.ts
 export interface RefundReviewCandidateInterface {
-    readonly confidenceBucket: 'review-prefix-strip' | 'review-extended-window';
+    readonly confidenceBucket: 'review-prefix-strip-mcc';
     readonly accountId: number;
     readonly expenseTransactionId: number;
     readonly expenseTransactionTitle: string | null;
@@ -136,11 +136,10 @@ export interface CanonicalRefundInputInterface {
     readonly operatedAt: number;
     readonly accountId: number;
     readonly netAmount: number;
-    readonly entryExchangeRate: number;
 }
 ```
 
-The canonical's `comment` field is hard-coded to `''` in the create call (matches existing `createCanonicalTransfer`) — no `comment` is propagated from sources, so the input shape doesn't carry one.
+The canonical's `comment` field is hard-coded to `''` and the entry's `exchangeRate` is hard-coded to `1` inside `createCanonicalRefund`. Both match the existing `createCanonicalTransfer` invariants for same-currency operations and don't need to be parameters until cross-currency refunds become a goal (deferred).
 
 `sync/interface/consolidation-candidate-groups.interface.ts` extends with `refundCandidates: RefundCandidateInterface[]` and `refundReviewCandidates: RefundReviewCandidateInterface[]`.
 
@@ -219,7 +218,7 @@ candidate_pairs AS (
       ON inc.account_id = exp.account_id
      AND inc.norm_title = exp.norm_title
      AND inc.operated_at > exp.operated_at
-     AND inc.operated_at - exp.operated_at <= :REFUND_TIME_WINDOW
+     AND inc.operated_at - exp.operated_at <= ${REFUND_TIME_WINDOW_SECONDS}
 )
 SELECT
     expense_tx_id,
@@ -227,24 +226,28 @@ SELECT
     expense_amount,
     expense_operated_at,
     account_id,
-    SUM(refund_amount)                          AS sum_refunds,
-    expense_amount - SUM(refund_amount)         AS net_amount,
-    GROUP_CONCAT(refund_tx_id)                  AS refund_tx_ids,
-    GROUP_CONCAT(refund_amount)                 AS refund_amounts,
-    MAX(time_diff)                              AS max_time_diff_seconds
+    SUM(refund_amount)                                            AS sum_refunds,
+    expense_amount - SUM(refund_amount)                           AS net_amount,
+    GROUP_CONCAT(refund_tx_id  ORDER BY refund_tx_id)             AS refund_tx_ids,
+    GROUP_CONCAT(refund_amount ORDER BY refund_tx_id)             AS refund_amounts,
+    MAX(time_diff)                                                AS max_time_diff_seconds
 FROM candidate_pairs
 GROUP BY expense_tx_id
 HAVING SUM(refund_amount) <= expense_amount;
 ```
 
-The repository method parses each `GROUP_CONCAT` column back into `number[]` via `value.split(',').map(Number)` after a null-check (SQLite returns `NULL` for empty groups; `HAVING` already eliminates that case here, but the parser stays defensive). No precedent in the existing contracts repos uses `GROUP_CONCAT`; this PR establishes the pattern.
+Notes on the SQL:
+
+- **Drizzle template substitution.** Constants like `REFUND_TIME_WINDOW_SECONDS` interpolate via Drizzle's `sql` template tag (`sql\`... <= ${REFUND_TIME_WINDOW_SECONDS}\``), matching the convention already used throughout `transfer-pair.repository.ts`.
+- **`GROUP_CONCAT` ordering is load-bearing.** Both aggregates use `ORDER BY refund_tx_id` so the parsed `refundIncomeTransactionIds` and `refundIncomeAmounts` arrays align by index. Without this, SQLite makes no ordering guarantee across aggregates and `@Log` strings / test assertions become non-deterministic. Parsing: `value.split(',').map(Number)` per column after a null-guard (the `HAVING` clause already eliminates empty groups, but the parser stays defensive). No `GROUP_CONCAT` precedent exists in the contracts repos; this PR establishes the pattern.
 
 ### Manual-review CTE — differences from auto
 
 - Replace `inc.norm_title = exp.norm_title` with `(inc.norm_title LIKE '%' || stripped(exp.norm_title) || '%' OR exp.norm_title LIKE '%' || stripped(inc.norm_title) || '%')` where `stripped(...)` strips each prefix in `REFUND_TITLE_PREFIXES` from the leading edge — implemented as a chained `REPLACE(REPLACE(..., 'REFUND', ''), 'RETURN', '')` etc., wrapped in `UPPER(TRIM(...))`.
-- `(inc.operated_at - exp.operated_at) <= :REFUND_MANUAL_REVIEW_WINDOW`.
-- `inc.mcc_category_id = exp.mcc_category_id` — MCC must match (precision boost).
-- A `LEFT JOIN` against the auto-bucket query excludes rows already auto-eligible, so a candidate never appears in both buckets.
+- `inc.operated_at - exp.operated_at <= ${REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS}`.
+- `inc.mcc_category_id = exp.mcc_category_id` — MCC must match (`NULL = NULL` evaluates as unknown, which is the desired conservative behaviour: missing-MCC pairs don't surface to the review bucket).
+- A `LEFT JOIN` (or `EXCEPT`) against the auto-bucket query excludes rows already auto-eligible, so a candidate never appears in both buckets. Single bucket label `'review-prefix-strip-mcc'`.
+- Same `GROUP_CONCAT(... ORDER BY refund_tx_id)` discipline as auto-bucket.
 
 ## Canonical creation
 
@@ -262,8 +265,7 @@ private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB
             title: candidate.expenseTransactionTitle ?? '',
             operatedAt: candidate.expenseOperatedAt,
             accountId: candidate.accountId,
-            netAmount: candidate.netAmount,
-            entryExchangeRate: 1
+            netAmount: candidate.netAmount
         },
         tx
     );
@@ -301,7 +303,7 @@ private async createCanonicalRefund(input: CanonicalRefundInputInterface, tx: DB
                 type: TransactionEntryTypeEnum.CREDIT,
                 amount: input.netAmount,
                 externalId: null,
-                exchangeRate: input.entryExchangeRate,
+                exchangeRate: 1,
                 toIban: null,
                 originalTransactionId: null
             }
