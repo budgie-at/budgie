@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.11.2](https://github.com/budgie-at/budgie/compare/v5.11.1...v5.11.2) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** hardcode ccacheEnabled to stop EAS fingerprint drift ([e41d48c](https://github.com/budgie-at/budgie/commit/e41d48c9e7d359ec8e47537dab1a7a69a8085f7d))
+
 ## [5.11.1](https://github.com/budgie-at/budgie/compare/v5.11.0...v5.11.1) (2026-05-03)
 
 ### Bug Fixes
