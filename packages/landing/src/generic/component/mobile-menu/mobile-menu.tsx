@@ -21,7 +21,7 @@ export const MobileMenu = ({ onClose, lang }: Props) => (
         initial={initialProps}
     >
         <div className="container py-4 flex flex-col gap-4">
-            <Link className="py-2 text-sm font-medium" href={`/${lang}#features`} onClick={onClose}>
+            <Link className="py-2 text-sm font-medium" href={`/${lang}/features`} onClick={onClose}>
                 <Trans>Features</Trans>
             </Link>
 

@@ -35,7 +35,7 @@ export const Header = ({ lang }: Props) => {
     const handleMenuToggle = () => void setMobileMenuOpen(prev => !prev);
     const handleMobileMenuClose = () => void setMobileMenuOpen(false);
 
-    const { handleScrollToFeatures, handleScrollToTestimonials, handleScrollToWaitlist, handleScrollToFaq } = useSmoothScroll();
+    const { handleScrollToTestimonials, handleScrollToWaitlist, handleScrollToFaq } = useSmoothScroll();
 
     return (
         <header
@@ -53,8 +53,7 @@ export const Header = ({ lang }: Props) => {
                 <nav className="hidden md:flex gap-8">
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`/${lang}#features`}
-                        onClick={handleScrollToFeatures}
+                        href={`/${lang}/features`}
                     >
                         <Trans>Features</Trans>
                     </Link>
