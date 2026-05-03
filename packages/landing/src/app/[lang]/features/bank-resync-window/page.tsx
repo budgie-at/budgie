@@ -80,9 +80,7 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                 heading={<Trans>Windowed Bank Re-sync</Trans>}
                 locale={lang}
                 tagline={
-                    <Trans>
-                        Re-pull just the last N days of bank history without nuking your manual edits or category overrides.
-                    </Trans>
+                    <Trans>Re-pull just the last N days of bank history without nuking your manual edits or category overrides.</Trans>
                 }
             />
 
@@ -170,8 +168,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     question={<Trans>Can I re-sync transactions from before bank-sync was enabled?</Trans>}
                     answer={
                         <Trans>
-                            Only as far back as the bank&apos;s API supports. Monobank has months of history; PrivatBank XLSX is
-                            per-export. CSV import is the universal fallback.
+                            Only as far back as the bank&apos;s API supports. Monobank has months of history; PrivatBank XLSX is per-export.
+                            CSV import is the universal fallback.
                         </Trans>
                     }
                 />
