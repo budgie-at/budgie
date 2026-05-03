@@ -967,10 +967,22 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         relatedFeatureSlugs: ['account-management', 'net-worth-tracker'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`What's the difference between "I owe" and "owes me"?`, answer: msg`Direction. "I owe" is a liability — your net worth subtracts it. "Owes me" is a receivable — your net worth adds it. Same account type, opposite sign.` },
-            { question: msg`Can I link a debt to a contact?`, answer: msg`Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without spreadsheets.` },
-            { question: msg`How do I settle a debt?`, answer: msg`Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the account if you want it off the home screen.` },
-            { question: msg`Does the target return date trigger a reminder?`, answer: msg`Currently it's informational — surfaced in the account detail and recurring view. Push reminders are on the roadmap.` }
+            {
+                question: msg`What's the difference between "I owe" and "owes me"?`,
+                answer: msg`Direction. "I owe" is a liability — your net worth subtracts it. "Owes me" is a receivable — your net worth adds it. Same account type, opposite sign.`
+            },
+            {
+                question: msg`Can I link a debt to a contact?`,
+                answer: msg`Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without spreadsheets.`
+            },
+            {
+                question: msg`How do I settle a debt?`,
+                answer: msg`Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the account if you want it off the home screen.`
+            },
+            {
+                question: msg`Does the target return date trigger a reminder?`,
+                answer: msg`Currently it's informational — surfaced in the account detail and recurring view. Push reminders are on the roadmap.`
+            }
         ],
         publishedAt: '2025-12-29',
         updatedAt: '2026-05-03',
@@ -984,14 +996,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Windowed Bank Re-sync — Budgie`,
         metaDescription: msg`Re-pull just the last N days of bank history without nuking your manual edits or category overrides. Conflict picker for edited rows.`,
         primaryKeyword: 'bank sync history reset',
-        seoKeywords: ['bank sync history reset', 're-sync window app', 'partial bank re-import', 'edited transaction conflict', 'bank statement diff'],
+        seoKeywords: [
+            'bank sync history reset',
+            're-sync window app',
+            'partial bank re-import',
+            'edited transaction conflict',
+            'bank statement diff'
+        ],
         relatedFeatureSlugs: ['monobank-sync', 'csv-import'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`Why not just full re-sync?`, answer: msg`A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe.` },
-            { question: msg`What's the smallest window?`, answer: msg`Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker.` },
-            { question: msg`What happens to edited transactions in the window?`, answer: msg`A conflict picker appears for every edited row before write. You choose to keep your edit, take the bank's version, or merge fields.` },
-            { question: msg`Can I re-sync transactions from before bank-sync was enabled?`, answer: msg`Only as far back as the bank's API supports. Monobank has months of history; PrivatBank XLSX is per-export. CSV import is the universal fallback.` }
+            {
+                question: msg`Why not just full re-sync?`,
+                answer: msg`A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe.`
+            },
+            {
+                question: msg`What's the smallest window?`,
+                answer: msg`Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker.`
+            },
+            {
+                question: msg`What happens to edited transactions in the window?`,
+                answer: msg`A conflict picker appears for every edited row before write. You choose to keep your edit, take the bank's version, or merge fields.`
+            },
+            {
+                question: msg`Can I re-sync transactions from before bank-sync was enabled?`,
+                answer: msg`Only as far back as the bank's API supports. Monobank has months of history; PrivatBank XLSX is per-export. CSV import is the universal fallback.`
+            }
         ],
         publishedAt: '2026-05-02',
         updatedAt: '2026-05-03',
@@ -1005,14 +1035,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`MCC Auto-Categorization — Budgie`,
         metaDescription: msg`Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically. Per-MCC overrides for personal preferences.`,
         primaryKeyword: 'automatic transaction categories',
-        seoKeywords: ['automatic transaction categories', 'MCC auto category', 'merchant category code app', 'MCC mapping budget app', 'bank-issued category codes'],
+        seoKeywords: [
+            'automatic transaction categories',
+            'MCC auto category',
+            'merchant category code app',
+            'MCC mapping budget app',
+            'bank-issued category codes'
+        ],
         relatedFeatureSlugs: ['csv-import', 'ai-auto-categorization', 'custom-categories', 'monobank-sync', 'privatbank-import'],
         relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
         faqs: [
-            { question: msg`What's an MCC?`, answer: msg`Merchant Category Code — the universal 4-digit code your bank attaches to every card transaction. 5814 is "fast food", 4111 is "transit", 5411 is "supermarket", and so on.` },
-            { question: msg`What if I want my own category mapping?`, answer: msg`Override per-MCC: point all 4111 (transit) into your "Commute" instead of the default "Travel". Override once, applies forever.` },
-            { question: msg`What if the transaction has no MCC?`, answer: msg`Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization.` },
-            { question: msg`Can I see the MCC on a transaction?`, answer: msg`Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row.` }
+            {
+                question: msg`What's an MCC?`,
+                answer: msg`Merchant Category Code — the universal 4-digit code your bank attaches to every card transaction. 5814 is "fast food", 4111 is "transit", 5411 is "supermarket", and so on.`
+            },
+            {
+                question: msg`What if I want my own category mapping?`,
+                answer: msg`Override per-MCC: point all 4111 (transit) into your "Commute" instead of the default "Travel". Override once, applies forever.`
+            },
+            {
+                question: msg`What if the transaction has no MCC?`,
+                answer: msg`Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization.`
+            },
+            {
+                question: msg`Can I see the MCC on a transaction?`,
+                answer: msg`Yes — the MCC short and full description appear in the transaction edit form for any bank-synced row.`
+            }
         ],
         publishedAt: '2026-01-02',
         updatedAt: '2026-05-03',
@@ -1026,14 +1074,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Tag-Based Analytics — Budgie`,
         metaDescription: msg`Slice spending and income by tag. Per-tag totals plus an "Untagged" bucket for the gaps. Drill from a tag into its transactions.`,
         primaryKeyword: 'spending by tag analytics',
-        seoKeywords: ['spending by tag analytics', 'tag-based budget app', 'project expense analytics', 'shared expense analytics', 'reimbursable expense tracker'],
+        seoKeywords: [
+            'spending by tag analytics',
+            'tag-based budget app',
+            'project expense analytics',
+            'shared expense analytics',
+            'reimbursable expense tracker'
+        ],
         relatedFeatureSlugs: ['transaction-tags', 'primary-tag', 'spending-analytics', 'date-filter-presets'],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`How is this different from category analytics?`, answer: msg`Categories answer "what kind of expense"; tags answer "for what purpose". Use both — categories give a structured view, tags give project / person / context views.` },
-            { question: msg`What's in the "Untagged" bucket?`, answer: msg`Every transaction without any tags. The bucket is a deliberate gap-finder so you can spot which transactions need tagging.` },
-            { question: msg`Can I see income totals per tag?`, answer: msg`Yes. Each tag row shows separate income, expense, and net totals — useful when a tag spans both (refunds tagged #vacation, for example).` },
-            { question: msg`Can I drill into a tag's transactions?`, answer: msg`Tap any tag row to see every transaction in it for the current period.` }
+            {
+                question: msg`How is this different from category analytics?`,
+                answer: msg`Categories answer "what kind of expense"; tags answer "for what purpose". Use both — categories give a structured view, tags give project / person / context views.`
+            },
+            {
+                question: msg`What's in the "Untagged" bucket?`,
+                answer: msg`Every transaction without any tags. The bucket is a deliberate gap-finder so you can spot which transactions need tagging.`
+            },
+            {
+                question: msg`Can I see income totals per tag?`,
+                answer: msg`Yes. Each tag row shows separate income, expense, and net totals — useful when a tag spans both (refunds tagged #vacation, for example).`
+            },
+            {
+                question: msg`Can I drill into a tag's transactions?`,
+                answer: msg`Tap any tag row to see every transaction in it for the current period.`
+            }
         ],
         publishedAt: '2026-01-04',
         updatedAt: '2026-05-03',
@@ -1047,14 +1113,32 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         metaTitle: msg`Convert to Transfer — Budgie`,
         metaDescription: msg`Logged a payment as expense but it was a transfer? One tap reclassifies — both legs link, balances reconcile, analytics updates.`,
         primaryKeyword: 'convert expense to transfer',
-        seoKeywords: ['convert expense to transfer', 'reclassify transaction app', 'transaction-to-transfer converter', 'transfer reclassification', 'expense to transfer'],
+        seoKeywords: [
+            'convert expense to transfer',
+            'reclassify transaction app',
+            'transaction-to-transfer converter',
+            'transfer reclassification',
+            'expense to transfer'
+        ],
         relatedFeatureSlugs: ['account-transfers', 'transfer-pair-detection'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
         faqs: [
-            { question: msg`What does "Convert to Transfer" actually do?`, answer: msg`The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked.` },
-            { question: msg`Will my analytics update?`, answer: msg`Yes — the original spending stat falls out immediately because transfers don't count as expenses.` },
-            { question: msg`Can I undo the conversion?`, answer: msg`Yes. Long-press the transfer and choose "Split back into two transactions"; both halves return to their original types.` },
-            { question: msg`Does this work for cross-currency?`, answer: msg`Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount.` }
+            {
+                question: msg`What does "Convert to Transfer" actually do?`,
+                answer: msg`The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked.`
+            },
+            {
+                question: msg`Will my analytics update?`,
+                answer: msg`Yes — the original spending stat falls out immediately because transfers don't count as expenses.`
+            },
+            {
+                question: msg`Can I undo the conversion?`,
+                answer: msg`Yes. Long-press the transfer and choose "Split back into two transactions"; both halves return to their original types.`
+            },
+            {
+                question: msg`Does this work for cross-currency?`,
+                answer: msg`Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount.`
+            }
         ],
         publishedAt: '2026-01-05',
         updatedAt: '2026-05-03',
