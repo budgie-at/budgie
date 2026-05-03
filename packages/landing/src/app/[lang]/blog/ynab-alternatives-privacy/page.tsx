@@ -67,9 +67,8 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
     const i18n = initLingui(lang);
 
     const articleEntry = ARTICLE_REGISTRY.find(item => item.slug === SLUG);
-    const relatedFeatures = articleEntry?.relatedFeatureSlugs
-        .map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug))
-        .filter(isDefined) ?? [];
+    const relatedFeatures =
+        articleEntry?.relatedFeatureSlugs.map(slug => FEATURE_REGISTRY.find(feature => feature.slug === slug)).filter(isDefined) ?? [];
 
     return (
         <main className="flex-1">
