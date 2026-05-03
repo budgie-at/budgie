@@ -93,8 +93,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tags answer questions categories can&apos;t: &quot;How much did the Italy trip cost?&quot; &quot;What&apos;s
-                        pending on shared rent?&quot; &quot;What&apos;s reimbursable?&quot; The Tags tab in Analytics is built for those.
+                        Tags answer questions categories can&apos;t: &quot;How much did the Italy trip cost?&quot; &quot;What&apos;s pending
+                        on shared rent?&quot; &quot;What&apos;s reimbursable?&quot; The Tags tab in Analytics is built for those.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>

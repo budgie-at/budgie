@@ -93,9 +93,9 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account
-                        doesn&apos;t credit. Budgie&apos;s &quot;Convert to transfer&quot; action takes the existing transaction and turns
-                        it into a transfer to the account you pick.
+                        Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn&apos;t
+                        credit. Budgie&apos;s &quot;Convert to transfer&quot; action takes the existing transaction and turns it into a
+                        transfer to the account you pick.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
