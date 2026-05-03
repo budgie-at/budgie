@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- File owns a single feature registry that must stay together */
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from './feature-tier.enum';
