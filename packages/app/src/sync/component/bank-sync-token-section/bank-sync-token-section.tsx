@@ -60,7 +60,7 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
 
     return (
         <View className="gap-y-sm pt-md border-t border-secondary-corner mt-md">
-            <Text className="text-primary text-xs text-muted-foreground">{t`API Token`}</Text>
+            <Text className="text-xs text-secondary-foreground">{t`API Token`}</Text>
 
             {isEditing ? (
                 <View className="gap-y-sm">
