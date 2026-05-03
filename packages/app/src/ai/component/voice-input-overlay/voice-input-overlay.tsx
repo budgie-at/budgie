@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
@@ -26,6 +27,7 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
 
         isLiveRef.current = true;
 
+        // eslint-disable-next-line max-statements -- Single async lifecycle: collect, route on result kind, recurse on re-record
         const runOnce = async (): Promise<void> => {
             const transactions = await startAndCollect().catch(() => null);
             if (!isLiveRef.current) {
@@ -41,12 +43,18 @@ export const VoiceInputOverlay = ({ onClose }: Props) => {
             if (!isLiveRef.current) {
                 return;
             }
-            if (result !== 're-record') {
-                onClose();
+            if (result.kind === 're-record') {
+                await runOnce();
 
                 return;
             }
-            await runOnce();
+            if (result.kind === 'saved' && isNotEmptyArray(result.transactionIds)) {
+                onClose();
+                router.push(`/transactions/${result.transactionIds[0]}/expense`);
+
+                return;
+            }
+            onClose();
         };
 
         void runOnce();

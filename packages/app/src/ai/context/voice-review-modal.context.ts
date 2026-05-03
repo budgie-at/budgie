@@ -7,8 +7,11 @@ export interface VoiceReviewModalParams {
     readonly originalText: string;
 }
 
-export type VoiceReviewModalResult = 'saved' | 're-record' | 'cancelled';
+export type VoiceReviewModalResult =
+    | { readonly kind: 'saved'; readonly transactionIds: number[] }
+    | { readonly kind: 're-record' }
+    | { readonly kind: 'cancelled' };
 
-export const [VoiceReviewModalContext, useVoiceReviewModal] = createModalContext<VoiceReviewModalParams, VoiceReviewModalResult>(
-    'cancelled'
-);
+export const [VoiceReviewModalContext, useVoiceReviewModal] = createModalContext<VoiceReviewModalParams, VoiceReviewModalResult>({
+    kind: 'cancelled'
+});

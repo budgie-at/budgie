@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -20,7 +20,7 @@ const SCROLL_CONTENT_STYLE = { paddingBottom: SCROLL_BOTTOM_PADDING } as const;
 const sumAmounts = (rows: { readonly amount: number }[]): number =>
     rows.reduce((accumulator, row) => accumulator + row.amount, 0);
 
-// eslint-disable-next-line max-statements -- Form-sheet route orchestrates per-row category, save, and re-record
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
@@ -29,6 +29,7 @@ export default function VoiceReviewModal() {
     const { backgroundColor } = useFormsheetListStyles();
 
     const initialRows = isDefined(currentParams) ? mapExtractedToReviewRows(currentParams.transactions) : [];
+    const originalText = currentParams?.originalText ?? '';
     const { rows, isSaving, canSave, editAmount, setCategory, deleteRow, saveAll } = useVoiceReview(initialRows);
 
     const totalAmount = sumAmounts(rows);
@@ -45,17 +46,17 @@ export default function VoiceReviewModal() {
         }
     };
 
-    const handleCancel = () => void resolveVoiceReview('cancelled');
-    const handleReRecord = () => void resolveVoiceReview('re-record');
+    const handleCancel = () => void resolveVoiceReview({ kind: 'cancelled' });
+    const handleReRecord = () => void resolveVoiceReview({ kind: 're-record' });
     const handleSave = async () => {
         if (!isPositiveNumber(accountId)) {
             return;
         }
-        const success = await saveAll(accountId);
-        if (!success) {
+        const saved = await saveAll(accountId);
+        if (saved === null) {
             return;
         }
-        resolveVoiceReview('saved');
+        resolveVoiceReview({ kind: 'saved', transactionIds: saved.map(transaction => transaction.id) });
     };
 
     const containerStyle = { flex: 1, backgroundColor };
@@ -65,6 +66,15 @@ export default function VoiceReviewModal() {
     return (
         <View style={containerStyle} collapsable={false}>
             <FormsheetHeader size="md" title={t`Voice import`} description={description} />
+
+            {isNotEmptyString(originalText) ? (
+                <View className="mx-lg mb-md rounded-2xl border border-secondary-corner bg-secondary-background px-lg py-md">
+                    <Text className="text-xs uppercase tracking-wider text-secondary-foreground opacity-60">{t`You said`}</Text>
+                    <Text className="mt-xs text-md italic text-primary" numberOfLines={3}>
+                        “{originalText}”
+                    </Text>
+                </View>
+            ) : null}
 
             <ScrollView className="flex-1" contentContainerStyle={SCROLL_CONTENT_STYLE} keyboardShouldPersistTaps="handled">
                 {isEmptyArray(rows) ? (

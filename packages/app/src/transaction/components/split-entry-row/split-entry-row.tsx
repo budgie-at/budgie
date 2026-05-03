@@ -67,6 +67,7 @@ export const SplitEntryRow = (props: Props) => {
                     autoFocus={autoFocus}
                     selectTextOnFocus
                     style={amountInputStyle}
+                    valuePrefix={`${currencySymbol} `}
                     placeholder={`${currencySymbol} 0`}
                 />
 

@@ -320,7 +320,7 @@ msgstr "Budgie"
 #: src/account/component/archive-account/archive-account.tsx:29
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:43
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:48
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -761,7 +761,7 @@ msgstr "Supprimer définitivement"
 msgid "Delete Transaction"
 msgstr "Supprimer la transaction"
 
-#: src/app/voice-review.tsx:63
+#: src/app/voice-review.tsx:64
 msgid "Detected items: {itemCount}"
 msgstr "Éléments détectés : {itemCount}"
 
@@ -1347,7 +1347,7 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
-#: src/app/voice-review.tsx:72
+#: src/app/voice-review.tsx:82
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -1552,7 +1552,7 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:47
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:52
 msgid "Re-record"
 msgstr "Réenregistrer"
 
@@ -1651,7 +1651,7 @@ msgstr "Reprise de l'IA…"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:28
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:32
 msgid "Save {count}"
 msgstr "Enregistrer {count}"
 
@@ -2001,7 +2001,7 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:73
+#: src/app/voice-review.tsx:83
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -2104,7 +2104,7 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx:35
+#: src/ai/component/voice-review-footer/voice-review-footer.tsx:40
 msgid "Total"
 msgstr "Total"
 
@@ -2276,7 +2276,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/app/voice-review.tsx:67
+#: src/app/voice-review.tsx:68
 msgid "Voice import"
 msgstr "Importation vocale"
 
@@ -2320,6 +2320,10 @@ msgstr "Vous devez"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "Vous avez reçu de l'argent"
+
+#: src/app/voice-review.tsx:72
+msgid "You said"
+msgstr "Vous avez dit"
 
 #: src/export/components/export-database/export-database.tsx:14
 msgid "Your database backup is ready to share."

@@ -1,4 +1,4 @@
-import { transactionAsync } from '@budgie/contracts';
+import { TransactionEntityInterface, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { useReducer, useState } from 'react';
 
@@ -32,7 +32,7 @@ interface UseVoiceReviewReturnInterface {
     readonly editAmount: (id: string, amount: number) => void;
     readonly setCategory: (id: string, categoryId: number) => void;
     readonly deleteRow: (id: string) => void;
-    readonly saveAll: (accountId: number) => Promise<boolean>;
+    readonly saveAll: (accountId: number) => Promise<TransactionEntityInterface[] | null>;
 }
 
 class VoiceReviewSaver {
@@ -66,16 +66,14 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
 
     const canSave = rows.length > 0 && rows.every(row => isPositiveNumber(row.categoryId) && row.amount > 0);
 
-    const saveAll = async (accountId: number): Promise<boolean> => {
+    const saveAll = async (accountId: number): Promise<TransactionEntityInterface[] | null> => {
         setIsSaving(true);
         try {
-            await voiceReviewSaver.saveBatch({ rows, accountId });
-
-            return true;
+            return await voiceReviewSaver.saveBatch({ rows, accountId });
         } catch {
             setIsSaving(false);
 
-            return false;
+            return null;
         }
     };
 
