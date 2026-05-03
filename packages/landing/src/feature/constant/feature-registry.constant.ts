@@ -432,6 +432,202 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         publishedAt: '2025-12-21',
         updatedAt: '2026-05-03',
         ogTags: ['csv', 'import', 'bank statement']
+    },
+    {
+        slug: 'erste-bank-pdf-import',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Erste Bank PDF Import`,
+        tagline: msg`Classic and modern PDF formats — full statement import in seconds.`,
+        metaTitle: msg`Erste Bank PDF Import — Budgie`,
+        metaDescription: msg`Import your full Erste Bank statement straight from PDF — both classic and the new 2026 modern format. Account holder, IBAN, balances, and every transaction line parsed.`,
+        primaryKeyword: 'Erste Bank statement import',
+        seoKeywords: ['Erste Bank statement import', 'Erste PDF import', 'Erste Bank transaction parser', 'Austrian bank statement import', 'Erste statement to budget app'],
+        heroBenefits: [
+            msg`Both Erste statement layouts supported: classic and the 2026 modern format`,
+            msg`Account holder, IBAN, opening and closing balances all extracted automatically`,
+            msg`Booking date and value date both captured per transaction`,
+            msg`MCC inferred from booking-text patterns where present`,
+            msg`Preview every parsed transaction before write — no surprises`
+        ],
+        relatedFeatureSlugs: ['csv-import', 'privatbank-import', 'monobank-sync'],
+        relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
+        faqs: [
+            { question: msg`Which Erste statement formats are supported?`, answer: msg`Both the classic layout and the modern format introduced in 2026 are parsed natively. If Erste rolls out another redesign, the parser updates with the next release.` },
+            { question: msg`Will the parser get my IBAN right?`, answer: msg`Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own.` },
+            { question: msg`Can I re-import the same PDF safely?`, answer: msg`Yes. Transactions deduplicate by their booking reference, so re-importing skips known rows and inserts only new ones.` },
+            { question: msg`Does the parser run online?`, answer: msg`No. PDF parsing happens entirely on-device — your statement never leaves your phone.` }
+        ],
+        publishedAt: '2026-02-04',
+        updatedAt: '2026-05-03',
+        ogTags: ['erste', 'pdf', 'import']
+    },
+    {
+        slug: 'privatbank-import',
+        tier: FeatureTierEnum.CORE,
+        title: msg`PrivatBank XLSX Import`,
+        tagline: msg`XLSX, MCC-mapped, two taps — long-press an account card to re-import.`,
+        metaTitle: msg`PrivatBank XLSX Import — Budgie`,
+        metaDescription: msg`Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works.`,
+        primaryKeyword: 'PrivatBank transaction import',
+        seoKeywords: ['PrivatBank transaction import', 'PrivatBank24 XLSX import', 'PrivatBank to budget app', 'Ukrainian bank import', 'PrivatBank statement parser'],
+        heroBenefits: [
+            msg`Native PrivatBank24 XLSX schema parser — no manual column mapping`,
+            msg`PrivatBank's proprietary MCC labels map to ISO MCC codes automatically`,
+            msg`Long-press a PrivatBank account card on the home screen for a one-tap re-import`,
+            msg`Currency, FX, and counterparty fields all preserved`,
+            msg`Dedupes against existing transactions on re-import`
+        ],
+        relatedFeatureSlugs: ['csv-import', 'erste-bank-pdf-import', 'monobank-sync', 'mcc-auto-category'],
+        relatedArticleSlugs: ['mint-alternatives-developers', 'budgie-offline-financial-data'],
+        faqs: [
+            { question: msg`How do I export the XLSX from PrivatBank24?`, answer: msg`Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the file and import via Budgie's Import → PrivatBank flow.` },
+            { question: msg`What about PrivatBank's custom MCC labels?`, answer: msg`Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips, and analytics all work the same as with other bank-synced data.` },
+            { question: msg`Is the long-press shortcut destructive?`, answer: msg`No. Re-import always dedupes by transaction ID, so re-pulling the same file is safe and idempotent.` },
+            { question: msg`Does it work offline?`, answer: msg`The parsing step is on-device. You only need internet to download the XLSX from PrivatBank24 in the first place.` }
+        ],
+        publishedAt: '2026-02-02',
+        updatedAt: '2026-05-03',
+        ogTags: ['privatbank', 'xlsx', 'import']
+    },
+    {
+        slug: 'pin-app-lock',
+        tier: FeatureTierEnum.CORE,
+        title: msg`PIN App Lock — Locks With the Encryption Key`,
+        tagline: msg`The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.`,
+        metaTitle: msg`PIN App Lock — Budgie`,
+        metaDescription: msg`Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access.`,
+        primaryKeyword: 'PIN lock finance app',
+        seoKeywords: ['PIN lock finance app', 'encrypted finance app', 'SQLCipher mobile', 'PIN-protected expense tracker', 'finance app screen lock'],
+        heroBenefits: [
+            msg`PIN derives the SQLCipher database encryption key — not just a screen guard`,
+            msg`4 to 6 digit PIN, configurable in Settings`,
+            msg`App-background timer re-locks automatically`,
+            msg`Optional biometric unlock binds to the same encryption key`,
+            msg`No "forgot PIN" recovery — that's the privacy guarantee`
+        ],
+        relatedFeatureSlugs: ['biometric-authentication', 'screenshot-protection', 'offline-first-expense-tracker', 'database-backup'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        faqs: [
+            { question: msg`What if I forget my PIN?`, answer: msg`The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state.` },
+            { question: msg`How quickly does the app re-lock?`, answer: msg`Re-lock fires when the app goes to background. The inactivity timer is configurable in Settings.` },
+            { question: msg`Is biometric the same as PIN security?`, answer: msg`Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses.` },
+            { question: msg`Does the lock work if my phone is jailbroken?`, answer: msg`SQLCipher with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device.` }
+        ],
+        publishedAt: '2025-12-18',
+        updatedAt: '2026-05-03',
+        ogTags: ['security', 'pin', 'encryption']
+    },
+    {
+        slug: 'biometric-authentication',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Face ID / Touch ID Authentication`,
+        tagline: msg`Bank-grade biometric unlock — same Secure Enclave, same encryption key.`,
+        metaTitle: msg`Biometric Authentication — Budgie`,
+        metaDescription: msg`Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy.`,
+        primaryKeyword: 'Face ID expense app',
+        seoKeywords: ['Face ID expense app', 'Touch ID budget app', 'biometric finance app', 'Secure Enclave expense tracker', 'biometric unlock finance'],
+        heroBenefits: [
+            msg`Face ID and Touch ID supported on every modern iOS and Android device`,
+            msg`Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data`,
+            msg`Falls back to PIN if biometrics are disabled or unavailable`,
+            msg`Respects OS lockout policy — five strikes prompts the device passcode`,
+            msg`No additional friction at app open — same speed as your bank app`
+        ],
+        relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'offline-first-expense-tracker'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        faqs: [
+            { question: msg`Does Budgie store my biometric data?`, answer: msg`No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only receives a yes/no signal plus access to a stored key fragment.` },
+            { question: msg`What if biometrics fail?`, answer: msg`The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode.` },
+            { question: msg`Can I disable biometrics?`, answer: msg`Yes — Settings → PIN → toggle off "Unlock with biometrics". The PIN remains active.` },
+            { question: msg`Is Face ID safer than a PIN?`, answer: msg`They're complementary. Biometrics are convenient and prevent shoulder-surfing; the PIN is the actual encryption key. Both raise the bar.` }
+        ],
+        publishedAt: '2025-12-18',
+        updatedAt: '2026-05-03',
+        ogTags: ['biometric', 'face id', 'security']
+    },
+    {
+        slug: 'data-export',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Export Every Transaction You've Logged`,
+        tagline: msg`CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours.`,
+        metaTitle: msg`CSV & Database Export — Budgie`,
+        metaDescription: msg`One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or anywhere. Your data, your call.`,
+        primaryKeyword: 'export transactions CSV',
+        seoKeywords: ['export transactions CSV', 'export expense data', 'CSV expense export app', 'database backup expense tracker', 'budget app data export'],
+        heroBenefits: [
+            msg`CSV export with date, account, category, tags, amount, currency, comment columns`,
+            msg`Encrypted database backup file for full restore on any device`,
+            msg`Filter by date range before exporting — last month, this year, or anything custom`,
+            msg`Save through the OS share sheet — Files, iCloud, Drive, anything`,
+            msg`No vendor account required — your data, your storage of choice`
+        ],
+        relatedFeatureSlugs: ['database-backup', 'csv-import'],
+        relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
+        faqs: [
+            { question: msg`Why two export formats?`, answer: msg`CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every relationship and account state for full restore on a new device.` },
+            { question: msg`Is the backup encrypted?`, answer: msg`Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by entering the same PIN.` },
+            { question: msg`Can I import the CSV back into Budgie?`, answer: msg`The CSV-import feature handles any flat CSV including ones Budgie produced — useful for round-tripping or merging databases.` },
+            { question: msg`Does export work offline?`, answer: msg`Yes. Both export flows produce files locally; you only need internet to upload them to a remote storage service.` }
+        ],
+        publishedAt: '2025-12-21',
+        updatedAt: '2026-05-03',
+        ogTags: ['export', 'csv', 'backup']
+    },
+    {
+        slug: 'database-backup',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Database Backup & Restore`,
+        tagline: msg`One encrypted file. No account. Restore on any device in seconds.`,
+        metaTitle: msg`Database Backup & Restore — Budgie`,
+        metaDescription: msg`Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN.`,
+        primaryKeyword: 'expense tracker backup restore',
+        seoKeywords: ['expense tracker backup restore', 'finance app backup file', 'mobile budget backup', 'restore expense data', 'no-account backup app'],
+        heroBenefits: [
+            msg`Single encrypted file holds every transaction, account, category, tag, and setting`,
+            msg`Backup file is your SQLCipher database — no vendor format conversion`,
+            msg`Restore is a one-tap flow on a fresh install — pick the file, enter your PIN`,
+            msg`Migrate to a new phone in under a minute, no account required`,
+            msg`Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice`
+        ],
+        relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'offline-first-expense-tracker'],
+        relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
+        faqs: [
+            { question: msg`How do I restore on a new device?`, answer: msg`Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud / Drive. Enter your original PIN. Done.` },
+            { question: msg`Is the backup file safe to upload to a cloud?`, answer: msg`Yes — the file is SQLCipher-encrypted with your PIN-derived key. Cloud providers see encrypted bytes, not your transactions.` },
+            { question: msg`Can I have multiple backups?`, answer: msg`Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback.` },
+            { question: msg`Does Budgie auto-backup?`, answer: msg`Manual backups only by default — for the privacy-first crowd that doesn't want surprise file writes. You can schedule reminders in Settings.` }
+        ],
+        publishedAt: '2025-12-21',
+        updatedAt: '2026-05-03',
+        ogTags: ['backup', 'restore', 'encryption']
+    },
+    {
+        slug: 'date-filter-presets',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Date Filter Presets — Past Periods, One Tap`,
+        tagline: msg`Eight presets, locale-aware week start, custom range fallback.`,
+        metaTitle: msg`Date Filter Presets — Budgie`,
+        metaDescription: msg`Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Locale-aware.`,
+        primaryKeyword: 'filter transactions by date',
+        seoKeywords: ['filter transactions by date', 'date range expense tracker', 'budget app date filter', 'monthly view expense app', 'date preset filter'],
+        heroBenefits: [
+            msg`Eight presets cover the windows you actually use, from Today to All Time`,
+            msg`Custom range fallback for anything else`,
+            msg`Same picker across analytics, transactions, and recurring screens`,
+            msg`Locale-aware week start (Monday in EU, Sunday in en-US)`,
+            msg`"Last Month" always means the most-recent COMPLETED month — never the half-finished current one`
+        ],
+        relatedFeatureSlugs: ['spending-analytics', 'recurring-payments-calendar', 'tag-analytics'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        faqs: [
+            { question: msg`Can I customize the week start?`, answer: msg`Yes — Settings → Display → Start of Week. Override the locale default with Monday or Sunday.` },
+            { question: msg`Are the presets the same on every screen?`, answer: msg`Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently.` },
+            { question: msg`What does "All Time" cover?`, answer: msg`Every transaction in your database. Useful for full-history analytics or one-off audits.` },
+            { question: msg`Can I save a custom range?`, answer: msg`Custom ranges are session-scoped today. Saved custom ranges are on the roadmap for a future release.` }
+        ],
+        publishedAt: '2026-05-02',
+        updatedAt: '2026-05-03',
+        ogTags: ['filters', 'dates', 'presets']
     }
 ] as const;
 /* eslint-enable lingui/no-unlocalized-strings */
