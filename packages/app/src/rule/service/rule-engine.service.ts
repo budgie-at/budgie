@@ -1,14 +1,7 @@
-import {
-    RuleActionEntityInterface,
-    RuleActionTypeEnum,
-    RuleConditionFieldEnum,
-    RuleWithRelationsEntityInterface,
-    TransactionCreateInputInterface,
-    TransactionUpdatedByEnum,
-    TransactionWithEntriesMccCategoryEntityInterface
-} from '@budgie/contracts';
+import { RuleActionTypeEnum, RuleConditionFieldEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     db,
@@ -18,16 +11,28 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
-import { Transaction } from '../../@generic/type/transaction.type';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
-import { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
-import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
-import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
 
+import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
+import type { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
+import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
+import type {
+    DB,
+    RuleActionEntityInterface,
+    RuleWithRelationsEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionWithEntriesMccCategoryEntityInterface
+} from '@budgie/contracts';
+
 class RuleEngineService {
+    @Log(
+        (transactionIds, transactionInputs) => `enter transactionIds=${transactionIds.join(',')} inputCount=${transactionInputs.length}`,
+        (_result, transactionIds) => `done transactionIds=${transactionIds.join(',')}`,
+        (error, transactionIds) => `throw transactionIds=${transactionIds.join(',')} error=${getErrorMessage(error)}`
+    )
     async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
         const rules = await ruleRepository.findEnabledWithRelations();
         if (!isNotEmptyArray(rules)) {
@@ -53,10 +58,22 @@ class RuleEngineService {
         }
     }
 
+    @Log(
+        params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
+        result => `done count=${result}`,
+        (error, params) =>
+            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
+    )
     async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
         return ruleMatcherService.countMatchingTransactions(params);
     }
 
+    @Log(
+        (params, limit) => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit}`,
+        result => `done count=${result.count} returned=${result.transactions.length}`,
+        (error, params, limit) =>
+            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
+    )
     async findMatchingTransactions(
         params: CountConditionsParamsInterface,
         limit: number
@@ -64,6 +81,11 @@ class RuleEngineService {
         return ruleMatcherService.findMatchingTransactions(params, limit);
     }
 
+    @Log(
+        ruleId => `enter ruleId=${ruleId}`,
+        (result, ruleId) => `done ruleId=${ruleId} applied=${result.applied} failed=${result.failed} total=${result.total}`,
+        (error, ruleId) => `throw ruleId=${ruleId} error=${getErrorMessage(error)}`
+    )
     // eslint-disable-next-line max-statements -- Two-phase batch processing with progress tracking
     async applyRuleToMatchingTransactions(
         ruleId: number,
@@ -126,7 +148,7 @@ class RuleEngineService {
 
         const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
 
-        await db.transaction(async transaction => {
+        await transactionAsync(db, async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
                 await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
@@ -136,7 +158,7 @@ class RuleEngineService {
     }
 
     private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
-        await db.transaction(async transaction => {
+        await transactionAsync(db, async transaction => {
             await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
         });
@@ -177,7 +199,7 @@ class RuleEngineService {
     private async applyRuleActions(
         transactionId: number,
         actions: RuleActionEntityInterface[],
-        transaction: Transaction,
+        transaction: DB,
         appliedExclusiveActions: Set<RuleActionTypeEnum>
     ): Promise<void> {
         const sortedActions = [...actions].sort((actionA, actionB) => {

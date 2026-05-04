@@ -13,13 +13,13 @@ import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
-import type { DB, DBOrTX } from '../../@generic/type/db.type';
+import type { DB } from '../../@generic/type/db.type';
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
 
 export class AccountRepository {
     constructor(private db: DB) {}
 
-    async create(input: AccountCreateEntityInterface, tx?: DBOrTX): Promise<AccountEntityInterface> {
+    async create(input: AccountCreateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
 
         return account;
@@ -29,7 +29,7 @@ export class AccountRepository {
         return this.db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: DBOrTX): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
         const [account] = await (tx ?? this.db)
             .update(AccountEntityTable)
             .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
@@ -39,15 +39,15 @@ export class AccountRepository {
         return account;
     }
 
-    async archiveById(id: number, tx?: DBOrTX): Promise<void> {
+    async archiveById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
     }
 
-    async restoreById(id: number, tx?: DBOrTX): Promise<void> {
+    async restoreById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
-    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
+    async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
     }
 
@@ -104,7 +104,7 @@ export class AccountRepository {
         });
     }
 
-    findById(id: number, tx?: DBOrTX) {
+    findById(id: number, tx?: DB) {
         return (tx ?? this.db).query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
@@ -147,18 +147,18 @@ export class AccountRepository {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: DBOrTX): Promise<AccountEntityInterface[]> {
+    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db)
             .insert(AccountEntityTable)
             .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
             .returning();
     }
 
-    async touchUpdatedAt(accountIds: number[], tx?: DBOrTX): Promise<void> {
+    async touchUpdatedAt(accountIds: number[], tx?: DB): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds));
     }
 
-    async truncate(tx?: DBOrTX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable);
     }
 
