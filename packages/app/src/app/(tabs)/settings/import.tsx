@@ -20,7 +20,6 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
-import { appE2ECsvImportService } from '../../../@generic/service/app-e2e-csv-import.service';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { readTextFileFromUri } from '../../../@generic/utils/read-text-file-from-uri.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
@@ -41,9 +40,7 @@ const SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
-    const { fileUri, e2eCsvFixture } = useLocalSearchParams<{ fileUri?: string; e2eCsvFixture?: string }>();
-
-    const resolvedFileUri = isNotEmptyString(e2eCsvFixture) ? appE2ECsvImportService.getCsvFixtureUri(e2eCsvFixture) : fileUri;
+    const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
     const { t } = useLingui();
 
@@ -97,14 +94,14 @@ export default function ImportScreen() {
 
     useEffect(() => {
         const loadFile = async () => {
-            if (!isNotEmptyString(resolvedFileUri)) {
+            if (!isNotEmptyString(fileUri)) {
                 return;
             }
 
             setIsLoading(true);
 
             try {
-                const text = await readTextFileFromUri(resolvedFileUri);
+                const text = await readTextFileFromUri(fileUri);
                 const [parsedHeaders, count] = await Promise.all([parseCsvHeaders(text), countCsvRows(text)]);
 
                 setCsvText(text);
@@ -119,9 +116,9 @@ export default function ImportScreen() {
         };
 
         void loadFile();
-    }, [resolvedFileUri, t]);
+    }, [fileUri, t]);
 
-    // eslint-disable-next-line max-statements -- Import handler with multiple truncate calls and E2E navigation
+     
     const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
@@ -141,11 +138,7 @@ export default function ImportScreen() {
 
             await accountBalanceIncrementalService.updateAllBalances(true);
 
-            if (isNotEmptyString(e2eCsvFixture)) {
-                router.navigate('/(tabs)/settings');
-            } else {
-                router.back();
-            }
+            router.back();
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Could not import CSV file`, text2: getErrorMessage(error) });
         }
