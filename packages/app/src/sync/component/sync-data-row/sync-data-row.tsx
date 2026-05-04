@@ -8,7 +8,7 @@ interface Props {
 
 export const SyncDataRow = ({ label, value, valueClass = 'text-primary' }: Props) => (
     <View className="flex-row justify-between">
-        <Text className="text-primary text-xs text-muted-foreground">{label}</Text>
+        <Text className="text-xs text-secondary-foreground">{label}</Text>
         <Text className={`text-xs ${valueClass}`}>{value}</Text>
     </View>
 );
