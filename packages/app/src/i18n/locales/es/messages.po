@@ -806,7 +806,7 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:68
+#: src/app/(main)/transactions/[id]/expense.tsx:93
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
@@ -1347,7 +1347,7 @@ msgstr "No hay cuentas inactivas"
 msgid "No inactive accounts match your search"
 msgstr "Ninguna cuenta inactiva coincide con tu búsqueda"
 
-#: src/app/voice-review.tsx:118
+#: src/app/voice-review.tsx:120
 msgid "No items to save"
 msgstr "No hay elementos para guardar"
 
@@ -1624,6 +1624,14 @@ msgstr "Recurrentes"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Los pagos recurrentes aparecerán aquí cuando se detecten patrones en tus transacciones"
+
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+msgid "Refunded"
+msgstr "Reembolsado"
+
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+msgid "Refunded {formattedRefundedAmount}"
+msgstr "Reembolsado {formattedRefundedAmount}"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -2002,7 +2010,7 @@ msgstr "Etiquetas"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Etiquetas ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:119
+#: src/app/voice-review.tsx:121
 msgid "Tap re-record to try again"
 msgstr "Toca volver a grabar para intentarlo de nuevo"
 
