@@ -12,7 +12,7 @@ interface Props {
 
 export const AccountSelectionStep = ({ accountPreviews, selectedAccounts, onToggle }: Props) => (
     <>
-        <Text className="text-primary text-muted-foreground text-sm px-md">
+        <Text className="text-secondary-foreground text-sm px-md">
             <Trans>Select accounts to sync:</Trans>
         </Text>
 
