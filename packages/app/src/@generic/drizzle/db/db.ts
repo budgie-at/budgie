@@ -10,6 +10,7 @@ import {
     InstrumentRepository,
     MccCategoryRepository,
     MerchantEmbeddingRepository,
+    RefundPairRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
@@ -107,3 +108,4 @@ export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);
+export const refundPairRepository = new RefundPairRepository(db);

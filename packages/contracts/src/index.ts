@@ -250,6 +250,7 @@ export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-
 export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 
 export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
+export { RefundPairRepository } from './transaction/repository/refund-pair.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
