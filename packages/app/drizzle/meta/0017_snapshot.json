@@ -1,8 +1,8 @@
 {
     "version": "6",
     "dialect": "sqlite",
-    "id": "dfa276f1-5735-4b1e-9122-19c2a382eab6",
-    "prevId": "175416ea-57b2-489d-9846-fa468df8cfa3",
+    "id": "7ea945fe-50bd-410f-ae03-d965857fbff2",
+    "prevId": "dfa276f1-5735-4b1e-9122-19c2a382eab6",
     "tables": {
         "account_balances": {
             "name": "account_balances",
@@ -1637,6 +1637,13 @@
                 },
                 "external_source": {
                     "name": "external_source",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "updated_by": {
+                    "name": "updated_by",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": false,
