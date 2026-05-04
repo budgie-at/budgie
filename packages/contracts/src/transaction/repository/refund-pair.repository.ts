@@ -10,10 +10,35 @@ import { REFUND_TITLE_PREFIXES } from '../constant/refund-title-prefixes.constan
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 import type { DB } from '../../@generic/type/db.type';
-import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
+import type { RefundAutoConfidenceBucket } from '../interface/refund-auto-confidence-bucket.type';
 import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
-import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
 import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
+import type { RefundReviewConfidenceBucket } from '../interface/refund-review-confidence-bucket.type';
+
+type RefundCandidateRowInterface = {
+    readonly confidenceBucket: RefundAutoConfidenceBucket;
+    readonly accountId: number;
+    readonly expenseTransactionId: number;
+    readonly expenseTransactionTitle: string | null;
+    readonly expenseEntryAmount: number;
+    readonly expenseOperatedAt: number;
+    readonly refundIncomeTransactionIds: string;
+    readonly refundIncomeAmounts: string;
+    readonly refundsTotal: number;
+    readonly maxTimeDiffSeconds: number;
+};
+
+type RefundReviewCandidateRowInterface = {
+    readonly confidenceBucket: RefundReviewConfidenceBucket;
+    readonly accountId: number;
+    readonly expenseTransactionId: number;
+    readonly expenseTransactionTitle: string | null;
+    readonly expenseEntryAmount: number;
+    readonly refundIncomeTransactionIds: string;
+    readonly refundIncomeAmounts: string;
+    readonly refundsTotal: number;
+    readonly maxTimeDiffSeconds: number;
+};
 
 export class RefundPairRepository {
     constructor(private db: DB) {}
@@ -119,14 +144,14 @@ export class RefundPairRepository {
     }
 
     private buildReviewBucketSql(): string {
-        const stripPrefixesExp = REFUND_TITLE_PREFIXES.reduce(
+        const stripPrefixesExp = `TRIM(${REFUND_TITLE_PREFIXES.reduce(
             (acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`,
             'UPPER(TRIM(exp.txTitle))'
-        );
-        const stripPrefixesInc = REFUND_TITLE_PREFIXES.reduce(
+        )})`;
+        const stripPrefixesInc = `TRIM(${REFUND_TITLE_PREFIXES.reduce(
             (acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`,
             'UPPER(TRIM(inc.txTitle))'
-        );
+        )})`;
 
         return `
             WITH expense_entries AS (

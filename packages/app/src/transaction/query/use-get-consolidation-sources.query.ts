@@ -1,29 +1,22 @@
 import { getLogger } from '@budgie/logger';
 import { useEffect, useState } from 'react';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 
-import type { ConsolidationSourceRowInterface } from '@budgie/contracts';
+import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 const logger = getLogger('useGetConsolidationSourcesQuery');
 
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const [sources, setSources] = useState<ConsolidationSourceRowInterface[]>([]);
+    const [consolidationType, setConsolidationType] = useState<TransactionConsolidationTypeEnum | null>(null);
     const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         let isActive = true;
-
-        const handleSuccess = (rows: ConsolidationSourceRowInterface[]) => {
-            if (isActive) {
-                setSources(rows);
-                setHasError(false);
-                setIsLoading(false);
-            }
-        };
 
         const handleError = (caughtError: unknown) => {
             logger.error('failed', { transactionId, errorMessage: getErrorMessage(caughtError) });
@@ -34,12 +27,25 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
             }
         };
 
-        void transactionRepository.findConsolidationSources(transactionId).then(handleSuccess).catch(handleError);
+        const fetchData = async (): Promise<void> => {
+            const [rows, canonical] = await Promise.all([
+                transactionRepository.findConsolidationSources(transactionId),
+                transactionRepository.getById(transactionId)
+            ]);
+            if (isActive) {
+                setSources(rows);
+                setConsolidationType(isDefined(canonical) ? canonical.consolidationType : null);
+                setHasError(false);
+                setIsLoading(false);
+            }
+        };
+
+        void fetchData().catch(handleError);
 
         return () => {
             isActive = false;
         };
     }, [transactionId]);
 
-    return { sources, hasError, isLoading };
+    return { sources, consolidationType, hasError, isLoading };
 };

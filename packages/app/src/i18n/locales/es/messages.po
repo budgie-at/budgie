@@ -542,7 +542,7 @@ msgstr "No se pudieron obtener las cuentas"
 msgid "Could not import CSV file"
 msgstr "No se pudo importar el archivo CSV"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:33
 msgid "Could not load sources. Please try again."
 msgstr "No se pudieron cargar las fuentes. Inténtalo de nuevo."
 
@@ -766,7 +766,7 @@ msgid "Disable App Lock"
 msgstr "Desactivar bloqueo"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:71
 msgid "Done"
 msgstr "Listo"
 
@@ -1372,7 +1372,7 @@ msgstr "No se detectaron pagos recurrentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:41
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "No source transactions"
 msgstr "No hay transacciones de origen"
 
@@ -1625,13 +1625,17 @@ msgstr "Recurrentes"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Los pagos recurrentes aparecerán aquí cuando se detecten patrones en tus transacciones"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
 msgid "Refunded"
 msgstr "Reembolsado"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Reembolsado {formattedRefundedAmount}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+msgid "Refunds"
+msgstr "Reembolsos"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -1897,6 +1901,10 @@ msgstr "Algo salió mal"
 msgid "Something went wrong. Please try again later."
 msgstr "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+msgid "Source transactions"
+msgstr "Transacciones de origen"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:143
 msgid "Sources"
 msgstr "Fuentes"
@@ -2040,7 +2048,7 @@ msgstr "Esta acción no se puede deshacer."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Esta categoría tiene transacciones. Selecciona otra categoría para reasignarlas."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:42
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:48
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
