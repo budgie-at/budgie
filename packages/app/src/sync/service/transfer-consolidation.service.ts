@@ -99,15 +99,7 @@ class TransferConsolidationService {
             `throw buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} error=${getErrorMessage(error)}`
     )
     private async processPairCandidates(candidates: TransferPairCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidatePair(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidatePair(candidate));
     }
 
     @Log(
@@ -119,15 +111,7 @@ class TransferConsolidationService {
             `throw transactionIds=${candidates.map(candidate => candidate.transactionId).join(',')} targetCashAccountIds=${candidates.map(candidate => candidate.targetCashAccountId).join(',')} error=${getErrorMessage(error)}`
     )
     private async processAtmCashWithdrawalCandidates(candidates: AtmCashWithdrawalCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateAtmCashWithdrawal(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidateAtmCashWithdrawal(candidate));
     }
 
     @Log(
@@ -139,35 +123,19 @@ class TransferConsolidationService {
             `throw expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} incomeTransactionIds=${candidates.map(candidate => candidate.incomeTransactionId).join(',')} existingDirectTransferIds=${candidates.map(candidate => candidate.existingDirectTransferId ?? '').join(',')} error=${getErrorMessage(error)}`
     )
     private async processIbanBridgeTransferCandidates(candidates: IbanBridgeTransferCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateIbanBridgeTransfer(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidateIbanBridgeTransfer(candidate));
     }
 
     @Log(
         candidates =>
-            `enter buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')}`,
+            `enter buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')}`,
         (result, candidates) =>
-            `done buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} consolidated=${result}`,
+            `done buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} consolidated=${result}`,
         (error, candidates) =>
-            `throw buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} error=${getErrorMessage(error)}`
+            `throw buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} error=${getErrorMessage(error)}`
     )
     private async processRefundCandidates(candidates: RefundCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateRefund(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidateRefund(candidate));
     }
 
     @Log(
@@ -334,6 +302,18 @@ class TransferConsolidationService {
     )
     private async findRefundReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         return refundPairRepository.findReviewCandidates();
+    }
+
+    private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<void>): Promise<number> {
+        return candidates.reduce(async (consolidatedPromise, candidate) => {
+            const consolidated = await consolidatedPromise;
+            const success = await consolidate(candidate).then(
+                () => true,
+                () => false
+            );
+
+            return success ? consolidated + 1 : consolidated;
+        }, Promise.resolve(0));
     }
 
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {

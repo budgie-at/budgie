@@ -1,8 +1,4 @@
 /* eslint-disable max-lines-per-function -- File owns a single multi-stage SQL/CTE pipeline that must stay together */
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS } from '../constant/refund-manual-review-time-window.constant';
 import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
@@ -43,12 +39,6 @@ type RefundReviewCandidateRowInterface = {
 export class RefundPairRepository {
     constructor(private db: DB) {}
 
-    @Log(
-        'enter',
-        result =>
-            `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')} refundsTotals=${result.map(candidate => candidate.refundsTotal).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     async findCandidates(): Promise<RefundCandidateInterface[]> {
         const sql = this.buildAutoBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
@@ -56,12 +46,6 @@ export class RefundPairRepository {
         return rows.map(row => this.mapRow(row));
     }
 
-    @Log(
-        'enter',
-        result =>
-            `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')} refundsTotals=${result.map(candidate => candidate.refundsTotal).join(',')}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         const sql = this.buildReviewBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);

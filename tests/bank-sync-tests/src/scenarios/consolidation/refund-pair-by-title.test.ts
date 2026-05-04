@@ -2,29 +2,25 @@ import { describe, expect, it } from 'vitest';
 
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
-import { fetchTransactionById, seed, seedRefundedExpense } from '../../harness';
+import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-by-title', () => {
     it('promotes the original expense in place when title matches exactly within 30 days', async () => {
-        const account = seed.account({ externalId: 'mono-card' });
-        const { expense, refunds } = seedRefundedExpense({
-            accountId: account.id,
+        const { expense, refunds, result } = await runRefundScenario({
             expenseAmount: 120 * PRECISION,
             refundAmounts: [120 * PRECISION]
         });
 
-        const result = await transferConsolidationService.consolidate();
-
         expect(result.consolidated).toBe(1);
+
+        const reparentedRefund = fetchTransactionById(refunds[0].id);
+        expect(reparentedRefund.consolidationParentTransactionId).toBe(expense.id);
 
         const promotedExpense = fetchTransactionById(expense.id);
         expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
         expect(promotedExpense.consolidationParentTransactionId).toBeNull();
-
-        const reparentedRefund = fetchTransactionById(refunds[0].id);
-        expect(reparentedRefund.consolidationParentTransactionId).toBe(expense.id);
     });
 
     it('does NOT consolidate when titles differ', async () => {
