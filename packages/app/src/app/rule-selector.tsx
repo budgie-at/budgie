@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
-import { RuleFormSelectors } from '../@e2e/selectors/rule-form.selector';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
+import { RuleFormSelector } from '../rule/components/rule-form-layout/rule-form-layout.selector';
 import { useRuleSelectorModal } from '../rule/context/rule-selector-modal.context';
 
 export default function RuleSelectorModal() {
@@ -22,7 +22,7 @@ export default function RuleSelectorModal() {
                     onSelect={resolveRuleSelector}
                     title={option.label}
                     iconSlot={null}
-                    testID={RuleFormSelectors.SelectorCard(option.value)}
+                    testID={RuleFormSelector.SelectorCard(option.value)}
                 />
             ))}
         </View>

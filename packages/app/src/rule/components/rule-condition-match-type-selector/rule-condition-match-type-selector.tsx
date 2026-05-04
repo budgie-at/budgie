@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { RULE_CONDITION_MATCH_TYPE_LABELS } from '../../constant/rule-condition-match-type-labels.constant';
+import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 
 export const RuleConditionMatchTypeSelector = () => {
     const { t } = useLingui();
@@ -17,7 +17,7 @@ export const RuleConditionMatchTypeSelector = () => {
     ];
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, 'conditionMatchType'>) => (
-        <View testID={RuleFormSelectors.MatchTypeSelector}>
+        <View testID={RuleFormSelector.MatchTypeSelector}>
             <SegmentedTabs options={options} value={value} onChange={onChange} />
         </View>
     );

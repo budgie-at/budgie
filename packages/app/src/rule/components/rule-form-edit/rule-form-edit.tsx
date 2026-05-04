@@ -4,7 +4,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -14,6 +13,7 @@ import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { useGetRuleByIdQuery } from '../../query/use-get-rule-by-id.query';
 import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
 import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
+import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 
 interface Props {
     readonly ruleId: number;
@@ -71,7 +71,7 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
     const footer = (
         <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <Button
-                testID={RuleFormSelectors.DeleteButton}
+                testID={RuleFormSelector.DeleteButton}
                 leftIcon={UserIconNameEnum.Trash2}
                 onPress={handleDeleteConfirm}
                 variant="destructive"

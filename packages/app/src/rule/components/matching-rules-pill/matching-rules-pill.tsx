@@ -4,9 +4,10 @@ import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { MatchingRulesSelectors } from '../../../@e2e/selectors/matching-rules.selector';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+
+import { MatchingRulesPillSelector } from './matching-rules-pill.selector';
 
 const ENTRY_DELAY_MS = 500;
 
@@ -27,7 +28,7 @@ export const MatchingRulesPill = ({ matchingRulesCount }: Props) => {
         <View className="items-start">
             <Animated.View entering={FadeIn.delay(ENTRY_DELAY_MS).duration(200)} exiting={FadeOut.duration(200)}>
                 <HapticPressable
-                    testID={MatchingRulesSelectors.Pill}
+                    testID={MatchingRulesPillSelector.Pill}
                     onPress={handlePress}
                     className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
                 >

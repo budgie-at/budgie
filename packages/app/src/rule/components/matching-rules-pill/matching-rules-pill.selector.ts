@@ -1,3 +1,3 @@
-export const MatchingRulesSelectors = {
+export const MatchingRulesPillSelector = {
     Pill: 'MatchingRules.Pill'
 } as const;
