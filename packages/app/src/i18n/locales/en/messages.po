@@ -96,12 +96,11 @@ msgstr "Account"
 msgid "Account Name & Icon"
 msgstr "Account Name & Icon"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:48
 msgid "Account Settings"
 msgstr "Account Settings"
 
-#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:36
-#: src/app/account-type-selector.tsx:39
+#: src/account/component/update-liability-account/update-liability-account.tsx:68
 msgid "Account Type"
 msgstr "Account Type"
 
@@ -365,10 +364,6 @@ msgstr "Category Name"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Change"
-
-#: src/app/account-type-selector.tsx:52
-msgid "Change Account Type"
-msgstr "Change Account Type"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:85
 msgid "Change PIN"
@@ -677,10 +672,6 @@ msgstr "Create your first account to start tracking your finances"
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Crypto"
-
-#: src/account/constant/account-type-description.constant.ts:9
-msgid "Cryptocurrency holdings"
-msgstr "Cryptocurrency holdings"
 
 #: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
@@ -1241,10 +1232,6 @@ msgstr "Merge into another tag"
 msgid "Money lent or borrowed"
 msgstr "Money lent or borrowed"
 
-#: src/account/constant/account-type-description.constant.ts:8
-msgid "Money you owe or are owed"
-msgstr "Money you owe or are owed"
-
 #: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:51
 msgid "Monobank"
@@ -1349,7 +1336,7 @@ msgstr "No Inactive Accounts"
 msgid "No inactive accounts match your search"
 msgstr "No inactive accounts match your search"
 
-#: src/app/voice-review.tsx:118
+#: src/app/voice-review.tsx:120
 msgid "No items to save"
 msgstr "No items to save"
 
@@ -1489,10 +1476,6 @@ msgstr "PDF statement"
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Permission to access contacts was denied."
-
-#: src/account/constant/account-type-description.constant.ts:7
-msgid "Physical cash on hand"
-msgstr "Physical cash on hand"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -1666,10 +1649,6 @@ msgstr "Savings"
 msgid "Savings Account"
 msgstr "Savings Account"
 
-#: src/account/constant/account-type-description.constant.ts:11
-msgid "Savings accounts"
-msgstr "Savings accounts"
-
 #: src/app/(tabs)/settings/index.tsx:80
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
@@ -1791,10 +1770,6 @@ msgstr "Select the downloaded PDF file"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:20
 msgid "Select the exported XLSX file"
 msgstr "Select the exported XLSX file"
-
-#: src/app/account-type-selector.tsx:39
-msgid "Select the type of account"
-msgstr "Select the type of account"
 
 #: src/app/import-column-mapper.tsx:55
 msgid "Selected"
@@ -1936,10 +1911,6 @@ msgstr "Start tracking your spending by using the mic button or adding transacti
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
 
-#: src/account/constant/account-type-description.constant.ts:10
-msgid "Stock investments"
-msgstr "Stock investments"
-
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Stocks"
@@ -1973,10 +1944,6 @@ msgstr "Sync Failed"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
-#: src/account/constant/account-type-description.constant.ts:12
-msgid "Synced bank accounts"
-msgstr "Synced bank accounts"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts:12
 msgid "Syncing history..."
 msgstr "Syncing history..."
@@ -2004,7 +1971,7 @@ msgstr "Tags"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:119
+#: src/app/voice-review.tsx:121
 msgid "Tap re-record to try again"
 msgstr "Tap re-record to try again"
 
@@ -2123,10 +2090,6 @@ msgstr "Total: {formattedAmountToReturn}"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:68
 msgid "Touch ID"
 msgstr "Touch ID"
-
-#: src/account/constant/account-type-description.constant.ts:6
-msgid "Traditional bank accounts"
-msgstr "Traditional bank accounts"
 
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
@@ -2250,7 +2213,7 @@ msgstr "Up to date"
 msgid "Upcoming"
 msgstr "Upcoming"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:75
+#: src/account/component/create-account-screen/update-account-screen.tsx:56
 msgid "Update Account"
 msgstr "Update Account"
 
