@@ -53,6 +53,7 @@ class VoiceReviewBatchCreateService {
             consolidationParentTransactionId: null,
             consolidationType: null,
             needsEmbedding: false,
+            updatedBy: null,
             amount: row.amount,
             tagIds: [],
             entries: [
