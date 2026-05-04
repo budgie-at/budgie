@@ -1,29 +1,35 @@
 /* eslint-disable max-lines -- Service with multiple matching strategies (SQL, fallback, legacy) */
 import {
     RuleConditionMatchTypeEnum,
-    RuleWithRelationsEntityInterface,
     TransactionAssociationEnum,
     TransactionEntryAssociationEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    TransactionWithEntriesMccCategoryEntityInterface
+    TransactionTypeEnum
 } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
-import { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
-import { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
-import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
+import type { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
+import type { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
+import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
+import type { RuleWithRelationsEntityInterface, TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
 
 class RuleMatcherService {
+    @Log(
+        params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
+        result => `done count=${result}`,
+        (error, params) =>
+            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
+    )
     async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
@@ -46,6 +52,12 @@ class RuleMatcherService {
         return this.countMatchingTransactionsLegacy(params);
     }
 
+    @Log(
+        (params, limit) => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit}`,
+        result => `done count=${result.count} returned=${result.transactions.length}`,
+        (error, params, limit) =>
+            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
+    )
     // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
     async findMatchingTransactions(
         params: CountConditionsParamsInterface,
@@ -82,6 +94,11 @@ class RuleMatcherService {
         return this.findMatchingTransactionsLegacy(params, limit);
     }
 
+    @Log(
+        rule => `enter ruleId=${rule.id} conditions=${rule.conditions.length} matchType=${rule.conditionMatchType}`,
+        (result, rule) => `done ruleId=${rule.id} matchedCount=${result.length}`,
+        (error, rule) => `throw ruleId=${rule.id} error=${getErrorMessage(error)}`
+    )
     async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
         if (!isNotEmptyArray(rule.conditions)) {
             return [];
@@ -102,6 +119,11 @@ class RuleMatcherService {
         return this.collectMatchingTransactionIdsLegacy(rule);
     }
 
+    @Log(
+        (rule, input) => `enter ruleId=${rule.id} matchType=${rule.conditionMatchType} title="${input.title}"`,
+        (result, rule, input) => `done ruleId=${rule.id} title="${input.title}" matched=${result}`,
+        (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
+    )
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         if (!isNotEmptyArray(rule.conditions)) {
             return false;
@@ -112,7 +134,9 @@ class RuleMatcherService {
         return rule.conditions[evaluator](condition => evaluateRuleCondition(condition, input));
     }
 
-    convertTransactionForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): RuleEvaluationInputInterface {
+    private convertTransactionForRuleEvaluation(
+        transaction: TransactionWithEntriesMccCategoryEntityInterface
+    ): RuleEvaluationInputInterface {
         const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
         return {

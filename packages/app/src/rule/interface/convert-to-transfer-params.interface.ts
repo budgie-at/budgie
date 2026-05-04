@@ -1,7 +1,7 @@
-import type { Transaction } from '../../@generic/type/transaction.type';
+import type { DB } from '@budgie/contracts';
 
 export interface ConvertToTransferParamsInterface {
     readonly transactionId: number;
     readonly targetAccountId: number;
-    readonly dbTransaction: Transaction;
+    readonly dbTransaction: DB;
 }

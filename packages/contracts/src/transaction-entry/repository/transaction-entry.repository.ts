@@ -5,7 +5,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
-import type { DB, DBOrTX } from '../../@generic/type/db.type';
+import type { DB } from '../../@generic/type/db.type';
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
@@ -60,7 +60,7 @@ export class TransactionEntryRepository {
             );
     }
 
-    async bulkCreate(inputs: TransactionEntryCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionEntryEntityInterface[]> {
+    async bulkCreate(inputs: TransactionEntryCreateEntityInterface[], tx?: DB): Promise<TransactionEntryEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionEntryEntityTable).values(inputs).returning();
         }
@@ -68,7 +68,7 @@ export class TransactionEntryRepository {
         return [];
     }
 
-    async create(input: TransactionEntryCreateEntityInterface, tx?: DBOrTX): Promise<TransactionEntryEntityInterface> {
+    async create(input: TransactionEntryCreateEntityInterface, tx?: DB): Promise<TransactionEntryEntityInterface> {
         const [transactionEntry] = await (tx ?? this.db).insert(TransactionEntryEntityTable).values([input]).returning();
 
         return transactionEntry;
@@ -123,14 +123,14 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
-    async updateCategoryByTransactionId(transactionId: number, categoryId: number, tx?: DBOrTX): Promise<void> {
+    async updateCategoryByTransactionId(transactionId: number, categoryId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntryEntityTable)
             .set({ categoryId })
             .where(and(eq(TransactionEntryEntityTable.transactionId, transactionId), isNull(TransactionEntryEntityTable.deletedAt)));
     }
 
-    async deleteByTransactionId(transactionId: number, tx?: DBOrTX): Promise<void> {
+    async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId));
     }
 
