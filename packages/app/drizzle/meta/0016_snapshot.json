@@ -1,8 +1,8 @@
 {
     "version": "6",
     "dialect": "sqlite",
-    "id": "dfa276f1-5735-4b1e-9122-19c2a382eab6",
-    "prevId": "175416ea-57b2-489d-9846-fa468df8cfa3",
+    "id": "c79e23aa-b560-4e6e-82e5-9be493406cdb",
+    "prevId": "42137a70-7329-4df3-b435-d65f4808017b",
     "tables": {
         "account_balances": {
             "name": "account_balances",
@@ -697,6 +697,12 @@
                 }
             },
             "indexes": {
+                "exchange_rates_lookup_idx": {
+                    "name": "exchange_rates_lookup_idx",
+                    "columns": ["base_instrument_id", "quote_instrument_id", "\"created_at\" DESC"],
+                    "isUnique": false,
+                    "where": "\"exchange_rates\".\"deleted_at\" IS NULL"
+                },
                 "exchange_rates_base_instrument_id_quote_instrument_id_unique": {
                     "name": "exchange_rates_base_instrument_id_quote_instrument_id_unique",
                     "columns": ["base_instrument_id", "quote_instrument_id"],
@@ -1440,7 +1446,7 @@
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false,
-                    "default": true
+                    "default": false
                 }
             },
             "indexes": {},
@@ -1641,9 +1647,138 @@
                     "primaryKey": false,
                     "notNull": false,
                     "autoincrement": false
+                },
+                "updated_by": {
+                    "name": "updated_by",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "needs_embedding": {
+                    "name": "needs_embedding",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
+                },
+                "consolidation_parent_transaction_id": {
+                    "name": "consolidation_parent_transaction_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "consolidation_type": {
+                    "name": "consolidation_type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "operated_weekday": {
+                    "name": "operated_weekday",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "generated": {
+                        "as": "(CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER))",
+                        "type": "virtual"
+                    }
+                },
+                "operated_minute_of_day": {
+                    "name": "operated_minute_of_day",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "generated": {
+                        "as": "(CAST(strftime('%H', operated_at, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', operated_at, 'unixepoch') AS INTEGER))",
+                        "type": "virtual"
+                    }
                 }
             },
-            "indexes": {},
+            "indexes": {
+                "transactions_needs_embedding_idx": {
+                    "name": "transactions_needs_embedding_idx",
+                    "columns": ["needs_embedding", "deleted_at"],
+                    "isUnique": false
+                },
+                "transactions_operated_at_idx": {
+                    "name": "transactions_operated_at_idx",
+                    "columns": ["operated_at"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_visible_operated_idx": {
+                    "name": "transactions_visible_operated_idx",
+                    "columns": ["operated_at"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL"
+                },
+                "transactions_consolidation_parent_idx": {
+                    "name": "transactions_consolidation_parent_idx",
+                    "columns": ["consolidation_parent_transaction_id"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"consolidation_parent_transaction_id\" IS NOT NULL"
+                },
+                "transactions_type_operated_idx": {
+                    "name": "transactions_type_operated_idx",
+                    "columns": ["type", "operated_at"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_from_account_idx": {
+                    "name": "transactions_from_account_idx",
+                    "columns": ["from_account_id"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"from_account_id\" IS NOT NULL"
+                },
+                "transactions_to_account_idx": {
+                    "name": "transactions_to_account_idx",
+                    "columns": ["to_account_id"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"to_account_id\" IS NOT NULL"
+                },
+                "transactions_external_idx": {
+                    "name": "transactions_external_idx",
+                    "columns": ["external_source", "external_id"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"external_id\" IS NOT NULL AND \"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_weekday_type_idx": {
+                    "name": "transactions_weekday_type_idx",
+                    "columns": ["operated_weekday", "type"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_minute_of_day_idx": {
+                    "name": "transactions_minute_of_day_idx",
+                    "columns": ["operated_minute_of_day"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_active_idx": {
+                    "name": "transactions_active_idx",
+                    "columns": ["id"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"deleted_at\" IS NULL"
+                },
+                "transactions_pending_merchant_idx": {
+                    "name": "transactions_pending_merchant_idx",
+                    "columns": ["\"operated_at\" DESC"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" != ''"
+                },
+                "transactions_pending_comment_idx": {
+                    "name": "transactions_pending_comment_idx",
+                    "columns": ["\"operated_at\" DESC"],
+                    "isUnique": false,
+                    "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" = '' AND \"transactions\".\"comment\" != ''"
+                }
+            },
             "foreignKeys": {
                 "transactions_to_account_id_accounts_id_fk": {
                     "name": "transactions_to_account_id_accounts_id_fk",
@@ -1661,6 +1796,15 @@
                     "columnsFrom": ["from_account_id"],
                     "columnsTo": ["id"],
                     "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "transactions_consolidation_parent_transaction_id_transactions_id_fk": {
+                    "name": "transactions_consolidation_parent_transaction_id_transactions_id_fk",
+                    "tableFrom": "transactions",
+                    "tableTo": "transactions",
+                    "columnsFrom": ["consolidation_parent_transaction_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "set null",
                     "onUpdate": "no action"
                 }
             },
@@ -1749,9 +1893,66 @@
                     "primaryKey": false,
                     "notNull": false,
                     "autoincrement": false
+                },
+                "exchange_rate": {
+                    "name": "exchange_rate",
+                    "type": "real",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 1
+                },
+                "to_iban": {
+                    "name": "to_iban",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "original_transaction_id": {
+                    "name": "original_transaction_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
                 }
             },
-            "indexes": {},
+            "indexes": {
+                "transaction_entries_transaction_idx": {
+                    "name": "transaction_entries_transaction_idx",
+                    "columns": ["transaction_id"],
+                    "isUnique": false
+                },
+                "transaction_entries_account_idx": {
+                    "name": "transaction_entries_account_idx",
+                    "columns": ["account_id"],
+                    "isUnique": false
+                },
+                "transaction_entries_original_transaction_idx": {
+                    "name": "transaction_entries_original_transaction_idx",
+                    "columns": ["original_transaction_id"],
+                    "isUnique": false,
+                    "where": "\"transaction_entries\".\"original_transaction_id\" IS NOT NULL"
+                },
+                "transaction_entries_ledger_account_idx": {
+                    "name": "transaction_entries_ledger_account_idx",
+                    "columns": ["account_id"],
+                    "isUnique": false,
+                    "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL"
+                },
+                "transaction_entries_category_idx": {
+                    "name": "transaction_entries_category_idx",
+                    "columns": ["category_id"],
+                    "isUnique": false,
+                    "where": "\"transaction_entries\".\"category_id\" IS NOT NULL"
+                },
+                "transaction_entries_category_type_idx": {
+                    "name": "transaction_entries_category_type_idx",
+                    "columns": ["category_id", "type"],
+                    "isUnique": false,
+                    "where": "\"transaction_entries\".\"category_id\" IS NOT NULL"
+                }
+            },
             "foreignKeys": {
                 "transaction_entries_account_id_accounts_id_fk": {
                     "name": "transaction_entries_account_id_accounts_id_fk",
@@ -1788,6 +1989,15 @@
                     "columnsTo": ["id"],
                     "onDelete": "cascade",
                     "onUpdate": "no action"
+                },
+                "transaction_entries_original_transaction_id_transactions_id_fk": {
+                    "name": "transaction_entries_original_transaction_id_transactions_id_fk",
+                    "tableFrom": "transaction_entries",
+                    "tableTo": "transactions",
+                    "columnsFrom": ["original_transaction_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "set null",
+                    "onUpdate": "no action"
                 }
             },
             "compositePrimaryKeys": {},
@@ -1810,9 +2020,29 @@
                     "primaryKey": false,
                     "notNull": true,
                     "autoincrement": false
+                },
+                "is_primary": {
+                    "name": "is_primary",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": false
                 }
             },
-            "indexes": {},
+            "indexes": {
+                "transaction_tags_tag_idx": {
+                    "name": "transaction_tags_tag_idx",
+                    "columns": ["tag_id"],
+                    "isUnique": false
+                },
+                "transaction_tags_primary_idx": {
+                    "name": "transaction_tags_primary_idx",
+                    "columns": ["transaction_id"],
+                    "isUnique": true,
+                    "where": "\"transaction_tags\".\"is_primary\" = 1"
+                }
+            },
             "foreignKeys": {
                 "transaction_tags_transaction_id_transactions_id_fk": {
                     "name": "transaction_tags_transaction_id_transactions_id_fk",
@@ -1851,6 +2081,28 @@
         "columns": {}
     },
     "internal": {
-        "indexes": {}
+        "indexes": {
+            "exchange_rates_lookup_idx": {
+                "columns": {
+                    "\"created_at\" DESC": {
+                        "isExpression": true
+                    }
+                }
+            },
+            "transactions_pending_merchant_idx": {
+                "columns": {
+                    "\"operated_at\" DESC": {
+                        "isExpression": true
+                    }
+                }
+            },
+            "transactions_pending_comment_idx": {
+                "columns": {
+                    "\"operated_at\" DESC": {
+                        "isExpression": true
+                    }
+                }
+            }
+        }
     }
 }
