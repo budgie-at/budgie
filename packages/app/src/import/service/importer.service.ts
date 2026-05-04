@@ -52,15 +52,10 @@ export class ImporterService {
         const transactions = await this.processTransactions(csvText, progress);
         const createdTransactions = await transactionService.bulkCreate(transactions);
 
-        try {
-            await ruleEngineService.applyRulesToTransactions(
-                createdTransactions.map(transaction => transaction.id),
-                transactions
-            );
-        } catch (error) {
-            // eslint-disable-next-line no-console
-            console.warn(getErrorMessage(error));
-        }
+        await ruleEngineService.applyRulesToTransactions(
+            createdTransactions.map(transaction => transaction.id),
+            transactions
+        );
 
         return progress;
     }
