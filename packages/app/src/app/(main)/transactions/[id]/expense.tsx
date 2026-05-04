@@ -4,8 +4,9 @@ import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -13,10 +14,15 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
+import { useFormatDigits } from '../../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
+import { RefundedPill } from '../../../../transaction/components/refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
+import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
+import { useRefundedSummary } from '../../../../transaction/hook/use-refunded-summary.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
@@ -26,10 +32,14 @@ import type { UpdateTransactionFormPropsInterface } from '../../../../transactio
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
+    const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const { markForEmbedding } = useEmbeddingGenerator();
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -49,6 +59,21 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
+
+    const refundSummary = useRefundedSummary(transaction);
+    const refundCurrencySymbol = sourceAccount.instrument.symbol;
+    const formattedRefundedAmount =
+        isDefined(refundSummary) && refundSummary.kind === 'partial' && isNotEmptyString(refundCurrencySymbol)
+            ? formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol)
+            : undefined; // eslint-disable-line no-undefined -- optional prop, undefined skips it
+
+    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
+
+    const headerBottom = isDefined(refundSummary) ? (
+        <View className="flex-row">
+            <RefundedPill kind={refundSummary.kind} formattedRefundedAmount={formattedRefundedAmount} onPress={handleOpenRefundSources} />
+        </View>
+    ) : null;
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -72,6 +97,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }
+                        bottom={headerBottom}
                     />
                 }
             >
