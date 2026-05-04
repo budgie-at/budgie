@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 
-- openLink: 'budgie://settings/import?e2eCsvFixture=${CSV_DISPLAY_NAME}'
+- openLink: 'budgie://settings/import?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
 
 - extendedWaitUntil:
     visible:
