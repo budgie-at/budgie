@@ -17,19 +17,20 @@ interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly inputClassName?: string;
     readonly status?: FormFieldStatus;
     readonly autoFocus?: boolean;
+    readonly valuePrefix?: string;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, status, autoFocus, ...rest }: Props) => {
+export const AmountInput = ({ value, onChangeValue, inputClassName, status, autoFocus, valuePrefix = '', ...rest }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { intl } = useI18nContext();
 
-    const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString()));
+    const [displayValue, setDisplayValue] = useState(() => formatDigits(value === 0 ? '' : value.toString(), valuePrefix));
     const [isFocused, setIsFocused] = useState(false);
 
-    const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString());
+    const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString(), valuePrefix);
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);

@@ -13,18 +13,18 @@ import { embeddingService } from './embedding.service';
 
 import type { DB } from '@budgie/contracts';
 
-const RELAXED_INTERVAL_MS = 2500;
-const RELAXED_BATCH_SIZE = 5;
-const BOOST_BATCH_SIZE = 15;
-const YIELD_EVERY_ROWS = 3;
-
 export abstract class BaseEmbeddingSubDrainerService<
     TContext extends EmbeddingPendingContextBaseInterface
 > extends BaseDrainerService<TContext> {
-    protected readonly relaxedIntervalMs = RELAXED_INTERVAL_MS;
-    protected readonly relaxedBatchSize = RELAXED_BATCH_SIZE;
-    protected readonly boostBatchSize = BOOST_BATCH_SIZE;
-    protected readonly yieldEveryRows = YIELD_EVERY_ROWS;
+    private static readonly RELAXED_INTERVAL_MS = 2500;
+    private static readonly RELAXED_BATCH_SIZE = 5;
+    private static readonly BOOST_BATCH_SIZE = 15;
+    private static readonly YIELD_EVERY_ROWS = 3;
+
+    protected readonly relaxedIntervalMs = BaseEmbeddingSubDrainerService.RELAXED_INTERVAL_MS;
+    protected readonly relaxedBatchSize = BaseEmbeddingSubDrainerService.RELAXED_BATCH_SIZE;
+    protected readonly boostBatchSize = BaseEmbeddingSubDrainerService.BOOST_BATCH_SIZE;
+    protected readonly yieldEveryRows = BaseEmbeddingSubDrainerService.YIELD_EVERY_ROWS;
 
     private readonly pendingPersists: Array<PendingPersistInterface<TContext>> = [];
 

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.11.0](https://github.com/budgie-at/budgie/compare/v5.10.0...v5.11.0) (2026-05-02)
+
+### Features
+
+- **bank-sync:** export Monobank wire-type interfaces from package barrel ([9d099e7](https://github.com/budgie-at/budgie/commit/9d099e766177873b9b4d53a53c22b303245ff5ed))
+
 # [5.7.0](https://github.com/budgie-at/budgie/compare/v5.6.3...v5.7.0) (2026-05-01)
 
 ### Features

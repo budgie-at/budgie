@@ -2,11 +2,12 @@
 import { type PropsWithChildren } from 'react';
 
 import { AccountSelectorModalProvider } from '../../account/provider/account-selector-modal.provider';
-import { AccountTypeSelectorModalProvider } from '../../account/provider/account-type-selector-modal.provider';
+import { VoiceReviewModalProvider } from '../../ai/provider/voice-review-modal.provider';
 import { CategoryFormModalProvider } from '../../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
 import { LanguageSelectorModalProvider } from '../../i18n/provider/language-selector-modal.provider';
 import { ImportColumnMapperModalProvider } from '../../import/provider/import-column-mapper-modal.provider';
+import { ResyncWindowPickerModalProvider } from '../../sync/provider/resync-window-picker-modal.provider';
 import { RuleFormModalProvider } from '../../rule/provider/rule-form-modal.provider';
 import { RuleMccSelectorModalProvider } from '../../rule/provider/rule-mcc-selector-modal.provider';
 import { RuleSelectorModalProvider } from '../../rule/provider/rule-selector-modal.provider';
@@ -42,27 +43,29 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                 <CurrencySelectorModalProvider>
                                                     <LanguageSelectorModalProvider>
                                                         <ContactSelectorModalProvider>
-                                                            <AccountTypeSelectorModalProvider>
-                                                                <ImportColumnMapperModalProvider>
+                                                            <ImportColumnMapperModalProvider>
+                                                                <ResyncWindowPickerModalProvider>
                                                                     <TransactionTypeFilterModalProvider>
                                                                         <DateFilterModalProvider>
                                                                             <TransactionCategoryFilterModalProvider>
                                                                                 <TransactionAccountFilterModalProvider>
                                                                                     <TransactionTagFilterModalProvider>
-                                                                                        <RuleFormModalProvider>
-                                                                                            <RuleSelectorModalProvider>
-                                                                                                <RuleMccSelectorModalProvider>
-                                                                                                    {children}
-                                                                                                </RuleMccSelectorModalProvider>
-                                                                                            </RuleSelectorModalProvider>
-                                                                                        </RuleFormModalProvider>
+                                                                                        <VoiceReviewModalProvider>
+                                                                                            <RuleFormModalProvider>
+                                                                                                <RuleSelectorModalProvider>
+                                                                                                    <RuleMccSelectorModalProvider>
+                                                                                                        {children}
+                                                                                                    </RuleMccSelectorModalProvider>
+                                                                                                </RuleSelectorModalProvider>
+                                                                                            </RuleFormModalProvider>
+                                                                                        </VoiceReviewModalProvider>
                                                                                     </TransactionTagFilterModalProvider>
                                                                                 </TransactionAccountFilterModalProvider>
                                                                             </TransactionCategoryFilterModalProvider>
                                                                         </DateFilterModalProvider>
                                                                     </TransactionTypeFilterModalProvider>
-                                                                </ImportColumnMapperModalProvider>
-                                                            </AccountTypeSelectorModalProvider>
+                                                                </ResyncWindowPickerModalProvider>
+                                                            </ImportColumnMapperModalProvider>
                                                         </ContactSelectorModalProvider>
                                                     </LanguageSelectorModalProvider>
                                                 </CurrencySelectorModalProvider>

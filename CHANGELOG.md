@@ -3,6 +3,158 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.14.2](https://github.com/budgie-at/budgie/compare/v5.14.1...v5.14.2) (2026-05-04)
+
+### Bug Fixes
+
+- **app:** disable account type changes ([#410](https://github.com/budgie-at/budgie/issues/410)) ([5dbb07e](https://github.com/budgie-at/budgie/commit/5dbb07eac95f9276565632fa379e1e0b8761b759))
+
+## [5.14.1](https://github.com/budgie-at/budgie/compare/v5.14.0...v5.14.1) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** replace undefined Tailwind tokens making AI status text invisible ([#407](https://github.com/budgie-at/budgie/issues/407)) ([6c3849d](https://github.com/budgie-at/budgie/commit/6c3849dfe6ee10e7204097e137688789173c44f2))
+
+# [5.14.0](https://github.com/budgie-at/budgie/compare/v5.13.0...v5.14.0) (2026-05-03)
+
+### Features
+
+- **app:** migrate STT from react-native-executorch to whisper.rn ([#293](https://github.com/budgie-at/budgie/issues/293)) ([fe09f38](https://github.com/budgie-at/budgie/commit/fe09f38c273696eba6d910437080df7ec0192752))
+
+# [5.13.0](https://github.com/budgie-at/budgie/compare/v5.12.1...v5.13.0) (2026-05-03)
+
+### Bug Fixes
+
+- **landing:** disable max-lines on feature-registry to allow single logical unit ([c2b2139](https://github.com/budgie-at/budgie/commit/c2b2139442e078f7bb3dfa7db375487053648664))
+- **landing:** fix breadcrumb aria-label casing and CTA JSX depth ([71f4646](https://github.com/budgie-at/budgie/commit/71f4646ba940af7f997d9721117286d2bc20fc9b))
+- **landing:** make feature relatedFeatureSlugs bidirectional ([4e54dcb](https://github.com/budgie-at/budgie/commit/4e54dcbf61e2446009c97a6c2264b22363bcabb5))
+- **landing:** restore offline-first tail in es hub description ([8d3fb2b](https://github.com/budgie-at/budgie/commit/8d3fb2b81fdaca44c6c435cdd3a6823b8e6eb79f))
+- **landing:** tune feature meta descriptions to 150-160 char range ([d0d7668](https://github.com/budgie-at/budgie/commit/d0d7668c4022f75215a6da7d6433d3a2ceb00df5))
+- **landing:** use canonical isEmptyArray/isNotEmptyArray guards ([6b23244](https://github.com/budgie-at/budgie/commit/6b2324428728f050ce7d5403c26a5e5f12a1e13f))
+- **landing:** use stable index key for FeaturePageJsonLd schemas ([2a7d104](https://github.com/budgie-at/budgie/commit/2a7d104a12cc261f2fd95bac6a942649052f55d3))
+
+### Features
+
+- **landing:** add /features hub page with topical cluster index ([95058a9](https://github.com/budgie-at/budgie/commit/95058a961986a559287a9ee759e4f2dc0a6a8496))
+- **landing:** add account-management feature page ([419f7fc](https://github.com/budgie-at/budgie/commit/419f7fc6d58d87232bd133bdf22eb8df640eebf6))
+- **landing:** add account-transfers feature page ([8767087](https://github.com/budgie-at/budgie/commit/876708714468c859568a85e8ea8757ab1d5cf73c))
+- **landing:** add ai-auto-categorization feature page ([e758006](https://github.com/budgie-at/budgie/commit/e75800638362cb60966d8e71f556d055033f1515))
+- **landing:** add ai-merchant-translation feature page ([1c84ae7](https://github.com/budgie-at/budgie/commit/1c84ae798d0948cb5ba6bc34dcfbfb668b36af1f))
+- **landing:** add bank-resync-window feature page ([e51233a](https://github.com/budgie-at/budgie/commit/e51233a8fed9159697dbb604324d80bbaedc6b50))
+- **landing:** add biometric-authentication feature page ([4530fcd](https://github.com/budgie-at/budgie/commit/4530fcdcc349e1c14af0c757651307b1148a9d8c))
+- **landing:** add convert-to-transfer feature page ([1d9bb30](https://github.com/budgie-at/budgie/commit/1d9bb308c079e17d8256161fd3b8fd2385e54788))
+- **landing:** add crypto-investment-tracking feature page ([646c990](https://github.com/budgie-at/budgie/commit/646c99028f32eda6f1834381aa0daa91e425bbc4))
+- **landing:** add csv-import feature page ([d0f4712](https://github.com/budgie-at/budgie/commit/d0f47129ec6a63859aebe6e49dbfc4b8f5fd3f01))
+- **landing:** add custom-categories feature page ([446f075](https://github.com/budgie-at/budgie/commit/446f07563e520d3ec9ff7f4ee99d22eddabc7e0d))
+- **landing:** add dark-mode feature page ([e0c831b](https://github.com/budgie-at/budgie/commit/e0c831b7cf3d71f505210067771ac2d7c6ecdca6))
+- **landing:** add data-export feature page ([2f1e001](https://github.com/budgie-at/budgie/commit/2f1e001b65602c56e0dd86dd6d69048c68101190))
+- **landing:** add database-backup feature page ([5f96e52](https://github.com/budgie-at/budgie/commit/5f96e524d3b0b10740306474dc4a28a6497960fe))
+- **landing:** add date-filter-presets feature page ([4fe8165](https://github.com/budgie-at/budgie/commit/4fe816577273c2337215256d0f15fca852444f49))
+- **landing:** add debt-tracking feature page ([855ca9a](https://github.com/budgie-at/budgie/commit/855ca9a1dce8e0f272fba1a9ffd940a5445226f0))
+- **landing:** add erste-bank-pdf-import feature page ([e5a0476](https://github.com/budgie-at/budgie/commit/e5a0476b17bf569ada11fd32a920c42961da6459))
+- **landing:** add expense-tracking feature page ([a560937](https://github.com/budgie-at/budgie/commit/a5609376d9c5f4e00c96127f038c555bc5548d59))
+- **landing:** add feature FAQ interface ([c90a337](https://github.com/budgie-at/budgie/commit/c90a3376a7e6ea1e57d3f152dc1d5f99e35bb738))
+- **landing:** add feature OG image factory ([9e93d29](https://github.com/budgie-at/budgie/commit/9e93d290395ee8ba71142f19b6aedcd2e8a80d9f))
+- **landing:** add feature page JSON-LD builder ([874b0fb](https://github.com/budgie-at/budgie/commit/874b0fb9df3d33e1d9bc9aee887fd98ee5344467))
+- **landing:** add feature page JSON-LD component ([e56fda6](https://github.com/budgie-at/budgie/commit/e56fda69f3fd34f8f193f23e77c598fe2b65f728))
+- **landing:** add feature page metadata builder ([daf320f](https://github.com/budgie-at/budgie/commit/daf320f85e257f1f234a4293a2654656a21a1d0e))
+- **landing:** add feature page typography components ([447ca30](https://github.com/budgie-at/budgie/commit/447ca30dda32317b1c744d6ccf34ef3d9a659c55))
+- **landing:** add feature page UI components ([c9cc6cd](https://github.com/budgie-at/budgie/commit/c9cc6cd37690aef9c1a5b5f6e04c0340b6d69fda))
+- **landing:** add feature registry entry interface ([8a21f4b](https://github.com/budgie-at/budgie/commit/8a21f4b4aeec20ea3c8fd5f69e600ebcda9869e6))
+- **landing:** add feature registry with 5 hero entries ([b47cfd4](https://github.com/budgie-at/budgie/commit/b47cfd468c1294cda4ca88edb1f8185a652bf871))
+- **landing:** add feature slug lookup util ([fc8d4ce](https://github.com/budgie-at/budgie/commit/fc8d4ceb8e68a818cd5c36066f864eb2339fb49b))
+- **landing:** add feature tier enum ([b639c77](https://github.com/budgie-at/budgie/commit/b639c77634cef059c91ccd107ecc1fd39ef9b17f))
+- **landing:** add Features column to footer ([fe6d268](https://github.com/budgie-at/budgie/commit/fe6d26851ea3a62b339ce2f37c17b42fdae4b599))
+- **landing:** add mcc-auto-category feature page ([f942e51](https://github.com/budgie-at/budgie/commit/f942e51941a1ec690638a51a07e4899c3494fd72))
+- **landing:** add monobank-sync feature page ([1d9e128](https://github.com/budgie-at/budgie/commit/1d9e1281ab629f045499f3fb811a07a037074652))
+- **landing:** add multi-currency feature page ([fc17753](https://github.com/budgie-at/budgie/commit/fc177539479138a96ba9dbc612cdfd751eabe19c))
+- **landing:** add multi-language-app feature page ([ad3c897](https://github.com/budgie-at/budgie/commit/ad3c89778d39a8415c4faffcec1c7bcbb443cd0c))
+- **landing:** add net-worth-tracker feature page ([2e2e185](https://github.com/budgie-at/budgie/commit/2e2e185ca189560000fb7b31356a5d2a0330b7ca))
+- **landing:** add offline-first expense tracker feature page ([d1f9572](https://github.com/budgie-at/budgie/commit/d1f9572315d69856267db46a175a88a41f27767e))
+- **landing:** add pin-app-lock feature page ([8aa9d9a](https://github.com/budgie-at/budgie/commit/8aa9d9afe98d06de6fe43c7733881272547054bf))
+- **landing:** add primary-tag feature page ([2238c01](https://github.com/budgie-at/budgie/commit/2238c01ee7882ad45c9f760e184eba019f6cf0ee))
+- **landing:** add privatbank-import feature page ([5a69e90](https://github.com/budgie-at/budgie/commit/5a69e90c3fba60bb7a3d0ae5e79f5e2e030f259c))
+- **landing:** add recurring-payments-calendar feature page ([69e82c8](https://github.com/budgie-at/budgie/commit/69e82c81be7a3790bb7d1463e6da80767e9af70c))
+- **landing:** add related-features lookup util ([818d35f](https://github.com/budgie-at/budgie/commit/818d35fbc275c2e95a24d053d2d41f03fd3884f2))
+- **landing:** add screenshot-protection feature page ([56d7a61](https://github.com/budgie-at/budgie/commit/56d7a61537aa38aa1c4515a1bfd7e7bde0a09bc3))
+- **landing:** add spending-analytics feature page ([be42eff](https://github.com/budgie-at/budgie/commit/be42efff5ef552369ea9d74c3f53d3f95d60f283))
+- **landing:** add split-transactions feature page ([e992c5a](https://github.com/budgie-at/budgie/commit/e992c5a127f6a3fa681c797f9917bdbf7b7df0fd))
+- **landing:** add tag-analytics feature page ([25ad30a](https://github.com/budgie-at/budgie/commit/25ad30a1be46dcbe6a14a95f7c023f1c1c82bafa))
+- **landing:** add transaction-tags feature page ([618f6d0](https://github.com/budgie-at/budgie/commit/618f6d004c16c1011cae5fa46d13a43d159cf830))
+- **landing:** add transfer-pair-detection feature page ([bed49b2](https://github.com/budgie-at/budgie/commit/bed49b2474037cce56e08de6199383480a491a56))
+- **landing:** add voice-transaction-entry feature page ([c870cb2](https://github.com/budgie-at/budgie/commit/c870cb236b09b9bbf5b3aa2183d463e16472e0aa))
+- **landing:** cross-link blog articles to feature pages ([6414b7e](https://github.com/budgie-at/budgie/commit/6414b7ea770431bdb7dd9e33e95e5188080939e9))
+- **landing:** extend sitemap with feature pages and hub ([708fae6](https://github.com/budgie-at/budgie/commit/708fae6146439b129076c5b7b4a55c565ec9ffe5))
+- **landing:** link home features section cards to feature pages ([9d503b8](https://github.com/budgie-at/budgie/commit/9d503b81be4d5e3642de1d5e960b4852e6b962ab))
+- **landing:** point header Features link to /features hub ([00e7bbf](https://github.com/budgie-at/budgie/commit/00e7bbf05ad1db7a1e793a3773c8eff6410ce023))
+- **landing:** translate feature page strings into de/es/fr/uk ([830d74f](https://github.com/budgie-at/budgie/commit/830d74f260d3b2817c0742b31a03d1dcea885ff8))
+
+## [5.12.1](https://github.com/budgie-at/budgie/compare/v5.12.0...v5.12.1) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** prevent split modal double back ([e8bf142](https://github.com/budgie-at/budgie/commit/e8bf142116281862caef1d2fb15fe4ac5ed01399))
+
+# [5.12.0](https://github.com/budgie-at/budgie/compare/v5.11.2...v5.12.0) (2026-05-03)
+
+### Features
+
+- **app:** grow comment input vertically up to two lines ([232be48](https://github.com/budgie-at/budgie/commit/232be48a6386a7664dc315f7637a809bd449b37f))
+
+## [5.11.2](https://github.com/budgie-at/budgie/compare/v5.11.1...v5.11.2) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** hardcode ccacheEnabled to stop EAS fingerprint drift ([e41d48c](https://github.com/budgie-at/budgie/commit/e41d48c9e7d359ec8e47537dab1a7a69a8085f7d))
+
+## [5.11.1](https://github.com/budgie-at/budgie/compare/v5.11.0...v5.11.1) (2026-05-03)
+
+### Bug Fixes
+
+- **contracts:** bind since via aliased column in windowed canonical lookup ([459ecd5](https://github.com/budgie-at/budgie/commit/459ecd5caa81a5a7cdd477f0063c7679ce136cd3))
+
+# [5.11.0](https://github.com/budgie-at/budgie/compare/v5.10.0...v5.11.0) (2026-05-02)
+
+### Bug Fixes
+
+- **app,contracts:** trigger immediate sync after windowed reset; fix lint+cpd ([100e684](https://github.com/budgie-at/budgie/commit/100e684c211902a514ea94696e66e5a1085ad91e)), closes [#32](https://github.com/budgie-at/budgie/issues/32) [#35](https://github.com/budgie-at/budgie/issues/35)
+- **app,contracts:** unbreak monobank sync hold + consolidation churn ([0861b18](https://github.com/budgie-at/budgie/commit/0861b18ea5c4f451c8b0f516ae6085fa976c284c))
+- **app:** inline t-macro calls in picker, reorder for thumb-zone safety ([14efa59](https://github.com/budgie-at/budgie/commit/14efa5944319daf9ebeb28712970557cc8b9be19))
+- **app:** make resync-window-picker labels visible and translate strings ([a483345](https://github.com/budgie-at/budgie/commit/a4833452be29ff58960a094b0eec75dccb9864c7))
+- **bank-sync-tests:** dedupe seedBankPair via curry + extracted entry type ([c4ee34a](https://github.com/budgie-at/budgie/commit/c4ee34a21032036229e87609e4660dd8267e8129)), closes [#19](https://github.com/budgie-at/budgie/issues/19)
+- **contracts:** windowed resync only moves forwardSyncFromAt backwards ([6594603](https://github.com/budgie-at/budgie/commit/659460327bc898e56e503137bffaee6e1716c69d))
+
+### Features
+
+- **app:** add re-sync window picker route and modal context ([42d66cc](https://github.com/budgie-at/budgie/commit/42d66ccec4dd52de46a55b7188f26adc3547b244))
+- **app:** add resyncBankSyncService and window option constants ([24888d7](https://github.com/budgie-at/budgie/commit/24888d7aefc7a31ed8d2f771070adf441ddc9971))
+- **app:** rewire ResyncBankSyncAccount to open the window picker ([44b5a93](https://github.com/budgie-at/budgie/commit/44b5a93adcf108f7d166d1e7a76d33b16a51dfb2))
+- **bank-sync:** export Monobank wire-type interfaces from package barrel ([9d099e7](https://github.com/budgie-at/budgie/commit/9d099e766177873b9b4d53a53c22b303245ff5ed))
+- **contracts:** add windowed resync helpers for bank-sync ([c572a93](https://github.com/budgie-at/budgie/commit/c572a93115c7959badd511b540158ad17d3286b6))
+
+### Reverts
+
+- Revert "refactor(bank-sync-tests): drop harness barrel, import from source files" ([db4efe1](https://github.com/budgie-at/budgie/commit/db4efe1846b114a58136c88a005955d5fed2ec91))
+
+# [5.10.0](https://github.com/budgie-at/budgie/compare/v5.9.0...v5.10.0) (2026-05-02)
+
+### Features
+
+- **app:** vertically stack analytics overview tiles for long labels ([3107d7e](https://github.com/budgie-at/budgie/commit/3107d7ea9634eba91be02bef030bdb4b060479b3))
+
+# [5.9.0](https://github.com/budgie-at/budgie/compare/v5.8.1...v5.9.0) (2026-05-02)
+
+### Features
+
+- **app,contracts:** add Last Week and Last Month date filter presets ([5a2a673](https://github.com/budgie-at/budgie/commit/5a2a673e90f671257caf97288d90afac5f619d5e))
+
+## [5.8.1](https://github.com/budgie-at/budgie/compare/v5.8.0...v5.8.1) (2026-05-02)
+
+### Bug Fixes
+
+- **app:** stabilize useLiveQuery deps in statistics transactions query ([a028a5c](https://github.com/budgie-at/budgie/commit/a028a5c578be1de97c5e15b6a05f63c67b859496)), closes [#395](https://github.com/budgie-at/budgie/issues/395)
+- **ci:** build workspace packages before eas update ([9617ca0](https://github.com/budgie-at/budgie/commit/9617ca066d9890de188e58e39ebe7b725aee85ad))
+
 # [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
 
 ### Bug Fixes

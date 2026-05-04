@@ -2,6 +2,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
 import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '../util/ai-constants.util';
@@ -15,7 +16,7 @@ class LocalEmbeddingService
     implements AiSubsystemServiceInterface<LlamaSubsystemSnapshotInterface>, EmbeddingInvokerInterface
 {
     constructor() {
-        super('embedding');
+        super(AiSubsystemNameEnum.EMBEDDING);
     }
 
     @Log(
