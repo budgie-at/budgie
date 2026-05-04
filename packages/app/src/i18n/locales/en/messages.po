@@ -253,7 +253,7 @@ msgstr "All your financial data is stored locally on your device. No cloud sync,
 msgid "Already syncing"
 msgstr "Already syncing"
 
-#: src/app/(tabs)/settings/import.tsx:204
+#: src/app/(tabs)/settings/import.tsx:196
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
@@ -399,7 +399,7 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(tabs)/settings/import.tsx:263
+#: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
@@ -431,7 +431,7 @@ msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:33
-#: src/app/(tabs)/settings/import.tsx:188
+#: src/app/(tabs)/settings/import.tsx:180
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:167
 msgid "Category"
@@ -503,7 +503,7 @@ msgstr "Close menu"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/app/(tabs)/settings/import.tsx:248
+#: src/app/(tabs)/settings/import.tsx:240
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
@@ -651,7 +651,7 @@ msgstr "Could not export database"
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
 
-#: src/app/(tabs)/settings/import.tsx:150
+#: src/app/(tabs)/settings/import.tsx:142
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
@@ -667,7 +667,7 @@ msgstr "Could not merge category"
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
 
-#: src/app/(tabs)/settings/import.tsx:114
+#: src/app/(tabs)/settings/import.tsx:111
 msgid "Could not read CSV file"
 msgstr "Could not read CSV file"
 
@@ -842,7 +842,7 @@ msgstr "Database exported"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
-#: src/app/(tabs)/settings/import.tsx:196
+#: src/app/(tabs)/settings/import.tsx:188
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:123
 msgid "Date"
 msgstr "Date"
@@ -1126,7 +1126,7 @@ msgstr "Export Database"
 msgid "Export your transactions to Excel"
 msgstr "Export your transactions to Excel"
 
-#: src/app/(tabs)/settings/import.tsx:220
+#: src/app/(tabs)/settings/import.tsx:212
 msgid "External ID"
 msgstr "External ID"
 
@@ -1167,7 +1167,7 @@ msgstr "Field"
 msgid "Fill in the account details"
 msgstr "Fill in the account details"
 
-#: src/app/(tabs)/settings/import.tsx:158
+#: src/app/(tabs)/settings/import.tsx:150
 msgid "Fix Errors"
 msgstr "Fix Errors"
 
@@ -1187,15 +1187,15 @@ msgstr "from"
 msgid "From"
 msgstr "From"
 
-#: src/app/(tabs)/settings/import.tsx:227
+#: src/app/(tabs)/settings/import.tsx:219
 msgid "From Account"
 msgstr "From Account"
 
-#: src/app/(tabs)/settings/import.tsx:241
+#: src/app/(tabs)/settings/import.tsx:233
 msgid "From Amount"
 msgstr "From Amount"
 
-#: src/app/(tabs)/settings/import.tsx:234
+#: src/app/(tabs)/settings/import.tsx:226
 msgid "From Currency"
 msgstr "From Currency"
 
@@ -1316,7 +1316,7 @@ msgstr "Indexing {done} of {total}"
 msgid "Invalid file"
 msgstr "Invalid file"
 
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:247
 msgid "Is Planned"
 msgstr "Is Planned"
 
@@ -1416,7 +1416,7 @@ msgstr "Manage Tags"
 msgid "Manual"
 msgstr "Manual"
 
-#: src/app/(tabs)/settings/import.tsx:164
+#: src/app/(tabs)/settings/import.tsx:156
 msgid "Map CSV Columns"
 msgstr "Map CSV Columns"
 
@@ -1428,7 +1428,7 @@ msgstr "Match All"
 msgid "Match Any"
 msgstr "Match Any"
 
-#: src/app/(tabs)/settings/import.tsx:165
+#: src/app/(tabs)/settings/import.tsx:157
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
@@ -2036,11 +2036,11 @@ msgstr "Select a contact"
 msgid "Select a tag to merge into"
 msgstr "Select a tag to merge into"
 
+#: src/app/(tabs)/settings/import.tsx:56
 #: src/app/(tabs)/settings/import.tsx:59
+#: src/app/(tabs)/settings/import.tsx:60
+#: src/app/(tabs)/settings/import.tsx:61
 #: src/app/(tabs)/settings/import.tsx:62
-#: src/app/(tabs)/settings/import.tsx:63
-#: src/app/(tabs)/settings/import.tsx:64
-#: src/app/(tabs)/settings/import.tsx:65
 msgid "Select a valid column"
 msgstr "Select a valid column"
 
@@ -2272,7 +2272,7 @@ msgstr "Spent"
 msgid "Split"
 msgstr "Split"
 
-#: src/app/(tabs)/settings/import.tsx:158
+#: src/app/(tabs)/settings/import.tsx:150
 msgid "Start Import"
 msgstr "Start Import"
 
@@ -2446,11 +2446,11 @@ msgstr "to"
 msgid "To"
 msgstr "To"
 
-#: src/app/(tabs)/settings/import.tsx:180
+#: src/app/(tabs)/settings/import.tsx:172
 msgid "To Account"
 msgstr "To Account"
 
-#: src/app/(tabs)/settings/import.tsx:212
+#: src/app/(tabs)/settings/import.tsx:204
 msgid "To Currency"
 msgstr "To Currency"
 
@@ -2683,7 +2683,7 @@ msgstr "Wise"
 msgid "XLSX export"
 msgstr "XLSX export"
 
-#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:154
+#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:164
 msgid "Yes"
 msgstr "Yes"
 
