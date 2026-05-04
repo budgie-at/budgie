@@ -31,6 +31,15 @@ env:
       text: 'Import Database'
       index: 1
 
+- runFlow:
+    when:
+      visible: 'budgie \(E2E\)'
+    commands:
+      - runFlow:
+          file: ../navigation/relaunch-app-and-wait.flow.yaml
+          env:
+            DESTINATION_ID: 'TabBar.Home'
+
 - tapOn:
       id: 'TabBar.Home'
 

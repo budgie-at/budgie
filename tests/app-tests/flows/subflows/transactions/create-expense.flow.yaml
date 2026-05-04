@@ -14,7 +14,22 @@ env:
       ACTION_ITEM_ID: 'ActionItem.Expense'
       FORM_TITLE: 'New Expense'
 
-- inputText: ${AMOUNT}
+- runFlow:
+    when:
+      visible: 'New Expense'
+    commands:
+      - runFlow:
+          when:
+            true: ${AMOUNT == '25'}
+          commands:
+            - tapOn: '2'
+            - tapOn: '5'
+      - runFlow:
+          when:
+            true: ${AMOUNT == '10'}
+          commands:
+            - tapOn: '1'
+            - tapOn: '0'
 
 - runFlow:
     file: select-account.flow.yaml
@@ -33,8 +48,9 @@ env:
       id: 'TransactionForm.CategorySelector'
     direction: UP
 
-- tapOn:
-    id: 'TransactionForm.CommentInput'
-- inputText: ${COMMENT}
+- runFlow:
+    file: enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
 
 - runFlow: submit-transaction-and-wait.flow.yaml

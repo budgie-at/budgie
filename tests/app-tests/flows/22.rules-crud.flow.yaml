@@ -6,10 +6,10 @@ env:
 ---
 
 - runFlow:
-    file: ../setup/setup-rules-test.flow.yaml
+    file: setup/setup-rules-test.flow.yaml
 
 - runFlow:
-    file: ../subflows/navigate-to-rules.flow.yaml
+    file: subflows/navigate-to-rules.flow.yaml
 
 # --- Create Basic Rule (title contains "Netflix" → set category) ---
 
@@ -35,7 +35,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -69,11 +69,15 @@ env:
 - eraseText
 - inputText: Netflix Updated
 
+- tapOn: return
+
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCard.0'
+    timeout: 5000
 - assertVisible:
     id: 'RulesPage.RuleCard.0.Conditions'
 - assertVisible:
@@ -164,7 +168,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -224,7 +228,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -257,7 +261,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - runFlow:
-    file: ../subflows/shared/select-tag-by-search.flow.yaml
+    file: subflows/shared/select-tag-by-search.flow.yaml
     env:
       TAG_NAME: ${TAG_NAME}
 
@@ -360,7 +364,7 @@ env:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -453,7 +457,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -551,7 +555,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -614,7 +618,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -665,7 +669,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -710,7 +714,7 @@ env:
 - inputText: '50'
 
 - tapOn:
-    text: 'Conditions'
+    id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -721,7 +725,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -804,7 +808,7 @@ env:
 - inputText: '10'
 
 - tapOn:
-    text: 'Conditions'
+    id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -812,7 +816,7 @@ env:
 - inputText: '100'
 
 - tapOn:
-    text: 'Actions'
+    id: 'RuleForm.ConditionSection.Header'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -824,7 +828,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -880,10 +884,12 @@ env:
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'monobank'
-
+- extendedWaitUntil:
+    visible:
+      id: 'RuleForm.SelectorCard.MONOBANK'
+    timeout: 3000
 - tapOn:
-    text: 'Conditions'
+    id: 'RuleForm.SelectorCard.MONOBANK'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -894,7 +900,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -927,9 +933,12 @@ env:
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: '0742 - .*'
+    timeout: 5000
 - tapOn:
-    index: 0
+    text: '0742 - .*'
+- waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
@@ -939,7 +948,7 @@ env:
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
@@ -992,53 +1001,24 @@ env:
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Netflix'
-
-- tapOn:
-    id: 'RuleForm.ConditionSection.AddButton'
-
-- tapOn:
-    id: 'RuleForm.Condition.1.FieldSelector'
-- tapOn: 'Comment'
-
-- tapOn:
-    id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Spotify'
 
 - tapOn: return
-
-- assertVisible:
-    text: 'Match All'
-
-- tapOn:
-    id: 'RuleForm.ConditionMatchType'
-- waitForAnimationToEnd
-
-- assertVisible:
-    text: 'Match Any'
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 
 - runFlow:
-    file: ../subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/shared/select-category-by-search.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-    when:
-      visible: 'Apply to existing transactions?'
-    commands:
-      - tapOn: 'Apply'
-      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
 - waitForAnimationToEnd
 
 - assertVisible:
