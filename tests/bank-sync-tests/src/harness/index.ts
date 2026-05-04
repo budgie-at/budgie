@@ -4,6 +4,7 @@ export { seed } from './seed/seed';
 export { seedBankPair } from './seed/seed-bank-pair';
 export { seedAccountPair } from './seed/seed-account-pair';
 export { seedTransferPairFixture } from './seed/seed-transfer-pair-fixture';
+export { seedRefundedExpense } from './seed/seed-refund-fixture';
 export { fetchTransactionById } from './db/fetch-transaction-by-id';
 export { fetchCanonicalsOfType } from './db/fetch-canonicals-of-type';
 export { findMccByCode } from './db/find-mcc-by-code';
