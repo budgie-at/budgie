@@ -2,12 +2,12 @@ import { RuleCreateInputInterface } from '@budgie/contracts';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
 import { RuleConditionOptionInterface } from '../../interface/rule-condition-option.interface';
-import { RuleConditionFieldType } from '../../type/rule-condition-field.type';
 import { RuleFieldValueType } from '../../type/rule-field-value.type';
 import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
 
-interface Props<T extends RuleConditionFieldType> {
+interface Props<T extends RuleConditionFormFieldEnum> {
     readonly index: number;
     readonly options: RuleConditionOptionInterface<RuleFieldValueType<T>>[];
     readonly fieldName: T;
@@ -17,7 +17,7 @@ interface Props<T extends RuleConditionFieldType> {
     readonly testID?: string;
 }
 
-export const RuleConditionEnumSelector = <T extends RuleConditionFieldType>(props: Props<T>) => {
+export const RuleConditionEnumSelector = <T extends RuleConditionFormFieldEnum>(props: Props<T>) => {
     const { index, options, fieldName, label, sheetTitle, defaultLabel, testID } = props;
     const { control } = useFormContext<RuleCreateInputInterface>();
 

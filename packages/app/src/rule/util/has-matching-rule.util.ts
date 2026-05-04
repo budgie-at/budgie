@@ -31,7 +31,10 @@ export const doesRuleMatchTransaction = (
         return false;
     }
 
-    const evaluator = rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
+    const matchesCondition = (condition: RuleConditionEntityInterface) =>
+        evaluateConditionForDetection(condition, transactionInput, suggestRuleData);
 
-    return rule.conditions[evaluator](condition => evaluateConditionForDetection(condition, transactionInput, suggestRuleData));
+    return rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY
+        ? rule.conditions.some(matchesCondition)
+        : rule.conditions.every(matchesCondition);
 };

@@ -1,13 +1,13 @@
-import { RuleConditionEntityInterface, RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-type ConditionInput = Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>;
+import { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 
-const serializeCondition = (condition: ConditionInput): string =>
+const serializeCondition = (condition: RuleConditionInputInterface): string =>
     `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
 
-const areConditionsEqual = (inputConditions: ConditionInput[], existingConditions: ConditionInput[]): boolean => {
+const areConditionsEqual = (inputConditions: RuleConditionInputInterface[], existingConditions: RuleConditionInputInterface[]): boolean => {
     if (inputConditions.length !== existingConditions.length) {
         return false;
     }
@@ -19,7 +19,7 @@ const areConditionsEqual = (inputConditions: ConditionInput[], existingCondition
 };
 
 export const findDuplicateRule = (
-    conditions: ConditionInput[],
+    conditions: RuleConditionInputInterface[],
     conditionMatchType: RuleConditionMatchTypeEnum,
     existingRules: RuleWithRelationsEntityInterface[]
 ): RuleWithRelationsEntityInterface | undefined =>

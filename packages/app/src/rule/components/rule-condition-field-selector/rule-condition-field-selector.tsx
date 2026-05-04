@@ -2,6 +2,7 @@ import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
 
 interface Props {
@@ -26,7 +27,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
         <RuleConditionEnumSelector
             index={index}
             options={FIELD_OPTIONS}
-            fieldName="field"
+            fieldName={RuleConditionFormFieldEnum.FIELD}
             label={t`Field`}
             sheetTitle={t`Select Field`}
             defaultLabel={t`Select Field`}

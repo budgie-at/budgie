@@ -1,4 +1,4 @@
-import { RuleActionTypeEnum, RuleConditionMatchTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleCreateInputInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Alert } from 'react-native';
@@ -10,8 +10,8 @@ import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { ruleEngineService } from '../../service/rule-engine.service';
 import { ruleService } from '../../service/rule.service';
+import { buildRuleCreateInput } from '../../util/build-rule-create-input.util';
 import { findDuplicateRule } from '../../util/find-duplicate-rule.util';
-import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
 
 import { RuleSuggestionCardSelector } from './rule-suggestion-card.selector';
@@ -21,33 +21,6 @@ interface Props {
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
 }
-
-const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
-    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
-
-    if (!isDefined(condition)) {
-        return null;
-    }
-
-    const categoryAction = isDefined(suggestRuleData.categoryId)
-        ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: suggestRuleData.categoryId, tagId: null, accountId: null }]
-        : [];
-
-    const tagActions = suggestRuleData.tagIds.map(tagId => ({
-        type: RuleActionTypeEnum.ADD_TAG as const,
-        categoryId: null,
-        tagId,
-        accountId: null
-    }));
-
-    return {
-        enabled: true,
-        conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        conditions: [condition],
-        actions: [...categoryAction, ...tagActions],
-        applyToExisting: false
-    };
-};
 
 const createRule = async (ruleInput: RuleCreateInputInterface): Promise<SwipeableRuleCardResultInterface> => {
     const rule = await ruleService.create(ruleInput);

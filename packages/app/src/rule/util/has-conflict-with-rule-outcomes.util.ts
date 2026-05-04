@@ -1,4 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { RuleActionOutcomesInterface } from '../interface/rule-action-outcomes.interface';
 
@@ -16,7 +16,8 @@ export const hasConflictWithRuleOutcomes = (params: HasConflictParams): boolean 
     const hasCategoryConflict = categoryChanged && isDefined(ruleOutcomes.categoryId) && userCategoryId !== ruleOutcomes.categoryId;
 
     const userTagIdSet = new Set(userTagIds);
-    const hasTagConflict = tagsChanged && ruleOutcomes.tagIds.length > 0 && ruleOutcomes.tagIds.some(tagId => !userTagIdSet.has(tagId));
+    const hasTagConflict =
+        tagsChanged && isNotEmptyArray(ruleOutcomes.tagIds) && ruleOutcomes.tagIds.some(tagId => !userTagIdSet.has(tagId));
 
     return hasCategoryConflict || hasTagConflict;
 };

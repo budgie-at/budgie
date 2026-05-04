@@ -4,13 +4,12 @@ import {
     RuleConditionMatchTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { Fragment } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { RuleActionPill } from '../rule-action-pill/rule-action-pill';
-import { RuleConditionPill } from '../rule-condition-pill/rule-condition-pill';
+
+import { RuleSummaryConditionItem } from './rule-summary-condition-item';
 
 interface Props {
     readonly conditions: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'id'>[];
@@ -24,21 +23,19 @@ const ARROW_ICON_SIZE = 14;
 
 export const RuleSummaryPills = ({ conditions, actions, conditionMatchType, conditionsTestID, actionsTestID }: Props) => {
     const isMatchAll = conditionMatchType === RuleConditionMatchTypeEnum.ALL;
+    const lastConditionIndex = conditions.length - 1;
 
     return (
         <View className="flex-row flex-wrap items-center gap-sm">
             <View testID={conditionsTestID} className="flex-row flex-wrap items-center gap-sm">
-                {conditions.map((condition, index) => {
-                    const isLast = index === conditions.length - 1;
-                    const separator = isMatchAll ? <Trans>and</Trans> : <Trans>or</Trans>;
-
-                    return (
-                        <Fragment key={condition.id}>
-                            <RuleConditionPill condition={condition} />
-                            {isLast ? null : <Text className="text-xs text-secondary-foreground">{separator}</Text>}
-                        </Fragment>
-                    );
-                })}
+                {conditions.map((condition, index) => (
+                    <RuleSummaryConditionItem
+                        key={condition.id}
+                        condition={condition}
+                        isLast={index === lastConditionIndex}
+                        isMatchAll={isMatchAll}
+                    />
+                ))}
             </View>
 
             <Icon icon={UserIconNameEnum.ArrowRight} size={ARROW_ICON_SIZE} className="text-secondary-foreground" />

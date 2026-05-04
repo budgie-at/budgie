@@ -1,25 +1,27 @@
-import { ComputeDetectionModeParamsInterface } from '../interface/compute-detection-mode-params.interface';
-import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
+import { isPositiveNumber } from '@rnw-community/shared';
 
-export const computeDetectionMode = (params: ComputeDetectionModeParamsInterface): RuleDetectionModeType => {
+import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
+import { ComputeDetectionModeParamsInterface } from '../interface/compute-detection-mode-params.interface';
+
+export const computeDetectionMode = (params: ComputeDetectionModeParamsInterface): RuleDetectionModeEnum => {
     const { hasChanges, ruleCreated, isDismissed, matchingRulesCount, hasConflictWithMatchingRules } = params;
     const canSuggest = hasChanges && !ruleCreated && !isDismissed;
 
     if (matchingRulesCount === 1 && canSuggest) {
-        return 'update';
+        return RuleDetectionModeEnum.UPDATE;
     }
 
-    if (matchingRulesCount > 0 && !hasConflictWithMatchingRules) {
-        return 'match';
+    if (isPositiveNumber(matchingRulesCount) && !hasConflictWithMatchingRules) {
+        return RuleDetectionModeEnum.MATCH;
     }
 
     if (canSuggest) {
-        return 'suggest';
+        return RuleDetectionModeEnum.SUGGEST;
     }
 
-    if (matchingRulesCount > 0) {
-        return 'match';
+    if (isPositiveNumber(matchingRulesCount)) {
+        return RuleDetectionModeEnum.MATCH;
     }
 
-    return 'none';
+    return RuleDetectionModeEnum.NONE;
 };

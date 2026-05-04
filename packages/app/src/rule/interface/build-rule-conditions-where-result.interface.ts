@@ -1,7 +1,7 @@
-import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
+import type { RuleConditionInputInterface } from './rule-condition-input.interface';
 import type { SQL } from 'drizzle-orm';
 
 export interface BuildRuleConditionsWhereResultInterface {
     readonly sqlWhere: SQL | null;
-    readonly fallbackConditions: RuleConditionInput[];
+    readonly fallbackConditions: RuleConditionInputInterface[];
 }

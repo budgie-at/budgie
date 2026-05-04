@@ -1,6 +1,5 @@
 import {
     MccCategoryEntityTable,
-    RuleConditionCreateInputInterface,
     RuleConditionFieldEnum,
     RuleConditionOperatorEnum,
     TransactionEntityTable,
@@ -10,11 +9,11 @@ import { SQL, and, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
+
 import { escapeSqlLikeValue } from './escape-sql-like-value.util';
 
 import type { Column } from 'drizzle-orm';
-
-type RuleConditionInput = Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>;
 
 const getColumnForField = (field: RuleConditionFieldEnum): Column | SQL | null => {
     switch (field) {
@@ -79,7 +78,7 @@ const buildOperatorSql = (
     }
 };
 
-export const buildRuleConditionSql = (condition: RuleConditionInput): SQL | null => {
+export const buildRuleConditionSql = (condition: RuleConditionInputInterface): SQL | null => {
     const column = getColumnForField(condition.field);
 
     if (!isDefined(column)) {
@@ -88,5 +87,3 @@ export const buildRuleConditionSql = (condition: RuleConditionInput): SQL | null
 
     return buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
 };
-
-export type { RuleConditionInput };

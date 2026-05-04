@@ -6,10 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { dismissedSuggestions } from '../constant/dismissed-suggestions.constant';
+import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
-import { RuleDetectionModeType } from '../type/rule-detection-mode.type';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
@@ -22,7 +22,7 @@ interface UseSuggestRuleDetectionParams {
 }
 
 interface UseSuggestRuleDetectionResult {
-    readonly mode: RuleDetectionModeType;
+    readonly mode: RuleDetectionModeEnum;
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly updateRuleData: UpdateRuleDataInterface | null;
     readonly matchingRulesCount: number;

@@ -57,13 +57,9 @@ msgstr "{formattedRemaining} left to assign"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} over budget"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:24
-msgid "{matchingRulesCount} matching rule"
-msgstr "{matchingRulesCount} matching rule"
-
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:24
-msgid "{matchingRulesCount} matching rules"
-msgstr "{matchingRulesCount} matching rules"
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:25
+msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
+msgstr "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
@@ -107,7 +103,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:81
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:55
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
@@ -115,7 +111,7 @@ msgstr "A rule with the same conditions already exists."
 msgid "About"
 msgstr "About"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
 #: src/rule/constant/rule-condition-field.constant.ts:9
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:115
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:52
@@ -150,7 +146,7 @@ msgstr "Accounts you archive will appear here. They won't be included in your to
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 msgstr "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 
-#: src/rule/components/rule-action-row/rule-action-row.tsx:34
+#: src/rule/components/rule-action-row/rule-action-row.tsx:35
 msgid "Action {actionNumber}"
 msgstr "Action {actionNumber}"
 
@@ -258,7 +254,7 @@ msgid "Already syncing"
 msgstr "Already syncing"
 
 #: src/app/(tabs)/settings/import.tsx:204
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
 msgstr "Amount"
@@ -268,7 +264,7 @@ msgstr "Amount"
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:33
+#: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx:15
 msgid "and"
 msgstr "and"
 
@@ -408,7 +404,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:83
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:57
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -462,7 +458,7 @@ msgstr "Change PIN"
 msgid "Checking Account"
 msgstr "Checking Account"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx:30
+#: src/import/components/import-preset-picker/import-preset-picker.tsx:31
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
 
@@ -508,12 +504,12 @@ msgid "Coinbase"
 msgstr "Coinbase"
 
 #: src/app/(tabs)/settings/import.tsx:248
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:14
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
 msgstr "Comment"
 
-#: src/rule/components/rule-condition-row/rule-condition-row.tsx:29
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx:30
 msgid "Condition {conditionNumber}"
 msgstr "Condition {conditionNumber}"
 
@@ -605,7 +601,7 @@ msgstr "Could not consolidate transfers"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:99
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:73
 #: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Could not create rule"
 msgstr "Could not create rule"
@@ -758,7 +754,7 @@ msgstr "Create and copy the personal token"
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:85
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:59
 msgid "Create anyway"
 msgstr "Create anyway"
 
@@ -787,7 +783,7 @@ msgstr "Create one to get started."
 msgid "Create Rule"
 msgstr "Create Rule"
 
-#: src/app/(tabs)/settings/rules.tsx:99
+#: src/app/(tabs)/settings/rules.tsx:100
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Create rules to automatically categorize and tag your bank transactions"
 
@@ -926,7 +922,7 @@ msgstr "Downloading AI models…"
 msgid "Downloading models"
 msgstr "Downloading models"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:81
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:55
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
@@ -950,7 +946,7 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:84
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:58
 msgid "Edit existing"
 msgstr "Edit existing"
 
@@ -1163,7 +1159,7 @@ msgstr "Fetch Accounts"
 msgid "Fetching new..."
 msgstr "Fetching new..."
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:30
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:31
 msgid "Field"
 msgstr "Field"
 
@@ -1448,7 +1444,7 @@ msgstr "Matches Regex"
 msgid "MCC categories are not loaded"
 msgstr "MCC categories are not loaded"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:18
 msgid "MCC Code"
 msgstr "MCC Code"
 
@@ -1610,7 +1606,7 @@ msgstr "No recurring payments detected"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/(tabs)/settings/rules.tsx:97
+#: src/app/(tabs)/settings/rules.tsx:98
 msgid "No Rules Yet"
 msgstr "No Rules Yet"
 
@@ -1701,11 +1697,11 @@ msgstr "Open Monobank to get your token"
 msgid "Open the Privatbank24 app"
 msgstr "Open the Privatbank24 app"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:36
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
 msgid "Operator"
 msgstr "Operator"
 
-#: src/rule/components/rule-summary-pills/rule-summary-pills.tsx:33
+#: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx:15
 msgid "or"
 msgstr "or"
 
@@ -1794,7 +1790,7 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx:29
+#: src/import/components/import-preset-picker/import-preset-picker.tsx:30
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
 
@@ -1811,7 +1807,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:97
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:71
 msgid "Quick rule"
 msgstr "Quick rule"
 
@@ -1917,7 +1913,7 @@ msgstr "Resuming AI…"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/(tabs)/settings/rules.tsx:54
+#: src/app/(tabs)/settings/rules.tsx:55
 msgid "Rule"
 msgstr "Rule"
 
@@ -1925,7 +1921,7 @@ msgstr "Rule"
 msgid "Rule applied to {applied} transactions"
 msgstr "Rule applied to {applied} transactions"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:93
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:67
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Rule created · Applied to {appliedCount} transactions"
 
@@ -1933,7 +1929,7 @@ msgstr "Rule created · Applied to {appliedCount} transactions"
 msgid "Rule updated · Applied to {appliedCount} transactions"
 msgstr "Rule updated · Applied to {appliedCount} transactions"
 
-#: src/app/(tabs)/settings/rules.tsx:80
+#: src/app/(tabs)/settings/rules.tsx:81
 msgid "Rules"
 msgstr "Rules"
 
@@ -2086,8 +2082,8 @@ msgstr "Select column..."
 msgid "Select External Source"
 msgstr "Select External Source"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:31
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:32
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:33
 msgid "Select Field"
 msgstr "Select Field"
 
@@ -2095,7 +2091,7 @@ msgstr "Select Field"
 msgid "Select File"
 msgstr "Select File"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx:26
+#: src/import/components/import-preset-picker/import-preset-picker.tsx:27
 msgid "Select Import Preset"
 msgstr "Select Import Preset"
 
@@ -2103,8 +2099,8 @@ msgstr "Select Import Preset"
 msgid "Select MCC code"
 msgstr "Select MCC code"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:38
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:39
 msgid "Select Operator"
 msgstr "Select Operator"
 
@@ -2243,7 +2239,7 @@ msgstr "Something went wrong"
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:20
 #: src/rule/constant/rule-condition-field.constant.ts:12
 msgid "Source"
 msgstr "Source"
@@ -2437,7 +2433,7 @@ msgstr "This will reset the sync history and re-sync all transactions from this 
 msgid "This Year"
 msgstr "This Year"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:13
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:14
 #: src/rule/constant/rule-condition-field.constant.ts:6
 msgid "Title"
 msgstr "Title"
@@ -2566,7 +2562,7 @@ msgstr "Try adjusting your filters to see more results"
 msgid "Try Again"
 msgstr "Try Again"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:18
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:28
 msgid "Type"
@@ -2687,7 +2683,7 @@ msgstr "Wise"
 msgid "XLSX export"
 msgstr "XLSX export"
 
-#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:143
+#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:154
 msgid "Yes"
 msgstr "Yes"
 
