@@ -39,6 +39,7 @@ export { LiabilityAccountCreateInputSchema } from './account/schema/liability-ac
 export type { LiabilityAccountCreateInputInterface } from './account/input/liability-account-create-input.interface';
 export type { DebtAccountCreateInputInterface } from './account/input/debt-account-create-input.interface';
 
+export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
 export type { AccountWithBankSyncEntityInterface } from './account/entity/account-with-bank-sync-entity.interface';
@@ -172,6 +173,7 @@ export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transf
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
+export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';

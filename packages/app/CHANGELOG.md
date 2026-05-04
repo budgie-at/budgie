@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.14.2](https://github.com/budgie-at/budgie/compare/v5.14.1...v5.14.2) (2026-05-04)
+
+### Bug Fixes
+
+- **app:** disable account type changes ([#410](https://github.com/budgie-at/budgie/issues/410)) ([5dbb07e](https://github.com/budgie-at/budgie/commit/5dbb07eac95f9276565632fa379e1e0b8761b759))
+
+## [5.14.1](https://github.com/budgie-at/budgie/compare/v5.14.0...v5.14.1) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** replace undefined Tailwind tokens making AI status text invisible ([#407](https://github.com/budgie-at/budgie/issues/407)) ([6c3849d](https://github.com/budgie-at/budgie/commit/6c3849dfe6ee10e7204097e137688789173c44f2))
+
+# [5.14.0](https://github.com/budgie-at/budgie/compare/v5.13.0...v5.14.0) (2026-05-03)
+
+### Features
+
+- **app:** migrate STT from react-native-executorch to whisper.rn ([#293](https://github.com/budgie-at/budgie/issues/293)) ([fe09f38](https://github.com/budgie-at/budgie/commit/fe09f38c273696eba6d910437080df7ec0192752))
+
+## [5.12.1](https://github.com/budgie-at/budgie/compare/v5.12.0...v5.12.1) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** prevent split modal double back ([e8bf142](https://github.com/budgie-at/budgie/commit/e8bf142116281862caef1d2fb15fe4ac5ed01399))
+
+# [5.12.0](https://github.com/budgie-at/budgie/compare/v5.11.2...v5.12.0) (2026-05-03)
+
+### Features
+
+- **app:** grow comment input vertically up to two lines ([232be48](https://github.com/budgie-at/budgie/commit/232be48a6386a7664dc315f7637a809bd449b37f))
+
+## [5.11.2](https://github.com/budgie-at/budgie/compare/v5.11.1...v5.11.2) (2026-05-03)
+
+### Bug Fixes
+
+- **app:** hardcode ccacheEnabled to stop EAS fingerprint drift ([e41d48c](https://github.com/budgie-at/budgie/commit/e41d48c9e7d359ec8e47537dab1a7a69a8085f7d))
+
+## [5.11.1](https://github.com/budgie-at/budgie/compare/v5.11.0...v5.11.1) (2026-05-03)
+
+**Note:** Version bump only for package @budgie-at/app
+
+# [5.11.0](https://github.com/budgie-at/budgie/compare/v5.10.0...v5.11.0) (2026-05-02)
+
+### Bug Fixes
+
+- **app,contracts:** trigger immediate sync after windowed reset; fix lint+cpd ([100e684](https://github.com/budgie-at/budgie/commit/100e684c211902a514ea94696e66e5a1085ad91e)), closes [#32](https://github.com/budgie-at/budgie/issues/32) [#35](https://github.com/budgie-at/budgie/issues/35)
+- **app,contracts:** unbreak monobank sync hold + consolidation churn ([0861b18](https://github.com/budgie-at/budgie/commit/0861b18ea5c4f451c8b0f516ae6085fa976c284c))
+- **app:** inline t-macro calls in picker, reorder for thumb-zone safety ([14efa59](https://github.com/budgie-at/budgie/commit/14efa5944319daf9ebeb28712970557cc8b9be19))
+- **app:** make resync-window-picker labels visible and translate strings ([a483345](https://github.com/budgie-at/budgie/commit/a4833452be29ff58960a094b0eec75dccb9864c7))
+
+### Features
+
+- **app:** add re-sync window picker route and modal context ([42d66cc](https://github.com/budgie-at/budgie/commit/42d66ccec4dd52de46a55b7188f26adc3547b244))
+- **app:** add resyncBankSyncService and window option constants ([24888d7](https://github.com/budgie-at/budgie/commit/24888d7aefc7a31ed8d2f771070adf441ddc9971))
+- **app:** rewire ResyncBankSyncAccount to open the window picker ([44b5a93](https://github.com/budgie-at/budgie/commit/44b5a93adcf108f7d166d1e7a76d33b16a51dfb2))
+
+# [5.10.0](https://github.com/budgie-at/budgie/compare/v5.9.0...v5.10.0) (2026-05-02)
+
+### Features
+
+- **app:** vertically stack analytics overview tiles for long labels ([3107d7e](https://github.com/budgie-at/budgie/commit/3107d7ea9634eba91be02bef030bdb4b060479b3))
+
+# [5.9.0](https://github.com/budgie-at/budgie/compare/v5.8.1...v5.9.0) (2026-05-02)
+
+### Features
+
+- **app,contracts:** add Last Week and Last Month date filter presets ([5a2a673](https://github.com/budgie-at/budgie/commit/5a2a673e90f671257caf97288d90afac5f619d5e))
+
+## [5.8.1](https://github.com/budgie-at/budgie/compare/v5.8.0...v5.8.1) (2026-05-02)
+
+### Bug Fixes
+
+- **app:** stabilize useLiveQuery deps in statistics transactions query ([a028a5c](https://github.com/budgie-at/budgie/commit/a028a5c578be1de97c5e15b6a05f63c67b859496)), closes [#395](https://github.com/budgie-at/budgie/issues/395)
+
 # [5.8.0](https://github.com/budgie-at/budgie/compare/v5.7.2...v5.8.0) (2026-05-01)
 
 ### Bug Fixes

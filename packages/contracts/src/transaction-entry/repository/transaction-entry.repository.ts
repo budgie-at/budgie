@@ -88,6 +88,20 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
+    async findByExternalIdAndAccountId(
+        externalId: string,
+        accountId: number,
+        tx?: DB
+    ): Promise<TransactionEntryEntityInterface | undefined> {
+        return await (tx ?? this.db).query.TransactionEntryEntityTable.findFirst({
+            where: and(
+                eq(TransactionEntryEntityTable.externalId, externalId),
+                eq(TransactionEntryEntityTable.accountId, accountId),
+                isNull(TransactionEntryEntityTable.deletedAt)
+            )
+        });
+    }
+
     async updateByExternalIdAndAccountId(
         externalId: string,
         accountId: number,

@@ -19,6 +19,12 @@ export const runCompletion = async (
         n_predict: options?.maxNewTokens ?? DEFAULT_MAX_TOKENS,
         stop: STOP_TOKENS,
         ...GENERATION_CONFIG,
+        ...(isDefined(options?.responseFormat) && {
+            response_format: {
+                json_schema: options.responseFormat.jsonSchema,
+                type: options.responseFormat.type
+            }
+        }),
         ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
     });
 

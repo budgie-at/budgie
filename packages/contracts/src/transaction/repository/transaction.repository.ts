@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { Log } from '@budgie/logger';
-import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -246,6 +247,37 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                         inArray(TransactionEntityTable.toAccountId, accountIds),
                         inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
                     )
+                )
+            );
+    }
+
+    @Log(
+        (accountIds, since, tx) => `enter accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (result, accountIds, since, tx) =>
+            `done accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
+        (error, accountIds, since, tx) =>
+            `throw accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async findActiveAutoConsolidatedByAccountIdsSince(accountIds: number[], since: Date, tx?: DB): Promise<{ id: number }[]> {
+        if (isEmptyArray(accountIds)) {
+            return [];
+        }
+        const runner = tx ?? this.db;
+        const sourceTransaction = alias(TransactionEntityTable, 'source_tx');
+
+        return await runner
+            .selectDistinct({ id: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(sourceTransaction, eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId))
+            .where(
+                and(
+                    isNotNull(TransactionEntityTable.consolidationType),
+                    isNull(TransactionEntityTable.deletedAt),
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    gte(sourceTransaction.operatedAt, since)
                 )
             );
     }

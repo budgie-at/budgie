@@ -1,5 +1,3 @@
-import { SpeechToTextLanguage } from 'react-native-executorch';
-
 const SPEECH_TO_TEXT_LANGUAGES = new Set<string>([
     'af',
     'sq',
@@ -78,4 +76,4 @@ const SPEECH_TO_TEXT_LANGUAGES = new Set<string>([
     'yi'
 ]);
 
-export const isSpeechToTextLanguage = (value: string): value is SpeechToTextLanguage => SPEECH_TO_TEXT_LANGUAGES.has(value);
+export const isSpeechToTextLanguage = (value: string): value is string => SPEECH_TO_TEXT_LANGUAGES.has(value);
