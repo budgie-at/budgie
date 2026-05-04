@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 
 interface Props {
     readonly onCancel: () => void;
@@ -17,7 +17,7 @@ export const RuleFormButtons = ({ onCancel, onSubmit, isSubmitting, children }: 
         {children}
         <View className="flex-row gap-x-md">
             <ModalFormCancelButton onPress={onCancel} />
-            <ModalFormSaveButton testID={RuleFormSelectors.SubmitButton} onPress={onSubmit} disabled={isSubmitting} />
+            <ModalFormSaveButton testID={RuleFormSelector.SubmitButton} onPress={onSubmit} disabled={isSubmitting} />
         </View>
     </View>
 );

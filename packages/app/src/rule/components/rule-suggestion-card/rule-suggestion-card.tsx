@@ -5,7 +5,6 @@ import { Alert } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
@@ -14,6 +13,8 @@ import { ruleService } from '../../service/rule.service';
 import { findDuplicateRule } from '../../util/find-duplicate-rule.util';
 import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
+
+import { RuleSuggestionCardSelector } from './rule-suggestion-card.selector';
 
 interface Props {
     readonly suggestRuleData: SuggestRuleDataInterface;
@@ -97,8 +98,8 @@ export const RuleSuggestionCard = (props: Props) => {
             descriptionText={t`Quick rule`}
             successMessage={successMessage}
             errorMessage={<Trans>Could not create rule</Trans>}
-            cardTestID={SuggestRuleSelectors.Card}
-            buttonTestID={SuggestRuleSelectors.CreateRuleButton}
+            cardTestID={RuleSuggestionCardSelector.Card}
+            buttonTestID={RuleSuggestionCardSelector.CreateRuleButton}
             onYes={handleYes}
             onComplete={onRuleCreated}
             onDismiss={onDismiss}

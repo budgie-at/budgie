@@ -7,7 +7,6 @@ import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { RuleCardSelectors, RulesPageSelectors } from '../../../@e2e/selectors/rule-page.selector';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
@@ -26,6 +25,8 @@ import { RuleCard } from '../../../rule/components/rule-card/rule-card';
 import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
 import { ruleService } from '../../../rule/service/rule.service';
+
+import { RulesPageSelector } from './rules-page.selector';
 
 const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP };
 const HEADER_SPACER_STYLE = { height: LEGEND_LIST_HEADER_HEIGHT };
@@ -54,7 +55,7 @@ export default function RulesPage() {
         label: t`Rule`,
         variant: 'primary',
         onPress: handleCreateRule,
-        testID: RulesPageSelectors.CreateButton
+        testID: RulesPageSelector.CreateButton
     });
 
     const renderItem = ({ item, index }: { item: RuleWithActionsRelationsEntityInterface; index: number }): ReactElement => {
@@ -63,11 +64,11 @@ export default function RulesPage() {
         return (
             <DeletableRow id={item.id} onDelete={handleDeleteRule}>
                 <RuleCard
-                    testID={RuleCardSelectors.Card(index)}
-                    switchTestID={RuleCardSelectors.EnabledSwitch(index)}
-                    orderBadgeTestID={RuleCardSelectors.OrderBadge(index)}
-                    conditionsTestID={RuleCardSelectors.ConditionsText(index)}
-                    actionsTestID={RuleCardSelectors.ActionsText(index)}
+                    testID={RulesPageSelector.RuleCard(index)}
+                    switchTestID={RulesPageSelector.RuleCardEnabledSwitch(index)}
+                    orderBadgeTestID={RulesPageSelector.RuleCardOrderBadge(index)}
+                    conditionsTestID={RulesPageSelector.RuleCardConditions(index)}
+                    actionsTestID={RulesPageSelector.RuleCardActions(index)}
                     onOpen={handleOpenRule}
                     order={order}
                     rule={item}
@@ -77,7 +78,7 @@ export default function RulesPage() {
     };
 
     return (
-        <Page testID={RulesPageSelectors.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />} withBlur>
+        <Page testID={RulesPageSelector.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />} withBlur>
             {isNotEmptyArray(rules) ? (
                 <LegendList
                     style={LEGEND_LIST_STYLE}
@@ -93,7 +94,7 @@ export default function RulesPage() {
                 />
             ) : (
                 <SearchablePageEmptyState
-                    testID={RulesPageSelectors.EmptyState}
+                    testID={RulesPageSelector.EmptyState}
                     title={t`No Rules Yet`}
                     icon={UserIconNameEnum.Zap}
                     description={t`Create rules to automatically categorize and tag your bank transactions`}

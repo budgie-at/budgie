@@ -3,11 +3,11 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { useHasConflictingRules } from '../../hooks/use-has-conflicting-rules.hook';
 import { useMinimumFieldArray } from '../../hooks/use-minimum-field-array.hook';
 import { RuleActionRow } from '../rule-action-row/rule-action-row';
 import { RuleConflictWarning } from '../rule-conflict-warning/rule-conflict-warning';
+import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 import { RuleFormSectionHeader } from '../rule-form-section-header/rule-form-section-header';
 
 const DEFAULT_ACTION = {
@@ -34,8 +34,8 @@ export const RuleActionsSection = ({ ruleId }: Props) => {
             <RuleFormSectionHeader
                 title={t`Actions`}
                 onAdd={add}
-                testID={RuleFormSelectors.ActionSectionHeader}
-                addButtonTestID={RuleFormSelectors.ActionAddButton}
+                testID={RuleFormSelector.ActionSectionHeader}
+                addButtonTestID={RuleFormSelector.ActionAddButton}
             />
             <Text className="text-secondary-foreground text-sm">
                 <Trans>Actions to apply when conditions match</Trans>
