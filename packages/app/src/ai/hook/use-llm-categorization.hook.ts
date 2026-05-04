@@ -1,15 +1,14 @@
 import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
-import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
+import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 import { voiceService } from '../service/voice.service';
-
-const logger = getLogger('useLlmCategorization');
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
 import { useChat } from './use-chat.hook';
@@ -26,21 +25,34 @@ interface UseLlmCategorizationReturnInterface {
     readonly reset: () => void;
 }
 
-const mapExtractedToTransactions = (
+const suggestCategoryFor = async (description: string, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface | null> => {
+    if (!isNotEmptyArray(categories)) {
+        return null;
+    }
+    const suggestions = await embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null);
+
+    return suggestions[0] ?? null;
+};
+
+const mapExtractedToTransactions = async (
     extracted: ExtractedVoiceTransactionInterface[],
-    accounts: AccountWithInstrumentEntityInterface[]
-): AITransactionInterface[] =>
-    extracted.map(item => ({
-        category: null,
-        amount: item.amount,
-        currency: item.currency,
-        account: findAccountByCurrency(accounts, item.currency),
-        type: TransactionTypeEnum.EXPENSE,
-        comment: item.description
-    }));
+    accounts: AccountWithInstrumentEntityInterface[],
+    categories: CategoryEntityInterface[]
+): Promise<AITransactionInterface[]> =>
+    Promise.all(
+        extracted.map(async item => ({
+            category: await suggestCategoryFor(item.description, categories),
+            amount: item.amount,
+            currency: item.currency,
+            account: findAccountByCurrency(accounts, item.currency),
+            type: TransactionTypeEnum.EXPENSE,
+            comment: item.description
+        }))
+    );
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
+    const { categories } = useAllCategoriesQuery();
     const { status: chatStatus } = useChat();
     const downloadProgress = useAiDownloadProgress();
 
@@ -48,30 +60,25 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    // eslint-disable-next-line max-statements -- Extract, map, and surface extraction errors with structured logs
     const categorize = async (text: string): Promise<AITransactionInterface[]> => {
-        logger.log('voice:categorize:start', { textLen: text.length });
         setStatus('processing');
         setError(null);
         setTransactions([]);
 
         try {
             const extracted = await voiceService.extractTransactions(text);
-            logger.log('voice:categorize:extracted', { count: extracted.length });
 
             if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
                 throw new Error('Failed to extract transactions from text');
             }
 
-            const results = mapExtractedToTransactions(extracted, accounts);
-            logger.log('voice:categorize:mapped', { count: results.length });
+            const results = await mapExtractedToTransactions(extracted, accounts, categories);
             setTransactions(results);
             setStatus('done');
 
             return results;
         } catch (err: unknown) {
-            logger.error('voice:categorize:throw', { errorMessage: getErrorMessage(err) });
             setError(getErrorMessage(err));
             setStatus('error');
             throw err;
@@ -79,7 +86,6 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     };
 
     const reset = (): void => {
-        logger.log('voice:categorize:reset');
         setStatus('idle');
         setTransactions([]);
         setError(null);

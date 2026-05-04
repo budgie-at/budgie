@@ -3,6 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaSubsystemSnapshotInterface } from '../interface/llama-subsystem-snapshot.interface';
@@ -20,7 +21,7 @@ class ChatService
     private mutexChain: Promise<unknown> = Promise.resolve();
 
     constructor() {
-        super('chat');
+        super(AiSubsystemNameEnum.CHAT);
     }
 
     @Log(
@@ -32,12 +33,12 @@ class ChatService
     )
     async generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {
         if (!this.isReady || !isDefined(this.context)) {
-            throw new AiNotReadyError('chat');
+            throw new AiNotReadyError(AiSubsystemNameEnum.CHAT);
         }
 
         const runFn = async (): Promise<string> => {
             if (!isDefined(this.context)) {
-                throw new AiNotReadyError('chat');
+                throw new AiNotReadyError(AiSubsystemNameEnum.CHAT);
             }
 
             return runCompletion(this.context, systemPrompt, userMessage, options);

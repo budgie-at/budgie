@@ -21,10 +21,10 @@ const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = 
 };
 
 const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
-    [AiSystemUmbrellaStateEnum.DISABLED]: 'text-muted-foreground',
-    [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary-foreground',
-    [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-muted-foreground',
-    [AiSystemUmbrellaStateEnum.IDLE]: 'text-muted-foreground',
+    [AiSystemUmbrellaStateEnum.DISABLED]: 'text-secondary-foreground',
+    [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary',
+    [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-secondary-foreground',
+    [AiSystemUmbrellaStateEnum.IDLE]: 'text-secondary-foreground',
     [AiSystemUmbrellaStateEnum.INITIALIZING]: 'text-warning-foreground',
     [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground',
     [AiSystemUmbrellaStateEnum.SUSPENDED]: 'text-warning-foreground'

@@ -18,7 +18,7 @@ export const Footer = ({ lang }: Props) => {
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
             <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
-                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-5">
                     <div className="space-y-4">
                         <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                             <Logo />
@@ -88,6 +88,60 @@ export const Footer = ({ lang }: Props) => {
                             <li>
                                 <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}#waitlist`}>
                                     <Trans>Join Waitlist</Trans>
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h4 className="text-sm font-bold">
+                            <Trans>Features</Trans>
+                        </h4>
+
+                        <ul className="space-y-2 text-sm">
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/features/offline-first-expense-tracker`}
+                                >
+                                    <Trans>Offline-First</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/features/monobank-sync`}
+                                >
+                                    <Trans>Bank Sync</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/features/ai-auto-categorization`}
+                                >
+                                    <Trans>AI Categorization</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/features/voice-transaction-entry`}
+                                >
+                                    <Trans>Voice Entry</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/features/net-worth-tracker`}
+                                >
+                                    <Trans>Net Worth</Trans>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/features`}>
+                                    <Trans>All Features</Trans>
                                 </Link>
                             </li>
                         </ul>

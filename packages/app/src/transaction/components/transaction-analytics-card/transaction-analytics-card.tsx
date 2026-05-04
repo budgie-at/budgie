@@ -30,19 +30,23 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
     const heroAmount = isAbbreviated ? compactAmount : fullAmount;
 
     return (
-        <Card className="flex-1 gap-y-3xl p-3xl">
-            <View className="flex-row items-center gap-x-md">
-                <CircleIcon border={false} icon={icon} variant={variant} size={24} iconSize={12} radius={12} />
-                <Text className="uppercase tracking-wider text-secondary-foreground text-xxs">{label}</Text>
-            </View>
+        <Card className="flex-1 gap-y-lg p-3xl items-center">
+            <CircleIcon border={false} icon={icon} variant={variant} size={28} iconSize={14} radius={14} />
+            <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                className="uppercase tracking-wider text-secondary-foreground text-xxs text-center"
+            >
+                {label}
+            </Text>
 
-            <View className="gap-y-xxs">
+            <View className="gap-y-xxs items-center w-full">
                 <ProtectedText
                     adjustsFontSizeToFit
                     numberOfLines={1}
                     minimumFontScale={0.7}
                     style={TABULAR_NUMS_STYLE}
-                    className="text-primary text-2xl font-bold"
+                    className="text-primary text-2xl font-bold text-center"
                 >
                     {heroAmount}
                 </ProtectedText>

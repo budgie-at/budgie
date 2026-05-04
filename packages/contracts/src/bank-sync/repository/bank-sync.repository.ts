@@ -58,6 +58,24 @@ export class BankSyncRepository {
             .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
     }
 
+    @Log(
+        (accountId, since, tx) => `enter accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (_result, accountId, since, tx) => `done accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (error, accountId, since, tx) =>
+            `throw accountId=${accountId} since=${since.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async resetForWindowedResync(accountId: number, since: Date, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(BankSyncEntityTable)
+            .set({
+                mode: BankSyncModeEnum.FORWARD,
+                status: BankSyncStatusEnum.IDLE,
+                forwardSyncFromAt: since,
+                forwardSyncedAt: null
+            })
+            .where(eq(BankSyncEntityTable.accountId, accountId));
+    }
+
     async create(input: BankSyncCreateEntityInterface, tx?: DB): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db).insert(BankSyncEntityTable).values([input]).returning();
 

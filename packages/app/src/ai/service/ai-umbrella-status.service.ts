@@ -1,42 +1,44 @@
-import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
-const logger = getLogger('AiUmbrellaStatusService');
 
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingService } from './embedding.service';
-
-const TRUNCATE_LEN = 80;
-const HALF = 2;
-
-const EMPTY_UMBRELLA_SNAPSHOT: AiSystemUmbrellaSnapshotInterface = {
-    state: AiSystemUmbrellaStateEnum.DISABLED,
-    statusText: '',
-    downloadPercent: 0,
-    errorMessage: null
-};
+import { sttService } from './stt.service';
 
 class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSnapshotInterface> {
+    private static readonly TRUNCATE_LEN = 80;
+    private static readonly SUBSYSTEM_COUNT = 3;
+    private static readonly EMPTY_UMBRELLA_SNAPSHOT: AiSystemUmbrellaSnapshotInterface = {
+        state: AiSystemUmbrellaStateEnum.DISABLED,
+        statusText: '',
+        downloadPercent: 0,
+        errorMessage: null
+    };
+
     private lastState: AiSystemUmbrellaStateEnum = AiSystemUmbrellaStateEnum.DISABLED;
-    private lastStateAt = Date.now();
 
     constructor() {
-        super(EMPTY_UMBRELLA_SNAPSHOT);
+        super(AiUmbrellaStatusService.EMPTY_UMBRELLA_SNAPSHOT);
     }
 
     protected buildSubscriptions(): (() => void)[] {
-        return [chatService.subscribe(this.scheduleRecompute), embeddingService.subscribe(this.scheduleRecompute)];
+        return [
+            chatService.subscribe(this.scheduleRecompute),
+            embeddingService.subscribe(this.scheduleRecompute),
+            sttService.subscribe(this.scheduleRecompute)
+        ];
     }
 
     protected emptySnapshot(): AiSystemUmbrellaSnapshotInterface {
-        return { ...EMPTY_UMBRELLA_SNAPSHOT };
+        return { ...AiUmbrellaStatusService.EMPTY_UMBRELLA_SNAPSHOT };
     }
 
     protected recompute(): void {
@@ -45,10 +47,7 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             return;
         }
         if (next.state !== this.lastState) {
-            const now = Date.now();
-            logger.log('umbrella:state:transition', { from: this.lastState, to: next.state, durationMs: now - this.lastStateAt });
             this.lastState = next.state;
-            this.lastStateAt = now;
         }
         this.setSnapshot(next);
     }
@@ -61,13 +60,15 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
 
         const chat = chatService.getSnapshot();
         const embedding = embeddingService.getSnapshot();
+        const stt = sttService.getSnapshot();
 
         const chatError = chat.errorMessage;
         const embeddingError = embedding.errorMessage;
-        if (isDefined(chatError) || isDefined(embeddingError)) {
-            const source = isDefined(chatError) ? 'chat' : 'embedding';
+        const sttError = stt.errorMessage;
+        if (isDefined(chatError) || isDefined(embeddingError) || isDefined(sttError)) {
+            const source = this.getErrorSource(chatError, embeddingError);
 
-            const message = (chatError ?? embeddingError ?? '').slice(0, TRUNCATE_LEN);
+            const message = (chatError ?? embeddingError ?? sttError ?? '').slice(0, AiUmbrellaStatusService.TRUNCATE_LEN);
 
             return {
                 state: AiSystemUmbrellaStateEnum.MODEL_ERROR,
@@ -77,10 +78,12 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             };
         }
 
-        const statuses = [chat.status, embedding.status] as const;
+        const statuses = [chat.status, embedding.status, stt.status] as const;
 
         if (statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING)) {
-            const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress) / HALF);
+            const downloadPercent = Math.round(
+                (chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / AiUmbrellaStatusService.SUBSYSTEM_COUNT
+            );
 
             return {
                 state: AiSystemUmbrellaStateEnum.DOWNLOADING,
@@ -131,6 +134,17 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             this.snapshot.downloadPercent === next.downloadPercent &&
             this.snapshot.errorMessage === next.errorMessage
         );
+    }
+
+    private getErrorSource(chatError: string | null, embeddingError: string | null): AiSubsystemNameEnum {
+        if (isDefined(chatError)) {
+            return AiSubsystemNameEnum.CHAT;
+        }
+        if (isDefined(embeddingError)) {
+            return AiSubsystemNameEnum.EMBEDDING;
+        }
+
+        return AiSubsystemNameEnum.STT;
     }
 }
 

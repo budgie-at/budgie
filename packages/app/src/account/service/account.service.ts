@@ -73,7 +73,7 @@ class AccountService {
         return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
-    async updateById(id: number, input: Partial<LiabilityAccountCreateInputInterface>): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const account = await accountRepository.updateById(id, input, tx);
 

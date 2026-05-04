@@ -9,8 +9,7 @@
             "distribution": "internal",
             "environment": "development",
             "env": {
-                "APP_VARIANT": "development",
-                "USE_CCACHE": "1"
+                "APP_VARIANT": "development"
             },
             "channel": "development"
         },
@@ -24,8 +23,7 @@
             "distribution": "internal",
             "environment": "preview",
             "env": {
-                "APP_VARIANT": "preview",
-                "USE_CCACHE": "1"
+                "APP_VARIANT": "preview"
             },
             "channel": "preview"
         },
@@ -35,8 +33,7 @@
             "env": {
                 "APP_VARIANT": "e2e",
                 "EXPO_PUBLIC_AI_DISABLE": "true",
-                "EXPO_PUBLIC_LOGGING_DISABLE": "true",
-                "USE_CCACHE": "1"
+                "EXPO_PUBLIC_LOGGING_DISABLE": "true"
             },
             "ios": {
                 "simulator": true
@@ -49,8 +46,7 @@
             "autoIncrement": true,
             "environment": "production",
             "env": {
-                "APP_VARIANT": "production",
-                "USE_CCACHE": "1"
+                "APP_VARIANT": "production"
             },
             "channel": "production"
         }
