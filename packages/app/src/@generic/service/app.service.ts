@@ -1,4 +1,7 @@
 import { LanguageEnum, ThemeEnum, transactionAsync } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -16,6 +19,7 @@ import {
 } from '../drizzle/db/db';
 
 class AppService {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async truncateData() {
         await transactionAsync(db, async tx => {
             await transactionTagsRepository.truncate();

@@ -6,7 +6,7 @@ import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags
 import { TransactionTagsEntityInterface } from '../entity/transaction-tags-entity.interface';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
-import type { DB, DBOrTX } from '../../@generic/type/db.type';
+import type { DB } from '../../@generic/type/db.type';
 
 export class TransactionTagsRepository {
     constructor(private db: DB) {}
@@ -18,7 +18,7 @@ export class TransactionTagsRepository {
             .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
     }
 
-    async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionTagsEntityInterface[]> {
+    async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: DB): Promise<TransactionTagsEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).returning();
         }

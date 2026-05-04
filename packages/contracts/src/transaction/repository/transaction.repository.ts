@@ -19,7 +19,7 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
-import type { DB, DBOrTX } from '../../@generic/type/db.type';
+import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
@@ -43,7 +43,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         (error, inputs, tx) =>
             `throw hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DBOrTX): Promise<TransactionEntityInterface[]> {
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
         }
@@ -319,21 +319,21 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
     }
 
-    async touchUpdatedAt(id: number, tx?: DBOrTX): Promise<void> {
+    async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
     }
 
-    async create(input: TransactionCreateEntityInterface, tx?: DBOrTX): Promise<TransactionEntityInterface> {
+    async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
         return transaction;
     }
 
-    async deleteById(id: number, tx?: DBOrTX): Promise<void> {
+    async deleteById(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    async updateById(id: number, input: TransactionUpdateInputInterface, tx?: DBOrTX): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionUpdateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
@@ -396,14 +396,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getById(id: number, tx?: DBOrTX) {
+    getById(id: number, tx?: DB) {
         return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
     }
 
-    async findByIds(ids: number[], tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         if (isNotEmptyArray(ids)) {
             return await (tx ?? this.db).query.TransactionEntityTable.findMany({
                 where: inArray(TransactionEntityTable.id, ids),
@@ -414,7 +414,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     }
 
-    async truncate(tx?: DBOrTX): Promise<void> {
+    async truncate(tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
@@ -536,7 +536,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return null;
     }
 
-    async archiveByAccountIds(accountIds: number[], tx?: DBOrTX): Promise<void> {
+    async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: new Date() })
@@ -548,28 +548,28 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    async restoreByAccountIds(accountIds: number[], tx?: DBOrTX): Promise<void> {
+    async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: null })
             .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
-    async findTransfersByAccountId(accountId: number, tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersByAccountId(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
             with: this.transactionRelations
         });
     }
 
-    async findTransfersForConversion(accountId: number, tx?: DBOrTX): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersForConversion(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
             with: { [TransactionAssociationEnum.ENTRIES]: true }
         });
     }
 
-    async deleteByAccountId(accountId: number, tx?: DBOrTX): Promise<void> {
+    async deleteByAccountId(accountId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .delete(TransactionEntityTable)
             .where(
@@ -580,14 +580,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             );
     }
 
-    async convertTransfersFromAccountToIncome(accountId: number, tx?: DBOrTX): Promise<void> {
+    async convertTransfersFromAccountToIncome(accountId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId)));
     }
 
-    async convertTransfersToAccountToExpense(accountId: number, tx?: DBOrTX): Promise<void> {
+    async convertTransfersToAccountToExpense(accountId: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
