@@ -10,6 +10,7 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -63,6 +64,9 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .select({
                 income: sql<number>`
                     COALESCE(SUM(CASE
+                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                        THEN 0
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
@@ -71,6 +75,10 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 `.as('income'),
                 expense: sql<number>`
                     COALESCE(SUM(CASE
+                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        THEN -${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
@@ -176,7 +184,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         defaultInstrumentId: number
     ) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+        const amountSql = this.buildRefundAwareAmountSql(exchangeRateSql);
 
         return this.db
             .select({
@@ -200,7 +208,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
     private buildTagBreakdownQuery(transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>, defaultInstrumentId: number) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+        const amountSql = this.buildRefundAwareAmountSql(exchangeRateSql);
 
         return this.db
             .select({
@@ -223,6 +231,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .orderBy(desc(amountSql));
     }
     /* jscpd:ignore-end */
+
+    private buildRefundAwareAmountSql(exchangeRateSql: ReturnType<typeof this.getExchangeRateSql>) {
+        return sql<number>`COALESCE(SUM(CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+            THEN -${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
+            ELSE ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
+        END), 0)`;
+    }
 
     private buildStatisticsWhere(filters: TransactionFilterInterface) {
         const baseWhere = this.buildFilterWhere(filters);
