@@ -1,0 +1,1 @@
+export const REFUND_TITLE_PREFIXES = ['REFUND', 'RETURN', 'REVERSAL', 'CHARGEBACK', 'CR '] as const;
