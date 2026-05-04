@@ -52,6 +52,24 @@ detect_booted_simulator_udid() {
     printf '%s\n' "$BOOTED_UDIDS" | sed -n '1p'
 }
 
+compute_csv_fixtures_uri() {
+    UDID="$1"
+
+    if [ -z "$UDID" ]; then
+        return 1
+    fi
+
+    APP_DATA_CONTAINER="$(
+        xcrun simctl get_app_container "$UDID" "$APP_ID" data 2>/dev/null || true
+    )"
+
+    if [ -z "$APP_DATA_CONTAINER" ] || [ ! -d "$APP_DATA_CONTAINER" ]; then
+        return 1
+    fi
+
+    printf 'file://%s/Documents/E2ECsvFixtures' "$APP_DATA_CONTAINER"
+}
+
 refresh_ios_fixtures_if_needed() {
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
 
@@ -77,10 +95,18 @@ if [ -z "$RECURRING_EMPTY_DAY" ]; then
     RECURRING_EMPTY_DAY="$(compute_recurring_empty_day)"
 fi
 
+DETECTED_SIMULATOR_UDID="${DETECTED_SIMULATOR_UDID:-$(detect_booted_simulator_udid || true)}"
+E2E_CSV_FIXTURES_URI="$(compute_csv_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
+
+if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
+    echo "Could not resolve E2E_CSV_FIXTURES_URI for $APP_ID; CSV-import flows will fail." >&2
+fi
+
 echo "Running Maestro suite from $WORKSPACE_DIR"
 maestro test "$WORKSPACE_DIR" \
     -e APP_ID="$APP_ID" \
     -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
     -e RECURRING_EMPTY_DAY="$RECURRING_EMPTY_DAY" \
+    -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
     --config "$SUITE_CONFIG_PATH" \
     "$@"
