@@ -2,10 +2,10 @@ import { RuleConditionFieldEnum, RuleConditionOperatorEnum, RuleCreateInputInter
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { useMinimumFieldArray } from '../../hooks/use-minimum-field-array.hook';
 import { RuleConditionMatchTypeSelector } from '../rule-condition-match-type-selector/rule-condition-match-type-selector';
 import { RuleConditionRow } from '../rule-condition-row/rule-condition-row';
+import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 import { RuleFormSectionHeader } from '../rule-form-section-header/rule-form-section-header';
 
 const DEFAULT_CONDITION = {
@@ -29,8 +29,8 @@ export const RuleConditionsSection = () => {
             <RuleFormSectionHeader
                 title={t`Conditions`}
                 onAdd={add}
-                testID={RuleFormSelectors.ConditionSectionHeader}
-                addButtonTestID={RuleFormSelectors.ConditionAddButton}
+                testID={RuleFormSelector.ConditionSectionHeader}
+                addButtonTestID={RuleFormSelector.ConditionAddButton}
             />
 
             {showMatchTypeSelector && <RuleConditionMatchTypeSelector />}

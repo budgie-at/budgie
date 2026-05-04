@@ -4,9 +4,10 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
+
+import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
 interface Props {
     readonly selectedPreset: ImportPresetEnum | undefined;
@@ -32,19 +33,19 @@ export const ImportPresetPicker = ({ selectedPreset, onPresetSelect }: Props) =>
             </View>
             <View className="flex-row flex-wrap gap-sm">
                 <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('Budgie')}
+                    testID={ImportPresetPickerSelector.PresetChip('Budgie')}
                     title="Budgie"
                     isSelected={selectedPreset === ImportPresetEnum.Budgie}
                     onSelect={handleBudgieSelect}
                 />
                 <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('SmartBudget')}
+                    testID={ImportPresetPickerSelector.PresetChip('SmartBudget')}
                     title="SmartBudget"
                     isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
                     onSelect={handleSmartBudgetSelect}
                 />
                 <ImportPresetChip
-                    testID={ImportSelectors.PresetChip('FinEye')}
+                    testID={ImportPresetPickerSelector.PresetChip('FinEye')}
                     title="FinEye"
                     isSelected={selectedPreset === ImportPresetEnum.FinEye}
                     onSelect={handleFinEyeSelect}
