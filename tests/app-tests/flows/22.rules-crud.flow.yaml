@@ -260,10 +260,9 @@ env:
     centerElement: true
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
-- runFlow:
-    file: subflows/shared/select-tag-by-search.flow.yaml
-    env:
-      TAG_NAME: ${TAG_NAME}
+- waitForAnimationToEnd
+- tapOn:
+    text: ${TAG_NAME}
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'

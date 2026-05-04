@@ -1,6 +1,0 @@
-appId: ${APP_ID}
----
-
-- waitForAnimationToEnd
-- tapOn:
-    text: ${TAG_NAME}
