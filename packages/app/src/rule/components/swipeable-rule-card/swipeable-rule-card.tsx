@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, useState } from 'react';
@@ -22,6 +23,19 @@ const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
+type CardLayout = 'compact' | 'wide';
+
+const cardVariants = cva('flex-row items-center gap-sm px-lg py-sm bg-ghost-background rounded-xl shadow-sm', {
+    variants: {
+        layout: {
+            compact: 'self-start',
+            wide: 'max-w-[85%]'
+        }
+    },
+    defaultVariants: {
+        layout: 'compact'
+    }
+});
 
 export interface SwipeableRuleCardResultInterface {
     readonly applied: number;
@@ -33,7 +47,7 @@ interface Props {
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
-    readonly cardClassName?: string;
+    readonly layout?: CardLayout;
     readonly onYes: () => Promise<SwipeableRuleCardResultInterface>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
@@ -41,7 +55,17 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Shared card component with gesture handling, animations, and multiple render states
 export const SwipeableRuleCard = (props: Props) => {
-    const { descriptionText, successMessage, errorMessage, cardTestID, buttonTestID, cardClassName, onYes, onComplete, onDismiss } = props;
+    const {
+        descriptionText,
+        successMessage,
+        errorMessage,
+        cardTestID,
+        buttonTestID,
+        layout = 'compact',
+        onYes,
+        onComplete,
+        onDismiss
+    } = props;
 
     const [status, setStatus] = useState<CardStatus>('idle');
     const [appliedCount, setAppliedCount] = useState(0);
@@ -125,10 +149,7 @@ export const SwipeableRuleCard = (props: Props) => {
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View
-                    testID={cardTestID}
-                    className={`flex-row items-center gap-sm px-lg py-sm bg-ghost-background rounded-xl shadow-sm ${cardClassName ?? 'self-start'}`}
-                >
+                <View testID={cardTestID} className={cardVariants({ layout })}>
                     <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
                     <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
                     {status === 'creating' ? (

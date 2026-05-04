@@ -1,7 +1,8 @@
-import { RuleConditionEntityInterface, RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
+import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString, isNumber } from '@rnw-community/shared';
 
+import { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 
 const MAX_REGEX_LENGTH = 200;
@@ -89,10 +90,7 @@ export const matchOperator = (
     }
 };
 
-export const evaluateRuleCondition = (
-    condition: Pick<RuleConditionEntityInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>,
-    input: RuleEvaluationInputInterface
-): boolean => {
+export const evaluateRuleCondition = (condition: RuleConditionInputInterface, input: RuleEvaluationInputInterface): boolean => {
     const fieldValue = getConditionFieldValue(condition.field, input);
 
     return matchOperator(condition.operator, fieldValue, condition.value, condition.secondaryValue);

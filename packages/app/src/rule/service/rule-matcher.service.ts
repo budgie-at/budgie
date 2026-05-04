@@ -19,8 +19,8 @@ import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 import type { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import type { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
+import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
-import type { RuleConditionInput } from '../util/build-rule-condition-sql.util';
 import type { RuleWithRelationsEntityInterface, TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
 
 class RuleMatcherService {
@@ -129,9 +129,7 @@ class RuleMatcherService {
             return false;
         }
 
-        const evaluator = rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
-
-        return rule.conditions[evaluator](condition => evaluateRuleCondition(condition, input));
+        return this.evaluateConditions(rule.conditions, rule.conditionMatchType, input);
     }
 
     private convertTransactionForRuleEvaluation(
@@ -156,7 +154,7 @@ class RuleMatcherService {
 
     private async countWithFallbackConditions(
         candidateIds: number[],
-        fallbackConditions: RuleConditionInput[],
+        fallbackConditions: RuleConditionInputInterface[],
         conditionMatchType: RuleConditionMatchTypeEnum
     ): Promise<number> {
         if (!isNotEmptyArray(candidateIds)) {
@@ -184,7 +182,7 @@ class RuleMatcherService {
 
     private async filterWithFallbackConditions(
         candidateIds: number[],
-        fallbackConditions: RuleConditionInput[],
+        fallbackConditions: RuleConditionInputInterface[],
         conditionMatchType: RuleConditionMatchTypeEnum
     ): Promise<number[]> {
         if (!isNotEmptyArray(candidateIds)) {
@@ -302,13 +300,15 @@ class RuleMatcherService {
     }
 
     private evaluateConditions(
-        conditions: readonly RuleConditionInput[],
+        conditions: readonly RuleConditionInputInterface[],
         conditionMatchType: RuleConditionMatchTypeEnum,
         input: RuleEvaluationInputInterface
     ): boolean {
-        const evaluator = conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
+        const matchesCondition = (condition: RuleConditionInputInterface) => evaluateRuleCondition(condition, input);
 
-        return conditions[evaluator](condition => evaluateRuleCondition(condition, input));
+        return conditionMatchType === RuleConditionMatchTypeEnum.ANY
+            ? conditions.some(matchesCondition)
+            : conditions.every(matchesCondition);
     }
 
     private calculateAmountForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): number {

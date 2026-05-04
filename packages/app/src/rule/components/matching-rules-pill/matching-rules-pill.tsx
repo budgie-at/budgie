@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { t } from '@lingui/core/macro';
+import { plural } from '@lingui/core/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -22,7 +22,10 @@ export const MatchingRulesPill = ({ matchingRulesCount }: Props) => {
         router.push('/settings/rules');
     };
 
-    const label = matchingRulesCount === 1 ? t`${matchingRulesCount} matching rule` : t`${matchingRulesCount} matching rules`;
+    const label = plural(matchingRulesCount, {
+        one: '# matching rule',
+        other: '# matching rules'
+    });
 
     return (
         <View className="items-start">

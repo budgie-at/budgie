@@ -11,9 +11,9 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
 import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
 import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
-import { RuleDetectionModeType } from '../../../rule/type/rule-detection-mode.type';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -51,7 +51,7 @@ interface Props {
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
-    readonly ruleDetectionMode?: RuleDetectionModeType;
+    readonly ruleDetectionMode?: RuleDetectionModeEnum;
     readonly suggestRuleData?: SuggestRuleDataInterface;
     readonly updateRuleData?: UpdateRuleDataInterface | null;
     readonly matchingRulesCount?: number;
@@ -78,7 +78,7 @@ export const SimpleQuickForm = (props: Props) => {
         buildEntries,
         onSubmit,
         onCancel,
-        ruleDetectionMode = 'none',
+        ruleDetectionMode = RuleDetectionModeEnum.NONE,
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
