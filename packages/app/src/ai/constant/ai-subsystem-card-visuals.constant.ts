@@ -8,7 +8,7 @@ interface SubsystemCardVisualInterface {
 
 export const AI_SUBSYSTEM_CARD_VISUALS: Record<AiSubsystemCardStateEnum, SubsystemCardVisualInterface> = {
     [AiSubsystemCardStateEnum.HIDDEN]: {
-        colorClass: 'text-muted-foreground',
+        colorClass: 'text-secondary-foreground',
         pulsePeriodMs: null,
         glow: false
     },

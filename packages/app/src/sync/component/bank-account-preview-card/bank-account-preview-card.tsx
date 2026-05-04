@@ -25,7 +25,7 @@ export const BankAccountPreviewCard = ({ preview, isSelected, onToggle }: Props)
             <View className="flex-row items-center justify-between">
                 <View className="flex-1 mr-md">
                     <Text className="text-primary font-semibold text-base">{preview.title}</Text>
-                    <Text className="text-xs text-muted-foreground">
+                    <Text className="text-xs text-secondary-foreground">
                         {preview.currencyCode}
                         {isNotEmptyString(preview.iban) && ` • ${preview.iban}`}
                     </Text>

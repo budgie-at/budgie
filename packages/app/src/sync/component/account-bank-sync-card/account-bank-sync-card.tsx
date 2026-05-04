@@ -75,7 +75,7 @@ export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInter
                         <SyncDataRow label={t`Errors`} value={String(bankSync.errorCount)} />
                         {isNotEmptyString(bankSync.lastError) && (
                             <View className="gap-y-xs">
-                                <Text className="text-primary text-xs text-muted-foreground">
+                                <Text className="text-xs text-secondary-foreground">
                                     <Trans>Last error</Trans>
                                 </Text>
                                 <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
