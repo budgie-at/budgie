@@ -1,5 +1,7 @@
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
-import { RuleConditionFieldType } from './rule-condition-field.type';
+import { RuleConditionFormFieldEnum } from '../enum/rule-condition-form-field.enum';
 
-export type RuleFieldValueType<T extends RuleConditionFieldType> = T extends 'field' ? RuleConditionFieldEnum : RuleConditionOperatorEnum;
+export type RuleFieldValueType<T extends RuleConditionFormFieldEnum> = T extends RuleConditionFormFieldEnum.FIELD
+    ? RuleConditionFieldEnum
+    : RuleConditionOperatorEnum;

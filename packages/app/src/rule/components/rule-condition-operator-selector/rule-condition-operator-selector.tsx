@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { FIELD_OPERATORS } from '../../constant/field-operators.constant';
 import { OPERATOR_LABELS } from '../../constant/operator-options.constant';
+import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
 
 interface Props {
@@ -32,7 +33,7 @@ export const RuleConditionOperatorSelector = ({ index, testID }: Props) => {
         <RuleConditionEnumSelector
             index={index}
             options={options}
-            fieldName="operator"
+            fieldName={RuleConditionFormFieldEnum.OPERATOR}
             label={t`Operator`}
             sheetTitle={t`Select Operator`}
             defaultLabel={t`Select Operator`}

@@ -7,10 +7,10 @@ import { CategoryFormModalProvider } from '../../category/provider/category-form
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
 import { LanguageSelectorModalProvider } from '../../i18n/provider/language-selector-modal.provider';
 import { ImportColumnMapperModalProvider } from '../../import/provider/import-column-mapper-modal.provider';
-import { ResyncWindowPickerModalProvider } from '../../sync/provider/resync-window-picker-modal.provider';
 import { RuleFormModalProvider } from '../../rule/provider/rule-form-modal.provider';
 import { RuleMccSelectorModalProvider } from '../../rule/provider/rule-mcc-selector-modal.provider';
 import { RuleSelectorModalProvider } from '../../rule/provider/rule-selector-modal.provider';
+import { ResyncWindowPickerModalProvider } from '../../sync/provider/resync-window-picker-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
 import { ConsolidationSourceModalProvider } from '../../transaction/provider/consolidation-source-modal.provider';
