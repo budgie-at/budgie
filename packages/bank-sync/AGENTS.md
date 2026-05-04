@@ -69,12 +69,12 @@ Each bank provider has:
 
 ### Supported Providers
 
-| Provider   | Status         | Implementation |
-| ---------- | -------------- | -------------- |
-| Monobank   | ✅ Implemented | Full support   |
-| Privatbank | 📋 Planned     | -              |
-| Revolut    | 📋 Planned     | -              |
-| Wise       | 📋 Planned     | -              |
+| Provider | Status | Implementation |
+|----------|--------|----------------|
+| Monobank | ✅ Implemented | Full support |
+| Privatbank | 📋 Planned | - |
+| Revolut | 📋 Planned | - |
+| Wise | 📋 Planned | - |
 
 ### Provider Parser Pattern
 
@@ -95,18 +95,10 @@ Export each class via a singleton (`export const ersteParser = new ErsteParser()
 
 ```ts
 class ErsteMapper {
-    mapAccount(info: ErsteAccountInfoInterface): BankAccountInterface {
-        /* ... */
-    }
-    mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface {
-        /* ... */
-    }
-    private generateExternalId(row, iban): string {
-        /* ... */
-    }
-    private fnv1aHash(input: string): string {
-        /* ... */
-    }
+    mapAccount(info: ErsteAccountInfoInterface): BankAccountInterface { /* ... */ }
+    mapTransaction(row: ErsteRowInterface, iban: string): BankTransactionInterface { /* ... */ }
+    private generateExternalId(row, iban): string { /* ... */ }
+    private fnv1aHash(input: string): string { /* ... */ }
 }
 export const ersteMapper = new ErsteMapper();
 ```
@@ -127,11 +119,14 @@ export abstract class BaseBankProviderClient {
         this.httpClient = ky.create({
             prefixUrl: options.baseUrl,
             retry: { limit: options.retryLimit ?? 3 },
-            timeout: options.timeout ?? 30000
+            timeout: options.timeout ?? 30000,
         });
     }
 
-    protected async request<T>(path: string, options?: Options): Promise<BankSyncResultInterface<T>> {
+    protected async request<T>(
+        path: string,
+        options?: Options
+    ): Promise<BankSyncResultInterface<T>> {
         // Handles errors, retries, and result wrapping
     }
 }
@@ -144,7 +139,7 @@ Uses `ky` library with built-in retry support:
 ```typescript
 const response = await this.httpClient.get('endpoint', {
     headers: { 'X-Token': token },
-    searchParams: { from, to }
+    searchParams: { from, to },
 });
 ```
 
@@ -182,7 +177,7 @@ enum BankSyncErrorCodeEnum {
     ACCOUNT_NOT_FOUND = 'ACCOUNT_NOT_FOUND',
     INVALID_RESPONSE = 'INVALID_RESPONSE',
     UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION',
-    UNKNOWN = 'UNKNOWN'
+    UNKNOWN = 'UNKNOWN',
 }
 ```
 
@@ -215,12 +210,12 @@ try {
 
 ### HTTP Status Mapping
 
-| Status  | Error Code       |
-| ------- | ---------------- |
-| 401     | UNAUTHORIZED     |
-| 429     | RATE_LIMITED     |
-| 400     | INVALID_RESPONSE |
-| Timeout | NETWORK_ERROR    |
+| Status | Error Code |
+|--------|------------|
+| 401 | UNAUTHORIZED |
+| 429 | RATE_LIMITED |
+| 400 | INVALID_RESPONSE |
+| Timeout | NETWORK_ERROR |
 
 ## Base Bank Sync Service
 
@@ -265,10 +260,18 @@ Handles both forward and backward sync:
 
 ```typescript
 // Forward sync (new transactions)
-const result = await syncService.syncTransactionsForward(token, accountId, lastSyncDate);
+const result = await syncService.syncTransactionsForward(
+    token,
+    accountId,
+    lastSyncDate
+);
 
 // Backward sync (historical)
-const result = await syncService.syncTransactionsBackward(token, accountId, earliestKnownDate);
+const result = await syncService.syncTransactionsBackward(
+    token,
+    accountId,
+    earliestKnownDate
+);
 ```
 
 ## Monobank Implementation
@@ -279,7 +282,7 @@ const result = await syncService.syncTransactionsBackward(token, accountId, earl
 export class MonobankClient extends BaseBankProviderClient {
     async getClientInfo(token: string): Promise<BankSyncResultInterface<BankClientInfoInterface>> {
         return this.request('/personal/client-info', {
-            headers: { 'X-Token': token }
+            headers: { 'X-Token': token },
         });
     }
 
@@ -288,7 +291,7 @@ export class MonobankClient extends BaseBankProviderClient {
         if (!result.success) return result;
         return {
             success: true,
-            data: result.data.accounts.map(monobankAccountMapper)
+            data: result.data.accounts.map(monobankAccountMapper),
         };
     }
 
@@ -299,7 +302,7 @@ export class MonobankClient extends BaseBankProviderClient {
         to: Date
     ): Promise<BankSyncResultInterface<BankTransactionInterface[]>> {
         return this.request(`/personal/statement/${accountId}/${fromTs}/${toTs}`, {
-            headers: { 'X-Token': token }
+            headers: { 'X-Token': token },
         });
     }
 }
@@ -313,11 +316,11 @@ export const MONOBANK_API_BASE_URL = 'https://api.monobank.ua';
 export const MONOBANK_AUTH_URL = 'https://api.monobank.ua/personal/auth';
 
 // Rate limits
-export const MONOBANK_RATE_LIMIT_MS = 60_000; // 1 request per minute
-export const MONOBANK_MAX_PERIOD_SECONDS = 2_678_400; // 31 days max range
+export const MONOBANK_RATE_LIMIT_MS = 60_000;  // 1 request per minute
+export const MONOBANK_MAX_PERIOD_SECONDS = 2_678_400;  // 31 days max range
 
 // Data conversion
-export const MONOBANK_BALANCE_DIVISOR = 100; // Amount in kopecks
+export const MONOBANK_BALANCE_DIVISOR = 100;  // Amount in kopecks
 ```
 
 ### Mappers
@@ -326,11 +329,13 @@ Transform Monobank-specific data to generic interfaces:
 
 ```typescript
 // monobank/mapper/monobank-account.mapper.ts
-export const monobankAccountMapper = (account: MonobankAccountApiInterface): BankAccountInterface => ({
+export const monobankAccountMapper = (
+    account: MonobankAccountApiInterface
+): BankAccountInterface => ({
     id: account.id,
     type: monobankAccountTypeMapper(account.type),
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
-    balance: account.balance / MONOBANK_BALANCE_DIVISOR
+    balance: account.balance / MONOBANK_BALANCE_DIVISOR,
     // ...
 });
 ```
@@ -388,7 +393,12 @@ interface BankTransactionInterface {
 interface BankProviderClientInterface {
     getClientInfo(token: string): Promise<BankSyncResultInterface<BankClientInfoInterface>>;
     getAccounts(token: string): Promise<BankSyncResultInterface<BankAccountInterface[]>>;
-    getTransactions(token: string, accountId: string, from: Date, to: Date): Promise<BankSyncResultInterface<BankTransactionInterface[]>>;
+    getTransactions(
+        token: string,
+        accountId: string,
+        from: Date,
+        to: Date
+    ): Promise<BankSyncResultInterface<BankTransactionInterface[]>>;
     setWebhook?(token: string, url: string): Promise<BankSyncResultInterface<void>>;
 }
 ```
@@ -494,11 +504,11 @@ describe('MonobankClient', () => {
 
 ## Dependencies
 
-| Package                 | Purpose                        |
-| ----------------------- | ------------------------------ |
-| `ky`                    | HTTP client with retry support |
-| `date-fns`              | Date manipulation              |
-| `@rnw-community/shared` | Type guards                    |
+| Package | Purpose |
+|---------|---------|
+| `ky` | HTTP client with retry support |
+| `date-fns` | Date manipulation |
+| `@rnw-community/shared` | Type guards |
 
 ## Export Configuration
 
@@ -525,7 +535,6 @@ ESM-only package:
 ## Error Recovery
 
 For failed syncs, the app tracks:
-
 - `errorCount` - Number of consecutive failures
 - `lastError` - Last error message
 - `lastSyncedAt` - Last successful sync timestamp

@@ -46,7 +46,6 @@ type: short description
 ```
 
 Examples:
-
 - `feat(app): add recurring transaction editor`
 - `fix(contracts): correct transaction tag schema`
 - `refactor(ai): simplify embedding service flow`
@@ -55,7 +54,6 @@ Examples:
 ### Allowed Scopes
 
 Use the repo package scopes without the npm namespace prefix:
-
 - `app`
 - `contracts`
 - `ai`
@@ -99,7 +97,7 @@ packages/
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per file/folder** - Each top-level component lives in its own file inside its own folder. Lazy wrappers (`const Foo = lazy(() => import('...'))`) count as components — extract them to their own file so the dynamic-import boundary is a real code-split point and the file has exactly one default-shaped export.
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
-11. **Use `t` macro for string props** - Use `t\`text\``from`@lingui/react/macro`for string props (like`content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
+11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/react/macro` for string props (like `content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
 14. **Utility functions in `/utils` folder** - Extract **reusable** functions to module's `utils/` folder with `.util.ts` suffix. Single-consumer helpers don't qualify (see rule 38 + rule 51).
@@ -153,18 +151,17 @@ packages/
 
 ### Naming Conventions
 
-| Type      | Convention               | Example                  |
-| --------- | ------------------------ | ------------------------ |
-| Interface | `*Interface` suffix      | `AccountFilterInterface` |
-| Enum      | `*Enum` suffix           | `AccountTypeEnum`        |
-| Function  | module prefix            | `exchangeRatesFetchApi`  |
-| Class     | PascalCase               | `AccountRepository`      |
-| File      | kebab-case + type suffix | `account.service.ts`     |
+| Type | Convention | Example |
+|------|------------|---------|
+| Interface | `*Interface` suffix | `AccountFilterInterface` |
+| Enum | `*Enum` suffix | `AccountTypeEnum` |
+| Function | module prefix | `exchangeRatesFetchApi` |
+| Class | PascalCase | `AccountRepository` |
+| File | kebab-case + type suffix | `account.service.ts` |
 
 ### Type Guards and Validation
 
 **Prefer `@rnw-community/shared` type guards over manual checks:**
-
 - `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
 - `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
@@ -173,56 +170,46 @@ packages/
 - `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0` or `x > 0`
 
 **Use `isDefined` for ref checks too:**
-
 ```typescript
 // Good
-if (isDefined(timerRef.current)) {
-    clearTimeout(timerRef.current);
-}
+if (isDefined(timerRef.current)) { clearTimeout(timerRef.current); }
 
 // Bad
-if (timerRef.current !== null) {
-    clearTimeout(timerRef.current);
-}
+if (timerRef.current !== null) { clearTimeout(timerRef.current); }
 ```
 
 **Prefer `.filter(isDefined)` over manual type guard filters:**
-
 ```typescript
 // Good
-items.map(transform).filter(isDefined);
+items.map(transform).filter(isDefined)
 
 // Bad
-items.map(transform).filter((item): item is ItemType => item !== null);
+items.map(transform).filter((item): item is ItemType => item !== null)
 ```
 
 **Only use `.filter(isDefined)` when nulls are possible:**
-
 ```typescript
 // Good - when transform can return null
-items.map(item => item.optionalField).filter(isDefined);
+items.map(item => item.optionalField).filter(isDefined)
 
 // Bad - unnecessary filter when array type doesn't allow null
 const numbers: number[] = [1, 2, 3];
-numbers.filter(isDefined); // Unnecessary, array can't have nulls
+numbers.filter(isDefined)  // Unnecessary, array can't have nulls
 ```
 
 **Prefer Zod for complex object validation:**
-
 ```typescript
 // Good - Zod schema
 const ItemSchema = z.object({ id: z.number(), name: z.string() });
 const result = ItemSchema.safeParse(data);
-if (result.success) {
-    /* use result.data */
-}
+if (result.success) { /* use result.data */ }
 
 // Bad - manual type guard
-const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
+const isItem = (x: unknown): x is Item =>
+    typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
 ```
 
 **Form schemas belong in `/constant` folder:**
-
 ```typescript
 // Good - schema in constant file
 // src/transaction/constant/convert-to-transfer-schema.constant.ts
@@ -242,7 +229,6 @@ type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
 
 **Check object property values, not just object existence:**
-
 ```typescript
 // Good - check if date range has actual values before using
 const hasDateRange = isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to));
@@ -257,7 +243,6 @@ if (isDefined(filters.date)) {
 ```
 
 **Microunits conversion:**
-
 ```typescript
 // Good - use utility functions
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -272,7 +257,6 @@ const microAmount = Math.round(userInputAmount * PRECISION);
 ```
 
 **Optional params with spread syntax:**
-
 ```typescript
 // Good - spread syntax (no eslint-disable needed)
 const params = {
@@ -292,7 +276,6 @@ const params = {
 ```
 
 **Contracts package file organization:**
-
 ```
 transaction/
 ├── interface/
@@ -342,7 +325,6 @@ The "Lint" column marks rows enforced by `no-restricted-syntax` at `warn` severi
 ```
 
 **Conditional i18n text:**
-
 ```typescript
 // Good - extract to variable first
 const accountLabel = isExpense ? t`Select destination account` : t`Select source account`;
@@ -360,14 +342,12 @@ const accountLabel = isExpense ? t`Select destination account` : t`Select source
 
 **i18n file structure:**
 Both `.po` (source) and `.ts` (compiled) files are required and must be committed:
-
 - `.po` files - source translations, editable by translators
 - `.ts` files - compiled messages, generated by `yarn i18n:sync`, required at runtime
 
 After modifying user-facing text, run `yarn i18n:sync` and commit both file types.
 
 **Adding missing translations:**
-
 1. Run `yarn i18n:sync` to see which locales have missing translations
 2. Open `.po` files for each locale (de, es, fr, uk) and find entries with empty `msgstr ""`
 3. Add translations for each missing entry
@@ -461,14 +441,14 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ## Tech Stack
 
-| Package       | Stack                                                                              |
-| ------------- | ---------------------------------------------------------------------------------- |
-| **app**       | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
-| **ai**        | Pure TypeScript, Zod                                                               |
-| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                      |
-| **landing**   | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7                                   |
-| **bank-sync** | ky HTTP client, date-fns                                                           |
-| **Build**     | Yarn 4.12 (PnP), Node >= 22, Lerna 8, TurboRepo 2, TypeScript 5.9, ESLint 9        |
+| Package | Stack |
+|---------|-------|
+| **app** | Expo 54, React 19 + Compiler, Expo Router 6, Drizzle ORM, NativeWind 5, Lingui 5.7 |
+| **ai** | Pure TypeScript, Zod |
+| **contracts** | Drizzle ORM, Zod, drizzle-zod |
+| **landing** | Next.js 15, React 19, Tailwind CSS 4, Lingui 5.7 |
+| **bank-sync** | ky HTTP client, date-fns |
+| **Build** | Yarn 4.12 (PnP), Node >= 22, Lerna 8, TurboRepo 2, TypeScript 5.9, ESLint 9 |
 
 ## Workflow
 
@@ -502,7 +482,6 @@ Conventional commits: `type(scope): description`
 **Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
 
 **Examples:**
-
 - `feat(app): add dark mode toggle`
 - `fix(contracts): update account schema`
 - `chore(landing): update dependencies`
@@ -535,16 +514,15 @@ Conventional commits: `type(scope): description`
 
 Add `eslint-disable-next-line` with justification for these specific cases:
 
-| Rule                            | When to Disable                                                                                                                                           | Justification Pattern                                                          |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`             |
-| `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                                 |
-| `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together`   |
-| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape                                                                       | `-- Existing public API and Log hooks intentionally keep positional arguments` |
-| `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                   |
+| Rule | When to Disable | Justification Pattern |
+|------|-----------------|----------------------|
+| `max-statements` | Form orchestration components with multiple hooks/handlers | `-- Form orchestration component with multiple hooks and handlers` |
+| `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
+| `max-lines` | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
+| `@typescript-eslint/max-params` | Existing public APIs or lifecycle log hooks must preserve positional argument shape | `-- Existing public API and Log hooks intentionally keep positional arguments` |
+| `func-style` | Next.js `generateMetadata` requires `export async function`, not `const` | `-- Next.js generateMetadata must be a function declaration` |
 
 Example:
-
 ```typescript
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const MyFormComponent = (props: Props) => { ... };
