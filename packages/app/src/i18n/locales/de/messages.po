@@ -542,7 +542,7 @@ msgstr "Konten konnten nicht abgerufen werden"
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:33
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
@@ -766,7 +766,7 @@ msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:71
 msgid "Done"
 msgstr "Fertig"
 
@@ -1372,7 +1372,7 @@ msgstr "Keine wiederkehrenden Zahlungen erkannt"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:41
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
@@ -1625,13 +1625,17 @@ msgstr "Wiederkehrend"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
 msgid "Refunded"
 msgstr "Erstattet"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:21
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Erstattet {formattedRefundedAmount}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+msgid "Refunds"
+msgstr "Erstattungen"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -1897,6 +1901,10 @@ msgstr "Etwas ist schief gelaufen"
 msgid "Something went wrong. Please try again later."
 msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+msgid "Source transactions"
+msgstr "Quelltransaktionen"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:143
 msgid "Sources"
 msgstr "Quellen"
@@ -2040,7 +2048,7 @@ msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Diese Kategorie hat Transaktionen. Wählen Sie eine andere Kategorie, um sie neu zuzuweisen."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:42
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:48
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Dieser konsolidierte Transfer hat keine verschobenen Quelleinträge."
 

@@ -8,11 +8,12 @@ import type { DB } from '@budgie/contracts';
 
 export const unconsolidateByIdInTransaction = async (transactionId: number, tx: DB): Promise<void> => {
     const canonical = await transactionRepository.getById(transactionId, tx);
+    const isRefundCanonical = isDefined(canonical) && canonical.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     await transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
     await transactionRepository.clearConsolidationParent(transactionId, tx);
 
-    if (isDefined(canonical) && canonical.consolidationType === TransactionConsolidationTypeEnum.REFUND) {
+    if (isRefundCanonical) {
         await transactionRepository.setConsolidationType(transactionId, null, tx);
 
         return;

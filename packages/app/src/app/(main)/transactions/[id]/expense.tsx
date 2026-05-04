@@ -22,10 +22,10 @@ import { SimpleQuickForm } from '../../../../transaction/components/simple-quick
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
-import { useRefundedSummary } from '../../../../transaction/hook/use-refunded-summary.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
+import { computeRefundedSummary } from '../../../../transaction/utils/compute-refunded-summary.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
@@ -60,18 +60,18 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
 
-    const refundSummary = useRefundedSummary(transaction);
+    const refundSummary = computeRefundedSummary(transaction);
     const refundCurrencySymbol = sourceAccount.instrument.symbol;
-    const formattedRefundedAmount =
+    const refundedAmountProp =
         isDefined(refundSummary) && refundSummary.kind === 'partial' && isNotEmptyString(refundCurrencySymbol)
-            ? formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol)
-            : undefined; // eslint-disable-line no-undefined -- optional prop, undefined skips it
+            ? { formattedRefundedAmount: formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol) }
+            : {};
 
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
 
     const headerBottom = isDefined(refundSummary) ? (
         <View className="flex-row">
-            <RefundedPill kind={refundSummary.kind} formattedRefundedAmount={formattedRefundedAmount} onPress={handleOpenRefundSources} />
+            <RefundedPill kind={refundSummary.kind} {...refundedAmountProp} onPress={handleOpenRefundSources} />
         </View>
     ) : null;
 

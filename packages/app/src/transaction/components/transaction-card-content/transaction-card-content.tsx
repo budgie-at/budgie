@@ -9,7 +9,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { useRefundedSummary } from '../../hook/use-refunded-summary.hook';
+import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -34,12 +34,12 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
 
-    const refundSummary = useRefundedSummary(transaction);
+    const refundSummary = computeRefundedSummary(transaction);
     const refundCurrencySymbol = transaction.entries[0]?.account.instrument.symbol;
-    const formattedRefundedAmount =
+    const refundedAmountProp =
         isDefined(refundSummary) && refundSummary.kind === 'partial' && isNotEmptyString(refundCurrencySymbol)
-            ? formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol)
-            : undefined; // eslint-disable-line no-undefined -- optional prop, undefined skips it
+            ? { formattedRefundedAmount: formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol) }
+            : {};
 
     const handleRefundPillPress = () => {
         void openConsolidationSourceModal({ transactionId: transaction.id });
@@ -67,7 +67,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                         <View className="flex-row">
                             <RefundedPill
                                 kind={refundSummary.kind}
-                                formattedRefundedAmount={formattedRefundedAmount}
+                                {...refundedAmountProp}
                                 onPress={handleRefundPillPress}
                             />
                         </View>

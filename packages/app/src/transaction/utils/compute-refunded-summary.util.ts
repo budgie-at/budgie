@@ -16,7 +16,7 @@ interface RefundedSummaryTransactionInput {
 const sumEntries = (entries: readonly RefundedSummaryEntryInput[], type: TransactionEntryTypeEnum): number =>
     entries.filter(entry => entry.type === type).reduce((total, entry) => total + entry.amount, 0);
 
-export const useRefundedSummary = (transaction: RefundedSummaryTransactionInput): RefundedSummaryInterface | null => {
+export const computeRefundedSummary = (transaction: RefundedSummaryTransactionInput): RefundedSummaryInterface | null => {
     if (transaction.consolidationType !== TransactionConsolidationTypeEnum.REFUND) {
         return null;
     }
