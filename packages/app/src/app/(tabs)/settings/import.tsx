@@ -118,7 +118,6 @@ export default function ImportScreen() {
         void loadFile();
     }, [fileUri, t]);
 
-     
     const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
