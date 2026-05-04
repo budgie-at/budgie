@@ -94,12 +94,11 @@ msgstr "Konto"
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:48
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
-#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:36
-#: src/app/account-type-selector.tsx:39
+#: src/account/component/update-liability-account/update-liability-account.tsx:68
 msgid "Account Type"
 msgstr "Kontotyp"
 
@@ -363,10 +362,6 @@ msgstr "Kategoriename"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Ändern"
-
-#: src/app/account-type-selector.tsx:52
-msgid "Change Account Type"
-msgstr "Kontotyp ändern"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:85
 msgid "Change PIN"
@@ -675,10 +670,6 @@ msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Krypto"
-
-#: src/account/constant/account-type-description.constant.ts:9
-msgid "Cryptocurrency holdings"
-msgstr "Kryptowährungsbestände"
 
 #: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
@@ -1239,10 +1230,6 @@ msgstr "In einen anderen Tag zusammenführen"
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
 
-#: src/account/constant/account-type-description.constant.ts:8
-msgid "Money you owe or are owed"
-msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
-
 #: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:51
 msgid "Monobank"
@@ -1347,7 +1334,7 @@ msgstr "Keine inaktiven Konten"
 msgid "No inactive accounts match your search"
 msgstr "Keine inaktiven Konten entsprechen deiner Suche"
 
-#: src/app/voice-review.tsx:118
+#: src/app/voice-review.tsx:120
 msgid "No items to save"
 msgstr "Keine Einträge zum Speichern"
 
@@ -1487,10 +1474,6 @@ msgstr "PDF-Kontoauszug"
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
-
-#: src/account/constant/account-type-description.constant.ts:7
-msgid "Physical cash on hand"
-msgstr "Physisches Bargeld"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -1664,10 +1647,6 @@ msgstr "Ersparnisse"
 msgid "Savings Account"
 msgstr "Sparkonto"
 
-#: src/account/constant/account-type-description.constant.ts:11
-msgid "Savings accounts"
-msgstr "Sparkonten"
-
 #: src/app/(tabs)/settings/index.tsx:80
 msgid "Screenshot Protection"
 msgstr "Screenshot-Schutz"
@@ -1789,10 +1768,6 @@ msgstr "Heruntergeladene PDF-Datei auswählen"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:20
 msgid "Select the exported XLSX file"
 msgstr "Exportierte XLSX-Datei auswählen"
-
-#: src/app/account-type-selector.tsx:39
-msgid "Select the type of account"
-msgstr "Wählen Sie den Kontotyp"
 
 #: src/app/import-column-mapper.tsx:55
 msgid "Selected"
@@ -1934,10 +1909,6 @@ msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofonta
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
 
-#: src/account/constant/account-type-description.constant.ts:10
-msgid "Stock investments"
-msgstr "Aktieninvestitionen"
-
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Aktien"
@@ -1971,10 +1942,6 @@ msgstr "Synchronisation fehlgeschlagen"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 
-#: src/account/constant/account-type-description.constant.ts:12
-msgid "Synced bank accounts"
-msgstr "Synchronisierte Bankkonten"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts:12
 msgid "Syncing history..."
 msgstr "Verlauf wird synchronisiert..."
@@ -2002,7 +1969,7 @@ msgstr "Tags"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:119
+#: src/app/voice-review.tsx:121
 msgid "Tap re-record to try again"
 msgstr "Tippe „Erneut aufnehmen\", um es noch einmal zu versuchen"
 
@@ -2121,10 +2088,6 @@ msgstr "Gesamt: {formattedAmountToReturn}"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:68
 msgid "Touch ID"
 msgstr "Touch ID"
-
-#: src/account/constant/account-type-description.constant.ts:6
-msgid "Traditional bank accounts"
-msgstr "Traditionelle Bankkonten"
 
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
@@ -2248,7 +2211,7 @@ msgstr "Auf dem neuesten Stand"
 msgid "Upcoming"
 msgstr "Bevorstehend"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:75
+#: src/account/component/create-account-screen/update-account-screen.tsx:56
 msgid "Update Account"
 msgstr "Konto aktualisieren"
 

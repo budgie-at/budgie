@@ -19,7 +19,6 @@ import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
-import { ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/account-type-selector-modal-options.constant';
 import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
@@ -125,10 +124,6 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen
                                                                     name="consolidation-source"
                                                                     options={CONSOLIDATION_SOURCE_MODAL_OPTIONS}
-                                                                />
-                                                                <Stack.Screen
-                                                                    name="account-type-selector"
-                                                                    options={ACCOUNT_TYPE_SELECTOR_MODAL_OPTIONS}
                                                                 />
                                                                 <Stack.Screen
                                                                     name="import-column-mapper"

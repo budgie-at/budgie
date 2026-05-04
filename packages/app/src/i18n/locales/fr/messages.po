@@ -94,12 +94,11 @@ msgstr "Compte"
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:48
 msgid "Account Settings"
 msgstr "Paramètres du compte"
 
-#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:36
-#: src/app/account-type-selector.tsx:39
+#: src/account/component/update-liability-account/update-liability-account.tsx:68
 msgid "Account Type"
 msgstr "Type de compte"
 
@@ -363,10 +362,6 @@ msgstr "Nom de la catégorie"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Modifier"
-
-#: src/app/account-type-selector.tsx:52
-msgid "Change Account Type"
-msgstr "Changer le type de compte"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:85
 msgid "Change PIN"
@@ -675,10 +670,6 @@ msgstr "Créez votre premier compte pour commencer à suivre vos finances"
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Crypto"
-
-#: src/account/constant/account-type-description.constant.ts:9
-msgid "Cryptocurrency holdings"
-msgstr "Avoirs en cryptomonnaies"
 
 #: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
@@ -1239,10 +1230,6 @@ msgstr "Fusionner avec une autre étiquette"
 msgid "Money lent or borrowed"
 msgstr "Argent prêté ou emprunté"
 
-#: src/account/constant/account-type-description.constant.ts:8
-msgid "Money you owe or are owed"
-msgstr "Argent que vous devez ou qu'on vous doit"
-
 #: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:51
 msgid "Monobank"
@@ -1347,7 +1334,7 @@ msgstr "Aucun compte inactif"
 msgid "No inactive accounts match your search"
 msgstr "Aucun compte inactif ne correspond à votre recherche"
 
-#: src/app/voice-review.tsx:118
+#: src/app/voice-review.tsx:120
 msgid "No items to save"
 msgstr "Aucun élément à enregistrer"
 
@@ -1487,10 +1474,6 @@ msgstr "Relevé PDF"
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "La permission d'accéder aux contacts a été refusée."
-
-#: src/account/constant/account-type-description.constant.ts:7
-msgid "Physical cash on hand"
-msgstr "Argent liquide physique"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -1664,10 +1647,6 @@ msgstr "Épargne"
 msgid "Savings Account"
 msgstr "Compte d'épargne"
 
-#: src/account/constant/account-type-description.constant.ts:11
-msgid "Savings accounts"
-msgstr "Comptes d'épargne"
-
 #: src/app/(tabs)/settings/index.tsx:80
 msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
@@ -1789,10 +1768,6 @@ msgstr "Sélectionnez le fichier PDF téléchargé"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:20
 msgid "Select the exported XLSX file"
 msgstr "Sélectionnez le fichier XLSX exporté"
-
-#: src/app/account-type-selector.tsx:39
-msgid "Select the type of account"
-msgstr "Sélectionnez le type de compte"
 
 #: src/app/import-column-mapper.tsx:55
 msgid "Selected"
@@ -1934,10 +1909,6 @@ msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajo
 msgid "Starting up AI…"
 msgstr "Démarrage de l'IA…"
 
-#: src/account/constant/account-type-description.constant.ts:10
-msgid "Stock investments"
-msgstr "Investissements boursiers"
-
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Actions"
@@ -1971,10 +1942,6 @@ msgstr "Échec de la synchronisation"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisez vos comptes et transactions Monobank"
 
-#: src/account/constant/account-type-description.constant.ts:12
-msgid "Synced bank accounts"
-msgstr "Comptes bancaires synchronisés"
-
 #: src/sync/utils/build-bank-sync-status-label.util.ts:12
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
@@ -2002,7 +1969,7 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/app/voice-review.tsx:119
+#: src/app/voice-review.tsx:121
 msgid "Tap re-record to try again"
 msgstr "Appuyez sur réenregistrer pour réessayer"
 
@@ -2121,10 +2088,6 @@ msgstr "Total : {formattedAmountToReturn}"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:68
 msgid "Touch ID"
 msgstr "Touch ID"
-
-#: src/account/constant/account-type-description.constant.ts:6
-msgid "Traditional bank accounts"
-msgstr "Comptes bancaires traditionnels"
 
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
@@ -2248,7 +2211,7 @@ msgstr "À jour"
 msgid "Upcoming"
 msgstr "À venir"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:75
+#: src/account/component/create-account-screen/update-account-screen.tsx:56
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
