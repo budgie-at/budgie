@@ -1,18 +1,18 @@
 appId: ${APP_ID}
 ---
 
-- openLink: 'budgie:///settings/import?e2eCsvFixture=${CSV_DISPLAY_NAME}'
+- openLink: 'budgie://settings/import?e2eCsvFixture=${CSV_DISPLAY_NAME}'
 
 - extendedWaitUntil:
     visible:
-      id: 'ImportScreen.Page'
+      id: 'ImportScreen.PresetChip.Budgie'
     timeout: 10000
 
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
 
 - tapOn:
-    id: 'ImportScreen.SubmitButton'
+    id: 'CsvPage.StartImportButton'
 
 - extendedWaitUntil:
     visible:

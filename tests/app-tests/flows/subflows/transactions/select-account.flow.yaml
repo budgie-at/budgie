@@ -19,8 +19,8 @@ appId: ${APP_ID}
 
       - runFlow:
           when:
-            notVisible:
-              id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
+            visible:
+              id: 'AccountPickerBottomSheet.Input'
           commands:
             - tapOn:
                 id: 'AccountPickerBottomSheet.Input'
