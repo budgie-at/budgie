@@ -155,12 +155,8 @@ export const SwipeableRuleCard = (props: Props) => {
                     {status === 'creating' ? (
                         <ActivityIndicator size="small" />
                     ) : (
-                        <HapticPressable
-                            testID={buttonTestID}
-                            onPress={handleYesButtonPress}
-                            className="px-md py-xs bg-primary-background rounded-lg"
-                        >
-                            <Text className="text-xs text-primary-foreground font-semibold">
+                        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} className="px-md py-xs bg-primary rounded-lg">
+                            <Text className="text-xs text-primary-reverse font-semibold">
                                 <Trans>Yes</Trans>
                             </Text>
                         </HapticPressable>
