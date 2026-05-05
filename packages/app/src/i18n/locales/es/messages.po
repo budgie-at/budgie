@@ -94,12 +94,11 @@ msgstr "Cuenta"
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:48
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
-#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:36
-#: src/app/account-type-selector.tsx:39
+#: src/account/component/update-liability-account/update-liability-account.tsx:68
 msgid "Account Type"
 msgstr "Tipo de cuenta"
 
@@ -363,10 +362,6 @@ msgstr "Nombre de la categoría"
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:87
 msgid "Change"
 msgstr "Cambiar"
-
-#: src/app/account-type-selector.tsx:52
-msgid "Change Account Type"
-msgstr "Cambiar tipo de cuenta"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:85
 msgid "Change PIN"
@@ -675,10 +670,6 @@ msgstr "Crea tu primera cuenta para comenzar a rastrear tus finanzas"
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Cripto"
-
-#: src/account/constant/account-type-description.constant.ts:9
-msgid "Cryptocurrency holdings"
-msgstr "Tenencias de criptomonedas"
 
 #: src/export/components/export-csv/export-csv.tsx:14
 msgid "CSV exported"
@@ -1239,10 +1230,6 @@ msgstr "Fusionar con otra etiqueta"
 msgid "Money lent or borrowed"
 msgstr "Dinero prestado o recibido"
 
-#: src/account/constant/account-type-description.constant.ts:8
-msgid "Money you owe or are owed"
-msgstr "Dinero que debes o te deben"
-
 #: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:51
 msgid "Monobank"
@@ -1488,10 +1475,6 @@ msgstr "Extracto PDF"
 msgid "Permission to access contacts was denied."
 msgstr "Se denegó el permiso para acceder a los contactos."
 
-#: src/account/constant/account-type-description.constant.ts:7
-msgid "Physical cash on hand"
-msgstr "Efectivo físico disponible"
-
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
 msgstr "Elige un período. Los datos existentes se conservan."
@@ -1676,10 +1659,6 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
-#: src/account/constant/account-type-description.constant.ts:11
-msgid "Savings accounts"
-msgstr "Cuentas de ahorro"
-
 #: src/app/(tabs)/settings/index.tsx:80
 msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
@@ -1801,10 +1780,6 @@ msgstr "Selecciona el archivo PDF descargado"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:20
 msgid "Select the exported XLSX file"
 msgstr "Selecciona el archivo XLSX exportado"
-
-#: src/app/account-type-selector.tsx:39
-msgid "Select the type of account"
-msgstr "Selecciona el tipo de cuenta"
 
 #: src/app/import-column-mapper.tsx:55
 msgid "Selected"
@@ -1950,10 +1925,6 @@ msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregand
 msgid "Starting up AI…"
 msgstr "Iniciando IA…"
 
-#: src/account/constant/account-type-description.constant.ts:10
-msgid "Stock investments"
-msgstr "Inversiones en acciones"
-
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Acciones"
@@ -1986,10 +1957,6 @@ msgstr "Sincronización fallida"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:89
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sincronice sus cuentas y transacciones de Monobank"
-
-#: src/account/constant/account-type-description.constant.ts:12
-msgid "Synced bank accounts"
-msgstr "Cuentas bancarias sincronizadas"
 
 #: src/sync/utils/build-bank-sync-status-label.util.ts:12
 msgid "Syncing history..."
@@ -2138,10 +2105,6 @@ msgstr "Total: {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/account/constant/account-type-description.constant.ts:6
-msgid "Traditional bank accounts"
-msgstr "Cuentas bancarias tradicionales"
-
 #: src/transaction/service/transaction-transfer.service.ts:168
 msgid "Transaction must have a destination account"
 msgstr "La transacción debe tener una cuenta de destino"
@@ -2264,7 +2227,7 @@ msgstr "Actualizado"
 msgid "Upcoming"
 msgstr "Próximos"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:75
+#: src/account/component/create-account-screen/update-account-screen.tsx:56
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
