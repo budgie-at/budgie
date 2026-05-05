@@ -17,15 +17,8 @@ import { convertTransactionToTransfer } from '../util/convert-transaction-to-tra
 import { ruleMatcherService } from './rule-matcher.service';
 
 import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
-import type { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
-import type {
-    DB,
-    RuleActionEntityInterface,
-    RuleWithRelationsEntityInterface,
-    TransactionCreateInputInterface,
-    TransactionWithEntriesMccCategoryEntityInterface
-} from '@budgie/contracts';
+import type { DB, RuleActionEntityInterface, RuleWithRelationsEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
 
 class RuleEngineService {
     @Log(
@@ -56,29 +49,6 @@ class RuleEngineService {
                 )
             );
         }
-    }
-
-    @Log(
-        params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
-        result => `done count=${result}`,
-        (error, params) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
-    )
-    async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
-        return ruleMatcherService.countMatchingTransactions(params);
-    }
-
-    @Log(
-        (params, limit) => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit}`,
-        result => `done count=${result.count} returned=${result.transactions.length}`,
-        (error, params, limit) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
-    )
-    async findMatchingTransactions(
-        params: CountConditionsParamsInterface,
-        limit: number
-    ): Promise<{ transactions: TransactionWithEntriesMccCategoryEntityInterface[]; count: number }> {
-        return ruleMatcherService.findMatchingTransactions(params, limit);
     }
 
     @Log(
