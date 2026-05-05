@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 
-import { SelectorCard } from '../@generic/component/selector-card/selector-card';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { RuleFormSelector } from '../rule/components/rule-form-layout/rule-form-layout.selector';
+import { RuleSelectorOptionRow } from '../rule/components/rule-selector-option-row/rule-selector-option-row';
 import { useRuleSelectorModal } from '../rule/context/rule-selector-modal.context';
 
 export default function RuleSelectorModal() {
@@ -18,13 +18,12 @@ export default function RuleSelectorModal() {
             <Text className="text-primary text-lg font-semibold mb-lg">{currentParams?.title ?? ''}</Text>
 
             {options.map(option => (
-                <SelectorCard<string>
+                <RuleSelectorOptionRow
                     key={option.value}
-                    identifier={option.value}
+                    value={option.value}
+                    label={option.label}
                     isSelected={option.value === selectedValue}
-                    onSelect={resolveRuleSelector}
-                    title={<Text className="text-primary text-md font-semibold">{option.label}</Text>}
-                    iconSlot={null}
+                    onPress={resolveRuleSelector}
                     testID={RuleFormSelector.SelectorCard(option.value)}
                 />
             ))}
