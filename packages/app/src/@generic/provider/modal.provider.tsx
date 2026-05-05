@@ -2,7 +2,6 @@
 import { type PropsWithChildren } from 'react';
 
 import { AccountSelectorModalProvider } from '../../account/provider/account-selector-modal.provider';
-import { AccountTypeSelectorModalProvider } from '../../account/provider/account-type-selector-modal.provider';
 import { VoiceReviewModalProvider } from '../../ai/provider/voice-review-modal.provider';
 import { CategoryFormModalProvider } from '../../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../../category/provider/category-selector-modal.provider';
@@ -41,25 +40,23 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                 <CurrencySelectorModalProvider>
                                                     <LanguageSelectorModalProvider>
                                                         <ContactSelectorModalProvider>
-                                                            <AccountTypeSelectorModalProvider>
-                                                                <ImportColumnMapperModalProvider>
-                                                                    <ResyncWindowPickerModalProvider>
-                                                                        <TransactionTypeFilterModalProvider>
-                                                                            <DateFilterModalProvider>
-                                                                                <TransactionCategoryFilterModalProvider>
-                                                                                    <TransactionAccountFilterModalProvider>
-                                                                                        <TransactionTagFilterModalProvider>
-                                                                                            <VoiceReviewModalProvider>
-                                                                                                {children}
-                                                                                            </VoiceReviewModalProvider>
-                                                                                        </TransactionTagFilterModalProvider>
-                                                                                    </TransactionAccountFilterModalProvider>
-                                                                                </TransactionCategoryFilterModalProvider>
-                                                                            </DateFilterModalProvider>
-                                                                        </TransactionTypeFilterModalProvider>
-                                                                    </ResyncWindowPickerModalProvider>
-                                                                </ImportColumnMapperModalProvider>
-                                                            </AccountTypeSelectorModalProvider>
+                                                            <ImportColumnMapperModalProvider>
+                                                                <ResyncWindowPickerModalProvider>
+                                                                    <TransactionTypeFilterModalProvider>
+                                                                        <DateFilterModalProvider>
+                                                                            <TransactionCategoryFilterModalProvider>
+                                                                                <TransactionAccountFilterModalProvider>
+                                                                                    <TransactionTagFilterModalProvider>
+                                                                                        <VoiceReviewModalProvider>
+                                                                                            {children}
+                                                                                        </VoiceReviewModalProvider>
+                                                                                    </TransactionTagFilterModalProvider>
+                                                                                </TransactionAccountFilterModalProvider>
+                                                                            </TransactionCategoryFilterModalProvider>
+                                                                        </DateFilterModalProvider>
+                                                                    </TransactionTypeFilterModalProvider>
+                                                                </ResyncWindowPickerModalProvider>
+                                                            </ImportColumnMapperModalProvider>
                                                         </ContactSelectorModalProvider>
                                                     </LanguageSelectorModalProvider>
                                                 </CurrencySelectorModalProvider>
