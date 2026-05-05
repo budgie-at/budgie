@@ -128,11 +128,11 @@ class TransferConsolidationService {
 
     @Log(
         candidates =>
-            `enter buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')}`,
+            `enter expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')}`,
         (result, candidates) =>
-            `done buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} consolidated=${result}`,
+            `done expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} consolidated=${result}`,
         (error, candidates) =>
-            `throw buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} error=${getErrorMessage(error)}`
+            `throw expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} error=${getErrorMessage(error)}`
     )
     private async processRefundCandidates(candidates: RefundCandidateInterface[]): Promise<number> {
         return this.reduceConsolidations(candidates, candidate => this.consolidateRefund(candidate));

@@ -537,7 +537,7 @@ msgstr "Impossible de récupérer les comptes"
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:33
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:32
 msgid "Could not load sources. Please try again."
 msgstr "Impossible de charger les sources. Veuillez réessayer."
 
@@ -757,7 +757,7 @@ msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:71
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "Done"
 msgstr "Terminé"
 
@@ -797,7 +797,7 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:93
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
@@ -1359,7 +1359,7 @@ msgstr "Aucun paiement récurrent détecté"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:46
 msgid "No source transactions"
 msgstr "Aucune transaction source"
 
@@ -1608,15 +1608,15 @@ msgstr "Récurrents"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
 msgid "Refunded"
 msgstr "Remboursé"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Remboursé {formattedRefundedAmount}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
 msgid "Refunds"
 msgstr "Remboursements"
 
@@ -1876,7 +1876,7 @@ msgstr "Quelque chose s'est mal passé"
 msgid "Something went wrong. Please try again later."
 msgstr "Quelque chose s'est mal passé. Veuillez réessayer plus tard."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
 msgid "Source transactions"
 msgstr "Transactions sources"
 
@@ -2015,7 +2015,7 @@ msgstr "Cette action ne peut pas être annulée."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Cette catégorie a des transactions. Sélectionnez une autre catégorie pour les réassigner."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:48
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Ce virement consolidé n’a aucune écriture source déplacée."
 

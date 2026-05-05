@@ -1,8 +1,7 @@
-import type { RefundedSummaryInterface } from './refunded-summary.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export interface RefundedPillPropsInterface {
-    readonly kind: RefundedSummaryInterface['kind'];
-    readonly formattedRefundedAmount?: string;
+    readonly transaction: TransactionWithRelationsEntityInterface;
     readonly onPress?: () => void;
     readonly testID?: string;
 }

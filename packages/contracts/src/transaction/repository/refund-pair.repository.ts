@@ -1,40 +1,15 @@
-/* eslint-disable max-lines-per-function -- File owns a single multi-stage SQL/CTE pipeline that must stay together */
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS } from '../constant/refund-manual-review-time-window.constant';
 import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
-import { REFUND_TITLE_PREFIXES } from '../constant/refund-title-prefixes.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 import type { DB } from '../../@generic/type/db.type';
-import type { RefundAutoConfidenceBucket } from '../interface/refund-auto-confidence-bucket.type';
+import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
 import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
+import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
 import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
-import type { RefundReviewConfidenceBucket } from '../interface/refund-review-confidence-bucket.type';
 
-type RefundCandidateRowInterface = {
-    readonly confidenceBucket: RefundAutoConfidenceBucket;
-    readonly accountId: number;
-    readonly expenseTransactionId: number;
-    readonly expenseTransactionTitle: string | null;
-    readonly expenseEntryAmount: number;
-    readonly expenseOperatedAt: number;
-    readonly refundIncomeTransactionIds: string;
-    readonly refundIncomeAmounts: string;
-    readonly refundsTotal: number;
-    readonly maxTimeDiffSeconds: number;
-};
-
-type RefundReviewCandidateRowInterface = {
-    readonly confidenceBucket: RefundReviewConfidenceBucket;
-    readonly accountId: number;
-    readonly expenseTransactionId: number;
-    readonly expenseTransactionTitle: string | null;
-    readonly expenseEntryAmount: number;
-    readonly refundIncomeTransactionIds: string;
-    readonly refundIncomeAmounts: string;
-    readonly refundsTotal: number;
-    readonly maxTimeDiffSeconds: number;
-};
+const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
+const TITLE_PREFIXES = ['REFUND', 'RETURN', 'REVERSAL', 'CHARGEBACK', 'CR '] as const;
 
 export class RefundPairRepository {
     constructor(private db: DB) {}
@@ -50,7 +25,7 @@ export class RefundPairRepository {
         const sql = this.buildReviewBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);
 
-        return rows.map(row => this.mapReviewRow(row));
+        return rows.map(row => this.mapRow(row));
     }
 
     private buildAutoBucketSql(): string {
@@ -96,13 +71,10 @@ export class RefundPairRepository {
             candidate_pairs AS (
                 SELECT
                     exp.txId AS expenseTxId,
-                    exp.txTitle AS expenseTitle,
                     exp.accountId AS accountId,
                     exp.amount AS expenseAmount,
-                    exp.operatedAt AS expenseOperatedAt,
                     inc.txId AS refundTxId,
-                    inc.amount AS refundAmount,
-                    (inc.operatedAt - exp.operatedAt) AS timeDiff
+                    inc.amount AS refundAmount
                 FROM expense_entries exp
                 INNER JOIN income_entries inc
                     ON inc.accountId = exp.accountId
@@ -111,16 +83,11 @@ export class RefundPairRepository {
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
             )
             SELECT
-                'AUTO_STRICT_TITLE' AS confidenceBucket,
                 expenseTxId AS expenseTransactionId,
-                expenseTitle AS expenseTransactionTitle,
                 accountId AS accountId,
                 expenseAmount AS expenseEntryAmount,
-                expenseOperatedAt AS expenseOperatedAt,
                 SUM(refundAmount) AS refundsTotal,
-                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds,
-                GROUP_CONCAT(refundAmount, ',' ORDER BY refundTxId) AS refundIncomeAmounts,
-                MAX(timeDiff) AS maxTimeDiffSeconds
+                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
             FROM candidate_pairs
             GROUP BY expenseTxId
             HAVING SUM(refundAmount) <= expenseAmount
@@ -128,14 +95,8 @@ export class RefundPairRepository {
     }
 
     private buildReviewBucketSql(): string {
-        const stripPrefixesExp = `TRIM(${REFUND_TITLE_PREFIXES.reduce(
-            (acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`,
-            'UPPER(TRIM(exp.txTitle))'
-        )})`;
-        const stripPrefixesInc = `TRIM(${REFUND_TITLE_PREFIXES.reduce(
-            (acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`,
-            'UPPER(TRIM(inc.txTitle))'
-        )})`;
+        const stripPrefixesExp = this.buildStripPrefixesSql('UPPER(TRIM(exp.txTitle))');
+        const stripPrefixesInc = this.buildStripPrefixesSql('UPPER(TRIM(inc.txTitle))');
 
         return `
             WITH expense_entries AS (
@@ -180,19 +141,16 @@ export class RefundPairRepository {
             candidate_pairs AS (
                 SELECT
                     exp.txId AS expenseTxId,
-                    exp.txTitle AS expenseTitle,
                     exp.accountId AS accountId,
                     exp.amount AS expenseAmount,
-                    exp.operatedAt AS expenseOperatedAt,
                     inc.txId AS refundTxId,
-                    inc.amount AS refundAmount,
-                    (inc.operatedAt - exp.operatedAt) AS timeDiff
+                    inc.amount AS refundAmount
                 FROM expense_entries exp
                 INNER JOIN income_entries inc
                     ON inc.accountId = exp.accountId
                     AND inc.mccCategoryId = exp.mccCategoryId
                     AND inc.operatedAt > exp.operatedAt
-                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_MANUAL_REVIEW_TIME_WINDOW_SECONDS}
+                    AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
                     AND (
                         UPPER(TRIM(inc.txTitle)) LIKE '%' || ${stripPrefixesExp} || '%'
                         OR UPPER(TRIM(exp.txTitle)) LIKE '%' || ${stripPrefixesInc} || '%'
@@ -203,51 +161,28 @@ export class RefundPairRepository {
                     )
             )
             SELECT
-                'REVIEW_PREFIX_STRIP_MCC' AS confidenceBucket,
                 expenseTxId AS expenseTransactionId,
-                expenseTitle AS expenseTransactionTitle,
                 accountId AS accountId,
                 expenseAmount AS expenseEntryAmount,
                 SUM(refundAmount) AS refundsTotal,
-                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds,
-                GROUP_CONCAT(refundAmount, ',' ORDER BY refundTxId) AS refundIncomeAmounts,
-                MAX(timeDiff) AS maxTimeDiffSeconds
+                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
             FROM candidate_pairs
             GROUP BY expenseTxId
             HAVING SUM(refundAmount) <= expenseAmount
         `;
     }
 
+    private buildStripPrefixesSql(seedExpression: string): string {
+        return `TRIM(${TITLE_PREFIXES.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
+    }
+
     private mapRow(row: RefundCandidateRowInterface): RefundCandidateInterface {
         return {
-            confidenceBucket: row.confidenceBucket,
             accountId: row.accountId,
             expenseTransactionId: row.expenseTransactionId,
-            expenseTransactionTitle: row.expenseTransactionTitle,
             expenseEntryAmount: row.expenseEntryAmount,
-            expenseOperatedAt: row.expenseOperatedAt,
-            refundIncomeTransactionIds: this.parseNumberList(row.refundIncomeTransactionIds),
-            refundIncomeAmounts: this.parseNumberList(row.refundIncomeAmounts),
-            refundsTotal: row.refundsTotal,
-            maxTimeDiffSeconds: row.maxTimeDiffSeconds
+            refundIncomeTransactionIds: row.refundIncomeTransactionIds.split(',').map(item => Number(item)),
+            refundsTotal: row.refundsTotal
         };
-    }
-
-    private mapReviewRow(row: RefundReviewCandidateRowInterface): RefundReviewCandidateInterface {
-        return {
-            confidenceBucket: row.confidenceBucket,
-            accountId: row.accountId,
-            expenseTransactionId: row.expenseTransactionId,
-            expenseTransactionTitle: row.expenseTransactionTitle,
-            expenseEntryAmount: row.expenseEntryAmount,
-            refundIncomeTransactionIds: this.parseNumberList(row.refundIncomeTransactionIds),
-            refundIncomeAmounts: this.parseNumberList(row.refundIncomeAmounts),
-            refundsTotal: row.refundsTotal,
-            maxTimeDiffSeconds: row.maxTimeDiffSeconds
-        };
-    }
-
-    private parseNumberList(value: string): number[] {
-        return value.split(',').map(item => Number(item));
     }
 }

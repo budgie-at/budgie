@@ -309,12 +309,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ consolidationType: type })
-            .where(
-                and(
-                    eq(TransactionEntityTable.id, transactionId),
-                    isNull(TransactionEntityTable.consolidationParentTransactionId)
-                )
-            );
+            .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)));
     }
 
     @Log(

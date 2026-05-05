@@ -1,7 +1,7 @@
-export interface RefundReviewCandidateInterface {
+export interface RefundReviewCandidateRowInterface {
     readonly accountId: number;
     readonly expenseTransactionId: number;
     readonly expenseEntryAmount: number;
-    readonly refundIncomeTransactionIds: number[];
+    readonly refundIncomeTransactionIds: string;
     readonly refundsTotal: number;
 }
