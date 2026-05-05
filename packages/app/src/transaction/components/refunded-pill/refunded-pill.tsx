@@ -7,6 +7,11 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
+import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
+import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 
 import type { RefundedPillPropsInterface } from '../../interface/refunded-pill-props.interface';
 
@@ -16,8 +21,22 @@ const baseClassName = 'flex-row items-center gap-x-xs rounded-full px-sm py-[2px
 const labelClassName = 'text-xs text-secondary-foreground';
 const continuousBorder = { borderCurve: 'continuous' as const };
 
-export const RefundedPill = ({ kind, formattedRefundedAmount, onPress, testID }: RefundedPillPropsInterface) => {
-    const label = kind === 'partial' && isNotEmptyString(formattedRefundedAmount) ? t`Refunded ${formattedRefundedAmount}` : t`Refunded`;
+export const RefundedPill = ({ transaction, onPress, testID }: RefundedPillPropsInterface) => {
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
+
+    const summary = computeRefundedSummary(transaction);
+    const currencySymbol = transaction.entries[0]?.account.instrument.symbol;
+
+    if (!isDefined(summary)) {
+        return null;
+    }
+
+    const formattedRefundedAmount =
+        summary.kind === RefundedSummaryKindEnum.PARTIAL && isNotEmptyString(currencySymbol)
+            ? formatDigits(convertFromMicroUnits(summary.refundsTotal), currencySymbol)
+            : null;
+    const label = isNotEmptyString(formattedRefundedAmount) ? t`Refunded ${formattedRefundedAmount}` : t`Refunded`;
 
     const body = (
         <View className={baseClassName} style={continuousBorder}>
@@ -30,17 +49,21 @@ export const RefundedPill = ({ kind, formattedRefundedAmount, onPress, testID }:
 
     if (!isDefined(onPress)) {
         return (
-            <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)} testID={testID}>
-                {body}
-            </Animated.View>
+            <View className="flex-row">
+                <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)} testID={testID}>
+                    {body}
+                </Animated.View>
+            </View>
         );
     }
 
     return (
-        <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)}>
-            <HapticPressable onPress={onPress} testID={testID}>
-                {body}
-            </HapticPressable>
-        </Animated.View>
+        <View className="flex-row">
+            <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)}>
+                <HapticPressable onPress={onPress} testID={testID}>
+                    {body}
+                </HapticPressable>
+            </Animated.View>
+        </View>
     );
 };

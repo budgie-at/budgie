@@ -18,8 +18,7 @@ import type { ConsolidationSourceModalContentPropsInterface } from '../../interf
 export const ConsolidationSourceModalContent = ({ transactionId, onClose }: ConsolidationSourceModalContentPropsInterface) => {
     const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
 
-    const headerTitle =
-        consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Source transactions`;
+    const headerTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Source transactions`;
 
     const hasSources = isNotEmptyArray(sources);
     const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
