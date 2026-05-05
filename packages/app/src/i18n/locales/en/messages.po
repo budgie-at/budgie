@@ -539,7 +539,7 @@ msgstr "Could not fetch accounts"
 msgid "Could not import CSV file"
 msgstr "Could not import CSV file"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:33
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:32
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
 
@@ -759,7 +759,7 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:71
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "Done"
 msgstr "Done"
 
@@ -799,7 +799,7 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:93
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
@@ -1361,7 +1361,7 @@ msgstr "No recurring payments detected"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:46
 msgid "No source transactions"
 msgstr "No source transactions"
 
@@ -1610,15 +1610,15 @@ msgstr "Recurring"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
 msgid "Refunded"
 msgstr "Refunded"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx:20
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Refunded {formattedRefundedAmount}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
 msgid "Refunds"
 msgstr "Refunds"
 
@@ -1878,7 +1878,7 @@ msgstr "Something went wrong"
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:22
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
 msgid "Source transactions"
 msgstr "Source transactions"
 
@@ -2017,7 +2017,7 @@ msgstr "This action cannot be undone."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "This category has transactions. Select another category to reassign them to."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:48
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "This consolidated transfer has no moved source entries."
 msgstr "This consolidated transfer has no moved source entries."
 

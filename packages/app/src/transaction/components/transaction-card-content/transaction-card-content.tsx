@@ -1,15 +1,11 @@
 import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
-import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -27,19 +23,10 @@ interface Props {
 export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel }: Props) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
-
-    const refundSummary = computeRefundedSummary(transaction);
-    const refundCurrencySymbol = transaction.entries[0]?.account.instrument.symbol;
-    const refundedAmountProp =
-        isDefined(refundSummary) && refundSummary.kind === 'partial' && isNotEmptyString(refundCurrencySymbol)
-            ? { formattedRefundedAmount: formatDigits(convertFromMicroUnits(refundSummary.refundsTotal), refundCurrencySymbol) }
-            : {};
 
     const handleRefundPillPress = () => {
         void openConsolidationSourceModal({ transactionId: transaction.id });
@@ -63,15 +50,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                         </Text>
                     ) : null}
 
-                    {isDefined(refundSummary) ? (
-                        <View className="flex-row">
-                            <RefundedPill
-                                kind={refundSummary.kind}
-                                {...refundedAmountProp}
-                                onPress={handleRefundPillPress}
-                            />
-                        </View>
-                    ) : null}
+                    <RefundedPill transaction={transaction} onPress={handleRefundPillPress} />
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
                         <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />

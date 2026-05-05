@@ -1,22 +1,14 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 
+import { RefundedSummaryKindEnum } from '../enum/refunded-summary-kind.enum';
+
 import type { RefundedSummaryInterface } from '../interface/refunded-summary.interface';
-import type { TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntryEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-interface RefundedSummaryEntryInput {
-    readonly type: TransactionEntryTypeEnum;
-    readonly amount: number;
-}
-
-interface RefundedSummaryTransactionInput {
-    readonly consolidationType: TransactionEntityInterface['consolidationType'];
-    readonly entries: readonly RefundedSummaryEntryInput[];
-}
-
-const sumEntries = (entries: readonly RefundedSummaryEntryInput[], type: TransactionEntryTypeEnum): number =>
+const sumEntries = (entries: readonly Pick<TransactionEntryEntityInterface, 'type' | 'amount'>[], type: TransactionEntryTypeEnum): number =>
     entries.filter(entry => entry.type === type).reduce((total, entry) => total + entry.amount, 0);
 
-export const computeRefundedSummary = (transaction: RefundedSummaryTransactionInput): RefundedSummaryInterface | null => {
+export const computeRefundedSummary = (transaction: TransactionWithRelationsEntityInterface): RefundedSummaryInterface | null => {
     if (transaction.consolidationType !== TransactionConsolidationTypeEnum.REFUND) {
         return null;
     }
@@ -25,7 +17,7 @@ export const computeRefundedSummary = (transaction: RefundedSummaryTransactionIn
     const debits = sumEntries(transaction.entries, TransactionEntryTypeEnum.DEBIT);
 
     return {
-        kind: credits === debits ? 'full' : 'partial',
+        kind: credits === debits ? RefundedSummaryKindEnum.FULL : RefundedSummaryKindEnum.PARTIAL,
         refundsTotal: debits
     };
 };
