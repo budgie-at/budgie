@@ -16,6 +16,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { UseRuleFormOptionsInterface } from '../interface/use-rule-form-options.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
+import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 
@@ -84,7 +85,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return false;
         }
 
-        const count = await ruleEngineService.countMatchingTransactions({
+        const count = await ruleMatcherService.countMatchingTransactions({
             conditions: values.conditions,
             conditionMatchType: values.conditionMatchType
         });
