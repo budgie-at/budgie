@@ -162,32 +162,23 @@ class TransactionService {
                 tx
             );
 
+            const primaryEntries = [
+                { entry: fromEntry, type: TransactionEntryTypeEnum.CREDIT, amount: fromAmountInMicroUnits },
+                { entry: toEntry, type: TransactionEntryTypeEnum.DEBIT, amount: toAmount }
+            ].map(({ entry, type, amount }) => ({
+                transactionId: transaction.id,
+                accountId: entry.accountId,
+                categoryId: entry.categoryId,
+                mccCategoryId: entry.mccCategoryId,
+                type,
+                amount,
+                externalId: entry.externalId ?? null,
+                exchangeRate: entry.exchangeRate ?? 1,
+                toIban: entry.toIban ?? null
+            }));
+
             await transactionEntryRepository.bulkCreate(
-                [
-                    {
-                        transactionId: transaction.id,
-                        accountId: fromEntry.accountId,
-                        categoryId: fromEntry.categoryId,
-                        mccCategoryId: fromEntry.mccCategoryId,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: fromAmountInMicroUnits,
-                        externalId: fromEntry.externalId ?? null,
-                        exchangeRate: fromEntry.exchangeRate ?? 1,
-                        toIban: fromEntry.toIban ?? null
-                    },
-                    {
-                        transactionId: transaction.id,
-                        accountId: toEntry.accountId,
-                        categoryId: toEntry.categoryId,
-                        mccCategoryId: toEntry.mccCategoryId,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: toAmount,
-                        externalId: toEntry.externalId ?? null,
-                        exchangeRate: toEntry.exchangeRate ?? 1,
-                        toIban: toEntry.toIban ?? null
-                    },
-                    ...buildAdditionalTransferEntries(input.entries, fromEntry, toEntry, transaction.id)
-                ],
+                [...primaryEntries, ...buildAdditionalTransferEntries(input.entries, fromEntry, toEntry, transaction.id)],
                 tx
             );
 
