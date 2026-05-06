@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
-import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
@@ -157,21 +156,22 @@ export const SwipeableRuleCard = (props: Props) => {
         );
     }
 
+    const isCreating = status === 'creating';
+
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View testID={cardTestID} className={cardVariants({ layout })}>
-                    <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
-                    <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
-                    {status === 'creating' ? (
-                        <ActivityIndicator size="small" />
-                    ) : (
-                        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} className="px-md py-xs bg-primary rounded-lg">
-                            <Text className="text-xs text-primary-reverse font-semibold">
-                                <Trans>Yes</Trans>
-                            </Text>
-                        </HapticPressable>
-                    )}
+                <View testID={cardTestID}>
+                    <HapticPressable
+                        testID={buttonTestID}
+                        onPress={handleYesButtonPress}
+                        disabled={isCreating}
+                        className={cardVariants({ layout })}
+                    >
+                        <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
+                        <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
+                        {isCreating ? <ActivityIndicator size="small" /> : null}
+                    </HapticPressable>
                 </View>
             </Animated.View>
         </GestureDetector>
