@@ -1,4 +1,5 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Alert } from 'react-native';
@@ -16,6 +17,8 @@ import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeabl
 
 import { RuleSuggestionCardSelector } from './rule-suggestion-card.selector';
 
+const logger = getLogger('RuleSuggestionCard');
+
 interface Props {
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly onRuleCreated: () => void;
@@ -23,8 +26,15 @@ interface Props {
 }
 
 const createRule = async (ruleInput: RuleCreateInputInterface): Promise<SwipeableRuleCardResultInterface> => {
+    logger.log('createRule:enter', {
+        conditionsCount: ruleInput.conditions.length,
+        actionsCount: ruleInput.actions.length,
+        conditionMatchType: ruleInput.conditionMatchType
+    });
     const rule = await ruleService.create(ruleInput);
+    logger.log('createRule:created', { ruleId: rule.id });
     const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+    logger.log('createRule:applied', { ruleId: rule.id, applied: result.applied, failed: result.failed, total: result.total });
 
     return { applied: result.applied };
 };
@@ -34,29 +44,54 @@ export const RuleSuggestionCard = (props: Props) => {
     const { openRuleForm } = useRuleFormModal();
 
     const handleYes = async (): Promise<SwipeableRuleCardResultInterface> => {
+        logger.log('handleYes:enter', {
+            title: suggestRuleData.title,
+            mccCode: suggestRuleData.mccCode,
+            categoryId: suggestRuleData.categoryId,
+            tagIds: suggestRuleData.tagIds.join(',')
+        });
         const ruleInput = buildRuleCreateInput(suggestRuleData);
+        logger.log('handleYes:buildRuleCreateInput', { hasInput: isDefined(ruleInput) });
 
         if (!isDefined(ruleInput)) {
+            logger.error('handleYes:throw:invalid-input');
             // eslint-disable-next-line lingui/no-unlocalized-strings
             throw new Error('Invalid rule input');
         }
 
         const existingRules = await ruleRepository.findAllWithActionsAndCategories();
         const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
+        logger.log('handleYes:duplicate-check', {
+            existingRulesCount: existingRules.length,
+            duplicateRuleId: duplicateRule?.id ?? null
+        });
 
         if (isDefined(duplicateRule)) {
+            logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
+
             return await new Promise<SwipeableRuleCardResultInterface>((resolve, reject) => {
                 const handleEditExisting = () => {
+                    logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
                     void openRuleForm({ ruleId: duplicateRule.id });
                     // eslint-disable-next-line lingui/no-unlocalized-strings
                     reject(new Error('Edit'));
                 };
 
-                Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
+                const handleCancel = () => {
+                    logger.log('handleYes:duplicate-alert:cancel');
                     // eslint-disable-next-line lingui/no-unlocalized-strings
-                    { text: t`Cancel`, style: 'cancel', onPress: () => void reject(new Error('Cancelled')) },
+                    reject(new Error('Cancelled'));
+                };
+
+                const handleCreateAnyway = () => {
+                    logger.log('handleYes:duplicate-alert:create-anyway');
+                    void createRule(ruleInput).then(resolve, reject);
+                };
+
+                Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
+                    { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
                     { text: t`Edit existing`, onPress: handleEditExisting },
-                    { text: t`Create anyway`, onPress: () => void createRule(ruleInput).then(resolve, reject) }
+                    { text: t`Create anyway`, onPress: handleCreateAnyway }
                 ]);
             });
         }

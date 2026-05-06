@@ -5,7 +5,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 
 import { db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
 
-import type { RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInputInterface } from '@budgie/contracts';
+import type { DB, RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInputInterface } from '@budgie/contracts';
 
 class RuleService {
     @Log(
@@ -65,37 +65,58 @@ class RuleService {
     )
     async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {
         return transactionAsync(db, async tx => {
-            const updatedRule = await ruleRepository.updateById(
-                id,
-                {
-                    enabled: input.enabled,
-                    conditionMatchType: input.conditionMatchType
-                },
-                tx
-            );
+            const updatedRule = await this.updateRuleFields(id, input, tx);
 
-            if (isDefined(input.conditions)) {
-                await ruleConditionRepository.deleteByRuleId(id, tx);
-                if (isNotEmptyArray(input.conditions)) {
-                    await ruleConditionRepository.bulkCreate(
-                        input.conditions.map(condition => ({ ...condition, ruleId: id })),
-                        tx
-                    );
-                }
-            }
-
-            if (isDefined(input.actions)) {
-                await ruleActionRepository.deleteByRuleId(id, tx);
-                if (isNotEmptyArray(input.actions)) {
-                    await ruleActionRepository.bulkCreate(
-                        input.actions.map(action => ({ ...action, ruleId: id })),
-                        tx
-                    );
-                }
-            }
+            await this.syncRuleConditions(id, input.conditions, tx);
+            await this.syncRuleActions(id, input.actions, tx);
 
             return updatedRule;
         });
+    }
+
+    private async updateRuleFields(id: number, input: RuleUpdateInputInterface, tx: DB): Promise<RuleEntityInterface> {
+        const ruleFieldUpdate = {
+            ...(isDefined(input.enabled) && { enabled: input.enabled }),
+            ...(isDefined(input.conditionMatchType) && { conditionMatchType: input.conditionMatchType })
+        };
+
+        if (isNotEmptyArray(Object.keys(ruleFieldUpdate))) {
+            return ruleRepository.updateById(id, ruleFieldUpdate, tx);
+        }
+
+        const existingRule = await ruleRepository.findByIdWithRelations(id);
+        if (!isDefined(existingRule)) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings
+            throw new Error(`Rule ${id} not found`);
+        }
+
+        return existingRule;
+    }
+
+    private async syncRuleConditions(id: number, conditions: RuleUpdateInputInterface['conditions'], tx: DB): Promise<void> {
+        if (!isDefined(conditions)) {
+            return;
+        }
+        await ruleConditionRepository.deleteByRuleId(id, tx);
+        if (isNotEmptyArray(conditions)) {
+            await ruleConditionRepository.bulkCreate(
+                conditions.map(condition => ({ ...condition, ruleId: id })),
+                tx
+            );
+        }
+    }
+
+    private async syncRuleActions(id: number, actions: RuleUpdateInputInterface['actions'], tx: DB): Promise<void> {
+        if (!isDefined(actions)) {
+            return;
+        }
+        await ruleActionRepository.deleteByRuleId(id, tx);
+        if (isNotEmptyArray(actions)) {
+            await ruleActionRepository.bulkCreate(
+                actions.map(action => ({ ...action, ruleId: id })),
+                tx
+            );
+        }
     }
 }
 
