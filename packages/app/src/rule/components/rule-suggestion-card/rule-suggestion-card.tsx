@@ -83,9 +83,16 @@ export const RuleSuggestionCard = (props: Props) => {
                     reject(new Error('Cancelled'));
                 };
 
+                const onCreateAnywaySuccess = (result: SwipeableRuleCardResultInterface): SwipeableRuleCardResultInterface => {
+                    onRuleCreated();
+                    resolve(result);
+
+                    return result;
+                };
+
                 const handleCreateAnyway = () => {
                     logger.log('handleYes:duplicate-alert:create-anyway');
-                    void createRule(ruleInput).then(resolve, reject);
+                    void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
                 };
 
                 Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
@@ -96,7 +103,10 @@ export const RuleSuggestionCard = (props: Props) => {
             });
         }
 
-        return await createRule(ruleInput);
+        const result = await createRule(ruleInput);
+        onRuleCreated();
+
+        return result;
     };
 
     const successMessage = (appliedCount: number) => <Trans>Rule created &middot; Applied to {appliedCount} transactions</Trans>;
