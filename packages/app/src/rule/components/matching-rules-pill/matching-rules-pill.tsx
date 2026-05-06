@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
@@ -17,15 +17,13 @@ interface Props {
 
 export const MatchingRulesPill = ({ matchingRulesCount }: Props) => {
     const router = useRouter();
+    const { t } = useLingui();
 
     const handlePress = () => {
         router.push('/settings/rules');
     };
 
-    const label = plural(matchingRulesCount, {
-        one: '# matching rule',
-        other: '# matching rules'
-    });
+    const label = matchingRulesCount === 1 ? t`1 matching rule` : t`${matchingRulesCount} matching rules`;
 
     return (
         <View className="items-start">

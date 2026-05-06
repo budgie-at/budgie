@@ -31,7 +31,7 @@ msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en lo
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} se restaurará en tu vista principal."
 
-#: src/rule/hooks/use-rule-form.hook.ts:78
+#: src/rule/hooks/use-rule-form.hook.ts:79
 msgid "{applied} updated, {failed} failed"
 msgstr "{applied} actualizadas, {failed} fallidas"
 
@@ -39,7 +39,7 @@ msgstr "{applied} actualizadas, {failed} fallidas"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
-#: src/rule/hooks/use-rule-form.hook.ts:98
+#: src/rule/hooks/use-rule-form.hook.ts:99
 msgid "{count} existing transactions match this rule."
 msgstr "{count} transacciones existentes coinciden con esta regla."
 
@@ -55,9 +55,9 @@ msgstr "{formattedRemaining} por asignar"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} por encima del presupuesto"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:25
-msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
-msgstr "{matchingRulesCount, plural, one {# regla coincidente} other {# reglas coincidentes}}"
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+msgid "{matchingRulesCount} matching rules"
+msgstr "{matchingRulesCount} reglas coincidentes"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
@@ -97,11 +97,15 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+msgid "1 matching rule"
+msgstr "1 regla coincidente"
+
 #: src/app/(tabs)/settings/index.tsx:69
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:55
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:91
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
 
@@ -284,11 +288,11 @@ msgid "Appearance"
 msgstr "Apariencia"
 
 #: src/app/note-input.tsx:54
-#: src/rule/hooks/use-rule-form.hook.ts:99
+#: src/rule/hooks/use-rule-form.hook.ts:100
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/rule/hooks/use-rule-form.hook.ts:97
+#: src/rule/hooks/use-rule-form.hook.ts:98
 msgid "Apply to existing transactions?"
 msgstr "¿Aplicar a transacciones existentes?"
 
@@ -402,7 +406,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:57
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:93
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -599,8 +603,8 @@ msgstr "No se pudieron consolidar las transferencias"
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:73
-#: src/rule/hooks/use-rule-form.hook.ts:126
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:109
+#: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Could not create rule"
 msgstr "No se pudo crear la regla"
 
@@ -624,7 +628,7 @@ msgstr "No se pudo eliminar la cuenta."
 msgid "Could not delete category"
 msgstr "No se pudo eliminar la categoría"
 
-#: src/rule/hooks/use-rule-form.hook.ts:143
+#: src/rule/hooks/use-rule-form.hook.ts:144
 msgid "Could not delete rule."
 msgstr "No se pudo eliminar la regla."
 
@@ -716,7 +720,7 @@ msgstr "No se pudo desconsolidar la transacción."
 
 #: src/rule/components/rule-card/rule-card.tsx:31
 #: src/rule/components/rule-update-card/rule-update-card.tsx:68
-#: src/rule/hooks/use-rule-form.hook.ts:126
+#: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Could not update rule"
 msgstr "No se pudo actualizar la regla"
 
@@ -752,7 +756,7 @@ msgstr "Crear y copiar el token personal"
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:59
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:95
 msgid "Create anyway"
 msgstr "Crear de todos modos"
 
@@ -920,7 +924,7 @@ msgstr "Descargando modelos de IA…"
 msgid "Downloading models"
 msgstr "Descargando modelos"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:55
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:91
 msgid "Duplicate rule"
 msgstr "Duplicar regla"
 
@@ -944,7 +948,7 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:58
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:94
 msgid "Edit existing"
 msgstr "Editar existente"
 
@@ -1805,7 +1809,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:71
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:107
 msgid "Quick rule"
 msgstr "Regla rápida"
 
@@ -1915,11 +1919,11 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Regla"
 
-#: src/rule/hooks/use-rule-form.hook.ts:73
+#: src/rule/hooks/use-rule-form.hook.ts:74
 msgid "Rule applied to {applied} transactions"
 msgstr "Regla aplicada a {applied} transacciones"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:67
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:103
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Regla creada · Aplicada a {appliedCount} transacciones"
 
@@ -2218,7 +2222,7 @@ msgstr "Mostrar rango seleccionado"
 msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
-#: src/rule/hooks/use-rule-form.hook.ts:100
+#: src/rule/hooks/use-rule-form.hook.ts:101
 msgid "Skip"
 msgstr "Saltar"
 
@@ -2681,7 +2685,7 @@ msgstr "Wise"
 msgid "XLSX export"
 msgstr "Exportación XLSX"
 
-#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:164
+#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:171
 msgid "Yes"
 msgstr "Sí"
 

@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
@@ -8,9 +9,13 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+
+const logger = getLogger('SwipeableRuleCard');
 
 const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 80 };
 const SWIPE_THRESHOLD = 80;
@@ -108,21 +113,27 @@ export const SwipeableRuleCard = (props: Props) => {
     }));
 
     const handleYesPress = async () => {
+        logger.log('handleYesPress:enter');
         setStatus('creating');
 
         try {
             const result = await onYes();
+            logger.log('handleYesPress:onYes:done', { applied: result.applied });
             setAppliedCount(result.applied);
             setStatus('success');
             hapticNotification(NotificationFeedbackType.Success);
             setTimeout(onComplete, SUCCESS_AUTO_DISMISS_MS);
-        } catch {
+        } catch (error) {
+            logger.error('handleYesPress:onYes:throw', { errorMessage: getErrorMessage(error) });
             setStatus('error');
             setTimeout(onDismiss, ERROR_AUTO_DISMISS_MS);
         }
     };
 
-    const handleYesButtonPress = () => void handleYesPress();
+    const handleYesButtonPress = () => {
+        logger.log('handleYesButtonPress:fired');
+        void handleYesPress();
+    };
 
     if (status === 'success') {
         return (

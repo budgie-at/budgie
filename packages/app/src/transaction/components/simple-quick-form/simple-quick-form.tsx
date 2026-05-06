@@ -19,9 +19,7 @@ import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
-import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
-import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
+import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
@@ -229,36 +227,30 @@ export const SimpleQuickForm = (props: Props) => {
                     variant={variant}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
-                <View className="absolute bottom-0 left-0 right-0 gap-md">
-                    <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                    <SuggestionsContainer
-                        isNewTransaction={isNewTransaction}
-                        isSplitActive={isSplitActive}
-                        transactionType={transactionType}
-                        transactionTitle={transactionTitle}
-                        categoryId={categoryId}
-                        mccCategoryId={mccCategoryId}
-                        comment={comment}
-                        aiContext={aiContext}
-                        accountId={accountId}
-                        amount={amount}
-                        hasTagsSelected={hasTagsSelected}
-                        onSelectCategory={handleSelectCategory}
-                        onSelectTag={handleSelectTag}
-                        onSelectComment={handleSelectComment}
-                        onFillPatternAmount={handleFillPatternAmount}
-                    />
-                </View>
+                <QuickFormBottomOverlay
+                    transactionTitle={transactionTitle}
+                    mccCategoryId={mccCategoryId}
+                    isNewTransaction={isNewTransaction}
+                    isSplitActive={isSplitActive}
+                    transactionType={transactionType}
+                    categoryId={categoryId}
+                    comment={comment}
+                    aiContext={aiContext}
+                    accountId={accountId}
+                    amount={amount}
+                    hasTagsSelected={hasTagsSelected}
+                    onSelectCategory={handleSelectCategory}
+                    onSelectTag={handleSelectTag}
+                    onSelectComment={handleSelectComment}
+                    onFillPatternAmount={handleFillPatternAmount}
+                    ruleDetectionMode={ruleDetectionMode}
+                    suggestRuleData={suggestRuleData}
+                    updateRuleData={updateRuleData}
+                    matchingRulesCount={matchingRulesCount}
+                    onRuleCreated={onRuleCreated}
+                    onDismiss={onDismiss}
+                />
             </View>
-
-            <RulePillSlot
-                ruleDetectionMode={ruleDetectionMode}
-                suggestRuleData={suggestRuleData}
-                updateRuleData={updateRuleData}
-                matchingRulesCount={matchingRulesCount}
-                onRuleCreated={onRuleCreated}
-                onDismiss={onDismiss}
-            />
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}
