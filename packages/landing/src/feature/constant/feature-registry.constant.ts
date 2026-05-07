@@ -170,6 +170,39 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['ai', 'suggestions', 'expense-tracking']
     },
     {
+        slug: 'ai-tag-suggestions',
+        tier: FeatureTierEnum.POWER,
+        title: msg`Automatic Tag Suggestions — Tap, Don't Type`,
+        tagline: msg`After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy.`,
+        metaTitle: msg`Automatic Expense Tags — On-Device — Budgie`,
+        metaDescription: msg`Budgie's local LLM suggests up to three tags per transaction so heavy taggers stop typing. Embedding fallback keeps it instant offline.`,
+        primaryKeyword: 'automatic expense tags',
+        seoKeywords: ['automatic expense tags', 'AI tag suggestions', 'on-device tag prediction', 'expense tag autocomplete', 'LLM transaction tags'],
+        relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'ai-auto-categorization', 'ai-transaction-suggestions', 'primary-tag'],
+        relatedArticleSlugs: ['budgie-offline-financial-data'],
+        faqs: [
+            {
+                question: msg`How are tags chosen?`,
+                answer: msg`The LLM ranks candidates by similarity to your past tag usage on similar transactions. The top three become tappable pills.`
+            },
+            {
+                question: msg`What if the LLM is slow on my phone?`,
+                answer: msg`The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup over your history.`
+            },
+            {
+                question: msg`Can I add new tags from the suggestion strip?`,
+                answer: msg`Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive.`
+            },
+            {
+                question: msg`Does this work offline?`,
+                answer: msg`Yes. Both engines run on-device.`
+            }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['ai', 'tags', 'suggestions']
+    },
+    {
         slug: 'voice-transaction-entry',
         tier: FeatureTierEnum.HERO,
         title: msg`Voice Transaction Entry`,
