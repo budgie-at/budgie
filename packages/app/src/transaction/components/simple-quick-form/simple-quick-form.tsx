@@ -4,7 +4,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { useRef } from 'react';
+import { ReactNode, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -44,6 +44,7 @@ interface Props {
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
     readonly isNewTransaction?: boolean;
+    readonly amountTopContent?: ReactNode;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -65,6 +66,7 @@ export const SimpleQuickForm = (props: Props) => {
         mccCategoryId,
         aiContext = '',
         isNewTransaction = false,
+        amountTopContent,
         buildEntries,
         onSubmit,
         onCancel
@@ -220,6 +222,7 @@ export const SimpleQuickForm = (props: Props) => {
                     amount={displayValue}
                     currencySymbol={currencySymbol}
                     variant={variant}
+                    topContent={amountTopContent}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">

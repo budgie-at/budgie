@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
@@ -6,6 +6,7 @@ import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { ConsolidationSourceRow } from '../consolidation-source-row/consolidation-source-row';
@@ -15,13 +16,17 @@ import { ConsolidationSourceModalSelector } from './consolidation-source-modal-c
 import type { ConsolidationSourceModalContentPropsInterface } from '../../interface/consolidation-source-modal-content-props.interface';
 
 export const ConsolidationSourceModalContent = ({ transactionId, onClose }: ConsolidationSourceModalContentPropsInterface) => {
-    const { sources, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
+    const { sources, consolidationType, hasError, isLoading } = useGetConsolidationSourcesQuery(transactionId);
+
+    const headerTitle = consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Refunds` : t`Source transactions`;
 
     const hasSources = isNotEmptyArray(sources);
     const showEmptyState = isEmptyArray(sources) && !isLoading && !hasError;
 
     return (
         <View className="flex-1">
+            <FormsheetHeader size="md" title={headerTitle} />
+
             {hasError ? (
                 <Text className="px-xl pb-md pt-xl text-sm text-destructive-foreground">
                     {t`Could not load sources. Please try again.`}

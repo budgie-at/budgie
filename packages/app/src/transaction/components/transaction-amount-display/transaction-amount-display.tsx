@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
-import { RefObject, useEffect, useImperativeHandle, useRef } from 'react';
-import { Pressable, Text } from 'react-native';
+import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
@@ -22,6 +22,7 @@ interface Props {
     readonly label?: string | null;
     readonly isLabelFlipped?: boolean;
     readonly secondaryAmount?: string | null;
+    readonly topContent?: ReactNode;
     readonly onLabelPress?: () => void;
     readonly onSecondaryAmountPress?: () => void;
     readonly testID?: string;
@@ -52,6 +53,7 @@ export const TransactionAmountDisplay = ({
     isLabelFlipped = false,
     onLabelPress,
     secondaryAmount,
+    topContent,
     onSecondaryAmountPress,
     testID
 }: Props) => {
@@ -82,6 +84,7 @@ export const TransactionAmountDisplay = ({
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
+            {isDefined(topContent) ? <View className="mb-sm items-center">{topContent}</View> : null}
             <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                 <Animated.View style={shakeStyle} className="w-full">
                     <Animated.View style={scaleStyle}>

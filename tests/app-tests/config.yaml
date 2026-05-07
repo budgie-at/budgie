@@ -25,6 +25,7 @@ executionOrder:
         - 19.csv-import-export.flow
         - 20.recurring-calendar.flow
         - 21.transfer-consolidation.flow
+        - 22.refund-consolidation.flow
 
 platform:
     ios:

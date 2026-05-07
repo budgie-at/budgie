@@ -537,7 +537,7 @@ msgstr "Не вдалося отримати рахунки"
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:32
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
@@ -757,7 +757,7 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "Done"
 msgstr "Готово"
 
@@ -797,7 +797,7 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:68
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
@@ -1359,7 +1359,7 @@ msgstr "Повторювані платежі не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:41
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:46
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
@@ -1607,6 +1607,18 @@ msgstr "Регулярні"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
+
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
+msgid "Refunded"
+msgstr "Повернено"
+
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:39
+msgid "Refunded {formattedRefundedAmount}"
+msgstr "Повернено {formattedRefundedAmount}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+msgid "Refunds"
+msgstr "Повернення"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -1864,6 +1876,10 @@ msgstr "Щось пішло не так"
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+msgid "Source transactions"
+msgstr "Вихідні транзакції"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:143
 msgid "Sources"
 msgstr "Джерела"
@@ -1999,7 +2015,7 @@ msgstr "Цю дію неможливо скасувати."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Ця категорія має транзакції. Виберіть іншу категорію для їх перепризначення."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:42
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
