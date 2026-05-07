@@ -77,31 +77,31 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>AI Merchant Name Translation</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Cyrillic, Greek, Arabic merchant strings in your bank statements? The on-device LLM transliterates and translates
-                        them into searchable English keywords.
+                        Foreign merchant names from Cyrillic, Greek, or Arabic bank statements get normalized to readable Latin — on your
+                        device, without sending anything to a server.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why travel statements break expense search</Trans>
+                    <Trans>Why foreign merchant names break expense search</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Travel statements come back full of &quot;АТБ&quot; or &quot;Καρρέ&quot; — useless for analytics search.
-                        Budgie&apos;s translation pipeline runs the merchant string through the on-device LLM, gets a normalized name plus
-                        search keywords, and stores both.
+                        Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless
+                        for search or analytics. Budgie&apos;s on-device normalizer runs each merchant string through the LLM, gets a clean
+                        Latin name plus search keywords, and stores both.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Original strings stay intact for receipt-matching; the translated form is what your search queries hit. Multi-script
-                        — Cyrillic, Greek, Arabic, CJK — all supported.
+                        Original Cyrillic or Greek strings are preserved for receipt-matching and audit; the normalized form is what your
+                        search queries hit. No data ever leaves your device.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

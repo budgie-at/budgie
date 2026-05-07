@@ -74,10 +74,12 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`Discover the hidden privacy risks of cloud-based budgeting apps and learn why offline-first architecture is the safer alternative for your financial data.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(
                     i18n

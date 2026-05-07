@@ -72,10 +72,12 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`After Mint's shutdown, developers need a finance app that respects data ownership and privacy. Compare Budgie, Actual Budget, Firefly III, and more.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(i18n)`Mint alternatives, Mint shutdown, budget app for developers, privacy finance app, offline budget app`}
                 locale={lang}
