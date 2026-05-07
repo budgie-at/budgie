@@ -25,7 +25,7 @@ export const TrustBanner = () => (
                 <Link
                     className="flex items-center gap-2 hover:text-foreground transition-colors"
                     href="https://github.com/rnw-community/budgie"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer" // eslint-disable-line lingui/no-unlocalized-strings
                     target="_blank"
                 >
                     <Github className="size-4" />
