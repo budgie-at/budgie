@@ -1076,9 +1076,9 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         slug: 'tag-analytics',
         tier: FeatureTierEnum.POWER,
         title: msg`Tag-Based Spending Analytics`,
-        tagline: msg`#vacation, #shared, #reimbursable — quantified, with an "Untagged" bucket for completeness.`,
+        tagline: msg`A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling.`,
         metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
-        metaDescription: msg`Slice spending and income by tag. Per-tag totals plus an "Untagged" bucket for the gaps. Drill from a tag into its transactions.`,
+        metaDescription: msg`See income, expense, and net per tag in a dedicated analytics tab. The Untagged bucket finds every transaction missing a label so nothing falls through.`,
         primaryKeyword: 'spending by tag analytics',
         seoKeywords: [
             'spending by tag analytics',
@@ -1108,7 +1108,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2026-01-04',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['tags', 'analytics', 'drill-down']
     },
     {
