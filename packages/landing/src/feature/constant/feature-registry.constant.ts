@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- File owns a single feature registry that must stay together */
 import { msg } from '@lingui/core/macro';
 
+import { FeatureCategoryEnum } from './feature-category.enum';
 import { FeatureTierEnum } from './feature-tier.enum';
 
 import type { FeatureRegistryEntryInterface } from '../interface/feature-registry-entry.interface';
@@ -1533,6 +1534,191 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         publishedAt: '2026-04-24',
         updatedAt: '2026-05-03',
         ogTags: ['tags', 'ui', 'scanning']
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        tier: FeatureTierEnum.HERO,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`Private Budget App — A Cloud-Free Alternative`,
+        tagline: msg`Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure.`,
+        metaTitle: msg`Private Budget App — Cloud-Free Alternative — Budgie`,
+        metaDescription: msg`Tired of cloud-based PFM apps holding your transactions? Budgie is offline-first, no account, no aggregator. Your financial data stays on your phone.`,
+        primaryKeyword: 'private alternative cloud budget app',
+        seoKeywords: ['private budget app', 'cloud budget app alternative', 'no cloud expense tracker', 'private personal finance app', 'no aggregator budget app'],
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'database-backup', 'pin-app-lock'],
+        relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'budgie-offline-financial-data'],
+        comparisonCategoryLabel: msg`Cloud-based PFM apps`,
+        comparisonRows: [
+            { label: msg`Where transactions live`, budgieValue: msg`Encrypted on your device`, competitorValue: msg`Vendor's cloud + aggregator` },
+            { label: msg`Account required`, budgieValue: msg`No`, competitorValue: msg`Yes — email + password` },
+            { label: msg`Bank login`, budgieValue: msg`Optional, direct API tokens`, competitorValue: msg`Required, via aggregator` },
+            { label: msg`Subscription`, budgieValue: msg`Free for core, optional one-time unlock`, competitorValue: msg`Monthly recurring` },
+            { label: msg`AI runs`, budgieValue: msg`On your phone`, competitorValue: msg`In the vendor cloud` },
+            { label: msg`Open source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
+        ],
+        faqs: [
+            { question: msg`How is Budgie different from cloud-based PFM apps?`, answer: msg`Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your data stays on your device, encrypted.` },
+            { question: msg`How does bank sync work without an aggregator?`, answer: msg`Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No third-party touches your data.` },
+            { question: msg`What about multi-device sync?`, answer: msg`You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys.` },
+            { question: msg`Is the privacy claim verifiable?`, answer: msg`Yes — Budgie is open source. Read the network code yourself: github.com/budgie-at/budgie.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['privacy', 'comparison', 'alternative']
+    },
+    {
+        slug: 'subscription-free-budget-app',
+        tier: FeatureTierEnum.HERO,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`Subscription-Free Budget App — Pay Once or Free`,
+        tagline: msg`Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.`,
+        metaTitle: msg`Budget App No Subscription — Free Core, One-Time Pro — Budgie`,
+        metaDescription: msg`Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private.`,
+        primaryKeyword: 'budget app no subscription',
+        seoKeywords: ['budget app no subscription', 'one-time purchase budget app', 'no monthly fee expense tracker', 'pay once finance app', 'no subscription personal finance'],
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'spending-analytics', 'open-source-budget-app-mobile'],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+        comparisonCategoryLabel: msg`Subscription budget apps`,
+        comparisonRows: [
+            { label: msg`Pricing`, budgieValue: msg`Free core, optional one-time unlock`, competitorValue: msg`Monthly recurring` },
+            { label: msg`What you keep when you stop paying`, budgieValue: msg`Everything — full access`, competitorValue: msg`Read-only or nothing` },
+            { label: msg`Annual cost over 5 years`, budgieValue: msg`< $30 one-time`, competitorValue: msg`$300+ recurring` },
+            { label: msg`Bank sync`, budgieValue: msg`Direct API or PDF/CSV`, competitorValue: msg`Aggregator (often paid tier)` },
+            { label: msg`Offline use`, budgieValue: msg`Full`, competitorValue: msg`Limited or none` },
+            { label: msg`Open source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
+        ],
+        faqs: [
+            { question: msg`What's free vs. paid in Budgie?`, answer: msg`Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.` },
+            { question: msg`What happens if I stop paying?`, answer: msg`Nothing — there's nothing to stop. The unlock is one-time, not a subscription.` },
+            { question: msg`Is "subscription-free" really durable?`, answer: msg`The app is open source. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers.` },
+            { question: msg`Why do other apps charge monthly?`, answer: msg`Most run cloud infrastructure to mirror your transactions. We don't run servers — your data lives on your phone — so we don't need recurring revenue to keep the lights on.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['pricing', 'comparison', 'subscription-free']
+    },
+    {
+        slug: 'no-bank-login-budget-app',
+        tier: FeatureTierEnum.CORE,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`Budget App Without Bank Login — Direct API or Statement Import`,
+        tagline: msg`Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.`,
+        metaTitle: msg`Budget App Without Bank Login — No Aggregator — Budgie`,
+        metaDescription: msg`Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you.`,
+        primaryKeyword: 'budget app without bank login',
+        seoKeywords: ['budget app without bank login', 'no aggregator expense tracker', 'budget app without credentials', 'self-import bank statement app', 'direct bank api budget app'],
+        relatedFeatureSlugs: ['monobank-sync', 'csv-import', 'erste-bank-pdf-import', 'privatbank-import', 'private-budget-app-alternative'],
+        relatedArticleSlugs: ['cloud-budgeting-privacy-risks'],
+        comparisonCategoryLabel: msg`Aggregator-based PFM apps`,
+        comparisonRows: [
+            { label: msg`Bank credentials`, budgieValue: msg`Never shared`, competitorValue: msg`Held by aggregator` },
+            { label: msg`Sync method`, budgieValue: msg`Direct API tokens or PDF/CSV`, competitorValue: msg`OAuth via aggregator` },
+            { label: msg`Aggregator middleman`, budgieValue: msg`None`, competitorValue: msg`Third-party aggregator service` },
+            { label: msg`Bank breach impact`, budgieValue: msg`Bank-level only`, competitorValue: msg`Bank + aggregator + app` },
+            { label: msg`Works with offline-only banks`, budgieValue: msg`Yes (statement import)`, competitorValue: msg`Often no` },
+            { label: msg`Sync interval`, budgieValue: msg`Manual or scheduled`, competitorValue: msg`Aggregator's clock` }
+        ],
+        faqs: [
+            { question: msg`How does Budgie sync without an aggregator?`, answer: msg`Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else.` },
+            { question: msg`What about third-party aggregators?`, answer: msg`Aggregators sit between you and your bank, mirroring transactions to their servers. Budgie deliberately does not use them.` },
+            { question: msg`Is direct API more secure than OAuth?`, answer: msg`Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream.` },
+            { question: msg`Which banks have direct API support?`, answer: msg`Monobank today; we add direct integrations as banks publish stable APIs. For everything else, statement import (PDF, CSV, Excel) covers the gap.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['privacy', 'aggregator', 'bank-sync']
+    },
+    {
+        slug: 'open-source-budget-app-mobile',
+        tier: FeatureTierEnum.CORE,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`Open Source Budget App for Mobile — Audit, Fork, Trust`,
+        tagline: msg`Closed-source finance apps ask you to trust marketing. Budgie's mobile app is open source, so the privacy and security claims are auditable line by line.`,
+        metaTitle: msg`Open Source Mobile Budget App — Auditable Privacy — Budgie`,
+        metaDescription: msg`Budgie is an open-source mobile budget app. Read the network code, verify the offline-first claims, fork it if we ever go in the wrong direction.`,
+        primaryKeyword: 'open source mobile budget app',
+        seoKeywords: ['open source mobile budget app', 'auditable budget app', 'open source iOS budget app', 'open source Android budget app', 'GitHub budget app'],
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'private-budget-app-alternative', 'self-hosted-finance-app-mobile'],
+        relatedArticleSlugs: ['open-source-budgeting-transparency'],
+        comparisonCategoryLabel: msg`Closed-source budget apps`,
+        comparisonRows: [
+            { label: msg`Source code`, budgieValue: msg`Public on GitHub`, competitorValue: msg`Closed` },
+            { label: msg`Privacy claims`, budgieValue: msg`Verifiable in source`, competitorValue: msg`Marketing copy only` },
+            { label: msg`Forkable`, budgieValue: msg`Yes`, competitorValue: msg`No` },
+            { label: msg`Community PRs accepted`, budgieValue: msg`Yes`, competitorValue: msg`No` },
+            { label: msg`Vendor risk`, budgieValue: msg`Low — fork survives`, competitorValue: msg`High — shutdown = data loss risk` }
+        ],
+        faqs: [
+            { question: msg`Where can I read the source?`, answer: msg`github.com/budgie-at/budgie. The mobile app, contracts, AI services, and bank-sync integrations all live there.` },
+            { question: msg`What license?`, answer: msg`A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable.` },
+            { question: msg`Can I self-build?`, answer: msg`Yes. The repository ships with build instructions for iOS and Android.` },
+            { question: msg`What if Budgie shuts down?`, answer: msg`The code stays public. The community can keep building. Your data stays on your device regardless.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['open-source', 'transparency', 'github']
+    },
+    {
+        slug: 'self-hosted-finance-app-mobile',
+        tier: FeatureTierEnum.POWER,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`Self-Hosted Finance App on Mobile — Without Running a Server`,
+        tagline: msg`Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with zero ops — your phone is the server.`,
+        metaTitle: msg`Self-Hosted Budget App Mobile — No Server Needed — Budgie`,
+        metaDescription: msg`Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership.`,
+        primaryKeyword: 'self-hosted budget mobile app',
+        seoKeywords: ['self-hosted budget mobile app', 'self-hosted finance no server', 'no server budget app', 'on-device personal finance', 'mobile-first self-hosted'],
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'database-backup', 'data-export', 'open-source-budget-app-mobile'],
+        relatedArticleSlugs: ['local-first-movement-developers', 'budgie-offline-financial-data'],
+        comparisonCategoryLabel: msg`Server-based finance apps`,
+        comparisonRows: [
+            { label: msg`Where data lives`, budgieValue: msg`Encrypted on your phone`, competitorValue: msg`Your VPS / Docker host` },
+            { label: msg`Server to maintain`, budgieValue: msg`None`, competitorValue: msg`Yes — updates, certs, backups` },
+            { label: msg`Mobile experience`, budgieValue: msg`Native iOS + Android`, competitorValue: msg`Web wrapper or none` },
+            { label: msg`Backup`, budgieValue: msg`To your own iCloud / Google Drive`, competitorValue: msg`Manual server snapshots` },
+            { label: msg`Multi-device sync`, budgieValue: msg`Backup file copied via your cloud`, competitorValue: msg`Built-in via your server` },
+            { label: msg`Setup time`, budgieValue: msg`Install + open`, competitorValue: msg`Hours of ops` }
+        ],
+        faqs: [
+            { question: msg`Why not just self-host an existing finance app?`, answer: msg`If you enjoy ops work, do that. Most people don't, and a forgotten server with stale TLS is worse than a vendor's cloud. Budgie keeps the data ownership story without the ops cost.` },
+            { question: msg`How do I sync between phone and tablet?`, answer: msg`Copy the encrypted backup file via your own iCloud Drive, Google Drive, or Dropbox. Restore on the second device with one tap.` },
+            { question: msg`What if I want to migrate to a real self-hosted app later?`, answer: msg`Export your data as CSV anytime. Budgie doesn't lock you in.` },
+            { question: msg`Can I keep my data backed up to my own server?`, answer: msg`Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['self-hosted', 'privacy', 'no-server']
+    },
+    {
+        slug: 'on-device-ai-budget-app',
+        tier: FeatureTierEnum.HERO,
+        category: FeatureCategoryEnum.COMPARISON,
+        title: msg`On-Device AI Budget App — Local LLM, No Cloud Inference`,
+        tagline: msg`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.`,
+        metaTitle: msg`On-Device AI Budget App — Private LLM Categorization — Budgie`,
+        metaDescription: msg`Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever.`,
+        primaryKeyword: 'on-device AI budget app',
+        seoKeywords: ['on-device AI budget app', 'private AI finance app', 'local LLM expense tracker', 'on-device AI categorization', 'no cloud AI budget app'],
+        relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'ai-transaction-suggestions', 'ai-tag-suggestions', 'ai-merchant-translation'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        comparisonCategoryLabel: msg`Cloud AI budget assistants`,
+        comparisonRows: [
+            { label: msg`Where AI runs`, budgieValue: msg`On your phone`, competitorValue: msg`Vendor's cloud / remote AI service` },
+            { label: msg`What gets sent`, budgieValue: msg`Nothing`, competitorValue: msg`Every transaction title, often more` },
+            { label: msg`Works offline`, budgieValue: msg`Yes`, competitorValue: msg`No` },
+            { label: msg`AI subscription required`, budgieValue: msg`No`, competitorValue: msg`Often yes` },
+            { label: msg`Privacy from AI provider`, budgieValue: msg`Total — no provider exists`, competitorValue: msg`Bound by their privacy policy` },
+            { label: msg`Suggestion quality`, budgieValue: msg`Improves with your corrections`, competitorValue: msg`Static, plus your data trains their model` }
+        ],
+        faqs: [
+            { question: msg`Which models does Budgie run on-device?`, answer: msg`Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android.` },
+            { question: msg`How big is the download?`, answer: msg`Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.` },
+            { question: msg`How is this different from a cloud AI assistant?`, answer: msg`A cloud assistant ships your transaction titles to a remote model and trusts the provider's privacy policy. Budgie's models live on your device — there's no provider to trust.` },
+            { question: msg`Does on-device AI drain battery?`, answer: msg`Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible.` }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['ai', 'on-device', 'privacy', 'llm']
     }
 ] as const;
 /* eslint-enable lingui/no-unlocalized-strings */
