@@ -4,11 +4,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { RefundedSummaryKindEnum } from '../enum/refunded-summary-kind.enum';
 
-import type { RefundedSummaryInterface } from '../interface/refunded-summary.interface';
-import type { TransactionEntryEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { sumEntryAmounts } from './sum-entry-amounts.util';
 
-const sumEntries = (entries: readonly Pick<TransactionEntryEntityInterface, 'type' | 'amount'>[], type: TransactionEntryTypeEnum): number =>
-    entries.filter(entry => entry.type === type).reduce((total, entry) => total + entry.amount, 0);
+import type { RefundedSummaryInterface } from '../interface/refunded-summary.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const computeRefundedSummary = (
     transaction: TransactionWithRelationsEntityInterface,
@@ -18,8 +17,10 @@ export const computeRefundedSummary = (
         return null;
     }
 
-    const credits = sumEntries(transaction.entries, TransactionEntryTypeEnum.CREDIT);
-    const debits = isDefined(refundsTotal) ? refundsTotal : sumEntries(transaction.entries, TransactionEntryTypeEnum.DEBIT);
+    const credits = sumEntryAmounts(transaction.entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
+    const debits = isDefined(refundsTotal)
+        ? refundsTotal
+        : sumEntryAmounts(transaction.entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
 
     return {
         kind: credits === debits ? RefundedSummaryKindEnum.FULL : RefundedSummaryKindEnum.PARTIAL,
