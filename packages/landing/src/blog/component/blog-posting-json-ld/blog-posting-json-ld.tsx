@@ -14,10 +14,12 @@ interface Props {
     locale: string;
     slug: string;
     keywords: string;
+    homeLabel: string;
+    blogLabel: string;
 }
 
-export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords }: Props) => {
-    const url = `${BASE_URL}/${locale}/blog/${slug}`;
+export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords, homeLabel, blogLabel }: Props) => {
+    const articleUrl = `${BASE_URL}/${locale}/blog/${slug}`;
     const data = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
@@ -32,12 +34,28 @@ export const BlogPostingJsonLd = ({ title, description, date, dateModified, auth
             url: BASE_URL,
             logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg` }
         },
-        url,
-        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+        url: articleUrl,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
         ...(isDefined(image) && { image: `${BASE_URL}${image}` }),
         keywords
     };
 
-    return <JsonLd data={data} />;
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        '@id': `${articleUrl}#breadcrumb`,
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: homeLabel, item: `${BASE_URL}/${locale}` },
+            { '@type': 'ListItem', position: 2, name: blogLabel, item: `${BASE_URL}/${locale}/blog` },
+            { '@type': 'ListItem', position: 3, name: title, item: articleUrl }
+        ]
+    };
+
+    return (
+        <>
+            <JsonLd data={data} />
+            <JsonLd data={breadcrumbSchema} />
+        </>
+    );
 };
 /* eslint-enable lingui/no-unlocalized-strings */

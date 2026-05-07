@@ -72,10 +72,12 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`Discover why open-source budgeting apps provide unmatched transparency and security for your financial data.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(i18n)`open-source budgeting, financial transparency, budget app security, open-source finance`}
                 locale={lang}
