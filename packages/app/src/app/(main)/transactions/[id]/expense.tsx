@@ -28,17 +28,14 @@ import type { UpdateTransactionFormPropsInterface } from '../../../../transactio
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const { markForEmbedding } = useEmbeddingGenerator();
 
-    const transactionInput = convertTransactionToInput(transaction);
-
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
-        transaction: transactionInput,
+        transaction: convertTransactionToInput(transaction),
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
         onAfterSubmit: () => void markForEmbedding({ transactionId })
@@ -48,9 +45,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
-    const sourceAmount = sourceEntry.amount;
     const sourceAccount = sourceEntry.account;
-    const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
 
@@ -61,8 +56,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
             transactionId,
             transactionType: TransactionTypeEnum.EXPENSE,
             excludeAccountId: fromAccountId ?? 0,
-            sourceAmount: convertFromMicroUnits(sourceAmount),
-            sourceInstrumentId,
+            sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+            sourceInstrumentId: sourceAccount.instrumentId,
             sourceCode: sourceAccount.instrument.code
         });
 

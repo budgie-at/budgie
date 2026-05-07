@@ -81,16 +81,24 @@ export class RefundPairRepository {
                     AND inc.normTitle = exp.normTitle
                     AND inc.operatedAt > exp.operatedAt
                     AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+            ),
+            unambiguous_refunds AS (
+                SELECT refundTxId
+                FROM candidate_pairs
+                GROUP BY refundTxId
+                HAVING COUNT(DISTINCT expenseTxId) = 1
             )
             SELECT
-                expenseTxId AS expenseTransactionId,
-                accountId AS accountId,
-                expenseAmount AS expenseEntryAmount,
-                SUM(refundAmount) AS refundsTotal,
-                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
+                candidate_pairs.expenseTxId AS expenseTransactionId,
+                candidate_pairs.accountId AS accountId,
+                candidate_pairs.expenseAmount AS expenseEntryAmount,
+                SUM(candidate_pairs.refundAmount) AS refundsTotal,
+                GROUP_CONCAT(candidate_pairs.refundTxId, ',' ORDER BY candidate_pairs.refundTxId) AS refundIncomeTransactionIds
             FROM candidate_pairs
-            GROUP BY expenseTxId
-            HAVING SUM(refundAmount) <= expenseAmount
+            INNER JOIN unambiguous_refunds
+                ON unambiguous_refunds.refundTxId = candidate_pairs.refundTxId
+            GROUP BY candidate_pairs.expenseTxId
+            HAVING SUM(candidate_pairs.refundAmount) <= candidate_pairs.expenseAmount
         `;
     }
 

@@ -1,8 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario } from '../../harness';
+import {
+    CategoryEntityTable,
+    DEFAULT_TRANSACTION_FILTER,
+    PRECISION,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
+
+import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
+
+import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seed, seedRefundedExpense, testDb } from '../../harness';
+
+import { statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-partial', () => {
     it('moves the partial refund DEBIT entry onto the expense canonical', async () => {
@@ -25,5 +39,48 @@ describe('consolidation/refund-pair-partial', () => {
         expect(debits).toHaveLength(1);
         expect(debits[0].amount).toBe(40 * PRECISION);
         expect(debits[0].originalTransactionId).toBe(refunds[0].id);
+    });
+
+    it('nets partial refunds out of totals and expense category analytics', async () => {
+        const category = testDb.select().from(CategoryEntityTable).all()[0];
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION]
+        });
+
+        testDb
+            .update(TransactionEntryEntityTable)
+            .set({ categoryId: category.id })
+            .where(eq(TransactionEntryEntityTable.transactionId, expense.id))
+            .run();
+
+        await transferConsolidationService.consolidate();
+
+        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
+        expect(totals?.income).toBe(0);
+        expect(totals?.expense).toBe(80 * PRECISION);
+
+        const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const categoryRow = categoryRows.find(row => row.category?.id === category.id);
+        expect(categoryRow?.amount).toBe(80 * PRECISION);
+    });
+
+    it('computes refunded summary from an explicit refund total when moved entries are hidden', async () => {
+        const { expense } = await runRefundScenario({
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION]
+        });
+
+        const promotedExpense = await transactionRepository.getById(expense.id);
+
+        if (!promotedExpense) {
+            throw new Error('Promoted expense not found');
+        }
+
+        const summary = computeRefundedSummary(promotedExpense, 40 * PRECISION);
+
+        expect(summary?.refundsTotal).toBe(40 * PRECISION);
     });
 });
