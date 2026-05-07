@@ -56,7 +56,7 @@ export default async function LandingPage(props: PageLangParam) {
             <UspPillarsSection />
 
             {/* Features & How It Works */}
-            <FeaturesSection />
+            <FeaturesSection locale={lang} />
             <HowItWorksSection />
 
             {/* Security Deep-Dive */}
