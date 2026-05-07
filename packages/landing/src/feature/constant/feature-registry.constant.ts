@@ -326,6 +326,45 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['expense tracking', 'transactions', 'mobile']
     },
     {
+        slug: 'transaction-long-press-menu',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Long-Press Quick Actions on Every Transaction`,
+        tagline: msg`Long-press any transaction card to edit, delete, convert to transfer, or split — no need to open the full edit form for common actions.`,
+        metaTitle: msg`Quick Edit Transaction App — Long-Press Menu — Budgie`,
+        metaDescription: msg`Long-press any transaction in Budgie for a native context menu: edit, delete, convert to transfer, split. Two taps where the rest of the market needs five.`,
+        primaryKeyword: 'quick edit transaction app',
+        seoKeywords: [
+            'quick edit transaction app',
+            'long-press transaction menu',
+            'context menu expense tracker',
+            'transaction quick actions',
+            'gesture-driven budget app'
+        ],
+        relatedFeatureSlugs: ['expense-tracking', 'convert-to-transfer', 'split-transactions', 'transaction-tags', 'ai-transaction-suggestions'],
+        relatedArticleSlugs: ['budgie-offline-financial-data'],
+        faqs: [
+            {
+                question: msg`How do I open the menu?`,
+                answer: msg`Press and hold any transaction card for about 300ms. The native context menu appears anchored to the card.`
+            },
+            {
+                question: msg`What actions are available?`,
+                answer: msg`Edit, Delete, Convert to Transfer, and Split. The exact set depends on the transaction type — transfers don't show "Convert to Transfer", for example.`
+            },
+            {
+                question: msg`Can I customize the menu?`,
+                answer: msg`Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.`
+            },
+            {
+                question: msg`Does this work on iPad?`,
+                answer: msg`Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet.`
+            }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['ux', 'gestures', 'productivity']
+    },
+    {
         slug: 'account-management',
         tier: FeatureTierEnum.CORE,
         title: msg`Multi-Account Money Management`,
