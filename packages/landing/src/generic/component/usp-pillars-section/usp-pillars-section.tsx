@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { Code2, Fingerprint, WifiOff, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
 import { Motion } from '../motion/motion';
@@ -11,7 +12,11 @@ const animatedMotion = { opacity: 1, y: 0 };
 const transitionMotion = { duration: 0.5 };
 const viewportOnce = { once: true };
 
-export const UspPillarsSection = () => (
+interface Props {
+    readonly locale: string;
+}
+
+export const UspPillarsSection = ({ locale }: Props) => (
     <section className="w-full py-20 md:py-28 bg-muted/30">
         <div className="container px-4 md:px-6">
             <Motion
@@ -35,15 +40,17 @@ export const UspPillarsSection = () => (
             </Motion>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                <UspPillar
-                    delay={0}
-                    description={
-                        <Trans>Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches.</Trans>
-                    }
-                    icon={<WifiOff className="size-8 text-white" />}
-                    title={<Trans>100% Offline</Trans>}
-                    variant="blue"
-                />
+                <Link href={`/${locale}/offline-first`}>
+                    <UspPillar
+                        delay={0}
+                        description={
+                            <Trans>Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches.</Trans>
+                        }
+                        icon={<WifiOff className="size-8 text-white" />}
+                        title={<Trans>100% Offline</Trans>}
+                        variant="blue"
+                    />
+                </Link>
 
                 <UspPillar
                     delay={0.1}
@@ -53,21 +60,25 @@ export const UspPillarsSection = () => (
                     variant="orange"
                 />
 
-                <UspPillar
-                    delay={0.2}
-                    description={<Trans>Your data is encrypted using your Face ID or fingerprint. Only you can ever access it.</Trans>}
-                    icon={<Fingerprint className="size-8 text-white" />}
-                    title={<Trans>Biometric Encrypted</Trans>}
-                    variant="green"
-                />
+                <Link href={`/${locale}/privacy`}>
+                    <UspPillar
+                        delay={0.2}
+                        description={<Trans>Your data is encrypted using your Face ID or fingerprint. Only you can ever access it.</Trans>}
+                        icon={<Fingerprint className="size-8 text-white" />}
+                        title={<Trans>Biometric Encrypted</Trans>}
+                        variant="green"
+                    />
+                </Link>
 
-                <UspPillar
-                    delay={0.3}
-                    description={<Trans>Every line of code is public on GitHub. Security researchers and anyone can audit it.</Trans>}
-                    icon={<Code2 className="size-8 text-white" />}
-                    title={<Trans>Open Source</Trans>}
-                    variant="purple"
-                />
+                <Link href={`/${locale}/open-source`}>
+                    <UspPillar
+                        delay={0.3}
+                        description={<Trans>Every line of code is public on GitHub. Security researchers and anyone can audit it.</Trans>}
+                        icon={<Code2 className="size-8 text-white" />}
+                        title={<Trans>Open Source</Trans>}
+                        variant="purple"
+                    />
+                </Link>
             </div>
         </div>
     </section>

@@ -53,7 +53,7 @@ export default async function LandingPage(props: PageLangParam) {
 
             {/* Problem & Solution */}
             <ProblemSolutionSection />
-            <UspPillarsSection />
+            <UspPillarsSection locale={lang} />
 
             {/* Features & How It Works */}
             <FeaturesSection locale={lang} />
