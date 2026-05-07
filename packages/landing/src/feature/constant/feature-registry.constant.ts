@@ -1223,6 +1223,45 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['tags', 'analytics', 'drill-down']
     },
     {
+        slug: 'statistics-tags-tab',
+        tier: FeatureTierEnum.POWER,
+        title: msg`Tags Tab in Statistics — Per-Tag Income, Expense, and Net`,
+        tagline: msg`A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label.`,
+        metaTitle: msg`Analytics by Tag — Per-Tag Spending Tab — Budgie`,
+        metaDescription: msg`Budgie's Statistics screen has a dedicated Tags tab with income, expense, and net per tag plus a drillable Untagged bucket for finding labeling gaps.`,
+        primaryKeyword: 'analytics by tag mobile',
+        seoKeywords: [
+            'analytics by tag mobile',
+            'tag analytics expense tracker',
+            'per-tag spending report',
+            'untagged transactions report',
+            'tag-based budgeting analytics'
+        ],
+        relatedFeatureSlugs: ['tag-analytics', 'spending-analytics', 'transaction-tags', 'ai-tag-suggestions', 'primary-tag'],
+        relatedArticleSlugs: ['budgie-offline-financial-data'],
+        faqs: [
+            {
+                question: msg`How is this different from the Tag Analytics page?`,
+                answer: msg`Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen, where you can switch between Categories and Tags views with one tap.`
+            },
+            {
+                question: msg`What's the Untagged bucket?`,
+                answer: msg`A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively.`
+            },
+            {
+                question: msg`Can I drill down from a tag?`,
+                answer: msg`Yes — tapping any tag row opens the full transaction list filtered to that tag, with the same sorts and date filters available everywhere else.`
+            },
+            {
+                question: msg`Does this work with the date filter presets?`,
+                answer: msg`Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom).`
+            }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['analytics', 'tags', 'statistics']
+    },
+    {
         slug: 'convert-to-transfer',
         tier: FeatureTierEnum.POWER,
         title: msg`Convert a Transaction to a Transfer`,
