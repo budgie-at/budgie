@@ -110,7 +110,7 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
             <Link href={`/${locale}/features/recurring-payments-calendar`}>
                 <FeaturesSectionItem
                     description={i18n._(
-                        msg`Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you.`
+                        msg`Auto-detected recurring payments laid out on a monthly calendar so subscriptions stop surprising you.`
                     )}
                     icon={<Calendar className="size-5" />}
                     title={i18n._(msg`Recurring Bills`)}

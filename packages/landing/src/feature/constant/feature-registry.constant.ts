@@ -902,7 +902,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`Recurring Payments Calendar`,
         tagline: msg`Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming.`,
         metaTitle: msg`Recurring Payments Calendar — Budgie`,
-        metaDescription: msg`Budgie auto-detects subscription and recurring-payment patterns from your history, plots them on a month calendar, and forecasts what's coming in the next 60 days.`,
+        metaDescription: msg`Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month.`,
         primaryKeyword: 'recurring payment tracker',
         seoKeywords: [
             'recurring payment tracker',
@@ -928,7 +928,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`How far does the forecast go?`,
-                answer: msg`60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy.`
+                answer: msg`The calendar shows upcoming recurring entries within the currently-viewed month. Switch months to look further ahead.`
             }
         ],
         publishedAt: '2026-02-22',
