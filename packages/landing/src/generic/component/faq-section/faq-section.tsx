@@ -51,13 +51,13 @@ export const FaqSection = () => {
                         />
 
                         <FaqSectionItem
-                            answer={t`Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking.`}
+                            answer={t`Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device.`}
                             index={2}
                             question={t`What cryptocurrencies and assets can I track?`}
                         />
 
                         <FaqSectionItem
-                            answer={t`'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process.`}
+                            answer={t`Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers.`}
                             index={3}
                             question={t`Can I use Budgie across multiple devices?`}
                         />

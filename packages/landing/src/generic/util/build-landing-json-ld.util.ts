@@ -22,13 +22,13 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
         {
             question: i18n._(msg`What cryptocurrencies and assets can I track?`),
             answer: i18n._(
-                msg`Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking.`
+                msg`Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device.`
             )
         },
         {
             question: i18n._(msg`Can I use Budgie across multiple devices?`),
             answer: i18n._(
-                msg`Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process.`
+                msg`Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers.`
             )
         },
         {
@@ -48,7 +48,6 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
         description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
         url: BASE_URL,
         image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
-        downloadUrl: 'https://apps.apple.com/app/budgie/id6499040608',
         offers: {
             '@type': 'Offer',
             price: '0',
