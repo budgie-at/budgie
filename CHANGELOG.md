@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.16.0](https://github.com/budgie-at/budgie/compare/v5.15.0...v5.16.0) (2026-05-07)
+
+### Features
+
+- **landing:** seo + content restructure (sprint c) ([#412](https://github.com/budgie-at/budgie/issues/412)) ([6d97988](https://github.com/budgie-at/budgie/commit/6d9798876dc34c6b5b9385bbea856ef826f762f4))
+
 # [5.15.0](https://github.com/budgie-at/budgie/compare/v5.14.2...v5.15.0) (2026-05-07)
 
 ### Bug Fixes
