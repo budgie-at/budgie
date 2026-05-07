@@ -46,8 +46,8 @@ export const SecuritySectionCards = () => (
         <SecuritySectionCard
             description={
                 <Trans>
-                    Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher
-                    AES-256 encrypts the database file so raw storage access reveals nothing.
+                    Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher AES-256
+                    encrypts the database file so raw storage access reveals nothing.
                 </Trans>
             }
             icon={<Cpu className="size-6 text-indigo-600 dark:text-indigo-400" />}

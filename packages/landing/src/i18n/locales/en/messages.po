@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/generic/component/faq-section/faq-section.tsx:60
-msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
-msgstr "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:297
 msgid "“Bank-level encryption” (what does that actually mean in their implementation?)"
 msgstr "“Bank-level encryption” (what does that actually mean in their implementation?)"
@@ -1816,7 +1812,6 @@ msgid "5. Flexibility and Customization"
 msgstr "5. Flexibility and Customization"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx:173
-#: src/feature/constant/feature-registry.constant.ts:931
 msgid "60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy."
 msgstr "60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy."
 
@@ -2070,6 +2065,14 @@ msgstr "Additive interface — suggestions sit alongside the text field, never r
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:804
 msgid "Advertising SDKs that build user profiles"
 msgstr "Advertising SDKs that build user profiles"
+
+#: src/generic/component/security-section/security-section-visual.tsx:41
+msgid "AES-256 Encrypted"
+msgstr "AES-256 Encrypted"
+
+#: src/generic/component/cta-section/cta-section.tsx:64
+msgid "AES-256 encrypted on-device storage"
+msgstr "AES-256 encrypted on-device storage"
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:178
 msgid "AES-256 encrypted SQLite — your database is unreadable without your key"
@@ -2384,10 +2387,6 @@ msgstr "App goes to background → lock kicks in. Wrong PIN doesn't lock you out
 msgid "App requests connection to your bank"
 msgstr "App requests connection to your bank"
 
-#: src/generic/component/trust-banner/trust-banner.tsx:26
-msgid "App Store"
-msgstr "App Store"
-
 #: src/app/[lang]/features/pin-app-lock/page.tsx:120
 msgid "App-background timer re-locks automatically"
 msgstr "App-background timer re-locks automatically"
@@ -2481,8 +2480,8 @@ msgid "Articles about financial privacy, security best practices, offline-first 
 msgstr "Articles about financial privacy, security best practices, offline-first architecture, and tips for better expense tracking."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:42
-msgid "As a freelancer with income in 3 currencies, Budgie is the only app that handles it properly. I can finally see my real financial picture."
-msgstr "As a freelancer with income in 3 currencies, Budgie is the only app that handles it properly. I can finally see my real financial picture."
+msgid "As a freelancer earning in multiple currencies, Budgie handles it properly. I can finally see my real financial picture without spreadsheet gymnastics."
+msgstr "As a freelancer earning in multiple currencies, Budgie handles it properly. I can finally see my real financial picture without spreadsheet gymnastics."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx:207
 #: src/feature/constant/feature-registry.constant.ts:289
@@ -2494,8 +2493,8 @@ msgid "As awareness of digital privacy grows, more people are realizing that <0>
 msgstr "As awareness of digital privacy grows, more people are realizing that <0>convenience shouldn’t come at the cost of privacy</0>. The offline-first movement represents a return to user sovereignty over personal data."
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:13
-msgid "Ask \"Where did my money go?\" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone."
-msgstr "Ask \"Where did my money go?\" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone."
+msgid "Ask \"Where did my money go?\" and get instant breakdowns. Qwen3 1.7B (Q4 quantized) runs entirely on your phone — your questions never reach a server."
+msgstr "Ask \"Where did my money go?\" and get instant breakdowns. Qwen3 1.7B (Q4 quantized) runs entirely on your phone — your questions never reach a server."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx:35
 msgid "Asset coverage"
@@ -2521,10 +2520,6 @@ msgstr "Audio never leaves the device — no Siri-style cloud round-trip"
 msgid "Audit the codebase for vulnerabilities"
 msgstr "Audit the codebase for vulnerabilities"
 
-#: src/generic/component/trust-banner/trust-banner.tsx:58
-msgid "Auditable Code"
-msgstr "Auditable Code"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:421
 msgid "Authentication systems that remain secure even when examined"
 msgstr "Authentication systems that remain secure even when examined"
@@ -2543,12 +2538,16 @@ msgid "Auto-detected from device locale on first launch. Override anytime in Set
 msgstr "Auto-detected from device locale on first launch. Override anytime in Settings → Language."
 
 #: src/generic/component/features-section/features-section-grid.tsx:113
-msgid "Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you."
-msgstr "Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you."
+msgid "Auto-detected recurring payments laid out on a monthly calendar so subscriptions stop surprising you."
+msgstr "Auto-detected recurring payments laid out on a monthly calendar so subscriptions stop surprising you."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx:113
 msgid "Auto-detection scans transaction history for amount + cadence patterns — no manual setup"
 msgstr "Auto-detection scans transaction history for amount + cadence patterns — no manual setup"
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:74
+msgid "Auto-Pair"
+msgstr "Auto-Pair"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:387
 msgid "Automated alerts and notifications"
@@ -2574,21 +2573,13 @@ msgstr "Automatic tag suggestions eliminate the friction without removing contro
 msgid "Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and exchange-rate matching, then merged into a single transfer entry"
 msgstr "Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and exchange-rate matching, then merged into a single transfer entry"
 
-#: src/generic/component/security-section/security-section-cards.tsx:57
+#: src/generic/component/security-section/security-section-cards.tsx:69
 msgid "Automatically hide sensitive balances when taking screenshots. Share your app safely without exposing your finances."
 msgstr "Automatically hide sensitive balances when taking screenshots. Share your app safely without exposing your finances."
 
 #: src/generic/component/integrations-section/integrations-section-header.tsx:30
 msgid "Automatically sync transactions from your favorite banks, fintech apps, and crypto exchanges. Or import your data via CSV—we support it all."
 msgstr "Automatically sync transactions from your favorite banks, fintech apps, and crypto exchanges. Or import your data via CSV—we support it all."
-
-#: src/generic/component/cta-section/cta-section.tsx:32
-msgid "Average user saves $347/month"
-msgstr "Average user saves $347/month"
-
-#: src/generic/component/trust-banner/trust-banner.tsx:68
-msgid "Avg. Saved/Year"
-msgstr "Avg. Saved/Year"
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx:18
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx:16
@@ -2663,13 +2654,13 @@ msgstr "bank data safety"
 msgid "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 msgstr "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:29
+msgid "Bank Integrations"
+msgstr "Bank Integrations"
+
 #: src/feature/constant/feature-registry.constant.ts:1582
 msgid "Bank login"
 msgstr "Bank login"
-
-#: src/generic/component/banks-section/banks-section.tsx:18
-msgid "Bank of America"
-msgstr "Bank of America"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx:36
 msgid "Bank only"
@@ -2872,6 +2863,34 @@ msgstr "Best YNAB Alternatives for Privacy-Conscious Users (2025)"
 msgid "Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide."
 msgstr "Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide."
 
+#: src/generic/component/testimonials-section/testimonials-header.tsx:22
+msgid "Beta Tester Feedback"
+msgstr "Beta Tester Feedback"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:41
+msgid "Beta tester, Amsterdam"
+msgstr "Beta tester, Amsterdam"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:20
+msgid "Beta tester, Berlin"
+msgstr "Beta tester, Berlin"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:13
+msgid "Beta tester, Kyiv"
+msgstr "Beta tester, Kyiv"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:34
+msgid "Beta tester, Lviv"
+msgstr "Beta tester, Lviv"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:48
+msgid "Beta tester, San Francisco"
+msgstr "Beta tester, San Francisco"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:27
+msgid "Beta tester, Vienna"
+msgstr "Beta tester, Vienna"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1161
 msgid "Better household features"
 msgstr "Better household features"
@@ -2888,10 +2907,6 @@ msgstr "Beyond the 2022 settlement, Plaid has faced ongoing scrutiny:"
 msgid "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 msgstr "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:32
-msgid "Binance"
-msgstr "Binance"
-
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx:16
 msgid "biometric"
 msgstr "biometric"
@@ -2904,26 +2919,29 @@ msgstr "Biometric and PIN locks before any transaction view"
 msgid "Biometric Auth"
 msgstr "Biometric Auth"
 
-#: src/generic/component/security-section/security-section-cards.tsx:43
-msgid "Biometric Authentication"
-msgstr "Biometric Authentication"
-
 #: src/feature/constant/feature-registry.constant.ts:748
 msgid "Biometric Authentication — Budgie"
 msgstr "Biometric Authentication — Budgie"
 
 #: src/generic/component/hero-section/hero-section-header.tsx:30
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:74
 msgid "Biometric Encrypted"
 msgstr "Biometric Encrypted"
-
-#: src/generic/component/comparison-section/comparison-table-body.tsx:9
-msgid "Biometric encryption"
-msgstr "Biometric encryption"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx:116
 msgid "Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data"
 msgstr "Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data"
+
+#: src/generic/component/security-section/security-section-cards.tsx:43
+msgid "Biometric Lock"
+msgstr "Biometric Lock"
+
+#: src/generic/component/comparison-section/comparison-table-body.tsx:9
+msgid "Biometric lock + AES-256 encrypted storage"
+msgstr "Biometric lock + AES-256 encrypted storage"
+
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:78
+msgid "Biometric Locked"
+msgstr "Biometric Locked"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx:94
 msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
@@ -2933,6 +2951,10 @@ msgstr "Biometrics are the right balance for an expense app you open ten times a
 #: src/feature/constant/feature-registry.constant.ts:732
 msgid "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
 msgstr "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:35
+msgid "Bitcoin"
+msgstr "Bitcoin"
 
 #: src/feature/constant/feature-registry.constant.ts:1404
 msgid "Bitcoin to ETFs in one dashboard, alongside your bank accounts."
@@ -3085,8 +3107,8 @@ msgid "Budgie auto-detects recurring patterns and surfaces them on a dedicated c
 msgstr "Budgie auto-detects recurring patterns and surfaces them on a dedicated calendar tab. See the Recurring Payments Calendar feature for details."
 
 #: src/feature/constant/feature-registry.constant.ts:905
-msgid "Budgie auto-detects subscription and recurring-payment patterns from your history, plots them on a month calendar, and forecasts what's coming in the next 60 days."
-msgstr "Budgie auto-detects subscription and recurring-payment patterns from your history, plots them on a month calendar, and forecasts what's coming in the next 60 days."
+msgid "Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month."
+msgstr "Budgie auto-detects subscription and recurring-payment patterns from your history and plots them on a monthly calendar so you can see upcoming bills within the current month."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1765
 msgid "Budgie automatically attempts to match categories and can learn from your corrections to improve future categorization."
@@ -3316,8 +3338,8 @@ msgstr "Budgie supports exporting your complete financial history in standard fo
 
 #: src/generic/component/faq-section/faq-section.tsx:54
 #: src/generic/util/build-landing-json-ld.util.ts:25
-msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
-msgstr "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
+msgid "Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device."
+msgstr "Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:378
 msgid "Budgie supports voice transaction entry powered by Whisper.rn — a React Native port of OpenAI Whisper, the open-source speech recognition model. Whisper runs entirely on-device. When you speak a transaction, the audio is processed locally and transcribed without being sent to any speech recognition API."
@@ -3351,13 +3373,16 @@ msgstr "Budgie takes offline-first seriously. Here’s how we protect your finan
 msgid "Budgie Team"
 msgstr "Budgie Team"
 
+#: src/generic/component/faq-section/faq-section.tsx:66
+#: src/generic/util/build-landing-json-ld.util.ts:37
+msgid "Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line."
+msgstr "Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:493
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 msgstr "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 
 #: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:14
-#: src/generic/component/faq-section/faq-section.tsx:66
-#: src/generic/util/build-landing-json-ld.util.ts:37
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 
@@ -3485,7 +3510,7 @@ msgstr "Built-in via your server"
 msgid "Built-in YNAB import tool available"
 msgstr "Built-in YNAB import tool available"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:50
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:58
 msgid "Bulk Import"
 msgstr "Bulk Import"
 
@@ -3518,7 +3543,7 @@ msgstr "Can a transaction have no primary tag?"
 msgid "Can be entirely self-hosted"
 msgstr "Can be entirely self-hosted"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:52
+#: src/generic/component/ai-section-features/ai-section-features.tsx:58
 msgid "Can be hacked or subpoenaed"
 msgstr "Can be hacked or subpoenaed"
 
@@ -3780,6 +3805,10 @@ msgstr "Cash App (Block) - 2022"
 msgid "Cash Tracking"
 msgstr "Cash Tracking"
 
+#: src/generic/component/features-section/features-section-grid.tsx:95
+msgid "Cash, savings, bank, crypto, stocks, and debt — all accounts in one private app. No bank login required."
+msgstr "Cash, savings, bank, crypto, stocks, and debt — all accounts in one private app. No bank login required."
+
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx:16
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx:17
 msgid "categories"
@@ -3861,17 +3890,9 @@ msgstr "Chart palettes auto-recompute for legibility on dark canvas"
 msgid "charts"
 msgstr "charts"
 
-#: src/generic/component/banks-section/banks-section.tsx:17
-msgid "Chase"
-msgstr "Chase"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:453
 msgid "Check the Issues and Discussions"
 msgstr "Check the Issues and Discussions"
-
-#: src/generic/component/features-section/features-section-grid.tsx:95
-msgid "Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required."
-msgstr "Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1865
 msgid "Choose Actual Budget if:"
@@ -3962,7 +3983,7 @@ msgstr "Closed-source financial apps often make security claims that sound impre
 msgid "Cloud “AI” budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration."
 msgstr "Cloud “AI” budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration."
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:42
+#: src/generic/component/ai-section-features/ai-section-features.tsx:48
 msgid "Cloud AI (Others)"
 msgstr "Cloud AI (Others)"
 
@@ -3988,7 +4009,7 @@ msgstr "Cloud AI assistants process your spending data on remote servers. On-dev
 msgid "Cloud AI budget assistants"
 msgstr "Cloud AI budget assistants"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:33
+#: src/generic/component/ai-section-features/ai-section-features.tsx:39
 msgid "Cloud AI vs On-Device AI"
 msgstr "Cloud AI vs On-Device AI"
 
@@ -4101,11 +4122,6 @@ msgstr "Cloud-hosted finance applications represent attractive targets for attac
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1480
 msgid "Cloud-only (no offline functionality)"
 msgstr "Cloud-only (no offline functionality)"
-
-#: src/generic/component/banks-section/banks-section.tsx:20
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:33
-msgid "Coinbase"
-msgstr "Coinbase"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx:123
 msgid "Combines with PIN lock and biometric unlock for layered defense"
@@ -4406,6 +4422,10 @@ msgstr "Corner-star badge on the transaction list — scan without opening rows"
 msgid "Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next similar transaction lands closer without re-training"
 msgstr "Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next similar transaction lands closer without re-training"
 
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:72
+msgid "Counter-IBAN"
+msgstr "Counter-IBAN"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx:165
 msgid "Counter-IBAN enrichment and transfer consolidation"
 msgstr "Counter-IBAN enrichment and transfer consolidation"
@@ -4530,6 +4550,7 @@ msgstr "Crypto & Investment Tracking — Budgie"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx:15
 #: src/generic/component/features-section/features-section-grid.tsx:70
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:50
 msgid "Crypto & Investments"
 msgstr "Crypto & Investments"
 
@@ -4540,10 +4561,6 @@ msgstr "Crypto and stock tracking"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:382
 msgid "Crypto and stock tracking included"
 msgstr "Crypto and stock tracking included"
-
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:42
-msgid "Crypto Exchanges"
-msgstr "Crypto Exchanges"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1279
 msgid "Crypto portfolio tracking"
@@ -4597,7 +4614,7 @@ msgid "CSV for spreadsheets. Encrypted database backup for restore. Both yours, 
 msgstr "CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours."
 
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx:15
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:58
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:66
 msgid "CSV Import"
 msgstr "CSV Import"
 
@@ -4626,6 +4643,10 @@ msgstr "Currency-mode pill switches whether you drive from send or receive direc
 msgid "Currency, FX, and counterparty fields all preserved"
 msgstr "Currency, FX, and counterparty fields all preserved"
 
+#: src/generic/component/cta-section/cta-section.tsx:33
+msgid "Currently in private beta — join the waitlist for early access to the only budget app that keeps your financial data entirely on your device."
+msgstr "Currently in private beta — join the waitlist for early access to the only budget app that keeps your financial data entirely on your device."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx:174
 #: src/feature/constant/feature-registry.constant.ts:1120
 msgid "Currently it's informational — surfaced in the account detail and recurring view. Push reminders are on the roadmap."
@@ -4643,7 +4664,7 @@ msgstr "Custom Categories"
 msgid "Custom categories and tags"
 msgstr "Custom categories and tags"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:48
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:56
 msgid "Custom Mapping"
 msgstr "Custom Mapping"
 
@@ -4763,7 +4784,7 @@ msgstr "Data importer supporting dozens of formats"
 msgid "Data location"
 msgstr "Data location"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:76
+#: src/generic/component/ai-section-features/ai-section-features.tsx:82
 msgid "Data never leaves your phone"
 msgstr "Data never leaves your phone"
 
@@ -4780,7 +4801,7 @@ msgstr "data protection"
 msgid "Data Retention After Disconnection"
 msgstr "Data Retention After Disconnection"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:48
+#: src/generic/component/ai-section-features/ai-section-features.tsx:54
 msgid "Data sent to remote servers"
 msgstr "Data sent to remote servers"
 
@@ -4834,10 +4855,6 @@ msgstr "Date filters cover Today, Yesterday, This/Last Week, This/Last Month, Th
 msgid "dates"
 msgstr "dates"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:34
-msgid "David Park"
-msgstr "David Park"
-
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx:16
 msgid "debt"
 msgstr "debt"
@@ -4879,10 +4896,6 @@ msgstr "Dedupes against existing transactions on re-import"
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx:17
 msgid "deduplication"
 msgstr "deduplication"
-
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:34
-msgid "DeFi Wallets"
-msgstr "DeFi Wallets"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:617
 msgid "Delete your account in the budgeting app"
@@ -4982,6 +4995,14 @@ msgstr "Direct API. No aggregator. Full transaction history to your device."
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx:15
 msgid "Direct API. No aggregator. Yours forever."
 msgstr "Direct API. No aggregator. Yours forever."
+
+#: src/generic/component/banks-section/banks-section.tsx:13
+msgid "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world"
+msgstr "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world"
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:23
+msgid "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world. No aggregator in the middle."
+msgstr "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world. No aggregator in the middle."
 
 #: src/generic/component/features-section/features-section-grid.tsx:33
 msgid "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle."
@@ -5264,10 +5285,6 @@ msgstr "Download the ZIP file containing your data"
 msgid "Download your transaction history"
 msgstr "Download your transaction history"
 
-#: src/generic/component/trust-banner/trust-banner.tsx:36
-msgid "Downloads"
-msgstr "Downloads"
-
 #: src/app/[lang]/features/tag-analytics/page.tsx:124
 msgid "Drill from any tag row into its underlying transactions with the same date filters"
 msgstr "Drill from any tag row into its underlying transactions with the same date filters"
@@ -5396,10 +5413,6 @@ msgstr "Embeddings and LLM Working Together: The Two-Stage Suggestion Stack"
 msgid "Embrace Eventual Consistency"
 msgstr "Embrace Eventual Consistency"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:27
-msgid "Emily Johnson"
-msgstr "Emily Johnson"
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:177
 msgid "Employees won’t access your data"
 msgstr "Employees won’t access your data"
@@ -5460,10 +5473,6 @@ msgstr "Encrypted on your phone"
 msgid "Encrypted SQLite on your device — no cloud copy ever"
 msgstr "Encrypted SQLite on your device — no cloud copy ever"
 
-#: src/generic/component/problem-solution-section/solution-items.tsx:18
-msgid "Encrypted with your biometrics"
-msgstr "Encrypted with your biometrics"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:140
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx:18
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx:18
@@ -5477,10 +5486,6 @@ msgstr "Encryption implementation details"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:418
 msgid "Encryption that doesn’t rely on hidden algorithms"
 msgstr "Encryption that doesn’t rely on hidden algorithms"
-
-#: src/generic/component/security-section/security-section-visual.tsx:41
-msgid "End-to-End Encrypted"
-msgstr "End-to-End Encrypted"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:934
 msgid "End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might reveal usage habits. Device-to-device sync eliminates even this metadata exposure."
@@ -5519,6 +5524,11 @@ msgstr "Envestnet Yodlee, another major data aggregator, faced FTC action for al
 msgid "erste"
 msgstr "erste"
 
+#: src/generic/component/banks-section/banks-section.tsx:19
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:18
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx:95
 msgid "Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format."
 msgstr "Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format."
@@ -5536,6 +5546,10 @@ msgstr "Erste Bank PDF Import — Budgie"
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx:18
 msgid "etf"
 msgstr "etf"
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:36
+msgid "Ethereum"
+msgstr "Ethereum"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:359
 msgid "Even if someone intercepts the connection, they can’t decrypt it"
@@ -5564,10 +5578,6 @@ msgstr "Every cloud-based service is a potential target. In 2023 alone, over 5.5
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx:151
 msgid "Every correction updates the embedding index instantly — accuracy improves as you use it"
 msgstr "Every correction updates the embedding index instantly — accuracy improves as you use it"
-
-#: src/generic/component/cta-section/cta-section.tsx:37
-msgid "Every Day You Wait Is Another $15 Gone"
-msgstr "Every Day You Wait Is Another $15 Gone"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:794
 msgid "Every dependency in Budgie is evaluated for privacy implications before inclusion. We specifically avoid:"
@@ -5775,6 +5785,10 @@ msgstr "Face ID and Touch ID supported on every modern iOS and Android device"
 msgid "Face ID drives the encryption key."
 msgstr "Face ID drives the encryption key."
 
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:73
+msgid "Face ID, Touch ID, or PIN unlock your encrypted vault. Hardware-backed in iOS Keychain and Android Keystore."
+msgstr "Face ID, Touch ID, or PIN unlock your encrypted vault. Hardware-backed in iOS Keychain and Android Keystore."
+
 #: src/app/[lang]/features/biometric-authentication/page.tsx:119
 msgid "Falls back to PIN if biometrics are disabled or unavailable"
 msgstr "Falls back to PIN if biometrics are disabled or unavailable"
@@ -5881,8 +5895,8 @@ msgid "filters"
 msgstr "filters"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:21
-msgid "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
-msgstr "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
+msgid "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth instead of wondering where money went."
+msgstr "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth instead of wondering where money went."
 
 #: src/blog/constant/article-registry.constant.ts:146
 msgid "Financial aggregators are high-value breach targets. Discover how offline-first architecture, direct bank APIs, and CSV/PDF imports keep your bank data safe without Plaid."
@@ -6130,10 +6144,6 @@ msgstr "Forkable"
 msgid "Forks"
 msgstr "Forks"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:37
-msgid "Found $1,020/year in wasted subscriptions"
-msgstr "Found $1,020/year in wasted subscriptions"
-
 #: src/feature/constant/feature-registry.constant.ts:1633
 msgid "Free core, optional one-time unlock"
 msgstr "Free core, optional one-time unlock"
@@ -6141,6 +6151,10 @@ msgstr "Free core, optional one-time unlock"
 #: src/feature/constant/feature-registry.constant.ts:1585
 msgid "Free for core, optional one-time unlock"
 msgstr "Free for core, optional one-time unlock"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:23
+msgid "Freelance designer"
+msgstr "Freelance designer"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:889
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:1132
@@ -6223,6 +6237,10 @@ msgstr "FX rates are pulled once a day from a public-domain source. Conversions 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx:40
 msgid "FX support"
 msgstr "FX support"
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:73
+msgid "FX Tolerance"
+msgstr "FX Tolerance"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx:189
 msgid "Generate a personal API token from the Monobank app, paste it into Budgie, choose which Monobank accounts to import, and select an initial sync window. A background task syncs every 30 minutes when you're online; you control the cadence and can pause anytime."
@@ -6307,6 +6325,14 @@ msgstr "Good multi-currency support"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:186
 msgid "Government agencies won’t request access"
 msgstr "Government agencies won’t request access"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:30
+msgid "Graduate student"
+msgstr "Graduate student"
+
+#: src/generic/component/security-section/security-section-cards.tsx:55
+msgid "Hardware-Backed Encryption Key"
+msgstr "Hardware-Backed Encryption Key"
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx:26
 msgid "Headline Features"
@@ -6616,15 +6642,15 @@ msgstr "How does multi-currency work offline?"
 msgid "How does public source make Budgie more private?"
 msgstr "How does public source make Budgie more private?"
 
-#: src/generic/component/faq-section/faq-section.tsx:68
-#: src/generic/util/build-landing-json-ld.util.ts:35
-msgid "How does the open source license work?"
-msgstr "How does the open source license work?"
-
 #: src/app/[lang]/features/custom-categories/page.tsx:160
 #: src/feature/constant/feature-registry.constant.ts:497
 msgid "How does the popularity sort work?"
 msgstr "How does the popularity sort work?"
+
+#: src/generic/component/faq-section/faq-section.tsx:68
+#: src/generic/util/build-landing-json-ld.util.ts:35
+msgid "How does the source-available license work?"
+msgstr "How does the source-available license work?"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx:171
 #: src/feature/constant/feature-registry.constant.ts:930
@@ -6811,12 +6837,12 @@ msgid "I analyzed your spending and found you spent $450 more than usual this mo
 msgstr "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:35
-msgid "I cancelled 5 subscriptions I forgot about in the first day. That's $85/month I was literally throwing away. Budgie paid for itself instantly."
-msgstr "I cancelled 5 subscriptions I forgot about in the first day. That's $85/month I was literally throwing away. Budgie paid for itself instantly."
+msgid "I found recurring subscriptions I had completely forgotten about. Cancelled them straight away — those small amounts really add up."
+msgstr "I found recurring subscriptions I had completely forgotten about. Cancelled them straight away — those small amounts really add up."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:14
-msgid "I was spending $400/month on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. Now I save $300+ every month."
-msgstr "I was spending $400/month on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. Now I save $300+ every month."
+msgid "I was spending way more on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. The breakdown by category was eye-opening."
+msgstr "I was spending way more on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. The breakdown by category was eye-opening."
 
 #: src/app/[lang]/features/multi-language-app/opengraph-image.tsx:16
 msgid "i18n"
@@ -6929,7 +6955,7 @@ msgstr "Import any bank's CSV with flexible column mapping, save the mapping as 
 msgid "Import bank CSVs and PDFs without a cloud connection"
 msgstr "Import bank CSVs and PDFs without a cloud connection"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:55
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:63
 msgid "Import from any app with flexible column mapping."
 msgstr "Import from any app with flexible column mapping."
 
@@ -6953,7 +6979,7 @@ msgstr "Import your full Erste Bank statement straight from PDF — both classic
 msgid "Importing to Budgie"
 msgstr "Importing to Budgie"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:80
+#: src/generic/component/ai-section-features/ai-section-features.tsx:86
 msgid "Impossible to breach remotely"
 msgstr "Impossible to breach remotely"
 
@@ -7013,6 +7039,10 @@ msgstr "In-app switcher — no reinstall, no relaunch"
 #: src/generic/component/analytics-section/analytics-section-chart-stats.tsx:11
 msgid "Income"
 msgstr "Income"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:44
+msgid "Independent consultant"
+msgstr "Independent consultant"
 
 #: src/generic/component/open-source-section/open-source-content.tsx:46
 msgid "Independent security experts can verify our claims"
@@ -7210,17 +7240,9 @@ msgstr "Is YNAB safe to use?"
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:48
-msgid "James Wilson"
-msgstr "James Wilson"
-
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx:17
 msgid "January 2025"
 msgstr "January 2025"
-
-#: src/generic/component/cta-section/cta-section.tsx:41
-msgid "Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that actually respects your privacy."
-msgstr "Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that actually respects your privacy."
 
 #: src/generic/component/open-source-section/open-source-content.tsx:52
 msgid "Join developers worldwide improving the app"
@@ -7233,6 +7255,10 @@ msgstr "Join the Budgie waitlist and be the first to experience truly private ex
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx:19
 msgid "Join the waitlist — be first to try the offline-first expense tracker."
 msgstr "Join the waitlist — be first to try the offline-first expense tracker."
+
+#: src/generic/component/trust-banner/trust-banner.tsx:50
+msgid "Join the waitlist for early access"
+msgstr "Join the waitlist for early access"
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx:26
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx:24
@@ -7277,10 +7303,6 @@ msgstr "Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. C
 #: src/generic/component/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
 msgstr "Latest from Our Blog"
-
-#: src/generic/component/cta-section/cta-section.tsx:72
-msgid "Launching Q1 2026"
-msgstr "Launching Q1 2026"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx:83
 msgid "Layer tags on top of categories — one transaction can be both Groceries (category) and #vacation, #shared, and #reimbursable (tags)."
@@ -7392,10 +7414,6 @@ msgstr "Lingui-driven message catalogs ship at install. Settings → Language sw
 msgid "Link to the Repository"
 msgstr "Link to the Repository"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:41
-msgid "Lisa Thompson"
-msgstr "Lisa Thompson"
-
 #: src/app/[lang]/features/income-to-transfer-conversion/page.tsx:146
 msgid "Live analytics update — the income column recalculates the moment the conversion is confirmed"
 msgstr "Live analytics update — the income column recalculates the moment the conversion is confirmed"
@@ -7473,6 +7491,14 @@ msgstr "Local-first systems choose availability. You can always work, even offli
 #: src/app/[lang]/features/date-filter-presets/page.tsx:123
 msgid "Locale-aware week start (Monday in EU, Sunday in en-US)"
 msgstr "Locale-aware week start (Monday in EU, Sunday in en-US)"
+
+#: src/generic/component/security-section/security-section-cards.tsx:36
+msgid "Lock your app with Face ID or Touch ID. Your encrypted data is only accessible after biometric or PIN verification. SQLCipher AES-256 encrypts the database file; the key lives in iOS Keychain or Android Keystore."
+msgstr "Lock your app with Face ID or Touch ID. Your encrypted data is only accessible after biometric or PIN verification. SQLCipher AES-256 encrypts the database file; the key lives in iOS Keychain or Android Keystore."
+
+#: src/generic/component/problem-solution-section/solution-items.tsx:20
+msgid "Locked behind biometrics. Encrypted with SQLCipher AES-256."
+msgstr "Locked behind biometrics. Encrypted with SQLCipher AES-256."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx:83
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
@@ -7607,10 +7633,6 @@ msgstr "Making Your Decision"
 msgid "management"
 msgstr "management"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:44
-msgid "Manages USD, EUR & GBP"
-msgstr "Manages USD, EUR & GBP"
-
 #: src/app/[lang]/features/database-backup/page.tsx:173
 #: src/feature/constant/feature-registry.constant.ts:853
 msgid "Manual backups only by default — for the privacy-first crowd that doesn't want surprise file writes. You can schedule reminders in Settings."
@@ -7679,6 +7701,10 @@ msgstr "Manual server snapshots"
 msgid "Manual update or imported brokerage CSV. Live ticker feeds are opt-in to keep the offline-first guarantee — no telemetry needed."
 msgstr "Manual update or imported brokerage CSV. Live ticker feeds are opt-in to keep the offline-first guarantee — no telemetry needed."
 
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:43
+msgid "Manually track Bitcoin, Ethereum, stocks, ETFs, and any asset. Import positions via CSV. No exchange API connections — your data stays on-device."
+msgstr "Manually track Bitcoin, Ethereum, stocks, ETFs, and any asset. Import positions via CSV. No exchange API connections — your data stays on-device."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:236
 msgid "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
 msgstr "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
@@ -7698,10 +7724,6 @@ msgstr "Map columns flexibly: Date, Amount, Description, Counterparty — your b
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1754
 msgid "Map the columns to Budgie’s fields"
 msgstr "Map the columns to Budgie’s fields"
-
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:20
-msgid "Marcus Rodriguez"
-msgstr "Marcus Rodriguez"
 
 #: src/feature/constant/feature-registry.constant.ts:1742
 msgid "Marketing copy only"
@@ -7979,6 +8001,7 @@ msgstr "Monitor what you owe to others"
 msgid "monobank"
 msgstr "monobank"
 
+#: src/generic/component/banks-section/banks-section.tsx:17
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:16
 msgid "Monobank"
 msgstr "Monobank"
@@ -8652,10 +8675,6 @@ msgstr "Off by default for the categories and analytics screens — sharing budg
 msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
 msgstr "Offer comprehensive export functionality (CSV, JSON, SQL)"
 
-#: src/generic/component/trust-banner/trust-banner.tsx:46
-msgid "Offline & Private"
-msgstr "Offline & Private"
-
 #: src/feature/constant/pillar-hub-registry.constant.ts:63
 msgid "Offline Budget App — Track Expenses Without Internet"
 msgstr "Offline Budget App — Track Expenses Without Internet"
@@ -8699,7 +8718,7 @@ msgstr "Offline-First"
 msgid "Offline-first alternative to Mint after the shutdown"
 msgstr "Offline-first alternative to Mint after the shutdown"
 
-#: src/generic/component/cta-section/cta-section.tsx:64
+#: src/generic/component/cta-section/cta-section.tsx:56
 msgid "Offline-first architecture"
 msgstr "Offline-first architecture"
 
@@ -8806,6 +8825,10 @@ msgstr "On first launch, Budgie creates an encrypted SQLite database in your app
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 msgstr "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 
+#: src/generic/component/trust-banner/trust-banner.tsx:38
+msgid "on GitHub"
+msgstr "on GitHub"
+
 #: src/feature/constant/feature-registry.constant.ts:1588
 #: src/feature/constant/feature-registry.constant.ts:1845
 msgid "On your phone"
@@ -8821,6 +8844,10 @@ msgstr "on-device"
 msgid "On-device — no merchant string ever leaves your phone"
 msgstr "On-device — no merchant string ever leaves your phone"
 
+#: src/generic/component/trust-banner/trust-banner.tsx:21
+msgid "On-Device — No Servers"
+msgstr "On-Device — No Servers"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:127
 msgid "on-device AI"
 msgstr "on-device AI"
@@ -8829,7 +8856,7 @@ msgstr "on-device AI"
 msgid "On-Device AI"
 msgstr "On-Device AI"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:70
+#: src/generic/component/ai-section-features/ai-section-features.tsx:76
 msgid "On-Device AI (Budgie)"
 msgstr "On-Device AI (Budgie)"
 
@@ -8889,6 +8916,10 @@ msgstr "On-device assistant"
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx:118
 msgid "On-device LLM extracts amount, merchant, date, and category from natural speech"
 msgstr "On-device LLM extracts amount, merchant, date, and category from natural speech"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:27
+msgid "On-Device Voice Transcription"
+msgstr "On-Device Voice Transcription"
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx:15
 msgid "One badge. Scan a list at a glance."
@@ -8984,7 +9015,7 @@ msgstr "Only as far back as the bank's API supports. Monobank has months of hist
 msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 msgstr "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:88
+#: src/generic/component/ai-section-features/ai-section-features.tsx:94
 msgid "Only you see your data"
 msgstr "Only you see your data"
 
@@ -9016,17 +9047,12 @@ msgstr "open source"
 
 #: src/app/[lang]/opengraph-image.tsx:92
 #: src/generic/component/hero-section/hero-section-header.tsx:35
-#: src/generic/component/trust-banner/trust-banner.tsx:54
 msgid "Open Source"
 msgstr "Open Source"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:892
 msgid "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
 msgstr "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
-
-#: src/generic/component/comparison-section/comparison-table-body.tsx:10
-msgid "Open source code"
-msgstr "Open source code"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:419
 msgid "Open source code for verification"
@@ -9052,10 +9078,6 @@ msgstr "Open Source Transparency"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1491
 msgid "Open Source Verification"
 msgstr "Open Source Verification"
-
-#: src/generic/component/problem-solution-section/solution-items.tsx:26
-msgid "Open source—audit our code"
-msgstr "Open source—audit our code"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:673
 msgid "Open Source: Verify Our Claims Yourself"
@@ -9224,10 +9246,6 @@ msgstr "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead
 msgid "Page Not Found"
 msgstr "Page Not Found"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:30
-msgid "Paid off $12K in debt"
-msgstr "Paid off $12K in debt"
-
 #: src/app/[lang]/features/income-to-transfer-conversion/page.tsx:149
 msgid "Pair-detection aware — auto-consolidates with a matching expense leg when one is found"
 msgstr "Pair-detection aware — auto-consolidates with a matching expense leg when one is found"
@@ -9252,10 +9270,6 @@ msgstr "People need access to their financial data in all circumstances: traveli
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:767
 msgid "People track finances over years or decades. You need your data to be accessible in 2030 and beyond. Will that cloud service still exist? Will they change their pricing? Will they be acquired and shut down?"
 msgstr "People track finances over years or decades. You need your data to be accessible in 2030 and beyond. Will that cloud service still exist? Will they change their pricing? Will they be acquired and shut down?"
-
-#: src/generic/component/testimonials-section/testimonials-header.tsx:26
-msgid "People Who Stopped Overspending"
-msgstr "People Who Stopped Overspending"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx:139
 msgid "Per-account “include in net worth” toggle — partial-truth balance is your call"
@@ -9346,7 +9360,7 @@ msgstr "PIN lock enforced before any transaction or balance is visible"
 msgid "PIN Lock Finance App — Private Expense Tracker — Budgie"
 msgstr "PIN Lock Finance App — Private Expense Tracker — Budgie"
 
-#: src/generic/component/security-section/security-section-cards.tsx:52
+#: src/generic/component/security-section/security-section-cards.tsx:64
 msgid "PIN Protection"
 msgstr "PIN Protection"
 
@@ -9511,10 +9525,6 @@ msgstr "Primary Tag — Quick-Scan Transaction Labeling — Budgie"
 msgid "privacy"
 msgstr "privacy"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:51
-msgid "Privacy advocate"
-msgstr "Privacy advocate"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1505
 msgid "Privacy advocates can verify we’re not collecting telemetry"
 msgstr "Privacy advocates can verify we’re not collecting telemetry"
@@ -9601,7 +9611,7 @@ msgstr "Privacy Rating: Excellent (with caveats)"
 msgid "Privacy Rating: Good (Apple ecosystem)"
 msgstr "Privacy Rating: Good (Apple ecosystem)"
 
-#: src/generic/component/cta-section/cta-section.tsx:56
+#: src/generic/component/cta-section/cta-section.tsx:48
 msgid "Privacy-first design"
 msgstr "Privacy-first design"
 
@@ -9625,6 +9635,7 @@ msgstr "Privacy-focused organizations and advocacy groups"
 msgid "privatbank"
 msgstr "privatbank"
 
+#: src/generic/component/banks-section/banks-section.tsx:18
 #: src/generic/component/integrations-section/integrations-section-cards.tsx:17
 msgid "PrivatBank"
 msgstr "PrivatBank"
@@ -9654,6 +9665,10 @@ msgstr "PrivatBank's proprietary categories also map through the same MCC system
 msgid "PrivatBank's proprietary MCC labels map to ISO MCC codes automatically"
 msgstr "PrivatBank's proprietary MCC labels map to ISO MCC codes automatically"
 
+#: src/generic/component/trust-banner/trust-banner.tsx:46
+msgid "Private Beta"
+msgstr "Private Beta"
+
 #: src/feature/constant/feature-registry.constant.ts:1560
 msgid "Private Budget App — A Cloud-Free Alternative"
 msgstr "Private Budget App — A Cloud-Free Alternative"
@@ -9669,6 +9684,10 @@ msgstr "Private Expense Tracker — On Your Device, Off the Cloud"
 #: src/feature/constant/pillar-hub-registry.constant.ts:11
 msgid "Private Expense Tracker — On-Device — Budgie"
 msgstr "Private Expense Tracker — On-Device — Budgie"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:37
+msgid "Product manager"
+msgstr "Product manager"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:346
 msgid "Professional penetration testers and security consultants"
@@ -9718,7 +9737,7 @@ msgid "Public source"
 msgstr "Public source"
 
 #: src/generic/component/open-source-section/open-source-content.tsx:24
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:87
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:91
 msgid "Public Source"
 msgstr "Public Source"
 
@@ -9745,6 +9764,10 @@ msgstr "Quantization"
 #: src/feature/constant/feature-registry.constant.ts:346
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
 msgstr "Quick Edit Transaction App — Long-Press Menu — Budgie"
+
+#: src/generic/component/testimonials-section/testimonials-header.tsx:30
+msgid "Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy."
+msgstr "Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy."
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:111
 msgid "Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data leaves your device."
@@ -9862,14 +9885,6 @@ msgstr "Real Data Breaches in Financial Apps"
 #: src/app/[lang]/features/account-management/page.tsx:95
 msgid "Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
 msgstr "Real life is multi-account. A current account, a savings pot, a Revolut card, a crypto wallet, a parental loan. Budgie treats each as a first-class account with its own currency, type, balance, and “include in net worth” toggle."
-
-#: src/generic/component/testimonials-section/testimonials-header.tsx:22
-msgid "Real Results"
-msgstr "Real Results"
-
-#: src/generic/component/testimonials-section/testimonials-header.tsx:30
-msgid "Real stories from users who took control of their money and never looked back."
-msgstr "Real stories from users who took control of their money and never looked back."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:469
 msgid "Real-World Examples of Local-First Apps"
@@ -10009,7 +10024,7 @@ msgstr "Required, via aggregator"
 msgid "Requires bank sync for best experience"
 msgstr "Requires bank sync for best experience"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:56
+#: src/generic/component/ai-section-features/ai-section-features.tsx:62
 #: src/generic/component/problem-solution-section/problem-items.tsx:23
 msgid "Requires internet connection"
 msgstr "Requires internet connection"
@@ -10090,17 +10105,9 @@ msgstr "Review the import preview"
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Revoke access through your bank’s connected apps settings"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:18
-msgid "Revolut"
-msgstr "Revolut"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:880
 msgid "Roadmap Transparency"
 msgstr "Roadmap Transparency"
-
-#: src/generic/component/banks-section/banks-section.tsx:21
-msgid "Robinhood"
-msgstr "Robinhood"
 
 #: src/feature/constant/feature-registry.constant.ts:263
 msgid "Roll up every bank account, cash wallet, crypto holding, stock position, and liability into a single net-worth number. Multi-currency conversion baked in."
@@ -10135,25 +10142,17 @@ msgstr "Safe deletion: prompts you to migrate or wipe transactions, never silent
 msgid "Same picker across analytics, transactions, and recurring screens"
 msgstr "Same picker across analytics, transactions, and recurring screens"
 
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:13
-msgid "Sarah Chen"
-msgstr "Sarah Chen"
-
 #: src/app/[lang]/features/csv-import/page.tsx:118
 msgid "Save a per-bank preset and never re-map again"
 msgstr "Save a per-bank preset and never re-map again"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:49
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:57
 msgid "Save Presets"
 msgstr "Save Presets"
 
 #: src/app/[lang]/features/data-export/page.tsx:123
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Save through the OS share sheet — Files, iCloud, Drive, anything"
-
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:16
-msgid "Saved $3,600/year"
-msgstr "Saved $3,600/year"
 
 #: src/generic/component/analytics-section/analytics-section-chart-cards.tsx:14
 msgid "Saved this month"
@@ -10192,7 +10191,7 @@ msgid "Screenshot blur on balance fields and app-switcher previews"
 msgstr "Screenshot blur on balance fields and app-switcher previews"
 
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx:15
-#: src/generic/component/security-section/security-section-cards.tsx:63
+#: src/generic/component/security-section/security-section-cards.tsx:75
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -10215,10 +10214,6 @@ msgstr "Scroll down to “Export Budget”"
 #: src/blog/component/blog-search/blog-search.tsx:55
 msgid "Search articles..."
 msgstr "Search articles..."
-
-#: src/generic/component/security-section/security-section-cards.tsx:36
-msgid "Secure your finances with Face ID or Touch ID. Only you can access your data, with the same security used by banking apps."
-msgstr "Secure your finances with Face ID or Touch ID. Only you can access your data, with the same security used by banking apps."
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:54
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
@@ -10257,6 +10252,10 @@ msgstr "Security experts can audit our privacy claims"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:782
 msgid "Security Practices and Transparency"
 msgstr "Security Practices and Transparency"
+
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:51
+msgid "Security researcher"
+msgstr "Security researcher"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1502
 msgid "Security researchers can audit our privacy claims"
@@ -10366,7 +10365,7 @@ msgstr "Server-based finance apps"
 msgid "Service outages leave you without access"
 msgstr "Service outages leave you without access"
 
-#: src/generic/component/security-section/security-section-cards.tsx:48
+#: src/generic/component/security-section/security-section-cards.tsx:60
 msgid "Set a custom PIN code with configurable length for an extra layer of security. Perfect for shared devices."
 msgstr "Set a custom PIN code with configurable length for an extra layer of security. Perfect for shared devices."
 
@@ -10514,6 +10513,10 @@ msgstr "Soft-delete for rows the bank no longer reports — recoverable from tra
 msgid "software architecture"
 msgstr "software architecture"
 
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:16
+msgid "Software engineer"
+msgstr "Software engineer"
+
 #: src/feature/constant/feature-registry.constant.ts:1342
 msgid "Some \"income\" entries are actually internal moves — a refund landing back on your card, a friend repaying you in cash that you then deposit. Recording them as transfers keeps your income totals reflecting actual income."
 msgstr "Some \"income\" entries are actually internal moves — a refund landing back on your card, a friend repaying you in cash that you then deposit. Recording them as transfers keeps your income totals reflecting actual income."
@@ -10567,6 +10570,10 @@ msgstr "Source code is publicly available — read every line that touches your 
 msgid "source-available"
 msgstr "source-available"
 
+#: src/generic/component/trust-banner/trust-banner.tsx:34
+msgid "Source-Available"
+msgstr "Source-Available"
+
 #: src/feature/constant/feature-registry.constant.ts:1725
 msgid "Source-Available Budget App for Mobile — Audit, Fork, Trust"
 msgstr "Source-Available Budget App for Mobile — Audit, Fork, Trust"
@@ -10584,6 +10591,10 @@ msgstr "source-available budgeting, financial transparency, budget app security,
 #: src/blog/constant/article-registry.constant.ts:79
 msgid "Source-Available Budgeting: Why Transparency Matters for Your Money"
 msgstr "Source-Available Budgeting: Why Transparency Matters for Your Money"
+
+#: src/generic/component/comparison-section/comparison-table-body.tsx:10
+msgid "Source-available code"
+msgstr "Source-available code"
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:228
 msgid "Source-available license — fork it, run your own build, take your data with you"
@@ -10604,6 +10615,10 @@ msgstr "Source-Available Personal Finance — Transparent by Design"
 #: src/feature/constant/pillar-hub-registry.constant.ts:213
 msgid "Source-Available Personal Finance App — Budgie"
 msgstr "Source-Available Personal Finance App — Budgie"
+
+#: src/generic/component/problem-solution-section/solution-items.tsx:30
+msgid "Source-available—audit our code on GitHub"
+msgstr "Source-available—audit our code on GitHub"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx:102
 msgid "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
@@ -10805,6 +10820,10 @@ msgstr "Step 5: Run Parallel for One Month"
 msgid "stocks"
 msgstr "stocks"
 
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:37
+msgid "Stocks & ETFs"
+msgstr "Stocks & ETFs"
+
 #: src/feature/constant/feature-registry.constant.ts:1620
 msgid "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
 msgstr "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
@@ -10938,14 +10957,6 @@ msgstr "Sync method"
 msgid "Sync protocol implementation"
 msgstr "Sync protocol implementation"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:23
-msgid "Sync with major banks and financial institutions automatically."
-msgstr "Sync with major banks and financial institutions automatically."
-
-#: src/generic/component/banks-section/banks-section.tsx:13
-msgid "Syncs with 1000+ banks and financial institutions"
-msgstr "Syncs with 1000+ banks and financial institutions"
-
 #: src/app/[lang]/features/dark-mode/page.tsx:116
 msgid "System / Light / Dark — three-way switch in Settings"
 msgstr "System / Light / Dark — three-way switch in Settings"
@@ -11004,6 +11015,10 @@ msgstr "Tags Tab in Statistics — Per-Tag Income, Expense, and Net"
 #: src/app/[lang]/features/spending-analytics/page.tsx:118
 msgid "Tags tab: per-tag income and expense, plus an “Untagged” bucket for the gaps"
 msgstr "Tags tab: per-tag income and expense, plus an “Untagged” bucket for the gaps"
+
+#: src/generic/component/cta-section/cta-section.tsx:29
+msgid "Take Control of Your Finances — Without Giving Up Your Privacy"
+msgstr "Take Control of Your Finances — Without Giving Up Your Privacy"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:513
 msgid "Take Control of Your Financial Privacy Today"
@@ -11173,6 +11188,10 @@ msgstr "The Bottom Line"
 msgid "The Budgie Difference: Privacy-First Financial Management"
 msgstr "The Budgie Difference: Privacy-First Financial Management"
 
+#: src/feature/constant/feature-registry.constant.ts:931
+msgid "The calendar shows upcoming recurring entries within the currently-viewed month. Switch months to look further ahead."
+msgstr "The calendar shows upcoming recurring entries within the currently-viewed month. Switch months to look further ahead."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:433
 msgid "The CAP Theorem and Local-First Trade-offs"
 msgstr "The CAP Theorem and Local-First Trade-offs"
@@ -11256,8 +11275,8 @@ msgid "The database uses Drizzle ORM for type-safe operations"
 msgstr "The database uses Drizzle ORM for type-safe operations"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:28
-msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
-msgstr "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
+msgid "The debt tracking feature kept me motivated. Watching the progress bar fill up every month made repayment feel achievable."
+msgstr "The debt tracking feature kept me motivated. Watching the progress bar fill up every month made repayment feel achievable."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:476
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
@@ -11458,8 +11477,8 @@ msgid "The principle of minimal data collection guides all decisions"
 msgstr "The principle of minimal data collection guides all decisions"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:49
-msgid "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
-msgstr "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
+msgid "The privacy aspect sold me. My financial data stays on my phone. No company is mining my spending habits. That's how it should be."
+msgstr "The privacy aspect sold me. My financial data stays on my phone. No company is mining my spending habits. That's how it should be."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:252
 msgid "The Privacy Problem"
@@ -11558,7 +11577,7 @@ msgstr "The shutdown was not a surprise to anyone paying attention. It was the p
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 msgstr "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:85
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:89
 msgid "The source code is public on GitHub. Security researchers and anyone can audit it."
 msgstr "The source code is public on GitHub. Security researchers and anyone can audit it."
 
@@ -11685,7 +11704,7 @@ msgstr "They're complementary. Biometrics are convenient and prevent shoulder-su
 msgid "Think through scenarios like: What if a user makes conflicting changes on two devices before syncing? What if sync fails partway through? What if a device is offline for an extended period?"
 msgstr "Think through scenarios like: What if a user makes conflicting changes on two devices before syncing? What if sync fails partway through? What if a device is offline for an extended period?"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:60
+#: src/generic/component/ai-section-features/ai-section-features.tsx:66
 msgid "Third parties see your data"
 msgstr "Third parties see your data"
 
@@ -11977,14 +11996,6 @@ msgstr "Track Progress Over Time"
 msgid "Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want."
 msgstr "Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want."
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:39
-msgid "Track your crypto portfolio across all major exchanges."
-msgstr "Track your crypto portfolio across all major exchanges."
-
-#: src/generic/component/testimonials-section/testimonials-slider.tsx:23
-msgid "Tracks $50K+ across 8 accounts"
-msgstr "Tracks $50K+ across 8 accounts"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:975
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1077
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1179
@@ -11994,10 +12005,6 @@ msgstr "Tracks $50K+ across 8 accounts"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1567
 msgid "Trade-offs to Consider:"
 msgstr "Trade-offs to Consider:"
-
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:26
-msgid "Traditional Banks"
-msgstr "Traditional Banks"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:486
 msgid "Traditional cloud sync relies on a central server to be the source of truth when conflicts arise. If you edit a transaction on two devices, the server decides which version wins."
@@ -12036,6 +12043,10 @@ msgstr "Transfer between your own accounts as a first-class transaction type wit
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx:15
 msgid "Transfer Consolidation"
 msgstr "Transfer Consolidation"
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:87
+msgid "Transfer Detection"
+msgstr "Transfer Detection"
 
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx:16
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx:16
@@ -12203,8 +12214,8 @@ msgid "Universal MCC → category lookup ships with sensible defaults"
 msgstr "Universal MCC → category lookup ships with sensible defaults"
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:19
-msgid "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. No servers see your salary, debts, or spending habits. Ever."
-msgstr "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. No servers see your salary, debts, or spending habits. Ever."
+msgid "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. The multilingual nomic-embed-text-v2-moe embedding model handles all 5 supported languages natively."
+msgstr "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. The multilingual nomic-embed-text-v2-moe embedding model handles all 5 supported languages natively."
 
 #: src/generic/component/open-source-section/open-source-content.tsx:32
 msgid "Unlike closed-source apps, you don't have to trust our word. The source code is public on GitHub. Security researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it."
@@ -12353,6 +12364,10 @@ msgstr "Voice Transaction Entry"
 msgid "Voice transaction entry via whisper.rn — audio never leaves the device"
 msgstr "Voice transaction entry via whisper.rn — audio never leaves the device"
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:25
+msgid "Voice transcription via Whisper Large v3 Turbo (whisper.rn) runs on-device. Works in airplane mode — your voice never streams to a server."
+msgstr "Voice transcription via Whisper Large v3 Turbo (whisper.rn) runs on-device. Works in airplane mode — your voice never streams to a server."
+
 #: src/feature/constant/feature-registry.constant.ts:223
 msgid "Voice-to-Expense, On-Device — Budgie"
 msgstr "Voice-to-Expense, On-Device — Budgie"
@@ -12469,10 +12484,6 @@ msgstr "Webhooks for real-time integrations"
 msgid "Well-designed export functionality"
 msgstr "Well-designed export functionality"
 
-#: src/generic/component/banks-section/banks-section.tsx:19
-msgid "Wells Fargo"
-msgstr "Wells Fargo"
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1115
 msgid "What about apps that require server-side processing?"
 msgstr "What about apps that require server-side processing?"
@@ -12524,6 +12535,10 @@ msgstr "What actions are available?"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:250
 msgid "What analytics services are embedded in the app"
 msgstr "What analytics services are embedded in the app"
+
+#: src/generic/component/testimonials-section/testimonials-header.tsx:26
+msgid "What Beta Testers Are Saying"
+msgstr "What Beta Testers Are Saying"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:277
 msgid "What Changes Architecturally"
@@ -13008,6 +13023,10 @@ msgstr "When you hand over your financial data to an app, you’re trusting it w
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:156
 msgid "When you open most expense tracking apps, something happens in the background that you might not notice: your transaction data, account balances, and spending habits are uploaded to servers you do not control. These servers might be located anywhere in the world, managed by teams you have never met, and protected by security practices you cannot verify."
 msgstr "When you open most expense tracking apps, something happens in the background that you might not notice: your transaction data, account balances, and spending habits are uploaded to servers you do not control. These servers might be located anywhere in the world, managed by teams you have never met, and protected by security practices you cannot verify."
+
+#: src/generic/component/integrations-section/integrations-section-cards.tsx:80
+msgid "When you send money between two banks, Budgie auto-pairs both legs using counter-IBAN matching plus exchange-rate tolerance — no duplicate expenses, no manual merging."
+msgstr "When you send money between two banks, Budgie auto-pairs both legs using counter-IBAN matching plus exchange-rate tolerance — no duplicate expenses, no manual merging."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx:176
 msgid "When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
@@ -13497,10 +13516,6 @@ msgstr "Windowed Bank Re-sync"
 msgid "Windowed re-sync to fix drift without losing manual edits"
 msgstr "Windowed re-sync to fix drift without losing manual edits"
 
-#: src/generic/component/integrations-section/integrations-section-cards.tsx:19
-msgid "Wise"
-msgstr "Wise"
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:249
 msgid "With Budgie, your financial data never leaves your device:"
 msgstr "With Budgie, your financial data never leaves your device:"
@@ -13538,7 +13553,7 @@ msgstr "Without access to the source code, these claims are marketing copy, not 
 msgid "Work in areas with poor connectivity"
 msgstr "Work in areas with poor connectivity"
 
-#: src/generic/component/problem-solution-section/solution-items.tsx:21
+#: src/generic/component/problem-solution-section/solution-items.tsx:25
 msgid "Works 100% offline—always fast"
 msgstr "Works 100% offline—always fast"
 
@@ -13546,7 +13561,7 @@ msgstr "Works 100% offline—always fast"
 msgid "Works Anywhere, Anytime"
 msgstr "Works Anywhere, Anytime"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:27
+#: src/generic/component/ai-section-features/ai-section-features.tsx:33
 msgid "Works Completely Offline"
 msgstr "Works Completely Offline"
 
@@ -13558,7 +13573,7 @@ msgstr "Works during the AI model loading phase too — visual progress indicato
 msgid "Works for both expense and income transactions"
 msgstr "Works for both expense and income transactions"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:84
+#: src/generic/component/ai-section-features/ai-section-features.tsx:90
 msgid "Works in airplane mode"
 msgstr "Works in airplane mode"
 
@@ -13566,7 +13581,7 @@ msgstr "Works in airplane mode"
 msgid "Works in airplane mode, tunnels, and rural areas — every feature, every time"
 msgstr "Works in airplane mode, tunnels, and rural areas — every feature, every time"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:25
+#: src/generic/component/ai-section-features/ai-section-features.tsx:31
 msgid "Works in airplane mode. No internet needed. Your financial assistant is always available—even when you're offline."
 msgstr "Works in airplane mode. No internet needed. Your financial assistant is always available—even when you're offline."
 
@@ -13653,6 +13668,11 @@ msgstr "Yes — enables transfer-pair detection"
 #: src/feature/constant/feature-registry.constant.ts:849
 msgid "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
 msgstr "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
+
+#: src/generic/component/faq-section/faq-section.tsx:60
+#: src/generic/util/build-landing-json-ld.util.ts:31
+msgid "Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers."
+msgstr "Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx:156
 #: src/feature/constant/feature-registry.constant.ts:650
@@ -13783,10 +13803,6 @@ msgstr "Yes, with consent. When you agree to terms of service and privacy polici
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1771
 msgid "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
 msgstr "Yes, YNAB supports manual transaction entry. However, the app is designed around bank sync, and some users find the manual-only experience less polished. If you’re using YNAB without bank sync for privacy reasons, you might consider an app that was designed for manual entry from the start."
-
-#: src/generic/util/build-landing-json-ld.util.ts:31
-msgid "Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
-msgstr "Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:464
 msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or fetch current exchange rates."
@@ -14217,10 +14233,6 @@ msgstr "Your data doesn’t disappear if we go out of business"
 msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 msgstr "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:72
-msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
-msgstr "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:903
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
 msgstr "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
@@ -14258,6 +14270,10 @@ msgstr "Your device only"
 #: src/generic/component/hero-section/hero-section-header.tsx:47
 msgid "Your Device."
 msgstr "Your Device."
+
+#: src/generic/component/security-section/security-section-cards.tsx:48
+msgid "Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher AES-256 encrypts the database file so raw storage access reveals nothing."
+msgstr "Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher AES-256 encrypts the database file so raw storage access reveals nothing."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:356
 msgid "Your financial data belongs to you. Period. A good budget app should:"
