@@ -13,6 +13,7 @@ import { TransactionEntryEntityTable } from '../../transaction-entry/table/trans
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
@@ -296,6 +297,19 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     isNull(TransactionEntityTable.consolidationParentTransactionId)
                 )
             );
+    }
+
+    @Log(
+        (transactionId, type, tx) => `enter transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))}`,
+        'done',
+        (error, transactionId, type, tx) =>
+            `throw transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async setConsolidationType(transactionId: number, type: TransactionConsolidationTypeEnum | null, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ consolidationType: type })
+            .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)));
     }
 
     @Log(

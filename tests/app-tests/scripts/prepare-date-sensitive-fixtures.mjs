@@ -290,6 +290,93 @@ const generateConsolidationFixture = () => {
     );
 };
 
+const generateRefundConsolidationFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '22.db');
+
+    const now = Math.floor(Date.now() / 1000);
+    const tOpening = now - 24 * 60 * 60;
+    const tPartialExpense = now - 5 * 60;
+    const tPartialRefund = now - 4 * 60;
+    const tFullExpense = now - 10 * 60;
+    const tFullRefund = now - 9 * 60;
+    const tAmbiguousFirstExpense = now - 15 * 60;
+    const tAmbiguousSecondExpense = now - 14 * 60;
+    const tAmbiguousRefund = now - 13 * 60;
+
+    const uahId = 33;
+
+    const u30 = 30_000_000;
+    const u40 = 40_000_000;
+    const u55 = 55_000_000;
+    const u120 = 120_000_000;
+    const u1000 = 1_000_000_000;
+
+    const balance = u1000 - u120 + u40 - u55 + u55 - u30 - u30 + u30;
+
+    backupFixture(sourcePath, targetPath);
+
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM transaction_tags;
+        DELETE FROM account_balances;
+        DELETE FROM accounts;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, external_source, iban, is_active, include_in_net_worth)
+        VALUES
+            (1, ${now}, ${now}, 'Wallet', 1, 'E2E Refund Card', 'BANK_SYNC', 'ASSET', ${uahId}, 'MONOBANK', 'UA000000000000000000000000R1', 1, 1);
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, token, created_at, updated_at)
+        VALUES
+            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', '', ${now}, ${now});
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
+        VALUES
+            (1, ${tOpening},                 ${tOpening},                 'ADJUSTMENT', '',                     '', ${tOpening},                 1.0, NULL, 1,    NULL,       NULL),
+            (2, ${tPartialExpense},          ${tPartialExpense},          'EXPENSE',    'E2E Refund Partial',   '', ${tPartialExpense},          1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-partial-expense'),
+            (3, ${tPartialRefund},           ${tPartialRefund},           'INCOME',     'E2E Refund Partial',   '', ${tPartialRefund},           1.0, NULL, 1,    'MONOBANK', 'e2e-refund-partial-income'),
+            (4, ${tFullExpense},             ${tFullExpense},             'EXPENSE',    'E2E Refund Full',      '', ${tFullExpense},             1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-full-expense'),
+            (5, ${tFullRefund},              ${tFullRefund},              'INCOME',     'E2E Refund Full',      '', ${tFullRefund},              1.0, NULL, 1,    'MONOBANK', 'e2e-refund-full-income'),
+            (6, ${tAmbiguousFirstExpense},   ${tAmbiguousFirstExpense},   'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousFirstExpense},   1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-first'),
+            (7, ${tAmbiguousSecondExpense},  ${tAmbiguousSecondExpense},  'EXPENSE',    'E2E Refund Ambiguous', '', ${tAmbiguousSecondExpense},  1.0, 1,    NULL, 'MONOBANK', 'e2e-refund-ambiguous-expense-second'),
+            (8, ${tAmbiguousRefund},         ${tAmbiguousRefund},         'INCOME',     'E2E Refund Ambiguous', '', ${tAmbiguousRefund},         1.0, NULL, 1,    'MONOBANK', 'e2e-refund-ambiguous-income');
+
+        INSERT INTO transaction_entries (transaction_id, account_id, type, amount, external_id, category_id, mcc_category_id, created_at, updated_at)
+        VALUES
+            (1, 1, 'DEBIT',  ${u1000}, NULL,                         NULL, NULL, ${tOpening},                ${tOpening}),
+            (2, 1, 'CREDIT', ${u120},  'e2e-refund-partial-expense',  12,   NULL, ${tPartialExpense},         ${tPartialExpense}),
+            (3, 1, 'DEBIT',  ${u40},   'e2e-refund-partial-income',   12,   NULL, ${tPartialRefund},          ${tPartialRefund}),
+            (4, 1, 'CREDIT', ${u55},   'e2e-refund-full-expense',     13,   NULL, ${tFullExpense},            ${tFullExpense}),
+            (5, 1, 'DEBIT',  ${u55},   'e2e-refund-full-income',      13,   NULL, ${tFullRefund},             ${tFullRefund}),
+            (6, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-first',  NULL, NULL, ${tAmbiguousFirstExpense},  ${tAmbiguousFirstExpense}),
+            (7, 1, 'CREDIT', ${u30},   'e2e-refund-ambiguous-second', NULL, NULL, ${tAmbiguousSecondExpense}, ${tAmbiguousSecondExpense}),
+            (8, 1, 'DEBIT',  ${u30},   'e2e-refund-ambiguous-income', NULL, NULL, ${tAmbiguousRefund},        ${tAmbiguousRefund});
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES
+            (1, ${balance}, ${now}, ${now});
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = ${uahId},
+            language = 'en',
+            show_cents = 0,
+            updated_at = ${now};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 shiftTransactionsFixtureToNow();
 generateRecurringFixture();
 generateConsolidationFixture();
+generateRefundConsolidationFixture();

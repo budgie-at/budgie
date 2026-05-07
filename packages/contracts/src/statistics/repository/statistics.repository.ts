@@ -10,6 +10,7 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -63,6 +64,9 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .select({
                 income: sql<number>`
                     COALESCE(SUM(CASE
+                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                        THEN 0
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
@@ -71,6 +75,10 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 `.as('income'),
                 expense: sql<number>`
                     COALESCE(SUM(CASE
+                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        THEN ${this.buildRefundAdjustedCreditAmountSql()} * ${exchangeRateSql}
                         WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                              AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
                         THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
@@ -176,7 +184,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         defaultInstrumentId: number
     ) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+        const amountSql = this.buildRefundAwareAmountSql(exchangeRateSql);
 
         return this.db
             .select({
@@ -200,7 +208,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
     private buildTagBreakdownQuery(transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>, defaultInstrumentId: number) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+        const amountSql = this.buildRefundAwareAmountSql(exchangeRateSql);
 
         return this.db
             .select({
@@ -223,6 +231,48 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .orderBy(desc(amountSql));
     }
     /* jscpd:ignore-end */
+
+    private buildRefundAwareAmountSql(exchangeRateSql: ReturnType<typeof this.getExchangeRateSql>) {
+        return sql<number>`COALESCE(SUM(CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+            THEN ${this.buildRefundAdjustedCreditAmountSql()} * ${exchangeRateSql}
+            ELSE ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
+        END), 0)`;
+    }
+
+    private buildRefundAdjustedCreditAmountSql() {
+        return sql<number>`
+            ${TransactionEntryEntityTable.amount}
+            - (
+                ${this.buildRefundTotalSql()}
+                * ${TransactionEntryEntityTable.amount}
+                / NULLIF(${this.buildLedgerCreditTotalSql()}, 0)
+            )
+        `;
+    }
+
+    private buildRefundTotalSql() {
+        return sql<number>`COALESCE((
+            SELECT SUM(refund_entry.amount)
+            FROM transaction_entries refund_entry
+            WHERE refund_entry.transaction_id = ${TransactionEntryEntityTable.transactionId}
+              AND refund_entry.original_transaction_id IS NOT NULL
+              AND refund_entry.deleted_at IS NULL
+              AND refund_entry.type = ${TransactionEntryTypeEnum.DEBIT}
+        ), 0)`;
+    }
+
+    private buildLedgerCreditTotalSql() {
+        return sql<number>`COALESCE((
+            SELECT SUM(ledger_credit.amount)
+            FROM transaction_entries ledger_credit
+            WHERE ledger_credit.transaction_id = ${TransactionEntryEntityTable.transactionId}
+              AND ledger_credit.original_transaction_id IS NULL
+              AND ledger_credit.deleted_at IS NULL
+              AND ledger_credit.type = ${TransactionEntryTypeEnum.CREDIT}
+        ), 0)`;
+    }
 
     private buildStatisticsWhere(filters: TransactionFilterInterface) {
         const baseWhere = this.buildFilterWhere(filters);

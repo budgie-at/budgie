@@ -168,6 +168,7 @@ export { TransactionAssociationEnum } from './transaction/enum/transaction-assoc
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
 export { TRANSFER_PAIR_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-pair-time-window.constant';
+export { REFUND_TIME_WINDOW_SECONDS } from './transaction/constant/refund-time-window.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
@@ -241,8 +242,11 @@ export type { TransferPairReviewCandidateInterface } from './transaction/interfa
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
+export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
+export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
 
 export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
+export { RefundPairRepository } from './transaction/repository/refund-pair.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';

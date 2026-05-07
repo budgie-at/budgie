@@ -1,0 +1,79 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '22.db(, db)?'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Partial'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Full'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ConsolidateTransfersCard'
+    direction: DOWN
+- tapOn:
+    id: 'SettingsPage.ConsolidateTransfersCard'
+- extendedWaitUntil:
+    visible: 'Consolidate Transfers'
+    timeout: 10000
+- tapOn: 'Consolidate'
+
+- extendedWaitUntil:
+    visible: 'Transfers consolidated'
+    timeout: 10000
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Refund_Partial'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionCard.RefundedPill.4'
+- assertNotVisible:
+    id: 'TransactionCard.Amount.3'
+- assertNotVisible:
+    id: 'TransactionCard.Amount.5'
+- assertVisible:
+    id: 'TransactionCard.Amount.8'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+
+- tapOn:
+    id: 'TransactionCard.RefundedPill.4'
+- extendedWaitUntil:
+    visible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 10000
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowTitle.0.E2E_Refund_Full'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowAmount.0.DEBIT.55000000'
+- tapOn:
+    id: 'ConsolidationSourceModal.DoneButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Analytics'
+- extendedWaitUntil:
+    visible:
+      id: 'AnalyticsPage.Container'
+    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: 'CategoryStatisticsCard.Amount.Restaurants_Cafes.80000000'
+    direction: DOWN
+- assertVisible:
+    id: 'CategoryStatisticsCard.Amount.Restaurants_Cafes.80000000'
