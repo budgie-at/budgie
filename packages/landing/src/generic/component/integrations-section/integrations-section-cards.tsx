@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Bitcoin, Building2, FileSpreadsheet } from 'lucide-react';
+import { Bitcoin, Building2, FileSpreadsheet, GitMerge } from 'lucide-react';
 
 import { Badge } from '../../../ui/badge';
 
@@ -9,7 +9,7 @@ export const IntegrationsSectionCards = () => {
     const { t } = useLingui();
 
     return (
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <IntegrationsSectionCard
                 badges={
                     <>
@@ -64,6 +64,27 @@ export const IntegrationsSectionCards = () => {
                 icon={<FileSpreadsheet className="size-6 text-green-600 dark:text-green-400" />}
                 iconClassName="bg-green-100 dark:bg-green-900/30"
                 title={<Trans>CSV Import</Trans>}
+            />
+
+            <IntegrationsSectionCard
+                badges={
+                    <>
+                        <Badge variant="outline">{t`Counter-IBAN`}</Badge>
+                        <Badge variant="outline">{t`FX Tolerance`}</Badge>
+                        <Badge variant="outline">{t`Auto-Pair`}</Badge>
+                    </>
+                }
+                cardClassName="bg-linear-to-b from-background to-purple-50/50 dark:to-purple-950/20"
+                delay={0.3}
+                description={
+                    <Trans>
+                        When you send money between two banks, Budgie auto-pairs both legs using counter-IBAN matching plus exchange-rate
+                        tolerance — no duplicate expenses, no manual merging.
+                    </Trans>
+                }
+                icon={<GitMerge className="size-6 text-purple-600 dark:text-purple-400" />}
+                iconClassName="bg-purple-100 dark:bg-purple-900/30"
+                title={<Trans>Transfer Detection</Trans>}
             />
         </div>
     );
