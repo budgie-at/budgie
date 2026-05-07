@@ -381,7 +381,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.CORE,
         title: msg`Transaction Tags for Multi-Dimensional Tracking`,
         tagline: msg`Layer tags on top of categories — one transaction can be Groceries (category) and #vacation, #shared, #reimbursable (tags).`,
-        metaTitle: msg`Transaction Tags — Budgie`,
+        metaTitle: msg`Custom Transaction Tags for Expense Tracking — Budgie`,
         metaDescription: msg`Tags answer "for which project, person, or purpose" — separate from categories. Multi-select fast, promote a primary tag for at-a-glance scanning, and slice analytics per tag.`,
         primaryKeyword: 'transaction labels app',
         seoKeywords: [
@@ -459,7 +459,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.CORE,
         title: msg`CSV Bank Statement Import`,
         tagline: msg`Any bank, any column order — set it up once per source, then it's two taps from there.`,
-        metaTitle: msg`CSV Bank Statement Import — Budgie`,
+        metaTitle: msg`CSV Import for Bank Statements & Transactions — Budgie`,
         metaDescription: msg`Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API.`,
         primaryKeyword: 'import bank statement CSV',
         seoKeywords: [
@@ -576,7 +576,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.CORE,
         title: msg`PIN App Lock — Locks With the Encryption Key`,
         tagline: msg`The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.`,
-        metaTitle: msg`PIN App Lock — Budgie`,
+        metaTitle: msg`PIN Lock Finance App — Private Expense Tracker — Budgie`,
         metaDescription: msg`Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access.`,
         primaryKeyword: 'PIN lock finance app',
         seoKeywords: [
@@ -654,7 +654,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.CORE,
         title: msg`Export Every Transaction You've Logged`,
         tagline: msg`CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours.`,
-        metaTitle: msg`CSV & Database Export — Budgie`,
+        metaTitle: msg`Data Export — Own Your Expense History — Budgie`,
         metaDescription: msg`One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or anywhere. Your data, your call.`,
         primaryKeyword: 'export transactions CSV',
         seoKeywords: [
@@ -693,7 +693,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.CORE,
         title: msg`Database Backup & Restore`,
         tagline: msg`One encrypted file. No account. Restore on any device in seconds.`,
-        metaTitle: msg`Database Backup & Restore — Budgie`,
+        metaTitle: msg`Encrypted Database Backup to Your Cloud — Budgie`,
         metaDescription: msg`Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN.`,
         primaryKeyword: 'expense tracker backup restore',
         seoKeywords: [
@@ -999,7 +999,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.POWER,
         title: msg`Windowed Bank Re-sync`,
         tagline: msg`Re-pull a slice. Keep your edits. No nuke-from-orbit.`,
-        metaTitle: msg`Windowed Bank Re-sync — Budgie`,
+        metaTitle: msg`Bank Re-Sync Window — Backfill Missing Transactions — Budgie`,
         metaDescription: msg`Re-pull just the last N days of bank history without nuking your manual edits or category overrides. Conflict picker for edited rows.`,
         primaryKeyword: 'bank sync history reset',
         seoKeywords: [
@@ -1038,7 +1038,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.POWER,
         title: msg`MCC Auto-Categorization`,
         tagline: msg`Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport.`,
-        metaTitle: msg`MCC Auto-Categorization — Budgie`,
+        metaTitle: msg`MCC Auto-Categorization for Bank Transactions — Budgie`,
         metaDescription: msg`Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically. Per-MCC overrides for personal preferences.`,
         primaryKeyword: 'automatic transaction categories',
         seoKeywords: [
@@ -1077,7 +1077,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.POWER,
         title: msg`Tag-Based Spending Analytics`,
         tagline: msg`#vacation, #shared, #reimbursable — quantified, with an "Untagged" bucket for completeness.`,
-        metaTitle: msg`Tag-Based Analytics — Budgie`,
+        metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
         metaDescription: msg`Slice spending and income by tag. Per-tag totals plus an "Untagged" bucket for the gaps. Drill from a tag into its transactions.`,
         primaryKeyword: 'spending by tag analytics',
         seoKeywords: [
@@ -1116,7 +1116,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.POWER,
         title: msg`Convert a Transaction to a Transfer`,
         tagline: msg`Reclassify, don't re-enter — turn an expense into a transfer in one tap.`,
-        metaTitle: msg`Convert to Transfer — Budgie`,
+        metaTitle: msg`Convert Expense to Transfer Between Accounts — Budgie`,
         metaDescription: msg`Logged a payment as expense but it was a transfer? One tap reclassifies — both legs link, balances reconcile, analytics updates.`,
         primaryKeyword: 'convert expense to transfer',
         seoKeywords: [
@@ -1233,7 +1233,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.NICHE,
         title: msg`True Dark Mode (Not Just Dimmed)`,
         tagline: msg`OLED-friendly black, locale-aware, no white flash on cold launch.`,
-        metaTitle: msg`Dark Mode — Budgie`,
+        metaTitle: msg`Dark Mode Budget App — Easy on the Eyes — Budgie`,
         metaDescription: msg`System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility.`,
         primaryKeyword: 'dark mode expense tracker',
         seoKeywords: [
@@ -1311,7 +1311,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.NICHE,
         title: msg`Primary Tag — Scan Your Transactions At A Glance`,
         tagline: msg`One badge. Scan a long list at a glance.`,
-        metaTitle: msg`Primary Tag — Budgie`,
+        metaTitle: msg`Primary Tag — Quick-Scan Transaction Labeling — Budgie`,
         metaDescription: msg`Promote one tag per transaction to "primary" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows.`,
         primaryKeyword: 'label transactions quickly',
         seoKeywords: [
