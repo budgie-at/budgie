@@ -131,6 +131,45 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['ai', 'on-device', 'privacy']
     },
     {
+        slug: 'ai-transaction-suggestions',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Smart Transaction Suggestions — Tap and Done`,
+        tagline: msg`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled.`,
+        metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,
+        metaDescription: msg`Budgie suggests category, tags, and amount from your own SQL patterns and 768-dim embeddings. Faster manual entry than any AI cloud assistant.`,
+        primaryKeyword: 'smart expense suggestions',
+        seoKeywords: [
+            'smart expense suggestions',
+            'auto-fill expense form',
+            'transaction prediction app',
+            'on-device expense suggestions',
+            'AI form pre-fill budget app'
+        ],
+        relatedFeatureSlugs: ['ai-auto-categorization', 'recurring-payments-calendar', 'expense-tracking', 'ai-tag-suggestions', 'transaction-tags'],
+        relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
+        faqs: [
+            {
+                question: msg`Where do the suggestions come from?`,
+                answer: msg`Two sources: (1) weekly/monthly SQL patterns over your own transactions, and (2) a 768-dim embedding lookup matching the current title against your nearest historical entries. No cloud calls.`
+            },
+            {
+                question: msg`Will it suggest things I never bought?`,
+                answer: msg`No. The suggestion engine only proposes values from transactions you've already logged or imported.`
+            },
+            {
+                question: msg`Can I disable suggestions?`,
+                answer: msg`Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before.`
+            },
+            {
+                question: msg`Does this work for income and transfers too?`,
+                answer: msg`Yes. The suggestion engine runs on every form variant — expense, income, and transfer.`
+            }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['ai', 'suggestions', 'expense-tracking']
+    },
+    {
         slug: 'voice-transaction-entry',
         tier: FeatureTierEnum.HERO,
         title: msg`Voice Transaction Entry`,
