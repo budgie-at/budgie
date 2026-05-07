@@ -73,7 +73,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }
-                        bottom={<RefundedPill transaction={transaction} onPress={handleOpenRefundSources} />}
                     />
                 }
             >
@@ -83,6 +82,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
+                    amountTopContent={<RefundedPill transaction={transaction} onPress={handleOpenRefundSources} />}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
