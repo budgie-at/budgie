@@ -5,6 +5,7 @@ export { seedBankPair } from './seed/seed-bank-pair';
 export { seedAccountPair } from './seed/seed-account-pair';
 export { seedTransferPairFixture } from './seed/seed-transfer-pair-fixture';
 export { seedRefundedExpense } from './seed/seed-refund-fixture';
+export { seedRefundStatisticsScenario } from './seed/seed-refund-statistics-scenario';
 export { runRefundScenario } from './seed/run-refund-scenario';
 export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';
 export { fetchTransactionById } from './db/fetch-transaction-by-id';

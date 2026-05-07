@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario } from '../../harness';
+import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
+
+import { statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-full-refund', () => {
     it('promotes the expense and reparents the matching-amount refund (full refund)', async () => {
@@ -24,5 +27,17 @@ describe('consolidation/refund-pair-full-refund', () => {
         const debitTotal = debits.reduce((sum, entry) => sum + entry.amount, 0);
 
         expect(creditTotal - debitTotal).toBe(0);
+    });
+
+    it('removes full refunds from totals and expense category analytics', async () => {
+        const { account, category } = seedRefundStatisticsScenario(120 * PRECISION);
+
+        await transferConsolidationService.consolidate();
+
+        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
+        const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
+
+        expect([totals?.income, totals?.expense, categoryAmount]).toStrictEqual([0, 0, 0]);
     });
 });

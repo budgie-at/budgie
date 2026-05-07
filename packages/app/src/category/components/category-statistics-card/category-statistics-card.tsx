@@ -13,6 +13,8 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
+import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
+
 interface Props {
     readonly category: Pick<CategoryEntityInterface, 'icon' | 'title'> & { id?: CategoryEntityInterface['id'] };
     readonly amount: number;
@@ -29,6 +31,8 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
+    const cardTestID = CategoryStatisticsCardSelector.Card(category.title);
+    const amountTestID = CategoryStatisticsCardSelector.Amount(category.title, amount);
     /* jscpd:ignore-end */
 
     /* jscpd:ignore-start */
@@ -45,11 +49,13 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
     };
 
     return (
-        <HapticPressable onPress={handlePress} className="gap-y-md">
+        <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
             <View className="flex-row items-center gap-x-md">
                 <CircleIcon icon={category.icon} variant={variant} />
                 <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                <Text className={statsAmountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
+                <Text className={statsAmountVariants({ variant })} testID={amountTestID}>
+                    {formatDigits(microAmount, defaultInstrument.symbol)}
+                </Text>
             </View>
 
             <StatsBar percentage={percentage} variant={variant} />
