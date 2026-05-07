@@ -89,9 +89,9 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         slug: 'ai-auto-categorization',
         tier: FeatureTierEnum.HERO,
         title: msg`On-Device AI Auto-Categorization`,
-        tagline: msg`A 1.7B-parameter model on your phone — never a remote server.`,
+        tagline: msg`Two on-device models — Qwen3 1.7B for chat and a 768-dim embedding model — power category, tag, and merchant suggestions privately.`,
         metaTitle: msg`On-Device AI Auto-Categorization — Budgie`,
-        metaDescription: msg`Budgie's on-device 1.7B LLM and embedding model categorize transactions privately. Your statements never leave the phone — no cloud, no API keys needed.`,
+        metaDescription: msg`Budgie runs Qwen3 1.7B + a 768-dim embedding model on your phone. Two-stage categorization with corrections feeding the embedding index.`,
         primaryKeyword: 'AI expense categorization',
         seoKeywords: [
             'AI expense categorization',
@@ -115,7 +115,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`How big is the model download?`,
-                answer: msg`Roughly 1 GB combined for the language model and the embedding model. The download happens on first use of AI features and is fully optional — you can keep using Budgie without AI.`
+                answer: msg`Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model. The download happens on first use of AI features and is fully optional — you can keep using Budgie without AI.`
             },
             {
                 question: msg`Can I correct the AI's suggestions?`,
@@ -127,7 +127,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2026-02-06',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['ai', 'on-device', 'privacy']
     },
     {
