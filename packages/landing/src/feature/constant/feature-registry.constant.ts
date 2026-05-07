@@ -1301,6 +1301,45 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['transfer', 'convert', 'reclassify']
     },
     {
+        slug: 'income-to-transfer-conversion',
+        tier: FeatureTierEnum.NICHE,
+        title: msg`Convert Income to Transfer — Clean Up Refunds`,
+        tagline: msg`An income transaction (a refund, a reimbursement) can be converted to a transfer in one tap — your income totals stay accurate.`,
+        metaTitle: msg`Convert Income to Transfer in Expense App — Budgie`,
+        metaDescription: msg`Refunds, reimbursements, and cross-account top-ups can now be converted from Income to Transfer in one tap, keeping your income reports clean.`,
+        primaryKeyword: 'convert income to transfer',
+        seoKeywords: [
+            'convert income to transfer',
+            'refund handling expense tracker',
+            'reimbursement budget app',
+            'fix miscategorized income',
+            'income to transfer conversion'
+        ],
+        relatedFeatureSlugs: ['convert-to-transfer', 'account-transfers', 'expense-tracking', 'transfer-pair-detection'],
+        relatedArticleSlugs: ['budgie-offline-financial-data'],
+        faqs: [
+            {
+                question: msg`Why would I want to convert income to a transfer?`,
+                answer: msg`Some "income" entries are actually internal moves — a refund landing back on your card, a friend repaying you in cash that you then deposit. Recording them as transfers keeps your income totals reflecting actual income.`
+            },
+            {
+                question: msg`Can I undo the conversion?`,
+                answer: msg`Yes — open the transfer and convert it back to income.`
+            },
+            {
+                question: msg`Does this rebuild my analytics?`,
+                answer: msg`Statistics recompute live; the converted entry leaves the income column and joins the transfers list immediately.`
+            },
+            {
+                question: msg`What if the matching transfer side already exists?`,
+                answer: msg`The conversion uses the existing pair-detection logic to merge with the matching expense or transfer leg if one is found within the same window.`
+            }
+        ],
+        publishedAt: '2026-05-07',
+        updatedAt: '2026-05-07',
+        ogTags: ['transfers', 'edit', 'cleanup']
+    },
+    {
         slug: 'screenshot-protection',
         tier: FeatureTierEnum.NICHE,
         title: msg`Screenshot Protection — Hide Bank Balance from Previews`,
