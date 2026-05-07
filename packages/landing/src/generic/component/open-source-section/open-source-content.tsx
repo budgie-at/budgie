@@ -21,7 +21,7 @@ export const OpenSourceContent = ({ locale }: Props) => (
     <Motion initial={contentInitial} transition={contentTransition} viewport={viewportOnce} whileInView={contentAnimate}>
         <Badge className="rounded-full px-4 py-1.5 text-sm font-medium mb-6" variant="secondary">
             <Code2 className="size-3 mr-1" />
-            <Trans>Open Source</Trans>
+            <Trans>Public Source</Trans>
         </Badge>
 
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
@@ -30,8 +30,8 @@ export const OpenSourceContent = ({ locale }: Props) => (
 
         <p className="text-muted-foreground md:text-lg mb-8">
             <Trans>
-                Unlike closed-source apps, you don&apos;t have to trust our word. Every line of code is public on GitHub. Security
-                researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it.
+                Unlike closed-source apps, you don&apos;t have to trust our word. The source code is public on GitHub. Security researchers,
+                developers, and anyone can audit exactly how we handle your data—spoiler: we never see it.
             </Trans>
         </p>
 

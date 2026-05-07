@@ -1,6 +1,4 @@
-import { isDefined } from '@rnw-community/shared';
-
-import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
+import { BASE_URL, DEFAULT_SOCIAL_IMAGE_PATH, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
 
 import type { Metadata } from 'next';
@@ -25,29 +23,33 @@ export const buildPillarHubMetadata = ({
     image,
     publishedAt,
     updatedAt
-}: BuildPillarHubMetadataInput): Metadata => ({
-    title,
-    description,
-    keywords,
-    alternates: buildAlternates(locale, `/${slug}`),
-    openGraph: {
+}: BuildPillarHubMetadataInput): Metadata => {
+    const socialImage = image ?? DEFAULT_SOCIAL_IMAGE_PATH;
+
+    return {
         title,
         description,
-        type: 'website',
-        url: `${BASE_URL}/${locale}/${slug}`,
-        locale: OG_LOCALE_MAP[locale] ?? 'en_US',
-        ...(isDefined(image) && { images: [{ url: `${BASE_URL}${image}`, width: 1200, height: 630 }] })
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        ...(isDefined(image) && { images: [`${BASE_URL}${image}`] }),
-        site: '@budgie_at',
-        creator: '@budgie_at'
-    },
-    other: {
-        'article:published_time': publishedAt,
-        'article:modified_time': updatedAt
-    }
-});
+        keywords,
+        alternates: buildAlternates(locale, `/${slug}`),
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `${BASE_URL}/${locale}/${slug}`,
+            locale: OG_LOCALE_MAP[locale] ?? 'en_US',
+            images: [{ url: `${BASE_URL}${socialImage}`, width: 1200, height: 630 }]
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [`${BASE_URL}${socialImage}`],
+            site: '@budgie_at',
+            creator: '@budgie_at'
+        },
+        other: {
+            'article:published_time': publishedAt,
+            'article:modified_time': updatedAt
+        }
+    };
+};

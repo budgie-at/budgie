@@ -888,7 +888,7 @@ msgstr "<0>Firefly III</0>: PWA"
 msgid "<0>Mobile App</0>: Yes"
 msgstr "<0>Firefly III</0>: Так"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1025
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1027
 msgid "<0>Mobile-native experience</0> - Built for phones, not adapted from desktop"
 msgstr "<0>Мобільний досвід</0> — Створений для телефонів, а не адаптований з десктопу"
 
@@ -900,7 +900,7 @@ msgstr "Помірна приватність: Lunch Money, YNAB"
 msgid "<0>Modern tech stack</0>: React Native, Expo, Drizzle ORM, TypeScript throughout."
 msgstr "<0>Сучасний технологічний стек</0>: React Native, Expo, Drizzle ORM, TypeScript наскрізь."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1040
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1042
 msgid "<0>Modern user experience</0> - Clean, intuitive interface for daily tracking"
 msgstr "<0>Сучасний досвід користувача</0> — Чистий, інтуїтивний інтерфейс для щоденного відстеження"
 
@@ -1099,7 +1099,7 @@ msgstr "<0>Firefly III</0>: Самохостинг"
 msgid "<0>Offline-capable applications</0> can function without internet but still treat the server as the canonical data source. Your local changes are staged until they can be sent to the server. Examples include many mobile apps that cache data for offline viewing."
 msgstr "<0>Застосунки з підтримкою офлайн</0> можуть працювати без інтернету, але все одно вважають сервер канонічним джерелом даних. Ваші локальні зміни відкладаються, доки не зможуть бути відправлені на сервер. Прикладами є багато мобільних застосунків, які кешують дані для офлайн-перегляду."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1030
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1032
 msgid "<0>Offline-first architecture</0> - Works without internet, syncs when available"
 msgstr "<0>Архітектура offline-first</0> — Працює без інтернету, синхронізується за наявності"
 
@@ -1345,7 +1345,7 @@ msgstr "<0>Ціна:</0> Безкоштовно для самохостингу.
 msgid "<0>Pricing:</0> Free. No ads, no premium tiers, no data monetization."
 msgstr "<0>Ціна:</0> Безкоштовно. Без реклами, без преміум-рівнів, без монетизації даних."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1035
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1037
 msgid "<0>Privacy by design</0> - Your data stays on your device by default"
 msgstr "<0>Конфіденційність за замовчуванням</0> — Ваші дані залишаються на вашому пристрої за замовчуванням"
 
@@ -1589,8 +1589,8 @@ msgid "<0>The documentation</0> - All guides, API docs, and technical specificat
 msgstr "<0>Документація</0> — Усі посібники, документація API та технічні специфікації"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:631
-msgid "<0>The landing page</0> - Even our marketing website is open source"
-msgstr "<0>Лендінг</0> — Навіть наш маркетинговий сайт має відкритий код"
+msgid "<0>The landing page</0> - Even our marketing website has public source"
+msgstr "<0>Лендінг</0> - Навіть наш маркетинговий сайт має публічний вихідний код"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:263
 msgid "<0>The Long Now.</0> Your data should outlive any particular application, service, or company. Data longevity is a core design principle."
@@ -2001,7 +2001,7 @@ msgstr "Тип рахунку — Борг з підтипом «Я винен»
 msgid "accounts"
 msgstr "рахунки"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:945
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:947
 msgid "Acknowledge receipt of security reports within 48 hours"
 msgstr "Підтвердження отримання звітів про безпеку протягом 48 годин"
 
@@ -2038,7 +2038,7 @@ msgid "Active plugin ecosystem"
 msgstr "Активна екосистема плагінів"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:541
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:980
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:982
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:450
 msgid "Actual Budget"
 msgstr "Actual Budget: Так"
@@ -2059,7 +2059,7 @@ msgstr "Actual Budget: потужність відкритого коду для
 msgid "Actual Budget: The Self-Hoster’s Dream"
 msgstr "Actual Budget: Мрія ентузіаста самохостингу"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:984
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:986
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual — це орієнтований на конфіденційність інструмент бюджетування з сильним підходом local-first. Він пропонує методологію конвертного бюджетування, можливості синхронізації з банком та варіанти як для самостійного розгортання, так і для хмари. Якщо ви віддаєте перевагу конвертному стилю бюджетування та хочете десктопний досвід, Actual варто розглянути."
 
@@ -2242,7 +2242,7 @@ msgstr "Усі ваші фінансові дані, включаючи тран
 msgid "All-in-One"
 msgstr "Все в одному"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:927
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:929
 msgid "Allow reasonable time for fixes before public disclosure"
 msgstr "Надайте розумний час для виправлення перед публічним розкриттям"
 
@@ -2310,7 +2310,7 @@ msgstr "Офлайн-перший підхід фундаментально пе
 msgid "An offline-first architecture addresses aggregator risk at the structural level rather than through policy promises. When your financial data is stored on your device and bank sync happens directly — without an intermediary — the aggregator attack surface does not exist."
 msgstr "Архітектура з офлайн-першим підходом усуває ризик агрегаторів на структурному рівні, а не через обіцянки в політиках. Коли ваші фінансові дані зберігаються на вашому пристрої, а банківська синхронізація відбувається безпосередньо — без посередника — поверхня атаки агрегатора не існує."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:799
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:801
 msgid "An open-source project is more than just public code. It’s a community of users, contributors, and maintainers working together toward shared goals. How that community is governed matters for the project’s long-term health and trustworthiness."
 msgstr "Проєкт з відкритим кодом — це більше, ніж просто публічний код. Це спільнота користувачів, учасників та мейнтейнерів, які працюють разом над спільними цілями. Те, як ця спільнота управляється, має значення для довгострокового здоров'я та надійності проєкту."
 
@@ -2356,7 +2356,7 @@ msgstr "Будь-який банк, будь-який порядок колон�
 msgid "Any bank, any column order — set it up once per source, then it's two taps from there."
 msgstr "Будь-який банк, будь-який порядок колонок — налаштуйте один раз для кожного джерела, і далі потрібно лише два дотики."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:864
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:866
 msgid "Any change affecting data handling is flagged for review"
 msgstr "Будь-яка зміна, що впливає на обробку даних, позначається для перегляду"
 
@@ -2517,7 +2517,7 @@ msgstr "В основі Budgie лежить локально-орієнтова�
 msgid "Audio never leaves the device — no Siri-style cloud round-trip"
 msgstr "Аудіо ніколи не покидає пристрій — без хмарних запитів у стилі Siri"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:775
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:777
 msgid "Audit the codebase for vulnerabilities"
 msgstr "Аудитуйте кодову базу на вразливості"
 
@@ -3020,7 +3020,7 @@ msgstr "Обидва. Той самий процес, що й для катег�
 msgid "Bound by their privacy policy"
 msgstr "Пов'язані їхньою політикою конфіденційності"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:849
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:851
 msgid "Breaking security changes are clearly communicated"
 msgstr "Критичні зміни безпеки чітко комунікуються"
 
@@ -3101,7 +3101,7 @@ msgstr "Імпорт CSV та PDF у Budgie обробляє файли випи
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie дедуплікує за ідентифікатором транзакції. Наявні рядки пропускаються; вставляються лише нові. Повторний імпорт є безпечним."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1134
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1136
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
 msgstr "Budgie втілює цей прозорий підхід. Кожен рядок коду публічний. Кожне рішення задокументоване. Кожну заяву можна перевірити. Ми не просимо вас довіряти нам, бо ми так кажемо. Ми просимо вас довіряти нам, бо ви можете точно бачити, що ми робимо."
 
@@ -3121,11 +3121,11 @@ msgstr "Budgie існує тому, що ми хотіли фінансовий 
 msgid "Budgie focuses on the device you use most—your phone. This isn’t a limitation; it’s a feature. One device means one point of vulnerability instead of many."
 msgstr "Budgie зосереджується на пристрої, який ви використовуєте найбільше — вашому телефоні. Це не обмеження; це функція. Один пристрій означає одну точку вразливості замість багатьох."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1020
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1022
 msgid "Budgie focuses specifically on mobile-first, offline-first expense tracking. Our priorities are:"
 msgstr "Budgie зосереджується саме на мобільному відстеженні витрат з підходом offline-first. Наші пріоритети:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:811
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:813
 msgid "Budgie follows a transparent decision-making process:"
 msgstr "Budgie дотримується прозорого процесу прийняття рішень:"
 
@@ -3167,17 +3167,17 @@ msgstr "Budgie — повністю офлайн-додаток для облі�
 msgid "Budgie is a private expense tracker by architecture: encrypted on-device storage, no account, no aggregator, biometric lock, screenshot protection, and your own cloud backups."
 msgstr "Budgie — приватний додаток для обліку витрат за архітектурою: зашифроване сховище на пристрої, без акаунта, без агрегатора, біометричне блокування, захист знімків екрана та власні хмарні резервні копії."
 
+#: src/feature/constant/feature-registry.constant.ts:1728
+msgid "Budgie is a source-available mobile budget app. Read the network code, verify the offline-first claims, fork it if we ever go in the wrong direction."
+msgstr "Budgie — мобільний застосунок для бюджету з доступним вихідним кодом. Читайте мережевий код, перевіряйте offline-first твердження та форкайте проєкт, якщо ми колись підемо не туди."
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:214
+msgid "Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it."
+msgstr "Budgie — застосунок для особистих фінансів із доступним вихідним кодом. Читайте код, перевіряйте заяви про приватність, додавайте функції та довіряйте трекеру витрат, бо можете його перевірити."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:291
 msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in an encrypted SQLite database on your device. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription required to use the core features."
 msgstr "Budgie — офлайн-перший додаток для обліку витрат, створений для iOS та Android. Усі дані зберігаються у зашифрованій базі даних SQLite на вашому пристрої. Немає серверів Budgie, що отримують ваші транзакції, немає агрегатора, що зберігає ваші банківські облікові дані, і не потрібна підписка для використання основних функцій."
-
-#: src/feature/constant/pillar-hub-registry.constant.ts:214
-msgid "Budgie is an open source personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it."
-msgstr "Budgie — додаток для особистих фінансів з відкритим вихідним кодом. Читайте вихідний код, перевіряйте заяви про конфіденційність, долучайтеся до розробки функцій і довіряйте своєму додатку для обліку витрат, бо можете його перевірити."
-
-#: src/feature/constant/feature-registry.constant.ts:1728
-msgid "Budgie is an open-source mobile budget app. Read the network code, verify the offline-first claims, fork it if we ever go in the wrong direction."
-msgstr "Budgie — мобільний бюджетний додаток з відкритим вихідним кодом. Читайте мережевий код, перевіряйте заяви про офлайн-перший підхід, зробіть форк, якщо ми колись підемо не в той бік."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1864
 msgid "Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in the future (like hosted backup), but the core app will always be free and fully functional."
@@ -3188,24 +3188,20 @@ msgid "Budgie is built from the ground up as a local-first personal finance appl
 msgstr "Budgie побудований з нуля як local-first застосунок для особистих фінансів. Ось як ми реалізуємо ідеали local-first:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:601
-msgid "Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims, examine our code, and confirm that we do what we say. Everything about Budgie is open source, from the mobile app to the backend services."
-msgstr "Budgie побудований на принципі, що вам не потрібно нам довіряти. Ви повинні мати можливість перевірити наші заяви, вивчити наш код і підтвердити, що ми робимо те, що говоримо. Все в Budgie має відкритий код — від мобільного додатку до бекенд-сервісів."
+msgid "Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims, examine our code, and confirm that we do what we say. Budgie's source is public, from the mobile app to the backend services."
+msgstr "Budgie побудований на принципі, що вам не потрібно просто довіряти нам. Ви маєте змогу перевірити наші твердження, дослідити код і підтвердити, що ми робимо те, що кажемо. Вихідний код Budgie публічний, від мобільного застосунку до backend-сервісів."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1822
 msgid "Budgie is designed as a mobile-first, offline application. There’s no server component to self-host because your data never leaves your device. This is intentional: it eliminates the complexity and security responsibility of running your own server while providing even stronger privacy guarantees."
 msgstr "Budgie створений як мобільний офлайн-додаток. Немає серверного компонента для самохостингу, тому що ваші дані ніколи не залишають ваш пристрій. Це зроблено навмисно: це усуває складність та відповідальність за безпеку під час запуску власного сервера, забезпечуючи при цьому ще сильніші гарантії приватності."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1109
-msgid "Budgie is free to use with optional premium features for users who want additional capabilities. Our business model relies on users who find enough value in the product to support its development, not on monetizing user data. The open-source nature actually supports this model because users can trust their data isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable business can coexist."
-msgstr "Budgie безкоштовний у використанні з додатковими преміум-функціями для користувачів, які хочуть розширені можливості. Наша бізнес-модель спирається на користувачів, які знаходять достатню цінність у продукті, щоб підтримати його розробку, а не на монетизації даних користувачів. Відкрита природа коду фактично підтримує цю модель, оскільки користувачі можуть довіряти, що їхні дані не продаються, що робить їх більш готовими платити за преміум-функції. Прозорість та стійкий бізнес можуть співіснувати."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1111
+msgid "Budgie is free to use with optional premium features for users who want additional capabilities. Our business model relies on users who find enough value in the product to support its development, not on monetizing user data. The public-source model actually supports this because users can trust their data isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable business can coexist."
+msgstr "Budgie можна використовувати безкоштовно, з опціональними premium-функціями для користувачів, яким потрібні додаткові можливості. Наша бізнес-модель спирається на користувачів, які бачать достатню цінність у продукті, щоб підтримати його розробку, а не на монетизацію користувацьких даних. Модель публічного коду підтримує це, бо користувачі можуть довіряти, що їхні дані не продаються, і тому охочіше платять за premium-функції. Прозорість і сталий бізнес можуть співіснувати."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1625
 msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
 msgstr "Budgie — це нативний мобільний додаток, повністю офлайн-здатний та радикально приватний. Ваші дані зберігаються на вашому пристрої в базі даних SQLite, до якої ви можете робити запити безпосередньо. Банківська синхронізація, коли використовується, застосовує архітектуру нульового знання. Додаток з відкритим кодом, тому ви можете перевірити кожну нашу заяву."
-
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:74
-msgid "Budgie is open source under the MIT License. Every line of code that touches your financial data is publicly readable on GitHub. Our privacy promises are not marketing — they are verifiable statements backed by code you can audit yourself."
-msgstr "Budgie є відкритим вихідним кодом за ліцензією MIT. Кожен рядок коду, що торкається ваших фінансових даних, публічно доступний на GitHub. Наші обіцянки щодо конфіденційності — не маркетинг, а верифіковані твердження, підкріплені кодом, який ви можете перевірити самостійно."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx:230
 #: src/feature/constant/feature-registry.constant.ts:82
@@ -3220,7 +3216,7 @@ msgstr "Budgie є відкритим вихідним кодом. Заяви п�
 msgid "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
 msgstr "Budgie — це наш внесок у це майбутнє: застосунок для особистих фінансів, який зберігає ваші фінансові дані там, де їм належить бути — на вашому пристрої під вашим контролем."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:972
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:974
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie — не єдиний варіант з відкритим кодом для управління фінансами. Існує здорова екосистема альтернатив, і ми вважаємо за правильне чесно їх згадати. Різні інструменти підходять для різних потреб, і найкращий вибір залежить від ваших конкретних вимог."
 
@@ -3282,7 +3278,7 @@ msgstr "Budgie запускає Qwen3 1.7B та 768-вимірну модель 
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie запускає Qwen3 1.7B і 768-вимірну модель вкладень локально. AI-автокатегоризація, введення транзакцій голосом і переклад назв продавців без надсилання даних у хмару."
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:94
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:32
 msgid "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
 msgstr "Budgie поширюється під source-available ліцензією, яка дозволяє читати кожен рядок, форкати проєкт і збирати власну версію. Ваші фінансові дані належать вам — а не постачальнику, який може змінити умови, підняти ціни або закрити сервіс. Якщо Budgie перестане відповідати вашим потребам, ви заберете дані й свій збірник із собою."
 
@@ -3359,6 +3355,7 @@ msgstr "Команда Budgie"
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 msgstr "Budgie використовує інший підхід, заснований на безконфліктних реплікованих типах даних (CRDT) та операційних трансформаціях. Кожна зміна записується як операція з міткою часу та ідентифікатором пристрою. Під час синхронізації:"
 
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:14
 #: src/generic/component/faq-section/faq-section.tsx:66
 #: src/generic/util/build-landing-json-ld.util.ts:37
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
@@ -3373,8 +3370,8 @@ msgid "Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encrypti
 msgstr "Budgie використовує SQLite із підтримкою SQLCipher та шифруванням AES-256. Ключ шифрування виводиться з вашого брелока пристрою і ніколи не передається за межі пристрою."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:659
-msgid "Budgie uses the MIT License, one of the most permissive open-source licenses available. We chose this license for several reasons:"
-msgstr "Budgie використовує MIT License — одну з найдозвільніших ліцензій відкритого коду. Ми обрали цю ліцензію з кількох причин:"
+msgid "Budgie uses the O'SAASY License, a source-available license that lets you read, modify, publish, and distribute the code while reserving hosted-service monetization for the original project. We chose this license for several reasons:"
+msgstr "Budgie використовує O'SAASY License — ліцензію з доступним вихідним кодом, яка дозволяє читати, змінювати, публікувати й поширювати код, водночас залишаючи монетизацію hosted-service за оригінальним проєктом. Ми обрали цю ліцензію з кількох причин:"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:318
 msgid "Budgie uses two complementary AI techniques for transaction categorization. They address different parts of the problem and together produce more accurate suggestions than either approach alone."
@@ -3420,10 +3417,6 @@ msgstr "Видаліть старі акаунти: Після міграції 
 msgid "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
 msgstr "Кодова база Budgie є відкритою, що дозволяє дослідникам безпеки та допитливим користувачам перевіряти наші заяви. Ви можете точно перевірити, як зберігаються дані, підтвердити, що нічого не передається на наші сервери, і навіть зібрати застосунок самостійно."
 
-#: src/feature/constant/pillar-hub-registry.constant.ts:212
-msgid "Budgie's core is open source. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide."
-msgstr "Ядро Budgie є відкритим вихідним кодом. Перевіряйте код, верифікуйте наші заяви про конфіденційність і долучайтеся — бо ваш фінансовий додаток не повинен нічого приховувати."
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:530
 msgid "Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want data to transfer. Both devices need to be accessible, either on the same local network or both connected to the internet for the relay-assisted handshake."
 msgstr "Синхронізація між пристроями в Budgie потребує більше залученості користувача. Вам потрібно явно ініціювати синхронізацію, коли ви хочете передати дані. Обидва пристрої повинні бути доступні — або в одній локальній мережі, або обидва підключені до інтернету для рукопотиску через ретранслятор."
@@ -3431,10 +3424,6 @@ msgstr "Синхронізація між пристроями в Budgie пот�
 #: src/feature/constant/feature-registry.constant.ts:185
 msgid "Budgie's local LLM suggests up to three tags per transaction so heavy taggers stop typing. Embedding fallback keeps it instant offline."
 msgstr "Локальний LLM Budgie пропонує до трьох тегів на транзакцію, тому активним користувачам тегів не потрібно вводити їх вручну. Резервний варіант на основі вкладень забезпечує миттєву роботу офлайн."
-
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:597
-msgid "Budgie’s Open-Source Commitment"
-msgstr "Відданість Budgie відкритому коду"
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:191
 msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
@@ -3444,15 +3433,23 @@ msgstr "PIN та біометричне блокування Budgie захища
 msgid "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access."
 msgstr "PIN-код Budgie не просто блокує екран — він генерує ключ шифрування SQLCipher. Без PIN-коду файл бази даних нечитабельний, навіть за повного доступу до файлової системи."
 
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:597
+msgid "Budgie’s Public Source Commitment"
+msgstr "Зобов'язання Budgie щодо публічного коду"
+
 #: src/feature/constant/pillar-hub-registry.constant.ts:234
 msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
 msgstr "Вихідний код Budgie розміщений на GitHub. Ви можете переглядати, форкати та робити внесок на github.com/budgie-at/budgie. Репозиторій містить повний застосунок, AI-сервіс, contracts та лендинг."
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:212
+msgid "Budgie's source is public. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide."
+msgstr "Вихідний код Budgie публічний. Перевіряйте код, підтверджуйте наші заяви про приватність і робіть внески — адже ваш фінансовий застосунок не має нічого приховувати."
 
 #: src/feature/constant/feature-registry.constant.ts:1250
 msgid "Budgie's Statistics screen has a dedicated Tags tab with income, expense, and net per tag plus a drillable Untagged bucket for finding labeling gaps."
 msgstr "Екран Статистики Budgie має окрему вкладку Теги з доходами, витратами та балансом по тегах, плюс деталізоване відро «Без тегів» для пошуку прогалин у маркуванні."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:909
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:911
 msgid "Bug Bounty and Security Disclosure"
 msgstr "Bug Bounty та розкриття вразливостей"
 
@@ -3954,8 +3951,8 @@ msgid "Closed-source budget apps"
 msgstr "Бюджетні додатки із закритим вихідним кодом"
 
 #: src/feature/constant/feature-registry.constant.ts:1726
-msgid "Closed-source finance apps ask you to trust marketing. Budgie's mobile app is open source, so the privacy and security claims are auditable line by line."
-msgstr "Фінансові додатки із закритим кодом просять довіряти маркетингу. Мобільний додаток Budgie є відкритим вихідним кодом, тому заяви про конфіденційність і безпеку можна перевіряти рядок за рядком."
+msgid "Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line."
+msgstr "Фінансові застосунки із закритим кодом просять довіряти маркетингу. Мобільний застосунок Budgie має публічний вихідний код, тому заяви про приватність і безпеку можна перевірити рядок за рядком."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:290
 msgid "Closed-source financial apps often make security claims that sound impressive but are impossible to verify:"
@@ -4130,7 +4127,7 @@ msgstr "Спільноти навколо програмного забезпе�
 msgid "Community Auditing"
 msgstr "Аудит спільноти"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:795
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:797
 msgid "Community Contributions and Governance"
 msgstr "Внесок спільноти та управління"
 
@@ -4142,7 +4139,7 @@ msgstr "Внески спільноти вітаються — функції, �
 msgid "Community Driven"
 msgstr "Спільнота розробників"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:825
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:827
 msgid "Community input is solicited and considered"
 msgstr "Думка спільноти запитується та враховується"
 
@@ -4327,7 +4324,7 @@ msgstr "Контекстно-залежне меню — дії адаптуют
 msgid "Continue using YNAB for one month"
 msgstr "Продовжуйте використовувати YNAB протягом одного місяця"
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:101
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:39
 msgid "Contributing is straightforward: open an issue, discuss the change, and submit a pull request. Features requested by real users and built by real users have a direct path into the app without a gatekeeper commercial roadmap."
 msgstr "Долучитися просто: відкрийте issue, обговоріть зміну та надішліть pull request. Функції, запитані реальними користувачами і створені реальними користувачами, мають прямий шлях до додатку без комерційного роадмепу-воротаря."
 
@@ -4335,7 +4332,7 @@ msgstr "Долучитися просто: відкрийте issue, обгов�
 msgid "Contributors"
 msgstr "Контриб'ютори"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:831
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:833
 msgid "Controversial changes require broader consensus"
 msgstr "Суперечливі зміни вимагають ширшого консенсусу"
 
@@ -4368,7 +4365,7 @@ msgstr "Конвертація доходу в переказ у додатку 
 msgid "Convert to Transfer"
 msgstr "Конвертувати в переказ"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:933
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:935
 msgid "Coordinated disclosure to protect users"
 msgstr "Координоване розкриття для захисту користувачів"
 
@@ -4470,7 +4467,7 @@ msgstr "Credit Karma — це легітимна компанія, що нале
 msgid "Credit Karma’s business model is built entirely on monetizing your financial data. They offer free credit monitoring in exchange for showing you targeted financial product recommendations. Every credit card, loan, and insurance offer you see is there because Credit Karma’s algorithms determined you’re a good target based on your financial profile."
 msgstr "Бізнес-модель Credit Karma повністю побудована на монетизації ваших фінансових даних. Вони пропонують безкоштовний моніторинг кредитів в обмін на показ вам таргетованих рекомендацій фінансових продуктів. Кожна кредитна картка, позика та страхова пропозиція, які ви бачите, з'являються тому, що алгоритми Credit Karma визначили, що ви — вдала ціль на основі вашого фінансового профілю."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:951
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:953
 msgid "Credit researchers in security advisories"
 msgstr "Визнання дослідників у рекомендаціях з безпеки"
 
@@ -4867,7 +4864,7 @@ msgstr "Облік боргів"
 msgid "Decimal separator and date format options handle US, EU, and ISO variants"
 msgstr "Параметри роздільника десяткових знаків та формату дати підтримують варіанти US, EU та ISO"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:828
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:830
 msgid "Decisions and rationales are documented publicly"
 msgstr "Рішення та їх обґрунтування документуються публічно"
 
@@ -4934,7 +4931,7 @@ msgstr "Функції для розробників:"
 msgid "developers"
 msgstr "розробники"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:694
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:695
 msgid "Developers can learn from our codebase"
 msgstr "Розробники можуть навчатися з нашої кодової бази"
 
@@ -5040,12 +5037,12 @@ msgstr "Дізнайтеся, чому архітектура offline-first є �
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:77
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:113
-msgid "Discover why open-source budgeting apps provide unmatched transparency and security for your financial data."
-msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
+msgid "Discover why source-available budgeting apps provide unmatched transparency and security for your financial data."
+msgstr "Дізнайтеся, чому бюджетні застосунки з доступним кодом забезпечують неперевершену прозорість і безпеку для ваших фінансових даних."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:52
-msgid "Discover why open-source budgeting apps provide unmatched transparency and security for your financial data. Learn to audit code yourself and why Budgie's open development model keeps your money private."
-msgstr "Дізнайтеся, чому відкриті бюджетні додатки забезпечують неперевершену прозорість та безпеку ваших фінансових даних. Навчіться самостійно перевіряти код і чому відкрита модель розробки Budgie зберігає ваші гроші в безпеці."
+msgid "Discover why source-available budgeting apps provide unmatched transparency and security for your financial data. Learn to audit code yourself and why Budgie's public development model keeps your money private."
+msgstr "Дізнайтеся, чому бюджетні застосунки з доступним кодом забезпечують неперевершену прозорість і безпеку для ваших фінансових даних. Навчіться самостійно аудитити код і дізнайтеся, чому публічна модель розробки Budgie зберігає ваші гроші приватними."
 
 #: src/feature/constant/feature-registry.constant.ts:983
 msgid "Divide a single transaction across multiple categories with a remaining-budget indicator. Each split keeps its own tags and comment."
@@ -5170,9 +5167,9 @@ msgstr "Чи витрачає AI на пристрої заряд батареї
 msgid "Does on-device AI mean the categorization is less accurate?"
 msgstr "Чи означає AI на пристрої менш точну категоризацію?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1099
-msgid "Does open source mean anyone can change my app without my knowledge?"
-msgstr "Чи означає відкритий код, що будь-хто може змінити мій додаток без мого відома?"
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1101
+msgid "Does public source mean anyone can change my app without my knowledge?"
+msgstr "Чи означає публічний код, що будь-хто може змінити мій застосунок без мого відома?"
 
 #: src/app/[lang]/features/split-transactions/page.tsx:155
 #: src/feature/constant/feature-registry.constant.ts:1004
@@ -5502,7 +5499,7 @@ msgstr "Англійська (оригінал), українська, фран�
 msgid "English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting."
 msgstr "Англійська, українська, французька, німецька, іспанська — повний UI, форматування з урахуванням мовних налаштувань."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:742
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:744
 msgid "Enhance documentation"
 msgstr "Вдосконалюйте документацію"
 
@@ -5583,10 +5580,6 @@ msgstr "Кожна гривня. Кожен рахунок. Один додат�
 #: src/app/[lang]/features/expense-tracking/page.tsx:100
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the screen."
 msgstr "Кожен запис містить суму + рахунок + категорію + теги + коментар + дату. Затисніть будь-яку транзакцію у списку для контекстного меню. Редагуйте, видаляйте, розділяйте або конвертуйте на переказ, не залишаючи екрана."
-
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:85
-msgid "Every line of code is public on GitHub. Security researchers and anyone can audit it."
-msgstr "Кожен рядок коду публічний на GitHub. Дослідники безпеки та будь-хто можуть його перевірити."
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:156
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
@@ -5753,7 +5746,7 @@ msgstr "Експортуйте свої дані у форматі CSV будь-
 msgid "Extensive feature set beyond budgeting"
 msgstr "Широкий набір функцій за межами бюджетування"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:846
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:848
 msgid "External input is welcomed on security architecture"
 msgstr "Зовнішній внесок щодо архітектури безпеки вітається"
 
@@ -5814,7 +5807,7 @@ msgstr "Функція"
 msgid "Feature comparison"
 msgstr "Порівняння функцій"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:816
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:818
 msgid "Feature decisions:"
 msgstr "Рішення щодо функцій:"
 
@@ -5930,9 +5923,9 @@ msgstr "Реальний вплив фінансової конфіденцій�
 msgid "Financial Privacy Blog & Insights"
 msgstr "Блог & Інсайти про Фінансову Конфіденційність"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1126
-msgid "Financial software that respects your privacy shouldn’t require blind faith. When you choose an open-source budget app, you’re choosing verifiable security over marketing promises. You’re choosing community oversight over corporate opacity. You’re choosing to trust evidence rather than assertions."
-msgstr "Фінансове програмне забезпечення, яке поважає вашу конфіденційність, не повинно вимагати сліпої віри. Обираючи бюджетний додаток з відкритим кодом, ви обираєте перевірену безпеку замість маркетингових обіцянок. Ви обираєте контроль спільноти замість корпоративної непрозорості. Ви обираєте довіру до доказів, а не до тверджень."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1128
+msgid "Financial software that respects your privacy shouldn’t require blind faith. When you choose a public-source budget app, you’re choosing verifiable security over marketing promises. You’re choosing community oversight over corporate opacity. You’re choosing to trust evidence rather than assertions."
+msgstr "Фінансове програмне забезпечення, яке поважає вашу приватність, не має вимагати сліпої віри. Коли ви обираєте бюджетний застосунок із публічним кодом, ви обираєте перевірювану безпеку замість маркетингових обіцянок. Ви обираєте нагляд спільноти замість корпоративної непрозорості. Ви обираєте довіряти доказам, а не твердженням."
 
 #: src/generic/component/analytics-section/analytics-section-content.tsx:44
 msgid "Find Hidden Patterns"
@@ -5943,7 +5936,7 @@ msgid "Fintech companies operate in a volatile market. The app you trust today m
 msgstr "Фінтех-компанії працюють на нестабільному ринку. Додаток, якому ви довіряєте сьогодні, може не існувати через два роки."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:598
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:992
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:994
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:487
 msgid "Firefly III"
 msgstr "Firefly III: Так"
@@ -5952,7 +5945,7 @@ msgstr "Firefly III: Так"
 msgid "Firefly III is a comprehensive personal finance manager designed for self-hosting. It goes beyond simple budgeting to provide a complete view of your finances."
 msgstr "Firefly III — це комплексний менеджер особистих фінансів, створений для self-hosted. Він виходить за рамки простого бюджетування, надаючи повну картину ваших фінансів."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:996
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:998
 msgid "Firefly III is a comprehensive personal finance manager designed for self-hosting. It offers detailed transaction tracking, budgeting features, and extensive reporting. If you’re comfortable managing your own server infrastructure and want maximum control, Firefly III provides powerful capabilities."
 msgstr "Firefly III — це комплексний менеджер особистих фінансів, розроблений для самостійного розгортання. Він пропонує детальне відстеження транзакцій, функції бюджетування та розширену звітність. Якщо ви комфортно управляєте власною серверною інфраструктурою та хочете максимального контролю, Firefly III надає потужні можливості."
 
@@ -5992,7 +5985,7 @@ msgstr "П'ять дотиків — це на чотири дотики біл�
 msgid "Five window presets: 7, 30, 90 days, plus custom range"
 msgstr "П'ять попередніх налаштувань вікна: 7, 30, 90 днів та власний діапазон"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:733
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:735
 msgid "Fix bugs and submit pull requests"
 msgstr "Виправляйте помилки та надсилайте pull requests"
 
@@ -6032,7 +6025,7 @@ msgstr "Для розробників, які цінують володіння 
 msgid "For developers, the path forward is clear: prioritize data ownership, choose open source when possible, and be skeptical of services that seem too good to be true."
 msgstr "Для розробників шлях вперед зрозумілий: надавайте пріоритет володінню даними, обирайте відкритий код, коли це можливо, та ставтеся скептично до сервісів, які здаються занадто хорошими, щоб бути правдою."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:727
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:729
 msgid "For developers:"
 msgstr "Для розробників:"
 
@@ -6060,7 +6053,7 @@ msgstr "Для більшості застосунків особистої пр
 msgid "For nearly two decades, cloud computing has dominated how we build software. Every startup pitch deck featured the same architecture: thin client, thick server, data in the cloud. But something interesting is happening. A growing movement of developers, researchers, and companies are questioning this orthodoxy and building software that works differently. They call it <0>local-first software</0>."
 msgstr "Майже два десятиліття хмарні обчислення домінують у тому, як ми створюємо програмне забезпечення. Кожна презентація стартапу містила однакову архітектуру: тонкий клієнт, потужний сервер, дані в хмарі. Але відбувається дещо цікаве. Зростаюча спільнота розробників, дослідників та компаній ставить під сумнів цю ортодоксію і створює програмне забезпечення, що працює інакше. Вони називають це <0>local-first програмне забезпечення</0>."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:748
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:750
 msgid "For non-developers:"
 msgstr "Для нерозробників:"
 
@@ -6080,8 +6073,8 @@ msgstr "Для користувачів, які цінують конфіден�
 msgid "For product improvement and analytics"
 msgstr "Для покращення продуктів та аналітики"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:769
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:918
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:771
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:920
 msgid "For security researchers:"
 msgstr "Для дослідників безпеки:"
 
@@ -6101,7 +6094,7 @@ msgstr "Для підтримуваних банків Budgie підключає
 msgid "For synchronization, Obsidian offers optional services or you can use your own sync solution (Dropbox, iCloud, Git, Syncthing). This approach gives users complete ownership and flexibility. Your notes cannot be locked in a proprietary format, and they survive regardless of what happens to Obsidian as a company."
 msgstr "Для синхронізації Obsidian пропонує необов'язкові сервіси, або ви можете використовувати власне рішення для синхронізації (Dropbox, iCloud, Git, Syncthing). Цей підхід дає користувачам повну власність та гнучкість. Ваші нотатки не можуть бути заблоковані у пропрієтарному форматі, і вони збережуться незалежно від того, що станеться з Obsidian як компанією."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:688
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:689
 msgid "For the community:"
 msgstr "Для спільноти:"
 
@@ -6117,7 +6110,7 @@ msgstr "Для користувачів, які ставлять конфіде�
 msgid "For users who want automatic transaction import, Budgie offers bank synchronization with a zero-knowledge architecture. Your bank credentials are encrypted locally on your device. Sync operations happen directly between your device and your bank. Budgie’s infrastructure never sees your credentials or transaction data."
 msgstr "Для користувачів, які хочуть автоматичний імпорт транзакцій, Budgie пропонує банківську синхронізацію з архітектурою нульового знання. Ваші банківські облікові дані зашифровані локально на вашому пристрої. Операції синхронізації відбуваються безпосередньо між вашим пристроєм та вашим банком. Інфраструктура Budgie ніколи не бачить ваших облікових даних чи даних транзакцій."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:667
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:668
 msgid "For users:"
 msgstr "Для користувачів:"
 
@@ -6156,7 +6149,7 @@ msgstr "Безкоштовно для основних функцій, необ�
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:437
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:466
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:485
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1056
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1058
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1756
 #: src/feature/component/feature-page-faq-section/feature-page-faq-section.tsx:15
 #: src/generic/component/faq-section/faq-section.tsx:31
@@ -6271,11 +6264,11 @@ msgstr "GitHub"
 msgid "github.com/budgie-at/budgie. The mobile app, contracts, AI services, and bank-sync integrations all live there."
 msgstr "github.com/budgie-at/budgie. Мобільний додаток, контракти, AI-сервіси та інтеграції синхронізації з банком — усе там."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1004
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1006
 msgid "GnuCash"
 msgstr "GnuCash"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1008
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1010
 msgid "GnuCash is a veteran of open-source finance software, offering double-entry accounting suitable for personal and small business use. If you need accounting-grade features like invoicing and business expense tracking, GnuCash’s mature codebase has decades of development behind it."
 msgstr "GnuCash — ветеран фінансового програмного забезпечення з відкритим кодом, що пропонує подвійний бухгалтерський облік, придатний для особистого та малого бізнесу. Якщо вам потрібні функції бухгалтерського рівня, такі як виставлення рахунків та відстеження бізнес-витрат, зріла кодова база GnuCash має за собою десятиліття розробки."
 
@@ -6323,7 +6316,7 @@ msgstr "Головні функції"
 msgid "Held by aggregator"
 msgstr "Зберігається агрегатором"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:760
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:762
 msgid "Help with translations"
 msgstr "Допомагайте з перекладами"
 
@@ -6431,7 +6424,7 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx:16
 #: src/feature/component/feature-page-comparison-shell/feature-page-comparison-shell.tsx:45
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx:16
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:38
+#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:34
 msgid "Home"
 msgstr "Головна"
 
@@ -6482,7 +6475,7 @@ msgstr "Який розмір завантаження?"
 msgid "How big is the model download?"
 msgstr "Який розмір завантаження моделі?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1016
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1018
 msgid "How Budgie Differs"
 msgstr "Чим відрізняється Budgie"
 
@@ -6515,7 +6508,7 @@ msgstr "Як хмарні бюджетні додатки збирають ва�
 msgid "How Data Storage Works in Budgie"
 msgstr "Як працює зберігання даних у Budgie"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:807
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:809
 msgid "How Decisions Are Made"
 msgstr "Як приймаються рішення"
 
@@ -6545,9 +6538,9 @@ msgstr "Як мені експортувати дані, якщо я перес�
 msgid "How do I export the XLSX from PrivatBank24?"
 msgstr "Як експортувати XLSX з PrivatBank24?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1080
-msgid "How do I know the app I download matches the open-source code?"
-msgstr "Як я можу переконатися, що завантажений додаток відповідає коду з відкритим кодом?"
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1082
+msgid "How do I know the app I download matches the public source code?"
+msgstr "Як дізнатися, що завантажений застосунок відповідає публічному вихідному коду?"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx:148
 #: src/feature/constant/feature-registry.constant.ts:366
@@ -6602,7 +6595,7 @@ msgstr "Як Budgie обробляє OAuth-токени для прямої си
 msgid "How does Budgie know what's recurring?"
 msgstr "Як Budgie визначає регулярні платежі?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1108
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1110
 msgid "How does Budgie make money if the software is free?"
 msgstr "Як Budgie заробляє гроші, якщо програмне забезпечення безкоштовне?"
 
@@ -6620,8 +6613,8 @@ msgid "How does multi-currency work offline?"
 msgstr "Як мультивалютність працює офлайн?"
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:241
-msgid "How does open source make Budgie more private?"
-msgstr "Як відкритий вихідний код робить Budgie більш приватним?"
+msgid "How does public source make Budgie more private?"
+msgstr "Як публічний вихідний код робить Budgie приватнішим?"
 
 #: src/generic/component/faq-section/faq-section.tsx:68
 #: src/generic/util/build-landing-json-ld.util.ts:35
@@ -6772,7 +6765,7 @@ msgstr "Як працює Offline-First"
 msgid "How often do FX rates refresh?"
 msgstr "Як часто оновлюються курси FX?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:896
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:898
 msgid "How priorities are determined"
 msgstr "Як визначаються пріоритети"
 
@@ -6801,7 +6794,7 @@ msgstr "Як аудитувати додаток з відкритим кодо�
 msgid "How to Audit the Code"
 msgstr "Як провести аудит коду"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:715
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:717
 msgid "How to Contribute"
 msgstr "Як зробити внесок"
 
@@ -6833,7 +6826,7 @@ msgstr "локалізація"
 msgid "If privacy matters to you, we built Budgie for exactly that reason. No servers storing your transactions. No third parties with access to your spending habits. Just you and your budget, on your device."
 msgstr "Якщо конфіденційність для вас важлива, ми створили Budgie саме з цієї причини. Ніяких серверів, що зберігають ваші транзакції. Ніяких третіх сторін з доступом до ваших витратних звичок. Тільки ви і ваш бюджет, на вашому пристрої."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1070
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1072
 msgid "If the code is public, can’t hackers use it to find vulnerabilities?"
 msgstr "Якщо код публічний, хіба хакери не можуть використати його для пошуку вразливостей?"
 
@@ -6906,7 +6899,7 @@ msgstr "Якщо ваш банк експортує CSV — так. Гнучки
 msgid "Immediate Actions"
 msgstr "Негайні дії"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:736
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:738
 msgid "Implement features from the roadmap"
 msgstr "Реалізовуйте функції з дорожньої карти"
 
@@ -6964,7 +6957,7 @@ msgstr "Імпорт до Budgie:"
 msgid "Impossible to breach remotely"
 msgstr "Неможливо зламати віддалено"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:739
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:741
 msgid "Improve test coverage"
 msgstr "Покращуйте покриття тестами"
 
@@ -7155,13 +7148,13 @@ msgstr "Чи Monarch Money кращий за YNAB?"
 msgid "Is my voice recorded anywhere?"
 msgstr "Чи записується мій голос де-небудь?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1060
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1062
 msgid "Is open-source software really more secure than proprietary software?"
 msgstr "Чи дійсно програмне забезпечення з відкритим кодом безпечніше за пропрієтарне?"
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:249
-msgid "Is the AI model integration also open source?"
-msgstr "Чи є інтеграція AI-моделі також відкритим вихідним кодом?"
+msgid "Is the AI model integration also public source?"
+msgstr "Чи інтеграція AI-моделі також має публічний код?"
 
 #: src/app/[lang]/features/data-export/page.tsx:154
 #: src/feature/constant/feature-registry.constant.ts:805
@@ -7315,12 +7308,12 @@ msgid "Learn why offline-first architecture is the only way to guarantee financi
 msgstr "Дізнайтеся, чому офлайн-орієнтована архітектура є єдиним способом гарантувати фінансову конфіденційність. Відкрийте приховані небезпеки хмарних додатків та як Budgie захищає ваші дані."
 
 #: src/blog/constant/article-registry.constant.ts:80
-msgid "Learn why open-source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data."
-msgstr "Дізнайтеся, чому офлайн-орієнтована архітектура є єдиним способом гарантувати фінансову конфіденційність. Відкрийте приховані небезпеки хмарних додатків та як Budgie захищає ваші дані."
+msgid "Learn why public source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data."
+msgstr "Дізнайтеся, чому публічний код важливий для фінансового програмного забезпечення, як самостійно аудитити застосунки і як прозора розробка Budgie захищає ваші фінансові дані."
 
 #: src/blog/constant/article-registry.constant.ts:83
-msgid "Learn why open-source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data."
-msgstr "Дізнайтеся, чому відкритий код важливий для фінансового програмного забезпечення, як самостійно перевіряти додатки та як прозора розробка Budgie захищає ваші фінансові дані."
+msgid "Learn why public source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data."
+msgstr "Дізнайтеся, чому публічний код важливий для фінансового програмного забезпечення. Як самостійно аудитити застосунки і як прозора розробка Budgie захищає ваші дані."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1486
 msgid "Learning curve for the methodology"
@@ -7592,7 +7585,7 @@ msgstr "Lunch Money: SaaS з фокусом на розробників"
 msgid "Lunch Money: Developer-Friendly Budgeting"
 msgstr "Lunch Money: бюджетування для розробників"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:822
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:824
 msgid "Major features are discussed in public GitHub issues before implementation"
 msgstr "Основні функції обговорюються у публічних GitHub issues перед реалізацією"
 
@@ -8261,7 +8254,7 @@ msgstr "Ніколи не замикати вас у пропрієтарном�
 msgid "Never shared"
 msgstr "Ніколи не передається"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:954
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:956
 msgid "Never take legal action against good-faith security research"
 msgstr "Ніколи не вживати юридичних дій проти добросовісних досліджень безпеки"
 
@@ -8547,7 +8540,7 @@ msgstr "Ні. Рушій підказок пропонує лише значен
 msgid "No. Voice entry uses whisper.rn — a React Native binding for whisper.cpp — which transcribes audio directly on your device. Your voice recordings are never streamed to any external server."
 msgstr "Ні. Введення голосом використовує whisper.rn — React Native прив'язку для whisper.cpp — яка транскрибує аудіо безпосередньо на вашому пристрої. Ваші голосові записи ніколи не передаються потоком на жодний зовнішній сервер."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1100
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1102
 msgid "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
 msgstr "Ні. Хоча будь-хто може запропонувати зміни до коду, ви контролюєте, яку версію використовуєте. Оновлення встановлюються лише тоді, коли ви вирішите оновити додаток. Якщо вас турбує конкретна версія, ви можете переглянути зміни перед оновленням або навіть зібрати власну версію з вихідного коду. Відкрита природа коду означає, що зміни видимі та доступні для перегляду, що фактично дає вам більше контролю, а не менше."
 
@@ -8921,9 +8914,9 @@ msgstr "Один зашифрований файл. Без облікового 
 msgid "One number. Every account, every currency."
 msgstr "Одне число. Кожен рахунок, кожна валюта."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1091
-msgid "One of the key benefits of open-source and offline-first architecture is data sovereignty. Your data is stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the open-source code would allow anyone to continue development or create export tools. You’re never locked in."
-msgstr "Одна з ключових переваг архітектури з відкритим кодом та offline-first — суверенітет даних. Ваші дані зберігаються локально на вашому пристрої, а не заблоковані в хмарі якоїсь компанії, яка може зникнути. Якщо розробка Budgie зупиниться завтра, ваші дані все ще будуть на вашому телефоні, а відкритий код дозволить будь-кому продовжити розробку або створити інструменти експорту. Ви ніколи не будете заблоковані."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1093
+msgid "One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public source code would allow anyone to continue development or create export tools. You’re never locked in."
+msgstr "Одна з ключових переваг архітектури з публічним кодом і offline-first — суверенітет даних. Ваші дані зберігаються локально на вашому пристрої, а не замкнені в хмарі компанії, яка може зникнути. Якби розробка Budgie зупинилася завтра, ваші дані все одно залишилися б на телефоні, а публічний вихідний код дозволив би будь-кому продовжити розробку або створити інструменти експорту. Ви ніколи не замкнені."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:430
 msgid "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie handles this through device-to-device sync with no cloud intermediary."
@@ -9021,26 +9014,15 @@ msgstr "Відкрийте privat24.ua у браузері, перейдіть �
 msgid "open source"
 msgstr "Відкритого вихідного коду для перевірки"
 
-#: src/feature/constant/feature-registry.constant.ts:1589
-#: src/feature/constant/feature-registry.constant.ts:1642
-msgid "Open source"
-msgstr "Відкритий вихідний код"
-
 #: src/app/[lang]/opengraph-image.tsx:92
 #: src/generic/component/hero-section/hero-section-header.tsx:35
-#: src/generic/component/open-source-section/open-source-content.tsx:24
 #: src/generic/component/trust-banner/trust-banner.tsx:54
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:87
 msgid "Open Source"
 msgstr "Відкритий код"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:892
 msgid "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
 msgstr "Відкритий вихідний код також вирішує питання довговічності. Навіть якщо Budgie як компанія зникне, код залишається доступним. Спільноти можуть підтримувати та розширювати його необмежено."
-
-#: src/feature/constant/feature-registry.constant.ts:1725
-msgid "Open Source Budget App for Mobile — Audit, Fork, Trust"
-msgstr "Бюджетний додаток для мобільних із відкритим вихідним кодом — перевіряйте, форкайте, довіряйте"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:10
 msgid "Open source code"
@@ -9054,37 +9036,13 @@ msgstr "Відкритого вихідного коду для перевірк
 msgid "Open source for complete transparency"
 msgstr "Відкритий код для повної прозорості"
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:114
-msgid "Open source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, AES-256 encryption, and zero-telemetry design are all visible in the repository for any developer to verify."
-msgstr "Відкритий вихідний код — це не просто філософія розробки, а властивість безпеки. Закриті фінансові додатки просять вас довіряти, що вони не журналюють ваші транзакції, не передають дані рекламодавцям і не продають поведінкові профілі. Budgie просить вас перевірити. Архітектура на пристрої, шифрування AES-256 і дизайн без телеметрії — все це видно в репозиторії для перевірки будь-яким розробником."
-
 #: src/generic/component/footer/footer.tsx:254
 msgid "Open Source License"
 msgstr "Ліцензія з відкритим кодом"
 
-#: src/feature/constant/pillar-hub-registry.constant.ts:242
-msgid "Open source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check."
-msgstr "Відкритий вихідний код означає, що наші заяви про конфіденційність верифіковані. Будь-який розробник може перевірити код і підтвердити, що жодні фінансові дані не передаються на зовнішні сервери. Вам не потрібно довіряти нам — ви можете перевірити."
-
-#: src/feature/constant/feature-registry.constant.ts:1727
-msgid "Open Source Mobile Budget App — Auditable Privacy — Budgie"
-msgstr "Мобільний бюджетний додаток із відкритим вихідним кодом — верифікована конфіденційність — Budgie"
-
-#: src/feature/constant/pillar-hub-registry.constant.ts:211
-msgid "Open Source Personal Finance — Transparent by Design"
-msgstr "Особисті фінанси з відкритим вихідним кодом — прозорі за дизайном"
-
-#: src/feature/constant/pillar-hub-registry.constant.ts:213
-msgid "Open Source Personal Finance App — Budgie"
-msgstr "Додаток для особистих фінансів із відкритим вихідним кодом — Budgie"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:826
 msgid "Open source software depends on a chain of dependencies, and any link in that chain could introduce vulnerabilities or privacy issues. Our security practices include:"
 msgstr "Програмне забезпечення з відкритим кодом залежить від ланцюжка залежностей, і будь-яка ланка в цьому ланцюжку може внести вразливості або проблеми з конфіденційністю. Наші практики безпеки включають:"
-
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:719
-msgid "Open source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
-msgstr "Відкритий код процвітає завдяки участі спільноти. Якщо ви хочете зробити внесок у Budgie, є багато способів долучитися:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:880
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:341
@@ -9125,8 +9083,6 @@ msgid "Open the sheet, type the amount, tap save — that's the typical flow onc
 msgstr "Відкрийте аркуш, введіть суму, натисніть зберегти — це типовий процес після налаштування параметрів за замовчуванням під ваші звички. Форма автоматично вибирає ваш рахунок за замовчуванням, найімовірнішу категорію та сьогоднішню дату."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:143
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:16
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:126
 msgid "open-source"
 msgstr "відкритий-код"
 
@@ -9138,20 +9094,6 @@ msgstr "Бюджетні додатки з відкритим кодом про�
 msgid "Open-source budgeting transparency"
 msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:56
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:82
-msgid "open-source budgeting, financial transparency, budget app security, open-source finance"
-msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
-
-#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:15
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:59
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:85
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:104
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:109
-#: src/blog/constant/article-registry.constant.ts:79
-msgid "Open-Source Budgeting: Why Transparency Matters for Your Money"
-msgstr "Бюджетування з відкритим кодом: чому прозорість важлива для ваших грошей"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1613
 msgid "Open-source options required significant self-hosting expertise. Cloud services monetized user data or charged substantial monthly fees. Mobile experiences were often afterthoughts (PWAs instead of native apps). And privacy was always a compromise."
 msgstr "Варіанти з відкритим кодом вимагали значного досвіду в самохостингу. Хмарні сервіси монетизували дані користувачів або стягували значну щомісячну плату. Мобільний досвід часто був другорядним (PWA замість нативних додатків). А приватність завжди була компромісом."
@@ -9160,7 +9102,7 @@ msgstr "Варіанти з відкритим кодом вимагали зн�
 msgid "Open-source software inverts the traditional security model. Instead of hiding code and hoping nobody finds vulnerabilities, open-source projects expose everything to scrutiny. This transparency creates a fundamentally stronger security posture."
 msgstr "Програмне забезпечення з відкритим кодом перевертає традиційну модель безпеки. Замість того, щоб ховати код і сподіватися, що ніхто не знайде вразливості, проєкти з відкритим кодом відкривають все для перевірки. Ця прозорість створює принципово сильнішу позицію безпеки."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1061
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1063
 msgid "Open-source software isn’t automatically more secure, but it enables better security through transparency. When code is public, security flaws can be found and fixed by anyone with the expertise, not just the original developers. This distributed scrutiny typically catches problems faster than relying solely on internal security teams. However, the security benefits only materialize when the community actually reviews the code, so active, well-maintained projects are more likely to be secure than abandoned ones."
 msgstr "Програмне забезпечення з відкритим кодом не стає автоматично безпечнішим, але воно забезпечує кращу безпеку через прозорість. Коли код публічний, недоліки безпеки можуть бути знайдені та виправлені будь-ким з відповідною експертизою, а не лише оригінальними розробниками. Цей розподілений нагляд зазвичай виявляє проблеми швидше, ніж покладання виключно на внутрішні команди безпеки. Однак переваги безпеки реалізуються лише тоді, коли спільнота дійсно переглядає код, тому активні, добре підтримувані проєкти з більшою ймовірністю будуть безпечними, ніж покинуті."
 
@@ -9241,11 +9183,11 @@ msgstr "Інші додатки надсилають ваші фінансові
 msgid "Other developers who need to understand the code"
 msgstr "Інших розробників, яким потрібно зрозуміти код"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:968
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:970
 msgid "Other Open-Source Finance Tools to Consider"
 msgstr "Інші фінансові інструменти з відкритим кодом"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:700
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:701
 msgid "Other projects can build on our work"
 msgstr "Інші проєкти можуть будувати на основі нашої роботи"
 
@@ -9253,7 +9195,7 @@ msgstr "Інші проєкти можуть будувати на основі 
 msgid "Our code is open source, meaning:"
 msgstr "Наш код є відкритим, що означає:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:939
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:941
 msgid "Our commitments:"
 msgstr "Наші зобов'язання:"
 
@@ -9261,7 +9203,7 @@ msgstr "Наші зобов'язання:"
 msgid "Our complete source code is available on GitHub. You can find it by visiting our open-source section where the repository link is provided."
 msgstr "Наш повний вихідний код доступний на GitHub. Ви можете знайти його, відвідавши наш [розділ відкритого коду](/{lang}#open-source), де надано посилання на репозиторій."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:882
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:884
 msgid "Our development roadmap is public and regularly updated. You can see:"
 msgstr "Наша дорожня карта розробки публічна та регулярно оновлюється. Ви можете бачити:"
 
@@ -9597,7 +9539,7 @@ msgstr "Заяви про приватність легко робити і ва
 msgid "Privacy claims are verifiable, not just promised"
 msgstr "Заяви про конфіденційність верифіковані, а не просто обіцяні"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:858
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:860
 msgid "Privacy decisions:"
 msgstr "Рішення щодо конфіденційності:"
 
@@ -9613,7 +9555,7 @@ msgstr "Гарантії конфіденційності, які можна п�
 msgid "Privacy Guide"
 msgstr "Посібник з конфіденційності"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:867
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:869
 msgid "Privacy implications are discussed openly"
 msgstr "Наслідки для конфіденційності обговорюються відкрито"
 
@@ -9758,7 +9700,7 @@ msgstr "Підвищте один тег на транзакцію до \"пер
 msgid "Pros:"
 msgstr "Переваги:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:948
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:950
 msgid "Provide regular updates on fix progress"
 msgstr "Регулярне оновлення про прогрес виправлення"
 
@@ -9769,6 +9711,28 @@ msgstr "Надавати регулярні оновлення щодо прог
 #: src/feature/constant/feature-registry.constant.ts:1741
 msgid "Public on GitHub"
 msgstr "Публічний на GitHub"
+
+#: src/feature/constant/feature-registry.constant.ts:1589
+#: src/feature/constant/feature-registry.constant.ts:1642
+msgid "Public source"
+msgstr "Публічний вихідний код"
+
+#: src/generic/component/open-source-section/open-source-content.tsx:24
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:87
+msgid "Public Source"
+msgstr "Публічний вихідний код"
+
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:51
+msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, AES-256 encryption, and zero-telemetry design are all visible in the repository for any developer to verify."
+msgstr "Публічний вихідний код — це не лише філософія розробки, а й властивість безпеки. Закриті фінансові застосунки просять вірити, що вони не логують транзакції, не діляться даними з рекламодавцями й не продають поведінкові профілі. Budgie пропонує перевірити. On-device архітектура, шифрування AES-256 і дизайн без телеметрії видимі в репозиторії для будь-якого розробника."
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:242
+msgid "Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check."
+msgstr "Публічний вихідний код означає, що наші заяви про приватність можна перевірити. Будь-який розробник може проаудитити код і підтвердити, що фінансові дані не передаються на зовнішні сервери. Вам не потрібно нам довіряти — ви можете перевірити."
+
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:721
+msgid "Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to get involved:"
+msgstr "Публічний код розвивається завдяки участі спільноти. Якщо ви хочете долучитися до Budgie, є багато способів це зробити:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:508
 msgid "Published audit reports from recognized security firms"
@@ -9847,7 +9811,7 @@ msgstr "Читати блог"
 msgid "Read More on the Blog"
 msgstr "Читати більше в блозі"
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:71
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:11
 msgid "Read the Code, Verify the Claims"
 msgstr "Читайте код, верифікуйте твердження"
 
@@ -9863,9 +9827,9 @@ msgstr "У кращому випадку лише для читання"
 msgid "Read-only or nothing"
 msgstr "Лише читання або нічого"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1150
-msgid "Ready to experience financial tracking built on transparency? Explore our open-source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
-msgstr "Готові відчути фінансовий трекінг, побудований на прозорості? Ознайомтеся з нашим [кодом з відкритим кодом](/{lang}#open-source), дізнайтеся про наші [практики безпеки](/{lang}#security) та [приєднайтеся до списку очікування](/{lang}#waitlist), щоб бути серед перших користувачів Budgie. Ваші гроші. Ваші дані. Ваша можливість перевірити кожну нашу заяву."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1152
+msgid "Ready to experience financial tracking built on transparency? Explore our public source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
+msgstr "Готові спробувати фінансовий трекінг, побудований на прозорості? Перегляньте наш публічний вихідний код, дізнайтеся про наші практики безпеки та приєднайтеся до waitlist, щоб бути серед перших користувачів Budgie. Ваші гроші. Ваші дані. Ваша можливість перевірити кожне наше твердження."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1152
 msgid "Ready to experience local-first personal finance? Join our waitlist to be among the first to try Budgie."
@@ -9919,7 +9883,7 @@ msgstr "Розумне ціноутворення"
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
 msgstr "Чеки змішують категорії. Без розбивки доводиться хитрувати — вибирати домінуючу категорію та втрачати деталізацію. Модальне вікно розбивки Budgie дозволяє розподіляти частини однієї транзакції на скільки завгодно категорій."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:930
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:932
 msgid "Receive credit for discovered vulnerabilities (if desired)"
 msgstr "Отримуйте визнання за виявлені вразливості (за бажанням)"
 
@@ -10016,11 +9980,11 @@ msgstr "Надійна цілісність даних"
 msgid "Remaining-budget pill shows what's left to allocate as you build the split"
 msgstr "Таблетка залишку бюджету показує, скільки ще залишилося розподілити під час створення розбивки"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:754
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:756
 msgid "Report bugs and usability issues"
 msgstr "Повідомляйте про помилки та проблеми з зручністю"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:784
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:786
 msgid "Report findings through responsible disclosure"
 msgstr "Повідомляйте про знахідки через відповідальне розкриття"
 
@@ -10028,7 +9992,7 @@ msgstr "Повідомляйте про знахідки через відпов
 msgid "Report it through established channels (responsible disclosure)"
 msgstr "Повідомити про неї через встановлені канали (відповідальне розкриття)"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:924
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:926
 msgid "Report vulnerabilities through our designated security channel"
 msgstr "Повідомляйте про вразливості через наш спеціальний канал безпеки"
 
@@ -10082,7 +10046,7 @@ msgstr "Враховує глобальний попередній налашт�
 msgid "Responsible Disclosure"
 msgstr "Відповідальне розкриття"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:852
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:854
 msgid "Responsible disclosure processes are followed"
 msgstr "Процеси відповідального розкриття дотримуються"
 
@@ -10114,7 +10078,7 @@ msgstr "Перевірте залежності"
 msgid "Review every function that touches your financial data"
 msgstr "Перевірте кожну функцію, що працює з вашими фінансовими даними"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:778
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:780
 msgid "Review our cryptographic implementations"
 msgstr "Перевіряйте наші криптографічні реалізації"
 
@@ -10130,7 +10094,7 @@ msgstr "Відкликати доступ через налаштування п
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:878
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:880
 msgid "Roadmap Transparency"
 msgstr "Прозорість дорожньої карти"
 
@@ -10282,7 +10246,7 @@ msgstr "Безпека та приватність"
 msgid "Security Audits Welcome"
 msgstr "Аудит безпеки вітається"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:837
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:839
 msgid "Security decisions:"
 msgstr "Рішення щодо безпеки:"
 
@@ -10298,7 +10262,7 @@ msgstr "Практики безпеки та прозорість"
 msgid "Security researchers can audit our privacy claims"
 msgstr "Дослідники безпеки можуть аудитувати наші заяви про приватність"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:697
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:698
 msgid "Security researchers can audit without restrictions"
 msgstr "Дослідники безпеки можуть проводити аудит без обмежень"
 
@@ -10310,7 +10274,7 @@ msgstr "Безпека через приховування — це хибна �
 msgid "Security-focused changelog entries showing proactive improvements"
 msgstr "Записи в журналі змін, орієнтовані на безпеку, що показують проактивні покращення"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:843
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:845
 msgid "Security-sensitive changes receive extra scrutiny"
 msgstr "Зміни, що стосуються безпеки, проходять додаткову перевірку"
 
@@ -10598,13 +10562,48 @@ msgstr "Вихідний код"
 msgid "Source code is publicly available — read every line that touches your data"
 msgstr "Вихідний код є загальнодоступним — читайте кожен рядок, що торкається ваших даних"
 
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:16
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:126
+msgid "source-available"
+msgstr "доступний код"
+
+#: src/feature/constant/feature-registry.constant.ts:1725
+msgid "Source-Available Budget App for Mobile — Audit, Fork, Trust"
+msgstr "Мобільний бюджетний застосунок із доступним кодом — Аудит, форк, довіра"
+
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:56
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:82
+msgid "source-available budgeting, financial transparency, budget app security, public source finance"
+msgstr "бюджетування з доступним кодом, фінансова прозорість, безпека бюджетного застосунку, фінанси з публічним кодом"
+
+#: src/app/[lang]/blog/open-source-budgeting-transparency/opengraph-image.tsx:15
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:59
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:85
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:104
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:109
+#: src/blog/constant/article-registry.constant.ts:79
+msgid "Source-Available Budgeting: Why Transparency Matters for Your Money"
+msgstr "Бюджетування з доступним кодом: чому прозорість важлива для ваших грошей"
+
 #: src/feature/constant/pillar-hub-registry.constant.ts:228
 msgid "Source-available license — fork it, run your own build, take your data with you"
 msgstr "Source-available ліцензія — форкайте, збирайте власну версію, забирайте дані з собою"
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:91
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:29
 msgid "Source-Available License — No Lock-In"
 msgstr "Source-available ліцензія — без прив'язки до постачальника"
+
+#: src/feature/constant/feature-registry.constant.ts:1727
+msgid "Source-Available Mobile Budget App — Auditable Privacy — Budgie"
+msgstr "Мобільний бюджетний застосунок із доступним кодом — Перевірювана приватність — Budgie"
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:211
+msgid "Source-Available Personal Finance — Transparent by Design"
+msgstr "Особисті фінанси з доступним кодом — Прозорість by design"
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:213
+msgid "Source-Available Personal Finance App — Budgie"
+msgstr "Застосунок для особистих фінансів із доступним кодом — Budgie"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx:102
 msgid "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
@@ -10696,7 +10695,7 @@ msgstr "Виявте повільний витік до того, як він в
 msgid "Spot the slow leak before it bills."
 msgstr "Виявте повільний витік до того, як він виставить рахунок."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:763
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:765
 msgid "Spread the word about privacy-respecting alternatives"
 msgstr "Розповсюджуйте інформацію про альтернативи, що поважають конфіденційність"
 
@@ -10883,7 +10882,7 @@ msgstr "Підписки"
 msgid "Subscriptions are the slow leak in every budget. Budgie scans your transaction history for amount + cadence patterns (Netflix, gym, mortgage, ISA) and surfaces them on a dedicated calendar tab."
 msgstr "Підписки — це повільний витік у будь-якому бюджеті. Budgie сканує вашу історію транзакцій на наявність шаблонів суми + ритму (Netflix, спортзал, іпотека, ощадний рахунок) та відображає їх на спеціальній вкладці календаря."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:757
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:759
 msgid "Suggest features and improvements"
 msgstr "Пропонуйте функції та покращення"
 
@@ -11014,7 +11013,7 @@ msgstr "Візьміть контроль над своєю фінансовою
 msgid "Take the Next Step"
 msgstr "Зробіть наступний крок"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1122
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1124
 msgid "Take the Transparent Path Forward"
 msgstr "Оберіть прозорий шлях"
 
@@ -11081,7 +11080,7 @@ msgstr "Технічні основи: CRDT та синхронізаційні 
 msgid "Terms of Service"
 msgstr "Умови користування"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:781
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:783
 msgid "Test our data handling practices"
 msgstr "Тестуйте наші практики обробки даних"
 
@@ -11138,10 +11137,6 @@ msgstr "Альтернатива: архітектура Offline-First"
 msgid "The answer varies by company, but the patterns are consistent:"
 msgstr "Відповідь залежить від компанії, але патерни однакові:"
 
-#: src/feature/constant/feature-registry.constant.ts:1655
-msgid "The app is open source. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers."
-msgstr "Додаток є відкритим вихідним кодом. Навіть якщо Budgie зникне, спільнота може продовжувати його розвивати. Це не так для додатків із підпискою та закритими серверами."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:270
 msgid "The app might be sending your transaction data to a third-party analytics service for “product improvement.” It might be fingerprinting your device and linking your financial behavior to advertising profiles. You would never know, because you cannot see the code."
 msgstr "Додаток може надсилати ваші дані про транзакції до стороннього аналітичного сервісу для «покращення продукту». Він може створювати цифровий відбиток вашого пристрою та пов'язувати вашу фінансову поведінку з рекламними профілями. Ви б ніколи про це не дізналися, оскільки не можете побачити код."
@@ -11149,6 +11144,10 @@ msgstr "Додаток може надсилати ваші дані про тр
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:428
 msgid "The app needs to work:"
 msgstr "Додаток повинен працювати:"
+
+#: src/feature/constant/feature-registry.constant.ts:1655
+msgid "The app source is public. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers."
+msgstr "Вихідний код застосунку публічний. Навіть якщо Budgie зникне, спільнота зможе продовжити розробку. Це не так для підпискових застосунків із закритими серверами."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1482
 msgid "The app stores it on their servers"
@@ -11268,7 +11267,7 @@ msgstr "Гід розробника по альтернативах Mint: Пов
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "Ця відмінність має значення, тому що вона змінює фундаментальні припущення щодо власності, доступності та приватності."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:703
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:704
 msgid "The ecosystem grows stronger through shared knowledge"
 msgstr "Екосистема стає сильнішою завдяки обміну знаннями"
 
@@ -11454,7 +11453,7 @@ msgstr "Основним рушієм є мовна модель Qwen3 1.7B на
 msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
 msgstr "Первинний тег відображається у вигляді значка зірки в куті в списку транзакцій, щоб можна було переглянути довгий список для #відпустка або #спільне без відкриття рядків. Утримуйте, щоб змінити первинний тег."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:873
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:875
 msgid "The principle of minimal data collection guides all decisions"
 msgstr "Принцип мінімального збору даних керує всіма рішеннями"
 
@@ -11506,7 +11505,7 @@ msgstr "Реальний вплив фінансової конфіденцій�
 msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
 msgstr "Таблетка залишку бюджету показує, скільки залишилося розподілити в процесі роботи. Збережіть кнопкою «Готово»; вихідна транзакція стає батьківською з пов'язаними розбитими записами під нею."
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:81
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:20
 msgid "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
 msgstr "Репозиторій включає повний React Native додаток, рівень AI-сервісів з інтеграціями LLM та моделі вкладень на пристрої, пакет контрактів і цю цільову сторінку. Нічого не приховано за пропрієтарним SDK або закритим бінарним файлом."
 
@@ -11558,6 +11557,10 @@ msgstr "Закриття не було несподіванкою для тих,
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:231
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 msgstr "Закриття стосувалося не лише невдачі продукту. Це був тривожний сигнал про ризики довіри своїх фінансових даних безкоштовному, рекламному сервісу, який належить корпорації, пріоритети якої можуть змінитися за одну ніч."
+
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:85
+msgid "The source code is public on GitHub. Security researchers and anyone can audit it."
+msgstr "Вихідний код публічний на GitHub. Дослідники безпеки й будь-хто можуть його перевірити."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:274
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
@@ -11734,13 +11737,13 @@ msgstr "Цей посібник не є загальним списком дод
 msgid "This guide is written by developers, for developers. We’ve tested every major Mint alternative and evaluated them based on what actually matters to technical users: data ownership, API access, export capabilities, privacy practices, and the ability to self-host or run offline."
 msgstr "Цей гід написаний розробниками для розробників. Ми протестували кожну основну альтернативу Mint та оцінили їх за критеріями, які дійсно важливі для технічних користувачів: володіння даними, доступ до API, можливості експорту, практики конфіденційності та можливість самохостингу або офлайн-роботи."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1071
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1073
 msgid "This is a common concern, but security research consistently shows that obscurity provides weak protection. Determined attackers can reverse-engineer closed-source applications, find vulnerabilities through fuzzing and probing, or exploit the same bugs that internal developers missed. Meanwhile, legitimate security researchers are blocked from helping. Open source assumes adversaries will study the code and designs security that works anyway. This produces more robust systems than hoping attackers won’t look too closely."
 msgstr "Це поширене занепокоєння, але дослідження безпеки послідовно показують, що приховування забезпечує слабкий захист. Рішучі зловмисники можуть провести зворотну інженерію додатків із закритим кодом, знайти вразливості через фазинг та зондування або використати ті ж помилки, які пропустили внутрішні розробники. Тим часом легітимні дослідники безпеки не мають можливості допомогти. Відкритий код передбачає, що супротивники вивчатимуть код, і проєктує безпеку, яка працює попри це. Це створює більш стійкі системи, ніж надія, що зловмисники не придивлятимуться уважно."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1081
-msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the open-source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
-msgstr "Це обґрунтоване занепокоєння, відоме як «верифікація збірки». Budgie використовує відтворювані збірки, де це можливо, дозволяючи будь-кому перевірити, що опублікований додаток відповідає вихідному коду. Для мобільних додатків потрібна додаткова довіра до дистрибуції через магазин додатків, але відкритий код гарантує, що ви можете зібрати додаток самостійно, якщо хочете максимальної перевірки. Ми також надаємо контрольні суми для релізів, щоб ви могли перевірити цілісність завантаження."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1083
+msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
+msgstr "Це слушне занепокоєння, відоме як «перевірка збірки». Budgie використовує відтворювані збірки там, де це можливо, дозволяючи будь-кому перевірити, що опублікований застосунок відповідає вихідному коду. Для мобільних застосунків потрібна додаткова довіра до розповсюдження через app store, але публічний вихідний код гарантує, що ви можете зібрати застосунок самостійно, якщо хочете максимальної перевірки. Ми також надаємо контрольні суми для релізів, щоб ви могли перевірити цілісність завантаження."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:225
 msgid "This is an extraordinarily detailed financial portrait. With closed-source software, you’re trusting that portrait to remain private based solely on corporate promises and legal agreements that can change at any time."
@@ -11826,7 +11829,7 @@ msgstr "Цей ризик не є теоретичним. Великі агре�
 msgid "This significantly limits our choices compared to developers who do not prioritize privacy. But it means you can trust that opening Budgie is not silently reporting your activity to a dozen different data collection services."
 msgstr "Це суттєво обмежує наш вибір у порівнянні з розробниками, які не ставлять конфіденційність на перше місце. Але це означає, що ви можете довіряти, що відкриття Budgie не призводить до тихого звітування про вашу активність десятку різних служб збору даних."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:901
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:903
 msgid "This transparency lets you make informed decisions about whether Budgie is right for you. If a planned feature concerns you, you can raise those concerns before it’s implemented. If a feature you need is missing, you can advocate for it or contribute it yourself."
 msgstr "Ця прозорість дозволяє вам приймати обґрунтовані рішення щодо того, чи підходить вам Budgie. Якщо запланована функція вас турбує, ви можете висловити ці занепокоєння до того, як вона буде реалізована. Якщо потрібна функція відсутня, ви можете виступити за її впровадження або зробити внесок самостійно."
 
@@ -12056,7 +12059,7 @@ msgstr "переклад"
 msgid "transparency"
 msgstr "прозорість"
 
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:111
+#: src/feature/component/open-source-pillar-hub-content/open-source-pillar-hub-content.tsx:48
 msgid "Transparency as a Security Property"
 msgstr "Прозорість як властивість безпеки"
 
@@ -12204,8 +12207,8 @@ msgid "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your dev
 msgstr "На відміну від ChatGPT або Google Assistant, ШІ Budgie працює повністю на вашому пристрої. Жоден сервер не бачить вашу зарплату, борги чи звички витрачання. Ніколи."
 
 #: src/generic/component/open-source-section/open-source-content.tsx:32
-msgid "Unlike closed-source apps, you don't have to trust our word. Every line of code is public on GitHub. Security researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it."
-msgstr "На відміну від додатків із закритим кодом, вам не потрібно вірити нам на слово. Кожен рядок коду публічний на GitHub. Дослідники безпеки, розробники та будь-хто можуть перевірити, як саме ми обробляємо ваші дані — спойлер: ми їх ніколи не бачимо."
+msgid "Unlike closed-source apps, you don't have to trust our word. The source code is public on GitHub. Security researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it."
+msgstr "На відміну від застосунків із закритим кодом, вам не потрібно вірити нам на слово. Вихідний код публічний на GitHub. Дослідники безпеки, розробники й будь-хто можуть перевірити, як саме ми обробляємо ваші дані — спойлер: ми їх ніколи не бачимо."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx:103
 msgid "Unlike cloud-based suggestion engines that profile spending patterns on a vendor server, every match happens on-device. Your transaction history never leaves your phone, and the suggestions improve as you add more entries — no account, no sync, no exposure."
@@ -12216,8 +12219,8 @@ msgid "Unlike other apps, we can't access your data even if we wanted to. That's
 msgstr "На відміну від інших додатків, ми не можемо отримати доступ до ваших даних, навіть якби хотіли. Це приватність за задумом."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:613
-msgid "Unlike some projects that open-source only portions of their code while keeping critical components proprietary, Budgie is 100% open source:"
-msgstr "На відміну від деяких проєктів, які відкривають лише частини свого коду, зберігаючи критичні компоненти закритими, Budgie на 100% має відкритий код:"
+msgid "Unlike some projects that publish only portions of their code while keeping critical components proprietary, Budgie keeps its product source public:"
+msgstr "На відміну від деяких проєктів, які публікують лише частини коду, залишаючи критичні компоненти пропрієтарними, Budgie тримає вихідний код продукту публічним:"
 
 #: src/app/[lang]/features/account-management/page.tsx:115
 msgid "Unlimited accounts: Bank, Cash, Crypto, Stocks, Debt — each with its own currency and balance"
@@ -12243,7 +12246,7 @@ msgstr "Використовуйте будь-яку хмару (iCloud, Drive, 
 msgid "Use Budgie CSV import screen to map your file columns to Budgie fields. The importer shows a preview of the first few rows so you can verify the mapping before committing. Budgie deduplicates transactions on import, so overlapping date ranges between files will not create duplicates."
 msgstr "Використовуйте екран імпорту CSV у Budgie для відображення стовпців файлу на поля Budgie. Імпортер показує попередній перегляд перших кількох рядків, щоб ви могли перевірити відображення перед підтвердженням. Budgie дедублікує транзакції під час імпорту, тому перекриваючі діапазони дат між файлами не створять дублікатів."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:870
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:872
 msgid "User consent and control remain primary considerations"
 msgstr "Згода та контроль користувачів залишаються першочерговими"
 
@@ -12307,7 +12310,7 @@ msgstr "Переглянути на GitHub"
 msgid "View Source Code"
 msgstr "Переглянути вихідний код"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:789
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:791
 msgid "Visit our GitHub repository to get started."
 msgstr "Відвідайте наш [репозиторій на GitHub](https://github.com/nicknisi/budgie), щоб розпочати."
 
@@ -12374,17 +12377,17 @@ msgstr "Ми віримо в те, що потрібно заслуговува�
 msgid "We believe in transparency. Here's an honest comparison with other popular budgeting apps."
 msgstr "Ми віримо в прозорість. Ось чесне порівняння з іншими популярними бюджетними додатками."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:708
-msgid "We believe that restrictive licensing undermines the trust benefits of open source. If you cannot freely examine and share the code, the transparency is incomplete."
-msgstr "Ми переконані, що обмежувальне ліцензування підриває переваги довіри, які дає відкритий код. Якщо ви не можете вільно перевіряти та ділитися кодом, прозорість є неповною."
-
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:959
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:961
 msgid "We believe that welcoming security research makes Budgie safer for everyone. Researchers who examine our code are doing us and our users a service."
 msgstr "Ми переконані, що привітання досліджень безпеки робить Budgie безпечнішим для всіх. Дослідники, які вивчають наш код, роблять послугу нам та нашим користувачам."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:538
 msgid "We believe this tradeoff is worth it for financial data. The convenience of automatic cloud sync comes at the cost of your data existing on servers you do not control. For many types of data, that tradeoff is acceptable. For your complete financial history, we think local control is worth the extra steps."
 msgstr "Ми вважаємо, що цей компроміс вартий для фінансових даних. Зручність автоматичної хмарної синхронізації обходиться ціною існування ваших даних на серверах, які ви не контролюєте. Для багатьох типів даних такий компроміс прийнятний. Для вашої повної фінансової історії ми вважаємо, що локальний контроль вартий додаткових кроків."
+
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:709
+msgid "We believe transparency depends on practical access to the source. If you cannot examine, modify, and contribute to the code, the trust benefits are incomplete; if the project cannot sustain the official app, the product is fragile."
+msgstr "Ми вважаємо, що прозорість залежить від практичного доступу до вихідного коду. Якщо ви не можете дослідити, змінити код і долучитися до нього, переваги довіри неповні; якщо проєкт не може підтримувати офіційний застосунок, продукт крихкий."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:902
 msgid "We cannot provide your data to law enforcement or anyone else because we do not have it. There is no server to subpoena, no database to query, and no backup to hand over. Your data is on your device, protected by your device security and Budgie’s encryption."
@@ -12414,11 +12417,11 @@ msgstr "Ми буквально не можемо бачити ваші тран
 msgid "We never see your banking credentials or transaction data"
 msgstr "Ми ніколи не бачимо ваші банківські облікові дані або дані транзакцій"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:913
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:915
 msgid "We take security vulnerabilities seriously and have established processes for responsible disclosure:"
 msgstr "Ми серйозно ставимося до вразливостей безпеки та впровадили процеси відповідального розкриття:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1047
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1049
 msgid "We think there’s room in the ecosystem for all these tools. Users benefit when they have choices, and competition among open-source projects drives innovation while maintaining the trust benefits of transparency."
 msgstr "Ми вважаємо, що в екосистемі є місце для всіх цих інструментів. Користувачі виграють, коли мають вибір, а конкуренція між проєктами з відкритим кодом стимулює інновації, зберігаючи переваги довіри від прозорості."
 
@@ -12587,7 +12590,7 @@ msgstr "Що означає «довговічний» для фінансово
 msgid "What Encryption Protects Against"
 msgstr "Від чого захищає шифрування"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:887
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:889
 msgid "What features are planned for upcoming releases"
 msgstr "Які функції заплановані для майбутніх випусків"
 
@@ -12721,7 +12724,7 @@ msgstr "Що якщо LLM неправильно перекладе?"
 msgid "What if the matching transfer side already exists?"
 msgstr "Що якщо відповідна сторона переказу вже існує?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1090
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1092
 msgid "What if the project is abandoned? Will I lose access to my data?"
 msgstr "Що, якщо проєкт буде покинутий? Чи втрачу я доступ до своїх даних?"
 
@@ -12791,7 +12794,7 @@ msgstr "На що звертати увагу у бюджетному додат
 msgid "What to look for:"
 msgstr "На що звертати увагу:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:893
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:895
 msgid "What trade-offs are being considered"
 msgstr "Які компроміси розглядаються"
 
@@ -12858,7 +12861,7 @@ msgstr "Що таке відро «Без тегу»?"
 msgid "What's an MCC?"
 msgstr "Що таке MCC?"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:890
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:892
 msgid "What’s currently being worked on"
 msgstr "Над чим ведеться робота зараз"
 
@@ -12875,8 +12878,8 @@ msgid "What's in the Untagged bucket?"
 msgstr "Що у відрі «Без тегів»?"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:609
-msgid "What’s Open Source: Everything"
-msgstr "Що має відкритий код: все"
+msgid "What’s Public Source: Everything"
+msgstr "Що має публічний код: усе"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1778
 msgid "What’s the best free YNAB alternative?"
@@ -13620,8 +13623,8 @@ msgid "Yes"
 msgstr "Так"
 
 #: src/feature/constant/feature-registry.constant.ts:1606
-msgid "Yes — Budgie is open source. Read the network code yourself: github.com/budgie-at/budgie."
-msgstr "Так — Budgie є відкритим вихідним кодом. Прочитайте мережевий код самостійно: github.com/budgie-at/budgie."
+msgid "Yes — Budgie's source is public. Read the network code yourself: github.com/budgie-at/budgie."
+msgstr "Так — вихідний код Budgie публічний. Читайте мережевий код самі: github.com/budgie-at/budgie."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx:173
 #: src/feature/constant/feature-registry.constant.ts:1432
@@ -13913,8 +13916,8 @@ msgid "Yes. Tap any category or tag slice to see every transaction that contribu
 msgstr "Так. Торкніть будь-який фрагмент категорії або тегу, щоб побачити всі транзакції, що зробили внесок до нього за поточний період."
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:250
-msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the open source repository. The underlying models (Qwen3, whisper.rn) are separately licensed open source projects."
-msgstr "Так. Рівень AI-сервісів — включаючи інтеграцію моделі вкладень та оркестрацію LLM — є частиною репозиторію відкритого вихідного коду. Базові моделі (Qwen3, whisper.rn) є окремо ліцензованими проєктами з відкритим вихідним кодом."
+msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
+msgstr "Так. AI-сервіс — включно з інтеграцією embedding-моделі та оркестрацією LLM — є частиною публічного репозиторію. Базові моделі (Qwen3, whisper.rn) є окремо ліцензованими проєктами."
 
 #: src/app/[lang]/features/data-export/page.tsx:156
 #: src/feature/constant/feature-registry.constant.ts:806
@@ -14046,7 +14049,7 @@ msgstr "Ви можете самі побудувати та перевірит�
 msgid "You can log an expense at 30,000 feet, walk through a Tube tunnel, or work a week off-grid — Budgie just keeps working. When you are back online, optional bank sync fills in the gaps you missed; manual edits are never blocked."
 msgstr "Ви можете записати витрату на висоті 9000 метрів, пройти через тунель метро або працювати тиждень без підключення — Budgie просто продовжує працювати. Коли Ви знову онлайн, необов'язкова банківська синхронізація заповнює пропущені пробіли; ручні зміни ніколи не блокуються."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:676
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:677
 msgid "You can modify the app for your own use"
 msgstr "Ви можете модифікувати додаток для власного використання"
 
@@ -14054,11 +14057,11 @@ msgstr "Ви можете модифікувати додаток для вла�
 msgid "You can request deletion, and under CCPA (California) and GDPR (Europe), companies must comply. However, there are exceptions for compliance, fraud prevention, and legitimate business interests that can justify retention. The process typically requires contacting each aggregator directly, not just the app you used. Plaid provides a portal at my.plaid.com for viewing and managing connections. Full deletion verification is difficult to confirm."
 msgstr "Ви можете запросити видалення, і відповідно до CCPA (Каліфорнія) та GDPR (Європа) компанії зобов'язані виконати запит. Однак існують винятки для виконання вимог законодавства, запобігання шахрайству та законних бізнес-інтересів, які можуть обґрунтувати зберігання. Процес зазвичай вимагає звернення до кожного агрегатора безпосередньо, а не лише до додатку, який ви використовували. Plaid надає портал на my.plaid.com для перегляду та управління з'єднаннями. Повну верифікацію видалення важко підтвердити."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:679
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:680
 msgid "You can share your modifications with others"
 msgstr "Ви можете ділитися своїми модифікаціями з іншими"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:673
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:674
 msgid "You can verify the code without any legal concerns"
 msgstr "Ви можете перевірити код без будь-яких юридичних обмежень"
 
@@ -14178,7 +14181,7 @@ msgstr "Ви в списку!"
 msgid "You’re not alone. The shutdown affected over 3.6 million active users, and the transition path Intuit offered (Credit Karma) left most of us deeply unsatisfied. For developers especially, Credit Karma’s approach to data privacy and lack of technical features makes it a non-starter."
 msgstr "Ви не самотні. Закриття торкнулося понад 3,6 мільйона активних користувачів, а шлях переходу, запропонований Intuit (Credit Karma), залишив більшість із нас глибоко незадоволеними. Для розробників особливо підхід Credit Karma до конфіденційності даних та відсутність технічних функцій роблять його неприйнятним варіантом."
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:682
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:683
 msgid "You’re not locked into any ecosystem or vendor"
 msgstr "Ви не прив'язані до жодної екосистеми чи постачальника"
 
@@ -14260,9 +14263,9 @@ msgstr "Ваш Пристрій."
 msgid "Your financial data belongs to you. Period. A good budget app should:"
 msgstr "Ваші фінансові дані належать вам. Крапка. Хороший бюджетний додаток повинен:"
 
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1142
-msgid "Your financial data deserves this level of transparency. The patterns in your spending reveal intimate details about your life, and you have every right to know exactly how that information is handled. Open-source budgeting makes that knowledge possible."
-msgstr "Ваші фінансові дані заслуговують на такий рівень прозорості. Патерни ваших витрат розкривають інтимні деталі вашого життя, і ви маєте повне право знати, як саме ця інформація обробляється. Бюджетування з відкритим кодом робить це знання можливим."
+#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1144
+msgid "Your financial data deserves this level of transparency. The patterns in your spending reveal intimate details about your life, and you have every right to know exactly how that information is handled. Public-source budgeting makes that knowledge possible."
+msgstr "Ваші фінансові дані заслуговують на такий рівень прозорості. Патерни ваших витрат розкривають інтимні подробиці життя, і ви маєте повне право знати, як саме обробляється ця інформація. Бюджетування з публічним кодом робить це знання можливим."
 
 #: src/generic/component/security-section/security-section-header.tsx:36
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."

@@ -1586,7 +1586,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
                 competitorValue: msg`Monthly recurring`
             },
             { label: msg`AI runs`, budgieValue: msg`On your phone`, competitorValue: msg`In the vendor cloud` },
-            { label: msg`Open source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
+            { label: msg`Public source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
         ],
         faqs: [
             {
@@ -1603,7 +1603,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`Is the privacy claim verifiable?`,
-                answer: msg`Yes — Budgie is open source. Read the network code yourself: github.com/budgie-at/budgie.`
+                answer: msg`Yes — Budgie's source is public. Read the network code yourself: github.com/budgie-at/budgie.`
             }
         ],
         publishedAt: '2026-05-07',
@@ -1639,7 +1639,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             { label: msg`Annual cost over 5 years`, budgieValue: msg`< $30 one-time`, competitorValue: msg`$300+ recurring` },
             { label: msg`Bank sync`, budgieValue: msg`Direct API or PDF/CSV`, competitorValue: msg`Aggregator (often paid tier)` },
             { label: msg`Offline use`, budgieValue: msg`Full`, competitorValue: msg`Limited or none` },
-            { label: msg`Open source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
+            { label: msg`Public source`, budgieValue: msg`Yes`, competitorValue: msg`No` }
         ],
         faqs: [
             {
@@ -1652,7 +1652,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`Is "subscription-free" really durable?`,
-                answer: msg`The app is open source. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers.`
+                answer: msg`The app source is public. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers.`
             },
             {
                 question: msg`Why do other apps charge monthly?`,
@@ -1722,16 +1722,16 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         slug: 'open-source-budget-app-mobile',
         tier: FeatureTierEnum.CORE,
         category: FeatureCategoryEnum.COMPARISON,
-        title: msg`Open Source Budget App for Mobile — Audit, Fork, Trust`,
-        tagline: msg`Closed-source finance apps ask you to trust marketing. Budgie's mobile app is open source, so the privacy and security claims are auditable line by line.`,
-        metaTitle: msg`Open Source Mobile Budget App — Auditable Privacy — Budgie`,
-        metaDescription: msg`Budgie is an open-source mobile budget app. Read the network code, verify the offline-first claims, fork it if we ever go in the wrong direction.`,
-        primaryKeyword: 'open source mobile budget app',
+        title: msg`Source-Available Budget App for Mobile — Audit, Fork, Trust`,
+        tagline: msg`Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.`,
+        metaTitle: msg`Source-Available Mobile Budget App — Auditable Privacy — Budgie`,
+        metaDescription: msg`Budgie is a source-available mobile budget app. Read the network code, verify the offline-first claims, fork it if we ever go in the wrong direction.`,
+        primaryKeyword: 'source available mobile budget app',
         seoKeywords: [
-            'open source mobile budget app',
+            'source available mobile budget app',
             'auditable budget app',
-            'open source iOS budget app',
-            'open source Android budget app',
+            'public source iOS budget app',
+            'public source Android budget app',
             'GitHub budget app'
         ],
         relatedFeatureSlugs: ['offline-first-expense-tracker', 'private-budget-app-alternative', 'self-hosted-finance-app-mobile'],

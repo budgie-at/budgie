@@ -208,15 +208,15 @@ export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
     },
     {
         slug: 'open-source',
-        title: msg`Open Source Personal Finance — Transparent by Design`,
-        tagline: msg`Budgie's core is open source. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide.`,
-        metaTitle: msg`Open Source Personal Finance App — Budgie`,
-        metaDescription: msg`Budgie is an open source personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it.`,
-        primaryKeyword: 'open source personal finance',
+        title: msg`Source-Available Personal Finance — Transparent by Design`,
+        tagline: msg`Budgie's source is public. Audit the code, verify our privacy claims, and contribute — because your financial app should have nothing to hide.`,
+        metaTitle: msg`Source-Available Personal Finance App — Budgie`,
+        metaDescription: msg`Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it.`,
+        primaryKeyword: 'source available personal finance',
         seoKeywords: [
-            'open source personal finance',
-            'open source budget app',
-            'open source expense tracker',
+            'source available personal finance',
+            'public source budget app',
+            'auditable expense tracker',
             'transparent finance app',
             'auditable budget app'
         ],
@@ -238,16 +238,16 @@ export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
                 answer: msg`Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project. There are no proprietary modules that touch your financial data — every line that handles your transactions is in the public repository.`
             },
             {
-                question: msg`How does open source make Budgie more private?`,
-                answer: msg`Open source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check.`
+                question: msg`How does public source make Budgie more private?`,
+                answer: msg`Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check.`
             },
             {
                 question: msg`Can I contribute to Budgie?`,
                 answer: msg`Yes. Pull requests, bug reports, and feature suggestions are welcome on the GitHub repository. The project follows a standard fork-and-PR workflow with contribution guidelines in the repository.`
             },
             {
-                question: msg`Is the AI model integration also open source?`,
-                answer: msg`Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the open source repository. The underlying models (Qwen3, whisper.rn) are separately licensed open source projects.`
+                question: msg`Is the AI model integration also public source?`,
+                answer: msg`Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects.`
             }
         ],
         publishedAt: '2026-05-07',

@@ -82,9 +82,9 @@ export const UspPillarsSection = ({ locale }: Props) => (
                 >
                     <UspPillar
                         delay={0.3}
-                        description={<Trans>Every line of code is public on GitHub. Security researchers and anyone can audit it.</Trans>}
+                        description={<Trans>The source code is public on GitHub. Security researchers and anyone can audit it.</Trans>}
                         icon={<Code2 className="size-8 text-white" />}
-                        title={<Trans>Open Source</Trans>}
+                        title={<Trans>Public Source</Trans>}
                         variant="purple"
                     />
                 </Link>

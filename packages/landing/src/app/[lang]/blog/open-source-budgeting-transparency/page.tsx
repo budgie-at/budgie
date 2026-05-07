@@ -51,12 +51,12 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         date: DATE,
         description: t(
             i18n
-        )`Discover why open-source budgeting apps provide unmatched transparency and security for your financial data. Learn to audit code yourself and why Budgie's open development model keeps your money private.`,
+        )`Discover why source-available budgeting apps provide unmatched transparency and security for your financial data. Learn to audit code yourself and why Budgie's public development model keeps your money private.`,
         image: IMAGE,
-        keywords: t(i18n)`open-source budgeting, financial transparency, budget app security, open-source finance`,
+        keywords: t(i18n)`source-available budgeting, financial transparency, budget app security, public source finance`,
         locale: lang,
         slug: SLUG,
-        title: t(i18n)`Open-Source Budgeting: Why Transparency Matters for Your Money`
+        title: t(i18n)`Source-Available Budgeting: Why Transparency Matters for Your Money`
     });
 }
 
@@ -76,13 +76,13 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                 date={DATE}
                 description={t(
                     i18n
-                )`Discover why open-source budgeting apps provide unmatched transparency and security for your financial data.`}
+                )`Discover why source-available budgeting apps provide unmatched transparency and security for your financial data.`}
                 homeLabel={t(i18n)`Home`}
                 image={IMAGE}
-                keywords={t(i18n)`open-source budgeting, financial transparency, budget app security, open-source finance`}
+                keywords={t(i18n)`source-available budgeting, financial transparency, budget app security, public source finance`}
                 locale={lang}
                 slug={SLUG}
-                title={t(i18n)`Open-Source Budgeting: Why Transparency Matters for Your Money`}
+                title={t(i18n)`Source-Available Budgeting: Why Transparency Matters for Your Money`}
             />
 
             <BlogArticleHero image={IMAGE} imageAlt={t(i18n)`Open-source budgeting transparency`}>
@@ -101,17 +101,17 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         <Trans>Blog</Trans>
                     </BlogBreadcrumbLink>
                     <BlogBreadcrumbCurrent position={3}>
-                        <Trans>Open-Source Budgeting: Why Transparency Matters for Your Money</Trans>
+                        <Trans>Source-Available Budgeting: Why Transparency Matters for Your Money</Trans>
                     </BlogBreadcrumbCurrent>
                 </BlogBreadcrumbs>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                    <Trans>Open-Source Budgeting: Why Transparency Matters for Your Money</Trans>
+                    <Trans>Source-Available Budgeting: Why Transparency Matters for Your Money</Trans>
                 </h1>
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Discover why open-source budgeting apps provide unmatched transparency and security for your financial data.
+                        Discover why source-available budgeting apps provide unmatched transparency and security for your financial data.
                     </Trans>
                 </p>
 
@@ -123,7 +123,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     tags={
                         <>
                             <Badge variant="secondary">
-                                <Trans>open-source</Trans>
+                                <Trans>source-available</Trans>
                             </Badge>
                             <Badge variant="secondary">
                                 <Trans>transparency</Trans>
@@ -594,25 +594,25 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Budgie’s Open-Source Commitment</Trans>
+                        <Trans>Budgie’s Public Source Commitment</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
                             Budgie is built on the principle that you shouldn’t have to trust us. You should be able to verify our claims,
-                            examine our code, and confirm that we do what we say. Everything about Budgie is open source, from the mobile
-                            app to the backend services.
+                            examine our code, and confirm that we do what we say. Budgie&apos;s source is public, from the mobile app to the
+                            backend services.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>What’s Open Source: Everything</Trans>
+                        <Trans>What’s Public Source: Everything</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Unlike some projects that open-source only portions of their code while keeping critical components proprietary,
-                            Budgie is 100% open source:
+                            Unlike some projects that publish only portions of their code while keeping critical components proprietary,
+                            Budgie keeps its product source public:
                         </Trans>
                     </BlogArticleProse>
 
@@ -629,7 +629,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>The landing page</strong> - Even our marketing website is open source
+                                <strong>The landing page</strong> - Even our marketing website has public source
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -657,7 +657,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses the MIT License, one of the most permissive open-source licenses available. We chose this license
+                            Budgie uses the O&apos;SAASY License, a source-available license that lets you read, modify, publish, and
+                            distribute the code while reserving hosted-service monetization for the original project. We chose this license
                             for several reasons:
                         </Trans>
                     </BlogArticleProse>
@@ -706,8 +707,9 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            We believe that restrictive licensing undermines the trust benefits of open source. If you cannot freely examine
-                            and share the code, the transparency is incomplete.
+                            We believe transparency depends on practical access to the source. If you cannot examine, modify, and contribute
+                            to the code, the trust benefits are incomplete; if the project cannot sustain the official app, the product is
+                            fragile.
                         </Trans>
                     </BlogArticleProse>
 
@@ -717,8 +719,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Open source thrives on community participation. If you want to contribute to Budgie, there are many ways to get
-                            involved:
+                            Public source thrives on community participation. If you want to contribute to Budgie, there are many ways to
+                            get involved:
                         </Trans>
                     </BlogArticleProse>
 
@@ -1077,11 +1079,11 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>How do I know the app I download matches the open-source code?</Trans>}>
+                        <BlogFaqItem question={<Trans>How do I know the app I download matches the public source code?</Trans>}>
                             <Trans>
                                 This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible,
                                 allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust
-                                is required in the app store distribution, but the open-source code ensures you can build the app yourself
+                                is required in the app store distribution, but the public source code ensures you can build the app yourself
                                 if you want maximum verification. We also provide checksums for releases so you can verify download
                                 integrity.
                             </Trans>
@@ -1089,14 +1091,14 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                         <BlogFaqItem question={<Trans>What if the project is abandoned? Will I lose access to my data?</Trans>}>
                             <Trans>
-                                One of the key benefits of open-source and offline-first architecture is data sovereignty. Your data is
+                                One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is
                                 stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie
-                                development stopped tomorrow, your data would still be on your phone, and the open-source code would allow
+                                development stopped tomorrow, your data would still be on your phone, and the public source code would allow
                                 anyone to continue development or create export tools. You’re never locked in.
                             </Trans>
                         </BlogFaqItem>
 
-                        <BlogFaqItem question={<Trans>Does open source mean anyone can change my app without my knowledge?</Trans>}>
+                        <BlogFaqItem question={<Trans>Does public source mean anyone can change my app without my knowledge?</Trans>}>
                             <Trans>
                                 No. While anyone can propose changes to the code, you control which version you run. Updates only install
                                 when you choose to update the app. If you’re concerned about a particular version, you can review the
@@ -1109,7 +1111,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                             <Trans>
                                 Budgie is free to use with optional premium features for users who want additional capabilities. Our
                                 business model relies on users who find enough value in the product to support its development, not on
-                                monetizing user data. The open-source nature actually supports this model because users can trust their data
+                                monetizing user data. The public-source model actually supports this because users can trust their data
                                 isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable
                                 business can coexist.
                             </Trans>
@@ -1124,7 +1126,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Financial software that respects your privacy shouldn’t require blind faith. When you choose an open-source
+                            Financial software that respects your privacy shouldn’t require blind faith. When you choose a public-source
                             budget app, you’re choosing verifiable security over marketing promises. You’re choosing community oversight
                             over corporate opacity. You’re choosing to trust evidence rather than assertions.
                         </Trans>
@@ -1141,14 +1143,14 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleProse>
                         <Trans>
                             Your financial data deserves this level of transparency. The patterns in your spending reveal intimate details
-                            about your life, and you have every right to know exactly how that information is handled. Open-source budgeting
-                            makes that knowledge possible.
+                            about your life, and you have every right to know exactly how that information is handled. Public-source
+                            budgeting makes that knowledge possible.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Ready to experience financial tracking built on transparency? Explore our open-source code, learn about our
+                            Ready to experience financial tracking built on transparency? Explore our public source code, learn about our
                             security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your
                             ability to verify every claim we make.
                         </Trans>

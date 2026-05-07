@@ -76,11 +76,11 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         author: 'Budgie Team',
         image: '/images/design-mode/ai-budgeting-app-4x.jpg',
         readingTimeMinutes: 15,
-        title: msg`Open-Source Budgeting: Why Transparency Matters for Your Money`,
-        description: msg`Learn why open-source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data.`,
-        tags: ['open-source', 'transparency', 'security', 'privacy', 'community'],
-        seoKeywords: ['open source budget app', 'transparent finance app', 'open source security'],
-        seoDescription: msg`Learn why open-source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data.`,
+        title: msg`Source-Available Budgeting: Why Transparency Matters for Your Money`,
+        description: msg`Learn why public source matters for financial software, how to audit apps yourself, and how Budgie's transparent development protects your financial data.`,
+        tags: ['source-available', 'transparency', 'security', 'privacy', 'community'],
+        seoKeywords: ['source available budget app', 'transparent finance app', 'public source security'],
+        seoDescription: msg`Learn why public source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data.`,
         relatedFeatureSlugs: ['offline-first-expense-tracker', 'data-export', 'database-backup']
     },
     {

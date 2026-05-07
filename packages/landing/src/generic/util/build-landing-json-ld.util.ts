@@ -53,13 +53,6 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
             '@type': 'Offer',
             price: '0',
             priceCurrency: 'USD'
-        },
-        aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: 4.8,
-            reviewCount: 127,
-            bestRating: 5,
-            worstRating: 1
         }
     };
 
