@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Camera, Fingerprint, Key, Server } from 'lucide-react';
+import { Camera, Cpu, Fingerprint, Key, Server } from 'lucide-react';
 
 import { Motion } from '../motion/motion';
 
@@ -41,6 +41,18 @@ export const SecuritySectionCards = () => (
             icon={<Fingerprint className="size-6 text-blue-600 dark:text-blue-400" />}
             iconClassName="bg-blue-100 dark:bg-blue-900/30"
             title={<Trans>Biometric Lock</Trans>}
+        />
+
+        <SecuritySectionCard
+            description={
+                <Trans>
+                    Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher
+                    AES-256 encrypts the database file so raw storage access reveals nothing.
+                </Trans>
+            }
+            icon={<Cpu className="size-6 text-indigo-600 dark:text-indigo-400" />}
+            iconClassName="bg-indigo-100 dark:bg-indigo-900/30"
+            title={<Trans>Hardware-Backed Encryption Key</Trans>}
         />
 
         <SecuritySectionCard
