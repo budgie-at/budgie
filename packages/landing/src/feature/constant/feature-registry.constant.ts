@@ -49,7 +49,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
     {
         slug: 'monobank-sync',
         tier: FeatureTierEnum.HERO,
-        title: msg`Monobank Bank Sync`,
+        title: msg`Monobank Expense Tracker — Direct API Sync, No Plaid`,
         tagline: msg`Direct API. No aggregator. Full transaction history to your device.`,
         metaTitle: msg`Monobank Auto-Sync — Budgie`,
         metaDescription: msg`Connect your Monobank account with a personal API token. Full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid.`,
@@ -1153,7 +1153,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
     {
         slug: 'screenshot-protection',
         tier: FeatureTierEnum.NICHE,
-        title: msg`Screenshot Protection`,
+        title: msg`Screenshot Protection — Hide Bank Balance from Previews`,
         tagline: msg`Accidental shares stay private — balances blur in screenshots and the app switcher.`,
         metaTitle: msg`Screenshot Protection — Budgie`,
         metaDescription: msg`Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen.`,
@@ -1309,7 +1309,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
     {
         slug: 'primary-tag',
         tier: FeatureTierEnum.NICHE,
-        title: msg`Primary Tag — Scan Your Transactions At A Glance`,
+        title: msg`Primary Tag — Label Transactions for Quick Scanning`,
         tagline: msg`One badge. Scan a long list at a glance.`,
         metaTitle: msg`Primary Tag — Quick-Scan Transaction Labeling — Budgie`,
         metaDescription: msg`Promote one tag per transaction to "primary" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows.`,

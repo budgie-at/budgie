@@ -102,7 +102,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Monobank Auto-Sync for the Privacy-Conscious</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
