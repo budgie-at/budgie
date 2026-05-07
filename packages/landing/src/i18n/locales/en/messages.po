@@ -73,7 +73,7 @@ msgstr "© {date} Budgie. All rights reserved."
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx:97
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:95
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:93
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:93
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:95
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:93
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:91
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:93
@@ -122,7 +122,7 @@ msgstr "<0>AES-256 database encryption</0> — The database is encrypted at rest
 msgid "<0>Aggregated profiling</0> — When millions of users send similar financial data to the same service, the aggregate reveals behavioral patterns that can be monetized in ways that individual consent forms do not clearly cover."
 msgstr "<0>Aggregated profiling</0> — When millions of users send similar financial data to the same service, the aggregate reveals behavioral patterns that can be monetized in ways that individual consent forms do not clearly cover."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:219
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:221
 msgid "<0>Aggregator breach</0> — Every cloud budgeting app that uses bank-feed aggregation pools credentials from millions of users into one target. A single breach exposes everyone."
 msgstr "<0>Aggregator breach</0> — Every cloud budgeting app that uses bank-feed aggregation pools credentials from millions of users into one target. A single breach exposes everyone."
 
@@ -391,7 +391,7 @@ msgstr "<0>Budget.csv:</0> Category allocations by month"
 msgid "<0>Budgeting templates.</0> Many free templates available"
 msgstr "<0>Budgeting templates.</0> Many free templates available"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:225
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:227
 msgid "<0>Business model drift</0> — Free tiers disappear. Subscription prices rise. Data-sharing policies get quietly updated. What the service is today is not what it will be in three years."
 msgstr "<0>Business model drift</0> — Free tiers disappear. Subscription prices rise. Data-sharing policies get quietly updated. What the service is today is not what it will be in three years."
 
@@ -597,7 +597,7 @@ msgstr "<0>Educational resources</0>: Extensive tutorials, webinars, and communi
 msgid "<0>Electric SQL</0> synchronizes SQLite databases between devices and cloud Postgres, enabling local-first with familiar SQL."
 msgstr "<0>Electric SQL</0> synchronizes SQLite databases between devices and cloud Postgres, enabling local-first with familiar SQL."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:464
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:462
 msgid "<0>Embeddings stored in local SQLite</0> — The embedding vectors for your transaction history are stored in the same encrypted database as your transactions. They are not synced to any server."
 msgstr "<0>Embeddings stored in local SQLite</0> — The embedding vectors for your transaction history are stored in the same encrypted database as your transactions. They are not synced to any server."
 
@@ -984,7 +984,7 @@ msgstr "<0>No aggregator copy of your history</0> — Because sync is direct, th
 msgid "<0>No API access</0>: You cannot programmatically access your data"
 msgstr "<0>No API access</0>: You cannot programmatically access your data"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:458
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:456
 msgid "<0>No audio data leaves the device</0> — The voice entry module uses Whisper.rn with a local model file. Audio buffers are processed in memory and discarded after transcription."
 msgstr "<0>No audio data leaves the device</0> — The voice entry module uses Whisper.rn with a local model file. Audio buffers are processed in memory and discarded after transcription."
 
@@ -1028,7 +1028,7 @@ msgstr "<0>No offline access</0>: 100% cloud-dependent with no local storage opt
 msgid "<0>No ongoing credential exposure</0> — You download a statement from your bank website using your normal login, then import the file. There are no tokens, no saved credentials, and no persistent connection to manage."
 msgstr "<0>No ongoing credential exposure</0> — You download a statement from your bank website using your normal login, then import the file. There are no tokens, no saved credentials, and no persistent connection to manage."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:452
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:450
 msgid "<0>No outbound network calls during AI inference</0> — The categorization service uses only local model files and the local SQLite database. There are no HTTP calls to external AI endpoints."
 msgstr "<0>No outbound network calls during AI inference</0> — The categorization service uses only local model files and the local SQLite database. There are no HTTP calls to external AI endpoints."
 
@@ -1048,7 +1048,7 @@ msgstr "<0>No spinners: your work at your fingertips.</0> The software responds 
 msgid "<0>No subscription fees</0>: Free forever, no premium tiers."
 msgstr "<0>No subscription fees</0>: Free forever, no premium tiers."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:470
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:468
 msgid "<0>No telemetry on AI usage</0> — Budgie does not collect analytics on which AI features you use, how often you accept suggestions, or which categories your transactions fall into."
 msgstr "<0>No telemetry on AI usage</0> — Budgie does not collect analytics on which AI features you use, how often you accept suggestions, or which categories your transactions fall into."
 
@@ -1656,7 +1656,7 @@ msgstr "<0>Use strong device security</0>: Offline-first apps depend on device s
 msgid "<0>User expectations</0> for performance are rising. As local-first apps demonstrate what is possible, cloud-first latency becomes less acceptable."
 msgstr "<0>User expectations</0> for performance are rising. As local-first apps demonstrate what is possible, cloud-first latency becomes less acceptable."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:213
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:215
 msgid "<0>Vendor shutdown</0> — Mint proved this is real. A startup running out of funding or a corporate parent deprioritizing a product can end your access to years of financial history overnight."
 msgstr "<0>Vendor shutdown</0> — Mint proved this is real. A startup running out of funding or a corporate parent deprioritizing a product can end your access to years of financial history overnight."
 
@@ -1767,7 +1767,7 @@ msgstr "1. Your Data is Always at Risk"
 #: src/app/[lang]/opengraph-image.tsx:90
 #: src/generic/component/comparison-section/comparison-table-body.tsx:7
 #: src/generic/component/hero-section/hero-section-header.tsx:25
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:50
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:53
 msgid "100% Offline"
 msgstr "100% Offline"
 
@@ -1836,7 +1836,7 @@ msgstr "768-dim Nomic embedding model + sqlite-vec for SIMD-accelerated similari
 msgid "768-dimensional embedding model for instant category suggestions"
 msgstr "768-dimensional embedding model for instant category suggestions"
 
-#: src/generic/component/features-section/features-section-grid.tsx:38
+#: src/generic/component/features-section/features-section-grid.tsx:42
 msgid "A 1.7B-parameter LLM and 768-dim embedding model categorize every transaction on your phone."
 msgstr "A 1.7B-parameter LLM and 768-dim embedding model categorize every transaction on your phone."
 
@@ -2092,9 +2092,9 @@ msgid "After evaluating all these options, we built Budgie because none of them 
 msgstr "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:59
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:85
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:104
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:109
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:87
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:106
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:111
 #: src/blog/constant/article-registry.constant.ts:105
 msgid "After Mint: A Private, Offline Alternative That Actually Sticks Around"
 msgstr "After Mint: A Private, Offline Alternative That Actually Sticks Around"
@@ -2155,7 +2155,7 @@ msgstr "Aggregators sit between you and your bank, mirroring transactions to the
 msgid "ai"
 msgstr "ai"
 
-#: src/generic/component/features-section/features-section-grid.tsx:40
+#: src/generic/component/features-section/features-section-grid.tsx:44
 msgid "AI Auto-Categorize"
 msgstr "AI Auto-Categorize"
 
@@ -2195,7 +2195,7 @@ msgstr "AI That Never Leaks Your Secrets"
 msgid "AI-powered insights"
 msgstr "AI-powered insights"
 
-#: src/generic/component/features-section/features-section-grid.tsx:88
+#: src/generic/component/features-section/features-section-grid.tsx:98
 msgid "All Accounts"
 msgstr "All Accounts"
 
@@ -2542,7 +2542,7 @@ msgstr "Auto-detected from device locale on first launch"
 msgid "Auto-detected from device locale on first launch. Override anytime in Settings → Language."
 msgstr "Auto-detected from device locale on first launch. Override anytime in Settings → Language."
 
-#: src/generic/component/features-section/features-section-grid.tsx:102
+#: src/generic/component/features-section/features-section-grid.tsx:113
 msgid "Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you."
 msgstr "Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you."
 
@@ -2659,7 +2659,7 @@ msgstr "bank data safety"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:85
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:104
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:109
-#: src/blog/constant/article-registry.constant.ts:131
+#: src/blog/constant/article-registry.constant.ts:142
 msgid "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 msgstr "Bank Data Safety: Why Offline-First Is the Only Honest Answer"
 
@@ -2697,7 +2697,7 @@ msgstr "bank sync"
 msgid "Bank sync"
 msgstr "Bank sync"
 
-#: src/generic/component/features-section/features-section-grid.tsx:32
+#: src/generic/component/features-section/features-section-grid.tsx:36
 #: src/generic/component/footer/footer.tsx:115
 msgid "Bank Sync"
 msgstr "Bank Sync"
@@ -2788,7 +2788,7 @@ msgstr "Bank-synced transactions carry Merchant Category Codes; Budgie maps them
 msgid "Bank, cash, crypto — all on one screen."
 msgstr "Bank, cash, crypto — all on one screen."
 
-#: src/generic/component/features-section/features-section-grid.tsx:54
+#: src/generic/component/features-section/features-section-grid.tsx:60
 msgid "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 msgstr "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 
@@ -2913,7 +2913,7 @@ msgid "Biometric Authentication — Budgie"
 msgstr "Biometric Authentication — Budgie"
 
 #: src/generic/component/hero-section/hero-section-header.tsx:30
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:68
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:74
 msgid "Biometric Encrypted"
 msgstr "Biometric Encrypted"
 
@@ -2942,7 +2942,7 @@ msgstr "Bitcoin to ETFs in one dashboard, alongside your bank accounts."
 msgid "Bitcoin to ETFs in one dashboard."
 msgstr "Bitcoin to ETFs in one dashboard."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:59
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:62
 msgid "Blazing Fast"
 msgstr "Blazing Fast"
 
@@ -2959,7 +2959,7 @@ msgstr "Block, the parent company of Cash App, disclosed that a former employee 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:75
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:101
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:75
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:101
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:103
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:75
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:101
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:75
@@ -3212,17 +3212,13 @@ msgstr "Budgie is open source under the MIT License. Every line of code that tou
 msgid "Budgie is open source. The Monobank integration lives in packages/bank-sync/src/monobank/ and the project's release cadence keeps it current."
 msgstr "Budgie is open source. The Monobank integration lives in packages/bank-sync/src/monobank/ and the project's release cadence keeps it current."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:444
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:442
 msgid "Budgie is open source. The privacy claims made in this article are not policy statements — they are architectural facts visible in the codebase. You can verify:"
 msgstr "Budgie is open source. The privacy claims made in this article are not policy statements — they are architectural facts visible in the codebase. You can verify:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:1145
 msgid "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
 msgstr "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
-
-#: src/feature/constant/pillar-hub-registry.constant.ts:238
-msgid "Budgie is released under the MIT License. You are free to use, modify, and distribute the code with attribution. There are no proprietary modules that touch your financial data."
-msgstr "Budgie is released under the MIT License. You are free to use, modify, and distribute the code with attribution. There are no proprietary modules that touch your financial data."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:972
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
@@ -3253,7 +3249,7 @@ msgstr "Budgie on-device AI suggests categories as you review imported transacti
 msgid "Budgie parses and categorizes the transactions locally"
 msgstr "Budgie parses and categorizes the transactions locally"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:423
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:421
 msgid "Budgie presents a pre-filled transaction form with the extracted amount and suggested category for your review before saving."
 msgstr "Budgie presents a pre-filled transaction form with the extracted amount and suggested category for your review before saving."
 
@@ -3274,7 +3270,7 @@ msgstr "Budgie proves that you don’t have to choose between powerful features 
 msgid "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever."
 msgstr "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:509
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:507
 msgid "Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. Each categorization inference completes in under a second on modern hardware. The cumulative battery impact of normal daily use is negligible."
 msgstr "Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. Each categorization inference completes in under a second on modern hardware. The cumulative battery impact of normal daily use is negligible."
 
@@ -3285,6 +3281,14 @@ msgstr "Budgie runs Qwen3 1.7B + a 768-dim embedding model on your phone. Two-st
 #: src/feature/constant/pillar-hub-registry.constant.ts:113
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
+
+#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:94
+msgid "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
+msgstr "Budgie ships under a source-available license that lets you read every line, fork it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
+
+#: src/feature/constant/pillar-hub-registry.constant.ts:238
+msgid "Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project. There are no proprietary modules that touch your financial data — every line that handles your transactions is in the public repository."
+msgstr "Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project. There are no proprietary modules that touch your financial data — every line that handles your transactions is in the public repository."
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:51
 msgid "Budgie ships with zero third-party analytics or advertising SDKs. Crash reporting is opt-in and anonymized; financial data is never included."
@@ -3441,8 +3445,8 @@ msgid "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher en
 msgstr "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access."
 
 #: src/feature/constant/pillar-hub-registry.constant.ts:234
-msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/goncharovnikita/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
-msgstr "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/goncharovnikita/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
+msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
+msgstr "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
 
 #: src/feature/constant/feature-registry.constant.ts:1250
 msgid "Budgie's Statistics screen has a dedicated Tags tab with income, expense, and net per tag plus a drillable Untagged bucket for finding labeling gaps."
@@ -3738,7 +3742,7 @@ msgstr "Can I use Budgie across multiple devices?"
 msgid "Can I use multiple Monobank accounts?"
 msgstr "Can I use multiple Monobank accounts?"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:516
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:514
 msgid "Can I use voice entry in languages other than English?"
 msgstr "Can I use voice entry in languages other than English?"
 
@@ -3868,7 +3872,7 @@ msgstr "Chase"
 msgid "Check the Issues and Discussions"
 msgstr "Check the Issues and Discussions"
 
-#: src/generic/component/features-section/features-section-grid.tsx:86
+#: src/generic/component/features-section/features-section-grid.tsx:95
 msgid "Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required."
 msgstr "Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required."
 
@@ -3979,7 +3983,7 @@ msgstr "Cloud AI assistants for budgeting send every transaction to a remote ser
 msgid "Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here is how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie."
 msgstr "Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here is how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie."
 
-#: src/blog/constant/article-registry.constant.ts:119
+#: src/blog/constant/article-registry.constant.ts:130
 msgid "Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here's how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie."
 msgstr "Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here's how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie."
 
@@ -4033,7 +4037,7 @@ msgstr "cloud budgeting privacy, financial data risks, Plaid data collection, of
 msgid "cloud risks"
 msgstr "cloud risks"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:139
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:141
 msgid "cloud shutdown"
 msgstr "cloud shutdown"
 
@@ -4528,7 +4532,7 @@ msgid "Crypto & Investment Tracking — Budgie"
 msgstr "Crypto & Investment Tracking — Budgie"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx:15
-#: src/generic/component/features-section/features-section-grid.tsx:64
+#: src/generic/component/features-section/features-section-grid.tsx:70
 msgid "Crypto & Investments"
 msgstr "Crypto & Investments"
 
@@ -4668,7 +4672,7 @@ msgstr "Custom Spending Categories — Budgie"
 msgid "Custom Spending Categories That Bend To You"
 msgstr "Custom Spending Categories That Bend To You"
 
-#: src/generic/component/features-section/features-section-grid.tsx:70
+#: src/generic/component/features-section/features-section-grid.tsx:76
 msgid "Custom tags layered on top of categories. Drillable analytics and AI-suggested tags built in."
 msgstr "Custom tags layered on top of categories. Drillable analytics and AI-suggested tags built in."
 
@@ -4850,7 +4854,7 @@ msgstr "Debt & Loan Tracking"
 msgid "Debt & Loan Tracking — Budgie"
 msgstr "Debt & Loan Tracking — Budgie"
 
-#: src/generic/component/features-section/features-section-grid.tsx:112
+#: src/generic/component/features-section/features-section-grid.tsx:124
 msgid "Debt Payoff"
 msgstr "Debt Payoff"
 
@@ -4982,7 +4986,7 @@ msgstr "Direct API. No aggregator. Full transaction history to your device."
 msgid "Direct API. No aggregator. Yours forever."
 msgstr "Direct API. No aggregator. Yours forever."
 
-#: src/generic/component/features-section/features-section-grid.tsx:30
+#: src/generic/component/features-section/features-section-grid.tsx:33
 msgid "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle."
 msgstr "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle."
 
@@ -5162,7 +5166,7 @@ msgstr "Does it work offline?"
 msgid "Does on-device AI drain battery?"
 msgstr "Does on-device AI drain battery?"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:491
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:489
 msgid "Does on-device AI mean the categorization is less accurate?"
 msgstr "Does on-device AI mean the categorization is less accurate?"
 
@@ -5175,7 +5179,7 @@ msgstr "Does open source mean anyone can change my app without my knowledge?"
 msgid "Does split mode work for income too?"
 msgstr "Does split mode work for income too?"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:508
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:506
 msgid "Does the AI drain my battery?"
 msgstr "Does the AI drain my battery?"
 
@@ -5580,7 +5584,7 @@ msgstr "Every Dollar. Every Account. One App."
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the screen."
 msgstr "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, or convert to a transfer without leaving the screen."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:76
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:85
 msgid "Every line of code is public on GitHub. Security researchers and anyone can audit it."
 msgstr "Every line of code is public on GitHub. Security researchers and anyone can audit it."
 
@@ -5601,7 +5605,7 @@ msgstr "Every transaction is stored locally. No Wi-Fi required to add expenses, 
 msgid "Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel."
 msgstr "Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel."
 
-#: src/generic/component/features-section/features-section-grid.tsx:94
+#: src/generic/component/features-section/features-section-grid.tsx:104
 msgid "Every transaction lives on your device. No cloud account, no sign-up, fully offline-capable."
 msgstr "Every transaction lives on your device. No cloud account, no sign-up, fully offline-capable."
 
@@ -5887,7 +5891,7 @@ msgstr "filters"
 msgid "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
 msgstr "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
 
-#: src/blog/constant/article-registry.constant.ts:135
+#: src/blog/constant/article-registry.constant.ts:146
 msgid "Financial aggregators are high-value breach targets. Discover how offline-first architecture, direct bank APIs, and CSV/PDF imports keep your bank data safe without Plaid."
 msgstr "Financial aggregators are high-value breach targets. Discover how offline-first architecture, direct bank APIs, and CSV/PDF imports keep your bank data safe without Plaid."
 
@@ -5897,7 +5901,7 @@ msgstr "Financial aggregators are high-value breach targets. Discover how offlin
 msgid "Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target. Here is how Budgie connects to banks without handing your credentials to a third party."
 msgstr "Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target. Here is how Budgie connects to banks without handing your credentials to a third party."
 
-#: src/blog/constant/article-registry.constant.ts:132
+#: src/blog/constant/article-registry.constant.ts:143
 msgid "Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target. Here's how Budgie connects to banks without handing your credentials to a third party."
 msgstr "Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target. Here's how Budgie connects to banks without handing your credentials to a third party."
 
@@ -6151,7 +6155,7 @@ msgstr "Free for core, optional one-time unlock"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:1801
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:437
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:466
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:487
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:485
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx:1056
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx:1756
 #: src/feature/component/feature-page-faq-section/feature-page-faq-section.tsx:15
@@ -6372,7 +6376,7 @@ msgstr "Holdings roll up into net worth alongside fiat accounts"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:80
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:98
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:80
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:98
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:100
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:80
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:98
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:78
@@ -6755,7 +6759,7 @@ msgstr "How many tags can I add to a transaction?"
 msgid "How much do you value privacy?"
 msgstr "How much do you value privacy?"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:500
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:498
 msgid "How much storage do the AI models use?"
 msgstr "How much storage do the AI models use?"
 
@@ -6877,7 +6881,7 @@ msgstr "If you no longer have your Mint export, download statements directly fro
 msgid "If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date, description, amount, and category. Budgie CSV importer maps standard Mint columns automatically."
 msgstr "If you still have a Mint CSV export, open it in a spreadsheet app and verify the column names: date, description, amount, and category. Budgie CSV importer maps standard Mint columns automatically."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:478
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:476
 msgid "If you want to audit these claims yourself, the source is publicly available. You do not have to take our word for it."
 msgstr "If you want to audit these claims yourself, the source is publicly available. You do not have to take our word for it."
 
@@ -7297,7 +7301,7 @@ msgstr "Layer tags on top of categories — one transaction can be Groceries (ca
 msgid "Learn exactly how budgeting works"
 msgstr "Learn exactly how budgeting works"
 
-#: src/blog/constant/article-registry.constant.ts:122
+#: src/blog/constant/article-registry.constant.ts:133
 msgid "Learn how on-device AI keeps your spending data private. Covers local LLM inference, offline embeddings, and Whisper speech-to-text — no cloud required."
 msgstr "Learn how on-device AI keeps your spending data private. Covers local LLM inference, offline embeddings, and Whisper speech-to-text — no cloud required."
 
@@ -7823,7 +7827,7 @@ msgstr "Mint (Intuit) - 2023"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:16
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:127
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:127
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:129
 msgid "mint alternatives"
 msgstr "mint alternatives"
 
@@ -7844,13 +7848,13 @@ msgstr "Mint alternatives, Mint shutdown, budget app for developers, privacy fin
 msgid "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 msgstr "Mint launched in 2007 and quickly became the gold standard for personal finance apps. Intuit acquired it in 2009 for $170 million, and for years, it seemed like a perfect marriage. Mint aggregated your accounts, categorized transactions automatically, and gave you a clean dashboard view of your financial life."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:170
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:172
 msgid "Mint launched in 2007 as a free budgeting service that automatically categorized transactions by connecting to bank accounts through a third-party aggregator. Intuit acquired it in 2009 for $170 million, and for many years it was genuinely the easiest way to see all of your accounts in one place."
 msgstr "Mint launched in 2007 as a free budgeting service that automatically categorized transactions by connecting to bank accounts through a third-party aggregator. Intuit acquired it in 2009 for $170 million, and for many years it was genuinely the easiest way to see all of your accounts in one place."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:52
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:77
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:113
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:115
 msgid "Mint shut down in 2024 and most replacements are still cloud-based. Here is why an offline-first, on-device tracker is the most durable answer for financial privacy."
 msgstr "Mint shut down in 2024 and most replacements are still cloud-based. Here is why an offline-first, on-device tracker is the most durable answer for financial privacy."
 
@@ -7858,7 +7862,7 @@ msgstr "Mint shut down in 2024 and most replacements are still cloud-based. Here
 msgid "Mint shut down in 2024 and most replacements are still cloud-based. Here's why an offline-first, on-device tracker is the most durable answer for financial privacy."
 msgstr "Mint shut down in 2024 and most replacements are still cloud-based. Here's why an offline-first, on-device tracker is the most durable answer for financial privacy."
 
-#: src/blog/constant/article-registry.constant.ts:109
+#: src/blog/constant/article-registry.constant.ts:114
 msgid "Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy."
 msgstr "Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy."
 
@@ -7895,14 +7899,6 @@ msgstr "Missing some advanced features"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx:95
 msgid "Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn't credit. Budgie's \"Convert to transfer\" action takes the existing transaction and turns it into a transfer to the account you pick."
 msgstr "Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn't credit. Budgie's \"Convert to transfer\" action takes the existing transaction and turns it into a transfer to the account you pick."
-
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:91
-msgid "MIT License — No Lock-In"
-msgstr "MIT License — No Lock-In"
-
-#: src/feature/constant/pillar-hub-registry.constant.ts:228
-msgid "MIT-licensed core with no proprietary data lock-in"
-msgstr "MIT-licensed core with no proprietary data lock-in"
 
 #: src/app/[lang]/features/expense-tracking/opengraph-image.tsx:18
 msgid "mobile"
@@ -8111,7 +8107,7 @@ msgstr "Most users never complete step 3 or 4."
 msgid "Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency transfers."
 msgstr "Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency transfers."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:233
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:235
 msgid "Moving from Mint to another cloud service does not solve the problem. It reschedules it."
 msgstr "Moving from Mint to another cloud service does not solve the problem. It reschedules it."
 
@@ -8139,7 +8135,7 @@ msgid "multi-currency"
 msgstr "multi-currency"
 
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx:15
-#: src/generic/component/features-section/features-section-grid.tsx:80
+#: src/generic/component/features-section/features-section-grid.tsx:88
 msgid "Multi-Currency"
 msgstr "Multi-Currency"
 
@@ -8223,7 +8219,7 @@ msgstr "Need for Reliable Access"
 msgid "net worth"
 msgstr "net worth"
 
-#: src/generic/component/features-section/features-section-grid.tsx:56
+#: src/generic/component/features-section/features-section-grid.tsx:62
 #: src/generic/component/footer/footer.tsx:139
 msgid "Net Worth"
 msgstr "Net Worth"
@@ -8417,7 +8413,7 @@ msgstr "No Security Through Obscurity"
 msgid "No self-hosting option"
 msgstr "No self-hosting option"
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:57
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:60
 msgid "No server round-trips. Every action is instant. The app works even in airplane mode."
 msgstr "No server round-trips. Every action is instant. The app works even in airplane mode."
 
@@ -8589,7 +8585,7 @@ msgstr "Not every bank has an API. CSV is the universal escape hatch — and Bud
 msgid "Not every bank offers an API program, and not every bank is supported by a given direct-sync integration. For these cases, manual statement import is the privacy-preserving fallback — and it is more practical than most people expect."
 msgstr "Not every bank offers an API program, and not every bank is supported by a given direct-sync integration. For these cases, manual statement import is the privacy-preserving fallback — and it is more practical than most people expect."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:492
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:490
 msgid "Not meaningfully for personal expense categorization. The task is well-suited to smaller models: the vocabulary is limited, the context window is short, and your personal transaction history provides strong prior signal via embeddings. Budgie two-stage stack produces accuracy comparable to cloud approaches for this specific task."
 msgstr "Not meaningfully for personal expense categorization. The task is well-suited to smaller models: the vocabulary is limited, the context window is short, and your personal transaction history provides strong prior signal via embeddings. Budgie two-stage stack produces accuracy comparable to cloud approaches for this specific task."
 
@@ -8614,7 +8610,7 @@ msgstr "Nothing"
 msgid "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
 msgstr "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:524
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:522
 msgid "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 msgstr "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 
@@ -8691,7 +8687,7 @@ msgstr "Offline use"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:146
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx:17
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:132
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:130
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:132
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:131
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:18
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:128
@@ -8701,12 +8697,12 @@ msgstr "Offline use"
 msgid "offline-first"
 msgstr "offline-first"
 
-#: src/generic/component/features-section/features-section-grid.tsx:96
+#: src/generic/component/features-section/features-section-grid.tsx:106
 #: src/generic/component/footer/footer.tsx:107
 msgid "Offline-First"
 msgstr "Offline-First"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:88
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:90
 msgid "Offline-first alternative to Mint after the shutdown"
 msgstr "Offline-first alternative to Mint after the shutdown"
 
@@ -8822,7 +8818,7 @@ msgstr "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embeddi
 msgid "On your phone"
 msgstr "On your phone"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:136
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:138
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx:17
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx:17
 msgid "on-device"
@@ -8881,7 +8877,7 @@ msgstr "On-Device AI Finance App — Private AI — Budgie"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:85
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:104
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:109
-#: src/blog/constant/article-registry.constant.ts:118
+#: src/blog/constant/article-registry.constant.ts:129
 msgid "On-Device AI in Your Budget App: How It Works and Why It Matters"
 msgstr "On-Device AI in Your Budget App: How It Works and Why It Matters"
 
@@ -8999,7 +8995,7 @@ msgstr "Only when needed. Latin-script merchants skip translation. Non-Latin str
 msgid "Only you see your data"
 msgstr "Only you see your data"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:200
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:202
 msgid "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
 msgstr "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
 
@@ -9034,7 +9030,7 @@ msgstr "Open source"
 #: src/generic/component/hero-section/hero-section-header.tsx:35
 #: src/generic/component/open-source-section/open-source-content.tsx:24
 #: src/generic/component/trust-banner/trust-banner.tsx:54
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:78
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:87
 msgid "Open Source"
 msgstr "Open Source"
 
@@ -9557,7 +9553,7 @@ msgstr "Primary Tag — Quick-Scan Transaction Labeling — Budgie"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx:144
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx:18
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx:133
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:133
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:135
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx:134
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx:16
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx:122
@@ -9609,7 +9605,7 @@ msgstr "Privacy decisions:"
 msgid "Privacy from AI provider"
 msgstr "Privacy from AI provider"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:440
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:438
 msgid "Privacy Guarantees You Can Verify in Source"
 msgstr "Privacy Guarantees You Can Verify in Source"
 
@@ -9951,7 +9947,7 @@ msgstr "Recreate your category structure (often an opportunity to simplify)"
 msgid "recurring"
 msgstr "recurring"
 
-#: src/generic/component/features-section/features-section-grid.tsx:104
+#: src/generic/component/features-section/features-section-grid.tsx:116
 msgid "Recurring Bills"
 msgstr "Recurring Bills"
 
@@ -10334,7 +10330,7 @@ msgstr "See income, expense, and net per tag in a dedicated analytics tab. The U
 msgid "See percentages for food, transport, shopping—know exactly what's draining your wallet."
 msgstr "See percentages for food, transport, shopping—know exactly what's draining your wallet."
 
-#: src/generic/component/features-section/features-section-grid.tsx:22
+#: src/generic/component/features-section/features-section-grid.tsx:23
 msgid "See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget."
 msgstr "See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget."
 
@@ -10526,7 +10522,7 @@ msgstr "Smart Expense Suggestions for Mobile — Budgie"
 msgid "Smart presets remember your column choices, date format, decimal separator, and account assignment per source. Re-imports detect duplicates so you can re-pull the same statement safely."
 msgstr "Smart presets remember your column choices, date format, decimal separator, and account assignment per source. Re-imports detect duplicates so you can re-pull the same statement safely."
 
-#: src/generic/component/features-section/features-section-grid.tsx:72
+#: src/generic/component/features-section/features-section-grid.tsx:78
 msgid "Smart Tags"
 msgstr "Smart Tags"
 
@@ -10602,6 +10598,14 @@ msgstr "Source Code"
 msgid "Source code is publicly available — read every line that touches your data"
 msgstr "Source code is publicly available — read every line that touches your data"
 
+#: src/feature/constant/pillar-hub-registry.constant.ts:228
+msgid "Source-available license — fork it, run your own build, take your data with you"
+msgstr "Source-available license — fork it, run your own build, take your data with you"
+
+#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:91
+msgid "Source-Available License — No Lock-In"
+msgstr "Source-Available License — No Lock-In"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx:102
 msgid "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
 msgstr "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
@@ -10614,7 +10618,7 @@ msgstr "Speak it. Budgie logs it. Audio never leaves your phone."
 msgid "Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your phone."
 msgstr "Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your phone."
 
-#: src/generic/component/features-section/features-section-grid.tsx:46
+#: src/generic/component/features-section/features-section-grid.tsx:51
 msgid "Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server."
 msgstr "Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server."
 
@@ -10655,7 +10659,7 @@ msgstr "Spending analytics updates in place — old expense falls out cleanly"
 msgid "Spending Breakdown"
 msgstr "Spending Breakdown"
 
-#: src/generic/component/features-section/features-section-grid.tsx:24
+#: src/generic/component/features-section/features-section-grid.tsx:26
 msgid "Spending Insights"
 msgstr "Spending Insights"
 
@@ -11285,7 +11289,7 @@ msgstr "The encryption key never leaves your device and never touches our server
 msgid "The End of an Era: What Happened to Mint"
 msgstr "The End of an Era: What Happened to Mint"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:431
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:429
 msgid "The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no signal, and in any language Whisper supports."
 msgstr "The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no signal, and in any language Whisper supports."
 
@@ -11326,7 +11330,7 @@ msgstr "The Ink & Switch Manifesto and Its Impact"
 msgid "The Ink & Switch paper did not invent these ideas. Distributed systems researchers had been working on the underlying problems for decades. But the paper brought academic concepts into the practical software development conversation and gave the movement a coherent identity."
 msgstr "The Ink & Switch paper did not invent these ideas. Distributed systems researchers had been working on the underlying problems for decades. But the paper brought academic concepts into the practical software development conversation and gave the movement a coherent identity."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:501
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:499
 msgid "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
 msgstr "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
 
@@ -11376,10 +11380,6 @@ msgstr "The Local-First Movement: Why Developers Are Building Offline Apps"
 #: src/feature/constant/feature-registry.constant.ts:494
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
-
-#: src/feature/component/pillar-hub-page-shell/pillar-hub-page-shell.tsx:94
-msgid "The MIT License means you can fork Budgie, modify it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
-msgstr "The MIT License means you can fork Budgie, modify it, and run your own build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your needs, you take your data and your build with you."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx:568
 msgid "The most private way to get bank data into Budgie is manual import. Most banks allow you to download transaction history in standard formats like CSV, OFX, or QIF. You download this file directly from your bank, and Budgie imports it locally on your device."
@@ -11490,7 +11490,7 @@ msgstr "The Problem We Saw"
 msgid "The Problem with Closed-Source Financial Software"
 msgstr "The Problem with Closed-Source Financial Software"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:178
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:180
 msgid "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
 msgstr "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
 
@@ -11551,7 +11551,7 @@ msgstr "The server cannot be breached because there is no server. Employee acces
 msgid "The service won’t be shut down"
 msgstr "The service won’t be shut down"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:187
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:189
 msgid "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
 msgstr "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
 
@@ -11571,7 +11571,7 @@ msgstr "The Tags tab in Budgie Statistics puts per-tag totals on the same screen
 msgid "The terms are often used interchangeably, but there is a distinction. Offline-first typically means an application that caches data for offline access but still treats the server as authoritative. Local-first goes further: the local device is the source of truth, and the server (if present) is just another peer for synchronization. Local-first implies true data ownership, not just offline caching."
 msgstr "The terms are often used interchangeably, but there is a distinction. Offline-first typically means an application that caches data for offline access but still treats the server as authoritative. Local-first goes further: the local device is the source of truth, and the server (if present) is just another peer for synchronization. Local-first implies true data ownership, not just offline caching."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:208
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:210
 msgid "The Three Failure Modes of Cloud Finance Apps"
 msgstr "The Three Failure Modes of Cloud Finance Apps"
 
@@ -11726,7 +11726,7 @@ msgstr "This differs from traditional approaches in important ways:"
 msgid "This gives you the convenience of automatic import without sacrificing the privacy guarantees of local-first architecture."
 msgstr "This gives you the convenience of automatic import without sacrificing the privacy guarantees of local-first architecture."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:157
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:159
 msgid "This guide is not a generic list of apps. It is an argument for a different category entirely — one where durability and privacy are architectural properties, not marketing promises."
 msgstr "This guide is not a generic list of apps. It is an argument for a different category entirely — one where durability and privacy are architectural properties, not marketing promises."
 
@@ -11914,7 +11914,7 @@ msgstr "Track Bitcoin, Ethereum, AAPL, an S&P 500 ETF, and gold alongside your b
 msgid "Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Each holding is an instrument + quantity + price."
 msgstr "Track Bitcoin, Ethereum, AAPL, S&P 500 ETFs, and gold alongside bank accounts in a single net-worth view. Each holding is an instrument + quantity + price."
 
-#: src/generic/component/features-section/features-section-grid.tsx:62
+#: src/generic/component/features-section/features-section-grid.tsx:68
 msgid "Track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Manual or CSV imports."
 msgstr "Track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Manual or CSV imports."
 
@@ -11926,7 +11926,7 @@ msgstr "Track checking, savings, credit cards, cash, and brokerage accounts in o
 msgid "Track Everything"
 msgstr "Track Everything"
 
-#: src/generic/component/features-section/features-section-grid.tsx:78
+#: src/generic/component/features-section/features-section-grid.tsx:85
 msgid "Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers."
 msgstr "Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers."
 
@@ -11950,7 +11950,7 @@ msgstr "Track in any currency. Sum in yours."
 msgid "Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair."
 msgstr "Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math fair."
 
-#: src/generic/component/features-section/features-section-grid.tsx:110
+#: src/generic/component/features-section/features-section-grid.tsx:122
 msgid "Track loan balances, watch the principal drop, and stay motivated with progress charts."
 msgstr "Track loan balances, watch the principal drop, and stay motivated with progress charts."
 
@@ -12324,7 +12324,7 @@ msgstr "Visualize payoff progress with charts"
 msgid "voice"
 msgstr "voice"
 
-#: src/generic/component/features-section/features-section-grid.tsx:48
+#: src/generic/component/features-section/features-section-grid.tsx:54
 #: src/generic/component/footer/footer.tsx:131
 msgid "Voice Entry"
 msgstr "Voice Entry"
@@ -12622,7 +12622,7 @@ msgstr "What happens if I stop paying?"
 msgid "What happens if someone picks up my unlocked phone?"
 msgstr "What happens if someone picks up my unlocked phone?"
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:523
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:521
 msgid "What happens to AI suggestions if I am offline?"
 msgstr "What happens to AI suggestions if I am offline?"
 
@@ -12735,7 +12735,7 @@ msgstr "What if the transaction has no MCC?"
 msgid "What if Whisper mishears me?"
 msgstr "What if Whisper mishears me?"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:166
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:168
 msgid "What Intuit Mint Actually Was"
 msgstr "What Intuit Mint Actually Was"
 
@@ -12938,7 +12938,7 @@ msgstr "When data is local, every operation is fast. There is no network latency
 msgid "When data lives on user devices, users own their data in a meaningful way. They can back it up, export it, inspect it, and take it with them if they switch applications. There is no vendor lock-in through data captivity."
 msgstr "When data lives on user devices, users own their data in a meaningful way. They can back it up, export it, inspect it, and take it with them if they switch applications. There is no vendor lock-in through data captivity."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:149
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:151
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 
@@ -13148,7 +13148,7 @@ msgstr "While Figma is primarily cloud-hosted, its underlying technology demonst
 msgid "Whisper running on your device never sends audio anywhere. The model receives your audio buffer, produces a transcript, and that is the end of the data flow. No audio log, no remote API call, no third party involved."
 msgstr "Whisper running on your device never sends audio anywhere. The model receives your audio buffer, produces a transcript, and that is the end of the data flow. No audio log, no remote API call, no third party involved."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:413
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:415
 msgid "Whisper transcribes the audio locally, producing a text string."
 msgstr "Whisper transcribes the audio locally, producing a text string."
 
@@ -13326,7 +13326,7 @@ msgstr "Why most expense apps stop at fiat"
 msgid "Why most expense charts are useless"
 msgstr "Why most expense charts are useless"
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:196
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx:198
 msgid "Why Most Mint Alternatives Have the Same Problem"
 msgstr "Why Most Mint Alternatives Have the Same Problem"
 
@@ -13968,7 +13968,7 @@ msgstr "Yes. Transactions deduplicate by their booking reference, so re-importin
 msgid "Yes. Transfer is a first-class transaction type with explicit source and destination accounts; it never inflates your spending stats."
 msgstr "Yes. Transfer is a first-class transaction type with explicit source and destination accounts; it never inflates your spending stats."
 
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:517
+#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx:515
 msgid "Yes. Whisper supports over 90 languages. Budgie voice entry works in any language Whisper supports, including multilingual conversations. Language detection is automatic."
 msgstr "Yes. Whisper supports over 90 languages. Budgie voice entry works in any language Whisper supports, including multilingual conversations. Language detection is automatic."
 
@@ -14214,7 +14214,7 @@ msgstr "Your data doesn’t disappear if we go out of business"
 msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 msgstr "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:66
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:72
 msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
 msgstr "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
 
@@ -14268,7 +14268,7 @@ msgstr "Your financial data deserves this level of transparency. The patterns in
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
 msgstr "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
 
-#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:47
+#: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:50
 msgid "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
 msgstr "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
 

@@ -225,17 +225,17 @@ export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
             msg`Source code is publicly available — read every line that touches your data`,
             msg`Privacy claims are verifiable, not just promised`,
             msg`Community contributions welcome — features built by people who use the app`,
-            msg`MIT-licensed core with no proprietary data lock-in`,
+            msg`Source-available license — fork it, run your own build, take your data with you`,
             msg`Transparent roadmap and public issue tracker`
         ],
         faqs: [
             {
                 question: msg`Where can I find Budgie's source code?`,
-                answer: msg`Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/goncharovnikita/budgie. The repository includes the full app, AI service layer, contracts, and landing page.`
+                answer: msg`Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page.`
             },
             {
                 question: msg`What license does Budgie use?`,
-                answer: msg`Budgie is released under the MIT License. You are free to use, modify, and distribute the code with attribution. There are no proprietary modules that touch your financial data.`
+                answer: msg`Budgie ships under a source-available license that lets you read, fork, and modify the code while reserving commercial distribution to the project. There are no proprietary modules that touch your financial data — every line that handles your transactions is in the public repository.`
             },
             {
                 question: msg`How does open source make Budgie more private?`,

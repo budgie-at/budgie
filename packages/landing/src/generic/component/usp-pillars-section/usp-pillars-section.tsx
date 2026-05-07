@@ -40,7 +40,10 @@ export const UspPillarsSection = ({ locale }: Props) => (
             </Motion>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                <Link href={`/${locale}/offline-first`}>
+                <Link
+                    className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    href={`/${locale}/offline-first`}
+                >
                     <UspPillar
                         delay={0}
                         description={
@@ -60,7 +63,10 @@ export const UspPillarsSection = ({ locale }: Props) => (
                     variant="orange"
                 />
 
-                <Link href={`/${locale}/privacy`}>
+                <Link
+                    className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    href={`/${locale}/security`}
+                >
                     <UspPillar
                         delay={0.2}
                         description={<Trans>Your data is encrypted using your Face ID or fingerprint. Only you can ever access it.</Trans>}
@@ -70,7 +76,10 @@ export const UspPillarsSection = ({ locale }: Props) => (
                     />
                 </Link>
 
-                <Link href={`/${locale}/open-source`}>
+                <Link
+                    className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    href={`/${locale}/open-source`}
+                >
                     <UspPillar
                         delay={0.3}
                         description={<Trans>Every line of code is public on GitHub. Security researchers and anyone can audit it.</Trans>}

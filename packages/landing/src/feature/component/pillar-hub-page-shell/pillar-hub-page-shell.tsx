@@ -88,13 +88,13 @@ export const PillarHubPageShell = ({ locale, slug }: Props) => {
 
                     <FeaturePageSection>
                         <FeaturePageHeading>
-                            <Trans>MIT License — No Lock-In</Trans>
+                            <Trans>Source-Available License — No Lock-In</Trans>
                         </FeaturePageHeading>
                         <FeaturePageProse>
                             <Trans>
-                                The MIT License means you can fork Budgie, modify it, and run your own build. Your financial data belongs to
-                                you — not to a vendor who can change terms, raise prices, or shut down. If Budgie ever stops meeting your
-                                needs, you take your data and your build with you.
+                                Budgie ships under a source-available license that lets you read every line, fork it, and run your own
+                                build. Your financial data belongs to you — not to a vendor who can change terms, raise prices, or shut
+                                down. If Budgie ever stops meeting your needs, you take your data and your build with you.
                             </Trans>
                         </FeaturePageProse>
                         <FeaturePageProse>
