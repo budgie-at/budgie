@@ -214,7 +214,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`Expense Tracking, Reimagined`,
         tagline: msg`Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use.`,
         metaTitle: msg`Expense Tracking, Reimagined — Budgie`,
-        metaDescription: msg`Log expenses, income, and transfers in seconds with a quick-entry bottom sheet that picks the right account, category, and date by default. Edit, split, or convert from the list.`,
+        metaDescription: msg`Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device with smart suggestions and zero cloud accounts.`,
         primaryKeyword: 'personal expense tracker',
         seoKeywords: [
             'personal expense tracker',
@@ -259,7 +259,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         title: msg`Multi-Account Money Management`,
         tagline: msg`Bank, cash, savings, crypto, stocks, debt — all on one home screen.`,
         metaTitle: msg`Multi-Account Money Management — Budgie`,
-        metaDescription: msg`Track unlimited bank accounts, cash wallets, savings, crypto, stocks, and debt — grouped, archived, and renamed however you want. Each account is a first-class entity with its own currency.`,
+        metaDescription: msg`Track checking, savings, credit cards, cash, and brokerage accounts in one private app. Multi-currency, offline-first, no bank login required.`,
         primaryKeyword: 'money management app',
         seoKeywords: [
             'money management app',
