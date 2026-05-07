@@ -77,30 +77,31 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Tag-Based Spending Analytics</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Slice your spending and income by tag — see #vacation totals, #shared expenses, #reimbursable rolling — with an
-                        &quot;Untagged&quot; bucket for completeness.
+                        A dedicated Tags tab lives alongside the Categories tab in Analytics — per-tag income, expense, and net totals, plus
+                        a drillable Untagged bucket that surfaces every transaction missing a label.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why tags answer questions categories can&apos;t</Trans>
+                    <Trans>Why the Tags tab answers questions categories can&apos;t</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tags answer questions categories can&apos;t: &quot;How much did the Italy trip cost?&quot; &quot;What&apos;s pending
-                        on shared rent?&quot; &quot;What&apos;s reimbursable?&quot; The Tags tab in Analytics is built for those.
+                        Categories tell you what kind of expense. Tags tell you for what purpose — &quot;Italy trip total&quot;,
+                        &quot;shared rent&quot;, &quot;reimbursable meals&quot;. Switch to the Tags tab in Analytics and every tag becomes
+                        its own row with income, expense, and net broken out separately.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Each tag shows separate income and expense totals — useful when a tag spans both (a #vacation tag might include
-                        refunds). The &quot;Untagged&quot; bucket is a deliberate gap-finder.
+                        The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to see
+                        the full list, label what you missed, and watch the bucket shrink.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -111,19 +112,19 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Per-tag income, expense, and net totals — at a glance</Trans>
+                        <Trans>Dedicated Tags tab alongside the Categories tab — one tap to switch views</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>&quot;Untagged&quot; bucket finds bookkeeping gaps for you</Trans>
+                        <Trans>Per-tag income, expense, and net totals — each tag row broken out separately</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Drill from any tag row into its underlying transactions</Trans>
+                        <Trans>Untagged bucket surfaces every transaction missing a label — drill in and fix gaps</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Same date filter as the rest of analytics — Today through All Time, plus custom</Trans>
+                        <Trans>Drill from any tag row into its underlying transactions with the same date filters</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Independent from category analytics — both views available, no conflict</Trans>
+                        <Trans>Respects the global date-range preset — Last Week, Last Month, Custom, or All Time</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -134,8 +135,9 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Analytics → Tags tab. Filter by date range. Each tag becomes a row with income, expense, and net. Tap any tag to
-                        drill into its transactions.
+                        Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the
+                        active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full
+                        transaction list filtered to that tag.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -145,17 +147,18 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     question={<Trans>How is this different from category analytics?</Trans>}
                     answer={
                         <Trans>
-                            Categories answer &quot;what kind of expense&quot;; tags answer &quot;for what purpose&quot;. Use both —
-                            categories give a structured view, tags give project / person / context views.
+                            Categories answer &quot;what kind of expense&quot;; tags answer &quot;for what purpose&quot;. Both views live in
+                            Analytics — switch between them with one tap. Categories give a structured budget view; tags give project-level
+                            and context-level views.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s in the &quot;Untagged&quot; bucket?</Trans>}
+                    question={<Trans>What&apos;s in the Untagged bucket?</Trans>}
                     answer={
                         <Trans>
-                            Every transaction without any tags. The bucket is a deliberate gap-finder so you can spot which transactions
-                            need tagging.
+                            Every transaction that carries zero tags. Tapping the Untagged row opens the full transaction list so you can
+                            label them retroactively — the bucket is a deliberate gap-finder, not a catch-all category.
                         </Trans>
                     }
                 />
@@ -164,13 +167,18 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Yes. Each tag row shows separate income, expense, and net totals — useful when a tag spans both (refunds tagged
-                            #vacation, for example).
+                            #vacation appear in the income column for that tag).
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I drill into a tag&apos;s transactions?</Trans>}
-                    answer={<Trans>Tap any tag row to see every transaction in it for the current period.</Trans>}
+                    answer={
+                        <Trans>
+                            Tap any tag row to see every contributing transaction for the current period, with the same sort options and
+                            date filters available everywhere else in Analytics.
+                        </Trans>
+                    }
                 />
             </FeaturePageFaqSection>
 

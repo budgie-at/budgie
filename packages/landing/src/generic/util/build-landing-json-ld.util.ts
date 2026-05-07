@@ -22,19 +22,19 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
         {
             question: i18n._(msg`What cryptocurrencies and assets can I track?`),
             answer: i18n._(
-                msg`Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking.`
+                msg`Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device.`
             )
         },
         {
             question: i18n._(msg`Can I use Budgie across multiple devices?`),
             answer: i18n._(
-                msg`Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process.`
+                msg`Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers.`
             )
         },
         {
-            question: i18n._(msg`How does the open source license work?`),
+            question: i18n._(msg`How does the source-available license work?`),
             answer: i18n._(
-                msg`Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency.`
+                msg`Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line.`
             )
         }
     ];

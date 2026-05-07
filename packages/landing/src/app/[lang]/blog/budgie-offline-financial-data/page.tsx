@@ -74,10 +74,12 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(
                     i18n

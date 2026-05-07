@@ -88,7 +88,7 @@ export async function generateMetadata(props: Props) {
             template: '%s | Budgie'
         },
         description: i18n._(
-            msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device.`
+            msg`Track expenses, sync banks, and manage crypto with full privacy. Multi-currency, debt tracking, and on-device AI insights — stored on your device.`
         ),
         keywords: i18n._(
             msg`expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management`
@@ -105,7 +105,7 @@ export async function generateMetadata(props: Props) {
             type: 'website',
             url: `${BASE_URL}/${lang}`,
             locale: OG_LOCALE_MAP[lang] ?? 'en_US',
-            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1280, height: 720 }]
+            images: [{ url: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`, width: 1200, height: 630 }]
         },
         twitter: {
             card: 'summary_large_image',

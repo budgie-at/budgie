@@ -74,10 +74,12 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(
                     i18n
