@@ -120,8 +120,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1} key="stage-1">
                         <Trans>
-                            LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category
-                            and tags from context
+                            LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category and
+                            tags from context
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2} key="stage-2">
@@ -162,10 +162,10 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both
-                        are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest
-                        neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response
-                        (accept, edit, or reject) feeds back into the embedding index without any network call.
+                        On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are
+                        stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor
+                        exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept,
+                        edit, or reject) feeds back into the embedding index without any network call.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -175,8 +175,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>Does the AI work offline?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Both models live on your device after the one-time download. Categorization runs whether you&apos;re
-                            online or not.
+                            Yes. Both models live on your device after the one-time download. Categorization runs whether you&apos;re online
+                            or not.
                         </Trans>
                     }
                 />

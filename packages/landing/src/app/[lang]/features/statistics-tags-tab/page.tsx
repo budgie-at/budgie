@@ -93,8 +93,8 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer
-                        a different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight
+                        Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer a
+                        different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight
                         charged to the same &ldquo;Travel&rdquo; category as a commute, a shared dinner that needs a #split label — these
                         distinctions only surface when you have a dedicated tag reporting layer.
                     </Trans>
@@ -117,9 +117,8 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                     <Trans>
                         The Untagged bucket is not an error state — it is a deliberate audit tool. Every transaction with zero tags
                         accumulates there, and its total tells you how much of your spending currently has no tag context. Tapping it opens
-                        a standard transaction list filtered to &ldquo;no tags&rdquo;, where you can open each row and add the missing
-                        label immediately. Budgie does not force you to tag everything, but it makes the gap visible so the choice is
-                        informed.
+                        a standard transaction list filtered to &ldquo;no tags&rdquo;, where you can open each row and add the missing label
+                        immediately. Budgie does not force you to tag everything, but it makes the gap visible so the choice is informed.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -181,11 +180,7 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work with the date filter presets?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom).
-                        </Trans>
-                    }
+                    answer={<Trans>Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom).</Trans>}
                 />
             </FeaturePageFaqSection>
 

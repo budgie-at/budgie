@@ -1,4 +1,3 @@
- 
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -49,8 +48,8 @@ export const FeaturePageComparisonShell = ({ locale, slug }: Props) => {
         updatedAt: entry.updatedAt
     });
 
-    const {comparisonRows} = entry;
-    const {comparisonCategoryLabel} = entry;
+    const { comparisonRows } = entry;
+    const { comparisonCategoryLabel } = entry;
 
     return (
         <main className="flex-1">
@@ -102,11 +101,7 @@ export const FeaturePageComparisonShell = ({ locale, slug }: Props) => {
 
             <FeaturePageFaqSection>
                 {entry.faqs.map(faq => (
-                    <FeaturePageFaqItem
-                        answer={i18n._(faq.answer)}
-                        key={i18n._(faq.question)}
-                        question={i18n._(faq.question)}
-                    />
+                    <FeaturePageFaqItem answer={i18n._(faq.answer)} key={i18n._(faq.question)} question={i18n._(faq.question)} />
                 ))}
             </FeaturePageFaqSection>
 

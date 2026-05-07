@@ -165,8 +165,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
-                            Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day
-                            time window. The original amounts in both currencies are preserved on each leg.
+                            Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day time
+                            window. The original amounts in both currencies are preserved on each leg.
                         </Trans>
                     }
                 />

@@ -100,8 +100,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to
-                        see the full list, label what you missed, and watch the bucket shrink.
+                        The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to see
+                        the full list, label what you missed, and watch the bucket shrink.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -147,9 +147,9 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     question={<Trans>How is this different from category analytics?</Trans>}
                     answer={
                         <Trans>
-                            Categories answer &quot;what kind of expense&quot;; tags answer &quot;for what purpose&quot;. Both views live
-                            in Analytics — switch between them with one tap. Categories give a structured budget view; tags give
-                            project-level and context-level views.
+                            Categories answer &quot;what kind of expense&quot;; tags answer &quot;for what purpose&quot;. Both views live in
+                            Analytics — switch between them with one tap. Categories give a structured budget view; tags give project-level
+                            and context-level views.
                         </Trans>
                     }
                 />

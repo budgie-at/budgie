@@ -125,8 +125,8 @@ export default async function IncomeToTransferConversionFeaturePage(props: PageL
                 <FeaturePageProse>
                     <Trans>
                         The conversion is reversible: open the resulting transfer and convert it back to income at any time. No data is
-                        permanently altered; the operation is a reclassification that updates the type field and rebuilds the transfer
-                        link, not a deletion and re-creation.
+                        permanently altered; the operation is a reclassification that updates the type field and rebuilds the transfer link,
+                        not a deletion and re-creation.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

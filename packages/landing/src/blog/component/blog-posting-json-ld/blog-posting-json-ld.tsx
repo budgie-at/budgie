@@ -18,7 +18,19 @@ interface Props {
     blogLabel: string;
 }
 
-export const BlogPostingJsonLd = ({ title, description, date, dateModified, author, image, locale, slug, keywords, homeLabel, blogLabel }: Props) => {
+export const BlogPostingJsonLd = ({
+    title,
+    description,
+    date,
+    dateModified,
+    author,
+    image,
+    locale,
+    slug,
+    keywords,
+    homeLabel,
+    blogLabel
+}: Props) => {
     const articleUrl = `${BASE_URL}/${locale}/blog/${slug}`;
     const data = {
         '@context': 'https://schema.org',

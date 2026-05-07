@@ -81,8 +81,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 locale={lang}
                 tagline={
                     <Trans>
-                        Long-press any transaction card for a native context menu — edit, delete, convert to transfer, or split without
-                        ever opening the full edit form.
+                        Long-press any transaction card for a native context menu — edit, delete, convert to transfer, or split without ever
+                        opening the full edit form.
                     </Trans>
                 }
             />
@@ -117,8 +117,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         Gesture detection activates after approximately 300 milliseconds of sustained contact on a transaction card. The
                         menu appears anchored to the card, listing only the actions that are valid for that specific transaction type.
                         Expense cards show Edit, Delete, Convert to Transfer, and Split. Transfer cards omit Convert to Transfer since it is
-                        already one. Split transactions expose a Merge Back option instead. This context-aware filtering prevents
-                        presenting actions that would be no-ops or errors for the current entry type.
+                        already one. Split transactions expose a Merge Back option instead. This context-aware filtering prevents presenting
+                        actions that would be no-ops or errors for the current entry type.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -164,17 +164,13 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 <FeaturePageFaqItem
                     question={<Trans>Can I customize the menu?</Trans>}
                     answer={
-                        <Trans>
-                            Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.
-                        </Trans>
+                        <Trans>Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work on iPad?</Trans>}
                     answer={
-                        <Trans>
-                            Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet.
-                        </Trans>
+                        <Trans>Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet.</Trans>
                     }
                 />
             </FeaturePageFaqSection>

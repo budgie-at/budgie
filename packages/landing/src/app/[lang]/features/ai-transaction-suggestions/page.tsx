@@ -162,26 +162,16 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 <FeaturePageFaqItem
                     question={<Trans>Will it suggest things I never bought?</Trans>}
                     answer={
-                        <Trans>
-                            No. The suggestion engine only proposes values from transactions you have already logged or imported.
-                        </Trans>
+                        <Trans>No. The suggestion engine only proposes values from transactions you have already logged or imported.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I disable suggestions?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before.
-                        </Trans>
-                    }
+                    answer={<Trans>Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work for income and transfers too?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. The suggestion engine runs on every form variant — expense, income, and transfer.
-                        </Trans>
-                    }
+                    answer={<Trans>Yes. The suggestion engine runs on every form variant — expense, income, and transfer.</Trans>}
                 />
             </FeaturePageFaqSection>
 

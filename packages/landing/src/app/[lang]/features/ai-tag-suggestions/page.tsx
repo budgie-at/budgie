@@ -172,11 +172,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I add new tags from the suggestion strip?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive.
-                        </Trans>
-                    }
+                    answer={<Trans>Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work offline?</Trans>}

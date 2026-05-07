@@ -1,6 +1,5 @@
-import type { MessageDescriptor } from '@lingui/core';
-
 import type { FeatureFaqInterface } from './feature-faq.interface';
+import type { MessageDescriptor } from '@lingui/core';
 
 export interface PillarHubEntryInterface {
     readonly slug: string;

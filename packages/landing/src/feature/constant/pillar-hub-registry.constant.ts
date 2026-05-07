@@ -72,13 +72,7 @@ export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
             'budget app without wifi',
             'local expense tracker'
         ],
-        memberFeatureSlugs: [
-            'offline-first-expense-tracker',
-            'csv-import',
-            'erste-bank-pdf-import',
-            'multi-currency',
-            'database-backup'
-        ],
+        memberFeatureSlugs: ['offline-first-expense-tracker', 'csv-import', 'erste-bank-pdf-import', 'multi-currency', 'database-backup'],
         heroBullets: [
             msg`Full expense tracking with zero internet dependency`,
             msg`Import bank CSVs and PDFs without a cloud connection`,
@@ -179,12 +173,7 @@ export const PILLAR_HUB_REGISTRY: readonly PillarHubEntryInterface[] = [
             'PIN lock budget app',
             'encrypted finance app'
         ],
-        memberFeatureSlugs: [
-            'pin-app-lock',
-            'biometric-authentication',
-            'screenshot-protection',
-            'database-backup'
-        ],
+        memberFeatureSlugs: ['pin-app-lock', 'biometric-authentication', 'screenshot-protection', 'database-backup'],
         heroBullets: [
             msg`AES-256 encrypted SQLite — your database is unreadable without your key`,
             msg`PIN lock enforced before any transaction or balance is visible`,

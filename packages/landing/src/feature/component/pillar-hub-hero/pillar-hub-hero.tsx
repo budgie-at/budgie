@@ -24,7 +24,9 @@ export const PillarHubHero = ({ locale, heading, tagline, breadcrumbs, bullets }
                 <ul className="mt-6 space-y-2">
                     {bullets.map((bullet, index) => (
                         <li className="flex items-start gap-2 text-muted-foreground" key={index}>
-                            <span aria-hidden className="mt-1 text-emerald-500">✓</span>
+                            <span aria-hidden className="mt-1 text-emerald-500">
+                                ✓
+                            </span>
                             <span>{bullet}</span>
                         </li>
                     ))}
