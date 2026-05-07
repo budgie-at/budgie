@@ -7,6 +7,7 @@ export const TransactionCardSelector = {
     Category: (value: string) => `TransactionCard.Category.${normalizePart(value)}` as const,
     Tag: (value: string) => `TransactionCard.Tag.${normalizePart(value)}` as const,
     TagSiblingsCount: (value: string) => `TransactionCard.TagSiblingsCount.${normalizePart(value)}` as const,
+    RefundedPill: (id: number) => `TransactionCard.RefundedPill.${id}` as const,
     Account: (value: string) => `TransactionCard.Account.${normalizePart(value)}` as const,
     FromAccount: (value: string) => `TransactionCard.FromAccount.${normalizePart(value)}` as const,
     ToAccount: (value: string) => `TransactionCard.ToAccount.${normalizePart(value)}` as const,

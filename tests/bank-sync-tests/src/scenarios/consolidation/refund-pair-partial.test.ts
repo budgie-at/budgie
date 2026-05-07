@@ -1,19 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { eq } from 'drizzle-orm';
-
-import {
-    CategoryEntityTable,
-    DEFAULT_TRANSACTION_FILTER,
-    PRECISION,
-    TransactionConsolidationTypeEnum,
-    TransactionEntryEntityTable,
-    TransactionEntryTypeEnum
-} from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 
 import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seed, seedRefundedExpense, testDb } from '../../harness';
+import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
 
 import { statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -42,19 +33,7 @@ describe('consolidation/refund-pair-partial', () => {
     });
 
     it('nets partial refunds out of totals and expense category analytics', async () => {
-        const category = testDb.select().from(CategoryEntityTable).all()[0];
-        const account = seed.account({ externalId: 'mono-card' });
-        const { expense } = seedRefundedExpense({
-            accountId: account.id,
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [40 * PRECISION]
-        });
-
-        testDb
-            .update(TransactionEntryEntityTable)
-            .set({ categoryId: category.id })
-            .where(eq(TransactionEntryEntityTable.transactionId, expense.id))
-            .run();
+        const { account, category } = seedRefundStatisticsScenario(40 * PRECISION);
 
         await transferConsolidationService.consolidate();
 

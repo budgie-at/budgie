@@ -99,7 +99,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: RefundedPillProps
     return (
         <View className="flex-row">
             <Animated.View entering={FadeIn.duration(ENTER_DURATION_MS)}>
-                <HapticPressable onPress={onPress} testID={testID}>
+                <HapticPressable accessibilityLabel={label} accessibilityRole="button" accessible onPress={onPress} testID={testID}>
                     {body}
                 </HapticPressable>
             </Animated.View>
