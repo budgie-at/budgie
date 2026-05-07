@@ -13,7 +13,11 @@ const contentAnimate = { opacity: 1, x: 0 };
 const contentTransition = { duration: 0.5 };
 const viewportOnce = { once: true };
 
-export const OpenSourceContent = () => (
+interface Props {
+    readonly locale: string;
+}
+
+export const OpenSourceContent = ({ locale }: Props) => (
     <Motion initial={contentInitial} transition={contentTransition} viewport={viewportOnce} whileInView={contentAnimate}>
         <Badge className="rounded-full px-4 py-1.5 text-sm font-medium mb-6" variant="secondary">
             <Code2 className="size-3 mr-1" />
@@ -65,6 +69,12 @@ export const OpenSourceContent = () => (
                 <Link href="https://github.com/sponsors/nickolay-ponomarev" rel="noopener noreferrer" target="_blank">
                     <Heart className="mr-2 size-5" />
                     <Trans>Sponsor Project</Trans>
+                </Link>
+            </Button>
+
+            <Button asChild className="rounded-full" size="lg" variant="outline">
+                <Link href={`/${locale}/open-source`}>
+                    <Trans>Learn More</Trans>
                 </Link>
             </Button>
         </div>

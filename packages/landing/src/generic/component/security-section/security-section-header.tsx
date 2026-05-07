@@ -1,7 +1,9 @@
 import { Trans } from '@lingui/react/macro';
 import { Shield } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '../../../ui/badge';
+import { Button } from '../../../ui/button';
 import { Motion } from '../motion/motion';
 
 const initialMotion = { opacity: 0, y: 20 };
@@ -9,7 +11,11 @@ const animatedMotion = { opacity: 1, y: 0 };
 const transitionMotion = { duration: 0.5 };
 const viewportOnce = { once: true };
 
-export const SecuritySectionHeader = () => (
+interface Props {
+    readonly locale: string;
+}
+
+export const SecuritySectionHeader = ({ locale }: Props) => (
     <Motion
         className="flex flex-col items-center justify-center space-y-4 text-center mb-16"
         initial={initialMotion}
@@ -32,5 +38,11 @@ export const SecuritySectionHeader = () => (
                 security features.
             </Trans>
         </p>
+
+        <Button asChild className="rounded-full" variant="outline">
+            <Link href={`/${locale}/security`}>
+                <Trans>Learn More</Trans>
+            </Link>
+        </Button>
     </Motion>
 );

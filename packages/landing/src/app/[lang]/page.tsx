@@ -60,7 +60,7 @@ export default async function LandingPage(props: PageLangParam) {
             <HowItWorksSection />
 
             {/* Security Deep-Dive */}
-            <SecuritySection />
+            <SecuritySection locale={lang} />
             <ComparisonSection />
 
             {/* Feature Showcases */}
@@ -73,7 +73,7 @@ export default async function LandingPage(props: PageLangParam) {
             <TestimonialsSection />
 
             {/* Trust */}
-            <OpenSourceSection />
+            <OpenSourceSection locale={lang} />
 
             {/* FAQ & Resources */}
             <FaqSection />
