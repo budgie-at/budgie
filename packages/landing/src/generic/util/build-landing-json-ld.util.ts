@@ -32,9 +32,9 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
             )
         },
         {
-            question: i18n._(msg`How does the open source license work?`),
+            question: i18n._(msg`How does the source-available license work?`),
             answer: i18n._(
-                msg`Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency.`
+                msg`Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line.`
             )
         }
     ];

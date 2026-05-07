@@ -27,7 +27,7 @@ export const SolutionItems = () => (
         />
         <ProblemSolutionItem
             icon={<CheckCircle2 className="size-4" />}
-            text={<Trans>Open source—audit our code</Trans>}
+            text={<Trans>Source-available—audit our code on GitHub</Trans>}
             variant="solution"
         />
     </>
