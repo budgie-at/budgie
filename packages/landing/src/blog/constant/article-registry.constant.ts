@@ -95,6 +95,45 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         seoKeywords: ['YNAB alternatives', 'privacy budget app', 'YNAB replacement'],
         seoDescription: msg`Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide.`,
         relatedFeatureSlugs: ['offline-first-expense-tracker', 'custom-categories', 'transaction-tags', 'recurring-payments-calendar']
+    },
+    {
+        slug: 'mint-shutdown-private-alternative',
+        date: '2026-05-07',
+        author: 'Budgie Team',
+        image: '/images/design-mode/ai-budgeting-app-4x.jpg',
+        readingTimeMinutes: 12,
+        title: msg`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
+        description: msg`Mint shut down in 2024 and most replacements are still cloud-based. Here's why an offline-first, on-device tracker is the most durable answer for financial privacy.`,
+        tags: ['mint-alternatives', 'offline-first', 'privacy', 'on-device', 'cloud-shutdown'],
+        seoKeywords: ['Mint shutdown alternative', 'private Mint replacement', 'offline budget app after Mint', 'no cloud Mint alternative'],
+        seoDescription: msg`Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'csv-import', 'monobank-sync', 'database-backup', 'private-budget-app-alternative']
+    },
+    {
+        slug: 'on-device-ai-budget-app-explainer',
+        date: '2026-05-07',
+        author: 'Budgie Team',
+        image: '/images/design-mode/ai-budgeting-app-4x.jpg',
+        readingTimeMinutes: 11,
+        title: msg`On-Device AI in Your Budget App: How It Works and Why It Matters`,
+        description: msg`Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here's how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.`,
+        tags: ['on-device-ai', 'privacy', 'local-llm', 'voice-input', 'ai-categorization'],
+        seoKeywords: ['on-device AI budget app', 'private AI finance', 'local LLM finance app', 'offline AI expense tracker'],
+        seoDescription: msg`Learn how on-device AI keeps your spending data private. Covers local LLM inference, offline embeddings, and Whisper speech-to-text — no cloud required.`,
+        relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'ai-transaction-suggestions', 'on-device-ai-budget-app']
+    },
+    {
+        slug: 'offline-first-bank-data-safety',
+        date: '2026-05-07',
+        author: 'Budgie Team',
+        image: '/images/design-mode/ai-budgeting-app-4x.jpg',
+        readingTimeMinutes: 10,
+        title: msg`Bank Data Safety: Why Offline-First Is the Only Honest Answer`,
+        description: msg`Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target. Here's how Budgie connects to banks without handing your credentials to a third party.`,
+        tags: ['bank-data-safety', 'offline-first', 'privacy', 'plaid', 'aggregators', 'security'],
+        seoKeywords: ['offline-first finance', 'bank data safety', 'Plaid alternative', 'no bank login budget app'],
+        seoDescription: msg`Financial aggregators are high-value breach targets. Discover how offline-first architecture, direct bank APIs, and CSV/PDF imports keep your bank data safe without Plaid.`,
+        relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'no-bank-login-budget-app']
     }
 ];
 /* eslint-enable lingui/no-unlocalized-strings */
