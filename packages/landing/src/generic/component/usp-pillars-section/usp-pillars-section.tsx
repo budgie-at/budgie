@@ -69,9 +69,13 @@ export const UspPillarsSection = ({ locale }: Props) => (
                 >
                     <UspPillar
                         delay={0.2}
-                        description={<Trans>Your data is encrypted using your Face ID or fingerprint. Only you can ever access it.</Trans>}
+                        description={
+                            <Trans>
+                                Face ID, Touch ID, or PIN unlock your encrypted vault. Hardware-backed in iOS Keychain and Android Keystore.
+                            </Trans>
+                        }
                         icon={<Fingerprint className="size-8 text-white" />}
-                        title={<Trans>Biometric Encrypted</Trans>}
+                        title={<Trans>Biometric Locked</Trans>}
                         variant="green"
                     />
                 </Link>

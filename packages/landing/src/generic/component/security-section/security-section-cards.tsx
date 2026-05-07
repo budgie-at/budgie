@@ -34,13 +34,13 @@ export const SecuritySectionCards = () => (
         <SecuritySectionCard
             description={
                 <Trans>
-                    Secure your finances with Face ID or Touch ID. Only you can access your data, with the same security used by banking
-                    apps.
+                    Lock your app with Face ID or Touch ID. Your encrypted data is only accessible after biometric or PIN verification.
+                    SQLCipher AES-256 encrypts the database file; the key lives in iOS Keychain or Android Keystore.
                 </Trans>
             }
             icon={<Fingerprint className="size-6 text-blue-600 dark:text-blue-400" />}
             iconClassName="bg-blue-100 dark:bg-blue-900/30"
-            title={<Trans>Biometric Authentication</Trans>}
+            title={<Trans>Biometric Lock</Trans>}
         />
 
         <SecuritySectionCard

@@ -15,7 +15,11 @@ export const SolutionItems = () => (
             text={<Trans>We literally cannot see your data</Trans>}
             variant="solution"
         />
-        <ProblemSolutionItem icon={<Lock className="size-4" />} text={<Trans>Encrypted with your biometrics</Trans>} variant="solution" />
+        <ProblemSolutionItem
+            icon={<Lock className="size-4" />}
+            text={<Trans>Locked behind biometrics. Encrypted with SQLCipher AES-256.</Trans>}
+            variant="solution"
+        />
         <ProblemSolutionItem
             icon={<CloudOff className="size-4" />}
             text={<Trans>Works 100% offline—always fast</Trans>}
