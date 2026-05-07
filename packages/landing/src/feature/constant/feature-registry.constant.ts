@@ -888,15 +888,15 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         tier: FeatureTierEnum.POWER,
         title: msg`AI Merchant Name Translation`,
         tagline: msg`Cyrillic, Greek, Arabic merchant strings — the on-device LLM transliterates and adds search keywords.`,
-        metaTitle: msg`AI Merchant Translation — Budgie`,
-        metaDescription: msg`Travel statements full of "АТБ" or "Καρρέ"? The on-device LLM normalizes non-Latin merchant names and adds searchable English keywords.`,
-        primaryKeyword: 'multilingual expense tracker',
+        metaTitle: msg`Foreign Merchant Name Normalizer — Budgie`,
+        metaDescription: msg`Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device.`,
+        primaryKeyword: 'foreign merchant name normalizer',
         seoKeywords: [
-            'multilingual expense tracker',
-            'merchant name translation',
-            'cyrillic budget app',
-            'transliterate transactions',
-            'multi-script expense app'
+            'foreign merchant name normalizer',
+            'bank statement translation app',
+            'merchant name cleanup',
+            'transliterate cyrillic merchants',
+            'transaction description translator'
         ],
         relatedFeatureSlugs: ['spending-analytics', 'voice-transaction-entry', 'multi-language-app'],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
