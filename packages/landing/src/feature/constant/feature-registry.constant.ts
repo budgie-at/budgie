@@ -82,7 +82,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2025-12-25',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['monobank', 'bank sync', 'privacy']
     },
     {
