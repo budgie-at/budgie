@@ -4,7 +4,6 @@ import { Motion } from '../motion/motion';
 
 import type { ReactNode } from 'react';
 
-
 const containerVariants = {
     hidden: { opacity: 0 },
     show: {
