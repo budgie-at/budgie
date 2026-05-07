@@ -802,7 +802,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2026-02-22',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['recurring', 'subscriptions', 'calendar']
     },
     {
@@ -829,11 +829,11 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             },
             {
                 question: msg`Does this work across two different banks?`,
-                answer: msg`Yes — that's the whole point. As long as both banks store the counter-IBAN on their side, Budgie can match them. Monobank, PrivatBank, and Erste all do.`
+                answer: msg`Yes — that's the whole point. Counter-IBAN is the primary matching signal: both banks store the counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion.`
             },
             {
                 question: msg`What about cross-currency transfers?`,
-                answer: msg`Pairs match if the FX rate is plausible within a 3-day window. The original amounts in both currencies are preserved.`
+                answer: msg`Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day time window. The original amounts in both currencies are preserved on each leg.`
             },
             {
                 question: msg`Will old (already-imported) transactions get re-matched?`,
@@ -841,7 +841,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2026-05-01',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['transfers', 'deduplication', 'smart']
     },
     {

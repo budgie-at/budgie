@@ -77,7 +77,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Smart Transfer Consolidation</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -154,8 +154,10 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>Does this work across two different banks?</Trans>}
                     answer={
                         <Trans>
-                            Yes — that&apos;s the whole point. As long as both banks store the counter-IBAN on their side, Budgie can match
-                            them. Monobank, PrivatBank, and Erste all do.
+                            Yes — that&apos;s the whole point. Counter-IBAN is the primary matching signal: both banks store the
+                            counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste
+                            all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the
+                            amounts differ due to FX conversion.
                         </Trans>
                     }
                 />
@@ -163,8 +165,8 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
-                            Pairs match if the FX rate is plausible within a 3-day window. The original amounts in both currencies are
-                            preserved.
+                            Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day
+                            time window. The original amounts in both currencies are preserved on each leg.
                         </Trans>
                     }
                 />
