@@ -33,6 +33,7 @@ export const buildFeaturePageJsonLd = ({
     const breadcrumbList = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
+        '@id': `${url}#breadcrumb`,
         itemListElement: [
             { '@type': 'ListItem', position: 1, name: homeLabel, item: `${BASE_URL}/${locale}` },
             { '@type': 'ListItem', position: 2, name: featuresLabel, item: `${BASE_URL}/${locale}/features` },
