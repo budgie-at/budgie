@@ -92,7 +92,7 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
             <Link href={`/${locale}/features/account-management`}>
                 <FeaturesSectionItem
                     description={i18n._(
-                        msg`Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required.`
+                        msg`Cash, savings, bank, crypto, stocks, and debt — all accounts in one private app. No bank login required.`
                     )}
                     icon={<Wallet className="size-5" />}
                     title={i18n._(msg`All Accounts`)}
