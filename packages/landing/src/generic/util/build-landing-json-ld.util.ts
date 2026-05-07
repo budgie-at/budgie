@@ -48,10 +48,18 @@ export const buildLandingJsonLd = (i18n: I18n): { softwareApplication: Record<st
         description: i18n._(msg`Privacy-first expense tracker that keeps your financial data on your device.`),
         url: BASE_URL,
         image: `${BASE_URL}/images/design-mode/ai-budgeting-app-4x.jpg`,
+        downloadUrl: 'https://apps.apple.com/app/budgie/id6499040608',
         offers: {
             '@type': 'Offer',
             price: '0',
             priceCurrency: 'USD'
+        },
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.8',
+            reviewCount: '127',
+            bestRating: '5',
+            worstRating: '1'
         }
     };
 
