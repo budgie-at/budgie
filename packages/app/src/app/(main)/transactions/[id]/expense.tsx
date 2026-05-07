@@ -14,8 +14,10 @@ import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-m
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
+import { RefundedPill } from '../../../../transaction/components/refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
+import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
@@ -29,12 +31,11 @@ import type { UpdateTransactionFormPropsInterface } from '../../../../transactio
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
+    const [openConsolidationSourceModal] = useConsolidationSourceModal();
     const { markForEmbedding } = useEmbeddingGenerator();
 
-    const transactionInput = convertTransactionToInput(transaction);
-
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
-        transaction: transactionInput,
+        transaction: convertTransactionToInput(transaction),
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId,
         onAfterSubmit: () => void markForEmbedding({ transactionId })
@@ -44,19 +45,19 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
-    const sourceAmount = sourceEntry.amount;
     const sourceAccount = sourceEntry.account;
-    const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
+
+    const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
             transactionId,
             transactionType: TransactionTypeEnum.EXPENSE,
             excludeAccountId: fromAccountId ?? 0,
-            sourceAmount: convertFromMicroUnits(sourceAmount),
-            sourceInstrumentId,
+            sourceAmount: convertFromMicroUnits(sourceEntry.amount),
+            sourceInstrumentId: sourceAccount.instrumentId,
             sourceCode: sourceAccount.instrument.code
         });
 
@@ -81,6 +82,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
+                    amountTopContent={<RefundedPill transaction={transaction} onPress={handleOpenRefundSources} />}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
