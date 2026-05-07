@@ -23,7 +23,7 @@ export const buildPillarHubJsonLd = ({
     faqs,
     publishedAt,
     updatedAt
-}: BuildPillarHubJsonLdInput): readonly [Record<string, unknown>, Record<string, unknown>, Record<string, unknown> | undefined] => {
+}: BuildPillarHubJsonLdInput): readonly [Record<string, unknown>, Record<string, unknown>, Record<string, unknown>?] => {
     const url = `${BASE_URL}/${locale}/${slug}`;
 
     const breadcrumbSchema = {
@@ -50,7 +50,7 @@ export const buildPillarHubJsonLd = ({
     };
 
     if (!isNotEmptyArray(faqs)) {
-        return [breadcrumbSchema, webPageSchema, undefined];
+        return [breadcrumbSchema, webPageSchema];
     }
 
     const faqSchema = {
