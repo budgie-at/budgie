@@ -79,7 +79,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                 )`Mint shut down in 2024 and most replacements are still cloud-based. Here is why an offline-first, on-device tracker is the most durable answer for financial privacy.`}
                 homeLabel={t(i18n)`Home`}
                 image={IMAGE}
-                keywords={t(i18n)`Mint shutdown alternative, private Mint replacement, offline budget app after Mint, no cloud Mint alternative`}
+                keywords={t(
+                    i18n
+                )`Mint shutdown alternative, private Mint replacement, offline budget app after Mint, no cloud Mint alternative`}
                 locale={lang}
                 slug={SLUG}
                 title={t(i18n)`After Mint: A Private, Offline Alternative That Actually Sticks Around`}
@@ -111,8 +113,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Mint shut down in 2024 and most replacements are still cloud-based. Here is why an offline-first, on-device
-                        tracker is the most durable answer for financial privacy.
+                        Mint shut down in 2024 and most replacements are still cloud-based. Here is why an offline-first, on-device tracker
+                        is the most durable answer for financial privacy.
                     </Trans>
                 </p>
 
@@ -211,8 +213,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Vendor shutdown</strong> — Mint proved this is real. A startup running out of funding or a
-                                corporate parent deprioritizing a product can end your access to years of financial history overnight.
+                                <strong>Vendor shutdown</strong> — Mint proved this is real. A startup running out of funding or a corporate
+                                parent deprioritizing a product can end your access to years of financial history overnight.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -230,9 +232,7 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     </BlogArticleList>
 
                     <BlogArticleProse>
-                        <Trans>
-                            Moving from Mint to another cloud service does not solve the problem. It reschedules it.
-                        </Trans>
+                        <Trans>Moving from Mint to another cloud service does not solve the problem. It reschedules it.</Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
@@ -257,8 +257,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No vendor account required</strong> — You do not need to create an account with a company to use
-                                the app. There is no account to close, no subscription to cancel, no data to request deletion of.
+                                <strong>No vendor account required</strong> — You do not need to create an account with a company to use the
+                                app. There is no account to close, no subscription to cancel, no data to request deletion of.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -302,8 +302,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in
-                                an encrypted database. Budgie works fully offline; connectivity is optional, never required.
+                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in an
+                                encrypted database. Budgie works fully offline; connectivity is optional, never required.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -333,8 +333,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Encrypted local backup</strong> — Create a backup of your entire database at any time and save it
-                                to iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup.
+                                <strong>Encrypted local backup</strong> — Create a backup of your entire database at any time and save it to
+                                iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -425,9 +425,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                     <BlogArticleProse>
                         <Trans>
-                            For supported banks, Budgie can sync new transactions directly from your device. This replaces the manual
-                            import step for ongoing use. For banks not yet supported by direct sync, continuing with periodic CSV imports
-                            is a perfectly sustainable workflow.
+                            For supported banks, Budgie can sync new transactions directly from your device. This replaces the manual import
+                            step for ongoing use. For banks not yet supported by direct sync, continuing with periodic CSV imports is a
+                            perfectly sustainable workflow.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -440,31 +440,31 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogFaqSection>
                         <BlogFaqItem question={<Trans>Is Budgie really free to use?</Trans>}>
                             <Trans>
-                                Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does
-                                not monetize your spending data. There is no advertising and no data brokering.
+                                Budgie has a free tier that covers core expense tracking. Unlike ad-supported models, the free tier does not
+                                monetize your spending data. There is no advertising and no data brokering.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>What happens to my data if Budgie ever shuts down?</Trans>}>
                             <Trans>
-                                Because your data is stored on your device and backed up to your own storage, nothing happens. You keep
-                                your database. Budgie is also open source, so the community can continue maintaining the app independently
-                                of any company decisions.
+                                Because your data is stored on your device and backed up to your own storage, nothing happens. You keep your
+                                database. Budgie is also open source, so the community can continue maintaining the app independently of any
+                                company decisions.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I import years of Mint transaction history?</Trans>}>
                             <Trans>
-                                Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and
-                                amount. If your Mint export was a single file covering multiple years, you can import it in one step.
+                                Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount.
+                                If your Mint export was a single file covering multiple years, you can import it in one step.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Does Budgie work without an internet connection?</Trans>}>
                             <Trans>
                                 Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your
-                                history — works completely offline. Internet access is only used when you explicitly trigger a bank sync
-                                or fetch current exchange rates.
+                                history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or
+                                fetch current exchange rates.
                             </Trans>
                         </BlogFaqItem>
 

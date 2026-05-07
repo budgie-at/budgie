@@ -111,8 +111,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here
-                        is how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.
+                        Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here is
+                        how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.
                     </Trans>
                 </p>
 
@@ -163,8 +163,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            This article explains what on-device AI means technically, why it matters for financial privacy, and how
-                            Budgie implements it end to end.
+                            This article explains what on-device AI means technically, why it matters for financial privacy, and how Budgie
+                            implements it end to end.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -176,9 +176,9 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            On-device AI means that the model weights and the inference computation both live on your device — in RAM,
-                            using your CPU or neural-engine hardware — rather than on a cloud server. When you ask for a category
-                            suggestion, the model receives your input and produces output without any network call.
+                            On-device AI means that the model weights and the inference computation both live on your device — in RAM, using
+                            your CPU or neural-engine hardware — rather than on a cloud server. When you ask for a category suggestion, the
+                            model receives your input and produces output without any network call.
                         </Trans>
                     </BlogArticleProse>
 
@@ -218,9 +218,9 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Your transaction stream is one of the most revealing datasets about you. It discloses where you live, where
-                            you work, what medical conditions you may have, which political causes you support, and what your relationships
-                            look like. Sending it to a remote AI service for processing has concrete risks:
+                            Your transaction stream is one of the most revealing datasets about you. It discloses where you live, where you
+                            work, what medical conditions you may have, which political causes you support, and what your relationships look
+                            like. Sending it to a remote AI service for processing has concrete risks:
                         </Trans>
                     </BlogArticleProse>
 
@@ -260,8 +260,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a
-                            model this size on a phone would have been impractical. Three advances made it possible:
+                            The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model
+                            this size on a phone would have been impractical. Three advances made it possible:
                         </Trans>
                     </BlogArticleProse>
 
@@ -283,9 +283,9 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Apple Silicon and modern Android processors include dedicated neural processing hardware. These chips run
-                            matrix multiplications — the dominant computation in transformer inference — far more efficiently than a general
-                            CPU. Inference that would take seconds on a CPU takes milliseconds on a neural engine.
+                            Apple Silicon and modern Android processors include dedicated neural processing hardware. These chips run matrix
+                            multiplications — the dominant computation in transformer inference — far more efficiently than a general CPU.
+                            Inference that would take seconds on a CPU takes milliseconds on a neural engine.
                         </Trans>
                     </BlogArticleProse>
 
@@ -316,8 +316,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses two complementary AI techniques for transaction categorization. They address different parts of
-                            the problem and together produce more accurate suggestions than either approach alone.
+                            Budgie uses two complementary AI techniques for transaction categorization. They address different parts of the
+                            problem and together produce more accurate suggestions than either approach alone.
                         </Trans>
                     </BlogArticleProse>
 
@@ -355,8 +355,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            The LLM is slower than the embedding lookup but handles novel inputs well. It understands that a charge from
-                            a pharmacy should go under healthcare, even if it has never seen that specific merchant before, because it has
+                            The LLM is slower than the embedding lookup but handles novel inputs well. It understands that a charge from a
+                            pharmacy should go under healthcare, even if it has never seen that specific merchant before, because it has
                             learned the semantic relationship between merchant types and spending categories.
                         </Trans>
                     </BlogArticleProse>
@@ -407,17 +407,15 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>You tap the voice input button and speak the transaction details — amount, merchant, and optional notes.</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
                             <Trans>
-                                Whisper transcribes the audio locally, producing a text string.
+                                You tap the voice input button and speak the transaction details — amount, merchant, and optional notes.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>
-                                The transcribed text is passed to the two-stage categorization stack described above.
-                            </Trans>
+                            <Trans>Whisper transcribes the audio locally, producing a text string.</Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>The transcribed text is passed to the two-stage categorization stack described above.</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
@@ -429,8 +427,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with
-                            no signal, and in any language Whisper supports.
+                            The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no
+                            signal, and in any language Whisper supports.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -450,26 +448,26 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No outbound network calls during AI inference</strong> — The categorization service uses only
-                                local model files and the local SQLite database. There are no HTTP calls to external AI endpoints.
+                                <strong>No outbound network calls during AI inference</strong> — The categorization service uses only local
+                                model files and the local SQLite database. There are no HTTP calls to external AI endpoints.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No audio data leaves the device</strong> — The voice entry module uses Whisper.rn with a local
-                                model file. Audio buffers are processed in memory and discarded after transcription.
+                                <strong>No audio data leaves the device</strong> — The voice entry module uses Whisper.rn with a local model
+                                file. Audio buffers are processed in memory and discarded after transcription.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Embeddings stored in local SQLite</strong> — The embedding vectors for your transaction history
-                                are stored in the same encrypted database as your transactions. They are not synced to any server.
+                                <strong>Embeddings stored in local SQLite</strong> — The embedding vectors for your transaction history are
+                                stored in the same encrypted database as your transactions. They are not synced to any server.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No telemetry on AI usage</strong> — Budgie does not collect analytics on which AI features you
-                                use, how often you accept suggestions, or which categories your transactions fall into.
+                                <strong>No telemetry on AI usage</strong> — Budgie does not collect analytics on which AI features you use,
+                                how often you accept suggestions, or which categories your transactions fall into.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -507,9 +505,9 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                         <BlogFaqItem question={<Trans>Does the AI drain my battery?</Trans>}>
                             <Trans>
-                                Budgie runs AI inference only when you add or edit a transaction — not continuously in the background.
-                                Each categorization inference completes in under a second on modern hardware. The cumulative battery
-                                impact of normal daily use is negligible.
+                                Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. Each
+                                categorization inference completes in under a second on modern hardware. The cumulative battery impact of
+                                normal daily use is negligible.
                             </Trans>
                         </BlogFaqItem>
 

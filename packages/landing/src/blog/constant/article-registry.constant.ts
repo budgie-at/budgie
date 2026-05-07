@@ -105,9 +105,20 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
         title: msg`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
         description: msg`Mint shut down in 2024 and most replacements are still cloud-based. Here's why an offline-first, on-device tracker is the most durable answer for financial privacy.`,
         tags: ['mint-alternatives', 'offline-first', 'privacy', 'on-device', 'cloud-shutdown'],
-        seoKeywords: ['Mint shutdown alternative', 'private Mint replacement', 'offline budget app after Mint', 'no cloud Mint alternative'],
+        seoKeywords: [
+            'Mint shutdown alternative',
+            'private Mint replacement',
+            'offline budget app after Mint',
+            'no cloud Mint alternative'
+        ],
         seoDescription: msg`Mint shut down in 2024. This guide covers why offline-first, on-device expense trackers are the only durable answer to vendor risk and financial-data privacy.`,
-        relatedFeatureSlugs: ['offline-first-expense-tracker', 'csv-import', 'monobank-sync', 'database-backup', 'private-budget-app-alternative']
+        relatedFeatureSlugs: [
+            'offline-first-expense-tracker',
+            'csv-import',
+            'monobank-sync',
+            'database-backup',
+            'private-budget-app-alternative'
+        ]
     },
     {
         slug: 'on-device-ai-budget-app-explainer',

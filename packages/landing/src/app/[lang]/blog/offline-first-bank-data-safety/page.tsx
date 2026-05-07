@@ -111,9 +111,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers.
-                        Offline-first architecture eliminates the target. Here is how Budgie connects to banks without handing your
-                        credentials to a third party.
+                        Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first
+                        architecture eliminates the target. Here is how Budgie connects to banks without handing your credentials to a third
+                        party.
                     </Trans>
                 </p>
 
@@ -179,22 +179,22 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Credential collection</strong> — For banks that do not support direct OAuth, Plaid historically
-                                used screen-scraping, which required your actual username and password. Many integrations have migrated to
-                                OAuth tokens, but the credential handling still flows through Plaid infrastructure.
+                                <strong>Credential collection</strong> — For banks that do not support direct OAuth, Plaid historically used
+                                screen-scraping, which required your actual username and password. Many integrations have migrated to OAuth
+                                tokens, but the credential handling still flows through Plaid infrastructure.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>Transaction mirroring</strong> — Plaid pulls your transaction stream from the bank and stores it.
-                                The aggregator holds a copy of your financial history on its servers, separate from the app you are
-                                actually using.
+                                The aggregator holds a copy of your financial history on its servers, separate from the app you are actually
+                                using.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Data sharing</strong> — Plaid data can be shared with other Plaid-connected apps you have
-                                previously authorized, lenders, credit bureaus, and partners under terms that users rarely read in full.
+                                <strong>Data sharing</strong> — Plaid data can be shared with other Plaid-connected apps you have previously
+                                authorized, lenders, credit bureaus, and partners under terms that users rarely read in full.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -236,8 +236,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Concentrated transaction history</strong> — Aggregators hold not just credentials but also years
-                                of normalized transaction history. This data is valuable for identity fraud, account takeover, and social
+                                <strong>Concentrated transaction history</strong> — Aggregators hold not just credentials but also years of
+                                normalized transaction history. This data is valuable for identity fraud, account takeover, and social
                                 engineering attacks.
                             </Trans>
                         </BlogArticleListItem>
@@ -254,8 +254,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                         <Trans>
                             This risk is not theoretical. Major financial data aggregators and fintech intermediaries have experienced
                             significant security incidents over the years, exposing consumer banking credentials, account numbers, and
-                            transaction history. Each incident affected users of multiple apps simultaneously, because the breach was at
-                            the aggregator layer rather than any individual application.
+                            transaction history. Each incident affected users of multiple apps simultaneously, because the breach was at the
+                            aggregator layer rather than any individual application.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -298,8 +298,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Breach impact is isolated</strong> — If your device is compromised, the exposure is limited to
-                                your accounts. An aggregator breach can expose every user simultaneously.
+                                <strong>Breach impact is isolated</strong> — If your device is compromised, the exposure is limited to your
+                                accounts. An aggregator breach can expose every user simultaneously.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -321,8 +321,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Scoped permissions</strong> — The token grants access only to transaction data. It cannot
-                                initiate transfers, change account details, or access other banking services.
+                                <strong>Scoped permissions</strong> — The token grants access only to transaction data. It cannot initiate
+                                transfers, change account details, or access other banking services.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -361,9 +361,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Not every bank offers an API program, and not every bank is supported by a given direct-sync integration.
-                            For these cases, manual statement import is the privacy-preserving fallback — and it is more practical than
-                            most people expect.
+                            Not every bank offers an API program, and not every bank is supported by a given direct-sync integration. For
+                            these cases, manual statement import is the privacy-preserving fallback — and it is more practical than most
+                            people expect.
                         </Trans>
                     </BlogArticleProse>
 
@@ -374,15 +374,15 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Universal compatibility</strong> — Every bank that has ever existed can produce a statement.
-                                CSV and PDF exports work with every financial institution on the planet, with no API access required.
+                                <strong>Universal compatibility</strong> — Every bank that has ever existed can produce a statement. CSV and
+                                PDF exports work with every financial institution on the planet, with no API access required.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No ongoing credential exposure</strong> — You download a statement from your bank website using
-                                your normal login, then import the file. There are no tokens, no saved credentials, and no persistent
-                                connection to manage.
+                                <strong>No ongoing credential exposure</strong> — You download a statement from your bank website using your
+                                normal login, then import the file. There are no tokens, no saved credentials, and no persistent connection
+                                to manage.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -407,8 +407,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie supports both direct bank sync and manual import, with a consistent commitment to keeping your data
-                            on your device at every stage.
+                            Budgie supports both direct bank sync and manual import, with a consistent commitment to keeping your data on
+                            your device at every stage.
                         </Trans>
                     </BlogArticleProse>
 
@@ -418,8 +418,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in
-                            the encrypted local database. The sync runs on your device; Budgie servers are not involved in the data flow.
+                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in the
+                            encrypted local database. The sync runs on your device; Budgie servers are not involved in the data flow.
                             Transaction data is written directly to the local SQLite database.
                         </Trans>
                     </BlogArticleProse>
@@ -443,8 +443,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             Whether data arrives via direct sync or manual import, it is stored in the same AES-256 encrypted SQLite
-                            database. The database is protected by your device PIN, biometric authentication, or a dedicated app lock.
-                            No transaction data is stored on Budgie servers at any point.
+                            database. The database is protected by your device PIN, biometric authentication, or a dedicated app lock. No
+                            transaction data is stored on Budgie servers at any point.
                         </Trans>
                     </BlogArticleProse>
 
@@ -454,8 +454,8 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            When you create a backup, the encrypted database file is exported to your chosen destination — iCloud,
-                            Google Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup.
+                            When you create a backup, the encrypted database file is exported to your chosen destination — iCloud, Google
+                            Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup.
                             Restoration reads the file from the same destination and decrypts it locally.
                         </Trans>
                     </BlogArticleProse>
@@ -477,10 +477,10 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>Is CSV import really secure enough for ongoing use?</Trans>}>
                             <Trans>
-                                Yes, for most users. Manual import aligns naturally with how people actually review their finances —
-                                weekly or monthly. The security advantage is significant: there are no stored credentials, no persistent
-                                connections, and no third-party services involved. Many security-conscious users prefer this model
-                                precisely because it is explicit and auditable.
+                                Yes, for most users. Manual import aligns naturally with how people actually review their finances — weekly
+                                or monthly. The security advantage is significant: there are no stored credentials, no persistent
+                                connections, and no third-party services involved. Many security-conscious users prefer this model precisely
+                                because it is explicit and auditable.
                             </Trans>
                         </BlogFaqItem>
 
@@ -494,18 +494,18 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>How does Budgie handle OAuth tokens for direct sync?</Trans>}>
                             <Trans>
-                                OAuth tokens for direct bank sync are stored in the encrypted local database on your device alongside
-                                your transaction data. They are protected by the same AES-256 encryption and device authentication as
-                                your financial records. Revoking a token from your bank portal immediately terminates all sync access
-                                without requiring any action inside Budgie.
+                                OAuth tokens for direct bank sync are stored in the encrypted local database on your device alongside your
+                                transaction data. They are protected by the same AES-256 encryption and device authentication as your
+                                financial records. Revoking a token from your bank portal immediately terminates all sync access without
+                                requiring any action inside Budgie.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I verify that Budgie does not send my bank data to a server?</Trans>}>
                             <Trans>
-                                Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound
-                                calls send transaction data to Budgie servers. The network requests during sync go directly from your
-                                device to your bank API endpoint.
+                                Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls
+                                send transaction data to Budgie servers. The network requests during sync go directly from your device to
+                                your bank API endpoint.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

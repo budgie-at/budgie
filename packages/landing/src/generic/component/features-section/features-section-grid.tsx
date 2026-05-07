@@ -19,7 +19,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
         <FeaturesSectionGridMotion>
             <Link href={`/${locale}/features/spending-analytics`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget.`)}
+                    description={i18n._(
+                        msg`See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget.`
+                    )}
                     icon={<BarChart3 className="size-5" />}
                     title={i18n._(msg`Spending Insights`)}
                 />
@@ -27,7 +29,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
 
             <Link href={`/${locale}/features/monobank-sync`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle.`)}
+                    description={i18n._(
+                        msg`Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle.`
+                    )}
                     icon={<Banknote className="size-5" />}
                     title={i18n._(msg`Bank Sync`)}
                 />
@@ -43,7 +47,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
 
             <Link href={`/${locale}/features/voice-transaction-entry`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server.`)}
+                    description={i18n._(
+                        msg`Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server.`
+                    )}
                     icon={<Mic className="size-5" />}
                     title={i18n._(msg`Voice Entry`)}
                 />
@@ -75,7 +81,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
 
             <Link href={`/${locale}/features/multi-currency`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers.`)}
+                    description={i18n._(
+                        msg`Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers.`
+                    )}
                     icon={<Layers className="size-5" />}
                     title={i18n._(msg`Multi-Currency`)}
                 />
@@ -83,7 +91,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
 
             <Link href={`/${locale}/features/account-management`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required.`)}
+                    description={i18n._(
+                        msg`Checking, savings, credit cards, cash, and brokerage in one private app. No bank login required.`
+                    )}
                     icon={<Wallet className="size-5" />}
                     title={i18n._(msg`All Accounts`)}
                 />
@@ -99,7 +109,9 @@ export const FeaturesSectionGrid = ({ locale }: Props) => {
 
             <Link href={`/${locale}/features/recurring-payments-calendar`}>
                 <FeaturesSectionItem
-                    description={i18n._(msg`Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you.`)}
+                    description={i18n._(
+                        msg`Auto-detected recurring payments laid out on a 60-day calendar so subscriptions stop surprising you.`
+                    )}
                     icon={<Calendar className="size-5" />}
                     title={i18n._(msg`Recurring Bills`)}
                 />
