@@ -134,9 +134,9 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         slug: 'voice-transaction-entry',
         tier: FeatureTierEnum.HERO,
         title: msg`Voice Transaction Entry`,
-        tagline: msg`Speak it. Budgie logs it. Audio never leaves your phone.`,
+        tagline: msg`Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your phone.`,
         metaTitle: msg`Voice-to-Expense, On-Device — Budgie`,
-        metaDescription: msg`Say "twelve dollars coffee this morning" and Budgie logs it. Whisper speech-to-text and the on-device LLM both run locally — no audio ever streams to a server.`,
+        metaDescription: msg`Say "twelve dollars coffee this morning" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio ever streams to a server.`,
         primaryKeyword: 'voice expense tracker',
         seoKeywords: [
             'voice expense tracker',
@@ -150,7 +150,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         faqs: [
             {
                 question: msg`Which languages does voice entry support?`,
-                answer: msg`Whisper-small supports the languages it ships with — including English, Ukrainian, German, French, Spanish, and dozens more. Transcription quality scales with language coverage in the model.`
+                answer: msg`whisper.rn ships the Whisper-small model, which covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model.`
             },
             {
                 question: msg`Is my voice recorded anywhere?`,
@@ -166,7 +166,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             }
         ],
         publishedAt: '2026-01-22',
-        updatedAt: '2026-05-03',
+        updatedAt: '2026-05-07',
         ogTags: ['voice', 'on-device', 'ai']
     },
     {
