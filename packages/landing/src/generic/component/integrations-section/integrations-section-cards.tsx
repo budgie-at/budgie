@@ -15,31 +15,39 @@ export const IntegrationsSectionCards = () => {
                     <>
                         <Badge variant="outline">{t`Monobank`}</Badge>
                         <Badge variant="outline">{t`PrivatBank`}</Badge>
-                        <Badge variant="outline">{t`Revolut`}</Badge>
-                        <Badge variant="outline">{t`Wise`}</Badge>
+                        <Badge variant="outline">{t`Erste Bank`}</Badge>
                     </>
                 }
                 cardClassName="bg-linear-to-b from-background to-blue-50/50 dark:to-blue-950/20"
-                description={<Trans>Sync with major banks and financial institutions automatically.</Trans>}
+                description={
+                    <Trans>
+                        Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world. No aggregator in the middle.
+                    </Trans>
+                }
                 icon={<Building2 className="size-6 text-blue-600 dark:text-blue-400" />}
                 iconClassName="bg-blue-100 dark:bg-blue-900/30"
-                title={<Trans>Traditional Banks</Trans>}
+                title={<Trans>Bank Integrations</Trans>}
             />
 
             <IntegrationsSectionCard
                 badges={
                     <>
-                        <Badge variant="outline">{t`Binance`}</Badge>
-                        <Badge variant="outline">{t`Coinbase`}</Badge>
-                        <Badge variant="outline">{t`DeFi Wallets`}</Badge>
+                        <Badge variant="outline">{t`Bitcoin`}</Badge>
+                        <Badge variant="outline">{t`Ethereum`}</Badge>
+                        <Badge variant="outline">{t`Stocks & ETFs`}</Badge>
                     </>
                 }
                 cardClassName="bg-linear-to-b from-background to-orange-50/50 dark:to-orange-950/20"
                 delay={0.1}
-                description={<Trans>Track your crypto portfolio across all major exchanges.</Trans>}
+                description={
+                    <Trans>
+                        Manually track Bitcoin, Ethereum, stocks, ETFs, and any asset. Import positions via CSV. No exchange API connections
+                        — your data stays on-device.
+                    </Trans>
+                }
                 icon={<Bitcoin className="size-6 text-orange-600 dark:text-orange-400" />}
                 iconClassName="bg-orange-100 dark:bg-orange-900/30"
-                title={<Trans>Crypto Exchanges</Trans>}
+                title={<Trans>Crypto & Investments</Trans>}
             />
 
             <IntegrationsSectionCard
