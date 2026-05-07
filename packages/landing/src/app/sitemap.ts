@@ -2,12 +2,11 @@ import { ARTICLE_REGISTRY } from '../blog/constant/article-registry.constant';
 import { FEATURE_REGISTRY } from '../feature/constant/feature-registry.constant';
 import { FeatureTierEnum } from '../feature/constant/feature-tier.enum';
 import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
+import { SITEMAP_STATIC_LAST_MODIFIED } from '../generic/constant/sitemap-last-modified.constant';
 
 import type { MetadataRoute } from 'next';
 
 const staticPages = ['', '/blog', '/features'];
-
-const buildDate = new Date();
 
 const buildSitemapLanguages = (path: string) => ({
     ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}${path}`])),
@@ -31,7 +30,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     const staticEntries = LOCALES.flatMap(locale =>
         staticPages.map(page => ({
             url: `${BASE_URL}/${locale}${page}`,
-            lastModified: buildDate,
+            lastModified: new Date(SITEMAP_STATIC_LAST_MODIFIED[page]),
             changeFrequency: page === '' ? ('weekly' as const) : ('monthly' as const),
             priority: STATIC_PAGE_PRIORITY[page],
             alternates: { languages: buildSitemapLanguages(page) }
