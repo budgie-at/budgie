@@ -102,7 +102,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Monobank Auto-Sync for the Privacy-Conscious</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -146,12 +146,39 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         <Trans>Cross-currency transactions preserve original FX rate per leg</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Counter-IBAN stored, enabling smart transfer-pair consolidation</Trans>
+                        <Trans>Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Windowed re-sync to fix drift without losing manual edits</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>
+                            Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and
+                            exchange-rate matching, then merged into a single transfer entry
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Counter-IBAN enrichment and transfer consolidation</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Monobank&apos;s API returns a corr_iban field on every transaction that has a counterparty IBAN — outgoing payments,
+                        bank transfers, and peer-to-peer moves all carry it. Budgie stores this field per transaction leg, which gives the
+                        transfer-pair detector a primary signal: when the debit side and credit side of the same transfer both reference the
+                        same IBAN, they collapse into one transfer automatically.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate
+                        matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup
+                        needed.
+                    </Trans>
+                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>

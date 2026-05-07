@@ -77,7 +77,7 @@ export default async function PrimaryTagFeaturePage(props: PageLangParam) {
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Primary Tag — Scan Your Transactions At A Glance</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>

@@ -72,10 +72,12 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(
                     i18n
                 )`Explore the local-first software movement, from CRDTs to sync engines. Learn why developers are choosing offline-first architecture and how it transforms personal finance apps.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(
                     i18n
