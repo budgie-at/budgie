@@ -1,6 +1,7 @@
 import { ARTICLE_REGISTRY } from '../blog/constant/article-registry.constant';
 import { FEATURE_REGISTRY } from '../feature/constant/feature-registry.constant';
 import { FeatureTierEnum } from '../feature/constant/feature-tier.enum';
+import { PILLAR_HUB_REGISTRY } from '../feature/constant/pillar-hub-registry.constant';
 import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
 import { SITEMAP_STATIC_LAST_MODIFIED } from '../generic/constant/sitemap-last-modified.constant';
 
@@ -57,7 +58,17 @@ const sitemap = (): MetadataRoute.Sitemap => {
         }))
     );
 
-    return [...staticEntries, ...blogEntries, ...featureEntries];
+    const pillarEntries = LOCALES.flatMap(locale =>
+        PILLAR_HUB_REGISTRY.map(entry => ({
+            url: `${BASE_URL}/${locale}/${entry.slug}`,
+            lastModified: new Date(entry.updatedAt),
+            changeFrequency: 'monthly' as const,
+            priority: 0.85,
+            alternates: { languages: buildSitemapLanguages(`/${entry.slug}`) }
+        }))
+    );
+
+    return [...staticEntries, ...blogEntries, ...featureEntries, ...pillarEntries];
 };
 
 export default sitemap;
