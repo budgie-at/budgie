@@ -36,4 +36,25 @@ describe('consolidation/refund-pair-by-title', () => {
         const result = await transferConsolidationService.consolidate();
         expect(result.consolidated).toBe(0);
     });
+
+    it('does NOT auto-consolidate one refund when multiple same-title expenses can claim it', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [],
+            externalIdPrefix: 'first',
+            expenseOperatedAt: new Date(2026, 0, 15, 12, 0, 0)
+        });
+        seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [120 * PRECISION],
+            externalIdPrefix: 'second',
+            expenseOperatedAt: new Date(2026, 0, 16, 12, 0, 0)
+        });
+
+        const result = await transferConsolidationService.consolidate();
+        expect(result.consolidated).toBe(0);
+    });
 });
