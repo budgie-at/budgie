@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.16.1](https://github.com/budgie-at/budgie/compare/v5.16.0...v5.16.1) (2026-05-08)
+
+### Bug Fixes
+
+- include refund consolidation in balances ([#414](https://github.com/budgie-at/budgie/issues/414)) ([81f99d2](https://github.com/budgie-at/budgie/commit/81f99d2db2ca6d7d45129f08c4a83222eac05bca))
+
 # [5.15.0](https://github.com/budgie-at/budgie/compare/v5.14.2...v5.15.0) (2026-05-07)
 
 ### Bug Fixes
