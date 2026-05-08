@@ -25,11 +25,12 @@ import { buildTransactionContext } from '../util/build-transaction-context.util'
 
 import { EmbeddingService } from './embedding.service';
 
-import type { PrepareSuggestionResultInterface } from '../interface/prepare-suggestion-result.interface';
 import type { SerializedEmbeddingResultInterface } from '../interface/serialized-embedding-result.interface';
 import type { SuggestionContextInterface } from '../interface/suggestion-context.interface';
 
 export class EmbeddingSuggestionService {
+    private static readonly MCC_BLEND_WEIGHT = 7 / 10;
+
     constructor(
         private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
         private readonly embedding: EmbeddingInvokerInterface,
@@ -55,11 +56,10 @@ export class EmbeddingSuggestionService {
         aiContext: string,
         mccCategoryId: number | null = null
     ): Promise<CategoryEntityInterface[]> {
-        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(preparation)) {
+        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(resolved)) {
             return [];
         }
-        const { resolved } = preparation;
 
         const mccLookup = isDefined(mccCategoryId)
             ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
@@ -100,11 +100,10 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<TagEntityInterface[]> {
-        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(preparation)) {
+        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(resolved)) {
             return [];
         }
-        const { resolved } = preparation;
 
         const tagParams: SimilarTagsParamsInterface = {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -139,11 +138,10 @@ export class EmbeddingSuggestionService {
         comment: string,
         aiContext: string
     ): Promise<string[]> {
-        const preparation = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(preparation)) {
+        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+        if (!isDefined(resolved)) {
             return [];
         }
-        const { resolved } = preparation;
 
         const commentResults = await this.repositories.merchant.findSimilarComments(resolved.serialized, {
             vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
@@ -177,16 +175,10 @@ export class EmbeddingSuggestionService {
         mccDescription: string | null,
         comment: string,
         aiContext: string
-    ): Promise<PrepareSuggestionResultInterface | null> {
-        const methodStart = Date.now();
+    ): Promise<SerializedEmbeddingResultInterface | null> {
         const suggestionContext = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-        const resolved = await this.resolveSerializedEmbedding(suggestionContext);
 
-        if (!isDefined(resolved)) {
-            return null;
-        }
-
-        return { resolved, methodStart };
+        return this.resolveSerializedEmbedding(suggestionContext);
     }
 
     private async resolveSerializedEmbedding(
@@ -253,10 +245,9 @@ export class EmbeddingSuggestionService {
         if (isEmptyArray(mccRows)) {
             return;
         }
-        const mccBlendWeight = 0.7;
         const mccMaxCount = Math.max(...mccRows.map(row => row.count));
         for (const { categoryId, count } of mccRows) {
-            const mccNormalizedScore = (count / mccMaxCount) * mccBlendWeight;
+            const mccNormalizedScore = (count / mccMaxCount) * EmbeddingSuggestionService.MCC_BLEND_WEIGHT;
             scoreMap.set(categoryId, (scoreMap.get(categoryId) ?? 0) + mccNormalizedScore);
         }
     }

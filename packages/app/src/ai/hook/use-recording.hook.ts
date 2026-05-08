@@ -175,17 +175,20 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
             return null;
         }
         if (buffer.numberOfChannels === 1) {
-            return buffer.getChannelData(0);
+            return new Float32Array(buffer.getChannelData(0));
         }
 
-        const firstChannelSamples = buffer.getChannelData(0);
-        const samples = new Float32Array(firstChannelSamples.length);
+        const channelSamples = Array.from(
+            { length: buffer.numberOfChannels },
+            (_value, channelIndex) => new Float32Array(buffer.getChannelData(channelIndex))
+        );
+        const samples = new Float32Array(channelSamples[0]?.length ?? 0);
 
-        for (let sampleIndex = 0; sampleIndex < firstChannelSamples.length; sampleIndex += 1) {
+        for (let sampleIndex = 0; sampleIndex < samples.length; sampleIndex += 1) {
             let sampleTotal = 0;
 
-            for (let channelIndex = 0; channelIndex < buffer.numberOfChannels; channelIndex += 1) {
-                sampleTotal += buffer.getChannelData(channelIndex)[sampleIndex];
+            for (const samplesForChannel of channelSamples) {
+                sampleTotal += samplesForChannel[sampleIndex] ?? 0;
             }
 
             samples[sampleIndex] = sampleTotal / buffer.numberOfChannels;
