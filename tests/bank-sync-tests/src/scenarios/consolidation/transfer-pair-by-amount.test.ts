@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { fetchCanonicalsOfType, fetchTransactionById, seedAccountPair, seedAmountTransferPair, seedBankPair } from '../../harness';
 
+import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
-
-const PRECISION = 1_000_000;
 
 describe('consolidation/transfer-pair-by-amount', () => {
     it('falls back to amount + transfer-MCC matching when neither side has an IBAN', async () => {
@@ -21,6 +20,18 @@ describe('consolidation/transfer-pair-by-amount', () => {
 
         expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicals[0].id);
         expect(fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonicals[0].id);
+    });
+
+    it('keeps moved source entries out of account balance calculations', async () => {
+        const { fromAccount, toAccount } = seedAmountTransferPair(250 * PRECISION);
+
+        await transferConsolidationService.consolidate();
+
+        const fromBalance = accountBalanceRepository.getByAccountId(fromAccount.id).get();
+        const toBalance = accountBalanceRepository.getByAccountId(toAccount.id).get();
+
+        expect(fromBalance?.balance).toBe(-250 * PRECISION);
+        expect(toBalance?.balance).toBe(250 * PRECISION);
     });
 
     it('does NOT consolidate when amounts match but neither IBAN nor transfer-MCC is present', async () => {
