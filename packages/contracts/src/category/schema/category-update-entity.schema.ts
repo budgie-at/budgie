@@ -1,3 +1,3 @@
-import { CategoryEntitySchema } from './category-entity.schema';
+import { CategoryCreateEntitySchema } from './category-create-entity.schema';
 
-export const CategoryUpdateEntitySchema = CategoryEntitySchema.partial();
+export const CategoryUpdateEntitySchema = CategoryCreateEntitySchema.partial();
