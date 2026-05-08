@@ -124,20 +124,43 @@ export const CategoryForm = (props: Props) => {
         }
     };
 
-    const handleFormSubmit = handleSubmit(async (values: CategoryCreateEntityInterface) => {
+    const saveCategoryTranslation = async (categoryId: number): Promise<void> => {
+        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+
+        if (hasTranslationData) {
+            await categoryRepository.updateTranslation(categoryId, titleEn, titleTags);
+        } else {
+            await categoryRepository.clearTranslation(categoryId);
+        }
+    };
+
+    const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
+        const updatedCategory = await categoryRepository.updateById(categoryId, values);
+        await saveCategoryTranslation(categoryId);
+
+        const translatedCategory = await categoryRepository.findById(categoryId);
+        const savedCategory = translatedCategory ?? updatedCategory;
+
+        onSuccess({ category: savedCategory, action: 'updated' });
+    };
+
+    const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
+        const savedCategory = await categoryRepository.create(values);
+        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+
+        if (hasTranslationData) {
+            await categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags);
+        }
+
+        onSuccess({ category: savedCategory, action: 'created' });
+    };
+
+    const handleFormSubmit = handleSubmit(async values => {
         try {
-            if (isEditing) {
-                const savedCategory = await categoryRepository.updateById(category.id, { ...values, titleEn, titleTags });
-                onSuccess({ category: savedCategory, action: 'updated' });
+            if (isDefined(category)) {
+                await handleEditSubmit(category.id, values);
             } else {
-                const savedCategory = await categoryRepository.create(values);
-                const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
-
-                if (hasTranslationData) {
-                    await categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags);
-                }
-
-                onSuccess({ category: savedCategory, action: 'created' });
+                await handleCreateSubmit(values);
             }
         } catch {
             const errorMessage = isEditing ? t`Could not save category` : t`Could not create category`;

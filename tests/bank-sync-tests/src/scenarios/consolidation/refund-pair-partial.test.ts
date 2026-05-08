@@ -6,7 +6,7 @@ import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-
 
 import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
 
-import { statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, statisticsRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-partial', () => {
@@ -44,6 +44,17 @@ describe('consolidation/refund-pair-partial', () => {
         const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
         const categoryRow = categoryRows.find(row => row.category?.id === category.id);
         expect(categoryRow?.amount).toBe(80 * PRECISION);
+    });
+
+    it('keeps moved refund income entries in account balance calculations', async () => {
+        const { account } = await runRefundScenario({
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION]
+        });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(-80 * PRECISION);
     });
 
     it('computes refunded summary from an explicit refund total when moved entries are hidden', async () => {

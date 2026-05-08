@@ -4,7 +4,7 @@ import { DEFAULT_TRANSACTION_FILTER, PRECISION, TransactionConsolidationTypeEnum
 
 import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
 
-import { statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 describe('consolidation/refund-pair-full-refund', () => {
@@ -39,5 +39,16 @@ describe('consolidation/refund-pair-full-refund', () => {
         const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
 
         expect([totals?.income, totals?.expense, categoryAmount]).toStrictEqual([0, 0, 0]);
+    });
+
+    it('keeps full refunds neutral in account balance calculations', async () => {
+        const { account } = await runRefundScenario({
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [120 * PRECISION]
+        });
+
+        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+
+        expect(balance?.balance).toBe(0);
     });
 });

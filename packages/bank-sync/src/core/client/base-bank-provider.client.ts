@@ -1,5 +1,7 @@
 import ky, { HTTPError, TimeoutError } from 'ky';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankSyncError } from '../error/bank-sync.error';
 import { syncLogger } from '../util/sync-logger.util';
@@ -119,7 +121,7 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
             return this.failure(new BankSyncError(BankSyncErrorCodeEnum.NETWORK_ERROR, 'Request timeout', this.provider));
         }
 
-        syncLogger.error('http:response:networkError', { provider: this.provider, error: String(error) });
+        syncLogger.error('http:response:networkError', { provider: this.provider, error: getErrorMessage(error) });
 
         return this.failure(BankSyncError.networkError(this.provider, error));
     }

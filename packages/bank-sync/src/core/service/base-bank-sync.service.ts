@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { addSeconds } from 'date-fns';
+import { addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
@@ -11,9 +11,9 @@ import { BankTransactionInterface } from '../interface/bank-transaction.interfac
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
 
-const MAX_TRANSACTIONS_PER_REQUEST = 500;
-
 export class BaseBankSyncService {
+    private static readonly MAX_TRANSACTIONS_PER_REQUEST = 500;
+
     constructor(
         protected readonly client: BankProviderClientInterface,
         protected readonly options: BankSyncOptionsInterface
@@ -108,20 +108,14 @@ export class BaseBankSyncService {
     }
 
     protected toSeconds(date: Date): number {
-        return Math.floor(date.getTime() / 1000);
-    }
-
-    protected delay(ms: number): Promise<void> {
-        return new Promise(resolve => {
-            setTimeout(resolve, ms);
-        });
+        return getUnixTime(date);
     }
 
     private hasMoreTransactions(transactions: BankTransactionInterface[]): boolean {
-        return transactions.length === MAX_TRANSACTIONS_PER_REQUEST;
+        return transactions.length === BaseBankSyncService.MAX_TRANSACTIONS_PER_REQUEST;
     }
 
     private getNextTimeFromTransaction(transaction: BankTransactionInterface): Date {
-        return addSeconds(new Date(transaction.time * 1000), -1);
+        return addSeconds(fromUnixTime(transaction.time), -1);
     }
 }

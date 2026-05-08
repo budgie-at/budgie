@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { getLogger } from '@budgie/logger';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
@@ -23,11 +24,13 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 
 import type { DB } from '@budgie/contracts';
+
+const logger = getLogger('db');
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
@@ -51,27 +54,29 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // eslint-disable-line lingui/no-unlocalized-strings
 
     try {
-        console.log('[DB] bundledExtensions:', JSON.stringify(Object.keys(SQLite.bundledExtensions))); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        logger.log('sqlite:bundled-extensions', { extensionNames: Object.keys(SQLite.bundledExtensions).join(',') });
         const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
-        console.log('[DB] sqlite-vec extension:', JSON.stringify(extension)); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
+            logger.log('sqlite:vec-extension', {
+                libPath: extension.libPath,
+                entryPoint: extension.entryPoint
+            });
             if (isNotEmptyString(extension.libPath)) {
-                console.log('[DB] Loading sqlite-vec from:', extension.libPath); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+                logger.log('sqlite:vec-load', { libPath: extension.libPath });
                 global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
             } else {
-                console.log('[DB] sqlite-vec libPath is null, skipping loadExtensionSync'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+                logger.log('sqlite:vec-load-skip');
             }
-            console.log('[DB] Creating vec tables...'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // eslint-disable-line lingui/no-unlocalized-strings
-            console.log('[DB] Vec tables ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            logger.log('sqlite:vec-tables-ready');
         } else {
-            console.log('[DB] sqlite-vec extension NOT found in bundledExtensions'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            logger.log('sqlite:vec-extension-missing');
         }
     } catch (dbError) {
-        console.log('[DB] sqlite-vec init error:', dbError); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        logger.error('sqlite:vec-init-error', { errorMessage: getErrorMessage(dbError) });
     }
 
     return global.__expoSqliteDb__;
@@ -81,6 +86,10 @@ export let expoDb = dbInit();
 
 /** @deprecated TODO: DELETE ME WHEN DB IS STABLE */
 export const __REMOVE_ME_RESET_DB = async () => {
+    if (!__DEV__) {
+        return;
+    }
+
     await expoDb.closeAsync();
     await SQLite.deleteDatabaseAsync(DB_NAME);
     global.__expoSqliteDb__ = undefined;

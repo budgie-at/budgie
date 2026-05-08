@@ -1,3 +1,5 @@
+import { getUnixTime } from 'date-fns';
+
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -9,8 +11,6 @@ import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper'
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
-const MILLISECONDS_TO_SECONDS_DIVISOR = 1000;
-
 const getTransactionType = (amount: number): BankTransactionTypeEnum =>
     isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
@@ -19,7 +19,7 @@ export const privatbankTransactionMapper = (row: PrivatbankRowInterface): BankTr
     provider: BankProviderEnum.PRIVATBANK,
     accountId: row.card,
     type: getTransactionType(row.cardAmount),
-    time: Math.floor(row.date.getTime() / MILLISECONDS_TO_SECONDS_DIVISOR),
+    time: getUnixTime(row.date),
     description: row.description,
     mcc: 0,
     originalMcc: 0,

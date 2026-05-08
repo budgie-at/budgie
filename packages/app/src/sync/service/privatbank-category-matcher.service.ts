@@ -1,8 +1,11 @@
 import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/bank-sync';
+import { getLogger } from '@budgie/logger';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { mccCategoryRepository } from '../../@generic/drizzle/db/db';
+
+const logger = getLogger('privatbankCategoryMatcher');
 
 const buildMccCodeToIdMap = async (): Promise<Map<string, number>> => {
     const mccCategories = await mccCategoryRepository.findAll();
@@ -12,7 +15,7 @@ const buildMccCodeToIdMap = async (): Promise<Map<string, number>> => {
 
 const warnUnmatchedCategories = (unmatchedCategories: string[]): void => {
     if (isNotEmptyArray(unmatchedCategories)) {
-        console.warn('[PrivatBank] Unmatched categories:', unmatchedCategories.join(', ')); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+        logger.log('unmatched-categories', { categories: unmatchedCategories.join(',') });
     }
 };
 
