@@ -30,7 +30,7 @@ export const CreateDebtAccount = () => {
 
     const { control, handleSubmit, instrument } = useDebtAccountForm(
         {
-            iban: '',
+            iban: null,
             title: '',
             deadline: null,
             contactId: null,
