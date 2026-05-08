@@ -85,15 +85,13 @@ export class CategoryRepository extends TranslatableRepositoryBase {
     async updateById(id: number, input: CategoryUpdateEntityInterface): Promise<CategoryEntityInterface> {
         const newTitle = input.title;
         const titleChanged = isDefined(newTitle);
-        const hasAiFields = isDefined(input.titleEn) || isDefined(input.titleTags);
-        const shouldResetAiFields = titleChanged && !hasAiFields;
 
         const [category] = await this.db
             .update(CategoryEntityTable)
             .set({
                 ...input,
                 ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
-                ...(shouldResetAiFields && { titleEn: null, titleTags: null, tagsGeneratedAt: null })
+                ...(titleChanged && { titleEn: null, titleTags: null, tagsGeneratedAt: null })
             })
             .where(eq(CategoryEntityTable.id, id))
             .returning();

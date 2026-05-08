@@ -1,4 +1,5 @@
 import { PRECISION } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { useEffect, useRef, useState } from 'react';
 
 import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
@@ -24,6 +25,7 @@ interface UseCurrencyConversionResult {
 
 const INITIAL_STATE: ConversionState = { destinationAmount: 0, exchangeRate: 1, isManualRate: false };
 const UNMOUNTED_REQUEST_ID = -1;
+const logger = getLogger('useCurrencyConversion');
 
 export const useCurrencyConversion = (): UseCurrencyConversionResult => {
     const [state, setState] = useState<ConversionState>(INITIAL_STATE);
@@ -68,8 +70,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
                 return result;
             },
             (error: unknown) => {
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- Internal error logging
-                console.warn('Currency conversion failed:', getErrorMessage(error));
+                logger.error('convert:failed', { errorMessage: getErrorMessage(error) });
             }
         );
     };

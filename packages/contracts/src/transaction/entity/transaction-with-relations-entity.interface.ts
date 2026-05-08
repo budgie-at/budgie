@@ -6,8 +6,8 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { TransactionEntityInterface } from './transaction-entity.interface';
 
 export interface TransactionWithRelationsEntityInterface extends TransactionEntityInterface {
-    [TransactionAssociationEnum.ENTRIES]: TransactionEntryWithRelationsEntityInterface[];
-    [TransactionAssociationEnum.FROM_ACCOUNT]: AccountEntityInterface | null;
-    [TransactionAssociationEnum.TO_ACCOUNT]: AccountEntityInterface | null;
-    [TransactionAssociationEnum.TRANSACTION_TAGS]: TransactionTagsWithTagEntityInterface[];
+    readonly [TransactionAssociationEnum.ENTRIES]: TransactionEntryWithRelationsEntityInterface[];
+    readonly [TransactionAssociationEnum.FROM_ACCOUNT]: AccountEntityInterface | null;
+    readonly [TransactionAssociationEnum.TO_ACCOUNT]: AccountEntityInterface | null;
+    readonly [TransactionAssociationEnum.TRANSACTION_TAGS]: TransactionTagsWithTagEntityInterface[];
 }
