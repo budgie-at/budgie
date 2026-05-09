@@ -5,6 +5,7 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 CONTACT_FIXTURE_PATH="$SCRIPT_DIR/../fixtures/maestro-e2e-contact.vcf"
 ERSTE_FIXTURES_DIR="$SCRIPT_DIR/../fixtures/erste"
+PRIVATBANK_FIXTURES_DIR="$SCRIPT_DIR/../fixtures/privatbank"
 INSTALL_DB_FIXTURE_SCRIPT="$PROJECT_ROOT/scripts/install-ios-db-fixture.sh"
 PREPARE_DYNAMIC_FIXTURES_SCRIPT="$SCRIPT_DIR/prepare-date-sensitive-fixtures.mjs"
 SIMULATOR_UDID="${1:-${SIMULATOR_UDID:-booted}}"
@@ -64,6 +65,7 @@ install_database_fixture "$SCRIPT_DIR/../fixtures/12.db" "12.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/12.db" "15.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/13.db" "13.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "16.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "23.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/14.db" "14.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
@@ -74,8 +76,12 @@ if [ -n "$APP_DATA" ]; then
     mkdir -p "$FIXTURES_DIR"
     rm -f "$FIXTURES_DIR/erste-statement-008.pdf"
     rm -f "$FIXTURES_DIR/erste-statement-009.pdf"
+    rm -f "$FIXTURES_DIR/privatbank-statement-001.xlsx"
+    rm -f "$FIXTURES_DIR/privatbank-statement-002.xlsx"
     cp "$ERSTE_FIXTURES_DIR/erste-statement-008.pdf" "$FIXTURES_DIR/"
     cp "$ERSTE_FIXTURES_DIR/erste-statement-009.pdf" "$FIXTURES_DIR/"
+    cp "$PRIVATBANK_FIXTURES_DIR/privatbank-statement-001.xlsx" "$FIXTURES_DIR/"
+    cp "$PRIVATBANK_FIXTURES_DIR/privatbank-statement-002.xlsx" "$FIXTURES_DIR/"
 fi
 
 xcrun simctl terminate "$SIMULATOR_UDID" com.apple.DocumentsApp >/dev/null 2>&1 || true
