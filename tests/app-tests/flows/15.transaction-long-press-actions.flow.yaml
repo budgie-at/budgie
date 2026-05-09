@@ -42,6 +42,16 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
     timeout: 5000
 
+- tapOn:
+    id: 'TabBar.Home'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Delete_Txn'
+    timeout: 5000
+
 # --- Long-Press Edit from List ---
 
 - runFlow:
@@ -108,6 +118,16 @@ appId: ${APP_ID}
       COMMENT: 'E2E LongPress Convert Txn'
 
 - runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 - extendedWaitUntil:
     visible:
