@@ -4,7 +4,7 @@ appId: ${APP_ID}
     visible: 'Convert to Transfer?'
     timeout: 10000
 - tapOn:
-    point: '67%,56%'
+    text: 'Convert'
 - extendedWaitUntil:
     notVisible: 'Convert to Transfer?'
     timeout: 15000
