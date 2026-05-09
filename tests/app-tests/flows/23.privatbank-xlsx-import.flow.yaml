@@ -1,0 +1,184 @@
+appId: ${APP_ID}
+env:
+    FIRST_XLSX_ROW_ID_MATCH: 'privatbank-statement-001, xlsx'
+    SECOND_XLSX_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
+---
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '23.db(, db)?'
+
+- evalScript: ${output.phase = 'clear-state-import'}
+
+- runFlow: subflows/accounts/open-new-account.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          text: '.*Privatbank.*'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 50
+      speed: 20
+
+- tapOn:
+      text: '.*Privatbank.*'
+
+- runFlow:
+      file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
+      env:
+          XLSX_ROW_ID_MATCH: ${FIRST_XLSX_ROW_ID_MATCH}
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Privatbank •1234'
+      direction: DOWN
+      timeout: 10000
+
+- assertVisible:
+      id: 'AccountCard.Balance.Privatbank_1234.1_050'
+
+- tapOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Privatbank_Market'
+      timeout: 20000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Privatbank_Salary'
+      timeout: 20000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Privatbank •1234'
+      timeout: 10000
+
+- evalScript: ${output.phase = 'existing-account-quick-import'}
+
+- longPressOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Balance.Privatbank_1234.850'
+      timeout: 5000
+
+- tapOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 10000
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Privatbank_Coffee'
+      direction: DOWN
+      timeout: 20000
+      speed: 20
+      visibilityPercentage: 30
+
+- evalScript: ${output.phase = 'edit-then-reimport-no-duplicate'}
+
+- runFlow:
+      file: subflows/transactions/long-press-edit-transaction.flow.yaml
+      env:
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Privatbank_Coffee'
+
+- extendedWaitUntil:
+      visible: 'Edit Expense'
+      timeout: 5000
+
+- runFlow:
+      file: subflows/categories/create-category-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: 'E2E Privatbank Import Category'
+
+- runFlow:
+      file: subflows/transactions/edit-comment.flow.yaml
+      env:
+          COMMENT: 'EDITED PRIVATBANK DEDUP TEST'
+
+- tapOn:
+      id: 'TransactionForm.SubmitButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.EditButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Privatbank •1234'
+      timeout: 10000
+
+- assertVisible:
+      id: 'AccountCard.Balance.Privatbank_1234.850'
+
+- longPressOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- runFlow:
+      file: subflows/import/select-file-from-app-provider.flow.yaml
+      env:
+          FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Balance.Privatbank_1234.850'
+      timeout: 5000
+
+- tapOn:
+      id: 'AccountCard.Privatbank •1234'
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Privatbank_Coffee'
+      direction: DOWN
+      timeout: 20000
+      speed: 20
+      visibilityPercentage: 30
+
+- runFlow:
+      file: subflows/transactions/long-press-edit-transaction.flow.yaml
+      env:
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Privatbank_Coffee'
+
+- extendedWaitUntil:
+      visible: 'Edit Expense'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionForm.CommentInput'
+
+- extendedWaitUntil:
+      visible:
+          id: 'NoteInput.Input'
+      timeout: 5000
+
+- assertVisible: 'EDITED PRIVATBANK DEDUP TEST'
+
+- tapOn:
+      id: 'NoteInput.SubmitButton'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
