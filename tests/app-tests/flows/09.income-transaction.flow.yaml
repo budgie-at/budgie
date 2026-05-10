@@ -67,6 +67,15 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Income'
 
+- longPressOn:
+    id: 'TransactionKeypad.Backspace'
+- tapOn:
+    id: 'TransactionKeypad.Digit.1'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
+
 - runFlow:
     file: subflows/transactions/edit-comment.flow.yaml
     env:
@@ -78,6 +87,18 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionCard.Label.E2E_Edited_Income'
     timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.225'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.225'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 # --- Delete Income ---
 

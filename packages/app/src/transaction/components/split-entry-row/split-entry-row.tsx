@@ -12,7 +12,10 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 
+import { SplitEntryRowSelector } from './split-entry-row.selector';
+
 interface Props {
+    readonly index: number;
     readonly categoryId: number;
     readonly amount: number;
     readonly currencySymbol: string;
@@ -32,7 +35,7 @@ const AMOUNT_INPUT_WIDTH = 90;
 const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as const, fontSize: 15, fontWeight: '600' as const };
 
 export const SplitEntryRow = (props: Props) => {
-    const { categoryId, amount, currencySymbol, variant, canDelete, autoFocus, onAmountChange, onCategoryPress, onDelete } = props;
+    const { index, categoryId, amount, currencySymbol, variant, canDelete, autoFocus, onAmountChange, onCategoryPress, onDelete } = props;
 
     const { t } = useLingui();
 
@@ -46,7 +49,11 @@ export const SplitEntryRow = (props: Props) => {
     return (
         <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
             <View className="flex-row items-center gap-x-xl rounded-3xl bg-secondary-background px-3xl py-xl">
-                <HapticPressable onPress={onCategoryPress} className="flex-row items-center gap-x-xl flex-1">
+                <HapticPressable
+                    onPress={onCategoryPress}
+                    className="flex-row items-center gap-x-xl flex-1"
+                    testID={SplitEntryRowSelector.Category(index)}
+                >
                     <CircleIcon
                         icon={categoryIcon}
                         size={CIRCLE_ICON_SIZE}
@@ -69,10 +76,11 @@ export const SplitEntryRow = (props: Props) => {
                     style={amountInputStyle}
                     valuePrefix={`${currencySymbol} `}
                     placeholder={`${currencySymbol} 0`}
+                    testID={SplitEntryRowSelector.Amount(index)}
                 />
 
                 {canDelete ? (
-                    <HapticPressable onPress={onDelete}>
+                    <HapticPressable onPress={onDelete} testID={SplitEntryRowSelector.Delete(index)}>
                         <CircleIcon
                             icon={UserIconNameEnum.X}
                             size={DELETE_ICON_SIZE}

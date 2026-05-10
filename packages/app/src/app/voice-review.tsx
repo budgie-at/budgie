@@ -122,7 +122,7 @@ export default function VoiceReviewModal() {
                     </View>
                 ) : (
                     <View className="gap-y-md px-lg">
-                        {rows.map(row => {
+                        {rows.map((row, index) => {
                             const handleAmount = (amount: number) => void editAmount(row.id, amount);
                             const handleCategory = () => void handleCategoryPress(row.id, row.categoryId);
                             const handleDelete = () => void deleteRow(row.id);
@@ -130,6 +130,7 @@ export default function VoiceReviewModal() {
                             return (
                                 <SplitEntryRow
                                     key={row.id}
+                                    index={index}
                                     categoryId={row.categoryId ?? 0}
                                     amount={row.amount}
                                     currencySymbol={currencySymbol}
