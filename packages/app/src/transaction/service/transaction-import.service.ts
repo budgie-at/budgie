@@ -1,7 +1,7 @@
 import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -138,11 +138,13 @@ class TransactionImportService {
         existingTransaction: TransactionWithEntriesEntityInterface | null,
         tx: DB
     ): Promise<TransactionEntityInterface> {
+        const comment =
+            isDefined(existingTransaction) && isNotEmptyString(existingTransaction.comment) ? existingTransaction.comment : input.comment;
         const updated = await transactionRepository.updateById(
             transactionId,
             {
                 title: input.title,
-                comment: input.comment,
+                comment,
                 operatedAt: input.operatedAt
             },
             tx

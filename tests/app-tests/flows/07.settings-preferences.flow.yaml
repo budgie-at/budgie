@@ -88,12 +88,12 @@ appId: ${APP_ID}
     direction: DOWN
     centerElement: true
 - assertVisible:
-    id: 'SettingsPage.DarkModeSwitch'
+    id: 'SettingsPage.DarkModeCard'
 - tapOn:
-    id: 'SettingsPage.DarkModeSwitch'
+    id: 'SettingsPage.DarkModeCard'
 - waitForAnimationToEnd
 - tapOn:
-    id: 'SettingsPage.DarkModeSwitch'
+    id: 'SettingsPage.DarkModeCard'
 - waitForAnimationToEnd
 
 - assertVisible:

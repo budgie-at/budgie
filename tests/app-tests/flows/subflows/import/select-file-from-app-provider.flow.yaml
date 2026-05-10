@@ -1,6 +1,8 @@
 appId: ${APP_ID}
 env:
     FILE_ROW_ID_MATCH: ${FILE_ROW_ID_MATCH}
+    FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
+    FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
 ---
 - waitForAnimationToEnd
 
@@ -42,6 +44,24 @@ env:
                               - runFlow:
                                     file: open-e2e-fixtures-full-path.flow.yaml
 
+- runFlow:
+      when:
+          true: ${FILE_PICKER_INITIAL_SCROLL_SHIFT == 'DOWN'}
+      commands:
+          - swipe:
+                start: '50%,45%'
+                end: '50%,65%'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          true: ${FILE_PICKER_INITIAL_SCROLL_SHIFT == 'UP'}
+      commands:
+          - swipe:
+                start: '50%,65%'
+                end: '50%,45%'
+          - waitForAnimationToEnd
+
 - scrollUntilVisible:
       element:
           id: '${FILE_ROW_ID_MATCH}'
@@ -51,6 +71,24 @@ env:
       waitToSettleTimeoutMs: 2000
 
 - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          true: ${FILE_PICKER_SCROLL_SHIFT == 'DOWN'}
+      commands:
+          - swipe:
+                start: '50%,45%'
+                end: '50%,65%'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
+          true: ${FILE_PICKER_SCROLL_SHIFT == 'UP'}
+      commands:
+          - swipe:
+                start: '50%,65%'
+                end: '50%,45%'
+          - waitForAnimationToEnd
 
 - tapOn:
       id: '${FILE_ROW_ID_MATCH}'
