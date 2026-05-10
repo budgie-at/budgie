@@ -27,6 +27,7 @@ executionOrder:
         - 21.transfer-consolidation.flow
         - 22.refund-consolidation.flow
         - 23.privatbank-xlsx-import.flow
+        - 24.split-transaction-and-analytics.flow
 
 platform:
     ios:

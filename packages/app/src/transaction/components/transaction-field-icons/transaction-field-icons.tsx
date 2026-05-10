@@ -114,6 +114,7 @@ export const TransactionFieldIcons = (props: TransactionFieldIconsPropsInterface
                         variant={variant}
                         onPress={onSplitPress}
                         animationDelay={SPLIT_ANIMATION_DELAY}
+                        testID={TransactionFieldIconsSelector.Split}
                     />
                 </Animated.View>
             ) : null}

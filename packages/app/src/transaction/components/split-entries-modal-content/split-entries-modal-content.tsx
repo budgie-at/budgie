@@ -24,6 +24,8 @@ import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
+import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
+
 interface Props {
     readonly initialEntries: TransactionEntryCreateInputInterface[];
     readonly variant: ColorPaletteVariant;
@@ -108,6 +110,7 @@ export const SplitEntriesModalContent = (props: Props) => {
 
         return (
             <SplitEntryRow
+                index={index}
                 categoryId={item.categoryId ?? 0}
                 amount={item.amount}
                 currencySymbol={currencySymbol}
@@ -151,6 +154,7 @@ export const SplitEntriesModalContent = (props: Props) => {
                     size="md"
                     disabled={!canConfirm}
                     onPress={handleConfirm}
+                    testID={SplitEntriesModalContentSelector.ConfirmButton}
                 />
             </View>
         </View>

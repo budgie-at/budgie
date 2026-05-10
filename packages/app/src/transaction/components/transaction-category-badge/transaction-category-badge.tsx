@@ -35,21 +35,25 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     if (hasMultipleEntries) {
         return (
             <View className="flex-row flex-wrap gap-xs">
-                {transaction.entries.map(entry => (
-                    <View className="flex-row gap-xs" key={entry.id}>
-                        <View className={wrapperClassName}>
-                            <Text className={textClassName}>
-                                {getTransactionEntryLabel(entry, unknownLabel)}{' '}
-                                <Text className="text-primary/70">
-                                    {formatDigits(convertFromMicroUnits(entry.amount), defaultInstrument.symbol)}
+                {transaction.entries.map(entry => {
+                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel);
+                    const entryAmount = convertFromMicroUnits(entry.amount);
+                    const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
+
+                    return (
+                        <View className="flex-row gap-xs" key={entry.id}>
+                            <View className={wrapperClassName} testID={entryTestID}>
+                                <Text className={textClassName}>
+                                    {entryLabel}{' '}
+                                    <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
                                 </Text>
-                            </Text>
+                            </View>
+                            {isDefined(entry.mccCategory) && isDefined(entry.category) ? (
+                                <MccCategoryChip mccCategory={entry.mccCategory} />
+                            ) : null}
                         </View>
-                        {isDefined(entry.mccCategory) && isDefined(entry.category) ? (
-                            <MccCategoryChip mccCategory={entry.mccCategory} />
-                        ) : null}
-                    </View>
-                ))}
+                    );
+                })}
             </View>
         );
     }
