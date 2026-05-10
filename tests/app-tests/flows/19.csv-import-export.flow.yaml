@@ -79,3 +79,22 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Save to Files'
     timeout: 15000
+
+- swipe:
+    start: '50%,70%'
+    end: '50%,95%'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.Container'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+    timeout: 10000

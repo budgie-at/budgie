@@ -71,7 +71,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
+      id: 'TabBar.Settings'
     timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
@@ -154,7 +154,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
+      id: 'TabBar.Settings'
     timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
@@ -181,7 +181,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
+      id: 'TabBar.Settings'
     timeout: 10000
 
 - stopApp

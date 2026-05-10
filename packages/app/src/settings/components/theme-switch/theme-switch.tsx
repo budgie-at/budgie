@@ -14,13 +14,16 @@ export const ThemeSwitch = ({ cardTestID, switchTestID }: Props) => {
     const { toggleColorSchema, isDarkColorSchema } = useThemeContext();
     const { t } = useLingui();
 
+    const handleToggle = () => void toggleColorSchema({});
+
     return (
         <SettingsCard
             testID={cardTestID}
+            onPress={handleToggle}
             variant="ghost"
             title={t`Dark Mode`}
             description={t`Switch between light and dark themes`}
-            right={<ThemedSwitch className="my-auto" testID={switchTestID} onChange={toggleColorSchema} value={isDarkColorSchema} />}
+            right={<ThemedSwitch className="my-auto" testID={switchTestID} onValueChange={handleToggle} value={isDarkColorSchema} />}
             icon={UserIconNameEnum.Moon}
         />
     );
