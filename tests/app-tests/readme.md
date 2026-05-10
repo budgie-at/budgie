@@ -18,15 +18,17 @@ iOS:
 sh ./scripts/run-maestro-suite.sh com.vitalyiegorov.budgie.e2e
 ```
 
-Local Erste Bank PDF flow:
+Local bank statement import flows:
 
 ```bash
 sh ./scripts/setup-ios-e2e-fixtures.sh
 maestro test ./flows/16.erste-pdf-import.flow.yaml \
   -e APP_ID=com.vitalyiegorov.budgie.e2e
+maestro test ./flows/23.privatbank-xlsx-import.flow.yaml \
+  -e APP_ID=com.vitalyiegorov.budgie.e2e
 ```
 
-Both variants use committed sanitized PDF fixtures from `tests/app-tests/fixtures/erste/`.
+Bank import flows use committed sanitized statement fixtures from `tests/app-tests/fixtures/erste/` and `tests/app-tests/fixtures/privatbank/`.
 
 Android:
 

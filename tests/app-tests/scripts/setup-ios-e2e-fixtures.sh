@@ -4,10 +4,14 @@ set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 PROJECT_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 CONTACT_FIXTURE_PATH="$SCRIPT_DIR/../fixtures/maestro-e2e-contact.vcf"
-ERSTE_FIXTURES_DIR="$SCRIPT_DIR/../fixtures/erste"
-PRIVATBANK_FIXTURES_DIR="$SCRIPT_DIR/../fixtures/privatbank"
 INSTALL_DB_FIXTURE_SCRIPT="$PROJECT_ROOT/scripts/install-ios-db-fixture.sh"
 PREPARE_DYNAMIC_FIXTURES_SCRIPT="$SCRIPT_DIR/prepare-date-sensitive-fixtures.mjs"
+STATEMENT_FIXTURE_PATHS="
+erste/erste-statement-008.pdf
+erste/erste-statement-009.pdf
+privatbank/privatbank-statement-001.xlsx
+privatbank/privatbank-statement-002.xlsx
+"
 SIMULATOR_UDID="${1:-${SIMULATOR_UDID:-booted}}"
 APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
@@ -32,6 +36,17 @@ install_database_fixture() {
     cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
     sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
     "$INSTALL_DB_FIXTURE_SCRIPT" "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+}
+
+install_statement_fixtures() {
+    mkdir -p "$FIXTURES_DIR"
+
+    for STATEMENT_FIXTURE_PATH in $STATEMENT_FIXTURE_PATHS; do
+        STATEMENT_FIXTURE_NAME=$(basename "$STATEMENT_FIXTURE_PATH")
+
+        rm -f "$FIXTURES_DIR/$STATEMENT_FIXTURE_NAME"
+        cp "$SCRIPT_DIR/../fixtures/$STATEMENT_FIXTURE_PATH" "$FIXTURES_DIR/"
+    done
 }
 
 xcrun simctl addmedia "$SIMULATOR_UDID" "$CONTACT_FIXTURE_PATH" >/dev/null 2>&1 || true
@@ -73,15 +88,7 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 if [ -n "$APP_DATA" ]; then
-    mkdir -p "$FIXTURES_DIR"
-    rm -f "$FIXTURES_DIR/erste-statement-008.pdf"
-    rm -f "$FIXTURES_DIR/erste-statement-009.pdf"
-    rm -f "$FIXTURES_DIR/privatbank-statement-001.xlsx"
-    rm -f "$FIXTURES_DIR/privatbank-statement-002.xlsx"
-    cp "$ERSTE_FIXTURES_DIR/erste-statement-008.pdf" "$FIXTURES_DIR/"
-    cp "$ERSTE_FIXTURES_DIR/erste-statement-009.pdf" "$FIXTURES_DIR/"
-    cp "$PRIVATBANK_FIXTURES_DIR/privatbank-statement-001.xlsx" "$FIXTURES_DIR/"
-    cp "$PRIVATBANK_FIXTURES_DIR/privatbank-statement-002.xlsx" "$FIXTURES_DIR/"
+    install_statement_fixtures
 fi
 
 xcrun simctl terminate "$SIMULATOR_UDID" com.apple.DocumentsApp >/dev/null 2>&1 || true
