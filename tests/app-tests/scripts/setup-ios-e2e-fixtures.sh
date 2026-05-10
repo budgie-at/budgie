@@ -12,6 +12,7 @@ APP_ID="${2:-${APP_ID:-com.vitalyiegorov.budgie.e2e}}"
 APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_UDID" "$APP_ID" data 2>/dev/null || true)
 FIXTURES_DIR="$APP_DATA/Documents/E2EFixtures"
 DYNAMIC_FIXTURES_DIR=$(mktemp -d)
+NORMALIZED_FIXTURES_DIR="$DYNAMIC_FIXTURES_DIR/normalized"
 
 cleanup() {
     rm -rf "$DYNAMIC_FIXTURES_DIR"
@@ -19,7 +20,18 @@ cleanup() {
 
 trap cleanup EXIT
 
+mkdir -p "$NORMALIZED_FIXTURES_DIR"
 node "$PREPARE_DYNAMIC_FIXTURES_SCRIPT" "$DYNAMIC_FIXTURES_DIR"
+
+install_database_fixture() {
+    SOURCE_FIXTURE_PATH="$1"
+    TARGET_FIXTURE_NAME="$2"
+    NORMALIZED_FIXTURE_PATH="$NORMALIZED_FIXTURES_DIR/$TARGET_FIXTURE_NAME"
+
+    cp "$SOURCE_FIXTURE_PATH" "$NORMALIZED_FIXTURE_PATH"
+    sqlite3 "$NORMALIZED_FIXTURE_PATH" 'UPDATE settings SET is_screenshot_protection_enabled = 0;'
+    "$INSTALL_DB_FIXTURE_SCRIPT" "$NORMALIZED_FIXTURE_PATH" "$TARGET_FIXTURE_NAME" "$SIMULATOR_UDID" "$APP_ID"
+}
 
 xcrun simctl addmedia "$SIMULATOR_UDID" "$CONTACT_FIXTURE_PATH" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts "$APP_ID" >/dev/null 2>&1 || true
@@ -34,27 +46,28 @@ if [ -n "$APP_DATA" ] && [ -d "$APP_DATA/Documents/SQLite" ]; then
     rm -f "$APP_DATA/Documents/SQLite"/budgie.db*
 fi
 
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "01.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "02.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "03.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "04.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "05.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "06.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/01.db" "19.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/07.db" "07.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/07.db" "17.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/07.db" "18.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/08.db" "08.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/09.db" "09.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/10.db" "10.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/11.db" "11.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/12.db" "12.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/12.db" "15.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/13.db" "13.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$DYNAMIC_FIXTURES_DIR/14.db" "14.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$DYNAMIC_FIXTURES_DIR/21.db" "21.db" "$SIMULATOR_UDID" "$APP_ID"
-"$INSTALL_DB_FIXTURE_SCRIPT" "$DYNAMIC_FIXTURES_DIR/22.db" "22.db" "$SIMULATOR_UDID" "$APP_ID"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "01.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "02.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "03.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "04.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "05.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "06.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "19.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/07.db" "07.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/07.db" "17.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/07.db" "18.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/08.db" "08.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/09.db" "09.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/10.db" "10.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/11.db" "11.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/12.db" "12.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/12.db" "15.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/13.db" "13.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "16.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/14.db" "14.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 if [ -n "$APP_DATA" ]; then
