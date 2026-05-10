@@ -1,12 +1,13 @@
 appId: ${APP_ID}
 env:
-    FIRST_PDF_ROW_ID_MATCH: 'erste-statement-008, pdf'
-    SECOND_PDF_ROW_ID_MATCH: 'erste-statement-009, pdf'
+    FIRST_XLSX_ROW_ID_MATCH: 'privatbank-statement-001, xlsx'
+    SECOND_XLSX_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
 ---
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
-          FIXTURE_ROW_ID_MATCH: '16.db(, db)?'
+          FIXTURE_ROW_ID_MATCH: '23.db(, db)?'
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOUBLE_DOWN'
 
 - evalScript: ${output.phase = 'clear-state-import'}
 
@@ -14,30 +15,31 @@ env:
 
 - scrollUntilVisible:
       element:
-          text: '.*Erste Bank.*'
+          text: '.*Privatbank.*'
       direction: DOWN
       timeout: 10000
       visibilityPercentage: 50
       speed: 20
 
 - tapOn:
-      text: '.*Erste Bank.*'
+      text: '.*Privatbank.*'
 
 - runFlow:
-      file: subflows/import/import-erste-pdf-from-picker.flow.yaml
+      file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
       env:
-          PDF_ROW_ID_MATCH: ${FIRST_PDF_ROW_ID_MATCH}
+          XLSX_ROW_ID_MATCH: ${FIRST_XLSX_ROW_ID_MATCH}
 
 - scrollUntilVisible:
       element:
-          id: 'AccountCard.Erste EUR'
+          id: 'AccountCard.Privatbank •1234'
       direction: DOWN
       timeout: 10000
 
-- assertVisible: 'Erste EUR, .*478'
+- assertVisible:
+      id: 'AccountCard.Balance.Privatbank_1234.1_050'
 
 - tapOn:
-      id: 'AccountCard.Erste EUR'
+      id: 'AccountCard.Privatbank •1234'
 
 - extendedWaitUntil:
       visible:
@@ -46,7 +48,12 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.Label.Sample_Counterparty'
+          id: 'TransactionCard.Label.E2E_Privatbank_Market'
+      timeout: 20000
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Privatbank_Salary'
       timeout: 20000
 
 - tapOn:
@@ -54,25 +61,26 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountCard.Erste EUR'
+          id: 'AccountCard.Privatbank •1234'
       timeout: 10000
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
 - longPressOn:
-      id: 'AccountCard.Erste EUR'
+      id: 'AccountCard.Privatbank •1234'
 
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
+          FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
-      timeout: 3000
+      visible:
+          id: 'AccountCard.Balance.Privatbank_1234.850'
+      timeout: 5000
 
 - tapOn:
-      id: 'AccountCard.Erste EUR'
+      id: 'AccountCard.Privatbank •1234'
 
 - extendedWaitUntil:
       visible:
@@ -81,7 +89,7 @@ env:
 
 - scrollUntilVisible:
       element:
-          id: 'TransactionCard.Label.AREALIS_GmbH'
+          id: 'TransactionCard.Label.E2E_Privatbank_Coffee'
       direction: DOWN
       timeout: 20000
       speed: 20
@@ -92,7 +100,7 @@ env:
 - runFlow:
       file: subflows/transactions/long-press-edit-transaction.flow.yaml
       env:
-          TRANSACTION_CARD_ID: 'TransactionCard.Label.AREALIS_GmbH'
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Privatbank_Coffee'
 
 - extendedWaitUntil:
       visible: 'Edit Expense'
@@ -101,12 +109,12 @@ env:
 - runFlow:
       file: subflows/categories/create-category-from-transaction.flow.yaml
       env:
-          CATEGORY_NAME: 'E2E Erste Import Category'
+          CATEGORY_NAME: 'E2E Privatbank Import Category'
 
 - runFlow:
       file: subflows/transactions/edit-comment.flow.yaml
       env:
-          COMMENT: 'EDITED FOR DEDUP TEST'
+          COMMENT: 'EDITED PRIVATBANK DEDUP TEST'
 
 - tapOn:
       id: 'TransactionForm.SubmitButton'
@@ -121,29 +129,31 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountCard.Erste EUR'
+          id: 'AccountCard.Privatbank •1234'
       timeout: 10000
 
-- assertVisible: 'Erste EUR, .*3,412'
+- assertVisible:
+      id: 'AccountCard.Balance.Privatbank_1234.850'
 
 - longPressOn:
-      id: 'AccountCard.Erste EUR'
+      id: 'AccountCard.Privatbank •1234'
 
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: ${SECOND_PDF_ROW_ID_MATCH}
+          FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
 
 - extendedWaitUntil:
-      visible: 'Erste EUR, .*3,412'
+      visible:
+          id: 'AccountCard.Balance.Privatbank_1234.850'
       timeout: 5000
 
 - tapOn:
-      id: 'AccountCard.Erste EUR'
+      id: 'AccountCard.Privatbank •1234'
 
 - scrollUntilVisible:
       element:
-          id: 'TransactionCard.Label.AREALIS_GmbH'
+          id: 'TransactionCard.Label.E2E_Privatbank_Coffee'
       direction: DOWN
       timeout: 20000
       speed: 20
@@ -152,7 +162,7 @@ env:
 - runFlow:
       file: subflows/transactions/long-press-edit-transaction.flow.yaml
       env:
-          TRANSACTION_CARD_ID: 'TransactionCard.Label.AREALIS_GmbH'
+          TRANSACTION_CARD_ID: 'TransactionCard.Label.E2E_Privatbank_Coffee'
 
 - extendedWaitUntil:
       visible: 'Edit Expense'
@@ -166,7 +176,7 @@ env:
           id: 'NoteInput.Input'
       timeout: 5000
 
-- assertVisible: 'EDITED FOR DEDUP TEST'
+- assertVisible: 'EDITED PRIVATBANK DEDUP TEST'
 
 - tapOn:
       id: 'NoteInput.SubmitButton'
