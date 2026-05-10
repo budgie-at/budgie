@@ -55,6 +55,19 @@ env:
 
 - runFlow:
       when:
+          true: ${FILE_PICKER_INITIAL_SCROLL_SHIFT == 'DOUBLE_DOWN'}
+      commands:
+          - swipe:
+                start: '50%,45%'
+                end: '50%,65%'
+          - waitForAnimationToEnd
+          - swipe:
+                start: '50%,45%'
+                end: '50%,65%'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
           true: ${FILE_PICKER_INITIAL_SCROLL_SHIFT == 'UP'}
       commands:
           - swipe:
