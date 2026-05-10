@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.16.2](https://github.com/budgie-at/budgie/compare/v5.16.1...v5.16.2) (2026-05-10)
+
+### Bug Fixes
+
+- **app:** allow debt account creation ([3234036](https://github.com/budgie-at/budgie/commit/32340361737193def0d2da422e5a9e8830c656b5))
+- **app:** preserve imported transaction notes ([452ea8d](https://github.com/budgie-at/budgie/commit/452ea8d736ec922716193ec5c447441c980b68cc))
+- **app:** refresh account balance totals ([5d53dde](https://github.com/budgie-at/budgie/commit/5d53dde98fe5b5d9d0ad632492cd459295e3bf72))
+- **app:** stabilize settings anchor highlight ([c02b9e1](https://github.com/budgie-at/budgie/commit/c02b9e1729fa86434831d61f9faee40000feca4a))
+
 ## [5.16.1](https://github.com/budgie-at/budgie/compare/v5.16.0...v5.16.1) (2026-05-08)
 
 ### Bug Fixes
