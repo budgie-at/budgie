@@ -221,6 +221,12 @@ env:
     end: 50%, 90%
 - waitForAnimationToEnd
 
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.1.TagSelector'
+    direction: DOWN
+    centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - waitForAnimationToEnd
@@ -715,6 +721,12 @@ env:
     end: 50%, 90%
 - waitForAnimationToEnd
 
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -1081,6 +1093,12 @@ env:
     start: 50%, 50%
     end: 50%, 90%
 - waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
