@@ -5,7 +5,7 @@ import { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interfac
 import { RuleAssociationEnum } from '../enum/rule-association.enum';
 import { RuleEntityTable } from '../table/rule-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
+import type { TX } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { RuleEntityInterface } from '../entity/rule-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
@@ -57,23 +57,23 @@ export class RuleRepository {
         });
     }
 
-    async create(input: RuleCreateEntityInterface, tx?: DB): Promise<RuleEntityInterface> {
+    async create(input: RuleCreateEntityInterface, tx?: TX): Promise<RuleEntityInterface> {
         const [rule] = await (tx ?? this.db).insert(RuleEntityTable).values([input]).returning();
 
         return rule;
     }
 
-    async updateById(id: number, input: RuleUpdateEntityInterface, tx?: DB): Promise<RuleEntityInterface> {
+    async updateById(id: number, input: RuleUpdateEntityInterface, tx?: TX): Promise<RuleEntityInterface> {
         const [rule] = await (tx ?? this.db).update(RuleEntityTable).set(input).where(eq(RuleEntityTable.id, id)).returning();
 
         return rule;
     }
 
-    async archiveById(id: number, tx?: DB): Promise<void> {
+    async archiveById(id: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id));
     }
 
-    async truncate(tx?: DB): Promise<void> {
+    async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(RuleEntityTable);
     }
 }

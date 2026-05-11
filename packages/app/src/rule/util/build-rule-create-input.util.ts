@@ -28,7 +28,6 @@ export const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface):
         enabled: true,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
         conditions: [condition],
-        actions: [...categoryAction, ...tagActions],
-        applyToExisting: false
+        actions: [...categoryAction, ...tagActions]
     };
 };

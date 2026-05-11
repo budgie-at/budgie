@@ -16,7 +16,7 @@ export type { TagScoreResultInterface } from './@generic/interface/tag-score-res
 
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 
-export type { DB } from './@generic/type/db.type';
+export type { DB, TX } from './@generic/type/db.type';
 
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';
@@ -369,7 +369,6 @@ export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.in
 
 export { RuleRepository } from './rule/repository/rule.repository';
 
-export { RuleConditionAssociationEnum } from './rule-condition/enum/rule-condition-association.enum';
 export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
 export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
 export { RuleConditionEntitySchema } from './rule-condition/schema/rule-condition-entity.schema';

@@ -4,7 +4,6 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
-import { dismissedSuggestions } from '../constant/dismissed-suggestions.constant';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
 import { UseSuggestRuleDetectionParamsInterface } from '../interface/use-suggest-rule-detection-params.interface';
@@ -15,6 +14,8 @@ import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.
 import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
 import { hasConflictWithRuleOutcomes } from '../util/has-conflict-with-rule-outcomes.util';
 import { selectSuggestCondition } from '../util/select-suggest-condition.util';
+
+const dismissedSuggestions = new Set<string>();
 
 const buildDismissKey = (transactionId: number, title: string, comment: string, mccCode: string | null): string => {
     const condition = selectSuggestCondition(title, mccCode, comment);

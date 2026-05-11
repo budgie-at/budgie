@@ -8,17 +8,18 @@ import {
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { UseRuleFormOptionsInterface } from '../interface/use-rule-form-options.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
-import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     enabled: true,
@@ -38,8 +39,36 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
             tagId: null,
             accountId: null
         }
-    ],
-    applyToExisting: false
+    ]
+};
+
+const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface): RuleCreateInputInterface => {
+    const categoryAction: RuleCreateInputInterface['actions'] = isDefined(prefillData.categoryId)
+        ? [{ type: RuleActionTypeEnum.SET_CATEGORY, categoryId: prefillData.categoryId, tagId: null, accountId: null }]
+        : [];
+
+    const tagActions: RuleCreateInputInterface['actions'] = prefillData.tagIds.map(tagId => ({
+        type: RuleActionTypeEnum.ADD_TAG,
+        categoryId: null,
+        tagId,
+        accountId: null
+    }));
+
+    const actions: RuleCreateInputInterface['actions'] = [...categoryAction, ...tagActions];
+
+    const conditions: RuleCreateInputInterface['conditions'] = prefillData.conditions.map(condition => ({
+        field: condition.field,
+        operator: RuleConditionOperatorEnum.CONTAINS,
+        value: condition.value,
+        secondaryValue: null
+    }));
+
+    return {
+        enabled: true,
+        conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+        conditions,
+        actions
+    };
 };
 
 // eslint-disable-next-line max-lines-per-function -- Form hook with confirm alert logic and create/update/delete handlers
@@ -47,7 +76,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
 
-    const getDefaultValues = (): RuleCreateInputInterface => {
+    const defaultValues = useMemo((): RuleCreateInputInterface => {
         if (isDefined(providedDefaultValues)) {
             return providedDefaultValues;
         }
@@ -57,9 +86,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         }
 
         return DEFAULT_VALUES;
-    };
-
-    const defaultValues = getDefaultValues();
+    }, [prefillData, providedDefaultValues]);
     const isEditing = isDefined(ruleId);
 
     const form = useForm<RuleCreateInputInterface>({
