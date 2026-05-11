@@ -58,24 +58,18 @@ export default function RulesPage() {
         testID: RulesPageSelector.CreateButton
     });
 
-    const renderItem = ({ item, index }: { item: RuleWithActionsRelationsEntityInterface; index: number }): ReactElement => {
-        const order = index + 1;
-
-        return (
-            <DeletableRow id={item.id} onDelete={handleDeleteRule}>
-                <RuleCard
-                    testID={RulesPageSelector.RuleCard(index)}
-                    switchTestID={RulesPageSelector.RuleCardEnabledSwitch(index)}
-                    orderBadgeTestID={RulesPageSelector.RuleCardOrderBadge(index)}
-                    conditionsTestID={RulesPageSelector.RuleCardConditions(index)}
-                    actionsTestID={RulesPageSelector.RuleCardActions(index)}
-                    onOpen={handleOpenRule}
-                    order={order}
-                    rule={item}
-                />
-            </DeletableRow>
-        );
-    };
+    const renderItem = ({ item, index }: { item: RuleWithActionsRelationsEntityInterface; index: number }): ReactElement => (
+        <DeletableRow id={item.id} onDelete={handleDeleteRule}>
+            <RuleCard
+                testID={RulesPageSelector.RuleCard(index)}
+                switchTestID={RulesPageSelector.RuleCardEnabledSwitch(index)}
+                conditionsTestID={RulesPageSelector.RuleCardConditions(index)}
+                actionsTestID={RulesPageSelector.RuleCardActions(index)}
+                onOpen={handleOpenRule}
+                rule={item}
+            />
+        </DeletableRow>
+    );
 
     return (
         <Page testID={RulesPageSelector.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />} withBlur>

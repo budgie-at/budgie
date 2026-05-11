@@ -1,6 +1,6 @@
 import { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -12,16 +12,14 @@ import { RuleSummaryPills } from '../rule-summary-pills/rule-summary-pills';
 
 interface Props {
     readonly rule: RuleWithActionsRelationsEntityInterface;
-    readonly order: number;
     readonly onOpen: (rule: RuleWithActionsRelationsEntityInterface) => void;
     readonly testID?: string;
     readonly switchTestID?: string;
-    readonly orderBadgeTestID?: string;
     readonly conditionsTestID?: string;
     readonly actionsTestID?: string;
 }
 
-export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadgeTestID, conditionsTestID, actionsTestID }: Props) => {
+export const RuleCard = ({ onOpen, rule, testID, switchTestID, conditionsTestID, actionsTestID }: Props) => {
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
@@ -34,13 +32,6 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadge
 
     return (
         <Card testID={testID} onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">
-            <View
-                testID={orderBadgeTestID}
-                className="w-10 h-10 rounded-full bg-ghost-background items-center justify-center border border-secondary-foreground"
-            >
-                <Text className="text-sm font-semibold text-primary">{order}</Text>
-            </View>
-
             <View className="flex-1">
                 <RuleSummaryPills
                     conditions={rule.conditions}
