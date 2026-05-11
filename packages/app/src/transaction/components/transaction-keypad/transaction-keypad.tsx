@@ -4,6 +4,8 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
 
+import { TransactionKeypadSelector } from './transaction-keypad.selector';
+
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
@@ -37,28 +39,29 @@ export const TransactionKeypad = (props: Props) => {
             <View className="flex-1 gap-md">
                 <View className="flex-1 gap-md">
                     <View className="flex-1 flex-row gap-md">
-                        <TransactionKeypadButton value="1" onPress={handleDigit1} />
-                        <TransactionKeypadButton value="2" onPress={handleDigit2} />
-                        <TransactionKeypadButton value="3" onPress={handleDigit3} />
+                        <TransactionKeypadButton value="1" onPress={handleDigit1} testID={TransactionKeypadSelector.Digit('1')} />
+                        <TransactionKeypadButton value="2" onPress={handleDigit2} testID={TransactionKeypadSelector.Digit('2')} />
+                        <TransactionKeypadButton value="3" onPress={handleDigit3} testID={TransactionKeypadSelector.Digit('3')} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
-                        <TransactionKeypadButton value="4" onPress={handleDigit4} />
-                        <TransactionKeypadButton value="5" onPress={handleDigit5} />
-                        <TransactionKeypadButton value="6" onPress={handleDigit6} />
+                        <TransactionKeypadButton value="4" onPress={handleDigit4} testID={TransactionKeypadSelector.Digit('4')} />
+                        <TransactionKeypadButton value="5" onPress={handleDigit5} testID={TransactionKeypadSelector.Digit('5')} />
+                        <TransactionKeypadButton value="6" onPress={handleDigit6} testID={TransactionKeypadSelector.Digit('6')} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
-                        <TransactionKeypadButton value="7" onPress={handleDigit7} />
-                        <TransactionKeypadButton value="8" onPress={handleDigit8} />
-                        <TransactionKeypadButton value="9" onPress={handleDigit9} />
+                        <TransactionKeypadButton value="7" onPress={handleDigit7} testID={TransactionKeypadSelector.Digit('7')} />
+                        <TransactionKeypadButton value="8" onPress={handleDigit8} testID={TransactionKeypadSelector.Digit('8')} />
+                        <TransactionKeypadButton value="9" onPress={handleDigit9} testID={TransactionKeypadSelector.Digit('9')} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="." onPress={onDecimal} />
-                        <TransactionKeypadButton value="0" onPress={handleDigit0} />
+                        <TransactionKeypadButton value="0" onPress={handleDigit0} testID={TransactionKeypadSelector.Digit('0')} />
                         <TransactionKeypadButton
                             icon={UserIconNameEnum.Delete}
                             variant="action"
                             onPress={onBackspace}
                             onLongPress={onLongBackspace}
+                            testID={TransactionKeypadSelector.Backspace}
                         />
                     </View>
                 </View>

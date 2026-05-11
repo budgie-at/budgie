@@ -1,23 +1,37 @@
-import { useEffect, useState } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 
-export const useAppState = (onChange?: (isActive: boolean) => Promise<void> | void) => {
-    const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+import type { AppStateStatus } from 'react-native';
+
+export const useAppState = (onChange?: (isActive: boolean) => void) => {
+    const currentAppState = AppState.currentState;
+    const appStateRef = useRef<AppStateStatus>(currentAppState);
+    const [appState, setAppState] = useState<AppStateStatus>(currentAppState);
+
+    const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
+        const previousAppState = appStateRef.current;
+        const movedToActive = previousAppState !== 'active' && nextAppState === 'active';
+        const movedFromActive = previousAppState === 'active' && nextAppState !== 'active';
+
+        appStateRef.current = nextAppState;
+        setAppState(nextAppState);
+
+        if (movedToActive) {
+            onChange?.(true);
+
+            return;
+        }
+
+        if (movedFromActive) {
+            onChange?.(false);
+        }
+    });
 
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        const subscription = AppState.addEventListener('change', async nextAppState => {
-            if (appState.match(/inactive|background/iu) && nextAppState === 'active') {
-                await onChange?.(true);
-            } else if (appState === 'active' && nextAppState.match(/inactive|background/iu)) {
-                await onChange?.(false);
-            }
-
-            setAppState(nextAppState);
-        });
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
 
         return () => void subscription.remove();
-    }, [appState, onChange]);
+    }, []);
 
     return {
         appState,

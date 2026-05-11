@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.16.3](https://github.com/budgie-at/budgie/compare/v5.16.2...v5.16.3) (2026-05-11)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [5.16.2](https://github.com/budgie-at/budgie/compare/v5.16.1...v5.16.2) (2026-05-10)
+
+### Bug Fixes
+
+- **app:** allow debt account creation ([3234036](https://github.com/budgie-at/budgie/commit/32340361737193def0d2da422e5a9e8830c656b5))
+- **app:** preserve imported transaction notes ([452ea8d](https://github.com/budgie-at/budgie/commit/452ea8d736ec922716193ec5c447441c980b68cc))
+- **app:** refresh account balance totals ([5d53dde](https://github.com/budgie-at/budgie/commit/5d53dde98fe5b5d9d0ad632492cd459295e3bf72))
+- **app:** stabilize settings anchor highlight ([c02b9e1](https://github.com/budgie-at/budgie/commit/c02b9e1729fa86434831d61f9faee40000feca4a))
+
+## [5.16.1](https://github.com/budgie-at/budgie/compare/v5.16.0...v5.16.1) (2026-05-08)
+
+### Bug Fixes
+
+- include refund consolidation in balances ([#414](https://github.com/budgie-at/budgie/issues/414)) ([81f99d2](https://github.com/budgie-at/budgie/commit/81f99d2db2ca6d7d45129f08c4a83222eac05bca))
+
+# [5.15.0](https://github.com/budgie-at/budgie/compare/v5.14.2...v5.15.0) (2026-05-07)
+
+### Bug Fixes
+
+- **app:** center refund label on expense form ([4907da9](https://github.com/budgie-at/budgie/commit/4907da96ff5b69c27c5fde3a9a9ffb6a8460b5de))
+- harden refund consolidation review gaps ([fe33ecd](https://github.com/budgie-at/budgie/commit/fe33ecd98ba06e6d1563ee55a9fc16ba27d1c650))
+
+### Features
+
+- **app:** RefundedPill + list/form wiring + i18n ([6235c82](https://github.com/budgie-at/budgie/commit/6235c82f474c17154b1323872e551074b187741d)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+- **contracts,app:** RefundPairRepository with auto + review CTEs ([3204700](https://github.com/budgie-at/budgie/commit/3204700eec92918aa90d4833bf6d685f6ec20bee)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+- **contracts,app:** wire refund processor into consolidation engine ([154dbbf](https://github.com/budgie-at/budgie/commit/154dbbf936c4f12d27e4f24647c9ea350dd332e9)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+
 ## [5.14.2](https://github.com/budgie-at/budgie/compare/v5.14.1...v5.14.2) (2026-05-04)
 
 ### Bug Fixes

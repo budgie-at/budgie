@@ -1,6 +1,7 @@
 import { SQL, count } from 'drizzle-orm';
-import { SQLiteColumn, SQLiteTable } from 'drizzle-orm/sqlite-core';
+import { SQLiteTable } from 'drizzle-orm/sqlite-core';
 
+import { TranslatableColumnsInterface } from '../interface/translatable-columns.interface';
 import { activeWhere } from '../util/active-where.util';
 import { untranslatedWhere } from '../util/untranslated-where.util';
 
@@ -8,15 +9,6 @@ import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 type TranslatableDB = ExpoSQLiteDatabase<typeof schema>;
-
-interface TranslatableColumnsInterface {
-    readonly id: SQLiteColumn;
-    readonly title: SQLiteColumn;
-    readonly titleEn: SQLiteColumn;
-    readonly titleTags: SQLiteColumn;
-    readonly tagsGeneratedAt: SQLiteColumn;
-    readonly deletedAt: SQLiteColumn;
-}
 
 export abstract class TranslatableRepositoryBase {
     constructor(

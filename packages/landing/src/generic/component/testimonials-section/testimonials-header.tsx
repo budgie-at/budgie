@@ -19,15 +19,15 @@ export const TestimonialsHeader = () => (
     >
         <Badge className="rounded-full px-4 py-1.5 text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
             <TrendingUp className="size-3 mr-1" />
-            <Trans>Real Results</Trans>
+            <Trans>Beta Tester Feedback</Trans>
         </Badge>
 
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            <Trans>People Who Stopped Overspending</Trans>
+            <Trans>What Beta Testers Are Saying</Trans>
         </h2>
 
         <p className="max-w-[800px] text-muted-foreground md:text-lg">
-            <Trans>Real stories from users who took control of their money and never looked back.</Trans>
+            <Trans>Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy.</Trans>
         </p>
     </Motion>
 );

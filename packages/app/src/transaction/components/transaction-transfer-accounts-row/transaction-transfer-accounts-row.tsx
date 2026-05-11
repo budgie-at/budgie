@@ -37,6 +37,9 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
 
+    const fromAccountSelectedTestID = isDefined(fromAccount) ? TransferQuickFormSelector.SelectedFromAccount(fromAccount.title) : void 0;
+    const toAccountSelectedTestID = isDefined(toAccount) ? TransferQuickFormSelector.SelectedToAccount(toAccount.title) : void 0;
+
     const handleFromPress = async () => {
         const selectedAccountId = await openAccountSelector({
             initialAccountId: fromAccountId,
@@ -72,6 +75,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 variant={variant}
                 animatedStyle={fromAnimatedStyle}
                 testID={TransferQuickFormSelector.FromAccount}
+                selectedTestID={fromAccountSelectedTestID}
                 onPress={handleFromPress}
             />
 
@@ -90,6 +94,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                 variant={variant}
                 animatedStyle={toAnimatedStyle}
                 testID={TransferQuickFormSelector.ToAccount}
+                selectedTestID={toAccountSelectedTestID}
                 onPress={handleToPress}
             />
         </Animated.View>
