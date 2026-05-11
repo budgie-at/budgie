@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.16.3](https://github.com/budgie-at/budgie/compare/v5.16.2...v5.16.3) (2026-05-11)
+
+**Note:** Version bump only for package @budgie-at/root
+
 ## [5.16.2](https://github.com/budgie-at/budgie/compare/v5.16.1...v5.16.2) (2026-05-10)
 
 ### Bug Fixes
