@@ -34,7 +34,7 @@ const shiftTransactionsFixtureToNow = () => {
         `
         BEGIN;
         CREATE TEMP TABLE fixture_offset AS
-        SELECT CAST(strftime('%s', 'now') AS INTEGER) - MAX(operated_at) AS seconds
+        SELECT CAST(strftime('%s', 'now') AS INTEGER) - 86400 - MAX(operated_at) AS seconds
         FROM transactions;
 
         UPDATE transactions

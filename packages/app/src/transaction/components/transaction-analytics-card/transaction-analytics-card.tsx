@@ -10,6 +10,8 @@ import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-di
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
+import { TransactionAnalyticsCardSelector } from './transaction-analytics-card.selector';
+
 interface Props {
     readonly label: string;
     readonly amount: number;
@@ -28,6 +30,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
     const compactAmount = formatCompactDigits(amount, defaultInstrument.symbol);
     const isAbbreviated = Math.abs(amount) >= HUNDRED_THOUSAND;
     const heroAmount = isAbbreviated ? compactAmount : fullAmount;
+    const amountTestID = TransactionAnalyticsCardSelector.Amount(label, amount);
 
     return (
         <Card className="flex-1 gap-y-lg p-3xl items-center">
@@ -47,6 +50,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
                     minimumFontScale={0.7}
                     style={TABULAR_NUMS_STYLE}
                     className="text-primary text-2xl font-bold text-center"
+                    testID={amountTestID}
                 >
                     {heroAmount}
                 </ProtectedText>

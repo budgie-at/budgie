@@ -182,6 +182,7 @@ export const TransferQuickForm = (props: Props) => {
                 secondaryAmount={display.secondaryAmountText}
                 label={display.amountLabel}
                 isLabelFlipped={isEditingDestination}
+                testID={SimpleQuickFormSelector.AmountInput}
                 {...(conversion.isCrossCurrency && {
                     onLabelPress: handleConversionRowPress,
                     onSecondaryAmountPress: handleConversionRowPress
