@@ -81,6 +81,41 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
+# --- Edit Cross-Currency Transfer ---
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransferForm.ConversionRow'
+    timeout: 5000
+- longPressOn:
+    id: 'TransactionKeypad.Backspace'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
+- tapOn:
+    id: 'TransactionKeypad.Digit.0'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Cross_Currency_Transfer'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.50'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Foreign_Account.150'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
 # --- Delete Cross-Currency Transfer ---
 
 - tapOn:

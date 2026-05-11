@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+env:
+  ENTRY_INDEX: ${ENTRY_INDEX}
+  CATEGORY_NAME: ${CATEGORY_NAME}
+---
+- tapOn:
+    id: 'SplitEntryRow.Category.${ENTRY_INDEX}'
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
+- inputText: ${CATEGORY_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+    timeout: 15000
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Card.${CATEGORY_NAME}'
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+
