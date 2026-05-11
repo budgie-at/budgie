@@ -5,7 +5,6 @@ env:
   CATEGORY_NAME: ${CATEGORY_NAME}
   COMMENT: ${COMMENT}
 ---
-
 - runFlow: ../navigation/navigate-to-transactions.flow.yaml
 
 - runFlow:
@@ -43,10 +42,11 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- swipe:
-    from:
-      id: 'TransactionForm.CategorySelector'
-    direction: UP
+- scrollUntilVisible:
+    element:
+      id: 'TransactionForm.CommentInput'
+    direction: DOWN
+    centerElement: true
 
 - runFlow:
     file: enter-comment.flow.yaml

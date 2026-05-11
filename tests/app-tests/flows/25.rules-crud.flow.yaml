@@ -4,7 +4,6 @@ env:
   CATEGORY_NAME: Rules Test Category
   TAG_NAME: Rules Test Tag
 ---
-
 - runFlow:
     file: setup/setup-rules-test.flow.yaml
 
@@ -232,25 +231,13 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.ActionSection.AddButton'
-    direction: DOWN
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.1.TypeSelector'
-    direction: DOWN
-    centerElement: true
 - tapOn:
     id: 'RuleForm.Action.1.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -258,6 +245,7 @@ env:
       id: 'RuleForm.Action.1.TagSelector'
     direction: DOWN
     centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - waitForAnimationToEnd
@@ -324,19 +312,9 @@ env:
 - assertNotVisible:
     id: 'RuleForm.Condition.1.FieldSelector'
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.ActionSection.AddButton'
-    direction: DOWN
-
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 - waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.1.TypeSelector'
-    direction: DOWN
 
 - assertVisible:
     id: 'RuleForm.Action.1.TypeSelector'
@@ -439,19 +417,10 @@ env:
 
 - tapOn: return
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.TypeSelector'
-    direction: DOWN
-    centerElement: true
-
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
 - tapOn:
     id: RuleForm.SelectorCard.SET_CATEGORY
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -621,6 +590,12 @@ env:
 
 - tapOn: return
 
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -666,11 +641,6 @@ env:
 - inputText: 'exclude'
 
 - tapOn: return
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -727,6 +697,7 @@ env:
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -903,6 +874,7 @@ env:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
     centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -939,17 +911,23 @@ env:
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
+- waitForAnimationToEnd
+- tapOn: 'Search by code or description...'
+- inputText: '0742'
+- tapOn: return
 - extendedWaitUntil:
-    visible: '0742 - .*'
-    timeout: 5000
+    visible:
+      id: 'RuleMccSelector.Card.0742'
+    timeout: 10000
 - tapOn:
-    text: '0742 - .*'
+    id: 'RuleMccSelector.Card.0742'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
@@ -1032,11 +1010,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:

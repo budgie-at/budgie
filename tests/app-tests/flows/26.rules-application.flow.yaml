@@ -4,7 +4,6 @@ env:
   CATEGORY_NAME: Rules Test Category
   TAG_NAME: Rules Test Tag
 ---
-
 - runFlow:
     file: setup/setup-rules-test.flow.yaml
 
@@ -55,11 +54,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -114,9 +108,6 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:
@@ -138,11 +129,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -200,25 +186,13 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.ActionSection.AddButton'
-    direction: DOWN
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.1.TypeSelector'
-    direction: DOWN
-    centerElement: true
 - tapOn:
     id: 'RuleForm.Action.1.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -252,11 +226,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -304,9 +273,6 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - waitForAnimationToEnd
 - tapOn: 'Comment'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
@@ -558,9 +524,6 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.CONVERT_TO_TRANSFER'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -568,6 +531,7 @@ env:
       id: 'RuleForm.Action.0.AccountSelector'
     direction: DOWN
     centerElement: true
+
 - tapOn:
     id: 'RuleForm.Action.0.AccountSelector'
 - waitForAnimationToEnd
@@ -716,9 +680,6 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.SET_CATEGORY'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -772,9 +733,6 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.ADD_TAG'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - tapOn:
@@ -802,11 +760,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -853,11 +806,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -927,11 +875,6 @@ env:
     id: 'TabBar.Transactions'
 - waitForAnimationToEnd
 
-- swipe:
-    direction: DOWN
-    duration: 500
-- waitForAnimationToEnd
-
 - extendedWaitUntil:
     visible:
       id: 'TransactionCard.Label.Test17_Direct_Create'
@@ -997,11 +940,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
@@ -1089,9 +1027,6 @@ env:
     id: 'RuleForm.Action.0.TypeSelector'
 - tapOn:
     id: 'RuleForm.SelectorCard.SET_CATEGORY'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
@@ -1126,11 +1061,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
-
-- swipe:
-    direction: DOWN
-    duration: 500
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
