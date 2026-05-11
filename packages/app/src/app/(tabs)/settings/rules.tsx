@@ -2,10 +2,10 @@ import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budg
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -38,17 +38,31 @@ const getKeyExtractor = (item: Pick<RuleWithActionsRelationsEntityInterface, 'id
 
 export default function RulesPage() {
     const { t } = useLingui();
-    const { rules } = useGetAllRulesQuery();
+    const [rulesRefreshKey, setRulesRefreshKey] = useState(0);
+    const { rules } = useGetAllRulesQuery(rulesRefreshKey);
     const [notify] = useVibration();
     const { openRuleForm } = useRuleFormModal();
 
+    const refreshRules = () => {
+        setRulesRefreshKey(value => value + 1);
+    };
+
+    const handleRuleFormResult = (result: Awaited<ReturnType<typeof openRuleForm>>) => {
+        if (isDefined(result)) {
+            refreshRules();
+        }
+    };
+
     const handleDeleteRule = async (id: number) => {
         await ruleService.archiveById(id);
+        refreshRules();
         notify(NotificationFeedbackType.Success);
     };
 
-    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) => void openRuleForm({ ruleId: rule.id });
-    const handleCreateRule = () => void openRuleForm();
+    const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) =>
+        void openRuleForm({ ruleId: rule.id }).then(handleRuleFormResult);
+
+    const handleCreateRule = () => void openRuleForm().then(handleRuleFormResult);
 
     useCreateAction({
         icon: UserIconNameEnum.Zap,
