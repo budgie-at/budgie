@@ -1,11 +1,41 @@
-import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import {
+    RuleActionTypeEnum,
+    RuleConditionCreateInputInterface,
+    RuleConditionFieldEnum,
+    RuleConditionOperatorEnum,
+    RuleCreateInputInterface,
+    TransactionTypeEnum
+} from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { EXCLUSIVE_ACTION_TYPES } from '../../constant/exclusive-action-types.constant';
-import { RULE_ACTION_TYPE_OPTIONS } from '../../constant/rule-action-type-options.constant';
-import { hasConvertibleTypeCondition } from '../../util/has-convertible-type-condition.util';
 import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
+
+interface RuleActionTypeOptionInterface {
+    readonly value: RuleActionTypeEnum;
+    readonly label: MessageDescriptor;
+}
+
+const CONVERTIBLE_TRANSACTION_TYPES: TransactionTypeEnum[] = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME];
+
+const hasConvertibleTypeCondition = (conditions: RuleConditionCreateInputInterface[]): boolean =>
+    conditions.some(
+        ({ field, operator, value }) =>
+            field === RuleConditionFieldEnum.TRANSACTION_TYPE &&
+            operator === RuleConditionOperatorEnum.EQUALS &&
+            isEnumValue(value, TransactionTypeEnum) &&
+            CONVERTIBLE_TRANSACTION_TYPES.includes(value)
+    );
+
+const RULE_ACTION_TYPE_OPTIONS: RuleActionTypeOptionInterface[] = [
+    { value: RuleActionTypeEnum.SET_CATEGORY, label: msg`Set Category` },
+    { value: RuleActionTypeEnum.ADD_TAG, label: msg`Add Tag` },
+    { value: RuleActionTypeEnum.CONVERT_TO_TRANSFER, label: msg`Convert to Transfer` }
+];
 
 interface Props {
     readonly index: number;

@@ -1,9 +1,19 @@
-import { RuleActionTypeEnum, RuleConditionFieldEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
+/* eslint-disable max-lines -- absorbs convert-transaction-to-transfer logic per CLAUDE.md rule 38/51 (approved by user during pr-322-rules SOTA cleanup) */
+import {
+    AccountTypeEnum,
+    RuleActionTypeEnum,
+    RuleConditionFieldEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    TransactionUpdatedByEnum,
+    transactionAsync
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
+    accountRepository,
     db,
     mccCategoryRepository,
     ruleRepository,
@@ -11,14 +21,19 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
-import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
 
-import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { DB, RuleActionEntityInterface, RuleWithRelationsEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
+
+type ApplyRuleResultType = {
+    readonly applied: number;
+    readonly failed: number;
+    readonly total: number;
+};
 
 class RuleEngineService {
     @Log(
@@ -53,9 +68,9 @@ class RuleEngineService {
     async applyRuleToMatchingTransactions(
         ruleId: number,
         onProgress: ((processed: number, total: number) => void) | null
-    ): Promise<ApplyRuleResultInterface> {
+    ): Promise<ApplyRuleResultType> {
         const rule = await ruleRepository.findByIdWithRelations(ruleId);
-        const emptyResult: ApplyRuleResultInterface = { applied: 0, failed: 0, total: 0 };
+        const emptyResult: ApplyRuleResultType = { applied: 0, failed: 0, total: 0 };
 
         if (!isDefined(rule) || !isNotEmptyArray(rule.conditions)) {
             return emptyResult;
@@ -239,7 +254,12 @@ class RuleEngineService {
                 break;
 
             case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
-                await this.applyConvertToTransferAction(transactionId, action, transaction, appliedExclusiveActions);
+                if (!isDefined(action.accountId) || appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
+                    break;
+                }
+
+                appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
+                await this.convertTransactionToTransfer(transactionId, action.accountId, transaction);
                 break;
 
             default:
@@ -278,22 +298,88 @@ class RuleEngineService {
         await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
-    private async applyConvertToTransferAction(
-        transactionId: number,
-        action: RuleActionEntityInterface,
-        transaction: DB,
-        appliedExclusiveActions: Set<RuleActionTypeEnum>
-    ): Promise<void> {
-        if (!isDefined(action.accountId) || appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
+    // eslint-disable-next-line max-statements -- multi-step transfer conversion absorbed from convert-transaction-to-transfer util per CLAUDE.md rule 38/51
+    private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<void> {
+        const transaction = await transactionRepository.getById(transactionId, dbTransaction);
+        if (!isDefined(transaction)) {
             return;
         }
 
-        appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
-        await convertTransactionToTransfer({
+        const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+        const isIncome = transaction.type === TransactionTypeEnum.INCOME;
+
+        if (!isExpense && !isIncome) {
+            return;
+        }
+
+        const [originalEntry] = transaction.entries;
+        if (!isDefined(originalEntry)) {
+            return;
+        }
+
+        const originalAccountId = originalEntry.accountId;
+
+        if (originalAccountId === targetAccountId) {
+            return;
+        }
+
+        const fromAccountId = isExpense ? originalAccountId : targetAccountId;
+        const toAccountId = isExpense ? targetAccountId : originalAccountId;
+
+        const [fromAccount, toAccount] = await Promise.all([
+            accountRepository.findById(fromAccountId, dbTransaction),
+            accountRepository.findById(toAccountId, dbTransaction)
+        ]);
+
+        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
+            return;
+        }
+
+        const { amount: convertedAmount, exchangeRate } = await exchangeRatesService.convert(
+            fromAccount.instrumentId,
+            toAccount.instrumentId,
+            originalEntry.amount
+        );
+
+        const isDebtTransaction = fromAccount.type === AccountTypeEnum.DEBT || toAccount.type === AccountTypeEnum.DEBT;
+        const newType = isDebtTransaction ? TransactionTypeEnum.DEBT : TransactionTypeEnum.TRANSFER;
+
+        await transactionRepository.updateById(
             transactionId,
-            targetAccountId: action.accountId,
-            dbTransaction: transaction
-        });
+            {
+                type: newType,
+                fromAccountId,
+                toAccountId,
+                exchangeRate
+            },
+            dbTransaction
+        );
+
+        await transactionEntryRepository.deleteByTransactionId(transactionId, dbTransaction);
+
+        await transactionEntryRepository.bulkCreate(
+            [
+                {
+                    transactionId,
+                    accountId: fromAccountId,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: originalEntry.amount,
+                    categoryId: originalEntry.categoryId,
+                    mccCategoryId: originalEntry.mccCategoryId,
+                    externalId: null
+                },
+                {
+                    transactionId,
+                    accountId: toAccountId,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: convertedAmount,
+                    categoryId: originalEntry.categoryId,
+                    mccCategoryId: null,
+                    externalId: null
+                }
+            ],
+            dbTransaction
+        );
     }
 }
 

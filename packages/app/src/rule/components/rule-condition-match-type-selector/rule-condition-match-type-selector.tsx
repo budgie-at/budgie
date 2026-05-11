@@ -1,11 +1,17 @@
 import { RuleConditionMatchTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
-import { RULE_CONDITION_MATCH_TYPE_LABELS } from '../../constant/rule-condition-match-type-labels.constant';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
+
+const RULE_CONDITION_MATCH_TYPE_LABELS: Record<RuleConditionMatchTypeEnum, MessageDescriptor> = {
+    [RuleConditionMatchTypeEnum.ALL]: msg`Match All`,
+    [RuleConditionMatchTypeEnum.ANY]: msg`Match Any`
+};
 
 export const RuleConditionMatchTypeSelector = () => {
     const { t } = useLingui();

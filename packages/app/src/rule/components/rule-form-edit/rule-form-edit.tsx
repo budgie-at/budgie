@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -28,28 +27,24 @@ export const RuleFormEdit = ({ ruleId, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
     const { rule, isLoading } = useGetRuleByIdQuery(ruleId);
 
-    const defaultValues = useMemo<RuleCreateInputInterface | null>(
-        () =>
-            isDefined(rule)
-                ? {
-                      enabled: rule.enabled,
-                      conditionMatchType: rule.conditionMatchType,
-                      conditions: rule.conditions.map(condition => ({
-                          field: condition.field,
-                          value: condition.value,
-                          operator: condition.operator,
-                          secondaryValue: condition.secondaryValue
-                      })),
-                      actions: rule.actions.map(action => ({
-                          type: action.type,
-                          tagId: action.tagId,
-                          categoryId: action.categoryId,
-                          accountId: action.accountId ?? null
-                      }))
-                  }
-                : null,
-        [rule]
-    );
+    const defaultValues: RuleCreateInputInterface | null = isDefined(rule)
+        ? {
+              enabled: rule.enabled,
+              conditionMatchType: rule.conditionMatchType,
+              conditions: rule.conditions.map(condition => ({
+                  field: condition.field,
+                  value: condition.value,
+                  operator: condition.operator,
+                  secondaryValue: condition.secondaryValue
+              })),
+              actions: rule.actions.map(action => ({
+                  type: action.type,
+                  tagId: action.tagId,
+                  categoryId: action.categoryId,
+                  accountId: action.accountId ?? null
+              }))
+          }
+        : null;
 
     const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId, defaultValues, onSuccess });
     const { isSubmitting } = form.formState;

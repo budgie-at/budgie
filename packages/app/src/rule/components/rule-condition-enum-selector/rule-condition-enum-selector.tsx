@@ -1,11 +1,16 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
-import { RuleConditionOptionInterface } from '../../interface/rule-condition-option.interface';
 import { RuleFieldValueType } from '../../type/rule-field-value.type';
 import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
+
+type RuleConditionOptionInterface<TValue extends string> = {
+    readonly value: TValue;
+    readonly label: MessageDescriptor;
+};
 
 interface Props<T extends RuleConditionFormFieldEnum> {
     readonly index: number;

@@ -8,7 +8,6 @@ import {
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
@@ -16,10 +15,18 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
-import { UseRuleFormOptionsInterface } from '../interface/use-rule-form-options.interface';
 import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
+
+import type { RuleFormResultType } from '../context/rule-form-modal.context';
+
+type UseRuleFormOptionsInterface = {
+    readonly ruleId?: number;
+    readonly defaultValues?: RuleCreateInputInterface | null;
+    readonly prefillData?: RulePrefillDataInterface | null;
+    readonly onSuccess?: (result: RuleFormResultType) => void;
+};
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     enabled: true,
@@ -71,22 +78,25 @@ const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface): RuleC
     };
 };
 
-// eslint-disable-next-line max-lines-per-function -- Form hook with confirm alert logic and create/update/delete handlers
+const resolveDefaultValues = (
+    providedDefaultValues: RuleCreateInputInterface | null | undefined,
+    prefillData: RulePrefillDataInterface | null | undefined
+): RuleCreateInputInterface => {
+    if (isDefined(providedDefaultValues)) {
+        return providedDefaultValues;
+    }
+    if (isDefined(prefillData)) {
+        return buildRuleInputFromPrefill(prefillData);
+    }
+
+    return DEFAULT_VALUES;
+};
+
 export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues, prefillData, onSuccess } = options;
 
-    const defaultValues = useMemo((): RuleCreateInputInterface => {
-        if (isDefined(providedDefaultValues)) {
-            return providedDefaultValues;
-        }
-
-        if (isDefined(prefillData)) {
-            return buildRuleInputFromPrefill(prefillData);
-        }
-
-        return DEFAULT_VALUES;
-    }, [prefillData, providedDefaultValues]);
+    const defaultValues: RuleCreateInputInterface = resolveDefaultValues(providedDefaultValues, prefillData);
     const isEditing = isDefined(ruleId);
 
     const form = useForm<RuleCreateInputInterface>({
