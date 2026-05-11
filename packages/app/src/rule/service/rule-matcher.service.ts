@@ -1,27 +1,47 @@
-/* eslint-disable max-lines -- Service with multiple matching strategies (SQL, fallback, legacy) */
+/* eslint-disable max-lines -- Service with multiple matching strategies (SQL, fallback, legacy); absorbs SQL where-builder chain per CLAUDE.md rule 51 */
 import {
+    MccCategoryEntityTable,
+    RuleConditionCreateInputInterface,
+    RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
+    RuleConditionOperatorEnum,
     TransactionAssociationEnum,
+    TransactionEntityTable,
     TransactionEntryAssociationEnum,
+    TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { SQL, and, or, sql } from 'drizzle-orm';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
-import { buildRuleConditionsWhere } from '../util/build-rule-conditions-where.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
-import type { CountConditionsParamsInterface } from '../interface/count-conditions-params.interface';
-import type { FindMatchingTransactionsResultInterface } from '../interface/find-matching-transactions-result.interface';
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { RuleWithRelationsEntityInterface, TransactionWithEntriesMccCategoryEntityInterface } from '@budgie/contracts';
+import type { Column } from 'drizzle-orm';
+
+type BuildRuleConditionsWhereResultType = {
+    readonly sqlWhere: SQL | null;
+    readonly fallbackConditions: RuleConditionInputInterface[];
+};
+
+type CountConditionsParamsType = {
+    readonly conditions: RuleConditionCreateInputInterface[];
+    readonly conditionMatchType: RuleConditionMatchTypeEnum;
+};
+
+type FindMatchingTransactionsResultType = {
+    readonly transactions: TransactionWithEntriesMccCategoryEntityInterface[];
+    readonly count: number;
+};
 
 class RuleMatcherService {
     @Log(
@@ -30,14 +50,14 @@ class RuleMatcherService {
         (error, params) =>
             `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
     )
-    async countMatchingTransactions(params: CountConditionsParamsInterface): Promise<number> {
+    async countMatchingTransactions(params: CountConditionsParamsType): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
             return 0;
         }
 
-        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
             return transactionRuleRepository.countByRuleConditions(sqlWhere);
@@ -59,18 +79,15 @@ class RuleMatcherService {
             `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
     )
     // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
-    async findMatchingTransactions(
-        params: CountConditionsParamsInterface,
-        limit: number
-    ): Promise<FindMatchingTransactionsResultInterface> {
+    async findMatchingTransactions(params: CountConditionsParamsType, limit: number): Promise<FindMatchingTransactionsResultType> {
         const { conditions, conditionMatchType } = params;
-        const emptyResult: FindMatchingTransactionsResultInterface = { transactions: [], count: 0 };
+        const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
 
         if (!isNotEmptyArray(conditions)) {
             return emptyResult;
         }
 
-        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
             const allIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
@@ -104,7 +121,7 @@ class RuleMatcherService {
             return [];
         }
 
-        const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
             return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
@@ -130,6 +147,106 @@ class RuleMatcherService {
         }
 
         return this.evaluateConditions(rule.conditions, rule.conditionMatchType, input);
+    }
+
+    private buildRuleConditionsWhere(
+        conditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ): BuildRuleConditionsWhereResultType {
+        const sqlConditions: SQL[] = [];
+        const fallbackConditions: RuleConditionInputInterface[] = [];
+
+        for (const condition of conditions) {
+            const sqlClause = this.buildRuleConditionSql(condition);
+
+            if (isDefined(sqlClause)) {
+                sqlConditions.push(sqlClause);
+            } else {
+                fallbackConditions.push(condition);
+            }
+        }
+
+        const combiner = conditionMatchType === RuleConditionMatchTypeEnum.ALL ? and : or;
+        const sqlWhere = isNotEmptyArray(sqlConditions) ? (combiner(...sqlConditions) ?? null) : null;
+
+        return { sqlWhere, fallbackConditions };
+    }
+
+    private buildRuleConditionSql(condition: RuleConditionInputInterface): SQL | null {
+        const column = this.getColumnForField(condition.field);
+
+        if (!isDefined(column)) {
+            return null;
+        }
+
+        return this.buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
+    }
+
+    private getColumnForField(field: RuleConditionFieldEnum): Column | SQL | null {
+        switch (field) {
+            case RuleConditionFieldEnum.TITLE:
+                return TransactionEntityTable.title;
+            case RuleConditionFieldEnum.COMMENT:
+                return TransactionEntityTable.comment;
+            case RuleConditionFieldEnum.TRANSACTION_TYPE:
+                return TransactionEntityTable.type;
+            case RuleConditionFieldEnum.EXTERNAL_SOURCE:
+                return TransactionEntityTable.externalSource;
+            case RuleConditionFieldEnum.ACCOUNT_ID:
+                return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
+            case RuleConditionFieldEnum.MCC_CODE:
+                return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
+            case RuleConditionFieldEnum.AMOUNT:
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    private buildOperatorSql(
+        column: Column | SQL,
+        operator: RuleConditionOperatorEnum,
+        value: string,
+        secondaryValue: string | null
+    ): SQL | null {
+        switch (operator) {
+            case RuleConditionOperatorEnum.CONTAINS:
+                return sql`CAST(${column} AS TEXT) LIKE ${`%${this.escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+            case RuleConditionOperatorEnum.NOT_CONTAINS:
+                return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${this.escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+            case RuleConditionOperatorEnum.EQUALS:
+                return sql`CAST(${column} AS TEXT) COLLATE NOCASE = ${value}`;
+            case RuleConditionOperatorEnum.NOT_EQUALS:
+                return sql`CAST(${column} AS TEXT) COLLATE NOCASE != ${value}`;
+            case RuleConditionOperatorEnum.GREATER_THAN:
+                return sql`${column} > ${Number(value)}`;
+            case RuleConditionOperatorEnum.LESS_THAN:
+                return sql`${column} < ${Number(value)}`;
+            case RuleConditionOperatorEnum.BETWEEN: {
+                if (!isNotEmptyString(secondaryValue)) {
+                    return null;
+                }
+
+                const gteClause = sql`${column} >= ${Number(value)}`;
+                const lteClause = sql`${column} <= ${Number(secondaryValue)}`;
+
+                return and(gteClause, lteClause) ?? null;
+            }
+            case RuleConditionOperatorEnum.IN: {
+                const inValues = value.split(',').map(item => item.trim());
+                const placeholders = inValues.map(item => sql`${item}`);
+
+                return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
+            }
+            case RuleConditionOperatorEnum.MATCHES_REGEX:
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    private escapeSqlLikeValue(value: string): string {
+        return value.replace(/\\/gu, '\\\\').replace(/%/gu, '\\%').replace(/_/gu, '\\_');
     }
 
     private convertTransactionForRuleEvaluation(
@@ -208,7 +325,7 @@ class RuleMatcherService {
         return matchingIds;
     }
 
-    private async countMatchingTransactionsLegacy(params: CountConditionsParamsInterface): Promise<number> {
+    private async countMatchingTransactionsLegacy(params: CountConditionsParamsType): Promise<number> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
@@ -229,9 +346,9 @@ class RuleMatcherService {
     }
 
     private async findMatchingTransactionsLegacy(
-        params: CountConditionsParamsInterface,
+        params: CountConditionsParamsType,
         limit: number
-    ): Promise<FindMatchingTransactionsResultInterface> {
+    ): Promise<FindMatchingTransactionsResultType> {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
