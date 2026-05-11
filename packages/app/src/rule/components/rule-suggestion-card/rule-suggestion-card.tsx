@@ -1,19 +1,76 @@
-import { RuleCreateInputInterface } from '@budgie/contracts';
+import {
+    RuleActionTypeEnum,
+    RuleConditionMatchTypeEnum,
+    RuleCreateInputInterface,
+    RuleWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Alert } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
+import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { ruleEngineService } from '../../service/rule-engine.service';
 import { ruleService } from '../../service/rule.service';
-import { buildRuleCreateInput } from '../../util/build-rule-create-input.util';
-import { findDuplicateRule } from '../../util/find-duplicate-rule.util';
+import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
+
+const serializeCondition = (condition: RuleConditionInputInterface): string =>
+    `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
+
+const areConditionsEqual = (inputConditions: RuleConditionInputInterface[], existingConditions: RuleConditionInputInterface[]): boolean => {
+    if (inputConditions.length !== existingConditions.length) {
+        return false;
+    }
+
+    const inputKeys = inputConditions.map(serializeCondition).sort();
+    const existingKeys = existingConditions.map(serializeCondition).sort();
+
+    return inputKeys.every((key, index) => key === existingKeys[index]);
+};
+
+const findDuplicateRule = (
+    conditions: RuleConditionInputInterface[],
+    conditionMatchType: RuleConditionMatchTypeEnum,
+    existingRules: RuleWithRelationsEntityInterface[]
+): RuleWithRelationsEntityInterface | undefined =>
+    existingRules.find(
+        rule =>
+            rule.conditionMatchType === conditionMatchType &&
+            isNotEmptyArray(rule.conditions) &&
+            areConditionsEqual(conditions, rule.conditions)
+    );
+
+const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
+    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
+
+    if (!isDefined(condition)) {
+        return null;
+    }
+
+    const categoryAction = isDefined(suggestRuleData.categoryId)
+        ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: suggestRuleData.categoryId, tagId: null, accountId: null }]
+        : [];
+
+    const tagActions = suggestRuleData.tagIds.map(tagId => ({
+        type: RuleActionTypeEnum.ADD_TAG as const,
+        categoryId: null,
+        tagId,
+        accountId: null
+    }));
+
+    return {
+        enabled: true,
+        conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+        conditions: [condition],
+        actions: [...categoryAction, ...tagActions]
+    };
+};
 
 import { RuleSuggestionCardSelector } from './rule-suggestion-card.selector';
 
