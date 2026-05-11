@@ -84,7 +84,7 @@ class RuleEngineService {
         await this.waitForNextBatch();
 
         const batchIds = transactionIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
-        await Promise.allSettled(
+        await Promise.all(
             batchIds.map((transactionId, offset) =>
                 this.applyRulesToTransaction(transactionId, evaluationInputs[batchStart + offset], rules)
             )
