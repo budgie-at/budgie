@@ -92,6 +92,24 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Transfer'
 
+- assertVisible:
+    id: 'TransferForm.SelectedFromAccount.E2E Txn Account'
+- assertVisible:
+    id: 'TransferForm.SelectedToAccount.E2E Transfer Account'
+- tapOn:
+    id: 'TransferForm.SwapAccounts'
+- assertVisible:
+    id: 'TransferForm.SelectedFromAccount.E2E Transfer Account'
+- assertVisible:
+    id: 'TransferForm.SelectedToAccount.E2E Txn Account'
+
+- longPressOn:
+    id: 'TransactionKeypad.Backspace'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
+
 - runFlow:
     file: subflows/transactions/edit-comment.flow.yaml
     env:
@@ -103,6 +121,24 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionCard.Label.E2E_Edited_Transfer'
     timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.FromAccount.E2E_Transfer_Account'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.E2E_Txn_Account'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.TotalBalance'
+- assertVisible:
+    id: 'HomePage.NetWorthValue.200'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.125'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Transfer_Account.75'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 # --- Delete Transfer ---
 
