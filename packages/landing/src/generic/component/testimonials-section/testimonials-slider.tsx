@@ -10,45 +10,45 @@ export const TestimonialsSlider = () => {
             <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
                 <div className="flex gap-6 snap-x snap-mandatory">
                     <TestimonialCard
-                        author={t`Sarah Chen`}
-                        quote={t`I was spending $400/month on "small purchases" without realizing it. Budgie showed me the truth in the first week. Now I save $300+ every month.`}
+                        author={t`Beta tester, Kyiv`}
+                        quote={t`I was spending way more on "small purchases" without realizing it. Budgie showed me the truth in the first week. The breakdown by category was eye-opening.`}
                         rating={5}
-                        role={t`Saved $3,600/year`}
+                        role={t`Software engineer`}
                     />
 
                     <TestimonialCard
-                        author={t`Marcus Rodriguez`}
-                        quote={t`Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went.`}
+                        author={t`Beta tester, Berlin`}
+                        quote={t`Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth instead of wondering where money went.`}
                         rating={5}
-                        role={t`Tracks $50K+ across 8 accounts`}
+                        role={t`Freelance designer`}
                     />
 
                     <TestimonialCard
-                        author={t`Emily Johnson`}
-                        quote={t`The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day.`}
+                        author={t`Beta tester, Vienna`}
+                        quote={t`The debt tracking feature kept me motivated. Watching the progress bar fill up every month made repayment feel achievable.`}
                         rating={5}
-                        role={t`Paid off $12K in debt`}
+                        role={t`Graduate student`}
                     />
 
                     <TestimonialCard
-                        author={t`David Park`}
-                        quote={t`I cancelled 5 subscriptions I forgot about in the first day. That's $85/month I was literally throwing away. Budgie paid for itself instantly.`}
+                        author={t`Beta tester, Lviv`}
+                        quote={t`I found recurring subscriptions I had completely forgotten about. Cancelled them straight away — those small amounts really add up.`}
                         rating={5}
-                        role={t`Found $1,020/year in wasted subscriptions`}
+                        role={t`Product manager`}
                     />
 
                     <TestimonialCard
-                        author={t`Lisa Thompson`}
-                        quote={t`As a freelancer with income in 3 currencies, Budgie is the only app that handles it properly. I can finally see my real financial picture.`}
+                        author={t`Beta tester, Amsterdam`}
+                        quote={t`As a freelancer earning in multiple currencies, Budgie handles it properly. I can finally see my real financial picture without spreadsheet gymnastics.`}
                         rating={5}
-                        role={t`Manages USD, EUR & GBP`}
+                        role={t`Independent consultant`}
                     />
 
                     <TestimonialCard
-                        author={t`James Wilson`}
-                        quote={t`The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be.`}
+                        author={t`Beta tester, San Francisco`}
+                        quote={t`The privacy aspect sold me. My financial data stays on my phone. No company is mining my spending habits. That's how it should be.`}
                         rating={5}
-                        role={t`Privacy advocate`}
+                        role={t`Security researcher`}
                     />
                 </div>
             </div>

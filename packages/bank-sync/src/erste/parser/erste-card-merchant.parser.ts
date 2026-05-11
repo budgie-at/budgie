@@ -1,6 +1,4 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ERSTE_ISO_NUMERIC_TO_ALPHA2 } from '../constant/erste-iso-numeric-country.constant';
 
@@ -14,12 +12,6 @@ class ErsteCardMerchantParser {
     private static readonly CITY_TOKEN_REGEX = /^[A-Za-zÄÖÜßäöü.-]+$/u;
     private static readonly MAX_POSTAL_TOKENS = 3;
 
-    @Log(
-        line => `enter line="${line}"`,
-        (result, line) =>
-            `done line="${line}" merchant=${result?.merchant ?? 'null'} city=${result?.city ?? 'null'} countryAlpha2=${result?.countryAlpha2 ?? 'null'}`,
-        (error, line) => `throw line="${line}" error=${getErrorMessage(error)}`
-    )
     parse(line: string): ErsteCardMerchantInterface | null {
         const tokens = line.trim().split(/\s+/u);
         const countryNumeric = tokens.at(-1);
@@ -30,7 +22,7 @@ class ErsteCardMerchantParser {
 
         const cityStartIndex = this.findCityStartIndex(tokens);
 
-        if (cityStartIndex === null) {
+        if (!isDefined(cityStartIndex)) {
             return null;
         }
 

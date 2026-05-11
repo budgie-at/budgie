@@ -104,7 +104,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const applyRuleToExisting = async (targetRuleId: number, shouldApply: boolean) => {
         if (shouldApply) {
-            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId);
+            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId, null);
             showApplyResultToast(result.applied, result.failed);
         }
     };

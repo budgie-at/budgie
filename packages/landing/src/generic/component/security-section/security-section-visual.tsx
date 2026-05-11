@@ -38,7 +38,7 @@ export const SecuritySectionVisual = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <SecuritySectionBadge icon={<Lock className="size-5 text-green-500" />} label={t`End-to-End Encrypted`} />
+                        <SecuritySectionBadge icon={<Lock className="size-5 text-green-500" />} label={t`AES-256 Encrypted`} />
                         <SecuritySectionBadge icon={<Eye className="size-5 text-green-500" />} label={t`Zero Tracking`} />
                         <SecuritySectionBadge icon={<Smartphone className="size-5 text-green-500" />} label={t`Device-Only Storage`} />
                         <SecuritySectionBadge icon={<Shield className="size-5 text-green-500" />} label={t`No Data Mining`} />

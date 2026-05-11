@@ -13,11 +13,15 @@ const contentAnimate = { opacity: 1, x: 0 };
 const contentTransition = { duration: 0.5 };
 const viewportOnce = { once: true };
 
-export const OpenSourceContent = () => (
+interface Props {
+    readonly locale: string;
+}
+
+export const OpenSourceContent = ({ locale }: Props) => (
     <Motion initial={contentInitial} transition={contentTransition} viewport={viewportOnce} whileInView={contentAnimate}>
         <Badge className="rounded-full px-4 py-1.5 text-sm font-medium mb-6" variant="secondary">
             <Code2 className="size-3 mr-1" />
-            <Trans>Open Source</Trans>
+            <Trans>Public Source</Trans>
         </Badge>
 
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">
@@ -26,8 +30,8 @@ export const OpenSourceContent = () => (
 
         <p className="text-muted-foreground md:text-lg mb-8">
             <Trans>
-                Unlike closed-source apps, you don&apos;t have to trust our word. Every line of code is public on GitHub. Security
-                researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it.
+                Unlike closed-source apps, you don&apos;t have to trust our word. The source code is public on GitHub. Security researchers,
+                developers, and anyone can audit exactly how we handle your data—spoiler: we never see it.
             </Trans>
         </p>
 
@@ -65,6 +69,12 @@ export const OpenSourceContent = () => (
                 <Link href="https://github.com/sponsors/nickolay-ponomarev" rel="noopener noreferrer" target="_blank">
                     <Heart className="mr-2 size-5" />
                     <Trans>Sponsor Project</Trans>
+                </Link>
+            </Button>
+
+            <Button asChild className="rounded-full" size="lg" variant="outline">
+                <Link href={`/${locale}/open-source`}>
+                    <Trans>Learn More</Trans>
                 </Link>
             </Button>
         </div>

@@ -35,6 +35,7 @@ vi.mock('@app/@generic/drizzle/db/db', async () => {
         merchantEmbeddingRepository: new contracts.MerchantEmbeddingRepository(testDb as never),
         commentEmbeddingRepository: new contracts.CommentEmbeddingRepository(testDb as never),
         transferPairRepository: new contracts.TransferPairRepository(testDb as never),
+        refundPairRepository: new contracts.RefundPairRepository(testDb as never),
         expoDb: undefined,
         __REMOVE_ME_RESET_DB: async () => undefined
     };

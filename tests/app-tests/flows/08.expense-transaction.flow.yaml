@@ -24,8 +24,10 @@ appId: ${APP_ID}
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Expense'
 
-- tapOn: '4'
-- tapOn: '2'
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
 
 - runFlow:
     file: subflows/transactions/select-account.flow.yaml
@@ -37,18 +39,35 @@ appId: ${APP_ID}
     env:
       CATEGORY_NAME: 'E2E Txn Category'
 
-- runFlow:
-    file: subflows/tags/create-tag-from-transaction.flow.yaml
-    env:
-      TAG_NAME: 'E2E Txn Tag'
-
-- runFlow:
-    file: subflows/tags/create-tag-from-transaction.flow.yaml
-    env:
-      TAG_NAME: 'E2E Txn Primary Tag'
-
 - tapOn:
     id: 'TransactionForm.TagsSelector'
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- inputText: 'E2E Txn Tag'
+- tapOn:
+    id: 'TagPickerBottomSheet.CreateButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TagForm.Input'
+- tapOn:
+    id: 'TagForm.Submit'
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- eraseText: 80
+- inputText: 'E2E Txn Primary Tag'
+- tapOn:
+    id: 'TagPickerBottomSheet.CreateButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TagForm.Input'
+- tapOn:
+    id: 'TagForm.Submit'
 - extendedWaitUntil:
     visible:
       id: 'TagPickerBottomSheet.Input'
@@ -89,6 +108,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'HomePage.NetWorthValue.58'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.58'
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
@@ -96,6 +117,15 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Test_Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Backspace'
+- tapOn:
+    id: 'TransactionKeypad.Backspace'
+- tapOn:
+    id: 'TransactionKeypad.Digit.3'
+- tapOn:
+    id: 'TransactionKeypad.Digit.3'
 
 - runFlow:
     file: subflows/categories/create-category-from-transaction.flow.yaml
@@ -124,6 +154,16 @@ appId: ${APP_ID}
     id: 'TransactionCard.Account.E2E_Txn_Account'
 - assertNotVisible:
     id: 'TransactionCard.Label.E2E_Test_Expense'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.67'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.67'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
 # --- Delete Expense ---
 

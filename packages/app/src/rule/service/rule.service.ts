@@ -10,14 +10,14 @@ import type { DB, RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInput
 class RuleService {
     @Log(
         (id, enabled) => `enter id=${id} enabled=${enabled}`,
-        'done',
+        (_result, id, enabled) => `done id=${id} enabled=${enabled}`,
         (error, id, enabled) => `throw id=${id} enabled=${enabled} error=${getErrorMessage(error)}`
     )
     async toggleEnabled(id: number, enabled: boolean): Promise<void> {
         await ruleRepository.updateById(id, { enabled });
     }
 
-    @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
+    @Log(id => `enter id=${id}`, (_result, id) => `done id=${id}`, (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
     async archiveById(id: number): Promise<void> {
         await ruleRepository.archiveById(id);
     }
@@ -25,7 +25,8 @@ class RuleService {
     @Log(
         input =>
             `enter conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length}`,
-        result => `done id=${result.id}`,
+        (result, input) =>
+            `done conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length} id=${result.id}`,
         (error, input) =>
             `throw conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length} error=${getErrorMessage(error)}`
     )
@@ -60,8 +61,10 @@ class RuleService {
     @Log(
         (id, input) =>
             `enter id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'}`,
-        (result, id) => `done id=${id} updatedId=${result.id}`,
-        (error, id) => `throw id=${id} error=${getErrorMessage(error)}`
+        (result, id, input) =>
+            `done id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'} updatedId=${result.id}`,
+        (error, id, input) =>
+            `throw id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'} error=${getErrorMessage(error)}`
     )
     async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {
         return transactionAsync(db, async tx => {

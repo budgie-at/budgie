@@ -7,6 +7,8 @@ import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
+import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -54,7 +56,7 @@ export class AccountBalanceRepository {
             .where(
                 and(
                     isNull(TransactionEntryEntityTable.deletedAt),
-                    isNull(TransactionEntryEntityTable.originalTransactionId),
+                    this.getBalanceLedgerEntryConditionSql(),
                     inArray(TransactionEntryEntityTable.accountId, accountIds),
                     sql`(
                         NOT EXISTS (
@@ -91,7 +93,7 @@ export class AccountBalanceRepository {
                 FROM ${TransactionEntryEntityTable}
                 WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
                   AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-                  AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL
+                  AND ${this.getBalanceLedgerEntryConditionSql()}
             ), 0)`;
 
         return this.db
@@ -212,7 +214,7 @@ export class AccountBalanceRepository {
             FROM ${TransactionEntryEntityTable}
             WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference}
               AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-              AND ${TransactionEntryEntityTable.originalTransactionId} IS NULL
+              AND ${this.getBalanceLedgerEntryConditionSql()}
               AND (
                   (${lastBalanceUpdatedAtSql}) IS NULL
                   OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql})
@@ -233,6 +235,21 @@ export class AccountBalanceRepository {
                    ELSE 0
                    END
                )
+        `;
+    }
+
+    private getBalanceLedgerEntryConditionSql() {
+        return sql`
+            (
+                ${TransactionEntryEntityTable.originalTransactionId} IS NULL
+                OR EXISTS (
+                    SELECT 1
+                    FROM ${TransactionEntityTable}
+                    WHERE ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
+                      AND ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                      AND ${TransactionEntityTable.deletedAt} IS NULL
+                )
+            )
         `;
     }
 }

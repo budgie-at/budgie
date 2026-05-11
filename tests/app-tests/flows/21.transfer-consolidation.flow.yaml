@@ -6,6 +6,7 @@ appId: ${APP_ID}
     file: subflows/import/import-database-from-settings.flow.yaml
     env:
       FIXTURE_ROW_ID_MATCH: '21.db(, db)?'
+      FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOUBLE_DOWN'
 - extendedWaitUntil:
     visible:
       id: 'HomePage.TotalBalance'

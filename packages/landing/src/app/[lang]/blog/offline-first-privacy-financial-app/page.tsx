@@ -72,8 +72,10 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
         <main className="flex-1">
             <BlogPostingJsonLd
                 author={AUTHOR}
+                blogLabel={t(i18n)`Blog`}
                 date={DATE}
                 description={t(i18n)`Discover why offline-first architecture is the only truly private approach for financial apps.`}
+                homeLabel={t(i18n)`Home`}
                 image={IMAGE}
                 keywords={t(i18n)`offline-first privacy, financial app security, private budget app`}
                 locale={lang}

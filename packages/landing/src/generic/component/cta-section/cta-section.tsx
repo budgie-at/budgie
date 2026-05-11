@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Check, Clock, TrendingDown } from 'lucide-react';
+import { Check, Lock, WifiOff } from 'lucide-react';
 
 import { Motion } from '../motion/motion';
 import { WaitlistForm } from '../waitlist-form/waitlist-form';
@@ -25,22 +25,14 @@ export const CtaSection = () => (
                 viewport={viewportMotion}
                 whileInView={whileInViewMotion}
             >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm">
-                    <TrendingDown className="size-4" />
-
-                    <span className="text-sm font-medium">
-                        <Trans>Average user saves $347/month</Trans>
-                    </span>
-                </div>
-
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight max-w-3xl">
-                    <Trans>Every Day You Wait Is Another $15 Gone</Trans>
+                    <Trans>Take Control of Your Finances — Without Giving Up Your Privacy</Trans>
                 </h2>
 
                 <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
                     <Trans>
-                        Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that
-                        actually respects your privacy.
+                        Currently in private beta — join the waitlist for early access to the only budget app that keeps your financial data
+                        entirely on your device.
                     </Trans>
                 </p>
 
@@ -58,7 +50,7 @@ export const CtaSection = () => (
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Check className="size-4" />
+                        <WifiOff className="size-4" />
 
                         <span>
                             <Trans>Offline-first architecture</Trans>
@@ -66,10 +58,10 @@ export const CtaSection = () => (
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Clock className="size-4" />
+                        <Lock className="size-4" />
 
                         <span>
-                            <Trans>Launching Q1 2026</Trans>
+                            <Trans>AES-256 encrypted on-device storage</Trans>
                         </span>
                     </div>
                 </div>

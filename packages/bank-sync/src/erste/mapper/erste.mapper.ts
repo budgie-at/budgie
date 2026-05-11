@@ -1,4 +1,5 @@
 import { Log } from '@budgie/logger';
+import { getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
@@ -13,7 +14,6 @@ import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 class ErsteMapper {
-    private static readonly MILLISECONDS_TO_SECONDS_DIVISOR = 1000;
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- FNV-1a 32-bit constants from RFC
     private static readonly FNV_OFFSET_BASIS = 0x811c9dc5;
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- FNV-1a 32-bit constants from RFC
@@ -48,7 +48,7 @@ class ErsteMapper {
             provider: BankProviderEnum.ERSTE,
             accountId: iban,
             type: row.isCredit ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE,
-            time: Math.floor(row.date.getTime() / ErsteMapper.MILLISECONDS_TO_SECONDS_DIVISOR),
+            time: getUnixTime(row.date),
             description: row.description,
             comment: this.buildComment(row),
             mcc: 0,

@@ -1,5 +1,5 @@
-import { infer } from 'zod';
-
 import { RuleUpdateInputSchema } from '../schema/rule-update-input.schema';
 
-export interface RuleUpdateInputInterface extends infer<typeof RuleUpdateInputSchema> {}
+import type { z } from 'zod';
+
+export type RuleUpdateInputInterface = z.infer<typeof RuleUpdateInputSchema>;

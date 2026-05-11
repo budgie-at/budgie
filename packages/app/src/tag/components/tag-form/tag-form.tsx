@@ -113,20 +113,43 @@ export const TagForm = (props: Props) => {
         }
     };
 
-    const handleFormSubmit = handleSubmit(async (values: TagCreateEntityInterface) => {
+    const saveTagTranslation = async (tagId: number): Promise<void> => {
+        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+
+        if (hasTranslationData) {
+            await tagRepository.updateTranslation(tagId, titleEn, titleTags);
+        } else {
+            await tagRepository.clearTranslation(tagId);
+        }
+    };
+
+    const handleEditSubmit = async (tagId: number, values: TagCreateEntityInterface): Promise<void> => {
+        const updatedTag = await tagRepository.updateById(tagId, values);
+        await saveTagTranslation(tagId);
+
+        const savedTags = await tagRepository.findByIds([tagId]);
+        const savedTag = savedTags.at(0) ?? updatedTag;
+
+        onSuccess({ tag: savedTag, action: 'updated' });
+    };
+
+    const handleCreateSubmit = async (values: TagCreateEntityInterface): Promise<void> => {
+        const savedTag = await tagRepository.create(values);
+        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
+
+        if (hasTranslationData) {
+            await tagRepository.updateTranslation(savedTag.id, titleEn, titleTags);
+        }
+
+        onSuccess({ tag: savedTag, action: 'created' });
+    };
+
+    const handleFormSubmit = handleSubmit(async values => {
         try {
-            if (isEditing) {
-                const savedTag = await tagRepository.updateById(tag.id, { ...values, titleEn, titleTags });
-                onSuccess({ tag: savedTag, action: 'updated' });
+            if (isDefined(tag)) {
+                await handleEditSubmit(tag.id, values);
             } else {
-                const savedTag = await tagRepository.create(values);
-                const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
-
-                if (hasTranslationData) {
-                    await tagRepository.updateTranslation(savedTag.id, titleEn, titleTags);
-                }
-
-                onSuccess({ tag: savedTag, action: 'created' });
+                await handleCreateSubmit(values);
             }
         } catch {
             const errorMessage = isEditing ? t`Could not save tag` : t`Could not create tag`;

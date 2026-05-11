@@ -14,6 +14,8 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
+import { TagStatisticsCardSelector } from './tag-statistics-card.selector';
+
 interface Props {
     readonly tag: Pick<TagEntityInterface, 'title'> & { id: TagEntityInterface['id'] | null };
     readonly amount: number;
@@ -30,6 +32,8 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
+    const cardTestID = TagStatisticsCardSelector.Card(tag.title);
+    const amountTestID = TagStatisticsCardSelector.Amount(tag.title, amount);
     /* jscpd:ignore-end */
 
     /* jscpd:ignore-start */
@@ -47,10 +51,12 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
     };
 
     return (
-        <HapticPressable onPress={handlePress} className="gap-y-md">
+        <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
             <View className="flex-row items-center gap-x-md">
                 <Text className="mr-auto text-primary text-xs">{tag.title}</Text>
-                <Text className={statsAmountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
+                <Text className={statsAmountVariants({ variant })} testID={amountTestID}>
+                    {formatDigits(microAmount, defaultInstrument.symbol)}
+                </Text>
             </View>
 
             <StatsBar percentage={percentage} variant={variant} />

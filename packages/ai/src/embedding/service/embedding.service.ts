@@ -7,8 +7,8 @@ import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interf
 
 export class EmbeddingService {
     private static inferenceQueue: Promise<void> = Promise.resolve();
-    private static embeddingCache = new Map<string, Promise<Float32Array | null>>();
-    private static EMBEDDING_CACHE_LIMIT = 50;
+    private static readonly embeddingCache = new Map<string, Promise<Float32Array | null>>();
+    private static readonly EMBEDDING_CACHE_LIMIT = 50;
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
@@ -20,7 +20,7 @@ export class EmbeddingService {
     async generateEmbedding(text: string): Promise<Float32Array | null> {
         const cached = EmbeddingService.embeddingCache.get(text);
         if (isDefined(cached)) {
-            return this.returnCachedEmbedding(text, cached);
+            return cached;
         }
 
         return this.enqueueEmbedding(text);
@@ -38,18 +38,6 @@ export class EmbeddingService {
     @Log('enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
         return this.embedding.isReady;
-    }
-
-    @Log(
-        (text, cached) => `enter text="${text}" hasCached=${String(isDefined(cached))}`,
-        (result, text, cached) =>
-            `done text="${text}" hasCached=${String(isDefined(cached))} dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text, cached) => `throw text="${text}" hasCached=${String(isDefined(cached))} error=${getErrorMessage(error)}`
-    )
-    private async returnCachedEmbedding(text: string, cached: Promise<Float32Array | null>): Promise<Float32Array | null> {
-        void text;
-
-        return cached;
     }
 
     private async enqueueEmbedding(text: string): Promise<Float32Array | null> {

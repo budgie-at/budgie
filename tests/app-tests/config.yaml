@@ -25,8 +25,11 @@ executionOrder:
         - 19.csv-import-export.flow
         - 20.recurring-calendar.flow
         - 21.transfer-consolidation.flow
-        - 22.rules-crud.flow
-        - 23.rules-application.flow
+        - 22.refund-consolidation.flow
+        - 23.privatbank-xlsx-import.flow
+        - 24.split-transaction-and-analytics.flow
+        - 25.rules-crud.flow
+        - 26.rules-application.flow
 
 platform:
     ios:

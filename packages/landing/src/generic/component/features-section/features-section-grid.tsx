@@ -1,146 +1,129 @@
-'use client';
-
-import { useLingui } from '@lingui/react/macro';
-import {
-    Banknote,
-    BarChart3,
-    Bitcoin,
-    CreditCard,
-    Layers,
-    PiggyBank,
-    Shield,
-    Tag,
-    Target,
-    TrendingUp,
-    Wallet,
-    WifiOff
-} from 'lucide-react';
+import { msg } from '@lingui/core/macro';
+import { Banknote, BarChart3, Bitcoin, Calendar, Layers, Mic, Sparkles, Tag, Target, TrendingUp, Wallet, WifiOff } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 
+import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { FeaturesSectionItem } from '../features-section-item/features-section-item';
-import { Motion } from '../motion/motion';
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-};
+import { FeaturesSectionGridMotion } from './features-section-grid-motion';
 
-const viewportOnce = { once: true };
+interface Props {
+    readonly locale: string;
+}
 
-// eslint-disable-next-line max-lines-per-function -- Grid component requires many lines for 12 explicit feature card instances
-export const FeaturesSectionGrid = () => {
-    const { t } = useLingui();
-    const { lang } = useParams<{ lang: string }>();
+// eslint-disable-next-line max-lines-per-function -- 12-card grid component requires many lines
+export const FeaturesSectionGrid = ({ locale }: Props) => {
+    const i18n = getI18nInstance(locale);
 
     return (
-        <Motion
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            initial="hidden"
-            variants={containerVariants}
-            viewport={viewportOnce}
-            whileInView="show"
-        >
-            <Link href={`/${lang}/features/spending-analytics`}>
+        <FeaturesSectionGridMotion>
+            <Link href={`/${locale}/features/spending-analytics`}>
                 <FeaturesSectionItem
-                    description={t`See where every dollar goes. Our category breakdown shows you exactly what's eating your budget.`}
+                    description={i18n._(
+                        msg`See where every dollar goes. Drillable category and tag breakdowns find what's eating your budget.`
+                    )}
                     icon={<BarChart3 className="size-5" />}
-                    title={t`Spending Insights`}
+                    title={i18n._(msg`Spending Insights`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/monobank-sync`}>
+            <Link href={`/${locale}/features/monobank-sync`}>
                 <FeaturesSectionItem
-                    description={t`Connect your bank accounts and import transactions automatically. No manual entry needed.`}
+                    description={i18n._(
+                        msg`Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank. No aggregator in the middle.`
+                    )}
                     icon={<Banknote className="size-5" />}
-                    title={t`Bank Sync`}
+                    title={i18n._(msg`Bank Sync`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/crypto-investment-tracking`}>
+            <Link href={`/${locale}/features/ai-auto-categorization`}>
                 <FeaturesSectionItem
-                    description={t`Track Bitcoin, Ethereum, and all your crypto holdings alongside traditional accounts.`}
-                    icon={<Bitcoin className="size-5" />}
-                    title={t`Crypto Tracking`}
+                    description={i18n._(msg`A 1.7B-parameter LLM and 768-dim embedding model categorize every transaction on your phone.`)}
+                    icon={<Sparkles className="size-5" />}
+                    title={i18n._(msg`AI Auto-Categorize`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/crypto-investment-tracking`}>
+            <Link href={`/${locale}/features/voice-transaction-entry`}>
                 <FeaturesSectionItem
-                    description={t`Monitor stocks, ETFs, and investment accounts. See your complete net worth in one view.`}
+                    description={i18n._(
+                        msg`Speak it. Budgie logs it. Whisper.rn transcribes on-device — your voice never streams to a server.`
+                    )}
+                    icon={<Mic className="size-5" />}
+                    title={i18n._(msg`Voice Entry`)}
+                />
+            </Link>
+
+            <Link href={`/${locale}/features/net-worth-tracker`}>
+                <FeaturesSectionItem
+                    description={i18n._(msg`Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion.`)}
                     icon={<TrendingUp className="size-5" />}
-                    title={t`Investment Portfolio`}
+                    title={i18n._(msg`Net Worth`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features`}>
+            <Link href={`/${locale}/features/crypto-investment-tracking`}>
                 <FeaturesSectionItem
-                    description={t`Set spending goals and track debt payoff. Watch your progress and stay motivated.`}
-                    icon={<Target className="size-5" />}
-                    title={t`Goals & Budgets`}
+                    description={i18n._(msg`Track Bitcoin, Ethereum, stocks, and ETFs alongside cash accounts. Manual or CSV imports.`)}
+                    icon={<Bitcoin className="size-5" />}
+                    title={i18n._(msg`Crypto & Investments`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/transaction-tags`}>
+            <Link href={`/${locale}/features/transaction-tags`}>
                 <FeaturesSectionItem
-                    description={t`Create custom tags and categories. Organize transactions your way for deeper insights.`}
+                    description={i18n._(msg`Custom tags layered on top of categories. Drillable analytics and AI-suggested tags built in.`)}
                     icon={<Tag className="size-5" />}
-                    title={t`Custom Tags`}
+                    title={i18n._(msg`Smart Tags`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/multi-currency`}>
+            <Link href={`/${locale}/features/multi-currency`}>
                 <FeaturesSectionItem
-                    description={t`Track expenses in any currency with real-time exchange rates. Perfect for travelers.`}
+                    description={i18n._(
+                        msg`Track expenses in any currency with daily exchange rates baked in. Built for travelers and remote workers.`
+                    )}
                     icon={<Layers className="size-5" />}
-                    title={t`Multi-Currency`}
+                    title={i18n._(msg`Multi-Currency`)}
                 />
             </Link>
 
-            <Link href={`/${lang}/features/account-management`}>
+            <Link href={`/${locale}/features/account-management`}>
                 <FeaturesSectionItem
-                    description={t`Track all your credit cards in one place. Never miss a payment or overspend again.`}
-                    icon={<CreditCard className="size-5" />}
-                    title={t`Credit Cards`}
-                />
-            </Link>
-
-            <Link href={`/${lang}/features/offline-first-expense-tracker`}>
-                <FeaturesSectionItem
-                    description={t`Your data stays on your device. No cloud, no tracking, no data mining. Ever.`}
-                    icon={<Shield className="size-5" />}
-                    title={t`100% Private`}
-                />
-            </Link>
-
-            <Link href={`/${lang}/features/offline-first-expense-tracker`}>
-                <FeaturesSectionItem
-                    description={t`Works without internet. Add expenses anywhere, sync when you're back online.`}
-                    icon={<WifiOff className="size-5" />}
-                    title={t`Offline-First`}
-                />
-            </Link>
-
-            <Link href={`/${lang}/features/expense-tracking`}>
-                <FeaturesSectionItem
-                    description={t`Track cash spending easily. Perfect for markets, tips, and small purchases.`}
-                    icon={<PiggyBank className="size-5" />}
-                    title={t`Cash Tracking`}
-                />
-            </Link>
-
-            <Link href={`/${lang}/features/account-management`}>
-                <FeaturesSectionItem
-                    description={t`Link multiple savings accounts. Watch your emergency fund and goals grow.`}
+                    description={i18n._(
+                        msg`Cash, savings, bank, crypto, stocks, and debt — all accounts in one private app. No bank login required.`
+                    )}
                     icon={<Wallet className="size-5" />}
-                    title={t`Savings Accounts`}
+                    title={i18n._(msg`All Accounts`)}
                 />
             </Link>
-        </Motion>
+
+            <Link href={`/${locale}/features/offline-first-expense-tracker`}>
+                <FeaturesSectionItem
+                    description={i18n._(msg`Every transaction lives on your device. No cloud account, no sign-up, fully offline-capable.`)}
+                    icon={<WifiOff className="size-5" />}
+                    title={i18n._(msg`Offline-First`)}
+                />
+            </Link>
+
+            <Link href={`/${locale}/features/recurring-payments-calendar`}>
+                <FeaturesSectionItem
+                    description={i18n._(
+                        msg`Auto-detected recurring payments laid out on a monthly calendar so subscriptions stop surprising you.`
+                    )}
+                    icon={<Calendar className="size-5" />}
+                    title={i18n._(msg`Recurring Bills`)}
+                />
+            </Link>
+
+            <Link href={`/${locale}/features/debt-tracking`}>
+                <FeaturesSectionItem
+                    description={i18n._(msg`Track loan balances, watch the principal drop, and stay motivated with progress charts.`)}
+                    icon={<Target className="size-5" />}
+                    title={i18n._(msg`Debt Payoff`)}
+                />
+            </Link>
+        </FeaturesSectionGridMotion>
     );
 };

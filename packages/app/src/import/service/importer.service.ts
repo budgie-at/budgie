@@ -13,6 +13,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { getLogger } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
@@ -29,6 +30,8 @@ import { ImportProgressInterface } from '../interface/import-progress.interface'
 import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import { ImporterRowInterface } from '../interface/importer-row.interface';
 import { NormalizedRowType } from '../type/normalized-row.type';
+
+const logger = getLogger('ImporterService');
 
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
@@ -118,8 +121,7 @@ export class ImporterService {
                 progress.successful += 1;
             } catch (error) {
                 progress.errors += 1;
-                // eslint-disable-next-line no-console
-                console.log(`Error processing row: ${getErrorMessage(error)}`, row);
+                logger.error('row:process-error', { errorMessage: getErrorMessage(error), rowColumns: Object.keys(row).join(',') });
             }
         });
 

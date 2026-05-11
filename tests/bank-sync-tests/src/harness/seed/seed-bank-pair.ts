@@ -51,8 +51,8 @@ const seedBankSide = (
         mccCategoryId: entry.mccCategoryId ?? null,
         originalTransactionId: null
     } satisfies TransactionEntryCreateEntityInterface);
-    
-return inserted;
+
+    return inserted;
 };
 
 const buildSide = (type: BankPairSide) => (transaction: SeedBankPairTransactionInputType, entry: SeedBankPairEntryInputType) =>

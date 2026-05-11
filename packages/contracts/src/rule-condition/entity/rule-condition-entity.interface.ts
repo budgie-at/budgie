@@ -1,4 +1,4 @@
 import type { RuleConditionEntitySchema } from '../schema/rule-condition-entity.schema';
-import type { infer } from 'zod';
+import type { z } from 'zod';
 
-export interface RuleConditionEntityInterface extends infer<typeof RuleConditionEntitySchema> {}
+export type RuleConditionEntityInterface = z.infer<typeof RuleConditionEntitySchema>;

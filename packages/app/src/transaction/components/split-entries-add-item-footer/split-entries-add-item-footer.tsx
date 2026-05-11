@@ -6,6 +6,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 
+import { SplitEntriesAddItemFooterSelector } from './split-entries-add-item-footer.selector';
+
 interface Props {
     readonly canAddEntry: boolean;
     readonly onAddEntry: () => void;
@@ -21,6 +23,7 @@ export const SplitEntriesAddItemFooter = ({ canAddEntry, onAddEntry }: Props) =>
                 <HapticPressable
                     className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
                     onPress={onAddEntry}
+                    testID={SplitEntriesAddItemFooterSelector.AddItemButton}
                 >
                     <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-primary" />
                     <Text className="text-sm font-semibold text-primary">

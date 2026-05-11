@@ -1,0 +1,24 @@
+appId: ${APP_ID}
+env:
+  TAG_NAME: ${TAG_NAME}
+---
+- tapOn:
+    id: 'TransactionForm.TagsSelector'
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Input'
+- tapOn:
+    id: 'TagPickerBottomSheet.Input'
+- inputText: ${TAG_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+    timeout: 15000
+- tapOn:
+    id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
+- tapOn:
+    id: 'tags-selector-modal-done-button'
+- extendedWaitUntil:
+    notVisible:
+      id: 'TagPickerBottomSheet.Input'
+

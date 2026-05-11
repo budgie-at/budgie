@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Cloud, CloudOff, Lock, Sparkles, Zap } from 'lucide-react';
+import { Cloud, CloudOff, Lock, Mic, Sparkles, Zap } from 'lucide-react';
 
 import { AiSectionFeaturesItem } from '../ai-section-features-item/ai-section-features-item';
 
@@ -10,15 +10,21 @@ export const AiSectionFeatures = () => {
         <>
             <div className="space-y-6">
                 <AiSectionFeaturesItem
-                    content={t`Ask "Where did my money go?" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone.`}
+                    content={t`Ask "Where did my money go?" and get instant breakdowns. Qwen3 1.7B (Q4 quantized) runs entirely on your phone — your questions never reach a server.`}
                     icon={<Sparkles className="size-5" />}
                     title={t`Instant Spending Analysis`}
                 />
 
                 <AiSectionFeaturesItem
-                    content={t`Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. No servers see your salary, debts, or spending habits. Ever.`}
+                    content={t`Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. The multilingual nomic-embed-text-v2-moe embedding model handles all 5 supported languages natively.`}
                     icon={<Lock className="size-5" />}
                     title={t`True Privacy, Not Just Promises`}
+                />
+
+                <AiSectionFeaturesItem
+                    content={t`Voice transcription via Whisper Large v3 Turbo (whisper.rn) runs on-device. Works in airplane mode — your voice never streams to a server.`}
+                    icon={<Mic className="size-5" />}
+                    title={t`On-Device Voice Transcription`}
                 />
 
                 <AiSectionFeaturesItem
