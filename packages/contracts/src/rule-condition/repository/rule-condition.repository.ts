@@ -5,7 +5,7 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { RuleConditionCreateEntityInterface } from '../entity/rule-condition-create-entity.interface';
 import { RuleConditionEntityTable } from '../table/rule-condition-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
+import type { TX } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { RuleConditionEntityInterface } from '../entity/rule-condition-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
@@ -19,13 +19,13 @@ export class RuleConditionRepository {
         });
     }
 
-    async create(input: RuleConditionCreateEntityInterface, tx?: DB): Promise<RuleConditionEntityInterface> {
+    async create(input: RuleConditionCreateEntityInterface, tx?: TX): Promise<RuleConditionEntityInterface> {
         const [condition] = await (tx ?? this.db).insert(RuleConditionEntityTable).values([input]).returning();
 
         return condition;
     }
 
-    async bulkCreate(inputs: RuleConditionCreateEntityInterface[], tx?: DB): Promise<RuleConditionEntityInterface[]> {
+    async bulkCreate(inputs: RuleConditionCreateEntityInterface[], tx?: TX): Promise<RuleConditionEntityInterface[]> {
         if (isEmptyArray(inputs)) {
             return [];
         }
@@ -33,11 +33,11 @@ export class RuleConditionRepository {
         return (tx ?? this.db).insert(RuleConditionEntityTable).values(inputs).returning();
     }
 
-    async deleteByRuleId(ruleId: number, tx?: DB): Promise<void> {
+    async deleteByRuleId(ruleId: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(RuleConditionEntityTable).where(eq(RuleConditionEntityTable.ruleId, ruleId));
     }
 
-    async truncate(tx?: DB): Promise<void> {
+    async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(RuleConditionEntityTable);
     }
 }

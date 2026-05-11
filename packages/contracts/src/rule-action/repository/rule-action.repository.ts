@@ -5,7 +5,7 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { RuleActionCreateEntityInterface } from '../entity/rule-action-create-entity.interface';
 import { RuleActionEntityTable } from '../table/rule-action-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
+import type { TX } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { RuleActionEntityInterface } from '../entity/rule-action-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
@@ -19,13 +19,13 @@ export class RuleActionRepository {
         });
     }
 
-    async create(input: RuleActionCreateEntityInterface, tx?: DB): Promise<RuleActionEntityInterface> {
+    async create(input: RuleActionCreateEntityInterface, tx?: TX): Promise<RuleActionEntityInterface> {
         const [action] = await (tx ?? this.db).insert(RuleActionEntityTable).values([input]).returning();
 
         return action;
     }
 
-    async bulkCreate(inputs: RuleActionCreateEntityInterface[], tx?: DB): Promise<RuleActionEntityInterface[]> {
+    async bulkCreate(inputs: RuleActionCreateEntityInterface[], tx?: TX): Promise<RuleActionEntityInterface[]> {
         if (isEmptyArray(inputs)) {
             return [];
         }
@@ -33,11 +33,11 @@ export class RuleActionRepository {
         return (tx ?? this.db).insert(RuleActionEntityTable).values(inputs).returning();
     }
 
-    async deleteByRuleId(ruleId: number, tx?: DB): Promise<void> {
+    async deleteByRuleId(ruleId: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(RuleActionEntityTable).where(eq(RuleActionEntityTable.ruleId, ruleId));
     }
 
-    async truncate(tx?: DB): Promise<void> {
+    async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(RuleActionEntityTable);
     }
 }
