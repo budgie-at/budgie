@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ComponentProps, useMemo } from 'react';
+import { ComponentProps } from 'react';
 import { Text, TextStyle, ViewStyle } from 'react-native';
 import DateTimePicker, { CalendarComponents, CalendarDay, useDefaultClassNames } from 'react-native-ui-datepicker';
 
@@ -69,7 +69,7 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { isDarkColorSchema } = useThemeContext();
     const defaultClassNames = useDefaultClassNames();
     const mergedComponents = { ...defaultComponents, ...props.components };
-    const themedStyles = useMemo(() => buildStyles(isDarkColorSchema), [isDarkColorSchema]);
+    const themedStyles = buildStyles(isDarkColorSchema);
 
     /* eslint-disable lingui/no-unlocalized-strings */
     const classNames = {

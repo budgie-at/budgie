@@ -1,34 +1,20 @@
-import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { dismissedSuggestions } from '../constant/dismissed-suggestions.constant';
-import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
+import { UseSuggestRuleDetectionParamsInterface } from '../interface/use-suggest-rule-detection-params.interface';
+import { UseSuggestRuleDetectionResultInterface } from '../interface/use-suggest-rule-detection-result.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { computeDetectionMode } from '../util/compute-detection-mode.util';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 import { findAllMatchingRules } from '../util/find-all-matching-rules.util';
 import { hasConflictWithRuleOutcomes } from '../util/has-conflict-with-rule-outcomes.util';
 import { selectSuggestCondition } from '../util/select-suggest-condition.util';
-
-interface UseSuggestRuleDetectionParams {
-    readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly control: Control<TransactionCreateInputInterface>;
-}
-
-interface UseSuggestRuleDetectionResult {
-    readonly mode: RuleDetectionModeEnum;
-    readonly suggestRuleData: SuggestRuleDataInterface;
-    readonly updateRuleData: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount: number;
-    readonly onRuleCreated: () => void;
-    readonly onDismiss: () => void;
-}
 
 const buildDismissKey = (transactionId: number, title: string, comment: string, mccCode: string | null): string => {
     const condition = selectSuggestCondition(title, mccCode, comment);
@@ -38,7 +24,10 @@ const buildDismissKey = (transactionId: number, title: string, comment: string, 
 };
 
 // eslint-disable-next-line max-statements -- Detection hook with multiple derived values and dismiss tracking
-export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParams): UseSuggestRuleDetectionResult => {
+export const useSuggestRuleDetection = ({
+    transaction,
+    control
+}: UseSuggestRuleDetectionParamsInterface): UseSuggestRuleDetectionResultInterface => {
     const [ruleCreated, setRuleCreated] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
     const entries = useWatch({ control, name: 'entries' });

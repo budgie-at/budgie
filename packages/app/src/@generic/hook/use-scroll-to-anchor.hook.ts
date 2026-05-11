@@ -1,6 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { LayoutChangeEvent, ScrollView, ViewStyle } from 'react-native';
-import { AnimatedStyle, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
+import {
+    AnimatedStyle,
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withSequence,
+    withTiming
+} from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -10,6 +18,8 @@ const FADE_OUT_MS = 400;
 const HIGHLIGHT_BORDER_RADIUS = 16;
 const HIGHLIGHT_PADDING = 8;
 const HIGHLIGHT_OPACITY = 0.08;
+const HIGHLIGHT_COLOR_TRANSPARENT = 'rgba(120, 170, 255, 0)';
+const HIGHLIGHT_COLOR_ACTIVE = `rgba(120, 170, 255, ${HIGHLIGHT_OPACITY})`;
 
 interface LayoutPositionInterface {
     readonly y: number;
@@ -26,7 +36,7 @@ export const useScrollToAnchor = (activeAnchor: string | null | undefined) => {
     const highlightStyle = useAnimatedStyle(() => ({
         borderRadius: HIGHLIGHT_BORDER_RADIUS,
         padding: HIGHLIGHT_PADDING,
-        backgroundColor: `rgba(120, 170, 255, ${interpolate(highlightProgress.value, [0, 1], [0, HIGHLIGHT_OPACITY])})`
+        backgroundColor: interpolateColor(highlightProgress.value, [0, 1], [HIGHLIGHT_COLOR_TRANSPARENT, HIGHLIGHT_COLOR_ACTIVE])
     }));
     const emptyStyle = useAnimatedStyle(() => ({}));
 

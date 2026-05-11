@@ -16,6 +16,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly animatedStyle?: StyleProp<ViewStyle>;
     readonly testID?: string;
+    readonly selectedTestID?: string;
     readonly onPress: () => void;
 }
 
@@ -23,7 +24,7 @@ const SPRING_CONFIG = { damping: 15, stiffness: 150 };
 const TITLE_FONT_SIZE_SELECTED = 15;
 const TITLE_FONT_SIZE_UNSELECTED = 14;
 
-export const TransferAccountPicker = ({ label, account, variant, animatedStyle, testID, onPress }: Props) => {
+export const TransferAccountPicker = ({ label, account, variant, animatedStyle, testID, selectedTestID, onPress }: Props) => {
     const hasAccount = isDefined(account);
     const accessibilityLabel = `${label}: ${account?.title ?? label}`;
     const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
@@ -50,7 +51,12 @@ export const TransferAccountPicker = ({ label, account, variant, animatedStyle, 
                 <CircleIcon icon={icon} variant={variant} size={28} iconSize={14} radius={8} />
 
                 <View className="flex-1 justify-center">
-                    <Animated.Text style={titleAnimatedStyle} className={titleClassName} numberOfLines={1}>
+                    <Animated.Text
+                        style={titleAnimatedStyle}
+                        className={titleClassName}
+                        numberOfLines={1}
+                        {...(hasAccount && { testID: selectedTestID })}
+                    >
                         {account?.title ?? label}
                     </Animated.Text>
                 </View>

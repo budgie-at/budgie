@@ -77,12 +77,12 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>On-Device AI Auto-Categorization</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
-                        A 1.7B-parameter model runs on your phone and suggests categories and tags for new transactions — your statements
-                        never touch a server.
+                        Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest
+                        tags, and learn from your corrections. Your statements never leave the phone.
                     </Trans>
                 }
             />
@@ -94,16 +94,43 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeaturePageProse>
                     <Trans>
                         Cloud &ldquo;AI&rdquo; budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees
-                        your supermarket habits. Budgie loads the model once, then keeps every inference local — same accuracy, zero data
+                        your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data
                         exfiltration.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The system blends two signals: a vector-search lookup against your past categorizations and a small generative pass
-                        that proposes a tag. As you confirm or correct, the index updates instantly — fully on-device.
+                        The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own
+                        history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every
+                        accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time.
                     </Trans>
                 </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Two-stage categorization flow</Trans>
+                </FeaturePageHeading>
+                <FeaturePageBenefitGrid>
+                    <FeaturePageBenefitGridItem index={0} key="stage-0">
+                        <Trans>
+                            Embedding lookup — 768-dim Nomic model finds the nearest historical transaction instantly via sqlite-vec SIMD
+                            search
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1} key="stage-1">
+                        <Trans>
+                            LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category and
+                            tags from context
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2} key="stage-2">
+                        <Trans>
+                            Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next
+                            similar transaction lands closer without re-training
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageSection>
@@ -115,13 +142,13 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         <Trans>Qwen3 1.7B Q4 model runs entirely on your phone after a one-time download</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search</Trans>
+                        <Trans>768-dim Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Two complementary signals: vector lookup over your history plus a generative tag suggestion</Trans>
+                        <Trans>Two complementary signals: vector lookup over your history plus a generative LLM suggestion</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Every confirmation updates the embedding index instantly — accuracy improves as you use it</Trans>
+                        <Trans>Every correction updates the embedding index instantly — accuracy improves as you use it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Statements never leave the device — no OpenAI, no remote inference, ever</Trans>
@@ -135,27 +162,12 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On first run, Budgie downloads a Qwen3 1.7B Q4 model and a Nomic embedding model directly from the Hugging Face hub.
-                        Both are stored in your app sandbox. Inference uses ONNX Runtime + sqlite-vec for SIMD-accelerated vector search.
+                        On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are
+                        stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor
+                        exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept,
+                        edit, or reject) feeds back into the embedding index without any network call.
                     </Trans>
                 </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Three privacy-preserving signals</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0} key="signal-0">
-                        <Trans>Embedding similarity — your past categorizations index every new transaction</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1} key="signal-1">
-                        <Trans>Amount-pattern recurrence — €4.20 every Tuesday morning is probably your coffee</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2} key="signal-2">
-                        <Trans>Merchant-name fuzzy match — handles typos, abbreviations, and translated variants</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
             <FeaturePageFaqSection>
@@ -163,8 +175,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>Does the AI work offline?</Trans>}
                     answer={
                         <Trans>
-                            Yes. The model and embeddings live on your device after the one-time download. Categorization runs whether
-                            you&apos;re online or not.
+                            Yes. Both models live on your device after the one-time download. Categorization runs whether you&apos;re online
+                            or not.
                         </Trans>
                     }
                 />
@@ -172,8 +184,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>How big is the model download?</Trans>}
                     answer={
                         <Trans>
-                            Roughly 1 GB combined for the language model and the embedding model. The download happens on first use of AI
-                            features and is fully optional — you can keep using Budgie without AI.
+                            Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model. The download
+                            happens on first use of AI features and is fully optional — you can keep using Budgie without AI.
                         </Trans>
                     }
                 />
@@ -182,7 +194,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     answer={
                         <Trans>
                             Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections feed back into the
-                            embedding index immediately so the next similar transaction lands closer to the right category.
+                            768-dim embedding index immediately so the next similar transaction lands closer to the right category.
                         </Trans>
                     }
                 />

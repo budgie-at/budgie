@@ -1,0 +1,186 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: '08.db(, db)?'
+
+# --- Create Split Expense ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.5'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+    file: subflows/transactions/enter-comment.flow.yaml
+    env:
+      COMMENT: 'E2E Split Expense'
+
+- tapOn:
+    id: 'TransactionFieldIcon.Split'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.0'
+
+- tapOn:
+    id: 'SplitEntryRow.Amount.0'
+- inputText: '20'
+
+- runFlow:
+    file: subflows/transactions/select-split-category.flow.yaml
+    env:
+      ENTRY_INDEX: '0'
+      CATEGORY_NAME: 'Groceries'
+
+- tapOn:
+    id: 'SplitEntries.AddItemButton'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.1'
+
+- tapOn:
+    id: 'SplitEntryRow.Amount.1'
+- inputText: '25'
+
+- runFlow:
+    file: subflows/transactions/select-split-category.flow.yaml
+    env:
+      ENTRY_INDEX: '1'
+      CATEGORY_NAME: 'Restaurants & Cafes'
+
+- tapOn:
+    id: 'SplitEntries.ConfirmButton'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Split_Expense'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Groceries.20'
+- assertVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.25'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.55'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.55'
+
+# --- Category Analytics and Drilldown ---
+
+- tapOn:
+    id: 'TabBar.Analytics'
+- extendedWaitUntil:
+    visible:
+      id: 'AnalyticsPage.Container'
+- assertVisible:
+    id: 'TransactionAnalyticsCard.Amount.Spent.45'
+- assertVisible:
+    id: 'CategoryStatisticsCard.Amount.Groceries.20000000'
+- assertVisible:
+    id: 'CategoryStatisticsCard.Amount.Restaurants_Cafes.25000000'
+
+- tapOn:
+    id: 'CategoryStatisticsCard.Groceries'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Split_Expense'
+    timeout: 5000
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'AnalyticsPage.Container'
+
+# --- Edit Split Rows ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+
+- tapOn:
+    id: 'TransactionFieldIcon.Split'
+- extendedWaitUntil:
+    visible:
+      id: 'SplitEntryRow.Amount.0'
+
+- tapOn:
+    id: 'SplitEntryRow.Amount.0'
+- eraseText: 20
+- inputText: '15'
+
+- tapOn:
+    id: 'SplitEntryRow.Amount.1'
+- eraseText: 20
+- inputText: '30'
+
+- runFlow:
+    file: subflows/transactions/select-split-category.flow.yaml
+    env:
+      ENTRY_INDEX: '1'
+      CATEGORY_NAME: 'Restaurants & Cafes'
+
+- tapOn:
+    id: 'SplitEntries.ConfirmButton'
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Split_Expense'
+    timeout: 5000
+- assertVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Groceries.15'
+- assertVisible:
+    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.30'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.55'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.55'
+
+# --- Delete Split Expense ---
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- tapOn:
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+
+- runFlow: subflows/transactions/delete-transaction.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.Label.E2E_Split_Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.100'
+- assertVisible:
+    id: 'AccountCard.Balance.E2E_Txn_Account.100'

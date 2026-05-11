@@ -1,4 +1,4 @@
 import type { RuleActionCreateEntitySchema } from '../schema/rule-action-create-entity.schema';
-import type { infer } from 'zod';
+import type { z } from 'zod';
 
-export interface RuleActionCreateEntityInterface extends infer<typeof RuleActionCreateEntitySchema> {}
+export type RuleActionCreateEntityInterface = z.infer<typeof RuleActionCreateEntitySchema>;

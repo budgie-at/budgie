@@ -8,6 +8,7 @@ import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNu
 
 import {
     db,
+    refundPairRepository,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository,
@@ -26,6 +27,8 @@ import type {
     AtmCashWithdrawalReviewCandidateInterface,
     DB,
     IbanBridgeTransferCandidateInterface,
+    RefundCandidateInterface,
+    RefundReviewCandidateInterface,
     TransactionEntityInterface,
     TransactionTagsEntityInterface,
     TransferPairCandidateInterface,
@@ -57,10 +60,14 @@ class TransferConsolidationService {
         const atmCashWithdrawalCandidates = await this.findAtmCashWithdrawalCandidates();
         const atmCashWithdrawalReviewCandidates = await this.findAtmCashWithdrawalReviewCandidates();
         const ibanBridgeTransferCandidates = await this.findIbanBridgeTransferCandidates();
+        const refundCandidates = await this.findRefundCandidates();
+        const refundReviewCandidates = await this.findRefundReviewCandidates();
 
         return {
-            autoCandidateCount: pairCandidates.length + atmCashWithdrawalCandidates.length + ibanBridgeTransferCandidates.length,
-            manualReviewCandidateCount: manualReviewCandidates.length + atmCashWithdrawalReviewCandidates.length
+            autoCandidateCount:
+                pairCandidates.length + atmCashWithdrawalCandidates.length + ibanBridgeTransferCandidates.length + refundCandidates.length,
+            manualReviewCandidateCount:
+                manualReviewCandidates.length + atmCashWithdrawalReviewCandidates.length + refundReviewCandidates.length
         };
     }
 
@@ -92,15 +99,7 @@ class TransferConsolidationService {
             `throw buckets=${candidates.map(candidate => candidate.confidenceBucket).join(',')} expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} error=${getErrorMessage(error)}`
     )
     private async processPairCandidates(candidates: TransferPairCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidatePair(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidatePair(candidate));
     }
 
     @Log(
@@ -112,15 +111,7 @@ class TransferConsolidationService {
             `throw transactionIds=${candidates.map(candidate => candidate.transactionId).join(',')} targetCashAccountIds=${candidates.map(candidate => candidate.targetCashAccountId).join(',')} error=${getErrorMessage(error)}`
     )
     private async processAtmCashWithdrawalCandidates(candidates: AtmCashWithdrawalCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateAtmCashWithdrawal(candidate).then(
-                () => true,
-                () => false
-            );
-
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+        return this.reduceConsolidations(candidates, candidate => this.consolidateAtmCashWithdrawal(candidate));
     }
 
     @Log(
@@ -132,15 +123,19 @@ class TransferConsolidationService {
             `throw expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} incomeTransactionIds=${candidates.map(candidate => candidate.incomeTransactionId).join(',')} existingDirectTransferIds=${candidates.map(candidate => candidate.existingDirectTransferId ?? '').join(',')} error=${getErrorMessage(error)}`
     )
     private async processIbanBridgeTransferCandidates(candidates: IbanBridgeTransferCandidateInterface[]): Promise<number> {
-        return candidates.reduce(async (consolidatedPromise, candidate) => {
-            const consolidated = await consolidatedPromise;
-            const success = await this.consolidateIbanBridgeTransfer(candidate).then(
-                () => true,
-                () => false
-            );
+        return this.reduceConsolidations(candidates, candidate => this.consolidateIbanBridgeTransfer(candidate));
+    }
 
-            return success ? consolidated + 1 : consolidated;
-        }, Promise.resolve(0));
+    @Log(
+        candidates =>
+            `enter expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')}`,
+        (result, candidates) =>
+            `done expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} consolidated=${result}`,
+        (error, candidates) =>
+            `throw expenseTransactionIds=${candidates.map(candidate => candidate.expenseTransactionId).join(',')} refundIncomeTransactionIds=${candidates.map(candidate => candidate.refundIncomeTransactionIds.join('+')).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async processRefundCandidates(candidates: RefundCandidateInterface[]): Promise<number> {
+        return this.reduceConsolidations(candidates, candidate => this.consolidateRefund(candidate));
     }
 
     @Log(
@@ -180,6 +175,18 @@ class TransferConsolidationService {
     }
 
     @Log(
+        candidate =>
+            `enter expenseTransactionId=${candidate.expenseTransactionId} accountId=${candidate.accountId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal} expenseEntryAmount=${candidate.expenseEntryAmount}`,
+        (result, candidate) =>
+            `done result=${String(result)} expenseTransactionId=${candidate.expenseTransactionId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal}`,
+        (error, candidate) =>
+            `throw expenseTransactionId=${candidate.expenseTransactionId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal} error=${getErrorMessage(error)}`
+    )
+    private async consolidateRefund(candidate: RefundCandidateInterface): Promise<void> {
+        await transactionAsync(db, async tx => this.consolidateRefundInner(candidate, tx));
+    }
+
+    @Log(
         'enter',
         result => `done found=${result.found} consolidated=${result.consolidated}`,
         error => `throw error=${getErrorMessage(error)}`
@@ -189,7 +196,8 @@ class TransferConsolidationService {
         const pairConsolidated = await this.processPairCandidates(candidates.pairCandidates);
         const bridgeConsolidated = await this.processIbanBridgeTransferCandidates(candidates.ibanBridgeTransferCandidates);
         const atmConsolidated = await this.processAtmCashWithdrawalCandidates(candidates.atmCashWithdrawalCandidates);
-        const consolidated = pairConsolidated + bridgeConsolidated + atmConsolidated;
+        const refundConsolidated = await this.processRefundCandidates(candidates.refundCandidates);
+        const consolidated = pairConsolidated + bridgeConsolidated + atmConsolidated + refundConsolidated;
 
         if (isPositiveNumber(consolidated)) {
             await accountBalanceIncrementalService.updateAllBalances(true);
@@ -199,7 +207,8 @@ class TransferConsolidationService {
             found:
                 candidates.pairCandidates.length +
                 candidates.ibanBridgeTransferCandidates.length +
-                candidates.atmCashWithdrawalCandidates.length,
+                candidates.atmCashWithdrawalCandidates.length +
+                candidates.refundCandidates.length,
             consolidated
         };
 
@@ -209,7 +218,7 @@ class TransferConsolidationService {
     @Log(
         'enter',
         result =>
-            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')}`,
+            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')} refundExpenseTransactionIds=${result.refundCandidates.map(candidate => candidate.expenseTransactionId).join(',')} refundReviewExpenseTransactionIds=${result.refundReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     private async findConsolidationCandidateGroups(): Promise<ConsolidationCandidateGroupsInterface> {
@@ -218,13 +227,17 @@ class TransferConsolidationService {
         const pairCandidates = await this.findPairCandidates();
         const ibanBridgeTransferCandidates = await this.findIbanBridgeTransferCandidates();
         const atmCashWithdrawalCandidates = await this.findAtmCashWithdrawalCandidates();
+        const refundCandidates = await this.findRefundCandidates();
+        const refundReviewCandidates = await this.findRefundReviewCandidates();
 
         return {
             manualReviewCandidates,
             atmCashWithdrawalReviewCandidates,
             pairCandidates,
             ibanBridgeTransferCandidates,
-            atmCashWithdrawalCandidates
+            atmCashWithdrawalCandidates,
+            refundCandidates,
+            refundReviewCandidates
         };
     }
 
@@ -273,6 +286,36 @@ class TransferConsolidationService {
         return transferPairRepository.findIbanBridgeTransferCandidates();
     }
 
+    @Log(
+        'enter',
+        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
+    private async findRefundCandidates(): Promise<RefundCandidateInterface[]> {
+        return refundPairRepository.findCandidates();
+    }
+
+    @Log(
+        'enter',
+        result => `done expenseTransactionIds=${result.map(candidate => candidate.expenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
+    private async findRefundReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
+        return refundPairRepository.findReviewCandidates();
+    }
+
+    private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<void>): Promise<number> {
+        return candidates.reduce(async (consolidatedPromise, candidate) => {
+            const consolidated = await consolidatedPromise;
+            const success = await consolidate(candidate).then(
+                () => true,
+                () => false
+            );
+
+            return success ? consolidated + 1 : consolidated;
+        }, Promise.resolve(0));
+    }
+
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {
         if (candidate.expenseEntryAmount === candidate.incomeEntryAmount) {
             return 1;
@@ -317,6 +360,18 @@ class TransferConsolidationService {
         };
 
         await this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+    }
+
+    private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<void> {
+        const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
+
+        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+            return;
+        }
+
+        await transactionRepository.setConsolidationType(candidate.expenseTransactionId, TransactionConsolidationTypeEnum.REFUND, tx);
+        await this.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
+        await this.moveSourcesToCanonical(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
     }
 
     private async consolidateIbanBridgeTransferInner(candidate: IbanBridgeTransferCandidateInterface, tx: DB): Promise<void> {

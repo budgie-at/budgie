@@ -47,11 +47,11 @@ msgstr "{count} transactions existantes correspondent à cette règle."
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:129
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:126
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:129
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -59,13 +59,13 @@ msgstr "{formattedRemaining} au-dessus du budget"
 msgid "{matchingRulesCount} matching rules"
 msgstr "{matchingRulesCount} règles correspondantes"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:63
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:64
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% des dépenses"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:63
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:64
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
@@ -105,7 +105,7 @@ msgstr "1 règle correspondante"
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:91
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:98
 msgid "A rule with the same conditions already exists."
 msgstr "Une règle avec les mêmes conditions existe déjà."
 
@@ -185,7 +185,7 @@ msgstr "Ajouter une note..."
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx:27
+#: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx:30
 msgid "Add item"
 msgstr "Ajouter un élément"
 
@@ -406,7 +406,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:93
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:99
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -435,7 +435,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 #: src/app/(tabs)/settings/categories.tsx:33
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:167
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:168
 msgid "Category"
 msgstr "Catégorie"
 
@@ -523,7 +523,7 @@ msgstr "Conditions"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:131
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
@@ -599,16 +599,16 @@ msgstr "Impossible d'effacer les données"
 msgid "Could not consolidate transfers"
 msgstr "Impossible de consolider les virements"
 
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:166
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:109
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:118
 #: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Could not create rule"
 msgstr "Impossible de créer la règle"
 
-#: src/tag/components/tag-form/tag-form.tsx:132
+#: src/tag/components/tag-form/tag-form.tsx:155
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
@@ -657,7 +657,7 @@ msgstr "Impossible de récupérer les comptes"
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:32
 msgid "Could not load sources. Please try again."
 msgstr "Impossible de charger les sources. Veuillez réessayer."
 
@@ -694,11 +694,11 @@ msgstr "Impossible de réinitialiser la synchronisation bancaire"
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:166
 msgid "Could not save category"
 msgstr "Impossible d'enregistrer la catégorie"
 
-#: src/tag/components/tag-form/tag-form.tsx:132
+#: src/tag/components/tag-form/tag-form.tsx:155
 msgid "Could not save tag"
 msgstr "Impossible d'enregistrer l'étiquette"
 
@@ -756,7 +756,7 @@ msgstr "Créer et copier le jeton personnel"
 msgid "Create and organize transaction tags"
 msgstr "Créer et organiser les étiquettes de transaction"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:95
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:101
 msgid "Create anyway"
 msgstr "Créer quand même"
 
@@ -830,7 +830,7 @@ msgstr "Solde actuel"
 msgid "Custom categories you create will appear here"
 msgstr "Les catégories personnalisées que vous créez apparaîtront ici"
 
-#: src/settings/components/theme-switch/theme-switch.tsx:21
+#: src/settings/components/theme-switch/theme-switch.tsx:24
 msgid "Dark Mode"
 msgstr "Mode sombre"
 
@@ -845,7 +845,7 @@ msgstr "Base de données exportée"
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:123
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:124
 msgid "Date"
 msgstr "Date"
 
@@ -904,7 +904,7 @@ msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
 
 #: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:65
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "Done"
 msgstr "Terminé"
 
@@ -924,7 +924,7 @@ msgstr "Téléchargement des modèles d'IA…"
 msgid "Downloading models"
 msgstr "Téléchargement des modèles"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:91
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:98
 msgid "Duplicate rule"
 msgstr "Dupliquer la règle"
 
@@ -932,7 +932,7 @@ msgstr "Dupliquer la règle"
 msgid "Dutch (Netherlands)"
 msgstr "Néerlandais (Pays-Bas)"
 
-#: src/tag/components/tag-form/tag-form.tsx:153
+#: src/tag/components/tag-form/tag-form.tsx:176
 msgid "e.g. Business, Personal, Vacation"
 msgstr "p. ex. Affaires, Personnel, Vacances"
 
@@ -948,11 +948,11 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:94
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:100
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:82
+#: src/app/(main)/transactions/[id]/expense.tsx:83
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
@@ -1185,7 +1185,7 @@ msgstr "Français (France)"
 msgid "from"
 msgstr "de"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:70
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:73
 msgid "From"
 msgstr "De"
 
@@ -1458,11 +1458,11 @@ msgstr "Code marchand"
 msgid "Merge high-confidence duplicate transfer transactions"
 msgstr "Fusionner les virements en double de haute confiance"
 
-#: src/category/components/category-form/category-form.tsx:190
+#: src/category/components/category-form/category-form.tsx:213
 msgid "Merge into another category"
 msgstr "Fusionner avec une autre catégorie"
 
-#: src/tag/components/tag-form/tag-form.tsx:179
+#: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "Fusionner avec une autre étiquette"
 
@@ -1612,7 +1612,7 @@ msgstr "Aucun résultat"
 msgid "No Rules Yet"
 msgstr "Aucune règle pour l'instant"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:41
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:46
 msgid "No source transactions"
 msgstr "Aucune transaction source"
 
@@ -1667,7 +1667,7 @@ msgstr "Non généré"
 msgid "not set"
 msgstr "non défini"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:132
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:133
 msgid "Note"
 msgstr "Note"
 
@@ -1778,9 +1778,9 @@ msgstr "Veuillez réessayer"
 #: src/app/(tabs)/settings/tags.tsx:55
 #: src/app/(tabs)/settings/tags.tsx:69
 #: src/category/components/category-form/category-form.tsx:123
-#: src/category/components/category-form/category-form.tsx:144
+#: src/category/components/category-form/category-form.tsx:167
 #: src/tag/components/tag-form/tag-form.tsx:112
-#: src/tag/components/tag-form/tag-form.tsx:133
+#: src/tag/components/tag-form/tag-form.tsx:156
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -1809,7 +1809,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:107
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:116
 msgid "Quick rule"
 msgstr "Règle rapide"
 
@@ -1890,6 +1890,18 @@ msgstr "Récurrents"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
 
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:78
+msgid "Refunded"
+msgstr "Remboursé"
+
+#: src/transaction/components/refunded-pill/refunded-pill.tsx:78
+msgid "Refunded {formattedRefundedAmount}"
+msgstr "Remboursé {formattedRefundedAmount}"
+
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+msgid "Refunds"
+msgstr "Remboursements"
+
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
 msgstr "Réinitialise tout l'état de synchronisation"
@@ -1923,7 +1935,7 @@ msgstr "Règle"
 msgid "Rule applied to {applied} transactions"
 msgstr "Règle appliquée à {applied} transactions"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:103
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:112
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Règle créée · Appliquée à {appliedCount} transactions"
 
@@ -2064,11 +2076,11 @@ msgid "Select Action Type"
 msgstr "Sélectionner le type d'action"
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:38
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:128
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:131
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
-#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:46
 msgid "Select category"
 msgstr "Sélectionner la catégorie"
 
@@ -2246,7 +2258,11 @@ msgstr "Quelque chose s'est mal passé. Veuillez réessayer plus tard."
 msgid "Source"
 msgstr "Source"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:143
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+msgid "Source transactions"
+msgstr "Transactions sources"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:144
 msgid "Sources"
 msgstr "Sources"
 
@@ -2303,7 +2319,7 @@ msgstr "Soumettre"
 msgid "Subscriptions"
 msgstr "Abonnements"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:85
 msgid "Swap accounts"
 msgstr "Échanger les comptes"
 
@@ -2312,7 +2328,7 @@ msgstr "Échanger les comptes"
 msgid "Swipe left"
 msgstr "Faites glisser vers la gauche"
 
-#: src/settings/components/theme-switch/theme-switch.tsx:22
+#: src/settings/components/theme-switch/theme-switch.tsx:25
 msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
@@ -2337,7 +2353,7 @@ msgstr "Tag"
 msgid "Tag → {tagTitle}"
 msgstr "Tag → {tagTitle}"
 
-#: src/tag/components/tag-form/tag-form.tsx:146
+#: src/tag/components/tag-form/tag-form.tsx:169
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
 
@@ -2347,7 +2363,7 @@ msgstr "Étiquetez vos transactions pour voir la répartition de vos dépenses p
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:16
 #: src/app/(tabs)/settings/tags.tsx:86
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:154
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:155
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags"
 msgstr "Étiquettes"
@@ -2387,7 +2403,7 @@ msgstr "Cette action ne peut pas être annulée."
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Cette catégorie a des transactions. Sélectionnez une autre catégorie pour les réassigner."
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:42
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Ce virement consolidé n’a aucune écriture source déplacée."
 
@@ -2444,7 +2460,7 @@ msgstr "Titre"
 msgid "to"
 msgstr "à"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:88
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:92
 msgid "To"
 msgstr "Vers"
 
@@ -2684,10 +2700,6 @@ msgstr "Wise"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:19
 msgid "XLSX export"
 msgstr "Export XLSX"
-
-#: src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx:171
-msgid "Yes"
-msgstr "Oui"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Yesterday"

@@ -1,8 +1,9 @@
+import { getUnixTime } from 'date-fns';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { BaseBankProviderClient } from '../../core/client/base-bank-provider.client';
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
-import { syncLogger } from '../../core/util/sync-logger.util';
 import { MONOBANK_API_BASE_URL } from '../constant/monobank-api-base-url.constant';
 import { monobankAccountMapper } from '../mapper/monobank-account.mapper';
 import { monobankTransactionMapper } from '../mapper/monobank-transaction.mapper';
@@ -48,27 +49,15 @@ export class MonobankClient extends BaseBankProviderClient {
     }
 
     async getTransactions(accountId: string, from: number, to?: number): Promise<BankSyncResultInterface<BankTransactionInterface[]>> {
-        const toTimestamp = to ?? Math.floor(Date.now() / 1000);
+        const toTimestamp = to ?? getUnixTime(new Date());
         const endpoint = `/personal/statement/${accountId}/${from}/${toTimestamp}`;
-
-        syncLogger.log('monobank:getTransactions:request', { accountId, from, toTimestamp, endpoint });
         const result = await this.fetchJson<MonobankTransactionApiInterface[]>(endpoint);
 
         if (!result.success) {
-            syncLogger.error('monobank:getTransactions:error', { accountId, code: result.error.code, message: result.error.message });
-
             return result;
         }
 
         const transactions = result.data.map(tx => monobankTransactionMapper(tx, accountId));
-        syncLogger.log('monobank:getTransactions:mapped', {
-            accountId,
-            rawCount: result.data.length,
-            mappedCount: transactions.length,
-            firstRawTime: result.data[0]?.time,
-            lastRawTime: result.data[result.data.length - 1]?.time,
-            anyHold: result.data.some(tx => tx.hold)
-        });
 
         return this.success(transactions);
     }

@@ -33,7 +33,7 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<Swipeabl
     });
     const rule = await ruleService.create(ruleInput);
     logger.log('createRule:created', { ruleId: rule.id });
-    const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+    const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
     logger.log('createRule:applied', { ruleId: rule.id, applied: result.applied, failed: result.failed, total: result.total });
 
     return { applied: result.applied };

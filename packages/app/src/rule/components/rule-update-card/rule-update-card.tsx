@@ -49,7 +49,7 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<Swip
 
     await ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions });
 
-    const result = await ruleEngineService.applyRuleToMatchingTransactions(updateRuleData.ruleId);
+    const result = await ruleEngineService.applyRuleToMatchingTransactions(updateRuleData.ruleId, null);
 
     return { applied: result.applied };
 };

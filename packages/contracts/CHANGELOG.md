@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.16.1](https://github.com/budgie-at/budgie/compare/v5.16.0...v5.16.1) (2026-05-08)
+
+### Bug Fixes
+
+- include refund consolidation in balances ([#414](https://github.com/budgie-at/budgie/issues/414)) ([81f99d2](https://github.com/budgie-at/budgie/commit/81f99d2db2ca6d7d45129f08c4a83222eac05bca))
+
+# [5.15.0](https://github.com/budgie-at/budgie/compare/v5.14.2...v5.15.0) (2026-05-07)
+
+### Bug Fixes
+
+- harden refund consolidation review gaps ([fe33ecd](https://github.com/budgie-at/budgie/commit/fe33ecd98ba06e6d1563ee55a9fc16ba27d1c650))
+
+### Features
+
+- **contracts,app:** RefundPairRepository with auto + review CTEs ([3204700](https://github.com/budgie-at/budgie/commit/3204700eec92918aa90d4833bf6d685f6ec20bee)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+- **contracts,app:** wire refund processor into consolidation engine ([154dbbf](https://github.com/budgie-at/budgie/commit/154dbbf936c4f12d27e4f24647c9ea350dd332e9)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+- **contracts:** add refund consolidation types, candidates, constants ([4c0e357](https://github.com/budgie-at/budgie/commit/4c0e3570cb6e761f7024ecf2429fea1a1a03324c)), closes [#243](https://github.com/budgie-at/budgie/issues/243) [#243](https://github.com/budgie-at/budgie/issues/243)
+- **contracts:** refund-aware stats aggregation ([8cfcc3a](https://github.com/budgie-at/budgie/commit/8cfcc3a460fce5b26ea379b00752854bd380c06c)), closes [#243](https://github.com/budgie-at/budgie/issues/243)
+
 # [5.14.0](https://github.com/budgie-at/budgie/compare/v5.13.0...v5.14.0) (2026-05-03)
 
 ### Features

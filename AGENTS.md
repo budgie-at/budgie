@@ -290,17 +290,17 @@ transaction/
 
 ### Canonical Mapping (Mandatory)
 
-| Manual pattern                                                     | Required guard         | Lint            |
-| ------------------------------------------------------------------ | ---------------------- | --------------- |
-| `x === null`, `x === undefined`, `x === null \|\| x === undefined` | `!isDefined(x)`        | ✓               |
-| `x !== null`, `x !== undefined`, both combined                     | `isDefined(x)`         | ✓               |
-| `typeof x === 'number'`                                            | `isNumber(x)`          | —               |
-| `typeof x === 'string'`                                            | `isString(x)`          | —               |
-| `Array.isArray(x) && x.length > 0`                                 | `isNotEmptyArray(x)`   | ✓ (length case) |
-| `x.length === 0` on array                                          | `isEmptyArray(x)`      | ✓               |
-| `typeof x === 'string' && x.length > 0`, `x !== ''`                | `isNotEmptyString(x)`  | ✓ (length case) |
-| `x === ''`, `x.length === 0` on string                             | `!isNotEmptyString(x)` | ✓               |
-| `typeof x === 'number' && x > 0`, `x > 0` on number                | `isPositiveNumber(x)`  | —               |
+| Manual pattern | Required guard | Lint |
+|---|---|---|
+| `x === null`, `x === undefined`, `x === null \|\| x === undefined` | `!isDefined(x)` | ✓ |
+| `x !== null`, `x !== undefined`, both combined | `isDefined(x)` | ✓ |
+| `typeof x === 'number'` | `isNumber(x)` | — |
+| `typeof x === 'string'` | `isString(x)` | — |
+| `Array.isArray(x) && x.length > 0` | `isNotEmptyArray(x)` | ✓ (length case) |
+| `x.length === 0` on array | `isEmptyArray(x)` | ✓ |
+| `typeof x === 'string' && x.length > 0`, `x !== ''` | `isNotEmptyString(x)` | ✓ (length case) |
+| `x === ''`, `x.length === 0` on string | `!isNotEmptyString(x)` | ✓ |
+| `typeof x === 'number' && x > 0`, `x > 0` on number | `isPositiveNumber(x)` | — |
 
 The "Lint" column marks rows enforced by `no-restricted-syntax` at `warn` severity in `eslint.config.mjs`. Un-linted rows must be caught at code review.
 
@@ -372,14 +372,11 @@ class TransactionRepository {
         result => `done insertedIds=${result.map(row => row.id).join(',')}`,
         (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
-    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> {
-        /* ... */
-    }
+    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> { /* ... */ }
 }
 ```
 
 Output:
-
 ```
 [TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
 [TransactionRepository::bulkCreate] done insertedIds=42,43
@@ -465,6 +462,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
 5. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 6. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the app before rerunning the test.
+7. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
 
 ### Maestro Robustness
 
@@ -474,6 +472,12 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 4. Use retries only for real native edge cases like submit/relaunch, not as a generic band-aid.
 5. Keep flows state-driven: positive target checks beat blind waits and negative assertions.
 6. Date-sensitive fixtures must be refreshed before the suite so test time and app time stay aligned.
+7. Shared subflows must stay minimal and deterministic. Do not add recovery branches, retries, relaunches, or alternative navigation paths without explicit user approval.
+8. If a stable deeplink already exists for setup or navigation, prefer it over replaying UI navigation in Maestro.
+9. If a flow appears fundamentally broken, stop and ask the user before adding test-side workaround logic.
+10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
+11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
+12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
 
 ### Commit Format
 

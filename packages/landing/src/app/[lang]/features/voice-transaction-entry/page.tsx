@@ -77,12 +77,12 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
             {isDefined(faqSchema) && <JsonLd data={faqSchema} />}
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={i18n._(entry.title)} locale={lang} />}
-                heading={<Trans>Voice-to-Expense, On-Device</Trans>}
+                heading={i18n._(entry.title)}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. Whisper STT and the on-device LLM both run
-                        locally — no audio leaves your phone.
+                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. whisper.rn (whisper.cpp backend) and the
+                        on-device LLM both run locally — no audio leaves your phone.
                     </Trans>
                 }
             />
@@ -94,8 +94,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a
-                        vendor server. Budgie keeps the audio stream entirely on the device, then runs Whisper-small for transcription and a
-                        local LLM for entity extraction.
+                        vendor server. Budgie keeps the audio stream entirely on the device, then runs whisper.rn (a whisper.cpp-backed
+                        React Native library) for transcription and a local LLM for entity extraction.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -112,7 +112,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Whisper-small runs locally for accurate, multilingual transcription</Trans>
+                        <Trans>whisper.rn (whisper.cpp backend) runs Whisper-small locally for accurate, multilingual transcription</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>On-device LLM extracts amount, merchant, date, and category from natural speech</Trans>
@@ -135,9 +135,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap the mic in the quick-entry sheet. Whisper transcribes locally. The local LLM extracts amount + merchant + date
-                        hints from the transcription and applies the same on-device category suggestion pipeline used for typed
-                        transactions.
+                        Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM
+                        extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion
+                        pipeline used for typed transactions.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -164,8 +164,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
-                            Whisper-small supports the languages it ships with — including English, Ukrainian, German, French, Spanish, and
-                            dozens more. Transcription quality scales with language coverage in the model.
+                            whisper.rn ships the Whisper-small model, which covers English, Ukrainian, German, French, and Spanish as
+                            primary languages, plus dozens more. Transcription quality scales with language coverage in the model.
                         </Trans>
                     }
                 />
@@ -173,8 +173,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Is my voice recorded anywhere?</Trans>}
                     answer={
                         <Trans>
-                            No. The microphone stream feeds Whisper directly in-process; the audio buffer is discarded after transcription.
-                            Nothing is saved, sent, or logged.
+                            No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after
+                            transcription. Nothing is saved, sent, or logged.
                         </Trans>
                     }
                 />
