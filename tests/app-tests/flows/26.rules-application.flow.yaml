@@ -479,7 +479,18 @@ env:
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
-# --- Convert to Transfer Action (TRANSACTION_TYPE + title → CONVERT_TO_TRANSFER) ---
+# --- Convert to Transfer Action (TRANSACTION_TYPE + comment -> CONVERT_TO_TRANSFER) ---
+
+- runFlow:
+    file: subflows/transactions/create-expense.flow.yaml
+    env:
+      AMOUNT: '10'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      COMMENT: 'Auto Transfer'
+
+- runFlow:
+    file: subflows/navigate-to-rules.flow.yaml
 
 - tapOn:
     id: 'ActionButton'
@@ -508,17 +519,17 @@ env:
     id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn: 'Comment'
+- waitForAnimationToEnd
+
+- tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
 - inputText: 'Auto Transfer'
 
 - tapOn:
     text: 'return'
 - waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.TypeSelector'
-    direction: DOWN
 
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
@@ -554,13 +565,34 @@ env:
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
+    visible: 'Apply to existing transactions?'
+    timeout: 10000
+- tapOn: 'Apply'
+- waitForAnimationToEnd
+- extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.Auto_Transfer'
+    timeout: 10000
+- assertVisible:
+    id: 'TransactionCard.FromAccount.Rules_Test_Account'
+- assertVisible:
+    id: 'TransactionCard.ToAccount.Test22_Destination'
+
 # Delete rule
+
+- runFlow:
+    file: subflows/navigate-to-rules.flow.yaml
 
 - swipe:
     from:
@@ -767,8 +799,10 @@ env:
       id: 'TransactionCard.Tag.Subscription'
     timeout: 10000
 
-- assertVisible:
-    id: 'TransactionCard.Category.Groceries'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Category.Groceries'
+    timeout: 10000
 
 # Delete 2 rules
 
