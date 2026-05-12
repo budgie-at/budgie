@@ -3,7 +3,7 @@ import { getLogger } from '@budgie/logger';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
@@ -78,9 +78,12 @@ export const SwipeableRuleCard = (props: Props) => {
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(ENTRY_TRANSLATE_Y);
     const opacity = useSharedValue(0);
+    const didTriggerThresholdHaptic = useSharedValue(false);
 
-    translateY.value = withSpring(0, ENTRY_SPRING_CONFIG);
-    opacity.value = withSpring(1, ENTRY_SPRING_CONFIG);
+    useEffect(() => {
+        translateY.value = withSpring(0, ENTRY_SPRING_CONFIG);
+        opacity.value = withSpring(1, ENTRY_SPRING_CONFIG);
+    }, [opacity, translateY]);
 
     const handleSwipeThresholdReached = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -93,10 +96,17 @@ export const SwipeableRuleCard = (props: Props) => {
             translateX.value = clampedTranslation;
 
             if (clampedTranslation >= SWIPE_THRESHOLD) {
-                runOnJS(handleSwipeThresholdReached)();
+                if (!didTriggerThresholdHaptic.value) {
+                    didTriggerThresholdHaptic.value = true;
+                    runOnJS(handleSwipeThresholdReached)();
+                }
+            } else {
+                didTriggerThresholdHaptic.value = false;
             }
         })
         .onEnd(event => {
+            didTriggerThresholdHaptic.value = false;
+
             if (event.translationX >= SWIPE_THRESHOLD) {
                 translateX.value = withSpring(SLIDE_OUT_DISTANCE, SNAP_BACK_SPRING_CONFIG);
                 opacity.value = withSpring(0, SNAP_BACK_SPRING_CONFIG);

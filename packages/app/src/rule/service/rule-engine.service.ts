@@ -21,6 +21,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
 
@@ -155,12 +156,20 @@ class RuleEngineService {
         const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
 
         await transactionAsync(db, async transaction => {
-            await matchingRules.reduce(
+            const convertedToTransfer = await matchingRules.reduce(
                 (previousRule, rule) =>
-                    previousRule.then(() => this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions)),
-                Promise.resolve()
+                    previousRule.then(async previousConverted => {
+                        const converted = await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
+
+                        return previousConverted || converted;
+                    }),
+                Promise.resolve(false)
             );
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+
+            if (convertedToTransfer) {
+                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
+            }
         });
     }
 
@@ -176,8 +185,12 @@ class RuleEngineService {
 
     private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
         await transactionAsync(db, async transaction => {
-            await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
+            const convertedToTransfer = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
+
+            if (convertedToTransfer) {
+                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
+            }
         });
     }
 
@@ -218,7 +231,7 @@ class RuleEngineService {
         actions: RuleActionEntityInterface[],
         transaction: DB,
         appliedExclusiveActions: Set<RuleActionTypeEnum>
-    ): Promise<void> {
+    ): Promise<boolean> {
         const sortedActions = [...actions].sort((actionA, actionB) => {
             if (actionA.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
                 return 1;
@@ -231,10 +244,14 @@ class RuleEngineService {
             return 0;
         });
 
-        await sortedActions.reduce(
+        return sortedActions.reduce(
             (previousAction, action) =>
-                previousAction.then(() => this.applyRuleAction(transactionId, action, transaction, appliedExclusiveActions)),
-            Promise.resolve()
+                previousAction.then(async previousConverted => {
+                    const converted = await this.applyRuleAction(transactionId, action, transaction, appliedExclusiveActions);
+
+                    return previousConverted || converted;
+                }),
+            Promise.resolve(false)
         );
     }
 
@@ -243,27 +260,33 @@ class RuleEngineService {
         action: RuleActionEntityInterface,
         transaction: DB,
         appliedExclusiveActions: Set<RuleActionTypeEnum>
-    ): Promise<void> {
+    ): Promise<boolean> {
         switch (action.type) {
             case RuleActionTypeEnum.SET_CATEGORY:
                 await this.applySetCategoryAction(transactionId, action, transaction, appliedExclusiveActions);
-                break;
+
+                return false;
 
             case RuleActionTypeEnum.ADD_TAG:
                 await this.applyAddTagAction(transactionId, action, transaction);
-                break;
 
-            case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
+                return false;
+
+            case RuleActionTypeEnum.CONVERT_TO_TRANSFER: {
                 if (!isDefined(action.accountId) || appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER)) {
-                    break;
+                    return false;
                 }
 
-                appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
-                await this.convertTransactionToTransfer(transactionId, action.accountId, transaction);
-                break;
+                const converted = await this.convertTransactionToTransfer(transactionId, action.accountId, transaction);
+                if (converted) {
+                    appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
+                }
+
+                return converted;
+            }
 
             default:
-                break;
+                return false;
         }
     }
 
@@ -299,28 +322,28 @@ class RuleEngineService {
     }
 
     // eslint-disable-next-line max-statements -- multi-step transfer conversion absorbed from convert-transaction-to-transfer util per CLAUDE.md rule 38/51
-    private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<void> {
+    private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {
         const transaction = await transactionRepository.getById(transactionId, dbTransaction);
         if (!isDefined(transaction)) {
-            return;
+            return false;
         }
 
         const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
         const isIncome = transaction.type === TransactionTypeEnum.INCOME;
 
         if (!isExpense && !isIncome) {
-            return;
+            return false;
         }
 
         const [originalEntry] = transaction.entries;
         if (!isDefined(originalEntry)) {
-            return;
+            return false;
         }
 
         const originalAccountId = originalEntry.accountId;
 
         if (originalAccountId === targetAccountId) {
-            return;
+            return false;
         }
 
         const fromAccountId = isExpense ? originalAccountId : targetAccountId;
@@ -332,7 +355,7 @@ class RuleEngineService {
         ]);
 
         if (!isDefined(fromAccount) || !isDefined(toAccount)) {
-            return;
+            return false;
         }
 
         const { amount: convertedAmount, exchangeRate } = await exchangeRatesService.convert(
@@ -380,6 +403,8 @@ class RuleEngineService {
             ],
             dbTransaction
         );
+
+        return true;
     }
 }
 

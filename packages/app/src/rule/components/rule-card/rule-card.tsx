@@ -1,34 +1,23 @@
 import { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
-import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
-import Toast from 'react-native-toast-message';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { ruleService } from '../../service/rule.service';
 import { RuleSummaryPills } from '../rule-summary-pills/rule-summary-pills';
 
 interface Props {
     readonly rule: RuleWithActionsRelationsEntityInterface;
     readonly onOpen: (rule: RuleWithActionsRelationsEntityInterface) => void;
+    readonly onToggle: (rule: RuleWithActionsRelationsEntityInterface, enabled: boolean) => void;
     readonly testID?: string;
     readonly switchTestID?: string;
     readonly conditionsTestID?: string;
     readonly actionsTestID?: string;
 }
 
-export const RuleCard = ({ onOpen, rule, testID, switchTestID, conditionsTestID, actionsTestID }: Props) => {
+export const RuleCard = ({ onOpen, onToggle, rule, testID, switchTestID, conditionsTestID, actionsTestID }: Props) => {
     const handleOpen = () => void onOpen(rule);
-
-    const handleToggle = async (enabled: boolean) => {
-        try {
-            await ruleService.toggleEnabled(rule.id, enabled);
-        } catch (error: unknown) {
-            Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });
-        }
-    };
+    const handleToggle = (enabled: boolean) => void onToggle(rule, enabled);
 
     return (
         <Card testID={testID} onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">

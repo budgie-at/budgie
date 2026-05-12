@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
-import { ruleEngineService } from '../../service/rule-engine.service';
+import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
 import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
 
@@ -49,7 +49,7 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<Swip
 
     await ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions });
 
-    const result = await ruleEngineService.applyRuleToMatchingTransactions(updateRuleData.ruleId, null);
+    const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(updateRuleData.ruleId, null);
 
     return { applied: result.applied };
 };

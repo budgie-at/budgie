@@ -15,7 +15,7 @@ import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
-import { ruleEngineService } from '../../service/rule-engine.service';
+import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
 import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
@@ -90,7 +90,7 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<Swipeabl
     });
     const rule = await ruleService.create(ruleInput);
     logger.log('createRule:created', { ruleId: rule.id });
-    const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
+    const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(rule.id, null);
     logger.log('createRule:applied', { ruleId: rule.id, applied: result.applied, failed: result.failed, total: result.total });
 
     return { applied: result.applied };

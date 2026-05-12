@@ -31,7 +31,7 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/rule/hooks/use-rule-form.hook.ts:79
+#: src/rule/hooks/use-rule-form.hook.ts:115
 msgid "{applied} updated, {failed} failed"
 msgstr "{applied} оновлено, {failed} не вдалося"
 
@@ -39,7 +39,7 @@ msgstr "{applied} оновлено, {failed} не вдалося"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/rule/hooks/use-rule-form.hook.ts:99
+#: src/rule/hooks/use-rule-form.hook.ts:135
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
 
@@ -105,7 +105,7 @@ msgstr "1 відповідне правило"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:98
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
@@ -148,11 +148,11 @@ msgstr "Архівовані рахунки відображатимуться �
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 msgstr "Рахунки, які ви позначите як неактивні, з'являться тут. Вони не відображатимуться на головній сторінці."
 
-#: src/rule/components/rule-action-row/rule-action-row.tsx:35
-msgid "Action {actionNumber}"
-msgstr "Дія {actionNumber}"
+#: src/rule/components/rule-action-row/rule-action-row.tsx:34
+msgid "Action"
+msgstr "Дія"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:42
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:72
 msgid "Action Type"
 msgstr "Тип дії"
 
@@ -189,7 +189,7 @@ msgstr "Додати рахунок"
 msgid "Add item"
 msgstr "Додати запис"
 
-#: src/rule/constant/rule-action-type-options.constant.ts:12
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:36
 msgid "Add Tag"
 msgstr "Додати тег"
 
@@ -288,11 +288,11 @@ msgid "Appearance"
 msgstr "Вигляд"
 
 #: src/app/note-input.tsx:54
-#: src/rule/hooks/use-rule-form.hook.ts:100
+#: src/rule/hooks/use-rule-form.hook.ts:136
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/rule/hooks/use-rule-form.hook.ts:98
+#: src/rule/hooks/use-rule-form.hook.ts:134
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
@@ -313,7 +313,7 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:53
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:46
 msgid "Are you sure you want to delete this rule?"
 msgstr "Ви впевнені, що хочете видалити це правило?"
 
@@ -370,7 +370,7 @@ msgstr "Базова валюта"
 msgid "between"
 msgstr "між"
 
-#: src/rule/constant/operator-options.constant.ts:13
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:64
 msgid "Between"
 msgstr "Між"
 
@@ -405,8 +405,8 @@ msgstr "Budgie"
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:56
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:99
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:156
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -511,9 +511,9 @@ msgstr "Coinbase"
 msgid "Comment"
 msgstr "Коментар"
 
-#: src/rule/components/rule-condition-row/rule-condition-row.tsx:30
-msgid "Condition {conditionNumber}"
-msgstr "Умова {conditionNumber}"
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx:29
+msgid "Condition"
+msgstr "Умова"
 
 #: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:30
 msgid "Conditions"
@@ -556,7 +556,7 @@ msgstr "Контакт (необов'язково)"
 msgid "contains"
 msgstr "містить"
 
-#: src/rule/constant/operator-options.constant.ts:8
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:59
 msgid "Contains"
 msgstr "Містить"
 
@@ -573,7 +573,7 @@ msgid "Convert"
 msgstr "Конвертувати"
 
 #: src/app/convert-to-transfer.tsx:118
-#: src/rule/constant/rule-action-type-options.constant.ts:13
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
 msgid "Convert to Transfer"
@@ -603,8 +603,8 @@ msgstr "Не вдалося консолідувати перекази"
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:118
-#: src/rule/hooks/use-rule-form.hook.ts:127
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/hooks/use-rule-form.hook.ts:163
 msgid "Could not create rule"
 msgstr "Не вдалося створити правило"
 
@@ -628,7 +628,7 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete category"
 msgstr "Не вдалося видалити категорію"
 
-#: src/rule/hooks/use-rule-form.hook.ts:144
+#: src/rule/hooks/use-rule-form.hook.ts:180
 msgid "Could not delete rule."
 msgstr "Не вдалося видалити правило."
 
@@ -718,9 +718,9 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Could not unconsolidate transaction."
 msgstr "Не вдалося розконсолідувати транзакцію."
 
-#: src/rule/components/rule-card/rule-card.tsx:31
+#: src/app/(tabs)/settings/rules.tsx:68
 #: src/rule/components/rule-update-card/rule-update-card.tsx:68
-#: src/rule/hooks/use-rule-form.hook.ts:127
+#: src/rule/hooks/use-rule-form.hook.ts:163
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
 
@@ -756,7 +756,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:101
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:158
 msgid "Create anyway"
 msgstr "Все одно створити"
 
@@ -785,7 +785,7 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Rule"
 msgstr "Створити правило"
 
-#: src/app/(tabs)/settings/rules.tsx:100
+#: src/app/(tabs)/settings/rules.tsx:119
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Створюйте правила для автоматичної категоризації та тегування банківських транзакцій"
 
@@ -889,8 +889,8 @@ msgstr "Видалити дані"
 msgid "Delete Permanently"
 msgstr "Видалити назавжди"
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:55
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:78
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:48
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:67
 msgid "Delete rule"
 msgstr "Видалити правило"
 
@@ -924,7 +924,7 @@ msgstr "Завантаження моделей ШІ…"
 msgid "Downloading models"
 msgstr "Завантаження моделей"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:98
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
@@ -948,7 +948,7 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:100
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:157
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
@@ -960,7 +960,7 @@ msgstr "Редагувати витрату"
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:69
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:58
 msgid "Edit Rule"
 msgstr "Редагувати правило"
 
@@ -1071,7 +1071,7 @@ msgstr "Уся історія буде повторно синхронізова
 msgid "equals"
 msgstr "дорівнює"
 
-#: src/rule/constant/operator-options.constant.ts:6
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:57
 msgid "Equals"
 msgstr "Дорівнює"
 
@@ -1217,7 +1217,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/rule/constant/operator-options.constant.ts:11
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:62
 msgid "Greater Than"
 msgstr "Більше ніж"
 
@@ -1277,7 +1277,7 @@ msgstr "Імпорт бази даних замінить усі поточні 
 msgid "in"
 msgstr "в"
 
-#: src/rule/constant/operator-options.constant.ts:14
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:65
 msgid "In List"
 msgstr "У списку"
 
@@ -1374,7 +1374,7 @@ msgstr "Навчання актуальне"
 msgid "Lent"
 msgstr "Позичено"
 
-#: src/rule/constant/operator-options.constant.ts:12
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:63
 msgid "Less Than"
 msgstr "Менше ніж"
 
@@ -1422,11 +1422,11 @@ msgstr "Вручну"
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
 
-#: src/rule/constant/rule-condition-match-type-labels.constant.ts:6
+#: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx:12
 msgid "Match All"
 msgstr "Усі збігаються"
 
-#: src/rule/constant/rule-condition-match-type-labels.constant.ts:7
+#: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx:13
 msgid "Match Any"
 msgstr "Будь-яка збігається"
 
@@ -1438,11 +1438,11 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "matches"
 msgstr "збігається"
 
-#: src/rule/constant/operator-options.constant.ts:10
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Відповідає регулярному виразу"
 
-#: src/app/rule-mcc-selector.tsx:46
+#: src/app/rule-mcc-selector.tsx:48
 msgid "MCC categories are not loaded"
 msgstr "Категорії MCC не завантажено"
 
@@ -1588,11 +1588,11 @@ msgstr "Мов не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/app/rule-mcc-selector.tsx:45
+#: src/app/rule-mcc-selector.tsx:47
 msgid "No MCC codes available"
 msgstr "Немає доступних MCC-кодів"
 
-#: src/app/rule-mcc-selector.tsx:45
+#: src/app/rule-mcc-selector.tsx:47
 msgid "No MCC codes found"
 msgstr "MCC-кодів не знайдено"
 
@@ -1608,7 +1608,7 @@ msgstr "Повторювані платежі не виявлено"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/app/(tabs)/settings/rules.tsx:98
+#: src/app/(tabs)/settings/rules.tsx:117
 msgid "No Rules Yet"
 msgstr "Правил ще немає"
 
@@ -1646,7 +1646,7 @@ msgstr "Нічого не вибрано"
 msgid "not contains"
 msgstr "не містить"
 
-#: src/rule/constant/operator-options.constant.ts:9
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:60
 msgid "Not Contains"
 msgstr "Не містить"
 
@@ -1654,7 +1654,7 @@ msgstr "Не містить"
 msgid "not equals"
 msgstr "не дорівнює"
 
-#: src/rule/constant/operator-options.constant.ts:7
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:58
 msgid "Not Equals"
 msgstr "Не дорівнює"
 
@@ -1699,7 +1699,7 @@ msgstr "Відкрийте Монобанк, щоб отримати токен"
 msgid "Open the Privatbank24 app"
 msgstr "Відкрийте додаток Приват24"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:94
 msgid "Operator"
 msgstr "Оператор"
 
@@ -1809,7 +1809,7 @@ msgstr "Приватбанк"
 msgid "PrivatBank"
 msgstr "ПриватБанк"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:116
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
 msgid "Quick rule"
 msgstr "Швидке правило"
 
@@ -1927,15 +1927,15 @@ msgstr "Відновлення ШІ…"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/(tabs)/settings/rules.tsx:55
+#: src/app/(tabs)/settings/rules.tsx:79
 msgid "Rule"
 msgstr "Правило"
 
-#: src/rule/hooks/use-rule-form.hook.ts:74
+#: src/rule/hooks/use-rule-form.hook.ts:110
 msgid "Rule applied to {applied} transactions"
 msgstr "Правило застосовано до {applied} транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:112
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:169
 msgid "Rule created · Applied to {appliedCount} transactions"
 msgstr "Правило створено · Застосовано до {appliedCount} транзакцій"
 
@@ -1943,7 +1943,7 @@ msgstr "Правило створено · Застосовано до {appliedC
 msgid "Rule updated · Applied to {appliedCount} transactions"
 msgstr "Правило оновлено · Застосовано до {appliedCount} транзакцій"
 
-#: src/app/(tabs)/settings/rules.tsx:81
+#: src/app/(tabs)/settings/rules.tsx:100
 msgid "Rules"
 msgstr "Правила"
 
@@ -1978,7 +1978,7 @@ msgstr "Пошук рахунків..."
 msgid "Search archived accounts..."
 msgstr "Шукати архівовані рахунки..."
 
-#: src/app/rule-mcc-selector.tsx:61
+#: src/app/rule-mcc-selector.tsx:69
 msgid "Search by code or description..."
 msgstr "Пошук за кодом або описом..."
 
@@ -2071,7 +2071,7 @@ msgstr "Вибрати рахунок"
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:43
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:73
 msgid "Select Action Type"
 msgstr "Вибрати тип дії"
 
@@ -2113,8 +2113,8 @@ msgstr "Вибрати шаблон імпорту"
 msgid "Select MCC code"
 msgstr "Вибрати MCC-код"
 
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:38
-#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:39
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:95
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:96
 msgid "Select Operator"
 msgstr "Вибрати оператор"
 
@@ -2142,7 +2142,7 @@ msgstr "Вибрати тип транзакції"
 msgid "Select type"
 msgstr "Вибрати тип"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:65
 msgid "Select Type"
 msgstr "Вибрати тип"
 
@@ -2154,7 +2154,7 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/rule/constant/rule-action-type-options.constant.ts:11
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:35
 msgid "Set Category"
 msgstr "Встановити категорію"
 
@@ -2234,7 +2234,7 @@ msgstr "Показати вибраний діапазон"
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
-#: src/rule/hooks/use-rule-form.hook.ts:101
+#: src/rule/hooks/use-rule-form.hook.ts:137
 msgid "Skip"
 msgstr "Пропустити"
 
@@ -2393,7 +2393,7 @@ msgid "This account will be hidden from your main view and won't be included in 
 msgstr "Цей рахунок буде приховано з головного екрану і не враховуватиметься в загальних підсумках. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/rule/components/rule-form-edit/rule-form-edit.tsx:54
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:47
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:30
 #: src/transaction/hook/use-delete-transaction.hook.ts:19
 msgid "This action cannot be undone."
@@ -2562,7 +2562,7 @@ msgstr "Переклади готові"
 #: src/app/currency-selector.tsx:52
 #: src/app/icon-selector.tsx:97
 #: src/app/language-selector.tsx:62
-#: src/app/rule-mcc-selector.tsx:46
+#: src/app/rule-mcc-selector.tsx:48
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"

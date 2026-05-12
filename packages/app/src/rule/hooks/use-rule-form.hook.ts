@@ -15,7 +15,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
-import { ruleEngineService } from '../service/rule-engine.service';
+import { ruleApplicationDrainerService } from '../service/rule-application-drainer.service';
 import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
 
@@ -102,7 +102,6 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const form = useForm<RuleCreateInputInterface>({
         resolver: zodResolver(RuleCreateInputSchema),
         defaultValues,
-        values: defaultValues,
         mode: 'onSubmit'
     });
 
@@ -141,7 +140,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const applyRuleToExisting = async (targetRuleId: number, shouldApply: boolean) => {
         if (shouldApply) {
-            const result = await ruleEngineService.applyRuleToMatchingTransactions(targetRuleId, null);
+            const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(targetRuleId, null);
             showApplyResultToast(result.applied, result.failed);
         }
     };

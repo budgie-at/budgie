@@ -4,8 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactElement, useState } from 'react';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
@@ -59,6 +60,15 @@ export default function RulesPage() {
         notify(NotificationFeedbackType.Success);
     };
 
+    const handleToggleRule = async (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>, enabled: boolean) => {
+        try {
+            await ruleService.toggleEnabled(rule.id, enabled);
+            refreshRules();
+        } catch (error: unknown) {
+            Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });
+        }
+    };
+
     const handleOpenRule = (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>) =>
         void openRuleForm({ ruleId: rule.id }).then(handleRuleFormResult);
 
@@ -80,6 +90,7 @@ export default function RulesPage() {
                 conditionsTestID={RulesPageSelector.RuleCardConditions(index)}
                 actionsTestID={RulesPageSelector.RuleCardActions(index)}
                 onOpen={handleOpenRule}
+                onToggle={handleToggleRule}
                 rule={item}
             />
         </DeletableRow>

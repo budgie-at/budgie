@@ -18,7 +18,6 @@ interface Props {
 
 export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
     const handleRemove = () => void onRemove(index);
-    const conditionNumber = index + 1;
 
     return (
         <View
@@ -27,7 +26,7 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
         >
             <View className="flex-row items-center justify-between">
                 <Text className="text-secondary-foreground text-sm font-medium">
-                    <Trans>Condition {conditionNumber}</Trans>
+                    <Trans>Condition</Trans>
                 </Text>
 
                 {canRemove && (
