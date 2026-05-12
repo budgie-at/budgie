@@ -21,7 +21,6 @@ interface Props {
 export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
     const { control } = useFormContext<RuleCreateInputInterface>();
     const actionType = useWatch({ control, name: `actions.${index}.type` });
-    const actionNumber = index + 1;
 
     const handleRemove = () => void onRemove(index);
 
@@ -32,7 +31,7 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
         >
             <View className="flex-row items-center justify-between">
                 <Text className="text-secondary-foreground text-sm font-medium">
-                    <Trans>Action {actionNumber}</Trans>
+                    <Trans>Action</Trans>
                 </Text>
 
                 {canRemove && (
