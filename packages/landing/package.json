@@ -5,13 +5,13 @@
     "scripts": {
         "build": "next build",
         "clear": "yarn run -T rimraf dist .next node_modules/.cache .turbo",
-        "release:start": "next start",
-        "start": "next dev",
-        "lint": "run -T eslint --fix .",
-        "ts": "run -T tsc -p .",
         "i18n:compile": "run -T lingui compile --typescript",
         "i18n:extract": "run -T lingui extract --overwrite --clean",
-        "i18n:sync": "yarn i18n:extract && yarn i18n:compile"
+        "i18n:sync": "yarn i18n:extract && yarn i18n:compile",
+        "lint": "run -T eslint --fix .",
+        "release:start": "next start",
+        "start": "next dev",
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@lingui/core": "^5.7.0",

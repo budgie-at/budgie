@@ -8,22 +8,22 @@
         ".": {
             "types": "./dist/esm/index.d.ts",
             "import": "./dist/esm/index.js",
-            "default": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js"
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
     "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "run -T tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",
         "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p .",
-        "test": "run -T jest --passWithNoTests"
+        "test": "run -T jest --passWithNoTests",
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@rnw-community/log-decorator": "^2.0.3",

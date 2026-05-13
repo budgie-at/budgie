@@ -13,6 +13,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
+import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { RefundedPill } from '../../../../transaction/components/refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
@@ -28,6 +29,7 @@ import type { UpdateTransactionFormPropsInterface } from '../../../../transactio
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionFormPropsInterface) => {
     const { t } = useLingui();
     const [openConvertToTransfer] = useConvertToTransferModal();
@@ -42,6 +44,18 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
+
+    const {
+        mode: ruleDetectionMode,
+        suggestRuleData,
+        updateRuleData,
+        matchingRulesCount,
+        onRuleCreated,
+        onDismiss
+    } = useSuggestRuleDetection({
+        transaction,
+        control: form.control
+    });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
@@ -86,6 +100,12 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
+                    ruleDetectionMode={ruleDetectionMode}
+                    suggestRuleData={suggestRuleData}
+                    updateRuleData={updateRuleData}
+                    matchingRulesCount={matchingRulesCount}
+                    onRuleCreated={onRuleCreated}
+                    onDismiss={onDismiss}
                 />
             </FullPage>
         </FormProvider>

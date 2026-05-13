@@ -12,6 +12,9 @@ import {
     MccCategoryRepository,
     MerchantEmbeddingRepository,
     RefundPairRepository,
+    RuleActionRepository,
+    RuleConditionRepository,
+    RuleRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
@@ -19,6 +22,7 @@ import {
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
+    TransactionRuleRepository,
     TransactionTagsRepository,
     TransferPairRepository
 } from '@budgie/contracts';
@@ -116,5 +120,9 @@ export const transactionRepository = new TransactionRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);
+export const transactionRuleRepository = new TransactionRuleRepository(db);
+export const ruleRepository = new RuleRepository(db);
+export const ruleConditionRepository = new RuleConditionRepository(db);
+export const ruleActionRepository = new RuleActionRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);
 export const refundPairRepository = new RefundPairRepository(db);

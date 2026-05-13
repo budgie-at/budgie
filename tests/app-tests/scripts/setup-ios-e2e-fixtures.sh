@@ -49,6 +49,9 @@ install_statement_fixtures() {
     done
 }
 
+xcrun simctl spawn "$SIMULATOR_UDID" defaults write .GlobalPreferences AppleKeyboards -array 'en_US@sw=QWERTY;hw=Automatic' 'emoji@sw=Emoji' >/dev/null 2>&1 || true
+xcrun simctl spawn "$SIMULATOR_UDID" defaults write .GlobalPreferences AppleLanguages -array 'en-US' >/dev/null 2>&1 || true
+
 xcrun simctl addmedia "$SIMULATOR_UDID" "$CONTACT_FIXTURE_PATH" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant contacts "$APP_ID" >/dev/null 2>&1 || true
 xcrun simctl privacy "$SIMULATOR_UDID" grant microphone "$APP_ID" >/dev/null 2>&1 || true
@@ -60,6 +63,11 @@ xcrun simctl terminate "$SIMULATOR_UDID" com.apple.DocumentsApp >/dev/null 2>&1 
 
 if [ -n "$APP_DATA" ] && [ -d "$APP_DATA/Documents/SQLite" ]; then
     rm -f "$APP_DATA/Documents/SQLite"/budgie.db*
+fi
+
+if [ -n "$APP_DATA" ]; then
+    rm -f "$APP_DATA/Documents/E2EFixtures"/e2e-* 2>/dev/null || true
+    rm -f "$APP_DATA/Documents/E2ECsvFixtures"/e2e-* 2>/dev/null || true
 fi
 
 install_database_fixture "$SCRIPT_DIR/../fixtures/01.db" "01.db"
@@ -85,7 +93,15 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/14.db" "14.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/rules-base.db" "rules-base.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
+
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test-transactions.csv" "test-transactions.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test15-suggested-rule.csv" "test15-suggested-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test16-rules-import.csv" "test16-rules-import.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test17-suggested-rule.csv" "test17-suggested-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test25-duplicate-rule.csv" "test25-duplicate-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test27-matching-rules-pill.csv" "test27-matching-rules-pill.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 if [ -n "$APP_DATA" ]; then
     install_statement_fixtures

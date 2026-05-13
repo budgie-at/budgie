@@ -8,12 +8,12 @@ import {
 
 import { insertOne } from '../db/insert-one';
 
+import type { SeedBankPairEntryInputType } from './seed-bank-pair-entry-input.type';
 import type {
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface
 } from '@budgie/contracts';
-import type { SeedBankPairEntryInputType } from './seed-bank-pair-entry-input.type';
 
 type SeedBankPairTransactionInputType = Pick<TransactionCreateEntityInterface, 'externalId' | 'operatedAt'>;
 
@@ -36,7 +36,8 @@ const seedBankSide = (
         exchangeRate: entry.exchangeRate ?? 1,
         fromAccountId,
         toAccountId,
-        comment: ''
+        comment: '',
+        updatedBy: null
     } satisfies TransactionCreateEntityInterface);
     insertOne(TransactionEntryEntityTable, {
         transactionId: inserted.id,
@@ -50,6 +51,7 @@ const seedBankSide = (
         mccCategoryId: entry.mccCategoryId ?? null,
         originalTransactionId: null
     } satisfies TransactionEntryCreateEntityInterface);
+
     return inserted;
 };
 

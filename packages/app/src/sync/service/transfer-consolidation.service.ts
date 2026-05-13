@@ -442,7 +442,8 @@ class TransferConsolidationService {
                 externalSource: null,
                 needsEmbedding: false,
                 consolidationType: input.consolidationType,
-                consolidationParentTransactionId: null
+                consolidationParentTransactionId: null,
+                updatedBy: null
             },
             tx
         );
