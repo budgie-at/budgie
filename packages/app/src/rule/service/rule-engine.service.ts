@@ -153,24 +153,31 @@ class RuleEngineService {
             return;
         }
 
-        const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
-
         await transactionAsync(db, async transaction => {
-            const convertedToTransfer = await matchingRules.reduce(
-                (previousRule, rule) =>
-                    previousRule.then(async previousConverted => {
-                        const converted = await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
-
-                        return previousConverted || converted;
-                    }),
-                Promise.resolve(false)
-            );
+            const convertedToTransfer = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
 
             if (convertedToTransfer) {
                 await accountBalanceIncrementalService.updateAllBalances(true, transaction);
             }
         });
+    }
+
+    private async applyMatchingRulesSequentially(
+        transactionId: number,
+        matchingRules: RuleWithRelationsEntityInterface[],
+        transaction: DB
+    ): Promise<boolean> {
+        const appliedExclusiveActions = new Set<RuleActionTypeEnum>();
+        let convertedToTransfer = false;
+
+        for (const rule of matchingRules) {
+            // eslint-disable-next-line no-await-in-loop -- rules must apply sequentially: each step mutates appliedExclusiveActions which gates the next iteration
+            const converted = await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
+            convertedToTransfer ||= converted;
+        }
+
+        return convertedToTransfer;
     }
 
     private getBatchStarts(total: number): number[] {

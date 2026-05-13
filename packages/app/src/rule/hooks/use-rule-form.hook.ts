@@ -11,7 +11,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
@@ -126,7 +126,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             conditionMatchType: values.conditionMatchType
         });
 
-        if (count <= 0) {
+        if (!isPositiveNumber(count)) {
             return false;
         }
 
