@@ -1,6 +1,6 @@
 {
     "name": "@budgie/logger",
-    "version": "5.4.0",
+    "version": "5.17.0",
     "private": true,
     "description": "Shared logging primitives: console transport, build-time disable gate, @Log decorator, getLogger",
     "sideEffects": false,

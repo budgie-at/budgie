@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.17.0](https://github.com/budgie-at/budgie/compare/v5.16.3...v5.17.0) (2026-05-13)
+
+### Bug Fixes
+
+- **app, contracts:** address PR review — batch processing, soft delete, conventions ([f80aa95](https://github.com/budgie-at/budgie/commit/f80aa951903c275e4540de71796e4d44107998b1))
+- **app, contracts:** fix TS and lint errors in rule engine ([a357dfa](https://github.com/budgie-at/budgie/commit/a357dfad1f71faf84b8a62a1d9049a7007d75fd2))
+- **app, contracts:** replace appliedRuleId with updatedBy, fix rule engine and TS issues ([3148d3f](https://github.com/budgie-at/budgie/commit/3148d3f6c57262c563a8c6b314023cfefb461408))
+- **app:** address code review issues — remove type assertions, add soft-delete filters, fix file organization ([b8c765e](https://github.com/budgie-at/budgie/commit/b8c765edf476b4b3f3f3b81519c5955daaed6f27))
+- **app:** address PR review issues - fix matching count, pill UI, translations, and code quality ([cc656dc](https://github.com/budgie-at/budgie/commit/cc656dc77459cd1c7f9d5ac7fd49efb74e8382bc))
+- **contracts:** add DBOrTX type for repository transaction parameter compatibility ([3d5b353](https://github.com/budgie-at/budgie/commit/3d5b3539570b6d9060864f3462bbadc683c113a7))
+
+### Features
+
+- **app, contracts:** track applied rule on transactions via appliedRuleId ([5136c5a](https://github.com/budgie-at/budgie/commit/5136c5aebbcc45fb9098709d8d8d0aa248304df5))
+- **app:** add rule conflict resolution with first-match-wins and warnings ([37e82ee](https://github.com/budgie-at/budgie/commit/37e82eedf51a3e7f4ce02b7f4e21249f035c8aa4))
+- **app:** add rules engine with suggest-rule UI and E2E tests ([e170454](https://github.com/budgie-at/budgie/commit/e170454d291242170378ae510b9bfa04e767a64b))
+
+### Performance Improvements
+
+- **app, contracts:** replace JS batch scan with SQL-based rule condition matching ([c914760](https://github.com/budgie-at/budgie/commit/c914760c74d35ba4262f12d2c12e3436effb519e))
+
 ## [5.16.1](https://github.com/budgie-at/budgie/compare/v5.16.0...v5.16.1) (2026-05-08)
 
 ### Bug Fixes
