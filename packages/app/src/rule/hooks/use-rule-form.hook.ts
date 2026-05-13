@@ -105,16 +105,6 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         mode: 'onSubmit'
     });
 
-    const showApplyResultToast = (applied: number, failed: number) => {
-        if (failed === 0) {
-            Toast.show({ type: 'success', text1: t`Rule applied to ${applied} transactions` });
-
-            return;
-        }
-
-        Toast.show({ type: 'error', text1: t`${applied} updated, ${failed} failed` });
-    };
-
     const confirmApplyToExisting = async (values: RuleCreateInputInterface): Promise<boolean> => {
         const hasConditions = values.conditions.some(condition => isNotEmptyString(condition.value));
         if (!hasConditions) {
@@ -138,10 +128,9 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         });
     };
 
-    const applyRuleToExisting = async (targetRuleId: number, shouldApply: boolean) => {
+    const enqueueApply = (targetRuleId: number, shouldApply: boolean): void => {
         if (shouldApply) {
-            const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(targetRuleId, null);
-            showApplyResultToast(result.applied, result.failed);
+            ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId);
         }
     };
 
@@ -151,10 +140,10 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
-                await applyRuleToExisting(ruleId, shouldApply);
+                enqueueApply(ruleId, shouldApply);
             } else {
                 const rule = await ruleService.create(values);
-                await applyRuleToExisting(rule.id, shouldApply);
+                enqueueApply(rule.id, shouldApply);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
         } catch (error: unknown) {
