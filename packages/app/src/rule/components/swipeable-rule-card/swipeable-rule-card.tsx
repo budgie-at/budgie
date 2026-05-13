@@ -6,13 +6,14 @@ import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { FadeIn, FadeOut, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { SwipeableRuleCardStatus } from '../swipeable-rule-card-status/swipeable-rule-card-status';
 
 const logger = getLogger('SwipeableRuleCard');
 
@@ -22,7 +23,6 @@ const ENTRY_TRANSLATE_Y = 16;
 const SNAP_BACK_SPRING_CONFIG = { damping: 20, stiffness: 200 };
 const SLIDE_OUT_DISTANCE = 300;
 const ZAP_ICON_SIZE = 14;
-const CHECK_ICON_SIZE = 14;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
 
@@ -146,23 +146,25 @@ export const SwipeableRuleCard = (props: Props) => {
 
     if (status === 'success') {
         return (
-            <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(300)}>
-                <View className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm">
-                    <Icon icon={UserIconNameEnum.CircleCheck} size={CHECK_ICON_SIZE} className="text-positive-foreground" />
-                    <Text className="text-xs text-secondary-foreground font-medium">{successMessage(appliedCount)}</Text>
-                </View>
-            </Animated.View>
+            <SwipeableRuleCardStatus
+                icon={UserIconNameEnum.CircleCheck}
+                iconClassName="text-positive-foreground"
+                textClassName="text-xs text-secondary-foreground font-medium"
+            >
+                {successMessage(appliedCount)}
+            </SwipeableRuleCardStatus>
         );
     }
 
     if (status === 'error') {
         return (
-            <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(300)}>
-                <View className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm">
-                    <Icon icon={UserIconNameEnum.CircleAlert} size={CHECK_ICON_SIZE} className="text-destructive-foreground" />
-                    <Text className="text-xs text-destructive-foreground font-medium">{errorMessage}</Text>
-                </View>
-            </Animated.View>
+            <SwipeableRuleCardStatus
+                icon={UserIconNameEnum.CircleAlert}
+                iconClassName="text-destructive-foreground"
+                textClassName="text-xs text-destructive-foreground font-medium"
+            >
+                {errorMessage}
+            </SwipeableRuleCardStatus>
         );
     }
 
