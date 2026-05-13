@@ -7,7 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
-import { ImportPresetSelector } from './import-preset-picker.selector';
+import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
 interface Props {
     readonly selectedPreset: ImportPresetEnum | undefined;
@@ -33,17 +33,23 @@ export const ImportPresetPicker = ({ selectedPreset, onPresetSelect }: Props) =>
             </View>
             <View className="flex-row flex-wrap gap-sm">
                 <ImportPresetChip
+                    testID={ImportPresetPickerSelector.PresetChip('Budgie')}
                     title="Budgie"
                     isSelected={selectedPreset === ImportPresetEnum.Budgie}
                     onSelect={handleBudgieSelect}
-                    testID={ImportPresetSelector.PresetBudgie}
                 />
                 <ImportPresetChip
+                    testID={ImportPresetPickerSelector.PresetChip('SmartBudget')}
                     title="SmartBudget"
                     isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
                     onSelect={handleSmartBudgetSelect}
                 />
-                <ImportPresetChip title="FinEye" isSelected={selectedPreset === ImportPresetEnum.FinEye} onSelect={handleFinEyeSelect} />
+                <ImportPresetChip
+                    testID={ImportPresetPickerSelector.PresetChip('FinEye')}
+                    title="FinEye"
+                    isSelected={selectedPreset === ImportPresetEnum.FinEye}
+                    onSelect={handleFinEyeSelect}
+                />
             </View>
         </View>
     );

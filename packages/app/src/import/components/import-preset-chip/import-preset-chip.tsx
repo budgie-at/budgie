@@ -8,6 +8,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props extends Pick<ComponentProps<typeof HapticPressable>, 'testID'> {
     readonly title: string;
+    readonly testID?: string;
     readonly isSelected: boolean;
     readonly onSelect: () => void;
 }

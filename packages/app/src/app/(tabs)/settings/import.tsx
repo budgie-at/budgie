@@ -40,7 +40,7 @@ const SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
-    const { fileUri } = useLocalSearchParams<{ fileUri: string }>();
+    const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
     const { t } = useLingui();
 

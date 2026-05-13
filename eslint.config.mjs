@@ -19,6 +19,7 @@ export default defineConfig(
             '**/.expo/**',
             '**/.android/**',
             '**/.ios/**',
+            '.agents/**',
 
             '**/node_modules/**',
             '**/dist/**',
