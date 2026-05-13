@@ -14,10 +14,11 @@ interface Props {
     readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
     readonly onDismiss?: () => void;
+    readonly onCreatingChange?: (next: boolean) => void;
 }
 
 export const RulePillSlot = (props: Props) => {
-    const { ruleDetectionMode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss } = props;
+    const { ruleDetectionMode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss, onCreatingChange } = props;
 
     if (
         ruleDetectionMode === RuleDetectionModeEnum.SUGGEST &&
@@ -25,7 +26,14 @@ export const RulePillSlot = (props: Props) => {
         isDefined(onRuleCreated) &&
         isDefined(onDismiss)
     ) {
-        return <RuleSuggestionCard suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} onDismiss={onDismiss} />;
+        return (
+            <RuleSuggestionCard
+                suggestRuleData={suggestRuleData}
+                onRuleCreated={onRuleCreated}
+                onDismiss={onDismiss}
+                onCreatingChange={onCreatingChange}
+            />
+        );
     }
 
     if (

@@ -30,6 +30,7 @@ interface Props {
     readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
     readonly onDismiss?: () => void;
+    readonly onCreatingChange?: (next: boolean) => void;
 }
 
 export const QuickFormBottomOverlay = (props: Props) => {
@@ -54,7 +55,8 @@ export const QuickFormBottomOverlay = (props: Props) => {
         updateRuleData,
         matchingRulesCount,
         onRuleCreated,
-        onDismiss
+        onDismiss,
+        onCreatingChange
     } = props;
 
     return (
@@ -69,6 +71,7 @@ export const QuickFormBottomOverlay = (props: Props) => {
                         matchingRulesCount={matchingRulesCount}
                         onRuleCreated={onRuleCreated}
                         onDismiss={onDismiss}
+                        onCreatingChange={onCreatingChange}
                     />
                 </View>
                 <View className="flex-1">
