@@ -80,6 +80,7 @@ interface Props {
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
+    readonly onCreatingChange?: (next: boolean) => void;
 }
 
 const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> => {
@@ -95,10 +96,46 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> =>
 };
 
 export const RuleSuggestionCard = (props: Props) => {
-    const { suggestRuleData, onRuleCreated, onDismiss } = props;
+    const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
     const { openRuleForm } = useRuleFormModal();
 
+    const handleDuplicateRule = (duplicateRule: RuleWithRelationsEntityInterface, ruleInput: RuleCreateInputInterface): Promise<void> => {
+        logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
+
+        return new Promise<void>((resolve, reject) => {
+            const handleEditExisting = () => {
+                logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
+                void openRuleForm({ ruleId: duplicateRule.id });
+                // eslint-disable-next-line lingui/no-unlocalized-strings
+                reject(new Error('Edit'));
+            };
+
+            const handleCancel = () => {
+                logger.log('handleYes:duplicate-alert:cancel');
+                // eslint-disable-next-line lingui/no-unlocalized-strings
+                reject(new Error('Cancelled'));
+            };
+
+            const onCreateAnywaySuccess = (): void => {
+                onRuleCreated();
+                resolve();
+            };
+
+            const handleCreateAnyway = () => {
+                logger.log('handleYes:duplicate-alert:create-anyway');
+                void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
+            };
+
+            Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
+                { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
+                { text: t`Edit existing`, onPress: handleEditExisting },
+                { text: t`Create anyway`, onPress: handleCreateAnyway }
+            ]);
+        });
+    };
+
     const handleYes = async (): Promise<void> => {
+        onCreatingChange?.(true);
         logger.log('handleYes:enter', {
             title: suggestRuleData.title,
             mccCode: suggestRuleData.mccCode,
@@ -122,38 +159,7 @@ export const RuleSuggestionCard = (props: Props) => {
         });
 
         if (isDefined(duplicateRule)) {
-            logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
-
-            await new Promise<void>((resolve, reject) => {
-                const handleEditExisting = () => {
-                    logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
-                    void openRuleForm({ ruleId: duplicateRule.id });
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    reject(new Error('Edit'));
-                };
-
-                const handleCancel = () => {
-                    logger.log('handleYes:duplicate-alert:cancel');
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    reject(new Error('Cancelled'));
-                };
-
-                const onCreateAnywaySuccess = (): void => {
-                    onRuleCreated();
-                    resolve();
-                };
-
-                const handleCreateAnyway = () => {
-                    logger.log('handleYes:duplicate-alert:create-anyway');
-                    void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
-                };
-
-                Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
-                    { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
-                    { text: t`Edit existing`, onPress: handleEditExisting },
-                    { text: t`Create anyway`, onPress: handleCreateAnyway }
-                ]);
-            });
+            await handleDuplicateRule(duplicateRule, ruleInput);
 
             return;
         }

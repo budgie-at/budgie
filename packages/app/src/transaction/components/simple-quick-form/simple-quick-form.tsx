@@ -56,6 +56,7 @@ interface Props {
     readonly matchingRulesCount?: number;
     readonly onRuleCreated?: () => void;
     readonly onDismiss?: () => void;
+    readonly onCreatingChange?: (next: boolean) => void;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
@@ -83,7 +84,8 @@ export const SimpleQuickForm = (props: Props) => {
         updateRuleData,
         matchingRulesCount,
         onRuleCreated,
-        onDismiss
+        onDismiss,
+        onCreatingChange
     } = props;
 
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
@@ -252,6 +254,7 @@ export const SimpleQuickForm = (props: Props) => {
                     matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
                     onDismiss={onDismiss}
+                    onCreatingChange={onCreatingChange}
                 />
             </View>
 
