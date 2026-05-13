@@ -24,6 +24,7 @@ export const mapBankTransactionToCreateInput = (
         exchangeRate,
         operatedAt: new Date(bankTransaction.time * 1000),
         externalId: bankTransaction.id,
+        updatedBy: null,
         externalSource: provider,
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,

@@ -9,35 +9,35 @@ Fixture-based benchmarks for the SOTA SQL perf pass.
 
 ## BEFORE (baseline before SOTA perf pass)
 
-| Bench | p50 (ms) | p95 (ms) |
-|---|---:|---:|
-| transaction_list_first_20 | 9.42 | 9.69 |
-| count_all_active | 5.93 | 5.98 |
-| count_pending_embedding | 6.28 | 6.90 |
-| pending_merchant_contexts_15 | 45.07 | 46.56 |
-| category_search_prefix | 82.39 | 83.32 |
+| Bench                        | p50 (ms) | p95 (ms) |
+| ---------------------------- | -------: | -------: |
+| transaction_list_first_20    |     9.42 |     9.69 |
+| count_all_active             |     5.93 |     5.98 |
+| count_pending_embedding      |     6.28 |     6.90 |
+| pending_merchant_contexts_15 |    45.07 |    46.56 |
+| category_search_prefix       |    82.39 |    83.32 |
 
 ## AFTER (SOTA perf pass)
 
-| Bench | p50 (ms) | p95 (ms) | Δ p95 |
-|---|---:|---:|---:|
-| transaction_list_first_20 | 20.07 | 20.25 | +109% |
-| count_all_active | 2.68 | 2.70 | -55% |
-| count_pending_embedding | 0.65 | 0.65 | (new bench) |
-| pending_merchant_contexts_15 | 46.15 | 47.32 | +2% (flat) |
-| category_search_prefix | 7.48 | 7.50 | -91% |
-| monthly_pattern_bank | 384.53 | 392.35 | (new bench; -23% vs Task-10 pre-rewrite 880ms, -22% vs post-rewrite 497ms) |
+| Bench                        | p50 (ms) | p95 (ms) |                                                                      Δ p95 |
+| ---------------------------- | -------: | -------: | -------------------------------------------------------------------------: |
+| transaction_list_first_20    |    20.07 |    20.25 |                                                                      +109% |
+| count_all_active             |     2.68 |     2.70 |                                                                       -55% |
+| count_pending_embedding      |     0.65 |     0.65 |                                                                (new bench) |
+| pending_merchant_contexts_15 |    46.15 |    47.32 |                                                                 +2% (flat) |
+| category_search_prefix       |     7.48 |     7.50 |                                                                       -91% |
+| monthly_pattern_bank         |   384.53 |   392.35 | (new bench; -23% vs Task-10 pre-rewrite 880ms, -22% vs post-rewrite 497ms) |
 
 ## Targets met
 
-| Bench | Target p95 | AFTER p95 | Status |
-|---|---:|---:|:---:|
-| transaction_list_first_20 | <10 ms | 20.25 ms | ✗ |
-| count_all_active | <5 ms | 2.70 ms | ✓ |
-| count_pending_embedding | — | 0.65 ms | ✓ |
-| pending_merchant_contexts_15 | <20 ms | 47.32 ms | ✗ |
-| category_search_prefix | <15 ms | 7.50 ms | ✓ |
-| monthly_pattern_bank | <50 ms | 392.35 ms | ✗ (adversarial fixture) |
+| Bench                        | Target p95 | AFTER p95 |         Status          |
+| ---------------------------- | ---------: | --------: | :---------------------: |
+| transaction_list_first_20    |     <10 ms |  20.25 ms |            ✗            |
+| count_all_active             |      <5 ms |   2.70 ms |            ✓            |
+| count_pending_embedding      |          — |   0.65 ms |            ✓            |
+| pending_merchant_contexts_15 |     <20 ms |  47.32 ms |            ✗            |
+| category_search_prefix       |     <15 ms |   7.50 ms |            ✓            |
+| monthly_pattern_bank         |     <50 ms | 392.35 ms | ✗ (adversarial fixture) |
 
 ### Notes on missed targets
 

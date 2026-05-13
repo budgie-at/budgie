@@ -76,7 +76,8 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
             <Pressable
-                className="flex-row-reverse items-center"
+                className="flex-row-reverse items-center p-sm"
+                hitSlop={10}
                 onPress={handlePress}
                 testID={testID ?? CreateTransactionMenuSelector.item(index)}
             >

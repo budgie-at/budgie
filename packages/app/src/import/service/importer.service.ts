@@ -22,6 +22,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
+import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
 import { EntryParamsInterface } from '../interface/entry-params.interface';
@@ -52,7 +53,12 @@ export class ImporterService {
         this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
 
         const transactions = await this.processTransactions(csvText, progress);
-        await transactionService.bulkCreate(transactions);
+        const createdTransactions = await transactionService.bulkCreate(transactions);
+
+        ruleApplicationDrainerService.enqueueTransactions(
+            createdTransactions.map(transaction => transaction.id),
+            transactions
+        );
 
         return progress;
     }
@@ -149,6 +155,7 @@ export class ImporterService {
             amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(dest?.amount ?? source.amount) : source.amount,
             externalId: normalizedRow.externalId,
             title: '',
+            updatedBy: null,
             externalSource: ExternalSourceEnum.CSV,
             comment: normalizedRow.comment,
             toAccountId: source.account.id,

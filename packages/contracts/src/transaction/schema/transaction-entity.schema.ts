@@ -7,6 +7,7 @@ import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable, {
@@ -20,6 +21,7 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     externalSource: zodEnum(ExternalSourceEnum).nullable().describe('The external source of the transaction.'),
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.'),
+    updatedBy: zodEnum(TransactionUpdatedByEnum).nullable().describe('Who last updated the transaction.'),
     consolidationParentTransactionId: schema =>
         schema.positive().nullable().describe('Canonical transaction id this source transaction belongs to.'),
     consolidationType: zodEnum(TransactionConsolidationTypeEnum)

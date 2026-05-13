@@ -1,0 +1,56 @@
+appId: ${APP_ID}
+env:
+  AMOUNT: ${AMOUNT}
+  ACCOUNT_NAME: ${ACCOUNT_NAME}
+  CATEGORY_NAME: ${CATEGORY_NAME}
+  COMMENT: ${COMMENT}
+---
+- runFlow: ../navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- runFlow:
+    when:
+      visible: 'New Expense'
+    commands:
+      - runFlow:
+          when:
+            true: ${AMOUNT == '25'}
+          commands:
+            - tapOn: '2'
+            - tapOn: '5'
+      - runFlow:
+          when:
+            true: ${AMOUNT == '10'}
+          commands:
+            - tapOn: '1'
+            - tapOn: '0'
+
+- runFlow:
+    file: select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionForm.CommentInput'
+    direction: DOWN
+    centerElement: true
+
+- runFlow:
+    file: enter-comment.flow.yaml
+    env:
+      COMMENT: ${COMMENT}
+
+- runFlow: submit-transaction-and-wait.flow.yaml

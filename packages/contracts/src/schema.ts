@@ -26,6 +26,12 @@ export { CommentEmbeddingEntityTable } from './comment-embedding/table/comment-e
 export { CommentEmbeddingEntityRelations } from './comment-embedding/relations/comment-embedding-entity.relations';
 export { CommentEmbeddingTagEntityTable } from './comment-embedding/table/comment-embedding-tag-entity.table';
 export { CommentEmbeddingTagEntityRelations } from './comment-embedding/relations/comment-embedding-tag-entity.relations';
+export { RuleEntityTable } from './rule/table/rule-entity.table';
+export { RuleEntityRelations } from './rule/relations/rule-entity.relations';
+export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-entity.table';
+export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
+export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
+export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';

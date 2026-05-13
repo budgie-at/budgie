@@ -3,7 +3,6 @@ import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInA
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { DB } from '../../@generic/type/db.type';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -14,6 +13,7 @@ import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
 
 export class AccountRepository {
@@ -104,8 +104,8 @@ export class AccountRepository {
         });
     }
 
-    findById(id: number) {
-        return this.db.query.AccountEntityTable.findFirst({
+    findById(id: number, tx?: DB) {
+        return (tx ?? this.db).query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
@@ -152,6 +152,10 @@ export class AccountRepository {
             .insert(AccountEntityTable)
             .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
             .returning();
+    }
+
+    async touchUpdatedAt(accountIds: number[], tx?: DB): Promise<void> {
+        await (tx ?? this.db).update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds));
     }
 
     async truncate(tx?: DB): Promise<void> {

@@ -8,6 +8,7 @@ import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNu
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
@@ -23,11 +24,18 @@ import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
+import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = TRANSACTION_FULL_RELATIONS;
+
+    private entriesWithMccCategoryRelations = {
+        [TransactionAssociationEnum.ENTRIES]: {
+            with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
+        }
+    } as const;
 
     @Log(
         (inputs, tx) => `enter hasTx=${String(isDefined(tx))} externalIds=${inputs.map(input => input.externalId).join(',')}`,
@@ -325,6 +333,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
     }
 
+    async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
+    }
+
     async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
@@ -361,6 +373,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
+    async findByIdsWithEntries(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: inArray(TransactionEntityTable.id, ids),
+            with: this.entriesWithMccCategoryRelations
+        });
+    }
+
     getAllAfter(cursorId: number | null, limit: number) {
         const baseFilter = and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
         const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
@@ -374,6 +397,16 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             where
+        });
+    }
+
+    async findAllWithMccCategoryOffset(limit: number, offset: number): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            with: this.entriesWithMccCategoryRelations,
+            orderBy: (transaction, { desc }) => [desc(transaction.id)],
+            limit,
+            offset,
+            where: isNull(TransactionEntityTable.deletedAt)
         });
     }
 

@@ -52,7 +52,8 @@ export const seedRefundedExpense = (input: SeedRefundedExpenseInput): SeedRefund
         exchangeRate: 1,
         fromAccountId: input.accountId,
         toAccountId: null,
-        comment: ''
+        comment: '',
+        updatedBy: null
     } satisfies TransactionCreateEntityInterface);
 
     insertOne(TransactionEntryEntityTable, {
@@ -80,7 +81,8 @@ export const seedRefundedExpense = (input: SeedRefundedExpenseInput): SeedRefund
             exchangeRate: 1,
             fromAccountId: null,
             toAccountId: input.accountId,
-            comment: ''
+            comment: '',
+            updatedBy: null
         } satisfies TransactionCreateEntityInterface);
 
         insertOne(TransactionEntryEntityTable, {

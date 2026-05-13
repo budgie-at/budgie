@@ -32,5 +32,11 @@ export {
     CommentEmbeddingEntityTable,
     CommentEmbeddingEntityRelations,
     CommentEmbeddingTagEntityTable,
-    CommentEmbeddingTagEntityRelations
+    CommentEmbeddingTagEntityRelations,
+    RuleEntityTable,
+    RuleEntityRelations,
+    RuleConditionEntityTable,
+    RuleConditionEntityRelations,
+    RuleActionEntityTable,
+    RuleActionEntityRelations
 } from '@budgie/contracts';

@@ -8,14 +8,14 @@
         ".": {
             "types": "./dist/esm/index.d.ts",
             "import": "./dist/esm/index.js",
-            "default": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js"
+            "react-native": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js"
         },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
     "react-native": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
     "scripts": {
         "build": "run -T tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",

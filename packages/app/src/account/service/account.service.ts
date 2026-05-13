@@ -245,7 +245,8 @@ class AccountService {
                 operatedAt: new Date(),
                 exchangeRate: 1,
                 fromAccountId: isIncome ? null : accountId,
-                toAccountId: isIncome ? accountId : null
+                toAccountId: isIncome ? accountId : null,
+                updatedBy: null
             },
             tx
         );

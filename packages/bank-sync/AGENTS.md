@@ -81,6 +81,7 @@ Each bank provider has:
 For any provider that parses raw input (PDF, XLSX, etc.) into transactions, organize the work as cohesive singleton classes — not loose utilities — under `<provider>/parser/`.
 
 **Class shapes:**
+
 - **`<Provider>Parser`** — main entry. `@Log` on `parse()`. Holds per-call mutable state internally. Calls smaller classes for sub-steps.
 - **`<Provider>AccountInfoExtractor`** — single coherent unit (find IBAN, dates, balances). `@Log` on `extract()`. Private finders inside.
 - **`<Provider>RowGrouper`** (or analog) — groups raw items into provider-specific row shape. `@Log` on `group()`. Private comparator inside.

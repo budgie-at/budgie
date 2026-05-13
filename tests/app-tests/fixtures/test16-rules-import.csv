@@ -1,0 +1,3 @@
+externalId,toAccount,category,operatedAt,toAmount,toCurrency,comment
+001,Rules Test Account,Food,04/10/2026 10:00:00,-15.00,USD,Netflix Subscription
+002,Rules Test Account,Other,04/10/2026 11:00:00,-5.00,USD,Starbucks Coffee
