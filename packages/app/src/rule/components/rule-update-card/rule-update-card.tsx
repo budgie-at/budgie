@@ -8,7 +8,7 @@ import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
-import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
+import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 interface Props {
     readonly updateRuleData: UpdateRuleDataInterface;
@@ -16,7 +16,7 @@ interface Props {
     readonly onDismiss: () => void;
 }
 
-const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<SwipeableRuleCardResultInterface> => {
+const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<void> => {
     const allRules = await ruleRepository.findAllWithActionsAndCategories();
     const existingRule = allRules.find(rule => rule.id === updateRuleData.ruleId);
 
@@ -49,22 +49,18 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface): Promise<Swip
 
     await ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions });
 
-    const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(updateRuleData.ruleId, null);
-
-    return { applied: result.applied };
+    ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId);
 };
 
 export const RuleUpdateCard = (props: Props) => {
     const { updateRuleData, onRuleUpdated, onDismiss } = props;
 
-    const handleYes = async (): Promise<SwipeableRuleCardResultInterface> => await updateRule(updateRuleData);
-
-    const successMessage = (appliedCount: number) => <Trans>Rule updated &middot; Applied to {appliedCount} transactions</Trans>;
+    const handleYes = async (): Promise<void> => updateRule(updateRuleData);
 
     return (
         <SwipeableRuleCard
             descriptionText={t`Update rule?`}
-            successMessage={successMessage}
+            successMessage={<Trans>Rule updated</Trans>}
             errorMessage={<Trans>Could not update rule</Trans>}
             layout="wide"
             onYes={handleYes}
