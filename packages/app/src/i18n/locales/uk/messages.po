@@ -31,15 +31,11 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/rule/hooks/use-rule-form.hook.ts:115
-msgid "{applied} updated, {failed} failed"
-msgstr "{applied} оновлено, {failed} не вдалося"
-
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/rule/hooks/use-rule-form.hook.ts:135
+#: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
 
@@ -105,7 +101,7 @@ msgstr "1 відповідне правило"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
@@ -288,11 +284,11 @@ msgid "Appearance"
 msgstr "Вигляд"
 
 #: src/app/note-input.tsx:54
-#: src/rule/hooks/use-rule-form.hook.ts:136
+#: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Apply"
 msgstr "Застосувати"
 
-#: src/rule/hooks/use-rule-form.hook.ts:134
+#: src/rule/hooks/use-rule-form.hook.ts:124
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
@@ -406,7 +402,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:156
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -604,7 +600,7 @@ msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
-#: src/rule/hooks/use-rule-form.hook.ts:163
+#: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not create rule"
 msgstr "Не вдалося створити правило"
 
@@ -628,7 +624,7 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete category"
 msgstr "Не вдалося видалити категорію"
 
-#: src/rule/hooks/use-rule-form.hook.ts:180
+#: src/rule/hooks/use-rule-form.hook.ts:169
 msgid "Could not delete rule."
 msgstr "Не вдалося видалити правило."
 
@@ -719,8 +715,8 @@ msgid "Could not unconsolidate transaction."
 msgstr "Не вдалося розконсолідувати транзакцію."
 
 #: src/app/(tabs)/settings/rules.tsx:68
-#: src/rule/components/rule-update-card/rule-update-card.tsx:68
-#: src/rule/hooks/use-rule-form.hook.ts:163
+#: src/rule/components/rule-update-card/rule-update-card.tsx:64
+#: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
 
@@ -756,7 +752,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:158
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Create anyway"
 msgstr "Все одно створити"
 
@@ -924,7 +920,7 @@ msgstr "Завантаження моделей ШІ…"
 msgid "Downloading models"
 msgstr "Завантаження моделей"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
@@ -948,15 +944,15 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:157
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:83
+#: src/app/(main)/transactions/[id]/expense.tsx:84
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:82
+#: src/app/(main)/transactions/[id]/income.tsx:83
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1931,17 +1927,13 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Правило"
 
-#: src/rule/hooks/use-rule-form.hook.ts:110
-msgid "Rule applied to {applied} transactions"
-msgstr "Правило застосовано до {applied} транзакцій"
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+msgid "Rule created"
+msgstr "Правило створено"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:169
-msgid "Rule created · Applied to {appliedCount} transactions"
-msgstr "Правило створено · Застосовано до {appliedCount} транзакцій"
-
-#: src/rule/components/rule-update-card/rule-update-card.tsx:62
-msgid "Rule updated · Applied to {appliedCount} transactions"
-msgstr "Правило оновлено · Застосовано до {appliedCount} транзакцій"
+#: src/rule/components/rule-update-card/rule-update-card.tsx:63
+msgid "Rule updated"
+msgstr "Правило оновлено"
 
 #: src/app/(tabs)/settings/rules.tsx:100
 msgid "Rules"
@@ -2234,7 +2226,7 @@ msgstr "Показати вибраний діапазон"
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
-#: src/rule/hooks/use-rule-form.hook.ts:137
+#: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Skip"
 msgstr "Пропустити"
 
@@ -2636,9 +2628,9 @@ msgstr "Незабаром"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:66
+#: src/rule/components/rule-update-card/rule-update-card.tsx:62
 msgid "Update rule?"
-msgstr "Оновити правило?"
+msgstr "Оновити?"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:34
 #: src/auth/util/get-pin-setup-meta.util.ts:24
