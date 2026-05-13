@@ -63,3 +63,10 @@ tests/app-tests/artifacts/
 nativewind-env.d.ts
 docs/plans
 docs/superpowers
+
+# OMC local artifacts (runtime state); .omc/skills/ is committable
+!.omc/
+.omc/*
+!.omc/skills/
+!.omc/skills/**
+.omx/
