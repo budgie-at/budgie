@@ -1,0 +1,133 @@
+appId: ${APP_ID}
+env:
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+
+# --- AC-9: Empty state when no budget ---
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 5000
+
+# --- AC-1 + AC-5 (overall): Create budget from empty state ---
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 5000
+- assertVisible:
+    id: 'BudgetWidget.SpentLabel'
+    text: '0.00 / 1000.00'
+
+# --- AC-3 (single-currency math): Add an expense, widget updates ---
+
+- runFlow:
+    file: ../subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: ../subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
+
+- runFlow:
+    file: ../subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: ../subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow: ../subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '42.00 / 1000.00'
+    timeout: 10000
+
+# --- AC-2 (overall edit): Edit overall limit ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+    point: '95%,50%'
+- eraseText: 10
+- inputText: '1500'
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '42.00 / 1500.00'
+    timeout: 10000
+
+# --- AC-10: Delete budget, cascade (empty cascade in S1), revert to empty state ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.DeleteButton'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetDetail.DeleteButton'
+- extendedWaitUntil:
+    visible: 'Delete budget?'
+    timeout: 5000
+- tapOn: 'Delete'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 10000

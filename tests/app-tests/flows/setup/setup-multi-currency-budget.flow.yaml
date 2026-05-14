@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: ../subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: 'budget-multi-currency.db(, db)?'
+
+- stopApp
+- launchApp:
+    permissions:
+      contacts: allow
+      microphone: allow
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 30000
