@@ -32,6 +32,12 @@ export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-
 export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
 export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
 export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+export { BudgetAlertEntityTable } from './budget-alert/table/budget-alert-entity.table';
+export { BudgetAlertEntityRelations } from './budget-alert/relations/budget-alert-entity.relations';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
