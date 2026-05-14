@@ -117,7 +117,6 @@ export const RuleSuggestionCard = (props: Props) => {
             };
 
             const onCreateAnywaySuccess = (): void => {
-                onRuleCreated();
                 resolve();
             };
 
@@ -165,7 +164,6 @@ export const RuleSuggestionCard = (props: Props) => {
         }
 
         await createRule(ruleInput);
-        onRuleCreated();
     };
 
     return (

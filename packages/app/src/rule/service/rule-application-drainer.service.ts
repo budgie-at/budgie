@@ -1,4 +1,4 @@
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -8,6 +8,8 @@ import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callbac
 import { ruleEngineService } from './rule-engine.service';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
+
+const logger = getLogger('RuleApplicationDrainerService');
 
 class RuleApplicationDrainerService {
     private static readonly DRAIN_DELAY_MS = 250;
@@ -103,7 +105,13 @@ class RuleApplicationDrainerService {
         this.pendingTransactionIds = [];
         this.pendingTransactionInputs = [];
 
-        await ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs);
+        await ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs).catch((error: unknown) => {
+            logger.error('processPendingTransactionBatch:throw', {
+                queuedTransactionIds: transactionIds.join(','),
+                queuedInputCount: transactionInputs.length,
+                errorMessage: getErrorMessage(error)
+            });
+        });
         await microPause();
     }
 
@@ -114,7 +122,12 @@ class RuleApplicationDrainerService {
             return;
         }
 
-        await ruleEngineService.applyRuleToMatchingTransactions(ruleId, null);
+        await ruleEngineService.applyRuleToMatchingTransactions(ruleId, null).catch((error: unknown) => {
+            logger.error('processPendingRuleBatch:throw', {
+                ruleId,
+                errorMessage: getErrorMessage(error)
+            });
+        });
         await microPause();
         await this.processPendingRuleBatch();
     }
