@@ -134,6 +134,14 @@ export default ({ config }) => ({
         'expo-secure-store',
         'expo-background-task',
         [
+            'expo-notifications',
+            {
+                icon: './assets/icons/ios-light.png',
+                color: '#ffffff',
+                sounds: []
+            }
+        ],
+        [
             'expo-contacts',
             {
                 contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.'

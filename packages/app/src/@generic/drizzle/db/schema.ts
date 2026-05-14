@@ -38,5 +38,11 @@ export {
     RuleConditionEntityTable,
     RuleConditionEntityRelations,
     RuleActionEntityTable,
-    RuleActionEntityRelations
+    RuleActionEntityRelations,
+    BudgetEntityTable,
+    BudgetEntityRelations,
+    BudgetCategoryLimitEntityTable,
+    BudgetCategoryLimitEntityRelations,
+    BudgetAlertEntityTable,
+    BudgetAlertEntityRelations
 } from '@budgie/contracts';
