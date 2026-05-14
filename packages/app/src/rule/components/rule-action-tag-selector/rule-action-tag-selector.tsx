@@ -4,9 +4,9 @@ import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { FormSelectorField } from '../../../@generic/component/form-selector-field/form-selector-field';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 
 interface Props {
     readonly index: number;
@@ -30,7 +30,7 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
             }
         };
 
-        return <RuleSelectorField label={t`Tag`} value={tags?.[0]?.title ?? t`Select Tag`} onPress={handleOpen} testID={testID} />;
+        return <FormSelectorField label={t`Tag`} value={tags?.[0]?.title ?? t`Select Tag`} onPress={handleOpen} testID={testID} />;
     };
 
     return <Controller control={control} name={`actions.${index}.tagId`} render={renderSelector} />;

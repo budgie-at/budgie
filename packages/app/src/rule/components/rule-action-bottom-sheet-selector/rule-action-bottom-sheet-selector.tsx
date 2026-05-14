@@ -1,7 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { FormSelectorField } from '../../../@generic/component/form-selector-field/form-selector-field';
 import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
-import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 
 interface Option<T extends string> {
     value: T;
@@ -35,5 +35,5 @@ export const RuleActionBottomSheetSelector = <T extends string>(props: Props<T>)
         }
     };
 
-    return <RuleSelectorField testID={testID} label={label} value={displayValue} onPress={handleOpen} />;
+    return <FormSelectorField testID={testID} label={label} value={displayValue} onPress={handleOpen} />;
 };
