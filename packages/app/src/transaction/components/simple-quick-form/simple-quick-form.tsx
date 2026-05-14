@@ -12,8 +12,6 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -27,6 +25,7 @@ import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
+import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 
 type AccountFieldName = 'fromAccountId' | 'toAccountId';
@@ -38,7 +37,7 @@ interface BuildEntryParams {
     readonly mccCategoryId: number | null;
 }
 
-interface Props {
+interface Props extends RulePillSlotPropsInterface {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: AccountFieldName;
@@ -50,13 +49,6 @@ interface Props {
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
-    readonly ruleDetectionMode?: RuleDetectionModeEnum;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly updateRuleData?: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount?: number;
-    readonly onRuleCreated?: () => void;
-    readonly onDismiss?: () => void;
-    readonly onCreatingChange?: (next: boolean) => void;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;

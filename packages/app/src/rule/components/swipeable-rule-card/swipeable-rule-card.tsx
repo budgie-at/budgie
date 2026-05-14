@@ -33,7 +33,7 @@ const cardVariants = cva('flex-row items-center gap-sm px-lg py-sm bg-ghost-back
     variants: {
         layout: {
             compact: 'self-start',
-            wide: 'max-w-[85%]'
+            wide: 'self-start min-w-[160px] max-w-[85%]'
         }
     },
     defaultVariants: {
@@ -175,7 +175,9 @@ export const SwipeableRuleCard = (props: Props) => {
                         className={cardVariants({ layout })}
                     >
                         <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
-                        <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
+                        <Text className="text-xs text-secondary-foreground font-medium shrink" numberOfLines={1} ellipsizeMode="tail">
+                            {descriptionText}
+                        </Text>
                         {isCreating ? <ActivityIndicator size="small" /> : null}
                     </HapticPressable>
                 </View>
