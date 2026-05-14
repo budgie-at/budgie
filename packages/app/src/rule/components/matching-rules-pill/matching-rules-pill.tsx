@@ -31,10 +31,12 @@ export const MatchingRulesPill = ({ matchingRulesCount }: Props) => {
                 <HapticPressable
                     testID={MatchingRulesPillSelector.Pill}
                     onPress={handlePress}
-                    className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm"
+                    className="flex-row items-center gap-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs self-start max-w-[85%]"
                 >
                     <Icon icon={UserIconNameEnum.Workflow} size={14} className="text-secondary-foreground" />
-                    <Text className="text-xs text-secondary-foreground font-medium">{label}</Text>
+                    <Text className="text-xs text-secondary-foreground font-medium shrink" numberOfLines={1} ellipsizeMode="tail">
+                        {label}
+                    </Text>
                 </HapticPressable>
             </Animated.View>
         </View>
