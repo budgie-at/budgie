@@ -16,7 +16,7 @@ interface Props {
 
 export const SwipeableRuleCardStatus = ({ icon, iconClassName, textClassName, children }: Props) => (
     <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(300)}>
-        <View className="flex-row items-center gap-xs px-lg py-sm bg-ghost-background rounded-xl shadow-sm">
+        <View className="flex-row items-center gap-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs">
             <Icon icon={icon} size={STATUS_ICON_SIZE} className={iconClassName} />
             <Text className={textClassName}>{children}</Text>
         </View>
