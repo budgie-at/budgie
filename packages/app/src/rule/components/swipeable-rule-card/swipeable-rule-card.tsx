@@ -29,7 +29,7 @@ const ERROR_AUTO_DISMISS_MS = 3000;
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
 type CardLayout = 'compact' | 'wide';
 
-const cardVariants = cva('flex-row items-center gap-sm px-lg py-sm bg-ghost-background rounded-xl shadow-sm', {
+const cardVariants = cva('flex-row items-center gap-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs', {
     variants: {
         layout: {
             compact: 'self-start',

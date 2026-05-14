@@ -18,6 +18,7 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
@@ -212,6 +213,20 @@ export const SimpleQuickForm = (props: Props) => {
 
     const handleSplitIconPress = () => void handleSplitPress();
     const handleConfirm = isSplitActive ? handleSplitConfirm : handleNormalConfirm;
+    const amountTopStack = (
+        <View className="h-[76px] items-center justify-end gap-xs">
+            <RulePillSlot
+                ruleDetectionMode={ruleDetectionMode}
+                suggestRuleData={suggestRuleData}
+                updateRuleData={updateRuleData}
+                matchingRulesCount={matchingRulesCount}
+                onRuleCreated={onRuleCreated}
+                onDismiss={onDismiss}
+                onCreatingChange={onCreatingChange}
+            />
+            {amountTopContent}
+        </View>
+    );
 
     return (
         <View className="flex-1">
@@ -221,7 +236,7 @@ export const SimpleQuickForm = (props: Props) => {
                     amount={displayValue}
                     currencySymbol={currencySymbol}
                     variant={variant}
-                    topContent={amountTopContent}
+                    topContent={amountTopStack}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
                 <QuickFormBottomOverlay
@@ -240,13 +255,6 @@ export const SimpleQuickForm = (props: Props) => {
                     onSelectTag={handleSelectTag}
                     onSelectComment={handleSelectComment}
                     onFillPatternAmount={handleFillPatternAmount}
-                    ruleDetectionMode={ruleDetectionMode}
-                    suggestRuleData={suggestRuleData}
-                    updateRuleData={updateRuleData}
-                    matchingRulesCount={matchingRulesCount}
-                    onRuleCreated={onRuleCreated}
-                    onDismiss={onDismiss}
-                    onCreatingChange={onCreatingChange}
                 />
             </View>
 
