@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.17.1](https://github.com/budgie-at/budgie/compare/v5.17.0...v5.17.1) (2026-05-14)
+
+### Bug Fixes
+
+- **app:** apply rules asynchronously via drainer queue ([f19437e](https://github.com/budgie-at/budgie/commit/f19437e66075c27899c83a3e4bda6257d8158a38))
+- **app:** lock rule-pill mode while a suggestion is being created ([c4410e0](https://github.com/budgie-at/budgie/commit/c4410e064d8c7181ab9b2461dac33f6be8a455bd))
+- **app:** stabilize rule suggestion pill state ([a62ac3e](https://github.com/budgie-at/budgie/commit/a62ac3e5e8b6d2bad3393826bb943ea17d69f860))
+
 # [5.17.0](https://github.com/budgie-at/budgie/compare/v5.16.3...v5.17.0) (2026-05-13)
 
 ### Bug Fixes
