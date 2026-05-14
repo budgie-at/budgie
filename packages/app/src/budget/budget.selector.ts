@@ -1,0 +1,19 @@
+export const BudgetSelector = {
+    WidgetEmptyState: 'BudgetWidget.EmptyState',
+    WidgetCard: 'BudgetWidget.Card',
+    WidgetSpentLabel: 'BudgetWidget.SpentLabel',
+    WidgetCategoryRow: (categoryId: number) => `BudgetWidget.CategoryRow.${categoryId}` as const,
+    SetupOverallLimitInput: 'BudgetSetup.OverallLimitInput',
+    SetupSaveButton: 'BudgetSetup.SaveButton',
+    SetupCategoryLimitsHeader: 'BudgetSetup.CategoryLimitsHeader',
+    SetupCategoryLimitAddButton: 'BudgetSetup.CategoryLimitAddButton',
+    SetupCategoryLimitRow: (index: number) => `BudgetSetup.CategoryLimit.${index}.Row` as const,
+    SetupCategoryLimitCategorySelector: (index: number) => `BudgetSetup.CategoryLimit.${index}.CategorySelector` as const,
+    SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
+    SetupCategoryLimitRemoveButton: (index: number) => `BudgetSetup.CategoryLimit.${index}.RemoveButton` as const,
+    SetupPushToggle: 'BudgetSetup.PushToggle',
+    DetailSpentLabel: 'BudgetDetail.SpentLabel',
+    DetailEditButton: 'BudgetDetail.EditButton',
+    DetailDeleteButton: 'BudgetDetail.DeleteButton',
+    DetailCategoryRow: (categoryId: number) => `BudgetDetail.CategoryRow.${categoryId}` as const
+} as const;
