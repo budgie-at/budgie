@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.17.2](https://github.com/budgie-at/budgie/compare/v5.17.1...v5.17.2) (2026-05-14)
+
+### Bug Fixes
+
+- **app:** keep rule create pill pending ([6a18735](https://github.com/budgie-at/budgie/commit/6a187358fdab598bdee7616f1ec60f38ce7d5db5))
+
 ## [5.17.1](https://github.com/budgie-at/budgie/compare/v5.17.0...v5.17.1) (2026-05-14)
 
 ### Bug Fixes
