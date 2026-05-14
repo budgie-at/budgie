@@ -29,6 +29,7 @@ type UseSuggestRuleDetectionResultType = {
     readonly matchingRulesCount: number;
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
+    readonly onCreatingChange: (next: boolean) => void;
 };
 
 const dismissedSuggestions = new Set<string>();
@@ -37,6 +38,7 @@ const dismissedSuggestions = new Set<string>();
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParamsType): UseSuggestRuleDetectionResultType => {
     const [ruleCreated, setRuleCreated] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { enabledRules } = useGetEnabledRulesQuery();
@@ -83,6 +85,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const mode = computeDetectionMode({
         hasChanges,
         ruleCreated,
+        isCreating,
         isDismissed: isDismissed || wasPreviouslyDismissed,
         matchingRulesCount,
         hasConflictWithMatchingRules: hasConflict
@@ -96,12 +99,18 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const onRuleCreated = () => {
         setRuleCreated(true);
+        setIsCreating(false);
     };
 
     const onDismiss = () => {
         dismissedSuggestions.add(dismissKey);
         setIsDismissed(true);
+        setIsCreating(false);
     };
 
-    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss };
+    const onCreatingChange = (next: boolean) => {
+        setIsCreating(next);
+    };
+
+    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss, onCreatingChange };
 };

@@ -18,7 +18,7 @@ import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.inte
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
 import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
-import { SwipeableRuleCard, SwipeableRuleCardResultInterface } from '../swipeable-rule-card/swipeable-rule-card';
+import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 const serializeCondition = (condition: RuleConditionInputInterface): string =>
     `${condition.field}|${condition.operator}|${condition.value.toLowerCase()}|${condition.secondaryValue?.toLowerCase() ?? ''}`;
@@ -80,9 +80,10 @@ interface Props {
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
+    readonly onCreatingChange?: (next: boolean) => void;
 }
 
-const createRule = async (ruleInput: RuleCreateInputInterface): Promise<SwipeableRuleCardResultInterface> => {
+const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> => {
     logger.log('createRule:enter', {
         conditionsCount: ruleInput.conditions.length,
         actionsCount: ruleInput.actions.length,
@@ -90,17 +91,50 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<Swipeabl
     });
     const rule = await ruleService.create(ruleInput);
     logger.log('createRule:created', { ruleId: rule.id });
-    const result = await ruleApplicationDrainerService.applyRuleToMatchingTransactions(rule.id, null);
-    logger.log('createRule:applied', { ruleId: rule.id, applied: result.applied, failed: result.failed, total: result.total });
-
-    return { applied: result.applied };
+    ruleApplicationDrainerService.enqueueRuleApplication(rule.id);
+    logger.log('createRule:enqueued', { ruleId: rule.id });
 };
 
 export const RuleSuggestionCard = (props: Props) => {
-    const { suggestRuleData, onRuleCreated, onDismiss } = props;
+    const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
     const { openRuleForm } = useRuleFormModal();
 
-    const handleYes = async (): Promise<SwipeableRuleCardResultInterface> => {
+    const handleDuplicateRule = (duplicateRule: RuleWithRelationsEntityInterface, ruleInput: RuleCreateInputInterface): Promise<void> => {
+        logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
+
+        return new Promise<void>((resolve, reject) => {
+            const handleEditExisting = () => {
+                logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
+                void openRuleForm({ ruleId: duplicateRule.id });
+                // eslint-disable-next-line lingui/no-unlocalized-strings
+                reject(new Error('Edit'));
+            };
+
+            const handleCancel = () => {
+                logger.log('handleYes:duplicate-alert:cancel');
+                // eslint-disable-next-line lingui/no-unlocalized-strings
+                reject(new Error('Cancelled'));
+            };
+
+            const onCreateAnywaySuccess = (): void => {
+                resolve();
+            };
+
+            const handleCreateAnyway = () => {
+                logger.log('handleYes:duplicate-alert:create-anyway');
+                void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
+            };
+
+            Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
+                { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
+                { text: t`Edit existing`, onPress: handleEditExisting },
+                { text: t`Create anyway`, onPress: handleCreateAnyway }
+            ]);
+        });
+    };
+
+    const handleYes = async (): Promise<void> => {
+        onCreatingChange?.(true);
         logger.log('handleYes:enter', {
             title: suggestRuleData.title,
             mccCode: suggestRuleData.mccCode,
@@ -124,54 +158,18 @@ export const RuleSuggestionCard = (props: Props) => {
         });
 
         if (isDefined(duplicateRule)) {
-            logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
+            await handleDuplicateRule(duplicateRule, ruleInput);
 
-            return await new Promise<SwipeableRuleCardResultInterface>((resolve, reject) => {
-                const handleEditExisting = () => {
-                    logger.log('handleYes:duplicate-alert:edit', { duplicateRuleId: duplicateRule.id });
-                    void openRuleForm({ ruleId: duplicateRule.id });
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    reject(new Error('Edit'));
-                };
-
-                const handleCancel = () => {
-                    logger.log('handleYes:duplicate-alert:cancel');
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    reject(new Error('Cancelled'));
-                };
-
-                const onCreateAnywaySuccess = (result: SwipeableRuleCardResultInterface): SwipeableRuleCardResultInterface => {
-                    onRuleCreated();
-                    resolve(result);
-
-                    return result;
-                };
-
-                const handleCreateAnyway = () => {
-                    logger.log('handleYes:duplicate-alert:create-anyway');
-                    void createRule(ruleInput).then(onCreateAnywaySuccess, reject);
-                };
-
-                Alert.alert(t`Duplicate rule`, t`A rule with the same conditions already exists.`, [
-                    { text: t`Cancel`, style: 'cancel', onPress: handleCancel },
-                    { text: t`Edit existing`, onPress: handleEditExisting },
-                    { text: t`Create anyway`, onPress: handleCreateAnyway }
-                ]);
-            });
+            return;
         }
 
-        const result = await createRule(ruleInput);
-        onRuleCreated();
-
-        return result;
+        await createRule(ruleInput);
     };
-
-    const successMessage = (appliedCount: number) => <Trans>Rule created &middot; Applied to {appliedCount} transactions</Trans>;
 
     return (
         <SwipeableRuleCard
             descriptionText={t`Quick rule`}
-            successMessage={successMessage}
+            successMessage={<Trans>Rule created</Trans>}
             errorMessage={<Trans>Could not create rule</Trans>}
             cardTestID={RuleSuggestionCardSelector.Card}
             buttonTestID={RuleSuggestionCardSelector.CreateRuleButton}
