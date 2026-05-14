@@ -173,6 +173,7 @@ export const RuleSuggestionCard = (props: Props) => {
             errorMessage={<Trans>Could not create rule</Trans>}
             cardTestID={RuleSuggestionCardSelector.Card}
             buttonTestID={RuleSuggestionCardSelector.CreateRuleButton}
+            layout="wide"
             onYes={handleYes}
             onComplete={onRuleCreated}
             onDismiss={onDismiss}

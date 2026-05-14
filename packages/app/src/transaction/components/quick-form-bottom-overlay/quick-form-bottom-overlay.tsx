@@ -2,12 +2,9 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 
-import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
-
-interface Props extends RulePillSlotPropsInterface {
+interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly isNewTransaction: boolean;
@@ -41,51 +38,29 @@ export const QuickFormBottomOverlay = (props: Props) => {
         onSelectCategory,
         onSelectTag,
         onSelectComment,
-        onFillPatternAmount,
-        ruleDetectionMode,
-        suggestRuleData,
-        updateRuleData,
-        matchingRulesCount,
-        onRuleCreated,
-        onDismiss,
-        onCreatingChange
+        onFillPatternAmount
     } = props;
 
     return (
         <View className="absolute bottom-0 left-0 right-0 gap-md">
             <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-            <View className="flex-row items-center gap-sm">
-                <View className="shrink">
-                    <RulePillSlot
-                        ruleDetectionMode={ruleDetectionMode}
-                        suggestRuleData={suggestRuleData}
-                        updateRuleData={updateRuleData}
-                        matchingRulesCount={matchingRulesCount}
-                        onRuleCreated={onRuleCreated}
-                        onDismiss={onDismiss}
-                        onCreatingChange={onCreatingChange}
-                    />
-                </View>
-                <View className="flex-1">
-                    <SuggestionsContainer
-                        isNewTransaction={isNewTransaction}
-                        isSplitActive={isSplitActive}
-                        transactionType={transactionType}
-                        transactionTitle={transactionTitle}
-                        categoryId={categoryId}
-                        mccCategoryId={mccCategoryId}
-                        comment={comment}
-                        aiContext={aiContext}
-                        accountId={accountId}
-                        amount={amount}
-                        hasTagsSelected={hasTagsSelected}
-                        onSelectCategory={onSelectCategory}
-                        onSelectTag={onSelectTag}
-                        onSelectComment={onSelectComment}
-                        onFillPatternAmount={onFillPatternAmount}
-                    />
-                </View>
-            </View>
+            <SuggestionsContainer
+                isNewTransaction={isNewTransaction}
+                isSplitActive={isSplitActive}
+                transactionType={transactionType}
+                transactionTitle={transactionTitle}
+                categoryId={categoryId}
+                mccCategoryId={mccCategoryId}
+                comment={comment}
+                aiContext={aiContext}
+                accountId={accountId}
+                amount={amount}
+                hasTagsSelected={hasTagsSelected}
+                onSelectCategory={onSelectCategory}
+                onSelectTag={onSelectTag}
+                onSelectComment={onSelectComment}
+                onFillPatternAmount={onFillPatternAmount}
+            />
         </View>
     );
 };
