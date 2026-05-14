@@ -5,6 +5,9 @@ import {
     AccountBalanceRepository,
     AccountRepository,
     BankSyncRepository,
+    BudgetAlertRepository,
+    BudgetCategoryLimitRepository,
+    BudgetRepository,
     CategoryRepository,
     CommentEmbeddingRepository,
     ExchangeRateRepository,
@@ -126,3 +129,6 @@ export const ruleConditionRepository = new RuleConditionRepository(db);
 export const ruleActionRepository = new RuleActionRepository(db);
 export const transferPairRepository = new TransferPairRepository(db);
 export const refundPairRepository = new RefundPairRepository(db);
+export const budgetRepository = new BudgetRepository(db);
+export const budgetCategoryLimitRepository = new BudgetCategoryLimitRepository(db);
+export const budgetAlertRepository = new BudgetAlertRepository(db);
