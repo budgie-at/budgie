@@ -36,7 +36,7 @@ const dismissedSuggestions = new Set<string>();
 
 // eslint-disable-next-line max-statements -- Detection hook with multiple derived values and dismiss tracking
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParamsType): UseSuggestRuleDetectionResultType => {
-    const [ruleCreated, setRuleCreated] = useState(false);
+    const [isRuleCreationStarted, setIsRuleCreationStarted] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
@@ -84,7 +84,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const mode = computeDetectionMode({
         hasChanges,
-        ruleCreated,
+        isRuleCreationStarted,
         isCreating,
         isDismissed: isDismissed || wasPreviouslyDismissed,
         matchingRulesCount,
@@ -92,13 +92,13 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     });
 
     const singleMatchingRule = matchingRulesCount === 1 ? matchingRules[0] : null;
+    const canUpdateRule = !isCreating && !isRuleCreationStarted;
 
-    const updateRuleData: UpdateRuleDataInterface | null = isDefined(singleMatchingRule)
-        ? { ruleId: singleMatchingRule.id, categoryId, tagIds }
-        : null;
+    const updateRuleData: UpdateRuleDataInterface | null =
+        canUpdateRule && isDefined(singleMatchingRule) ? { ruleId: singleMatchingRule.id, categoryId, tagIds } : null;
 
     const onRuleCreated = () => {
-        setRuleCreated(true);
+        setIsRuleCreationStarted(true);
         setIsCreating(false);
     };
 
@@ -109,6 +109,10 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     };
 
     const onCreatingChange = (next: boolean) => {
+        if (next) {
+            setIsRuleCreationStarted(true);
+        }
+
         setIsCreating(next);
     };
 
