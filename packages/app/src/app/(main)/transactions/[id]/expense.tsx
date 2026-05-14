@@ -51,7 +51,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         updateRuleData,
         matchingRulesCount,
         onRuleCreated,
-        onDismiss
+        onDismiss,
+        onCreatingChange
     } = useSuggestRuleDetection({
         transaction,
         control: form.control
@@ -106,6 +107,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     matchingRulesCount={matchingRulesCount}
                     onRuleCreated={onRuleCreated}
                     onDismiss={onDismiss}
+                    onCreatingChange={onCreatingChange}
                 />
             </FullPage>
         </FormProvider>

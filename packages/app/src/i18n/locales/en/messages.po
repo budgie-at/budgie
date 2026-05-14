@@ -33,15 +33,11 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
-#: src/rule/hooks/use-rule-form.hook.ts:115
-msgid "{applied} updated, {failed} failed"
-msgstr "{applied} updated, {failed} failed"
-
 #: src/app/import-column-mapper.tsx:30
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/rule/hooks/use-rule-form.hook.ts:135
+#: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} existing transactions match this rule."
 
@@ -107,7 +103,7 @@ msgstr "1 matching rule"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
@@ -290,11 +286,11 @@ msgid "Appearance"
 msgstr "Appearance"
 
 #: src/app/note-input.tsx:54
-#: src/rule/hooks/use-rule-form.hook.ts:136
+#: src/rule/hooks/use-rule-form.hook.ts:126
 msgid "Apply"
 msgstr "Apply"
 
-#: src/rule/hooks/use-rule-form.hook.ts:134
+#: src/rule/hooks/use-rule-form.hook.ts:124
 msgid "Apply to existing transactions?"
 msgstr "Apply to existing transactions?"
 
@@ -408,7 +404,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:156
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -606,7 +602,7 @@ msgid "Could not create category"
 msgstr "Could not create category"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
-#: src/rule/hooks/use-rule-form.hook.ts:163
+#: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not create rule"
 msgstr "Could not create rule"
 
@@ -630,7 +626,7 @@ msgstr "Could not delete account."
 msgid "Could not delete category"
 msgstr "Could not delete category"
 
-#: src/rule/hooks/use-rule-form.hook.ts:180
+#: src/rule/hooks/use-rule-form.hook.ts:169
 msgid "Could not delete rule."
 msgstr "Could not delete rule."
 
@@ -721,8 +717,8 @@ msgid "Could not unconsolidate transaction."
 msgstr "Could not unconsolidate transaction."
 
 #: src/app/(tabs)/settings/rules.tsx:68
-#: src/rule/components/rule-update-card/rule-update-card.tsx:68
-#: src/rule/hooks/use-rule-form.hook.ts:163
+#: src/rule/components/rule-update-card/rule-update-card.tsx:64
+#: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not update rule"
 msgstr "Could not update rule"
 
@@ -758,7 +754,7 @@ msgstr "Create and copy the personal token"
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:158
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Create anyway"
 msgstr "Create anyway"
 
@@ -926,7 +922,7 @@ msgstr "Downloading AI models…"
 msgid "Downloading models"
 msgstr "Downloading models"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:155
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
@@ -950,15 +946,15 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:157
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
 msgid "Edit existing"
 msgstr "Edit existing"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:83
+#: src/app/(main)/transactions/[id]/expense.tsx:84
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:82
+#: src/app/(main)/transactions/[id]/income.tsx:83
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -1933,17 +1929,13 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Rule"
 
-#: src/rule/hooks/use-rule-form.hook.ts:110
-msgid "Rule applied to {applied} transactions"
-msgstr "Rule applied to {applied} transactions"
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+msgid "Rule created"
+msgstr "Rule created"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:169
-msgid "Rule created · Applied to {appliedCount} transactions"
-msgstr "Rule created · Applied to {appliedCount} transactions"
-
-#: src/rule/components/rule-update-card/rule-update-card.tsx:62
-msgid "Rule updated · Applied to {appliedCount} transactions"
-msgstr "Rule updated · Applied to {appliedCount} transactions"
+#: src/rule/components/rule-update-card/rule-update-card.tsx:63
+msgid "Rule updated"
+msgstr "Rule updated"
 
 #: src/app/(tabs)/settings/rules.tsx:100
 msgid "Rules"
@@ -2236,7 +2228,7 @@ msgstr "Show selected range"
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
-#: src/rule/hooks/use-rule-form.hook.ts:137
+#: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Skip"
 msgstr "Skip"
 
@@ -2638,7 +2630,7 @@ msgstr "Upcoming"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:66
+#: src/rule/components/rule-update-card/rule-update-card.tsx:62
 msgid "Update rule?"
 msgstr "Update rule?"
 

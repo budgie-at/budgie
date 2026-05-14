@@ -5,8 +5,12 @@ import { RuleDetectionModeEnum } from '../enum/rule-detection-mode.enum';
 import type { DetectionModeParamsInterface } from '../interface/detection-mode-params.interface';
 
 export const computeDetectionMode = (params: DetectionModeParamsInterface): RuleDetectionModeEnum => {
-    const { hasChanges, ruleCreated, isDismissed, matchingRulesCount, hasConflictWithMatchingRules } = params;
+    const { hasChanges, ruleCreated, isCreating, isDismissed, matchingRulesCount, hasConflictWithMatchingRules } = params;
     const canSuggest = hasChanges && !ruleCreated && !isDismissed;
+
+    if (isCreating) {
+        return RuleDetectionModeEnum.SUGGEST;
+    }
 
     if (matchingRulesCount === 1 && canSuggest) {
         return RuleDetectionModeEnum.UPDATE;

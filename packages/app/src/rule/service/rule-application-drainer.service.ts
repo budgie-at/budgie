@@ -1,4 +1,4 @@
-import { Log } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -9,11 +9,14 @@ import { ruleEngineService } from './rule-engine.service';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
+const logger = getLogger('RuleApplicationDrainerService');
+
 class RuleApplicationDrainerService {
     private static readonly DRAIN_DELAY_MS = 250;
 
     private cancelIdleCallback: (() => void) | null = null;
     private isRunning = false;
+    private pendingRuleIds: number[] = [];
     private pendingTransactionIds: number[] = [];
     private pendingTransactionInputs: TransactionCreateInputInterface[] = [];
     private runPromise: Promise<void> | null = null;
@@ -38,23 +41,21 @@ class RuleApplicationDrainerService {
     }
 
     @Log(
-        (ruleId, onProgress) => `enter boostRuleId=${ruleId} progressCallback=${String(isDefined(onProgress))}`,
-        (result, ruleId, onProgress) =>
-            `done boostRuleId=${ruleId} progressCallback=${String(isDefined(onProgress))} applied=${result.applied} failed=${result.failed} total=${result.total}`,
-        (error, ruleId, onProgress) =>
-            `throw boostRuleId=${ruleId} progressCallback=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
+        ruleId => `enter ruleId=${ruleId}`,
+        (_result, ruleId) => `done ruleId=${ruleId}`,
+        (error, ruleId) => `throw ruleId=${ruleId} error=${getErrorMessage(error)}`
     )
-    async applyRuleToMatchingTransactions(
-        ruleId: number,
-        onProgress: ((processed: number, total: number) => void) | null
-    ): ReturnType<typeof ruleEngineService.applyRuleToMatchingTransactions> {
-        await this.drainPendingTransactions();
+    enqueueRuleApplication(ruleId: number): void {
+        if (this.pendingRuleIds.includes(ruleId)) {
+            return;
+        }
 
-        return ruleEngineService.applyRuleToMatchingTransactions(ruleId, onProgress);
+        this.pendingRuleIds.push(ruleId);
+        this.scheduleDrain();
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async drainPendingTransactions(): Promise<void> {
+    private async drainPending(): Promise<void> {
         this.cancelScheduledDrain();
 
         if (this.isRunning && isDefined(this.runPromise)) {
@@ -84,6 +85,16 @@ class RuleApplicationDrainerService {
     }
 
     private async drainNextBatch(): Promise<void> {
+        if (!isNotEmptyArray(this.pendingTransactionIds) && !isNotEmptyArray(this.pendingRuleIds)) {
+            return;
+        }
+
+        await this.processPendingTransactionBatch();
+        await this.processPendingRuleBatch();
+        await this.drainNextBatch();
+    }
+
+    private async processPendingTransactionBatch(): Promise<void> {
         if (!isNotEmptyArray(this.pendingTransactionIds)) {
             return;
         }
@@ -94,9 +105,31 @@ class RuleApplicationDrainerService {
         this.pendingTransactionIds = [];
         this.pendingTransactionInputs = [];
 
-        await ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs);
+        await ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs).catch((error: unknown) => {
+            logger.error('processPendingTransactionBatch:throw', {
+                queuedTransactionIds: transactionIds.join(','),
+                queuedInputCount: transactionInputs.length,
+                errorMessage: getErrorMessage(error)
+            });
+        });
         await microPause();
-        await this.drainNextBatch();
+    }
+
+    private async processPendingRuleBatch(): Promise<void> {
+        const ruleId = this.pendingRuleIds.shift();
+
+        if (!isDefined(ruleId)) {
+            return;
+        }
+
+        await ruleEngineService.applyRuleToMatchingTransactions(ruleId, null).catch((error: unknown) => {
+            logger.error('processPendingRuleBatch:throw', {
+                ruleId,
+                errorMessage: getErrorMessage(error)
+            });
+        });
+        await microPause();
+        await this.processPendingRuleBatch();
     }
 
     private scheduleDrain(): void {
@@ -108,7 +141,7 @@ class RuleApplicationDrainerService {
             this.timer = null;
             this.cancelIdleCallback = scheduleIdleCallback(() => {
                 this.cancelIdleCallback = null;
-                this.drainPendingTransactions().catch(emptyFn);
+                this.drainPending().catch(emptyFn);
             });
         }, RuleApplicationDrainerService.DRAIN_DELAY_MS);
     }

@@ -1,14 +1,13 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
-import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 
-interface Props {
+import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
+
+interface Props extends RulePillSlotPropsInterface {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly isNewTransaction: boolean;
@@ -20,16 +19,10 @@ interface Props {
     readonly accountId: number;
     readonly amount: number;
     readonly hasTagsSelected: boolean;
-    readonly ruleDetectionMode: RuleDetectionModeEnum;
     readonly onSelectCategory: (categoryId: number) => void;
     readonly onSelectTag: (tagId: number) => void;
     readonly onSelectComment: (comment: string) => void;
     readonly onFillPatternAmount: (amount: number) => void;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly updateRuleData?: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount?: number;
-    readonly onRuleCreated?: () => void;
-    readonly onDismiss?: () => void;
 }
 
 export const QuickFormBottomOverlay = (props: Props) => {
@@ -54,7 +47,8 @@ export const QuickFormBottomOverlay = (props: Props) => {
         updateRuleData,
         matchingRulesCount,
         onRuleCreated,
-        onDismiss
+        onDismiss,
+        onCreatingChange
     } = props;
 
     return (
@@ -69,6 +63,7 @@ export const QuickFormBottomOverlay = (props: Props) => {
                         matchingRulesCount={matchingRulesCount}
                         onRuleCreated={onRuleCreated}
                         onDismiss={onDismiss}
+                        onCreatingChange={onCreatingChange}
                     />
                 </View>
                 <View className="flex-1">

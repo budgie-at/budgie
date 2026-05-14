@@ -33,7 +33,7 @@ const cardVariants = cva('flex-row items-center gap-sm px-lg py-sm bg-ghost-back
     variants: {
         layout: {
             compact: 'self-start',
-            wide: 'max-w-[85%]'
+            wide: 'self-start min-w-[160px] max-w-[85%]'
         }
     },
     defaultVariants: {
@@ -41,18 +41,14 @@ const cardVariants = cva('flex-row items-center gap-sm px-lg py-sm bg-ghost-back
     }
 });
 
-export interface SwipeableRuleCardResultInterface {
-    readonly applied: number;
-}
-
 interface Props {
     readonly descriptionText: string;
-    readonly successMessage: (appliedCount: number) => ReactNode;
+    readonly successMessage: ReactNode;
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
     readonly layout?: CardLayout;
-    readonly onYes: () => Promise<SwipeableRuleCardResultInterface>;
+    readonly onYes: () => Promise<void>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
 }
@@ -72,7 +68,6 @@ export const SwipeableRuleCard = (props: Props) => {
     } = props;
 
     const [status, setStatus] = useState<CardStatus>('idle');
-    const [appliedCount, setAppliedCount] = useState(0);
     const [hapticNotification, hapticImpact] = useVibration();
 
     const translateX = useSharedValue(0);
@@ -126,9 +121,8 @@ export const SwipeableRuleCard = (props: Props) => {
         setStatus('creating');
 
         try {
-            const result = await onYes();
-            logger.log('handleYesPress:onYes:done', { applied: result.applied });
-            setAppliedCount(result.applied);
+            await onYes();
+            logger.log('handleYesPress:onYes:done');
             setStatus('success');
             hapticNotification(NotificationFeedbackType.Success);
             setTimeout(onComplete, SUCCESS_AUTO_DISMISS_MS);
@@ -151,7 +145,7 @@ export const SwipeableRuleCard = (props: Props) => {
                 iconClassName="text-positive-foreground"
                 textClassName="text-xs text-secondary-foreground font-medium"
             >
-                {successMessage(appliedCount)}
+                {successMessage}
             </SwipeableRuleCardStatus>
         );
     }
@@ -181,7 +175,9 @@ export const SwipeableRuleCard = (props: Props) => {
                         className={cardVariants({ layout })}
                     >
                         <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
-                        <Text className="text-xs text-secondary-foreground font-medium shrink">{descriptionText}</Text>
+                        <Text className="text-xs text-secondary-foreground font-medium shrink" numberOfLines={1} ellipsizeMode="tail">
+                            {descriptionText}
+                        </Text>
                         {isCreating ? <ActivityIndicator size="small" /> : null}
                     </HapticPressable>
                 </View>
