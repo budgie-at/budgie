@@ -4,20 +4,19 @@ import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/
 import { RuleSuggestionCard } from '../../../rule/components/rule-suggestion-card/rule-suggestion-card';
 import { RuleUpdateCard } from '../../../rule/components/rule-update-card/rule-update-card';
 import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
 
-interface Props {
-    readonly ruleDetectionMode: RuleDetectionModeEnum;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly updateRuleData?: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount?: number;
-    readonly onRuleCreated?: () => void;
-    readonly onDismiss?: () => void;
-}
+import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 
-export const RulePillSlot = (props: Props) => {
-    const { ruleDetectionMode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss } = props;
+export const RulePillSlot = (props: RulePillSlotPropsInterface) => {
+    const {
+        ruleDetectionMode = RuleDetectionModeEnum.NONE,
+        suggestRuleData,
+        updateRuleData,
+        matchingRulesCount,
+        onRuleCreated,
+        onDismiss,
+        onCreatingChange
+    } = props;
 
     if (
         ruleDetectionMode === RuleDetectionModeEnum.SUGGEST &&
@@ -25,7 +24,14 @@ export const RulePillSlot = (props: Props) => {
         isDefined(onRuleCreated) &&
         isDefined(onDismiss)
     ) {
-        return <RuleSuggestionCard suggestRuleData={suggestRuleData} onRuleCreated={onRuleCreated} onDismiss={onDismiss} />;
+        return (
+            <RuleSuggestionCard
+                suggestRuleData={suggestRuleData}
+                onRuleCreated={onRuleCreated}
+                onDismiss={onDismiss}
+                onCreatingChange={onCreatingChange}
+            />
+        );
     }
 
     if (
