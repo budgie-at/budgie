@@ -1,0 +1,165 @@
+appId: ${APP_ID}
+env:
+  ACCOUNT_NAME: Rules Test Account
+  CATEGORY_NAME: Rules Test Category
+---
+
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+
+# --- Seed budget from empty state (S1 path) ---
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 5000
+
+# --- AC-1 (categories), AC-2 (categories): Add per-category limits via edit ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 5000
+
+# Add first category limit (Rules Test Category, id=42)
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+- runFlow:
+    file: ../subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '200'
+
+# Add second category limit (Groceries, id=11)
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
+- runFlow:
+    file: ../subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: 'Groceries'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.AmountInput'
+- inputText: '100'
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+# --- AC-4 (per-category): Detail screen renders both category rows ---
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.SpentLabel'
+    timeout: 5000
+- assertVisible:
+    id: 'BudgetDetail.CategoryRow.42'
+- assertVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+
+# --- AC-5 (per-category widget): Widget shows per-category rows ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 5000
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.42'
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.11'
+
+# --- Remove the second category limit; detail and widget update ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 5000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.RemoveButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.CategoryRow.42'
+    timeout: 5000
+- assertNotVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.CategoryRow.42'
+    timeout: 5000
+- assertNotVisible:
+    id: 'BudgetWidget.CategoryRow.11'
