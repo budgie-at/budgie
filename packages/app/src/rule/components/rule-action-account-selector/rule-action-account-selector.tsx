@@ -4,10 +4,10 @@ import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react
 
 import { isDefined } from '@rnw-community/shared';
 
+import { FormSelectorField } from '../../../@generic/component/form-selector-field/form-selector-field';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 
 interface Props {
     readonly index: number;
@@ -42,7 +42,7 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
             }
         };
 
-        return <RuleSelectorField label={label} value={account?.title ?? t`Select Account`} onPress={handleOpen} testID={testID} />;
+        return <FormSelectorField label={label} value={account?.title ?? t`Select Account`} onPress={handleOpen} testID={testID} />;
     };
 
     return <Controller control={control} name={`actions.${index}.accountId`} render={renderSelector} />;
