@@ -1,7 +1,7 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { useSQLiteContext } from 'expo-sqlite';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -22,6 +22,7 @@ import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-w
 import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
 import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
 import { HomeSectionInterface, buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
+import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 
 const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum => {
     if (isBankProviderSection(section)) {
@@ -35,6 +36,12 @@ const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum =
     return section.type;
 };
 
+const listHeaderComponent = (
+    <View className="mb-3xl">
+        <BudgetWidget />
+    </View>
+);
+
 export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
@@ -46,7 +53,7 @@ export default function HomePage() {
 
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
     const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
-    const emptyStateStyle = { paddingBottom: bottomPadding };
+    const emptyStateContentStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20, flexGrow: 1 };
 
     const activeAccounts = accounts.filter(account => account.isActive);
     const sections = buildHomePageSections(activeAccounts);
@@ -93,12 +100,14 @@ export default function HomePage() {
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={listHeaderComponent}
                     ListFooterComponent={listFooterComponent}
                 />
             ) : (
-                <View className="flex-1 px-5xl" style={emptyStateStyle}>
+                <ScrollView contentContainerStyle={emptyStateContentStyle} showsVerticalScrollIndicator={false}>
+                    {listHeaderComponent}
                     <AccountsEmptyState />
-                </View>
+                </ScrollView>
             )}
         </View>
     );

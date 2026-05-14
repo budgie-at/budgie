@@ -12,6 +12,7 @@ import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
+import '../budget/task/budget-alert-monitor.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../sync/task/monobank-sync.task';
 import '../sync/task/transfer-consolidation.task';

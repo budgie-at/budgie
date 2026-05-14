@@ -49,6 +49,7 @@ export default function SettingsPage() {
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
+    const handleNavigateToBudget = () => void router.push('/budget');
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -140,6 +141,13 @@ export default function SettingsPage() {
                                 description={t`Auto-categorize transactions`}
                                 icon={UserIconNameEnum.Zap}
                                 variant="ghost"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToBudget}
+                                title={t`Budget`}
+                                description={t`Set a monthly limit and track spending`}
+                                icon={UserIconNameEnum.PiggyBank}
+                                variant="positive"
                             />
                             <SettingsCard
                                 onPress={handleNavigateToArchived}
