@@ -8,6 +8,7 @@ import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 import { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
+import type { BackwardSweepWindowResultInterface } from '../interface/backward-sweep-window-result.interface';
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
 
@@ -48,12 +49,26 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
-        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
+        (accountId, to, previousEmptyWindowCount, previousBackwardSyncedAt) =>
+            `enter accountId=${accountId} to=${to.toISOString()} previousEmptyWindowCount=${previousEmptyWindowCount} previousBackwardSyncedAt=${previousBackwardSyncedAt?.toISOString() ?? 'null'}`,
+        result =>
+            `done count=${result.transactions.length} completed=${String(result.completed)} nextEmptyWindowCount=${result.nextEmptyWindowCount}`,
+        // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API and Log hooks intentionally keep positional arguments
+        (error, accountId, to, previousEmptyWindowCount, previousBackwardSyncedAt) =>
+            `throw accountId=${accountId} to=${to.toISOString()} previousEmptyWindowCount=${previousEmptyWindowCount} previousBackwardSyncedAt=${previousBackwardSyncedAt?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
-    async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+    async syncTransactionsBackward(
+        accountId: string,
+        to: Date,
+        previousEmptyWindowCount: number,
+        previousBackwardSyncedAt: Date | null
+    ): Promise<BackwardSweepWindowResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
+        const effectiveFloor =
+            isDefined(previousBackwardSyncedAt) && previousBackwardSyncedAt > this.options.historicalFloor
+                ? previousBackwardSyncedAt
+                : this.options.historicalFloor;
+
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
 
@@ -62,15 +77,32 @@ export class BaseBankSyncService {
                 nextTo: this.getNextTimeFromTransaction(oldestTransaction),
                 nextFrom: from,
                 transactions,
-                completed: false
+                completed: false,
+                nextEmptyWindowCount: 0
+            };
+        }
+
+        const nextFrom = addSeconds(from, -this.options.maxPeriodSeconds);
+
+        if (isEmptyArray(transactions)) {
+            const nextEmptyWindowCount = previousEmptyWindowCount + 1;
+            const completed = nextEmptyWindowCount >= this.options.maxEmptyWindowsBeforeStop || from <= effectiveFloor;
+
+            return {
+                nextTo: from,
+                nextFrom,
+                transactions,
+                completed,
+                nextEmptyWindowCount
             };
         }
 
         return {
             nextTo: from,
-            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
+            nextFrom,
             transactions,
-            completed: isEmptyArray(transactions)
+            completed: from <= effectiveFloor,
+            nextEmptyWindowCount: 0
         };
     }
 
