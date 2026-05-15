@@ -43,7 +43,7 @@ export const AccountDeptTypeCard = ({ type, onSelect, isSelected, testID }: Prop
         <Card testID={testID} onPress={handleSelect} className={cardVariants({ isSelected })} size="md">
             <CircleIcon icon={ACCOUNT_DEBT_TYPE_ICON[type]} variant="ghost" border={false} size={40} iconSize={20} />
 
-            <View className="flex-1 items-center justify-center gap-y-xs self-stretch px-sm">
+            <View className="items-center justify-center gap-y-xs self-stretch px-sm">
                 <Text className="text-sm font-semibold text-primary text-center">{t(ACCOUNT_DEBT_TYPE[type])}</Text>
                 <Text className="text-sm text-secondary-foreground text-center">{t(ACCOUNT_DEBT_TYPE_DESCRIPTION[type])}</Text>
             </View>
