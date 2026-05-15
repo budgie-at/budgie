@@ -84,30 +84,35 @@ export const TransactionAmountDisplay = ({
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
-            {isDefined(topContent) ? <View className="mb-sm items-center">{topContent}</View> : null}
-            <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
-                <Animated.View style={shakeStyle} className="w-full">
-                    <Animated.View style={scaleStyle}>
-                        <Text
-                            className={textVariants({ variant })}
-                            style={fontSizeStyle}
-                            adjustsFontSizeToFit
-                            numberOfLines={1}
-                            testID={testID}
-                        >
-                            {fullDisplay}
-                        </Text>
-                    </Animated.View>
-                </Animated.View>
-            </Pressable>
-            {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} onPress={onLabelPress} /> : null}
-            {isDefined(secondaryAmount) ? (
+            <View className="items-center">
+                {isDefined(topContent) ? <View className="absolute bottom-full mb-sm items-center z-10">{topContent}</View> : null}
                 <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
-                    <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">
-                        {secondaryAmount}
-                    </Animated.Text>
+                    <Animated.View style={shakeStyle} className="w-full">
+                        <Animated.View style={scaleStyle}>
+                            <Text
+                                className={textVariants({ variant })}
+                                style={fontSizeStyle}
+                                adjustsFontSizeToFit
+                                numberOfLines={1}
+                                testID={testID}
+                            >
+                                {fullDisplay}
+                            </Text>
+                        </Animated.View>
+                    </Animated.View>
                 </Pressable>
-            ) : null}
+                {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} onPress={onLabelPress} /> : null}
+                {isDefined(secondaryAmount) ? (
+                    <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
+                        <Animated.Text
+                            entering={SECONDARY_ENTERING_ANIMATION}
+                            className="text-lg text-secondary-foreground font-medium mt-xs"
+                        >
+                            {secondaryAmount}
+                        </Animated.Text>
+                    </Pressable>
+                ) : null}
+            </View>
         </Animated.View>
     );
 };

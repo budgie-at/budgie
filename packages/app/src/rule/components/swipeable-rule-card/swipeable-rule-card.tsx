@@ -1,18 +1,17 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
-import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
 import { SwipeableRuleCardStatus } from '../swipeable-rule-card-status/swipeable-rule-card-status';
 
 const logger = getLogger('SwipeableRuleCard');
@@ -22,24 +21,11 @@ const SWIPE_THRESHOLD = 80;
 const ENTRY_TRANSLATE_Y = 16;
 const SNAP_BACK_SPRING_CONFIG = { damping: 20, stiffness: 200 };
 const SLIDE_OUT_DISTANCE = 300;
-const ZAP_ICON_SIZE = 14;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
 type CardLayout = 'compact' | 'wide';
-
-const cardVariants = cva('flex-row items-center gap-xs rounded-full border border-secondary-corner bg-secondary-background px-md py-xs', {
-    variants: {
-        layout: {
-            compact: 'self-start',
-            wide: 'self-start min-w-[160px] max-w-[85%]'
-        }
-    },
-    defaultVariants: {
-        layout: 'compact'
-    }
-});
 
 interface Props {
     readonly descriptionText: string;
@@ -163,6 +149,8 @@ export const SwipeableRuleCard = (props: Props) => {
     }
 
     const isCreating = status === 'creating';
+    const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
+    const pillClassName = layout === 'wide' ? 'self-start min-w-[160px] max-w-[85%]' : 'self-start';
 
     return (
         <GestureDetector gesture={panGesture}>
@@ -172,13 +160,11 @@ export const SwipeableRuleCard = (props: Props) => {
                         testID={buttonTestID}
                         onPress={handleYesButtonPress}
                         disabled={isCreating}
-                        className={cardVariants({ layout })}
+                        className="self-start max-w-[85%]"
                     >
-                        <Icon icon={UserIconNameEnum.Zap} size={ZAP_ICON_SIZE} className="text-secondary-foreground" />
-                        <Text className="text-xs text-secondary-foreground font-medium shrink" numberOfLines={1} ellipsizeMode="tail">
+                        <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent}>
                             {descriptionText}
-                        </Text>
-                        {isCreating ? <ActivityIndicator size="small" /> : null}
+                        </RuleIndicatorPill>
                     </HapticPressable>
                 </View>
             </Animated.View>
