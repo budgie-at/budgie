@@ -231,7 +231,7 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <View className="flex-1">
-                <View className="flex-1 pb-[112px]">
+                <View className="flex-1">
                     <TransactionAmountDisplay
                         ref={amountDisplayRef}
                         amount={displayValue}
