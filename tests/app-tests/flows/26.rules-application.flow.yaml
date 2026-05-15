@@ -868,10 +868,6 @@ env:
     id: 'SuggestRule.CreateRuleButton'
 
 - extendedWaitUntil:
-    visible: 'Rule created'
-    timeout: 10000
-
-- extendedWaitUntil:
     notVisible:
       id: 'SuggestRule.Card'
     timeout: 10000
@@ -937,10 +933,6 @@ env:
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
-
-- extendedWaitUntil:
-    visible: 'Rule created'
-    timeout: 10000
 
 - extendedWaitUntil:
     notVisible:
