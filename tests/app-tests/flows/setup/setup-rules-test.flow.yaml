@@ -10,6 +10,7 @@ appId: ${APP_ID}
     permissions:
       contacts: allow
       microphone: allow
+      notifications: allow
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Home'

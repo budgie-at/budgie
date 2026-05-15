@@ -30,6 +30,8 @@ executionOrder:
         - 24.split-transaction-and-analytics.flow
         - 25.rules-crud.flow
         - 26.rules-application.flow
+        - 27.budget.flow
+        - 28.budget-multi-currency.flow
 
 platform:
     ios:
