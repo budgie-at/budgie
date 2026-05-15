@@ -29,14 +29,16 @@ type UseSuggestRuleDetectionResultType = {
     readonly matchingRulesCount: number;
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
+    readonly onCreatingChange: (next: boolean) => void;
 };
 
 const dismissedSuggestions = new Set<string>();
 
 // eslint-disable-next-line max-statements -- Detection hook with multiple derived values and dismiss tracking
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParamsType): UseSuggestRuleDetectionResultType => {
-    const [ruleCreated, setRuleCreated] = useState(false);
+    const [isRuleCreationStarted, setIsRuleCreationStarted] = useState(false);
     const [isDismissed, setIsDismissed] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { enabledRules } = useGetEnabledRulesQuery();
@@ -82,26 +84,37 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
 
     const mode = computeDetectionMode({
         hasChanges,
-        ruleCreated,
+        isRuleCreationStarted,
+        isCreating,
         isDismissed: isDismissed || wasPreviouslyDismissed,
         matchingRulesCount,
         hasConflictWithMatchingRules: hasConflict
     });
 
     const singleMatchingRule = matchingRulesCount === 1 ? matchingRules[0] : null;
+    const canUpdateRule = !isCreating && !isRuleCreationStarted;
 
-    const updateRuleData: UpdateRuleDataInterface | null = isDefined(singleMatchingRule)
-        ? { ruleId: singleMatchingRule.id, categoryId, tagIds }
-        : null;
+    const updateRuleData: UpdateRuleDataInterface | null =
+        canUpdateRule && isDefined(singleMatchingRule) ? { ruleId: singleMatchingRule.id, categoryId, tagIds } : null;
 
     const onRuleCreated = () => {
-        setRuleCreated(true);
+        setIsRuleCreationStarted(true);
+        setIsCreating(false);
     };
 
     const onDismiss = () => {
         dismissedSuggestions.add(dismissKey);
         setIsDismissed(true);
+        setIsCreating(false);
     };
 
-    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss };
+    const onCreatingChange = (next: boolean) => {
+        if (next) {
+            setIsRuleCreationStarted(true);
+        }
+
+        setIsCreating(next);
+    };
+
+    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss, onCreatingChange };
 };

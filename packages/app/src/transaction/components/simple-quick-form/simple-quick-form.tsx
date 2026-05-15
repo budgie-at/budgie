@@ -12,14 +12,13 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { RuleDetectionModeEnum } from '../../../rule/enum/rule-detection-mode.enum';
-import { SuggestRuleDataInterface } from '../../../rule/interface/suggest-rule-data.interface';
-import { UpdateRuleDataInterface } from '../../../rule/interface/update-rule-data.interface';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { QuickFormBottomOverlay } from '../quick-form-bottom-overlay/quick-form-bottom-overlay';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
@@ -27,6 +26,7 @@ import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
+import type { RulePillSlotPropsInterface } from '../../interface/rule-pill-slot-props.interface';
 import type { TransactionFieldIconsRefInterface } from '../../interface/transaction-field-icons-ref.interface';
 
 type AccountFieldName = 'fromAccountId' | 'toAccountId';
@@ -38,7 +38,7 @@ interface BuildEntryParams {
     readonly mccCategoryId: number | null;
 }
 
-interface Props {
+interface Props extends RulePillSlotPropsInterface {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: AccountFieldName;
@@ -50,12 +50,6 @@ interface Props {
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
-    readonly ruleDetectionMode?: RuleDetectionModeEnum;
-    readonly suggestRuleData?: SuggestRuleDataInterface;
-    readonly updateRuleData?: UpdateRuleDataInterface | null;
-    readonly matchingRulesCount?: number;
-    readonly onRuleCreated?: () => void;
-    readonly onDismiss?: () => void;
 }
 
 const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
@@ -83,7 +77,8 @@ export const SimpleQuickForm = (props: Props) => {
         updateRuleData,
         matchingRulesCount,
         onRuleCreated,
-        onDismiss
+        onDismiss,
+        onCreatingChange
     } = props;
 
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
@@ -218,6 +213,20 @@ export const SimpleQuickForm = (props: Props) => {
 
     const handleSplitIconPress = () => void handleSplitPress();
     const handleConfirm = isSplitActive ? handleSplitConfirm : handleNormalConfirm;
+    const amountTopStack = (
+        <View className="h-[76px] items-center justify-end gap-xs">
+            <RulePillSlot
+                ruleDetectionMode={ruleDetectionMode}
+                suggestRuleData={suggestRuleData}
+                updateRuleData={updateRuleData}
+                matchingRulesCount={matchingRulesCount}
+                onRuleCreated={onRuleCreated}
+                onDismiss={onDismiss}
+                onCreatingChange={onCreatingChange}
+            />
+            {amountTopContent}
+        </View>
+    );
 
     return (
         <View className="flex-1">
@@ -227,7 +236,7 @@ export const SimpleQuickForm = (props: Props) => {
                     amount={displayValue}
                     currencySymbol={currencySymbol}
                     variant={variant}
-                    topContent={amountTopContent}
+                    topContent={amountTopStack}
                     testID={SimpleQuickFormSelector.AmountInput}
                 />
                 <QuickFormBottomOverlay
@@ -246,12 +255,6 @@ export const SimpleQuickForm = (props: Props) => {
                     onSelectTag={handleSelectTag}
                     onSelectComment={handleSelectComment}
                     onFillPatternAmount={handleFillPatternAmount}
-                    ruleDetectionMode={ruleDetectionMode}
-                    suggestRuleData={suggestRuleData}
-                    updateRuleData={updateRuleData}
-                    matchingRulesCount={matchingRulesCount}
-                    onRuleCreated={onRuleCreated}
-                    onDismiss={onDismiss}
                 />
             </View>
 
