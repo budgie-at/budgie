@@ -238,7 +238,7 @@ class RuleEngineService {
         }
 
         const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
-        const {categoryId} = ruleActionOutcomes;
+        const { categoryId } = ruleActionOutcomes;
         const tagIds = [...new Set([...input.tagIds, ...ruleActionOutcomes.tagIds])];
         const hasCategoryAction = isDefined(categoryId);
         const hasTagAction = tagIds.length !== input.tagIds.length;
