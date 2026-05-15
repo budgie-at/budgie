@@ -1,0 +1,369 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+---
+
+- runFlow:
+    file: setup/setup-rules-test.flow.yaml
+
+# --- AC-9: Empty state when no budget ---
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+
+# --- AC-1 + AC-5 (overall): Create budget from empty state ---
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetWidget.SpentLabel'
+    text: '0.00 / 1000.00'
+
+# --- AC-3 (single-currency math): Add an expense, widget updates ---
+
+- runFlow:
+    file: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+    file: subflows/transactions/open-transaction-form.flow.yaml
+    env:
+      ACTION_ITEM_ID: 'ActionItem.Expense'
+      FORM_TITLE: 'New Expense'
+
+- tapOn:
+    id: 'TransactionKeypad.Digit.4'
+- tapOn:
+    id: 'TransactionKeypad.Digit.2'
+
+- runFlow:
+    file: subflows/transactions/select-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '42.00 / 1000.00'
+    timeout: 5000
+
+# --- AC-2 (overall edit): Edit overall limit ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+    point: '95%,50%'
+- eraseText: 10
+- inputText: '1500'
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '42.00 / 1500.00'
+    timeout: 5000
+
+# --- Cancel edit discards changes ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+    point: '95%,50%'
+- eraseText: 10
+- inputText: '9999'
+
+- tapOn: 'Cancel'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.SpentLabel'
+      text: '42.00 / 1500.00'
+    timeout: 5000
+
+# --- AC-1 + AC-2 (categories): Add per-category limits via edit ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '200'
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: 'Groceries'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.AmountInput'
+- inputText: '100'
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+# --- AC-4 (per-category): Detail screen renders both category rows ---
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.SpentLabel'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetDetail.CategoryRow.42'
+- assertVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+
+# --- AC-5 (per-category widget): Widget shows per-category rows ---
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.42'
+- assertVisible:
+    id: 'BudgetWidget.CategoryRow.11'
+
+# --- Remove the second category limit; detail and widget update ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.1.RemoveButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.CategoryRow.42'
+    timeout: 3000
+- assertNotVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.CategoryRow.42'
+    timeout: 3000
+- assertNotVisible:
+    id: 'BudgetWidget.CategoryRow.11'
+
+# --- AC-7 (push toggle): ON persists across save + reopen ---
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.PushToggle'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- assertVisible:
+    id: 'BudgetSetup.PushToggle'
+
+# --- AC-7 (push toggle): OFF persists across save + reopen ---
+
+- tapOn:
+    id: 'BudgetSetup.PushToggle'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- assertVisible:
+    id: 'BudgetSetup.PushToggle'
+
+- tapOn: 'Cancel'
+- waitForAnimationToEnd
+
+# --- AC-10: Delete budget, cascade to category limits, revert to empty state ---
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.DeleteButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.DeleteButton'
+- extendedWaitUntil:
+    visible: 'Delete budget?'
+    timeout: 3000
+- tapOn: 'Delete'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 5000

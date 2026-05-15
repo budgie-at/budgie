@@ -5,20 +5,29 @@ appId: ${APP_ID}
 # exchange_rates has USD→EUR = 0.863, one 100 USD expense + one 50 EUR expense,
 # budget overall_limit = 200 EUR (200_000_000 microunits), period_start_day = 1.
 # FX math: 100 USD × 0.863 = 86.30 EUR + 50 EUR = 136.30 EUR spent.
-# The widget must render without crashing — AC-8 happy-path smoke.
 
 - runFlow:
-    file: ../setup/setup-multi-currency-budget.flow.yaml
+    file: setup/setup-multi-currency-budget.flow.yaml
+
+# --- AC-8: Widget reflects FX-converted spent total ---
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.Card'
-    timeout: 5000
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetWidget.SpentLabel'
+    text: '136.30 / 200.00'
+
+# --- Detail screen renders the same converted total ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible:
       id: 'BudgetDetail.SpentLabel'
-    timeout: 5000
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetDetail.SpentLabel'
+    text: '136.30 / 200.00'
