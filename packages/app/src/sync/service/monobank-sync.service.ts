@@ -11,6 +11,7 @@ import { accountRepository, bankSyncRepository, mccCategoryRepository } from '..
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
+import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -222,12 +223,14 @@ class AppMonobankSyncService {
                 this.provider
             )
         );
-        const createdTransactions = await transactionService.bulkCreate(transactionInputs);
+        const prepared = await ruleEngineService.prepareCreateInputsForRules(transactionInputs);
+        const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
+        const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
+        const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 
-        ruleApplicationDrainerService.enqueueTransactions(
-            createdTransactions.map(transaction => transaction.id),
-            transactionInputs
-        );
+        if (isNotEmptyArray(postCreateTransactionIds)) {
+            ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
+        }
 
         return createdTransactions;
     }
