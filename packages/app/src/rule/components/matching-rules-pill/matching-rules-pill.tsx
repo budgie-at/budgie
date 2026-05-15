@@ -26,9 +26,9 @@ export const MatchingRulesPill = ({ matchingRulesCount }: Props) => {
     const label = matchingRulesCount === 1 ? t`1 matching rule` : t`${matchingRulesCount} matching rules`;
 
     return (
-        <View className="items-start">
+        <View className="items-center">
             <Animated.View entering={FadeIn.delay(ENTRY_DELAY_MS).duration(200)} exiting={FadeOut.duration(200)}>
-                <HapticPressable testID={MatchingRulesPillSelector.Pill} onPress={handlePress} className="self-start max-w-[85%]">
+                <HapticPressable testID={MatchingRulesPillSelector.Pill} onPress={handlePress} className="self-center">
                     <RuleIndicatorPill icon={UserIconNameEnum.Workflow}>{label}</RuleIndicatorPill>
                 </HapticPressable>
             </Animated.View>
