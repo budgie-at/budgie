@@ -1,4 +1,4 @@
-import { addYears } from 'date-fns';
+import { addMonths } from 'date-fns';
 
 import { BaseBankSyncService } from '../../core/service/base-bank-sync.service';
 import { MonobankClient } from '../client/monobank.client';
@@ -10,7 +10,7 @@ export class MonobankSyncService extends BaseBankSyncService {
         super(new MonobankClient(token), {
             maxPeriodSeconds: MONOBANK_MAX_PERIOD_SECONDS,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
-            historicalFloor: addYears(new Date(), -5),
+            historicalFloor: addMonths(new Date(), -6),
             maxEmptyWindowsBeforeStop: 3
         });
     }
