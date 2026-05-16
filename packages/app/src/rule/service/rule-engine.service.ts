@@ -24,9 +24,11 @@ import {
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
+import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
 
+import type { RuleCreatePreparationResultInterface } from '../interface/rule-create-preparation-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { DB, RuleActionEntityInterface, RuleWithRelationsEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -58,6 +60,32 @@ class RuleEngineService {
                 previousBatch.then(() => this.applyRulesToTransactionsBatch(batchStart, transactionIds, evaluationInputs, rules)),
             Promise.resolve()
         );
+    }
+
+    @Log(
+        transactionInputs => `enter externalIds=${transactionInputs.map(input => input.externalId).join(',')}`,
+        (result, transactionInputs) =>
+            `done externalIds=${transactionInputs.map(input => input.externalId).join(',')} postCreateIndexes=${result.postCreateIndexes.join(',')}`,
+        (error, transactionInputs) =>
+            `throw externalIds=${transactionInputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
+    )
+    async prepareCreateInputsForRules(transactionInputs: TransactionCreateInputInterface[]): Promise<RuleCreatePreparationResultInterface> {
+        const rules = await ruleRepository.findEnabledWithRelations();
+        if (!isNotEmptyArray(rules)) {
+            return { transactionInputs, postCreateIndexes: [] };
+        }
+
+        const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
+        const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
+        const matchingRulesByIndex = evaluationInputs.map(input => rules.filter(rule => ruleMatcherService.evaluateRule(rule, input)));
+        const preparedTransactionInputs = transactionInputs.map((input, index) =>
+            this.applyCreateSafeRuleActionsToInput(input, matchingRulesByIndex[index] ?? [])
+        );
+        const postCreateIndexes = matchingRulesByIndex.flatMap((matchingRules, index) =>
+            this.hasPostCreateRuleAction(matchingRules) ? [index] : []
+        );
+
+        return { transactionInputs: preparedTransactionInputs, postCreateIndexes };
     }
 
     @Log(
@@ -199,6 +227,38 @@ class RuleEngineService {
                 await accountBalanceIncrementalService.updateAllBalances(true, transaction);
             }
         });
+    }
+
+    private applyCreateSafeRuleActionsToInput(
+        input: TransactionCreateInputInterface,
+        matchingRules: RuleWithRelationsEntityInterface[]
+    ): TransactionCreateInputInterface {
+        if (!isNotEmptyArray(matchingRules)) {
+            return input;
+        }
+
+        const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
+        const { categoryId } = ruleActionOutcomes;
+        const tagIds = [...new Set([...input.tagIds, ...ruleActionOutcomes.tagIds])];
+        const hasCategoryAction = isDefined(categoryId);
+        const hasTagAction = tagIds.length !== input.tagIds.length;
+
+        if (!hasCategoryAction && !hasTagAction) {
+            return input;
+        }
+
+        const entries = hasCategoryAction ? input.entries.map(entry => ({ ...entry, categoryId })) : input.entries;
+
+        return {
+            ...input,
+            updatedBy: TransactionUpdatedByEnum.RULE,
+            tagIds,
+            entries
+        };
+    }
+
+    private hasPostCreateRuleAction(matchingRules: RuleWithRelationsEntityInterface[]): boolean {
+        return matchingRules.some(rule => rule.actions.some(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER));
     }
 
     private toRuleEvaluationInput(input: TransactionCreateInputInterface, mccCodeMap: Map<number, string>): RuleEvaluationInputInterface {

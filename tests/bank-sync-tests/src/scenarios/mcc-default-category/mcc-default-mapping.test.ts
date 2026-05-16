@@ -6,7 +6,6 @@ import { describe, expect, it } from 'vitest';
 import type { BankTransactionInterface } from '@budgie/bank-sync';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
-
 const makeExpenseTransaction = (overrides: Partial<BankTransactionInterface> = {}): BankTransactionInterface => ({
     id: 'tx-test-1',
     time: Math.floor(Date.now() / 1000),
