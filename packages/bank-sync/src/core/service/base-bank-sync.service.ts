@@ -48,13 +48,16 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (accountId, to) => `enter accountId=${accountId} to=${to.toISOString()}`,
+        (accountId, to, oldestSeenTxTime) =>
+            `enter accountId=${accountId} to=${to.toISOString()} oldestSeenTxTime=${oldestSeenTxTime?.toISOString() ?? 'null'}`,
         result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, to) => `throw accountId=${accountId} to=${to.toISOString()} error=${getErrorMessage(error)}`
+        (error, accountId, to, oldestSeenTxTime) =>
+            `throw accountId=${accountId} to=${to.toISOString()} oldestSeenTxTime=${oldestSeenTxTime?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
-    async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+    async syncTransactionsBackward(accountId: string, to: Date, oldestSeenTxTime: Date | null): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
-        const oldestAllowedDate = addMonths(new Date(), -this.options.dormancyMonths);
+        const activityAnchor = oldestSeenTxTime ?? new Date();
+        const oldestAllowedDate = addMonths(activityAnchor, -this.options.dormancyMonths);
 
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
