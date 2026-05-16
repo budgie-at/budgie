@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.17.6](https://github.com/budgie-at/budgie/compare/v5.17.5...v5.17.6) (2026-05-16)
+
+### Bug Fixes
+
+- **app:** open transaction rule pills in context ([739a780](https://github.com/budgie-at/budgie/commit/739a78056177b746742582932765d32e61b58531))
+
+## [5.17.5](https://github.com/budgie-at/budgie/compare/v5.17.4...v5.17.5) (2026-05-16)
+
+### Bug Fixes
+
+- **app:** gate consolidation source from/to override on transfer sourceType ([2a55c3e](https://github.com/budgie-at/budgie/commit/2a55c3ee67c72522988eedb58aec6e4183934785)), closes [#431](https://github.com/budgie-at/budgie/issues/431)
+- **app:** render debt type card text on first mount ([5b3c2c6](https://github.com/budgie-at/budgie/commit/5b3c2c66b50f0a0f13832bed0ac7474cdb00eb82))
+
+## [5.17.4](https://github.com/budgie-at/budgie/compare/v5.17.3...v5.17.4) (2026-05-15)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [5.17.3](https://github.com/budgie-at/budgie/compare/v5.17.2...v5.17.3) (2026-05-15)
+
+### Bug Fixes
+
+- **app:** apply rules to synced monobank transactions ([1136025](https://github.com/budgie-at/budgie/commit/1136025f739a456ad139e8eb70ad790db06cbc29))
+- **app:** lower rule pill amount cluster ([f93e502](https://github.com/budgie-at/budgie/commit/f93e502d7cb122bef0e4dfaab72c2150976b5a90))
+- **app:** persist sync rule actions on insert ([727a76a](https://github.com/budgie-at/budgie/commit/727a76a5f51b09fc9dc947993fb979d7d3a1f6b6))
+- **app:** stabilize rule pill layout ([1491eb1](https://github.com/budgie-at/budgie/commit/1491eb1392f353333d4496cc300a2d23b803f4ae))
+
 ## [5.17.2](https://github.com/budgie-at/budgie/compare/v5.17.1...v5.17.2) (2026-05-14)
 
 ### Bug Fixes

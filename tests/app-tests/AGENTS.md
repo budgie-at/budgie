@@ -36,8 +36,8 @@ Maestro flows for Budgie.
 
 1. Treat file selection as one complete subflow: navigate provider, open folder, select file, then confirm native `Open`.
 2. In iOS Files, prefer native folder row ids over label text:
-   - `budgie \(E2E\), Container`
-   - `E2EFixtures, Folder`
+    - `budgie \(E2E\), Container`
+    - `E2EFixtures, Folder`
 3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text only when it is actually visible and assert the picker root state separately.
 4. When debugging picker failures, inspect live hierarchy before changing selectors. Labels and tappable container ids are often different nodes.
 5. Use the same rule for native selector sheets: hierarchy often exposes a stable visible placeholder or title text that is more reliable than an internal input id.
@@ -53,3 +53,5 @@ Maestro flows for Budgie.
 1. Preserve the app URL scheme in E2E builds. Do not delete `CFBundleURLTypes`; deep-link-based flows depend on `budgie://...`.
 2. Prefer `npx expo prebuild -p ios --clean` for deterministic E2E iOS rebuilds when the generated native tree may already exist.
 3. Do not duplicate native build hacks in multiple places. If a config plugin already injects a required Xcode build phase, do not repeat the same workaround in the workflow or local build commands.
+4. Run Maestro verification only against a freshly rebuilt and reinstalled `APP_VARIANT=e2e` app. Dev-client or Metro runs may reproduce/debug a symptom, but they are not valid E2E pass evidence.
+5. After changing app code, selectors, fixtures, native config, or Maestro flow assumptions, rebuild the E2E app, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures with `setup-ios-e2e-fixtures.sh`, then run the target flow or suite.

@@ -49,6 +49,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
+        matchingRuleIds,
         onRuleCreated,
         onDismiss,
         onCreatingChange
@@ -103,6 +104,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                     suggestRuleData={suggestRuleData}
                     updateRuleData={updateRuleData}
                     matchingRulesCount={matchingRulesCount}
+                    matchingRuleIds={matchingRuleIds}
                     onRuleCreated={onRuleCreated}
                     onDismiss={onDismiss}
                     onCreatingChange={onCreatingChange}

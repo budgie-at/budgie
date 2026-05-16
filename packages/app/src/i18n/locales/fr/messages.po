@@ -59,7 +59,8 @@ msgstr "{formattedRemaining} à attribuer"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:37
+#: src/rule/components/rules-list-page/rules-list-page.tsx:40
 msgid "{matchingRulesCount} matching rules"
 msgstr "{matchingRulesCount} règles correspondantes"
 
@@ -109,7 +110,8 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:37
+#: src/rule/components/rules-list-page/rules-list-page.tsx:40
 msgid "1 matching rule"
 msgstr "1 règle correspondante"
 
@@ -762,9 +764,9 @@ msgstr "Impossible de configurer la synchronisation"
 msgid "Could not unconsolidate transaction."
 msgstr "Impossible de déconsolider la transaction."
 
-#: src/app/(tabs)/settings/rules.tsx:68
 #: src/rule/components/rule-update-card/rule-update-card.tsx:64
 #: src/rule/hooks/use-rule-form.hook.ts:152
+#: src/rule/hooks/use-rules-list-page-actions.hook.ts:44
 msgid "Could not update rule"
 msgstr "Impossible de mettre à jour la règle"
 
@@ -833,7 +835,7 @@ msgstr "Créez-en un pour commencer."
 msgid "Create Rule"
 msgstr "Créer une règle"
 
-#: src/app/(tabs)/settings/rules.tsx:119
+#: src/rule/components/rules-list-page/rules-list-page.tsx:85
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Créez des règles pour catégoriser et taguer automatiquement vos transactions bancaires"
 
@@ -1030,11 +1032,11 @@ msgstr "Modifier la catégorie"
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:84
+#: src/app/(main)/transactions/[id]/expense.tsx:85
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:83
+#: src/app/(main)/transactions/[id]/income.tsx:84
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -1710,7 +1712,7 @@ msgstr "Aucun paiement récurrent détecté"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/app/(tabs)/settings/rules.tsx:117
+#: src/rule/components/rules-list-page/rules-list-page.tsx:83
 msgid "No Rules Yet"
 msgstr "Aucune règle pour l'instant"
 
@@ -2053,7 +2055,7 @@ msgstr "Reprise de l'IA…"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/(tabs)/settings/rules.tsx:79
+#: src/rule/hooks/use-rules-list-page-actions.hook.ts:55
 msgid "Rule"
 msgstr "Règle"
 
@@ -2065,7 +2067,7 @@ msgstr "Règle créée"
 msgid "Rule updated"
 msgstr "Règle mise à jour"
 
-#: src/app/(tabs)/settings/rules.tsx:100
+#: src/rule/components/rules-list-page/rules-list-page.tsx:66
 msgid "Rules"
 msgstr "Règles"
 
