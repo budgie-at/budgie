@@ -1,0 +1,17 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: ../subflows/import/import-database-from-settings.flow.yaml
+    env:
+      FIXTURE_ROW_ID_MATCH: 'budget-base.db(, db)?'
+
+- stopApp
+- launchApp:
+    permissions:
+      contacts: allow
+      microphone: allow
+      notifications: allow
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 30000

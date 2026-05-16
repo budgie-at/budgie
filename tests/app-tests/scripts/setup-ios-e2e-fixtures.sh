@@ -94,6 +94,8 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/rules-base.db" "rules-base.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/budget-base.db" "budget-base.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/budget-multi-currency.db" "budget-multi-currency.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test-transactions.csv" "test-transactions.csv" "$SIMULATOR_UDID" "$APP_ID"
