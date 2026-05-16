@@ -17,7 +17,6 @@ import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
 
 
-const SWEEP_START = new Date('2026-05-16T00:00:00Z');
 const FIXTURE_FORWARD_FROM = new Date('2026-01-01T00:00:00Z');
 const SECONDS_PER_DAY = 86_400;
 const MS_PER_SECOND = 1_000;
@@ -27,16 +26,17 @@ const EXPECTED_PERSISTED_COUNT = 1;
 
 describe('monobank/old-transactions-after-dormant-month', () => {
     // eslint-disable-next-line max-statements -- Backward sweep scenario: fixture + 6-window MSW handler stack + sync + 5 assertions
-    it('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates via the safety net', async () => {
+    it('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates at the dormancy boundary', async () => {
+        const sweepStart = new Date();
         const { bankSync } = setupMonobankFixture('mono-acc-1', BankSyncModeEnum.BACKWARD, FIXTURE_FORWARD_FROM);
 
         testDb
             .update(BankSyncEntityTable)
-            .set({ backwardSyncFromAt: SWEEP_START, backwardSyncedAt: null })
+            .set({ backwardSyncFromAt: sweepStart, backwardSyncedAt: null })
             .where(eq(BankSyncEntityTable.id, bankSync.id))
             .run();
 
-        const oldTransactionTimeSeconds = Math.floor(SWEEP_START.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
+        const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
         const oldTransaction: MonobankTransactionApiInterface = buildMonobank.transaction({
             id: 'tx-old-80d',
             amount: OLD_TRANSACTION_AMOUNT_KOPECKS,
