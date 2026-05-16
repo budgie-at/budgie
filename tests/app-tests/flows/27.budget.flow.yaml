@@ -359,3 +359,43 @@ env:
     visible:
       id: 'BudgetWidget.EmptyState'
     timeout: 5000
+
+# --- Budget widget toggle: disable hides widget, enable restores it ---
+
+- openLink: 'budgie://settings'
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.BudgetWidgetSwitch'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'SettingsPage.BudgetWidgetSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    notVisible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+- assertNotVisible:
+    id: 'BudgetWidget.Card'
+
+- openLink: 'budgie://settings'
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.BudgetWidgetSwitch'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'SettingsPage.BudgetWidgetSwitch'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
