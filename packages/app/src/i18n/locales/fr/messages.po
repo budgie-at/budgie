@@ -101,7 +101,7 @@ msgstr "1 règle correspondante"
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "A rule with the same conditions already exists."
 msgstr "Une règle avec les mêmes conditions existe déjà."
 
@@ -251,7 +251,7 @@ msgstr "Toutes vos données financières sont stockées localement sur votre app
 msgid "Already syncing"
 msgstr "Déjà en cours de synchronisation"
 
-#: src/app/(tabs)/settings/import.tsx:196
+#: src/app/(tabs)/settings/import.tsx:199
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
@@ -319,6 +319,11 @@ msgstr "Voulez-vous vraiment supprimer cette règle ?"
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
+#: src/app/(tabs)/settings/import.tsx:257
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:103
+msgid "Auto-assign categories from MCC"
+msgstr "Attribuer automatiquement les catégories via MCC"
+
 #: src/app/(tabs)/settings/index.tsx:140
 msgid "Auto-categorize transactions"
 msgstr "Catégoriser automatiquement les transactions"
@@ -349,7 +354,7 @@ msgid "Bank sync"
 msgstr "Synchronisation bancaire"
 
 #: src/app/(main)/create-account/index.tsx:46
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:53
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:62
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
@@ -397,12 +402,12 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:265
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -429,7 +434,7 @@ msgid "Categories ({selectedCategoriesCount})"
 msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:33
-#: src/app/(tabs)/settings/import.tsx:180
+#: src/app/(tabs)/settings/import.tsx:183
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:35
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:168
 msgid "Category"
@@ -501,7 +506,7 @@ msgstr "Fermer le menu"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/app/(tabs)/settings/import.tsx:240
+#: src/app/(tabs)/settings/import.tsx:243
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
@@ -599,7 +604,7 @@ msgstr "Impossible de consolider les virements"
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
 #: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not create rule"
 msgstr "Impossible de créer la règle"
@@ -649,7 +654,7 @@ msgstr "Impossible d'exporter la base de données"
 msgid "Could not fetch accounts"
 msgstr "Impossible de récupérer les comptes"
 
-#: src/app/(tabs)/settings/import.tsx:142
+#: src/app/(tabs)/settings/import.tsx:145
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
 
@@ -665,7 +670,7 @@ msgstr "Impossible de fusionner la catégorie"
 msgid "Could not merge tag"
 msgstr "Impossible de fusionner l'étiquette"
 
-#: src/app/(tabs)/settings/import.tsx:111
+#: src/app/(tabs)/settings/import.tsx:114
 msgid "Could not read CSV file"
 msgstr "Impossible de lire le fichier CSV"
 
@@ -752,7 +757,7 @@ msgstr "Créer et copier le jeton personnel"
 msgid "Create and organize transaction tags"
 msgstr "Créer et organiser les étiquettes de transaction"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
 msgid "Create anyway"
 msgstr "Créer quand même"
 
@@ -840,7 +845,7 @@ msgstr "Base de données exportée"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
-#: src/app/(tabs)/settings/import.tsx:188
+#: src/app/(tabs)/settings/import.tsx:191
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:124
 msgid "Date"
 msgstr "Date"
@@ -920,7 +925,7 @@ msgstr "Téléchargement des modèles d'IA…"
 msgid "Downloading models"
 msgstr "Téléchargement des modèles"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "Duplicate rule"
 msgstr "Dupliquer la règle"
 
@@ -944,7 +949,7 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
@@ -1071,7 +1076,7 @@ msgstr "égal à"
 msgid "Equals"
 msgstr "Égal à"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:84
 msgid "Errors"
 msgstr "Erreurs"
 
@@ -1124,7 +1129,7 @@ msgstr "Exporter la base de données"
 msgid "Export your transactions to Excel"
 msgstr "Exportez vos transactions vers Excel"
 
-#: src/app/(tabs)/settings/import.tsx:212
+#: src/app/(tabs)/settings/import.tsx:215
 msgid "External ID"
 msgstr "ID externe"
 
@@ -1165,7 +1170,7 @@ msgstr "Champ"
 msgid "Fill in the account details"
 msgstr "Remplissez les détails du compte"
 
-#: src/app/(tabs)/settings/import.tsx:150
+#: src/app/(tabs)/settings/import.tsx:153
 msgid "Fix Errors"
 msgstr "Corriger les erreurs"
 
@@ -1185,15 +1190,15 @@ msgstr "de"
 msgid "From"
 msgstr "De"
 
-#: src/app/(tabs)/settings/import.tsx:219
+#: src/app/(tabs)/settings/import.tsx:222
 msgid "From Account"
 msgstr "Du compte"
 
-#: src/app/(tabs)/settings/import.tsx:233
+#: src/app/(tabs)/settings/import.tsx:236
 msgid "From Amount"
 msgstr "Montant source"
 
-#: src/app/(tabs)/settings/import.tsx:226
+#: src/app/(tabs)/settings/import.tsx:229
 msgid "From Currency"
 msgstr "Devise source"
 
@@ -1221,7 +1226,7 @@ msgstr "Supérieur à"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'écran"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:70
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
 msgid "History synced"
 msgstr "Historique synchronisé"
 
@@ -1314,7 +1319,7 @@ msgstr "Indexation {done} sur {total}"
 msgid "Invalid file"
 msgstr "Fichier invalide"
 
-#: src/app/(tabs)/settings/import.tsx:247
+#: src/app/(tabs)/settings/import.tsx:250
 msgid "Is Planned"
 msgstr "Est planifié"
 
@@ -1338,7 +1343,7 @@ msgstr "7 derniers jours"
 msgid "Last 90 days"
 msgstr "90 derniers jours"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:79
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:88
 msgid "Last error"
 msgstr "Dernière erreur"
 
@@ -1346,7 +1351,7 @@ msgstr "Dernière erreur"
 msgid "Last Month"
 msgstr "Mois dernier"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:75
 msgid "Last sync"
 msgstr "Dernière synchronisation"
 
@@ -1414,7 +1419,7 @@ msgstr "Gérer les étiquettes"
 msgid "Manual"
 msgstr "Manuel"
 
-#: src/app/(tabs)/settings/import.tsx:156
+#: src/app/(tabs)/settings/import.tsx:159
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
 
@@ -1426,7 +1431,7 @@ msgstr "Toutes correspondent"
 msgid "Match Any"
 msgstr "L'une correspond"
 
-#: src/app/(tabs)/settings/import.tsx:157
+#: src/app/(tabs)/settings/import.tsx:160
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
@@ -1437,6 +1442,10 @@ msgstr "correspond"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Correspond au regex"
+
+#: src/app/(tabs)/settings/import.tsx:254
+msgid "MCC"
+msgstr "MCC"
 
 #: src/app/rule-mcc-selector.tsx:48
 msgid "MCC categories are not loaded"
@@ -1805,7 +1814,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
 msgid "Quick rule"
 msgstr "Règle rapide"
 
@@ -1927,7 +1936,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Règle"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:172
 msgid "Rule created"
 msgstr "Règle créée"
 
@@ -2042,11 +2051,11 @@ msgstr "Sélectionner un contact"
 msgid "Select a tag to merge into"
 msgstr "Sélectionnez une étiquette pour fusionner"
 
-#: src/app/(tabs)/settings/import.tsx:56
-#: src/app/(tabs)/settings/import.tsx:59
-#: src/app/(tabs)/settings/import.tsx:60
+#: src/app/(tabs)/settings/import.tsx:58
 #: src/app/(tabs)/settings/import.tsx:61
 #: src/app/(tabs)/settings/import.tsx:62
+#: src/app/(tabs)/settings/import.tsx:63
+#: src/app/(tabs)/settings/import.tsx:64
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
@@ -2282,7 +2291,7 @@ msgstr "Dépensé"
 msgid "Split"
 msgstr "Diviser"
 
-#: src/app/(tabs)/settings/import.tsx:150
+#: src/app/(tabs)/settings/import.tsx:153
 msgid "Start Import"
 msgstr "Démarrer l'importation"
 
@@ -2456,11 +2465,11 @@ msgstr "à"
 msgid "To"
 msgstr "Vers"
 
-#: src/app/(tabs)/settings/import.tsx:172
+#: src/app/(tabs)/settings/import.tsx:175
 msgid "To Account"
 msgstr "Vers le compte"
 
-#: src/app/(tabs)/settings/import.tsx:204
+#: src/app/(tabs)/settings/import.tsx:207
 msgid "To Currency"
 msgstr "Devise cible"
 
@@ -2507,7 +2516,7 @@ msgstr "Transaction introuvable"
 msgid "Transactions"
 msgstr "Transactions"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:63
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:72
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 

@@ -6,6 +6,7 @@ export const BankSyncCreateEntitySchema = convertToCreateEntitySchema(BankSyncEn
     mode: true,
     status: true,
     enabled: true,
+    applyMccDefaultCategory: true,
     errorCount: true,
     lastError: true,
     forwardSyncFromAt: true,

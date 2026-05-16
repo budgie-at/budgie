@@ -7,7 +7,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -19,6 +19,7 @@ import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
+import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
@@ -56,13 +57,7 @@ class AppMonobankSyncService {
 
     @Log('enter', result => `done mccKeys=${[...result.keys()].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
     private async loadMccCategories(): Promise<Map<string, MccCategoryLookupInterface>> {
-        const mccCategories = await mccCategoryRepository.findAll();
-        this.mccCategoryLookupMap = new Map(
-            mccCategories.map(mccCategory => [
-                mccCategory.mcc,
-                { id: mccCategory.id, defaultCategoryId: mccCategory.defaultCategoryId ?? null }
-            ])
-        );
+        this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
 
         return this.mccCategoryLookupMap;
     }
@@ -202,7 +197,7 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id);
+        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id, sync);
 
         if (isPositiveNumber(changedTransactionCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
@@ -286,7 +281,8 @@ class AppMonobankSyncService {
 
     private async processFetchedTransactions(
         transactions: BankSyncBatchResultInterface['transactions'],
-        accountId: number
+        accountId: number,
+        sync: BankSyncEntityInterface
     ): Promise<number> {
         if (!isNotEmptyArray(transactions)) {
             return 0;
@@ -296,7 +292,7 @@ class AppMonobankSyncService {
         const newTransactions = transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
         const existingTransactions = transactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
 
-        const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId);
+        const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId, sync);
         const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
 
         if (isPositiveNumber(updatedTransactionCount)) {
@@ -306,19 +302,22 @@ class AppMonobankSyncService {
         return createdTransactionCount + updatedTransactionCount;
     }
 
-    private async createNewTransactions(newTransactions: BankSyncBatchResultInterface['transactions'], accountId: number): Promise<number> {
+    private async createNewTransactions(
+        newTransactions: BankSyncBatchResultInterface['transactions'],
+        accountId: number,
+        sync: BankSyncEntityInterface
+    ): Promise<number> {
         if (!isNotEmptyArray(newTransactions)) {
             return 0;
         }
 
-        const inputs = newTransactions.map(bankTransaction =>
-            mapBankTransactionToCreateInput(
-                bankTransaction,
-                accountId,
-                this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
-                this.provider
-            )
-        );
+        const inputs = newTransactions.map(bankTransaction => {
+            const rawLookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
+            const effectiveLookup =
+                isDefined(rawLookup) && !sync.applyMccDefaultCategory ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
+
+            return mapBankTransactionToCreateInput(bankTransaction, accountId, effectiveLookup, this.provider);
+        });
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
         const createdTransactions = await this.createBatchTransactions(prepared.transactionInputs);
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
