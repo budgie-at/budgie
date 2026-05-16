@@ -19,7 +19,7 @@ const getCategoryIcon = (category: CategoryEntityInterface): UserIconNameEnum =>
 
 export const CategorySuggestionRow = (props: Props) => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const { suggestions, status } = useCategorySuggestion({
         transactionTitle,
@@ -33,7 +33,7 @@ export const CategorySuggestionRow = (props: Props) => {
         onSelect(category.id);
     };
 
-    const getCategoryTitle = (category: CategoryEntityInterface): string => resolveCategoryTitle(category, i18n) ?? category.title;
+    const getCategoryTitle = (category: CategoryEntityInterface): string => resolveCategoryTitle(category, t);
 
     return (
         <IconTitleSuggestionRow

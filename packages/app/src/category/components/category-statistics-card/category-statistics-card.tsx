@@ -28,7 +28,7 @@ interface Props {
 }
 
 export const CategoryStatisticsCard = ({ category, amount, percentage, variant, filters, isIncome }: Props) => {
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const router = useRouter();
@@ -52,7 +52,7 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
     };
 
     const resolvableCategory = isDefined(category.id) ? { id: category.id, title: category.title, isDefault: category.isDefault } : null;
-    const visibleTitle = resolveCategoryTitle(resolvableCategory, i18n) ?? category.title;
+    const visibleTitle = isDefined(resolvableCategory) ? resolveCategoryTitle(resolvableCategory, t) : category.title;
 
     return (
         <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
