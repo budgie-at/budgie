@@ -11,6 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 
 import { SplitEntryRowSelector } from './split-entry-row.selector';
 
@@ -37,13 +38,14 @@ const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as cons
 export const SplitEntryRow = (props: Props) => {
     const { index, categoryId, amount, currencySymbol, variant, canDelete, autoFocus, onAmountChange, onCategoryPress, onDelete } = props;
 
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
 
     const hasCategorySelected = isPositiveNumber(categoryId);
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
-    const categoryTitle = hasCategorySelected && isDefined(category) ? category.title : t`Select category`;
+    const resolvedTitle = hasCategorySelected && isDefined(category) ? resolveCategoryTitle(category, i18n) : null;
+    const categoryTitle = isDefined(resolvedTitle) ? resolvedTitle : t`Select category`;
     const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
     return (

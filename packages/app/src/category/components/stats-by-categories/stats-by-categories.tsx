@@ -25,7 +25,8 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
 
         const categoryData = category ?? {
             icon: UserIconNameEnum.BadgeQuestionMark,
-            title: t`Uncategorized`
+            title: t`Uncategorized`,
+            isDefault: false
         };
 
         return (
