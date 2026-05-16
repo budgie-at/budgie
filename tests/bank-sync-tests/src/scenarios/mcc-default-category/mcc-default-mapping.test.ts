@@ -29,8 +29,8 @@ const ACCOUNT_ID = 1;
 const PROVIDER = ExternalSourceEnum.MONOBANK;
 
 describe('mcc-default-category/mcc-default-mapping', () => {
-    it('MCC_DEFAULT_CATEGORY_SEED has at least 80 entries', () => {
-        expect(Object.keys(MCC_DEFAULT_CATEGORY_SEED).length).toBeGreaterThanOrEqual(80);
+    it('MCC_DEFAULT_CATEGORY_SEED has at least 1000 entries', () => {
+        expect(Object.keys(MCC_DEFAULT_CATEGORY_SEED).length).toBeGreaterThanOrEqual(1000);
     });
 
     it('applies defaultCategoryId from lookup when input has no categoryId', () => {
