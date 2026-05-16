@@ -20,6 +20,8 @@ export type { BackwardSweepWindowResultInterface } from './core/interface/backwa
 export type { SyncBatchTaggedResult } from './core/interface/sync-batch-tagged-result.type';
 export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.interface';
 
+export { BaseBankSyncService } from './core/service/base-bank-sync.service';
+
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
