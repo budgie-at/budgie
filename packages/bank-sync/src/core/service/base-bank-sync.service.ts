@@ -54,6 +54,10 @@ export class BaseBankSyncService {
         (error, accountId, to, lastSeenFromAt) =>
             `throw accountId=${accountId} to=${to.toISOString()} lastSeenFromAt=${lastSeenFromAt?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
+    /**
+     * @param lastSeenFromAt cursor of the most recent backward iteration that returned transactions; null on first iteration.
+     *                       Used to compute the dormancy boundary: addMonths(lastSeenFromAt ?? now, -options.dormancyMonths).
+     */
     async syncTransactionsBackward(accountId: string, to: Date, lastSeenFromAt: Date | null): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
         const activityAnchor = lastSeenFromAt ?? new Date();

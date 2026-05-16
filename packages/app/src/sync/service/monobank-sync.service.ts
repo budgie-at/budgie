@@ -165,6 +165,7 @@ class AppMonobankSyncService {
             return;
         }
 
+        // backwardSyncedAt records the cursor at the iteration where we last saw activity; advanced only when transactions were found
         const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? result.nextTo : sync.backwardSyncedAt;
 
         if (result.completed) {
