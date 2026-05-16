@@ -231,14 +231,16 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <View className="flex-1">
-                <TransactionAmountDisplay
-                    ref={amountDisplayRef}
-                    amount={displayValue}
-                    currencySymbol={currencySymbol}
-                    variant={variant}
-                    topContent={amountTopStack}
-                    testID={SimpleQuickFormSelector.AmountInput}
-                />
+                <View className="flex-1">
+                    <TransactionAmountDisplay
+                        ref={amountDisplayRef}
+                        amount={displayValue}
+                        currencySymbol={currencySymbol}
+                        variant={variant}
+                        topContent={amountTopStack}
+                        testID={SimpleQuickFormSelector.AmountInput}
+                    />
+                </View>
                 <QuickFormBottomOverlay
                     transactionTitle={transactionTitle}
                     mccCategoryId={mccCategoryId}
