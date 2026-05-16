@@ -16,6 +16,8 @@ import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token
 import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
+import { AccountBankSyncCardSelector } from './account-bank-sync-card.selector';
+
 import type { AccountBankSyncCardPropsInterface } from '../../interface/account-bank-sync-card-props.interface';
 
 const statusTextVariants = cva('text-xs font-medium', {
@@ -102,7 +104,11 @@ export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInter
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Auto-assign categories from MCC</Trans>
                         </Text>
-                        <ThemedSwitch value={bankSync.applyMccDefaultCategory} onValueChange={handleToggleMccDefault} />
+                        <ThemedSwitch
+                            value={bankSync.applyMccDefaultCategory}
+                            onValueChange={handleToggleMccDefault}
+                            testID={AccountBankSyncCardSelector.MccDefaultSwitch}
+                        />
                     </View>
                 )}
             </View>

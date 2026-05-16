@@ -256,7 +256,11 @@ export default function ImportScreen() {
                     <Text className="text-primary text-base">
                         <Trans>Auto-assign categories from MCC</Trans>
                     </Text>
-                    <ThemedSwitch value={applyMccDefault} onValueChange={setApplyMccDefault} />
+                    <ThemedSwitch
+                        value={applyMccDefault}
+                        onValueChange={setApplyMccDefault}
+                        testID={ImportScreenSelector.ApplyMccDefaultSwitch}
+                    />
                 </View>
             </ScrollView>
 
