@@ -7,6 +7,7 @@ export interface RulePillSlotPropsInterface {
     readonly suggestRuleData?: SuggestRuleDataInterface;
     readonly updateRuleData?: UpdateRuleDataInterface | null;
     readonly matchingRulesCount?: number;
+    readonly matchingRuleIds?: readonly number[];
     readonly onRuleCreated?: () => void;
     readonly onDismiss?: () => void;
     readonly onCreatingChange?: (next: boolean) => void;
