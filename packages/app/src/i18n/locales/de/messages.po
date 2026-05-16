@@ -847,7 +847,7 @@ msgstr "Tags erstellen"
 msgid "Create tags to organize your transactions"
 msgstr "Erstellen Sie Tags, um Ihre Transaktionen zu organisieren"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:25
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx:21
 msgid "Create your budget"
 msgstr "Erstelle dein Budget"
 
@@ -1568,7 +1568,7 @@ msgstr "Verliehenes oder geliehenes Geld"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:38
+#: src/budget/components/budget-widget/budget-widget.tsx:45
 msgid "Monthly budget"
 msgstr "Monatsbudget"
 
@@ -2286,7 +2286,7 @@ msgstr "Senden {fromCode}"
 msgid "Set a monthly limit and track spending"
 msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:17
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx:25
 msgid "Set a monthly limit and track your spending"
 msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
 
