@@ -1,6 +1,8 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
+import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 
 interface Props {
@@ -14,10 +16,10 @@ interface Props {
 
 const getCategoryKey = (category: CategoryEntityInterface): number => category.id;
 const getCategoryIcon = (category: CategoryEntityInterface): UserIconNameEnum => category.icon;
-const getCategoryTitle = (category: CategoryEntityInterface): string => category.title;
 
 export const CategorySuggestionRow = (props: Props) => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
+    const { i18n } = useLingui();
 
     const { suggestions, status } = useCategorySuggestion({
         transactionTitle,
@@ -30,6 +32,8 @@ export const CategorySuggestionRow = (props: Props) => {
     const handleSelect = (category: CategoryEntityInterface): void => {
         onSelect(category.id);
     };
+
+    const getCategoryTitle = (category: CategoryEntityInterface): string => resolveCategoryTitle(category, i18n) ?? category.title;
 
     return (
         <IconTitleSuggestionRow

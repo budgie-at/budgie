@@ -1,5 +1,6 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
+import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -11,6 +12,7 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
@@ -48,6 +50,7 @@ export const TransactionSectionsList = ({
     footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
+    const { i18n } = useLingui();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
     const { bottom } = useSafeAreaInsets();
@@ -92,15 +95,20 @@ export const TransactionSectionsList = ({
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => ({
-            type: 'transaction' as const,
-            id: `transaction-${transaction.id}`,
-            data: {
-                transaction,
-                formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
-            }
-        }))
+        ...transactions.map(transaction => {
+            const firstEntry = transaction.entries.at(0);
+            const resolvedCategoryTitle = resolveCategoryTitle(firstEntry?.category, i18n);
+
+            return {
+                type: 'transaction' as const,
+                id: `transaction-${transaction.id}`,
+                data: {
+                    transaction,
+                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel, resolvedCategoryTitle)
+                }
+            };
+        })
     ]);
 
     const isEmpty = isEmptyArray(flatData);
