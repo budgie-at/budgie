@@ -2,7 +2,6 @@
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import { fromUnixTime } from 'date-fns';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -166,8 +165,7 @@ class AppMonobankSyncService {
             return;
         }
 
-        const oldestTxInWindow = result.transactions.at(-1);
-        const nextBackwardSyncedAt = isDefined(oldestTxInWindow) ? fromUnixTime(oldestTxInWindow.time) : sync.backwardSyncedAt;
+        const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? result.nextTo : sync.backwardSyncedAt;
 
         if (result.completed) {
             await bankSyncRepository.update(sync.id, {
