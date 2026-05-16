@@ -27,6 +27,7 @@ import m0022 from './0022_add_budgets.sql';
 import m0023 from './0023_add_budget_category_limit.sql';
 import m0024 from './0024_add_budget_alert.sql';
 import m0025 from './0025_add_budget_push_enabled.sql';
+import m0026 from './0026_add_settings_budget_widget_enabled.sql';
 
 export default {
     journal,
@@ -56,6 +57,7 @@ export default {
         m0022,
         m0023,
         m0024,
-        m0025
+        m0025,
+        m0026
     }
 };
