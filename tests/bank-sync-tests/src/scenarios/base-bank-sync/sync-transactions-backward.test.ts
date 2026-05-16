@@ -19,10 +19,6 @@ const MS_PER_SECOND = 1_000;
 const MS_PER_DAY = 86_400_000;
 const SIX_MONTHS_DAYS = 180;
 const SIX_MONTHS_AND_ONE_DAY_OFFSET_MS = -(SIX_MONTHS_DAYS + 1) * MS_PER_DAY;
-const RECENT_TX_DAYS = 30;
-const EXTENDED_TO_DAYS = 100;
-const RECENT_TX_OFFSET_MS = -RECENT_TX_DAYS * MS_PER_DAY;
-const EXTENDED_TO_OFFSET_MS = -EXTENDED_TO_DAYS * MS_PER_DAY;
 
 const toUnixSeconds = (date: Date): number => Math.floor(date.getTime() / MS_PER_SECOND);
 
@@ -78,40 +74,30 @@ describe('BaseBankSyncService.syncTransactionsBackward', () => {
         const txs = Array.from({ length: PAGE_SIZE }, (_, index) => buildTransaction(toUnixSeconds(sweepTo) - index, `tx-${index}`));
         const service = new BaseBankSyncService(new StubClient(buildSuccess(txs)), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo);
 
         expect(result.completed).toBe(false);
         expect(result.transactions).toHaveLength(PAGE_SIZE);
         expect(toUnixSeconds(result.nextTo)).toBe(toUnixSeconds(sweepTo) - PAGE_SIZE);
     });
 
-    it('returns completed=false on an empty window when (now - dormancyMonths) is still ahead and no activity seen yet', async () => {
+    it('returns completed=false on an empty window when the next window stays within the dormancy window', async () => {
         const sweepTo = new Date();
         const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo);
 
         expect(result.completed).toBe(false);
         expect(result.transactions).toHaveLength(0);
     });
 
-    it('returns completed=true when the current window crosses (now - dormancyMonths) with no activity seen yet', async () => {
+    it('returns completed=true when the current window crosses (now - dormancyMonths)', async () => {
         const farPastTo = new Date(Date.now() + SIX_MONTHS_AND_ONE_DAY_OFFSET_MS);
         const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, farPastTo, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, farPastTo);
 
         expect(result.completed).toBe(true);
-    });
-
-    it('extends the dormancy boundary 6 months past oldestSeenTxTime so the sweep keeps walking past now-6mo', async () => {
-        const oldestSeen = new Date(Date.now() + RECENT_TX_OFFSET_MS);
-        const extendedTo = new Date(Date.now() + EXTENDED_TO_OFFSET_MS);
-        const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
-
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, extendedTo, oldestSeen);
-
-        expect(result.completed).toBe(false);
     });
 
     it('treats INVALID_RESPONSE as an empty window', async () => {
@@ -122,7 +108,7 @@ describe('BaseBankSyncService.syncTransactionsBackward', () => {
         };
         const service = new BaseBankSyncService(new StubClient(errorResponse), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, sweepTo);
 
         expect(result.completed).toBe(false);
         expect(result.transactions).toHaveLength(0);

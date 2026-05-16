@@ -2,7 +2,6 @@
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
-import { fromUnixTime } from 'date-fns';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -148,8 +147,8 @@ class AppMonobankSyncService {
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
 
-        if (sync.mode === BankSyncModeEnum.FORWARD) {
-            if (result.completed) {
+        if (result.completed) {
+            if (sync.mode === BankSyncModeEnum.FORWARD) {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
                     status: BankSyncStatusEnum.IDLE,
@@ -159,29 +158,21 @@ class AppMonobankSyncService {
             } else {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
-                    forwardSyncFromAt: result.nextFrom
+                    mode: BankSyncModeEnum.FORWARD,
+                    status: BankSyncStatusEnum.IDLE,
+                    backwardSyncedAt: result.nextTo,
+                    backwardSyncFromAt: result.nextFrom
                 });
             }
-
-            return;
-        }
-
-        const oldestTxInWindow = result.transactions.at(-1);
-        const nextBackwardSyncedAt = isDefined(oldestTxInWindow) ? fromUnixTime(oldestTxInWindow.time) : sync.backwardSyncedAt;
-
-        if (result.completed) {
+        } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                mode: BankSyncModeEnum.FORWARD,
-                status: BankSyncStatusEnum.IDLE,
-                backwardSyncedAt: nextBackwardSyncedAt,
-                backwardSyncFromAt: result.nextFrom
+                backwardSyncFromAt: result.nextTo
             });
         } else {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                backwardSyncedAt: nextBackwardSyncedAt,
-                backwardSyncFromAt: result.nextTo
+                forwardSyncFromAt: result.nextFrom
             });
         }
     }
@@ -359,11 +350,11 @@ class AppMonobankSyncService {
 
     private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
         const svc = new MonobankSyncService(sync.token);
-        if (sync.mode === BankSyncModeEnum.FORWARD) {
-            return svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date());
-        }
+        const isForward = sync.mode === BankSyncModeEnum.FORWARD;
 
-        return svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
+        return isForward
+            ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
+            : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date());
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
