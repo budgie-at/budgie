@@ -7,7 +7,7 @@ env:
 - runFlow:
     file: setup/setup-budget-test.flow.yaml
 
-# --- AC-9: Empty state when no budget ---
+# --- Empty state when no budget ---
 
 - openLink: 'budgie://budget'
 - extendedWaitUntil:
@@ -15,7 +15,7 @@ env:
       id: 'BudgetWidget.EmptyState'
     timeout: 3000
 
-# --- AC-1 + AC-5 (overall): Create budget from empty state ---
+# --- Create budget from empty state ---
 
 - tapOn:
     id: 'BudgetWidget.EmptyState'
@@ -49,7 +49,7 @@ env:
     id: 'BudgetWidget.SpentLabel'
     text: '0.00 / 1000.00'
 
-# --- AC-3 (single-currency math): Add an expense, widget updates ---
+# --- Add an expense, widget updates ---
 
 - runFlow:
     file: subflows/navigation/navigate-to-transactions.flow.yaml
@@ -87,7 +87,7 @@ env:
       text: '42.00 / 1000.00'
     timeout: 3000
 
-# --- AC-2 (overall edit): Edit overall limit ---
+# --- Edit overall limit ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -148,7 +148,7 @@ env:
       text: '42.00 / 1500.00'
     timeout: 3000
 
-# --- AC-1 + AC-2 (categories): Add per-category limits via edit ---
+# --- Add per-category limits via edit ---
 
 - tapOn:
     id: 'BudgetDetail.EditButton'
@@ -221,7 +221,7 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-# --- AC-4 (per-category): Detail screen renders both category rows ---
+# --- Detail screen renders both category rows ---
 
 - extendedWaitUntil:
     visible:
@@ -232,7 +232,7 @@ env:
 - assertVisible:
     id: 'BudgetDetail.CategoryRow.11'
 
-# --- AC-5 (per-category widget): Widget shows per-category rows ---
+# --- Widget shows per-category rows ---
 
 - tapOn:
     id: 'PageHeader.BackButton'
@@ -289,7 +289,7 @@ env:
 - assertNotVisible:
     id: 'BudgetWidget.CategoryRow.11'
 
-# --- AC-7 (push toggle): ON persists across save + reopen ---
+# --- Push toggle: ON persists across save + reopen ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
@@ -325,7 +325,7 @@ env:
 - assertVisible:
     id: 'BudgetSetup.PushToggle'
 
-# --- AC-7 (push toggle): OFF persists across save + reopen ---
+# --- Push toggle: OFF persists across save + reopen ---
 
 - tapOn:
     id: 'BudgetSetup.PushToggle'
@@ -423,7 +423,7 @@ env:
       id: 'BudgetWidget.Card'
     timeout: 3000
 
-# --- AC-10: Delete budget, cascade to category limits, revert to empty state ---
+# --- Delete budget, cascade to category limits, revert to empty state ---
 
 - tapOn:
     id: 'BudgetWidget.Card'
