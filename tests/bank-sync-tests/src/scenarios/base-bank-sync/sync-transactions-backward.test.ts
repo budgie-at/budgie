@@ -12,23 +12,25 @@ import type {
 
 const MAX_PERIOD_SECONDS = 2_678_400;
 const RATE_LIMIT_MS = 60_000;
-const MAX_EMPTY_WINDOWS = 3;
+const DORMANCY_MONTHS = 6;
 const PAGE_SIZE = 500;
 const ACCOUNT_ID = 'acc-1';
 const MS_PER_SECOND = 1_000;
 const MS_PER_DAY = 86_400_000;
-const FLOOR_OFFSET_MS = -5 * 365 * MS_PER_DAY;
+const SIX_MONTHS_DAYS = 180;
+const SIX_MONTHS_AND_ONE_DAY_OFFSET_MS = -(SIX_MONTHS_DAYS + 1) * MS_PER_DAY;
+const RECENT_TX_DAYS = 30;
+const EXTENDED_TO_DAYS = 100;
+const RECENT_TX_OFFSET_MS = -RECENT_TX_DAYS * MS_PER_DAY;
+const EXTENDED_TO_OFFSET_MS = -EXTENDED_TO_DAYS * MS_PER_DAY;
 const SWEEP_TO = new Date('2026-05-16T00:00:00Z');
-const NEXT_BACKWARD_SYNCED_AT_OFFSET_MS = -10 * MS_PER_DAY;
-const JUST_ABOVE_FLOOR_OFFSET_MS = FLOOR_OFFSET_MS + MS_PER_DAY;
 
 const toUnixSeconds = (date: Date): number => Math.floor(date.getTime() / MS_PER_SECOND);
 
 const buildOptions = (overrides: Partial<BankSyncOptionsInterface> = {}): BankSyncOptionsInterface => ({
     maxPeriodSeconds: MAX_PERIOD_SECONDS,
     rateLimitMs: RATE_LIMIT_MS,
-    historicalFloor: new Date(SWEEP_TO.getTime() + FLOOR_OFFSET_MS),
-    maxEmptyWindowsBeforeStop: MAX_EMPTY_WINDOWS,
+    dormancyMonths: DORMANCY_MONTHS,
     ...overrides
 });
 
@@ -72,88 +74,55 @@ const buildSuccess = (txs: BankTransactionInterface[]): BankSyncResultInterface<
 });
 
 describe('BaseBankSyncService.syncTransactionsBackward', () => {
-    it('returns completed=false with reset counter when the window is page-full (500 txs)', async () => {
+    it('returns completed=false on a page-full window (500 txs) and advances cursor by oldest tx time minus one second', async () => {
         const txs = Array.from({ length: PAGE_SIZE }, (_, index) => buildTransaction(toUnixSeconds(SWEEP_TO) - index, `tx-${index}`));
         const service = new BaseBankSyncService(new StubClient(buildSuccess(txs)), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, 0, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, null);
 
         expect(result.completed).toBe(false);
-        expect(result.nextEmptyWindowCount).toBe(0);
         expect(result.transactions).toHaveLength(PAGE_SIZE);
         expect(toUnixSeconds(result.nextTo)).toBe(toUnixSeconds(SWEEP_TO) - PAGE_SIZE);
     });
 
-    it('returns completed=false with incremented counter on an empty window below the safety-net threshold', async () => {
+    it('returns completed=false on an empty window when the dormancy floor (from `now`) is still ahead', async () => {
         const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, 1, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, null);
 
         expect(result.completed).toBe(false);
-        expect(result.nextEmptyWindowCount).toBe(2);
         expect(result.transactions).toHaveLength(0);
     });
 
-    it('returns completed=true on the empty window that reaches the safety-net threshold', async () => {
+    it('returns completed=true when the current window crosses (now - dormancyMonths) on an account with no activity yet', async () => {
+        const farPastTo = new Date(SWEEP_TO.getTime() + SIX_MONTHS_AND_ONE_DAY_OFFSET_MS);
         const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, MAX_EMPTY_WINDOWS - 1, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, farPastTo, null);
 
         expect(result.completed).toBe(true);
-        expect(result.nextEmptyWindowCount).toBe(MAX_EMPTY_WINDOWS);
     });
 
-    it('resets the empty-window counter when a partial (1..499) window returns data', async () => {
-        const txs = [buildTransaction(toUnixSeconds(SWEEP_TO) - 1, 'tx-only')];
-        const service = new BaseBankSyncService(new StubClient(buildSuccess(txs)), buildOptions());
+    it('extends the dormancy floor 6 months past lastSeenTxTime so the sweep keeps walking', async () => {
+        const recentLastSeen = new Date(SWEEP_TO.getTime() + RECENT_TX_OFFSET_MS);
+        const extendedTo = new Date(SWEEP_TO.getTime() + EXTENDED_TO_OFFSET_MS);
+        const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, MAX_EMPTY_WINDOWS - 1, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, extendedTo, recentLastSeen);
 
         expect(result.completed).toBe(false);
-        expect(result.nextEmptyWindowCount).toBe(0);
-        expect(result.transactions).toHaveLength(1);
     });
 
-    it('completes when the next window crosses the configured historical floor on an empty window', async () => {
-        const justAboveFloor = new Date(SWEEP_TO.getTime() + JUST_ABOVE_FLOOR_OFFSET_MS);
-        const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
-
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, justAboveFloor, 0, null);
-
-        expect(result.completed).toBe(true);
-        expect(result.nextEmptyWindowCount).toBe(1);
-    });
-
-    it('uses previousBackwardSyncedAt as the floor when it is more recent than options.historicalFloor', async () => {
-        const previousBackwardSyncedAt = new Date(SWEEP_TO.getTime() + NEXT_BACKWARD_SYNCED_AT_OFFSET_MS);
-        const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
-
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, 0, previousBackwardSyncedAt);
-
-        expect(result.completed).toBe(true);
-        expect(result.nextEmptyWindowCount).toBe(1);
-    });
-
-    it('falls back to options.historicalFloor when previousBackwardSyncedAt is null', async () => {
-        const service = new BaseBankSyncService(new StubClient(buildSuccess([])), buildOptions());
-
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, 0, null);
-
-        expect(result.completed).toBe(false);
-        expect(result.nextEmptyWindowCount).toBe(1);
-    });
-
-    it('treats INVALID_RESPONSE as an empty window (counter increments)', async () => {
+    it('treats INVALID_RESPONSE as an empty window', async () => {
         const errorResponse: BankSyncResultInterface<BankTransactionInterface[]> = {
             success: false,
             error: { code: BankSyncErrorCodeEnum.INVALID_RESPONSE, message: 'bad payload', provider: BankProviderEnum.MONOBANK }
         };
         const service = new BaseBankSyncService(new StubClient(errorResponse), buildOptions());
 
-        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, 0, null);
+        const result = await service.syncTransactionsBackward(ACCOUNT_ID, SWEEP_TO, null);
 
         expect(result.completed).toBe(false);
-        expect(result.nextEmptyWindowCount).toBe(1);
         expect(result.transactions).toHaveLength(0);
     });
 });

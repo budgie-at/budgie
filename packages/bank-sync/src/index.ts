@@ -4,7 +4,6 @@ export { syncLogger } from './core/util/sync-logger.util';
 export { BankAccountTypeEnum } from './core/enum/bank-account-type.enum';
 export { BankProviderEnum } from './core/enum/bank-provider.enum';
 export { BankSyncErrorCodeEnum } from './core/enum/bank-sync-error-code.enum';
-export { SyncBatchKindEnum } from './core/enum/sync-batch-kind.enum';
 export { BankTransactionTypeEnum } from './core/enum/bank-transaction-type.enum';
 export { CashbackTypeEnum } from './core/enum/cashback-type.enum';
 
@@ -17,8 +16,6 @@ export type { BankTransactionInterface } from './core/interface/bank-transaction
 export type { BankTokenStorageInterface } from './core/interface/bank-token-storage.interface';
 export type { BankSyncOptionsInterface } from './core/interface/bank-sync-options.interface';
 export type { BankSyncBatchResultInterface } from './core/interface/bank-sync-batch-result.interface';
-export type { BackwardSweepWindowResultInterface } from './core/interface/backward-sweep-window-result.interface';
-export type { SyncBatchTaggedResult } from './core/interface/sync-batch-tagged-result.type';
 export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.interface';
 
 export { BaseBankSyncService } from './core/service/base-bank-sync.service';

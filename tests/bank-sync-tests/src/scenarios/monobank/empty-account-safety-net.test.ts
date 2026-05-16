@@ -9,10 +9,10 @@ import { monobankServer } from '../../harness/monobank/monobank-server';
 
 const SWEEP_START = new Date('2026-05-16T00:00:00Z');
 const FIXTURE_FORWARD_FROM = new Date('2026-01-01T00:00:00Z');
-const EXPECTED_SAFETY_NET_REQUESTS = 3;
+const EXPECTED_DORMANCY_FLOOR_REQUESTS = 6;
 
 describe('monobank/empty-account-safety-net', () => {
-    it('terminates backward sweep after exactly 3 empty windows when the account has no transactions', async () => {
+    it('terminates backward sweep after ~6 empty 31-day windows (now - 6 months) when the account has no transactions', async () => {
         const { bankSync } = setupMonobankFixture('mono-acc-1', BankSyncModeEnum.BACKWARD, FIXTURE_FORWARD_FROM);
 
         testDb
@@ -32,7 +32,7 @@ describe('monobank/empty-account-safety-net', () => {
 
         await monobankSyncService.sync();
 
-        expect(monobankRequestCount).toBe(EXPECTED_SAFETY_NET_REQUESTS);
+        expect(monobankRequestCount).toBe(EXPECTED_DORMANCY_FLOOR_REQUESTS);
         expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
 
         const finalSync = fetchBankSyncById(bankSync.id);

@@ -1,7 +1,8 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncBatchKindEnum } from '@budgie/bank-sync';
+import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { fromUnixTime } from 'date-fns';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -24,14 +25,13 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
-import type { BankAccountInterface, BankSyncBatchResultInterface, SyncBatchTaggedResult } from '@budgie/bank-sync';
+import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
 import type { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
 
 class AppMonobankSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
     private readonly provider = ExternalSourceEnum.MONOBANK;
-    private readonly emptyBackwardWindowCounters = new Map<number, number>();
     private isRunning = false;
     private mccCategoryIdMap = new Map<string, number>();
 
@@ -137,23 +137,19 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        (sync, tagged) =>
-            `enter syncId=${sync.id} mode=${sync.mode} kind=${tagged.kind} transactionIds=${tagged.result.transactions.map(t => t.id).join(',')} completed=${tagged.result.completed}`,
-        (doneResult, sync, tagged) =>
-            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} kind=${tagged.kind} transactionIds=${tagged.result.transactions.map(t => t.id).join(',')} completed=${tagged.result.completed}`,
-        (error, sync, tagged) =>
-            `throw syncId=${sync.id} mode=${sync.mode} kind=${tagged.kind} transactionIds=${tagged.result.transactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
+        (sync, result) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
+        (doneResult, sync, result) =>
+            `done result=${String(doneResult)} syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
+        (error, sync, result) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
     )
-    private async updateSyncProgress(sync: BankSyncEntityInterface, tagged: SyncBatchTaggedResult): Promise<void> {
+    private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();
-        const baseUpdate = {
-            transactionCount: sync.transactionCount + tagged.result.transactions.length,
-            errorCount: 0,
-            lastError: null
-        };
+        const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
 
-        if (tagged.kind === SyncBatchKindEnum.FORWARD) {
-            if (tagged.result.completed) {
+        if (sync.mode === BankSyncModeEnum.FORWARD) {
+            if (result.completed) {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
                     status: BankSyncStatusEnum.IDLE,
@@ -163,47 +159,49 @@ class AppMonobankSyncService {
             } else {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
-                    forwardSyncFromAt: tagged.result.nextFrom
+                    forwardSyncFromAt: result.nextFrom
                 });
             }
 
             return;
         }
 
-        if (tagged.result.completed) {
-            this.emptyBackwardWindowCounters.delete(sync.id);
+        const oldestTxInWindow = result.transactions.at(-1);
+        const newBackwardSyncedAt = isDefined(oldestTxInWindow) ? fromUnixTime(oldestTxInWindow.time) : sync.backwardSyncedAt;
+
+        if (result.completed) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
                 mode: BankSyncModeEnum.FORWARD,
                 status: BankSyncStatusEnum.IDLE,
-                backwardSyncedAt: tagged.result.nextTo,
-                backwardSyncFromAt: tagged.result.nextFrom
+                backwardSyncedAt: newBackwardSyncedAt,
+                backwardSyncFromAt: result.nextFrom
             });
         } else {
-            this.emptyBackwardWindowCounters.set(sync.id, tagged.result.nextEmptyWindowCount);
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                backwardSyncFromAt: tagged.result.nextTo
+                backwardSyncedAt: newBackwardSyncedAt,
+                backwardSyncFromAt: result.nextTo
             });
         }
     }
 
     @Log(
         sync => `enter syncId=${sync.id} mode=${sync.mode}`,
-        (tagged, sync) =>
-            `done syncId=${sync.id} mode=${sync.mode} kind=${tagged.kind} transactionIds=${tagged.result.transactions.map(t => t.id).join(',')} completed=${tagged.result.completed}`,
+        (result, sync) =>
+            `done syncId=${sync.id} mode=${sync.mode} transactionIds=${result.transactions.map(t => t.id).join(',')} completed=${result.completed}`,
         (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
     )
-    private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<SyncBatchTaggedResult> {
+    private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            return this.buildEmptyTaggedResult(sync.mode);
+            return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
         }
 
-        const tagged = await this.fetchTransactionBatch(sync, account.externalId);
+        const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        const changedTransactionCount = await this.processFetchedTransactions(tagged.result.transactions, account.id);
+        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id);
 
         if (isPositiveNumber(changedTransactionCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
@@ -211,7 +209,7 @@ class AppMonobankSyncService {
 
         await microPause();
 
-        return tagged;
+        return result;
     }
 
     @Log(
@@ -298,8 +296,8 @@ class AppMonobankSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
-        const tagged = await this.executeSyncBatch(pendingSync);
-        await this.updateSyncProgress(pendingSync, tagged);
+        const result = await this.executeSyncBatch(pendingSync);
+        await this.updateSyncProgress(pendingSync, result);
         await microPause(MONOBANK_RATE_LIMIT_MS);
 
         return await this.executeSyncLoop();
@@ -359,38 +357,13 @@ class AppMonobankSyncService {
         return existingTransactions.length;
     }
 
-    private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<SyncBatchTaggedResult> {
+    private async fetchTransactionBatch(sync: BankSyncEntityInterface, extAccId: string): Promise<BankSyncBatchResultInterface> {
         const svc = new MonobankSyncService(sync.token);
         if (sync.mode === BankSyncModeEnum.FORWARD) {
-            return {
-                kind: SyncBatchKindEnum.FORWARD,
-                result: await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
-            };
+            return svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date());
         }
 
-        const previousEmptyWindowCount = this.emptyBackwardWindowCounters.get(sync.id) ?? 0;
-
-        return {
-            kind: SyncBatchKindEnum.BACKWARD,
-            result: await svc.syncTransactionsBackward(
-                extAccId,
-                sync.backwardSyncFromAt ?? new Date(),
-                previousEmptyWindowCount,
-                sync.backwardSyncedAt
-            )
-        };
-    }
-
-    private buildEmptyTaggedResult(mode: BankSyncModeEnum): SyncBatchTaggedResult {
-        const now = new Date();
-        if (mode === BankSyncModeEnum.FORWARD) {
-            return { kind: SyncBatchKindEnum.FORWARD, result: { transactions: [], nextTo: now, nextFrom: now, completed: true } };
-        }
-
-        return {
-            kind: SyncBatchKindEnum.BACKWARD,
-            result: { transactions: [], nextTo: now, nextFrom: now, completed: true, nextEmptyWindowCount: 0 }
-        };
+        return svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
