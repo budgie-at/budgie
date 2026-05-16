@@ -1,4 +1,4 @@
-/* eslint-disable max-lines -- absorbs convert-transaction-to-transfer logic per CLAUDE.md rule 38/51 (approved by user during pr-322-rules SOTA cleanup) */
+/* eslint-disable max-lines, no-await-in-loop -- max-lines absorbs convert-transaction-to-transfer logic (approved during pr-322-rules SOTA); no-await-in-loop covers chunked microPause yields that keep the JS thread responsive during foreground sync (approved 2026-05-17 for issue #440) */
 import {
     AccountTypeEnum,
     RuleActionTypeEnum,
@@ -21,6 +21,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
@@ -39,6 +40,8 @@ type ApplyRuleResultType = {
 };
 
 class RuleEngineService {
+    private static readonly PREPARE_YIELD_EVERY = 50;
+
     @Log(
         (transactionIds, transactionInputs) => `enter transactionIds=${transactionIds.join(',')} inputCount=${transactionInputs.length}`,
         (_result, transactionIds, transactionInputs) =>
@@ -76,16 +79,8 @@ class RuleEngineService {
         }
 
         const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
-        const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
-        const matchingRulesByIndex = evaluationInputs.map(input => rules.filter(rule => ruleMatcherService.evaluateRule(rule, input)));
-        const preparedTransactionInputs = transactionInputs.map((input, index) =>
-            this.applyCreateSafeRuleActionsToInput(input, matchingRulesByIndex[index] ?? [])
-        );
-        const postCreateIndexes = matchingRulesByIndex.flatMap((matchingRules, index) =>
-            this.hasPostCreateRuleAction(matchingRules) ? [index] : []
-        );
 
-        return { transactionInputs: preparedTransactionInputs, postCreateIndexes };
+        return await this.applyRulesToInputs(transactionInputs, rules, mccCodeMap);
     }
 
     @Log(
@@ -117,6 +112,29 @@ class RuleEngineService {
         const applied = total - failed;
 
         return { applied, failed, total };
+    }
+
+    private async applyRulesToInputs(
+        transactionInputs: TransactionCreateInputInterface[],
+        rules: RuleWithRelationsEntityInterface[],
+        mccCodeMap: Map<number, string>
+    ): Promise<RuleCreatePreparationResultInterface> {
+        const preparedTransactionInputs: TransactionCreateInputInterface[] = [];
+        const postCreateIndexes: number[] = [];
+
+        for (const [index, input] of transactionInputs.entries()) {
+            const evaluation = this.toRuleEvaluationInput(input, mccCodeMap);
+            const matchingRules = rules.filter(rule => ruleMatcherService.evaluateRule(rule, evaluation));
+            preparedTransactionInputs.push(this.applyCreateSafeRuleActionsToInput(input, matchingRules));
+            if (this.hasPostCreateRuleAction(matchingRules)) {
+                postCreateIndexes.push(index);
+            }
+            if ((index + 1) % RuleEngineService.PREPARE_YIELD_EVERY === 0) {
+                await microPause();
+            }
+        }
+
+        return { transactionInputs: preparedTransactionInputs, postCreateIndexes };
     }
 
     private async applyRulesToTransactionsBatch(
@@ -200,7 +218,6 @@ class RuleEngineService {
         let convertedToTransfer = false;
 
         for (const rule of matchingRules) {
-            // eslint-disable-next-line no-await-in-loop -- rules must apply sequentially: each step mutates appliedExclusiveActions which gates the next iteration
             const converted = await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             convertedToTransfer ||= converted;
         }
