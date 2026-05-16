@@ -4,6 +4,7 @@ export { syncLogger } from './core/util/sync-logger.util';
 export { BankAccountTypeEnum } from './core/enum/bank-account-type.enum';
 export { BankProviderEnum } from './core/enum/bank-provider.enum';
 export { BankSyncErrorCodeEnum } from './core/enum/bank-sync-error-code.enum';
+export { SyncBatchKindEnum } from './core/enum/sync-batch-kind.enum';
 export { BankTransactionTypeEnum } from './core/enum/bank-transaction-type.enum';
 export { CashbackTypeEnum } from './core/enum/cashback-type.enum';
 

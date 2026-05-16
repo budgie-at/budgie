@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
+import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService, SyncBatchKindEnum } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
@@ -152,7 +152,7 @@ class AppMonobankSyncService {
             lastError: null
         };
 
-        if (tagged.kind === 'forward') {
+        if (tagged.kind === SyncBatchKindEnum.FORWARD) {
             if (tagged.result.completed) {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
@@ -363,7 +363,7 @@ class AppMonobankSyncService {
         const svc = new MonobankSyncService(sync.token);
         if (sync.mode === BankSyncModeEnum.FORWARD) {
             return {
-                kind: 'forward',
+                kind: SyncBatchKindEnum.FORWARD,
                 result: await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
             };
         }
@@ -371,7 +371,7 @@ class AppMonobankSyncService {
         const previousEmptyWindowCount = this.emptyBackwardWindowCounters.get(sync.id) ?? 0;
 
         return {
-            kind: 'backward',
+            kind: SyncBatchKindEnum.BACKWARD,
             result: await svc.syncTransactionsBackward(
                 extAccId,
                 sync.backwardSyncFromAt ?? new Date(),
@@ -384,11 +384,11 @@ class AppMonobankSyncService {
     private buildEmptyTaggedResult(mode: BankSyncModeEnum): SyncBatchTaggedResult {
         const now = new Date();
         if (mode === BankSyncModeEnum.FORWARD) {
-            return { kind: 'forward', result: { transactions: [], nextTo: now, nextFrom: now, completed: true } };
+            return { kind: SyncBatchKindEnum.FORWARD, result: { transactions: [], nextTo: now, nextFrom: now, completed: true } };
         }
 
         return {
-            kind: 'backward',
+            kind: SyncBatchKindEnum.BACKWARD,
             result: { transactions: [], nextTo: now, nextFrom: now, completed: true, nextEmptyWindowCount: 0 }
         };
     }
