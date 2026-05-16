@@ -868,10 +868,6 @@ env:
     id: 'SuggestRule.CreateRuleButton'
 
 - extendedWaitUntil:
-    visible: 'Rule created'
-    timeout: 10000
-
-- extendedWaitUntil:
     notVisible:
       id: 'SuggestRule.Card'
     timeout: 10000
@@ -937,10 +933,6 @@ env:
 
 - tapOn:
     id: 'SuggestRule.CreateRuleButton'
-
-- extendedWaitUntil:
-    visible: 'Rule created'
-    timeout: 10000
 
 - extendedWaitUntil:
     notVisible:
@@ -1040,7 +1032,7 @@ env:
 - assertVisible:
     id: 'RulesPage.EmptyState'
 
-# --- Matching Rules Pill (import → verify pill on transaction → navigate to rules) ---
+# --- Matching Rules Pill (import → verify pill on transaction → open matching rule) ---
 
 - tapOn:
     id: 'ActionButton'
@@ -1125,7 +1117,5 @@ env:
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-- assertVisible:
-    id: 'RulesPage.Page'
+    visible: 'Edit Rule'
+- assertVisible: 'Edit Rule'

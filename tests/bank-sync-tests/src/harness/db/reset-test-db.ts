@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm';
+
 import type { SQLWrapper } from 'drizzle-orm';
 
 const MUTABLE_TABLES = [
@@ -8,6 +9,9 @@ const MUTABLE_TABLES = [
     'transaction_entries',
     'transaction_tags',
     'tags',
+    'rule_actions',
+    'rule_conditions',
+    'rules',
     'bank_syncs',
     'exchange_rates',
     'merchant_embeddings',

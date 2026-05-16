@@ -76,6 +76,7 @@ export const SimpleQuickForm = (props: Props) => {
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
+        matchingRuleIds,
         onRuleCreated,
         onDismiss,
         onCreatingChange
@@ -220,6 +221,7 @@ export const SimpleQuickForm = (props: Props) => {
                 suggestRuleData={suggestRuleData}
                 updateRuleData={updateRuleData}
                 matchingRulesCount={matchingRulesCount}
+                matchingRuleIds={matchingRuleIds}
                 onRuleCreated={onRuleCreated}
                 onDismiss={onDismiss}
                 onCreatingChange={onCreatingChange}
@@ -231,14 +233,16 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <View className="flex-1">
-                <TransactionAmountDisplay
-                    ref={amountDisplayRef}
-                    amount={displayValue}
-                    currencySymbol={currencySymbol}
-                    variant={variant}
-                    topContent={amountTopStack}
-                    testID={SimpleQuickFormSelector.AmountInput}
-                />
+                <View className="flex-1">
+                    <TransactionAmountDisplay
+                        ref={amountDisplayRef}
+                        amount={displayValue}
+                        currencySymbol={currencySymbol}
+                        variant={variant}
+                        topContent={amountTopStack}
+                        testID={SimpleQuickFormSelector.AmountInput}
+                    />
+                </View>
                 <QuickFormBottomOverlay
                     transactionTitle={transactionTitle}
                     mccCategoryId={mccCategoryId}
