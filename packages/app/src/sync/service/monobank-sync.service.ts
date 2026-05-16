@@ -340,6 +340,7 @@ class AppMonobankSyncService {
 
         for (const bankTransaction of existingTransactions) {
             await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
+            await microPause();
         }
 
         return existingTransactions.length;
