@@ -26,12 +26,12 @@ export const BudgetWidget = () => {
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
 
-    if (!isEnabled) {
-        return null;
-    }
-
     if (!isDefined(budget)) {
         return <BudgetEmptyState testID={BudgetSelector.WidgetEmptyState} />;
+    }
+
+    if (!isEnabled) {
+        return null;
     }
 
     const dateLabel = formatBudgetPeriodLabel(budget, 'short');

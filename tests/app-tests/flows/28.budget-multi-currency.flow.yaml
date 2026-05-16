@@ -29,6 +29,16 @@ appId: ${APP_ID}
 - inputText: '200'
 - tapOn: 'Use last day of month'
 - waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.WidgetEnabledToggle'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'BudgetSetup.WidgetEnabledToggle'
+- waitForAnimationToEnd
+
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 

@@ -13,6 +13,7 @@ export const BudgetSelector = {
     SetupCategoryLimitAmountInput: (index: number) => `BudgetSetup.CategoryLimit.${index}.AmountInput` as const,
     SetupCategoryLimitRemoveButton: (index: number) => `BudgetSetup.CategoryLimit.${index}.RemoveButton` as const,
     SetupPushToggle: 'BudgetSetup.PushToggle',
+    SetupWidgetEnabledToggle: 'BudgetSetup.WidgetEnabledToggle',
     DetailSpentLabel: 'BudgetDetail.SpentLabel',
     DetailEditButton: 'BudgetDetail.EditButton',
     DetailDeleteButton: 'BudgetDetail.DeleteButton',

@@ -18,8 +18,6 @@ export const SettingsPageSelector = {
     DarkModeSwitch: 'SettingsPage.DarkModeSwitch',
     ShowCentsCard: 'SettingsPage.ShowCentsCard',
     ShowCentsSwitch: 'SettingsPage.ShowCentsSwitch',
-    BudgetWidgetCard: 'SettingsPage.BudgetWidgetCard',
-    BudgetWidgetSwitch: 'SettingsPage.BudgetWidgetSwitch',
     ManageCategoriesCard: 'SettingsPage.ManageCategoriesCard',
     ManageTagsCard: 'SettingsPage.ManageTagsCard',
     ArchivedCard: 'SettingsPage.ArchivedCard',

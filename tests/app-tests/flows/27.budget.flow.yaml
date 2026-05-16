@@ -28,6 +28,16 @@ env:
 - inputText: '1000'
 - tapOn: 'Use last day of month'
 - waitForAnimationToEnd
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.WidgetEnabledToggle'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'BudgetSetup.WidgetEnabledToggle'
+- waitForAnimationToEnd
+
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
@@ -341,8 +351,82 @@ env:
 - tapOn: 'Cancel'
 - waitForAnimationToEnd
 
+# --- Widget toggle: edit form disables widget, re-enables it ---
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.WidgetEnabledToggle'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'BudgetSetup.WidgetEnabledToggle'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.SpentLabel'
+    timeout: 3000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
+    timeout: 3000
+- assertNotVisible:
+    id: 'BudgetWidget.Card'
+- assertNotVisible:
+    id: 'BudgetWidget.EmptyState'
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.EditButton'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.WidgetEnabledToggle'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'BudgetSetup.WidgetEnabledToggle'
+- waitForAnimationToEnd
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.SpentLabel'
+    timeout: 3000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.Card'
+    timeout: 3000
+
 # --- AC-10: Delete budget, cascade to category limits, revert to empty state ---
 
+- tapOn:
+    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible:
       id: 'BudgetDetail.DeleteButton'
@@ -359,43 +443,3 @@ env:
     visible:
       id: 'BudgetWidget.EmptyState'
     timeout: 5000
-
-# --- Budget widget toggle: disable hides widget, enable restores it ---
-
-- openLink: 'budgie://settings'
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.BudgetWidgetSwitch'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'SettingsPage.BudgetWidgetSwitch'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    notVisible:
-      id: 'BudgetWidget.EmptyState'
-    timeout: 3000
-- assertNotVisible:
-    id: 'BudgetWidget.Card'
-
-- openLink: 'budgie://settings'
-- scrollUntilVisible:
-    element:
-      id: 'SettingsPage.BudgetWidgetSwitch'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'SettingsPage.BudgetWidgetSwitch'
-- waitForAnimationToEnd
-
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.EmptyState'
-    timeout: 3000

@@ -115,7 +115,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "1 matching rule"
 msgstr "1 відповідне правило"
 
-#: src/app/(tabs)/settings/index.tsx:71
+#: src/app/(tabs)/settings/index.tsx:70
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
@@ -123,7 +123,7 @@ msgstr "100% офлайн і приватно"
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
-#: src/app/(tabs)/settings/index.tsx:230
+#: src/app/(tabs)/settings/index.tsx:214
 msgid "About"
 msgstr "Про застосунок"
 
@@ -215,7 +215,7 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/app/(tabs)/settings/index.tsx:110
+#: src/app/(tabs)/settings/index.tsx:109
 msgid "AI"
 msgstr "ШІ"
 
@@ -237,7 +237,7 @@ msgstr "ШІ вимкнено"
 msgid "AI-Generated Metadata"
 msgstr "Метадані, згенеровані ШІ"
 
-#: src/app/(tabs)/settings/index.tsx:234
+#: src/app/(tabs)/settings/index.tsx:218
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "Бюджетний застосунок на базі ШІ з повною приватністю. Усі дані обробляються локально на вашому пристрої."
 
@@ -261,7 +261,7 @@ msgstr "Усе готово"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(tabs)/settings/index.tsx:72
+#: src/app/(tabs)/settings/index.tsx:71
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -293,11 +293,11 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(tabs)/settings/index.tsx:238
+#: src/app/(tabs)/settings/index.tsx:222
 msgid "App Version"
 msgstr "Версія застосунку"
 
-#: src/app/(tabs)/settings/index.tsx:174
+#: src/app/(tabs)/settings/index.tsx:173
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -319,7 +319,7 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:155
+#: src/app/(tabs)/settings/index.tsx:154
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -337,7 +337,7 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/app/(tabs)/settings/index.tsx:142
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Auto-categorize transactions"
 msgstr "Автоматично категоризувати транзакції"
 
@@ -405,7 +405,7 @@ msgid "Borrowed"
 msgstr "Позичено"
 
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(tabs)/settings/index.tsx:148
+#: src/app/(tabs)/settings/index.tsx:147
 msgid "Budget"
 msgstr "Бюджет"
 
@@ -413,11 +413,7 @@ msgstr "Бюджет"
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
-#: src/app/(tabs)/settings/index.tsx:197
-msgid "Budget Widget"
-msgstr "Віджет бюджету"
-
-#: src/app/(tabs)/settings/index.tsx:232
+#: src/app/(tabs)/settings/index.tsx:216
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -633,7 +629,7 @@ msgstr "Не вдалося очистити дані"
 msgid "Could not consolidate transfers"
 msgstr "Не вдалося консолідувати перекази"
 
-#: src/app/(main)/budget/setup.tsx:110
+#: src/app/(main)/budget/setup.tsx:118
 msgid "Could not create budget"
 msgstr "Не вдалося створити бюджет"
 
@@ -736,7 +732,7 @@ msgstr "Не вдалося скинути синхронізацію з бан�
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/app/(main)/budget/setup.tsx:110
+#: src/app/(main)/budget/setup.tsx:118
 msgid "Could not save budget"
 msgstr "Не вдалося зберегти бюджет"
 
@@ -798,7 +794,7 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(tabs)/settings/index.tsx:133
+#: src/app/(tabs)/settings/index.tsx:132
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -806,7 +802,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/(main)/budget/setup.tsx:85
+#: src/app/(main)/budget/setup.tsx:91
 msgid "Create budget"
 msgstr "Створити бюджет"
 
@@ -888,7 +884,7 @@ msgstr "Власні категорії, які ви створите, з'явл
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(tabs)/settings/index.tsx:215
+#: src/app/(tabs)/settings/index.tsx:199
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -966,6 +962,10 @@ msgstr "Видалити транзакцію"
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
+#: src/budget/components/budget-widget-enabled-field/budget-widget-enabled-field.tsx:25
+msgid "Display this budget on the home screen"
+msgstr "Показувати цей бюджет на головному екрані"
+
 #: src/app/import-column-mapper.tsx:91
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
 msgid "Done"
@@ -1020,7 +1020,7 @@ msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
 #: src/app/(main)/budget/index.tsx:105
-#: src/app/(main)/budget/setup.tsx:85
+#: src/app/(main)/budget/setup.tsx:91
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
@@ -1285,7 +1285,7 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(tabs)/settings/index.tsx:100
+#: src/app/(tabs)/settings/index.tsx:99
 msgid "General"
 msgstr "Загальне"
 
@@ -1309,7 +1309,7 @@ msgstr "Отримуйте сповіщення, коли додаток зак�
 msgid "Greater Than"
 msgstr "Більше ніж"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -1370,7 +1370,7 @@ msgid "In List"
 msgstr "У списку"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:163
+#: src/app/(tabs)/settings/index.tsx:162
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -1494,15 +1494,15 @@ msgstr "Завантаження..."
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings/index.tsx:124
+#: src/app/(tabs)/settings/index.tsx:123
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/app/(tabs)/settings/index.tsx:140
 msgid "Manage Rules"
 msgstr "Керувати правилами"
 
-#: src/app/(tabs)/settings/index.tsx:132
+#: src/app/(tabs)/settings/index.tsx:131
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -1572,7 +1572,7 @@ msgstr "Монобанк"
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
-#: src/app/(main)/budget/setup.tsx:53
+#: src/app/(main)/budget/setup.tsx:57
 msgid "Monthly Budget"
 msgstr "Місячний бюджет"
 
@@ -1815,7 +1815,7 @@ msgstr "Опційні обмеження за категоріями у меж�
 msgid "or"
 msgstr "або"
 
-#: src/app/(tabs)/settings/index.tsx:120
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Organization"
 msgstr "Організація"
 
@@ -1916,7 +1916,7 @@ msgstr "Португальська (Португалія)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
-#: src/app/(tabs)/settings/index.tsx:68
+#: src/app/(tabs)/settings/index.tsx:67
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -2089,7 +2089,7 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
-#: src/app/(tabs)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:82
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -2154,7 +2154,7 @@ msgstr "Другорядне значення"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:77
+#: src/app/(tabs)/settings/index.tsx:76
 msgid "Security"
 msgstr "Безпека"
 
@@ -2282,7 +2282,7 @@ msgstr "Надсилати push-сповіщення"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/app/(tabs)/settings/index.tsx:149
+#: src/app/(tabs)/settings/index.tsx:148
 msgid "Set a monthly limit and track spending"
 msgstr "Встановіть місячний ліміт та відстежуйте витрати"
 
@@ -2298,7 +2298,7 @@ msgstr "Встановити категорію"
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:60
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -2318,7 +2318,7 @@ msgstr "Показати {selectedCount} категорій"
 msgid "Show {selectedCount} tags"
 msgstr "Показати {selectedCount} тегів"
 
-#: src/app/(tabs)/settings/index.tsx:183
+#: src/app/(tabs)/settings/index.tsx:182
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
@@ -2358,7 +2358,7 @@ msgstr "Показати всі теги"
 msgid "Show all types"
 msgstr "Показати всі типи"
 
-#: src/app/(tabs)/settings/index.tsx:182
+#: src/app/(tabs)/settings/index.tsx:181
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -2366,13 +2366,13 @@ msgstr "Показати копійки"
 msgid "Show selected range"
 msgstr "Показати вибраний діапазон"
 
-#: src/app/(tabs)/settings/index.tsx:198
-msgid "Show the monthly budget widget on the home screen"
-msgstr "Показувати віджет місячного бюджету на головному екрані"
-
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:38
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
+
+#: src/budget/components/budget-widget-enabled-field/budget-widget-enabled-field.tsx:22
+msgid "Show widget on home"
+msgstr "Показувати віджет на головній"
 
 #: src/rule/hooks/use-rule-form.hook.ts:127
 msgid "Skip"
@@ -2809,15 +2809,15 @@ msgstr "Використовуйте Touch ID для швидкого та бе�
 msgid "Value"
 msgstr "Значення"
 
-#: src/app/(tabs)/settings/index.tsx:164
+#: src/app/(tabs)/settings/index.tsx:163
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(tabs)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:124
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(tabs)/settings/index.tsx:156
+#: src/app/(tabs)/settings/index.tsx:155
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
