@@ -847,7 +847,7 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створюйте теги для організації транзакцій"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:25
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx:21
 msgid "Create your budget"
 msgstr "Створіть свій бюджет"
 
@@ -1568,7 +1568,7 @@ msgstr "Позичені або надані гроші"
 msgid "Monobank"
 msgstr "Монобанк"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:38
+#: src/budget/components/budget-widget/budget-widget.tsx:45
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
@@ -2286,7 +2286,7 @@ msgstr "Відправлення {fromCode}"
 msgid "Set a monthly limit and track spending"
 msgstr "Встановіть місячний ліміт та відстежуйте витрати"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx:17
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx:25
 msgid "Set a monthly limit and track your spending"
 msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
 

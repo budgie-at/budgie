@@ -1,8 +1,8 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -20,7 +20,6 @@ const WIDGET_CATEGORY_LIMITS_MAX = 6;
 const handleNavigate = () => void router.push('/budget');
 
 export const BudgetWidget = () => {
-    const { t } = useLingui();
     const isEnabled = useSetting('isBudgetWidgetEnabled');
     const { budget } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
@@ -35,7 +34,6 @@ export const BudgetWidget = () => {
     }
 
     const dateLabel = formatBudgetPeriodLabel(budget, 'short');
-    const headline = t`Monthly budget`;
     const spentByCategoryMap = new Map(spent.spentByCategory.map(entry => [entry.categoryId, entry.spent]));
     const visibleCategoryLimits = categoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
     const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;
@@ -43,7 +41,9 @@ export const BudgetWidget = () => {
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" onPress={handleNavigate} className="gap-y-lg">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-semibold text-md">{headline}</Text>
+                <Text className="text-primary font-semibold text-md">
+                    <Trans>Monthly budget</Trans>
+                </Text>
                 <Text className="text-secondary-foreground text-sm">{dateLabel}</Text>
             </View>
 
@@ -60,12 +60,12 @@ export const BudgetWidget = () => {
                             testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
                         />
                     ))}
-                    {hiddenCategoryCount > 0 && (
+                    {isPositiveNumber(hiddenCategoryCount) && (
                         <Text
                             testID={BudgetSelector.WidgetMoreCategoriesLabel}
                             className="text-secondary-foreground text-sm text-center pt-xs"
                         >
-                            {t`+${hiddenCategoryCount} more`}
+                            <Trans>+{hiddenCategoryCount} more</Trans>
                         </Text>
                     )}
                 </View>
