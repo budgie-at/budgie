@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.17.5](https://github.com/budgie-at/budgie/compare/v5.17.4...v5.17.5) (2026-05-16)
+
+### Bug Fixes
+
+- **app:** gate consolidation source from/to override on transfer sourceType ([2a55c3e](https://github.com/budgie-at/budgie/commit/2a55c3ee67c72522988eedb58aec6e4183934785)), closes [#431](https://github.com/budgie-at/budgie/issues/431)
+- **app:** render debt type card text on first mount ([5b3c2c6](https://github.com/budgie-at/budgie/commit/5b3c2c66b50f0a0f13832bed0ac7474cdb00eb82))
+
 ## [5.17.4](https://github.com/budgie-at/budgie/compare/v5.17.3...v5.17.4) (2026-05-15)
 
 **Note:** Version bump only for package @budgie-at/app
