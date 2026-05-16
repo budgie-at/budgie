@@ -27,6 +27,7 @@ type UseSuggestRuleDetectionResultType = {
     readonly suggestRuleData: SuggestRuleDataInterface;
     readonly updateRuleData: UpdateRuleDataInterface | null;
     readonly matchingRulesCount: number;
+    readonly matchingRuleIds: readonly number[];
     readonly onRuleCreated: () => void;
     readonly onDismiss: () => void;
     readonly onCreatingChange: (next: boolean) => void;
@@ -68,6 +69,7 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
     const transactionInput = convertTransactionToInput(transaction);
     const matchingRules = enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData));
     const matchingRulesCount = matchingRules.length;
+    const matchingRuleIds = matchingRules.map(rule => rule.id);
     const hasChanges = categoryChanged || tagsChanged;
 
     const ruleActionOutcomes = extractRuleActionOutcomes(matchingRules);
@@ -116,5 +118,5 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         setIsCreating(next);
     };
 
-    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, onRuleCreated, onDismiss, onCreatingChange };
+    return { mode, suggestRuleData, updateRuleData, matchingRulesCount, matchingRuleIds, onRuleCreated, onDismiss, onCreatingChange };
 };

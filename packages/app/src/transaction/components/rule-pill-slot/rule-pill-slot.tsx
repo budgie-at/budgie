@@ -13,6 +13,7 @@ export const RulePillSlot = (props: RulePillSlotPropsInterface) => {
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
+        matchingRuleIds,
         onRuleCreated,
         onDismiss,
         onCreatingChange
@@ -43,8 +44,8 @@ export const RulePillSlot = (props: RulePillSlotPropsInterface) => {
         return <RuleUpdateCard updateRuleData={updateRuleData} onRuleUpdated={onRuleCreated} onDismiss={onDismiss} />;
     }
 
-    if (ruleDetectionMode === RuleDetectionModeEnum.MATCH && isPositiveNumber(matchingRulesCount)) {
-        return <MatchingRulesPill matchingRulesCount={matchingRulesCount} />;
+    if (ruleDetectionMode === RuleDetectionModeEnum.MATCH && isPositiveNumber(matchingRulesCount) && isDefined(matchingRuleIds)) {
+        return <MatchingRulesPill matchingRulesCount={matchingRulesCount} matchingRuleIds={matchingRuleIds} />;
     }
 
     return null;
