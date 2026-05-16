@@ -42,7 +42,5 @@ export {
     BudgetEntityTable,
     BudgetEntityRelations,
     BudgetCategoryLimitEntityTable,
-    BudgetCategoryLimitEntityRelations,
-    BudgetAlertEntityTable,
-    BudgetAlertEntityRelations
+    BudgetCategoryLimitEntityRelations
 } from '@budgie/contracts';

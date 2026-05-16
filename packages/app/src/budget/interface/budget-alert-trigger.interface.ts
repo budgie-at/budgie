@@ -1,4 +1,4 @@
-import type { BudgetAlertScopeEnum } from '@budgie/contracts';
+import type { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
 
 export interface BudgetAlertTriggerInterface {
     readonly scope: BudgetAlertScopeEnum;
