@@ -5,7 +5,7 @@ env:
 ---
 
 - runFlow:
-    file: setup/setup-rules-test.flow.yaml
+    file: setup/setup-budget-test.flow.yaml
 
 # --- AC-9: Empty state when no budget ---
 
@@ -31,8 +31,6 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-- tapOn:
-    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.Card'
@@ -77,7 +75,7 @@ env:
     visible:
       id: 'BudgetWidget.SpentLabel'
       text: '42.00 / 1000.00'
-    timeout: 5000
+    timeout: 3000
 
 # --- AC-2 (overall edit): Edit overall limit ---
 
@@ -99,26 +97,21 @@ env:
     point: '95%,50%'
 - eraseText: 10
 - inputText: '1500'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-- tapOn:
-    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'BudgetWidget.SpentLabel'
+      id: 'BudgetDetail.SpentLabel'
       text: '42.00 / 1500.00'
-    timeout: 5000
+    timeout: 3000
 
 # --- Cancel edit discards changes ---
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
 
 - tapOn:
     id: 'BudgetDetail.EditButton'
@@ -131,26 +124,21 @@ env:
     point: '95%,50%'
 - eraseText: 10
 - inputText: '9999'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
 
 - tapOn: 'Cancel'
 - waitForAnimationToEnd
 
-- tapOn:
-    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'BudgetWidget.SpentLabel'
+      id: 'BudgetDetail.SpentLabel'
       text: '42.00 / 1500.00'
-    timeout: 5000
+    timeout: 3000
 
 # --- AC-1 + AC-2 (categories): Add per-category limits via edit ---
-
-- tapOn:
-    id: 'BudgetWidget.Card'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetDetail.EditButton'
-    timeout: 3000
 
 - tapOn:
     id: 'BudgetDetail.EditButton'
@@ -164,6 +152,12 @@ env:
     visible:
       id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
     timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
@@ -188,6 +182,12 @@ env:
       id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
     timeout: 3000
 
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.1.CategorySelector'
 - runFlow:
@@ -203,6 +203,10 @@ env:
 - tapOn:
     id: 'BudgetSetup.CategoryLimit.1.AmountInput'
 - inputText: '100'
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
 
 - tapOn:
     id: 'BudgetSetup.SaveButton'
@@ -221,7 +225,7 @@ env:
 # --- AC-5 (per-category widget): Widget shows per-category rows ---
 
 - tapOn:
-    id: 'TabBar.Home'
+    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.Card'
@@ -246,8 +250,14 @@ env:
     visible: 'Edit budget'
     timeout: 3000
 
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
+    direction: DOWN
+    centerElement: true
+
 - tapOn:
-    id: 'BudgetSetup.CategoryLimit.1.RemoveButton'
+    id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -261,7 +271,7 @@ env:
     id: 'BudgetDetail.CategoryRow.11'
 
 - tapOn:
-    id: 'TabBar.Home'
+    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     visible:
       id: 'BudgetWidget.CategoryRow.42'
@@ -291,15 +301,6 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible:
       id: 'BudgetDetail.EditButton'
@@ -323,15 +324,6 @@ env:
 - tapOn:
     id: 'BudgetSetup.SaveButton'
 
-- tapOn:
-    id: 'TabBar.Home'
-- extendedWaitUntil:
-    visible:
-      id: 'BudgetWidget.Card'
-    timeout: 3000
-
-- tapOn:
-    id: 'BudgetWidget.Card'
 - extendedWaitUntil:
     visible:
       id: 'BudgetDetail.EditButton'
