@@ -169,6 +169,13 @@
             "when": 1779465600000,
             "tag": "0023_expand_mcc_default_categories",
             "breakpoints": true
+        },
+        {
+            "idx": 24,
+            "version": "6",
+            "when": 1747440000000,
+            "tag": "0024_add_bank_sync_apply_mcc_default_category",
+            "breakpoints": true
         }
     ]
 }

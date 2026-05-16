@@ -95,18 +95,22 @@ export abstract class BaseFileBankSyncService {
     ): Promise<void> {
         const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
         await this.createBankSyncRecord(account.id, context.tx);
+        const bankSync = await bankSyncRepository.getByAccountId(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
         if (!isNotEmptyArray(transactions)) {
             return;
         }
 
+        const applyMccDefault = isDefined(bankSync) ? bankSync.applyMccDefaultCategory : true;
+
         const transactionInputs = transactions.map(transaction => {
-            const mccCategoryLookup = isNotEmptyString(transaction.category)
+            const rawLookup = isNotEmptyString(transaction.category)
                 ? (context.mccCategoryLookupMap.get(transaction.category) ?? null)
                 : null;
+            const effectiveLookup = isDefined(rawLookup) && !applyMccDefault ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryLookup, this.provider);
+            return mapBankTransactionToCreateInput(transaction, account.id, effectiveLookup, this.provider);
         });
 
         const upsertedTransactions = await transactionImportService.bulkUpsertImported(

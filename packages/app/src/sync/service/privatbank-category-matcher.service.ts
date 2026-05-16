@@ -3,19 +3,11 @@ import { getLogger } from '@budgie/logger';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { mccCategoryRepository } from '../../@generic/drizzle/db/db';
+import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 const logger = getLogger('privatbankCategoryMatcher');
-
-const buildMccCodeToLookupMap = async (): Promise<Map<string, MccCategoryLookupInterface>> => {
-    const mccCategories = await mccCategoryRepository.findAll();
-
-    return new Map(
-        mccCategories.map(category => [category.mcc, { id: category.id, defaultCategoryId: category.defaultCategoryId ?? null }])
-    );
-};
 
 const warnUnmatchedCategories = (unmatchedCategories: string[]): void => {
     if (isNotEmptyArray(unmatchedCategories)) {
@@ -29,7 +21,7 @@ export const privatbankCategoryMatcherMatch = async (categories: string[]): Prom
         return new Map();
     }
 
-    const mccCodeToLookupMap = await buildMccCodeToLookupMap();
+    const mccCodeToLookupMap = await loadMccCategoryLookupMap();
     const resultMap = new Map<string, MccCategoryLookupInterface | null>();
     const unmatchedCategories: string[] = [];
 
