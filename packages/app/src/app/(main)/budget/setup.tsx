@@ -24,10 +24,13 @@ import { BudgetOverallLimitField } from '../../../budget/components/budget-overa
 import { BudgetPeriodStartDayField } from '../../../budget/components/budget-period-start-day-field/budget-period-start-day-field';
 import { BudgetPushEnabledField } from '../../../budget/components/budget-push-enabled-field/budget-push-enabled-field';
 import { BudgetUseLastDayField } from '../../../budget/components/budget-use-last-day-field/budget-use-last-day-field';
+import { BudgetWidgetEnabledField } from '../../../budget/components/budget-widget-enabled-field/budget-widget-enabled-field';
 import { BudgetFormSchema, BudgetFormValues } from '../../../budget/constant/budget-form-schema.constant';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../../../budget/query/use-get-budget-category-limits.query';
 import { budgetService } from '../../../budget/service/budget.service';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
 const DEFAULT_PERIOD_START_DAY = 1;
 const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
@@ -45,6 +48,7 @@ export default function BudgetSetupScreen() {
     const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
         isEditing && isDefined(budget) ? budget.id : null
     );
+    const isWidgetEnabledSetting = useSetting('isBudgetWidgetEnabled');
 
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
@@ -55,7 +59,8 @@ export default function BudgetSetupScreen() {
             useLastDayOfMonth: false,
             overallLimit: 0,
             categoryLimits: [],
-            pushEnabled: false
+            pushEnabled: false,
+            isWidgetEnabled: false
         }
     });
 
@@ -70,10 +75,11 @@ export default function BudgetSetupScreen() {
                     categoryId: limit.categoryId,
                     limitAmount: convertFromMicroUnits(limit.limitAmount)
                 })),
-                pushEnabled: budget.pushEnabled
+                pushEnabled: budget.pushEnabled,
+                isWidgetEnabled: isWidgetEnabledSetting
             });
         }
-    }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, form]);
+    }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, isWidgetEnabledSetting, form]);
 
     const useLastDay = useWatch({ control: form.control, name: 'useLastDayOfMonth' });
     const { isValid } = form.formState;
@@ -105,6 +111,8 @@ export default function BudgetSetupScreen() {
                 await budgetService.createBudget(payload);
             }
 
+            await updateSettingsMutation({ isBudgetWidgetEnabled: values.isWidgetEnabled });
+
             goBackOrReplace('/');
         } catch (error: unknown) {
             const errorMessage = isEditing ? t`Could not save budget` : t`Could not create budget`;
@@ -131,6 +139,7 @@ export default function BudgetSetupScreen() {
                 <BudgetUseLastDayField control={form.control} />
                 {useLastDay ? null : <BudgetPeriodStartDayField control={form.control} />}
                 <BudgetPushEnabledField control={form.control} />
+                <BudgetWidgetEnabledField control={form.control} />
                 <BudgetCategoryLimitsField />
             </FormPage>
         </FormProvider>

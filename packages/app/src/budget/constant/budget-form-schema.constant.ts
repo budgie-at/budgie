@@ -15,7 +15,8 @@ export const BudgetFormSchema = z
         useLastDayOfMonth: z.boolean(),
         overallLimit: z.number().positive(),
         categoryLimits: z.array(BudgetCategoryLimitFormSchema),
-        pushEnabled: z.boolean()
+        pushEnabled: z.boolean(),
+        isWidgetEnabled: z.boolean()
     })
     .transform(values => ({
         ...values,
