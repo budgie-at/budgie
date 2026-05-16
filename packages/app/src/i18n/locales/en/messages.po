@@ -57,12 +57,12 @@ msgstr "{formattedRemaining} over budget"
 msgid "{matchingRulesCount} matching rules"
 msgstr "{matchingRulesCount} matching rules"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:63
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:69
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:64
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% of expenses"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:63
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:69
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:64
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
@@ -103,7 +103,7 @@ msgstr "1 matching rule"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
 
@@ -346,6 +346,10 @@ msgstr "Balance Adjustment"
 msgid "Bank"
 msgstr "Bank"
 
+#: src/@generic/constant/default-category-title.constant.ts:36
+msgid "Bank Fees & Charges"
+msgstr "Bank Fees & Charges"
+
 #: src/account/constant/account-type.constant.ts:12
 msgid "Bank sync"
 msgstr "Bank sync"
@@ -392,6 +396,10 @@ msgstr "Borrowed"
 msgid "Budgie"
 msgstr "Budgie"
 
+#: src/@generic/constant/default-category-title.constant.ts:34
+msgid "Business Expenses"
+msgstr "Business Expenses"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx:41
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
 #: src/account/component/account-action-card/account-action-card.tsx:52
@@ -404,7 +412,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -413,6 +421,10 @@ msgstr "Budgie"
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/@generic/constant/default-category-title.constant.ts:18
+msgid "Car & Fuel"
+msgstr "Car & Fuel"
 
 #: src/account/constant/account-type.constant.ts:7
 msgid "Cash"
@@ -437,7 +449,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:20
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:22
 msgid "Category → {categoryTitle}"
 msgstr "Category → {categoryTitle}"
 
@@ -498,6 +510,10 @@ msgstr "Close"
 #: src/@generic/component/popover-menu/popover-menu.tsx:72
 msgid "Close menu"
 msgstr "Close menu"
+
+#: src/@generic/constant/default-category-title.constant.ts:41
+msgid "Clothing & Accessories"
+msgstr "Clothing & Accessories"
 
 #: src/rule/constant/external-source.constant.ts:12
 msgid "Coinbase"
@@ -601,7 +617,7 @@ msgstr "Could not consolidate transfers"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
 #: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not create rule"
 msgstr "Could not create rule"
@@ -754,7 +770,7 @@ msgstr "Create and copy the personal token"
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
 msgid "Create anyway"
 msgstr "Create anyway"
 
@@ -807,6 +823,18 @@ msgstr "Create your first account to start tracking your finances"
 msgid "Crypto"
 msgstr "Crypto"
 
+#: src/@generic/constant/default-category-title.constant.ts:7
+msgid "Crypto Purchase"
+msgstr "Crypto Purchase"
+
+#: src/@generic/constant/default-category-title.constant.ts:8
+msgid "Crypto Sale"
+msgstr "Crypto Sale"
+
+#: src/@generic/constant/default-category-title.constant.ts:12
+msgid "Crypto Transfer"
+msgstr "Crypto Transfer"
+
 #: src/rule/constant/external-source.constant.ts:14
 msgid "CSV"
 msgstr "CSV"
@@ -818,6 +846,18 @@ msgstr "CSV exported"
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:16
 msgid "Currency"
 msgstr "Currency"
+
+#: src/@generic/constant/default-category-title.constant.ts:5
+msgid "Currency Purchase"
+msgstr "Currency Purchase"
+
+#: src/@generic/constant/default-category-title.constant.ts:6
+msgid "Currency Sale"
+msgstr "Currency Sale"
+
+#: src/@generic/constant/default-category-title.constant.ts:11
+msgid "Currency Transfer"
+msgstr "Currency Transfer"
 
 #: src/account/component/account-balance/account-balance.tsx:14
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:27
@@ -860,6 +900,10 @@ msgstr "Debt"
 #: src/app/(main)/create-account/index.tsx:41
 msgid "Debt Account"
 msgstr "Debt Account"
+
+#: src/@generic/constant/default-category-title.constant.ts:21
+msgid "Debt Payments"
+msgstr "Debt Payments"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx:34
 msgid "Default Account"
@@ -922,7 +966,7 @@ msgstr "Downloading AI models…"
 msgid "Downloading models"
 msgstr "Downloading models"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
@@ -946,7 +990,7 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
 msgid "Edit existing"
 msgstr "Edit existing"
 
@@ -973,6 +1017,18 @@ msgstr "Edit Transaction"
 #: src/app/(main)/transactions/[id]/transfer.tsx:77
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
+
+#: src/@generic/constant/default-category-title.constant.ts:29
+msgid "Education"
+msgstr "Education"
+
+#: src/@generic/constant/default-category-title.constant.ts:39
+msgid "Electronics & Gadgets"
+msgstr "Electronics & Gadgets"
+
+#: src/@generic/constant/default-category-title.constant.ts:43
+msgid "Emergency Fund"
+msgstr "Emergency Fund"
 
 #: src/app/(main)/create-account/index.tsx:33
 msgid "Emergency fund and savings goals"
@@ -1061,6 +1117,10 @@ msgstr "Enter your Monobank API token"
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
 
+#: src/@generic/constant/default-category-title.constant.ts:28
+msgid "Entertainment"
+msgstr "Entertainment"
+
 #: src/app/resync-window-picker.tsx:43
 msgid "Entire history will be re-synced on next sync."
 msgstr "Entire history will be re-synced on next sync."
@@ -1147,6 +1207,10 @@ msgstr "Failed to load contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
+#: src/@generic/constant/default-category-title.constant.ts:31
+msgid "Family & Kids"
+msgstr "Family & Kids"
+
 #: src/ai/service/ai-system-status.service.ts:278
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
@@ -1170,6 +1234,10 @@ msgstr "Fill in the account details"
 #: src/app/(tabs)/settings/import.tsx:150
 msgid "Fix Errors"
 msgstr "Fix Errors"
+
+#: src/@generic/constant/default-category-title.constant.ts:25
+msgid "Freelance & Side Hustle"
+msgstr "Freelance & Side Hustle"
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -1215,9 +1283,21 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
+#: src/@generic/constant/default-category-title.constant.ts:30
+msgid "Gifts & Donations"
+msgstr "Gifts & Donations"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:62
 msgid "Greater Than"
 msgstr "Greater Than"
+
+#: src/@generic/constant/default-category-title.constant.ts:15
+msgid "Groceries"
+msgstr "Groceries"
+
+#: src/@generic/constant/default-category-title.constant.ts:19
+msgid "Health & Medical"
+msgstr "Health & Medical"
 
 #: src/app/(tabs)/settings/index.tsx:82
 msgid "Hide account balances and net worth when taking screenshots"
@@ -1226,6 +1306,14 @@ msgstr "Hide account balances and net worth when taking screenshots"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:70
 msgid "History synced"
 msgstr "History synced"
+
+#: src/@generic/constant/default-category-title.constant.ts:37
+msgid "Home Maintenance"
+msgstr "Home Maintenance"
+
+#: src/@generic/constant/default-category-title.constant.ts:14
+msgid "Housing & Utilities"
+msgstr "Housing & Utilities"
 
 #: src/sync/component/file-upload-step/file-upload-step.tsx:34
 msgid "How to export"
@@ -1312,9 +1400,17 @@ msgstr "Incorrect PIN"
 msgid "Indexing {done} of {total}"
 msgstr "Indexing {done} of {total}"
 
+#: src/@generic/constant/default-category-title.constant.ts:20
+msgid "Insurance"
+msgstr "Insurance"
+
 #: src/sync/component/create-file-bank-account/create-file-bank-account.tsx:61
 msgid "Invalid file"
 msgstr "Invalid file"
+
+#: src/@generic/constant/default-category-title.constant.ts:23
+msgid "Investments"
+msgstr "Investments"
 
 #: src/app/(tabs)/settings/import.tsx:247
 msgid "Is Planned"
@@ -1718,6 +1814,10 @@ msgstr "Original imported transactions will be restored and the consolidated tra
 msgid "Original transaction"
 msgstr "Original transaction"
 
+#: src/@generic/constant/default-category-title.constant.ts:42
+msgid "Other"
+msgstr "Other"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx:59
 msgid "Overview"
 msgstr "Overview"
@@ -1749,6 +1849,14 @@ msgstr "PDF statement"
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Permission to access contacts was denied."
+
+#: src/@generic/constant/default-category-title.constant.ts:38
+msgid "Personal Care"
+msgstr "Personal Care"
+
+#: src/@generic/constant/default-category-title.constant.ts:32
+msgid "Pets"
+msgstr "Pets"
 
 #: src/app/resync-window-picker.tsx:94
 msgid "Pick a window. Existing data is preserved."
@@ -1807,7 +1915,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
 msgid "Quick rule"
 msgstr "Quick rule"
 
@@ -1904,6 +2012,10 @@ msgstr "Refunds"
 msgid "Resets all sync state"
 msgstr "Resets all sync state"
 
+#: src/@generic/constant/default-category-title.constant.ts:16
+msgid "Restaurants & Cafes"
+msgstr "Restaurants & Cafes"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Restore"
 msgstr "Restore"
@@ -1929,7 +2041,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Rule"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:172
 msgid "Rule created"
 msgstr "Rule created"
 
@@ -1941,6 +2053,10 @@ msgstr "Rule updated"
 msgid "Rules"
 msgstr "Rules"
 
+#: src/@generic/constant/default-category-title.constant.ts:24
+msgid "Salary & Wages"
+msgstr "Salary & Wages"
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:14
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:81
 msgid "Save"
@@ -1950,6 +2066,7 @@ msgstr "Save"
 msgid "Save {count}"
 msgstr "Save {count}"
 
+#: src/@generic/constant/default-category-title.constant.ts:22
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
 msgstr "Savings"
@@ -2074,7 +2191,7 @@ msgstr "Select Action Type"
 msgid "Select all categories"
 msgstr "Select all categories"
 
-#: src/transaction/components/split-entry-row/split-entry-row.tsx:46
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:48
 msgid "Select category"
 msgstr "Select category"
 
@@ -2159,6 +2276,10 @@ msgstr "Set Return Date"
 #: src/app/(tabs)/settings/index.tsx:59
 msgid "Settings"
 msgstr "Settings"
+
+#: src/@generic/constant/default-category-title.constant.ts:26
+msgid "Shopping"
+msgstr "Shopping"
 
 #: src/app/transaction-type-filter.tsx:53
 msgid "Show {localSelectedCount} types"
@@ -2284,6 +2405,10 @@ msgstr "Spent"
 msgid "Split"
 msgstr "Split"
 
+#: src/@generic/constant/default-category-title.constant.ts:40
+msgid "Sport & Fitness"
+msgstr "Sport & Fitness"
+
 #: src/app/(tabs)/settings/import.tsx:150
 msgid "Start Import"
 msgstr "Start Import"
@@ -2301,6 +2426,18 @@ msgstr "Start tracking your spending by using the mic button or adding transacti
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
 
+#: src/@generic/constant/default-category-title.constant.ts:9
+msgid "Stock Purchase"
+msgstr "Stock Purchase"
+
+#: src/@generic/constant/default-category-title.constant.ts:10
+msgid "Stock Sale"
+msgstr "Stock Sale"
+
+#: src/@generic/constant/default-category-title.constant.ts:13
+msgid "Stock Transfer"
+msgstr "Stock Transfer"
+
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Stocks"
@@ -2309,6 +2446,7 @@ msgstr "Stocks"
 msgid "Submit"
 msgstr "Submit"
 
+#: src/@generic/constant/default-category-title.constant.ts:27
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:28
 msgid "Subscriptions"
 msgstr "Subscriptions"
@@ -2317,7 +2455,7 @@ msgstr "Subscriptions"
 msgid "Swap accounts"
 msgstr "Swap accounts"
 
-#: src/category/components/category-card/category-card.tsx:29
+#: src/category/components/category-card/category-card.tsx:24
 #: src/tag/components/tag-card/tag-card.tsx:23
 msgid "Swipe left"
 msgstr "Swipe left"
@@ -2343,7 +2481,7 @@ msgstr "Syncing history..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:30
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:32
 msgid "Tag → {tagTitle}"
 msgstr "Tag → {tagTitle}"
 
@@ -2381,6 +2519,10 @@ msgstr "Tap to select"
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:20
 msgid "Target balance"
 msgstr "Target balance"
+
+#: src/@generic/constant/default-category-title.constant.ts:35
+msgid "Taxes"
+msgstr "Taxes"
 
 #: src/account/component/archive-account/archive-account.tsx:27
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -2517,7 +2659,7 @@ msgstr "Transactions synced"
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
-#: src/rule/components/rule-action-pill/rule-action-pill.tsx:38
+#: src/rule/components/rule-action-pill/rule-action-pill.tsx:40
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:108
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
@@ -2550,6 +2692,14 @@ msgstr "Translation"
 #: src/ai/service/ai-translation-status.service.ts:55
 msgid "Translations ready"
 msgstr "Translations ready"
+
+#: src/@generic/constant/default-category-title.constant.ts:17
+msgid "Transportation"
+msgstr "Transportation"
+
+#: src/@generic/constant/default-category-title.constant.ts:33
+msgid "Travel"
+msgstr "Travel"
 
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40
@@ -2609,7 +2759,7 @@ msgstr "Unconsolidate Transaction"
 msgid "Unconsolidate transaction?"
 msgstr "Unconsolidate transaction?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:34
 msgid "Unknown"
 msgstr "Unknown"
 

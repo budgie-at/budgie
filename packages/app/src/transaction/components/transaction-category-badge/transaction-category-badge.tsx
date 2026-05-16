@@ -9,6 +9,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
@@ -26,7 +27,7 @@ const textClassName = 'text-secondary-foreground text-xxs font-medium';
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
 
     const hasMultipleEntries = transaction.entries.length > 1;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
@@ -36,7 +37,8 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel);
+                    const resolvedCategoryTitle = resolveCategoryTitle(entry.category, i18n);
+                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel, resolvedCategoryTitle);
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
