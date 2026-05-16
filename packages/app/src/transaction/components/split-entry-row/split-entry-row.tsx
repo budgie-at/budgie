@@ -38,13 +38,13 @@ const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as cons
 export const SplitEntryRow = (props: Props) => {
     const { index, categoryId, amount, currencySymbol, variant, canDelete, autoFocus, onAmountChange, onCategoryPress, onDelete } = props;
 
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
 
     const hasCategorySelected = isPositiveNumber(categoryId);
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
-    const resolvedTitle = hasCategorySelected && isDefined(category) ? resolveCategoryTitle(category, i18n) : null;
+    const resolvedTitle = hasCategorySelected && isDefined(category) ? resolveCategoryTitle(category, t) : null;
     const categoryTitle = isDefined(resolvedTitle) ? resolvedTitle : t`Select category`;
     const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
