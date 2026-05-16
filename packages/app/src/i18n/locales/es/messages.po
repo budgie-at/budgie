@@ -51,7 +51,8 @@ msgstr "{formattedRemaining} por asignar"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} por encima del presupuesto"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+#: src/app/(tabs)/settings/rules.tsx:63
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:34
 msgid "{matchingRulesCount} matching rules"
 msgstr "{matchingRulesCount} reglas coincidentes"
 
@@ -93,7 +94,8 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:26
+#: src/app/(tabs)/settings/rules.tsx:63
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:34
 msgid "1 matching rule"
 msgstr "1 regla coincidente"
 
@@ -101,7 +103,7 @@ msgstr "1 regla coincidente"
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
 
@@ -402,7 +404,7 @@ msgstr "Budgie"
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -599,7 +601,7 @@ msgstr "No se pudieron consolidar las transferencias"
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
 #: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not create rule"
 msgstr "No se pudo crear la regla"
@@ -714,7 +716,7 @@ msgstr "No se pudo configurar la sincronización"
 msgid "Could not unconsolidate transaction."
 msgstr "No se pudo desconsolidar la transacción."
 
-#: src/app/(tabs)/settings/rules.tsx:68
+#: src/app/(tabs)/settings/rules.tsx:95
 #: src/rule/components/rule-update-card/rule-update-card.tsx:64
 #: src/rule/hooks/use-rule-form.hook.ts:152
 msgid "Could not update rule"
@@ -752,7 +754,7 @@ msgstr "Crear y copiar el token personal"
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
 msgid "Create anyway"
 msgstr "Crear de todos modos"
 
@@ -781,7 +783,7 @@ msgstr "Crea una para comenzar."
 msgid "Create Rule"
 msgstr "Crear regla"
 
-#: src/app/(tabs)/settings/rules.tsx:119
+#: src/app/(tabs)/settings/rules.tsx:146
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Crea reglas para categorizar y etiquetar automáticamente tus transacciones bancarias"
 
@@ -920,7 +922,7 @@ msgstr "Descargando modelos de IA…"
 msgid "Downloading models"
 msgstr "Descargando modelos"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "Duplicate rule"
 msgstr "Duplicar regla"
 
@@ -944,15 +946,15 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
 msgid "Edit existing"
 msgstr "Editar existente"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:84
+#: src/app/(main)/transactions/[id]/expense.tsx:85
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:83
+#: src/app/(main)/transactions/[id]/income.tsx:84
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
@@ -1604,7 +1606,7 @@ msgstr "No se detectaron pagos recurrentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/(tabs)/settings/rules.tsx:117
+#: src/app/(tabs)/settings/rules.tsx:144
 msgid "No Rules Yet"
 msgstr "Aún no hay reglas"
 
@@ -1805,7 +1807,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
 msgid "Quick rule"
 msgstr "Regla rápida"
 
@@ -1923,11 +1925,11 @@ msgstr "Reanudando IA…"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/(tabs)/settings/rules.tsx:79
+#: src/app/(tabs)/settings/rules.tsx:106
 msgid "Rule"
 msgstr "Regla"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:174
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:172
 msgid "Rule created"
 msgstr "Regla creada"
 
@@ -1935,7 +1937,7 @@ msgstr "Regla creada"
 msgid "Rule updated"
 msgstr "Regla actualizada"
 
-#: src/app/(tabs)/settings/rules.tsx:100
+#: src/app/(tabs)/settings/rules.tsx:127
 msgid "Rules"
 msgstr "Reglas"
 
