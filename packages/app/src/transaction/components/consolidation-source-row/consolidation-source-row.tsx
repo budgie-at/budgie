@@ -1,4 +1,4 @@
-import { TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
@@ -42,10 +42,13 @@ const buildAccountSummary = (source: ConsolidationSourceRowInterface, isDebit: b
     const toFallbackIcon = isDebit ? source.canonicalToAccountIcon : source.accountIcon;
     const toFallbackTitle = isDebit ? source.canonicalToAccountTitle : source.accountTitle;
 
-    const fromIcon = isDefined(source.sourceFromAccountIcon) ? source.sourceFromAccountIcon : fromFallbackIcon;
-    const fromTitle = isNotEmptyString(source.sourceFromAccountTitle) ? source.sourceFromAccountTitle : fromFallbackTitle;
-    const toIcon = isDefined(source.sourceToAccountIcon) ? source.sourceToAccountIcon : toFallbackIcon;
-    const toTitle = isNotEmptyString(source.sourceToAccountTitle) ? source.sourceToAccountTitle : toFallbackTitle;
+    const useSourceAccounts = source.sourceType === TransactionTypeEnum.TRANSFER;
+
+    const fromIcon = useSourceAccounts && isDefined(source.sourceFromAccountIcon) ? source.sourceFromAccountIcon : fromFallbackIcon;
+    const fromTitle =
+        useSourceAccounts && isNotEmptyString(source.sourceFromAccountTitle) ? source.sourceFromAccountTitle : fromFallbackTitle;
+    const toIcon = useSourceAccounts && isDefined(source.sourceToAccountIcon) ? source.sourceToAccountIcon : toFallbackIcon;
+    const toTitle = useSourceAccounts && isNotEmptyString(source.sourceToAccountTitle) ? source.sourceToAccountTitle : toFallbackTitle;
 
     return { fromIcon, fromTitle, toIcon, toTitle };
 };
