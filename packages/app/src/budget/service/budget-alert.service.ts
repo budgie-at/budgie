@@ -1,23 +1,24 @@
-import { BudgetAlertScopeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import Storage from 'expo-sqlite/kv-store';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetAlertRepository } from '../../@generic/drizzle/db/db';
+import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
 import { computePeriodWindow } from '../utils/compute-period-window.util';
 
 import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trigger.interface';
 import type { BudgetSpentInterface } from '../interface/budget-spent.interface';
-import type { BudgetAlertEntityInterface, BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
+import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertService {
     private static readonly BUDGET_ALERT_THRESHOLDS = [80, 100] as const;
+    private static readonly STORAGE_KEY_PREFIX = '@budgie:budget-alerts-fired';
 
     @Log(
         (budget, spent, categoryLimits) =>
             `enter budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length}`,
         (result, budget, spent, categoryLimits) =>
-            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newAlerts=${result.length}`,
+            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newTriggers=${result.length}`,
         (error, budget, spent, categoryLimits) =>
             `throw budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} error=${getErrorMessage(error)}`
     )
@@ -25,23 +26,38 @@ class BudgetAlertService {
         budget: BudgetEntityInterface,
         spent: BudgetSpentInterface,
         categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
-    ): Promise<BudgetAlertEntityInterface[]> {
+    ): Promise<BudgetAlertTriggerInterface[]> {
         const { periodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
         const triggers = this.computeTriggers(budget, spent, categoryLimits);
 
-        const rows = await Promise.all(
-            triggers.map(trigger =>
-                budgetAlertRepository.createIfMissing({
-                    budgetId: budget.id,
-                    periodStart,
-                    scope: trigger.scope,
-                    categoryId: trigger.categoryId,
-                    threshold: trigger.threshold
-                })
-            )
-        );
+        const storageKey = this.buildStorageKey(budget.id, periodStart.getTime());
+        const fired = await this.loadFired(storageKey);
+        const newTriggers = triggers.filter(trigger => !fired.has(this.buildTriggerKey(trigger)));
 
-        return rows.filter(isDefined);
+        if (isNotEmptyArray(newTriggers)) {
+            newTriggers.forEach(trigger => fired.add(this.buildTriggerKey(trigger)));
+            await Storage.setItem(storageKey, JSON.stringify([...fired]));
+        }
+
+        return newTriggers;
+    }
+
+    private async loadFired(storageKey: string): Promise<Set<string>> {
+        const raw = await Storage.getItem(storageKey);
+
+        if (!isDefined(raw)) {
+            return new Set();
+        }
+
+        return new Set(JSON.parse(raw) as string[]);
+    }
+
+    private buildStorageKey(budgetId: number, periodStartMs: number): string {
+        return `${BudgetAlertService.STORAGE_KEY_PREFIX}:${budgetId}:${periodStartMs}`;
+    }
+
+    private buildTriggerKey(trigger: BudgetAlertTriggerInterface): string {
+        return `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`;
     }
 
     private computeTriggers(

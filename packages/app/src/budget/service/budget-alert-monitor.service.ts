@@ -1,4 +1,3 @@
-import { BudgetAlertScopeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -10,19 +9,20 @@ import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/sha
 import { budgetCategoryLimitRepository, budgetRepository, categoryRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
 import { BUDGET_ALERT_MONITOR_TASK } from '../constant/budget-alert-monitor-task.constant';
+import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
 import { computeBudgetSpent } from '../utils/compute-budget-spent.util';
 import { computePeriodWindow } from '../utils/compute-period-window.util';
 
 import { budgetAlertService } from './budget-alert.service';
 
+import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trigger.interface';
 import type { BudgetSpentInterface } from '../interface/budget-spent.interface';
-import type { BudgetAlertEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertMonitorService {
     private static readonly MINIMUM_INTERVAL_SECONDS = 15 * 60;
 
-    @Log('enter', result => `done newAlerts=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async run(): Promise<BudgetAlertEntityInterface[]> {
+    @Log('enter', result => `done newTriggers=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
+    async run(): Promise<BudgetAlertTriggerInterface[]> {
         const budget = await budgetRepository.getActive();
 
         if (!isDefined(budget) || !budget.pushEnabled) {
@@ -31,11 +31,11 @@ class BudgetAlertMonitorService {
 
         const spent = await this.computeSpent(budget.periodStartDay, budget.useLastDayOfMonth);
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
-        const newAlerts = await budgetAlertService.evaluateAndPersist(budget, spent, categoryLimits);
+        const newTriggers = await budgetAlertService.evaluateAndPersist(budget, spent, categoryLimits);
 
-        await this.postAlerts(newAlerts, budget.overallLimit, spent);
+        await this.postTriggers(newTriggers, budget.overallLimit, spent);
 
-        return newAlerts;
+        return newTriggers;
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -64,22 +64,22 @@ class BudgetAlertMonitorService {
         return computeBudgetSpent(entries, baseInstrumentId);
     }
 
-    private async postAlerts(alerts: BudgetAlertEntityInterface[], overallLimit: number, spent: BudgetSpentInterface): Promise<void> {
-        for (const alert of alerts) {
+    private async postTriggers(triggers: BudgetAlertTriggerInterface[], overallLimit: number, spent: BudgetSpentInterface): Promise<void> {
+        for (const trigger of triggers) {
             // eslint-disable-next-line no-await-in-loop
-            await this.postAlert(alert, overallLimit, spent);
+            await this.postTrigger(trigger, overallLimit, spent);
         }
     }
 
-    private async postAlert(alert: BudgetAlertEntityInterface, overallLimit: number, spent: BudgetSpentInterface): Promise<void> {
-        if (alert.scope === BudgetAlertScopeEnum.OVERALL) {
-            await this.postOverallAlert(alert.threshold, overallLimit, spent.spentOverall);
+    private async postTrigger(trigger: BudgetAlertTriggerInterface, overallLimit: number, spent: BudgetSpentInterface): Promise<void> {
+        if (trigger.scope === BudgetAlertScopeEnum.OVERALL) {
+            await this.postOverallAlert(trigger.threshold, overallLimit, spent.spentOverall);
 
             return;
         }
 
-        if (isDefined(alert.categoryId)) {
-            await this.postCategoryAlert(alert.threshold, alert.categoryId);
+        if (isDefined(trigger.categoryId)) {
+            await this.postCategoryAlert(trigger.threshold, trigger.categoryId);
         }
     }
 

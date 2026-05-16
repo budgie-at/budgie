@@ -60,7 +60,7 @@ export default function BudgetSetupScreen() {
             overallLimit: 0,
             categoryLimits: [],
             pushEnabled: false,
-            isWidgetEnabled: false
+            isWidgetEnabled: true
         }
     });
 

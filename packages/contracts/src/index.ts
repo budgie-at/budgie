@@ -412,14 +412,3 @@ export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export { BudgetCategoryLimitRepository } from './budget-category-limit/repository/budget-category-limit.repository';
-
-export { BudgetAlertScopeEnum } from './budget-alert/enum/budget-alert-scope.enum';
-export { BudgetAlertEntityTable } from './budget-alert/table/budget-alert-entity.table';
-export { BudgetAlertEntityRelations } from './budget-alert/relations/budget-alert-entity.relations';
-export { BudgetAlertEntitySchema } from './budget-alert/schema/budget-alert-entity.schema';
-export { BudgetAlertCreateEntitySchema } from './budget-alert/schema/budget-alert-create-entity.schema';
-export { BudgetAlertUpdateEntitySchema } from './budget-alert/schema/budget-alert-update-entity.schema';
-export type { BudgetAlertEntityInterface } from './budget-alert/entity/budget-alert-entity.interface';
-export type { BudgetAlertCreateEntityInterface } from './budget-alert/entity/budget-alert-create-entity.interface';
-export type { BudgetAlertUpdateEntityInterface } from './budget-alert/entity/budget-alert-update-entity.interface';
-export { BudgetAlertRepository } from './budget-alert/repository/budget-alert.repository';
