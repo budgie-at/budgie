@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.17.6](https://github.com/budgie-at/budgie/compare/v5.17.5...v5.17.6) (2026-05-16)
+
+### Bug Fixes
+
+- **app:** open transaction rule pills in context ([739a780](https://github.com/budgie-at/budgie/commit/739a78056177b746742582932765d32e61b58531))
+
 ## [5.17.5](https://github.com/budgie-at/budgie/compare/v5.17.4...v5.17.5) (2026-05-16)
 
 ### Bug Fixes
