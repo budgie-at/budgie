@@ -7,7 +7,7 @@ import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
@@ -50,7 +50,7 @@ export const TransactionSectionsList = ({
     footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
-    const { i18n } = useLingui();
+    const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
     const { bottom } = useSafeAreaInsets();
@@ -97,7 +97,8 @@ export const TransactionSectionsList = ({
         { type: 'header' as const, title: date, id: `header-${date}` },
         ...transactions.map(transaction => {
             const firstEntry = transaction.entries.at(0);
-            const resolvedCategoryTitle = resolveCategoryTitle(firstEntry?.category, i18n);
+            const firstCategory = firstEntry?.category;
+            const resolvedCategoryTitle = isDefined(firstCategory) ? resolveCategoryTitle(firstCategory, t) : null;
 
             return {
                 type: 'transaction' as const,

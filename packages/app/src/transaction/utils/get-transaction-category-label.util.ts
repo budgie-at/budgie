@@ -10,7 +10,7 @@ export const getTransactionCategoryLabel = (
     transaction: TransactionWithRelationsEntityInterface,
     balanceAdjustmentLabel: string,
     categoriesLabel: string,
-    resolvedCategoryTitle: string | undefined
+    resolvedCategoryTitle: string | null
 ): string => {
     if (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
         return balanceAdjustmentLabel;

@@ -27,7 +27,7 @@ const textClassName = 'text-secondary-foreground text-xxs font-medium';
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
 
     const hasMultipleEntries = transaction.entries.length > 1;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
@@ -37,7 +37,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const resolvedCategoryTitle = resolveCategoryTitle(entry.category, i18n);
+                    const resolvedCategoryTitle = isDefined(entry.category) ? resolveCategoryTitle(entry.category, t) : null;
                     const entryLabel = getTransactionEntryLabel(entry, unknownLabel, resolvedCategoryTitle);
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);

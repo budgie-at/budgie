@@ -11,11 +11,11 @@ interface Props {
 }
 
 export const RuleActionPill = ({ action }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
     const { type, category, tag } = action;
 
     if (type === RuleActionTypeEnum.SET_CATEGORY && isDefined(category)) {
-        const categoryTitle = resolveCategoryTitle(category, i18n) ?? category.title;
+        const categoryTitle = resolveCategoryTitle(category, t);
 
         return (
             <RuleActionPillContainer icon={UserIconNameEnum.FolderOpen}>

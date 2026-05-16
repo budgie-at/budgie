@@ -14,10 +14,10 @@ interface Props {
 }
 
 export const CategoryCard = ({ onOpen, category }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleOpen = () => void onOpen(category);
-    const visibleTitle = resolveCategoryTitle(category, i18n) ?? category.title;
+    const visibleTitle = resolveCategoryTitle(category, t);
     const { isDefault } = category;
     const swipeLeftHint = isDefault ? null : (
         <Text className="text-secondary-foreground font-medium text-xs ml-auto">

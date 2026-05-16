@@ -15,10 +15,10 @@ interface Props {
 }
 
 export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleSelect = () => void onSelect(category.id);
-    const visibleTitle = resolveCategoryTitle(category, i18n) ?? category.title;
+    const visibleTitle = resolveCategoryTitle(category, t);
 
     return (
         <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelector.CategoryOption(category.title)}>
