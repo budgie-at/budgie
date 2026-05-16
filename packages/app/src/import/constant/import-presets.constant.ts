@@ -45,6 +45,6 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         operatedAt: 'operatedAt',
         comment: 'comment',
         isPlanned: '',
-        mcc: ''
+        mcc: 'mcc'
     }
 };
