@@ -43,6 +43,7 @@ export default function SettingsPage() {
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
+    const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
@@ -187,6 +188,21 @@ export default function SettingsPage() {
                                         testID={SettingsPageSelector.ShowCentsSwitch}
                                         onValueChange={handleToggle('showCents')}
                                         value={showCents}
+                                    />
+                                }
+                                variant="positive"
+                            />
+                            <SettingsCard
+                                testID={SettingsPageSelector.BudgetWidgetCard}
+                                title={t`Budget Widget`}
+                                description={t`Show the monthly budget widget on the home screen`}
+                                icon={UserIconNameEnum.PiggyBank}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        testID={SettingsPageSelector.BudgetWidgetSwitch}
+                                        onValueChange={handleToggle('isBudgetWidgetEnabled')}
+                                        value={isBudgetWidgetEnabled}
                                     />
                                 }
                                 variant="positive"

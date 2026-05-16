@@ -183,6 +183,13 @@
             "when": 1778803200000,
             "tag": "0025_add_budget_push_enabled",
             "breakpoints": true
+        },
+        {
+            "idx": 26,
+            "version": "6",
+            "when": 1779148800000,
+            "tag": "0026_add_settings_budget_widget_enabled",
+            "breakpoints": true
         }
     ]
 }

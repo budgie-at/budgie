@@ -85,6 +85,10 @@ msgstr "{source} falló: {message}"
 msgid "{splitEntryCount} items"
 msgstr "{splitEntryCount} elementos"
 
+#: src/budget/components/budget-widget/budget-widget.tsx:68
+msgid "+{hiddenCategoryCount} more"
+msgstr "+{hiddenCategoryCount} más"
+
 #: src/rule/constant/rule-condition-operator.constant.ts:12
 msgid "<"
 msgstr "<"
@@ -109,7 +113,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "1 matching rule"
 msgstr "1 regla coincidente"
 
-#: src/app/(tabs)/settings/index.tsx:70
+#: src/app/(tabs)/settings/index.tsx:71
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
@@ -117,7 +121,7 @@ msgstr "100% Sin conexión y privado"
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
 
-#: src/app/(tabs)/settings/index.tsx:214
+#: src/app/(tabs)/settings/index.tsx:230
 msgid "About"
 msgstr "Acerca de"
 
@@ -209,7 +213,7 @@ msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 msgid "Adjustment"
 msgstr "Ajuste"
 
-#: src/app/(tabs)/settings/index.tsx:109
+#: src/app/(tabs)/settings/index.tsx:110
 msgid "AI"
 msgstr "IA"
 
@@ -231,7 +235,7 @@ msgstr "IA desactivada"
 msgid "AI-Generated Metadata"
 msgstr "Metadatos generados por IA"
 
-#: src/app/(tabs)/settings/index.tsx:218
+#: src/app/(tabs)/settings/index.tsx:234
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "Aplicación de presupuesto con IA y privacidad total. Todo el procesamiento de datos ocurre localmente en tu dispositivo."
 
@@ -255,7 +259,7 @@ msgstr "Todo listo"
 msgid "All Time"
 msgstr "Todo el tiempo"
 
-#: src/app/(tabs)/settings/index.tsx:71
+#: src/app/(tabs)/settings/index.tsx:72
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
@@ -287,11 +291,11 @@ msgstr "Token de API"
 msgid "App Lock"
 msgstr "Bloqueo de aplicación"
 
-#: src/app/(tabs)/settings/index.tsx:222
+#: src/app/(tabs)/settings/index.tsx:238
 msgid "App Version"
 msgstr "Versión de la app"
 
-#: src/app/(tabs)/settings/index.tsx:173
+#: src/app/(tabs)/settings/index.tsx:174
 msgid "Appearance"
 msgstr "Apariencia"
 
@@ -313,7 +317,7 @@ msgid "Archive Account?"
 msgstr "¿Archivar cuenta?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:154
+#: src/app/(tabs)/settings/index.tsx:155
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
@@ -331,7 +335,7 @@ msgstr "¿Seguro que quieres eliminar esta regla?"
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/app/(tabs)/settings/index.tsx:142
 msgid "Auto-categorize transactions"
 msgstr "Categorizar transacciones automáticamente"
 
@@ -399,7 +403,7 @@ msgid "Borrowed"
 msgstr "Prestado"
 
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(tabs)/settings/index.tsx:147
+#: src/app/(tabs)/settings/index.tsx:148
 msgid "Budget"
 msgstr "Presupuesto"
 
@@ -407,7 +411,11 @@ msgstr "Presupuesto"
 msgid "Budget limit reached"
 msgstr "Límite de presupuesto alcanzado"
 
-#: src/app/(tabs)/settings/index.tsx:216
+#: src/app/(tabs)/settings/index.tsx:197
+msgid "Budget Widget"
+msgstr "Widget de presupuesto"
+
+#: src/app/(tabs)/settings/index.tsx:232
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -788,7 +796,7 @@ msgstr "Crear cuentas"
 msgid "Create and copy the personal token"
 msgstr "Crear y copiar el token personal"
 
-#: src/app/(tabs)/settings/index.tsx:132
+#: src/app/(tabs)/settings/index.tsx:133
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -878,7 +886,7 @@ msgstr "Las categorías personalizadas que crees aparecerán aquí"
 msgid "Dark Mode"
 msgstr "Modo oscuro"
 
-#: src/app/(tabs)/settings/index.tsx:199
+#: src/app/(tabs)/settings/index.tsx:215
 msgid "Data management"
 msgstr "Gestión de datos"
 
@@ -1275,7 +1283,7 @@ msgstr "Monto origen"
 msgid "From Currency"
 msgstr "Moneda origen"
 
-#: src/app/(tabs)/settings/index.tsx:99
+#: src/app/(tabs)/settings/index.tsx:100
 msgid "General"
 msgstr "General"
 
@@ -1299,7 +1307,7 @@ msgstr "Recibe una notificación cuando la app está cerrada y se supera un lím
 msgid "Greater Than"
 msgstr "Mayor que"
 
-#: src/app/(tabs)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:84
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Ocultar saldos de cuentas y patrimonio neto al tomar capturas de pantalla"
 
@@ -1360,7 +1368,7 @@ msgid "In List"
 msgstr "En lista"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:162
+#: src/app/(tabs)/settings/index.tsx:163
 msgid "Inactive Accounts"
 msgstr "Cuentas inactivas"
 
@@ -1484,15 +1492,15 @@ msgstr "Cargando..."
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(tabs)/settings/index.tsx:123
+#: src/app/(tabs)/settings/index.tsx:124
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(tabs)/settings/index.tsx:140
+#: src/app/(tabs)/settings/index.tsx:141
 msgid "Manage Rules"
 msgstr "Gestionar reglas"
 
-#: src/app/(tabs)/settings/index.tsx:131
+#: src/app/(tabs)/settings/index.tsx:132
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
@@ -1558,7 +1566,7 @@ msgstr "Dinero prestado o recibido"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:30
+#: src/budget/components/budget-widget/budget-widget.tsx:38
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
 
@@ -1805,7 +1813,7 @@ msgstr "Topes opcionales por categoría dentro de este presupuesto"
 msgid "or"
 msgstr "o"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:120
 msgid "Organization"
 msgstr "Organización"
 
@@ -1906,7 +1914,7 @@ msgstr "Portugués (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:68
 msgid "Privacy"
 msgstr "Privacidad"
 
@@ -2079,7 +2087,7 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
-#: src/app/(tabs)/settings/index.tsx:82
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
 
@@ -2144,7 +2152,7 @@ msgstr "Valor secundario"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Protege tu aplicación con PIN y Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:76
+#: src/app/(tabs)/settings/index.tsx:77
 msgid "Security"
 msgstr "Seguridad"
 
@@ -2272,7 +2280,7 @@ msgstr "Enviar notificaciones push"
 msgid "Sending {fromCode}"
 msgstr "Enviando {fromCode}"
 
-#: src/app/(tabs)/settings/index.tsx:148
+#: src/app/(tabs)/settings/index.tsx:149
 msgid "Set a monthly limit and track spending"
 msgstr "Establece un límite mensual y controla tus gastos"
 
@@ -2288,7 +2296,7 @@ msgstr "Establecer categoría"
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
 
-#: src/app/(tabs)/settings/index.tsx:60
+#: src/app/(tabs)/settings/index.tsx:61
 msgid "Settings"
 msgstr "Configuración"
 
@@ -2308,7 +2316,7 @@ msgstr "Mostrar {selectedCount} categorías"
 msgid "Show {selectedCount} tags"
 msgstr "Mostrar {selectedCount} etiquetas"
 
-#: src/app/(tabs)/settings/index.tsx:182
+#: src/app/(tabs)/settings/index.tsx:183
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
@@ -2348,13 +2356,17 @@ msgstr "Mostrar todas las etiquetas"
 msgid "Show all types"
 msgstr "Mostrar todos los tipos"
 
-#: src/app/(tabs)/settings/index.tsx:181
+#: src/app/(tabs)/settings/index.tsx:182
 msgid "Show Cents"
 msgstr "Mostrar centavos"
 
 #: src/app/date-filter.tsx:32
 msgid "Show selected range"
 msgstr "Mostrar rango seleccionado"
+
+#: src/app/(tabs)/settings/index.tsx:198
+msgid "Show the monthly budget widget on the home screen"
+msgstr "Mostrar el widget de presupuesto mensual en la pantalla de inicio"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:38
 msgid "Show this account on the main page"
@@ -2795,15 +2807,15 @@ msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 msgid "Value"
 msgstr "Valor"
 
-#: src/app/(tabs)/settings/index.tsx:163
+#: src/app/(tabs)/settings/index.tsx:164
 msgid "View and activate hidden accounts"
 msgstr "Ver y activar cuentas ocultas"
 
-#: src/app/(tabs)/settings/index.tsx:124
+#: src/app/(tabs)/settings/index.tsx:125
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(tabs)/settings/index.tsx:155
+#: src/app/(tabs)/settings/index.tsx:156
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 
