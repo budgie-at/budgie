@@ -4,9 +4,8 @@ import { eq } from 'drizzle-orm';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { fetchPersistedMonobankTransactions, setupMonobankFixture, testDb } from '../../harness';
+import { fetchBankSyncById, fetchPersistedMonobankTransactions, setupMonobankFixture, testDb } from '../../harness';
 import { monobankServer } from '../../harness/monobank/monobank-server';
-
 
 const SWEEP_START = new Date('2026-05-16T00:00:00Z');
 const FIXTURE_FORWARD_FROM = new Date('2026-01-01T00:00:00Z');
@@ -26,8 +25,8 @@ describe('monobank/empty-account-safety-net', () => {
         monobankServer.use(
             http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => {
                 monobankRequestCount += 1;
-                
-return HttpResponse.json([]);
+
+                return HttpResponse.json([]);
             })
         );
 
@@ -36,7 +35,7 @@ return HttpResponse.json([]);
         expect(monobankRequestCount).toBe(EXPECTED_SAFETY_NET_REQUESTS);
         expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
 
-        const [finalSync] = testDb.select().from(BankSyncEntityTable).where(eq(BankSyncEntityTable.id, bankSync.id)).all();
+        const finalSync = fetchBankSyncById(bankSync.id);
         expect(finalSync.mode).toBe(BankSyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(0);
     });

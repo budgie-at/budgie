@@ -4,8 +4,14 @@ import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
 
-import { buildMonobank, fetchPersistedMonobankTransactions, setupMonobankFixture, testDb } from '../../harness';
-import { monobankStub } from '../../harness/monobank/monobank-stub';
+import {
+    buildMonobank,
+    fetchBankSyncById,
+    fetchPersistedMonobankTransactions,
+    monobankStub,
+    setupMonobankFixture,
+    testDb
+} from '../../harness';
 
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
@@ -47,7 +53,7 @@ describe('monobank/old-transactions-after-dormant-month', () => {
         const [persistedOld] = persisted;
         expect(persistedOld.externalId).toBe('tx-old-80d');
 
-        const [finalSync] = testDb.select().from(BankSyncEntityTable).where(eq(BankSyncEntityTable.id, bankSync.id)).all();
+        const finalSync = fetchBankSyncById(bankSync.id);
         expect(finalSync.mode).toBe(BankSyncModeEnum.FORWARD);
         expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
     });

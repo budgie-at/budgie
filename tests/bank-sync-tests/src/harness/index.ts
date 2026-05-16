@@ -12,6 +12,7 @@ export { fetchTransactionById } from './db/fetch-transaction-by-id';
 export { fetchExpenseEntries } from './db/fetch-expense-entries';
 export { fetchCanonicalsOfType } from './db/fetch-canonicals-of-type';
 export { fetchPersistedMonobankTransactions } from './db/fetch-persisted-monobank-transactions';
+export { fetchBankSyncById } from './db/fetch-bank-sync-by-id';
 export { findMccByCode } from './db/find-mcc-by-code';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';

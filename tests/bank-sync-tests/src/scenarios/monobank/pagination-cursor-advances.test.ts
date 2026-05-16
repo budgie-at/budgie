@@ -1,11 +1,8 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { BankSyncEntityTable, BankSyncModeEnum } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
+import { BankSyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-
-import { buildMonobank, fetchPersistedMonobankTransactions, setupMonobankFixture, testDb } from '../../harness';
-import { monobankStub } from '../../harness/monobank/monobank-stub';
+import { buildMonobank, fetchBankSyncById, fetchPersistedMonobankTransactions, monobankStub, setupMonobankFixture } from '../../harness';
 
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
@@ -39,7 +36,7 @@ describe('monobank/pagination-cursor-advances', () => {
 
         expect(fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
 
-        const [finalSync] = testDb.select().from(BankSyncEntityTable).where(eq(BankSyncEntityTable.id, bankSync.id)).all();
+        const finalSync = fetchBankSyncById(bankSync.id);
         expect(finalSync.forwardSyncedAt).not.toBeNull();
         expect(finalSync.transactionCount).toBe(PAGE_SIZE);
     });
