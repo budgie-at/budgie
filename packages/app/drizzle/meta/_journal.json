@@ -159,36 +159,8 @@
         {
             "idx": 22,
             "version": "6",
-            "when": 1778025600000,
-            "tag": "0022_add_budgets",
-            "breakpoints": true
-        },
-        {
-            "idx": 23,
-            "version": "6",
-            "when": 1778198400000,
-            "tag": "0023_add_budget_category_limit",
-            "breakpoints": true
-        },
-        {
-            "idx": 24,
-            "version": "6",
-            "when": 1778716800000,
-            "tag": "0024_add_budget_alert",
-            "breakpoints": true
-        },
-        {
-            "idx": 25,
-            "version": "6",
-            "when": 1778803200000,
-            "tag": "0025_add_budget_push_enabled",
-            "breakpoints": true
-        },
-        {
-            "idx": 26,
-            "version": "6",
             "when": 1779148800000,
-            "tag": "0026_add_settings_budget_widget_enabled",
+            "tag": "0022_add_budget_planning",
             "breakpoints": true
         }
     ]

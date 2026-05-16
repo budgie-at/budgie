@@ -23,11 +23,7 @@ import m0018 from './0018_add_transaction_tags_is_primary.sql';
 import m0019 from './0019_add_consolidation_ledger.sql';
 import m0020 from './0020_add_rules.sql';
 import m0021 from './0021_add_updated_by.sql';
-import m0022 from './0022_add_budgets.sql';
-import m0023 from './0023_add_budget_category_limit.sql';
-import m0024 from './0024_add_budget_alert.sql';
-import m0025 from './0025_add_budget_push_enabled.sql';
-import m0026 from './0026_add_settings_budget_widget_enabled.sql';
+import m0022 from './0022_add_budget_planning.sql';
 
 export default {
     journal,
@@ -54,10 +50,6 @@ export default {
         m0019,
         m0020,
         m0021,
-        m0022,
-        m0023,
-        m0024,
-        m0025,
-        m0026
+        m0022
     }
 };
