@@ -76,6 +76,7 @@ export const SimpleQuickForm = (props: Props) => {
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
+        matchingRuleIds,
         onRuleCreated,
         onDismiss,
         onCreatingChange
@@ -220,6 +221,7 @@ export const SimpleQuickForm = (props: Props) => {
                 suggestRuleData={suggestRuleData}
                 updateRuleData={updateRuleData}
                 matchingRulesCount={matchingRulesCount}
+                matchingRuleIds={matchingRuleIds}
                 onRuleCreated={onRuleCreated}
                 onDismiss={onDismiss}
                 onCreatingChange={onCreatingChange}

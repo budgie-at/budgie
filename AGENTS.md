@@ -29,17 +29,17 @@ yarn deps:check                           # Check dependency versions
 yarn deps:dedupe                          # Deduplicate dependencies
 ```
 
-## Pull Requests
+## Git Commits And Pull Requests
 
-### PR Title Format
+### Commit Message And PR Title Format
 
-Use Conventional Commits for PR titles:
+Use Conventional Commits for commit messages and PR titles:
 
 ```text
 type(scope): short description
 ```
 
-For repo-wide or root-level changes, omit the scope:
+For repo-wide changes where no single package owns the change, omit the scope:
 
 ```text
 type: short description
@@ -62,8 +62,8 @@ Use the repo package scopes without the npm namespace prefix:
 
 ### Scope Selection Rules
 
-1. Use the package scope when the change is isolated to one package.
-2. Omit the scope when the change touches multiple packages, root documentation, workspace tooling, shared agent configuration, or other repo-wide files.
+1. Use the package scope when the primary product or code change belongs to one package, even if supporting docs, tests, or tooling files are also touched.
+2. Omit the scope when the primary change touches multiple packages, root documentation, workspace tooling, shared agent configuration, or other repo-wide files.
 3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
 4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
 
@@ -460,9 +460,11 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. Use real user-visible import paths for database backups and bank PDFs.
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
-5. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
-6. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the app before rerunning the test.
-7. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
+6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id.
+7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
+8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
+9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
 
 ### Maestro Robustness
 
@@ -478,17 +480,6 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 10. System or simulator prompts outside the app, such as Apple account verification sheets, are environment noise and must not be treated as app or Maestro regressions.
 11. Settings flows must verify the user-visible outcome after a toggle, not only the switch interaction itself.
 12. When a correct selector matches the right element but the native control only responds to a specific hit target inside that element, use `tapOn` with the selector plus `point` to target the relative position inside the matched bounds. Prefer this over absolute screen coordinates.
-
-### Commit Format
-
-Conventional commits: `type(scope): description`
-
-**Scopes:** Use package names without prefix: `app`, `ai`, `contracts`, `landing`, `bank-sync`
-
-**Examples:**
-- `feat(app): add dark mode toggle`
-- `fix(contracts): update account schema`
-- `chore(landing): update dependencies`
 
 ## PR Review
 

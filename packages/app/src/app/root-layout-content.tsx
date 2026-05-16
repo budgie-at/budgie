@@ -98,6 +98,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack.Screen name="(main)/create-transaction/expense" />
                                                                 <Stack.Screen name="(main)/create-transaction/income" />
                                                                 <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                <Stack.Screen name="(main)/matching-rules" />
                                                                 <Stack.Screen name="(main)/transactions/[id]/expense" />
                                                                 <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                 <Stack.Screen name="(main)/transactions/[id]/transfer" />
