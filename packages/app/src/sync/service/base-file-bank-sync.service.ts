@@ -5,6 +5,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
@@ -16,7 +17,7 @@ import type { FileBasedBankSyncClientInterface } from '../interface/file-based-b
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
-import type { DB } from '@budgie/contracts';
+import type { DB, MccCategoryLookupInterface } from '@budgie/contracts';
 
 export abstract class BaseFileBankSyncService {
     constructor(protected readonly provider: ExternalSourceEnum) {}
@@ -101,16 +102,30 @@ export abstract class BaseFileBankSyncService {
         }
 
         const transactionInputs = transactions.map(transaction => {
-            const mccCategoryId = isNotEmptyString(transaction.category)
-                ? (context.mccCategoryIdMap.get(transaction.category) ?? null)
+            const mccCategoryLookup = isNotEmptyString(transaction.category)
+                ? (context.mccCategoryLookupMap.get(transaction.category) ?? null)
                 : null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, this.provider);
+            return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryLookup, this.provider);
         });
 
-        await transactionImportService.bulkUpsertImported(transactionInputs, context.existingTransactionIdMap, context.tx, {
-            shouldUpdateBalances: false
-        });
+        const upsertedTransactions = await transactionImportService.bulkUpsertImported(
+            transactionInputs,
+            context.existingTransactionIdMap,
+            context.tx,
+            {
+                shouldUpdateBalances: false
+            }
+        );
+
+        const newInputs = transactionInputs.filter(
+            input => !isDefined(input.externalId) || !context.existingTransactionIdMap.has(input.externalId)
+        );
+        const newTransactionIds = upsertedTransactions
+            .filter(transaction => !isDefined(transaction.externalId) || !context.existingTransactionIdMap.has(transaction.externalId))
+            .map(transaction => transaction.id);
+
+        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
     }
 
     @Log(
@@ -120,13 +135,13 @@ export abstract class BaseFileBankSyncService {
             `throw bankAccountIds=${bankAccounts.map(account => account.id).join(',')} error=${getErrorMessage(error)}`
     )
     private async executeImport(client: FileBasedBankSyncClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
-        const [mccCategoryIdMap, existingTransactionIdMap] = await Promise.all([
+        const [mccCategoryLookupMap, existingTransactionIdMap] = await Promise.all([
             this.resolveMccCategoryIdMap(client, bankAccounts),
             transactionService.findIdMapByExternalSource(this.provider)
         ]);
 
         await transactionAsync(db, async tx => {
-            const context: ImportContextInterface = { mccCategoryIdMap, existingTransactionIdMap, tx };
+            const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap, tx };
 
             for (const bankAccount of bankAccounts) {
                 await this.importAccountTransactions(client, bankAccount, context);
@@ -171,5 +186,5 @@ export abstract class BaseFileBankSyncService {
     protected abstract resolveMccCategoryIdMap(
         client: FileBasedBankSyncClientInterface,
         bankAccounts: BankAccountInterface[]
-    ): Promise<Map<string, number | null>>;
+    ): Promise<Map<string, MccCategoryLookupInterface | null>>;
 }

@@ -10,6 +10,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositi
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
+import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
@@ -23,14 +24,19 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
-import type { AccountEntityInterface, BankSyncEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    BankSyncEntityInterface,
+    MccCategoryLookupInterface,
+    TransactionCreateInputInterface
+} from '@budgie/contracts';
 
 class AppMonobankSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
-    private mccCategoryIdMap = new Map<string, number>();
+    private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
@@ -48,11 +54,16 @@ class AppMonobankSyncService {
     }
 
     @Log('enter', result => `done mccKeys=${[...result.keys()].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
-    private async loadMccCategories(): Promise<Map<string, number>> {
+    private async loadMccCategories(): Promise<Map<string, MccCategoryLookupInterface>> {
         const mccCategories = await mccCategoryRepository.findAll();
-        this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
+        this.mccCategoryLookupMap = new Map(
+            mccCategories.map(mccCategory => [
+                mccCategory.mcc,
+                { id: mccCategory.id, defaultCategoryId: mccCategory.defaultCategoryId ?? null }
+            ])
+        );
 
-        return this.mccCategoryIdMap;
+        return this.mccCategoryLookupMap;
     }
 
     @Log('enter', result => `done result=${result}`, error => `throw error=${getErrorMessage(error)}`)
@@ -202,27 +213,15 @@ class AppMonobankSyncService {
     }
 
     @Log(
-        (newTransactions, accountId) =>
-            `enter provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} count=${newTransactions.length}`,
-        (result, newTransactions, accountId) =>
-            `done provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
-        (error, newTransactions, accountId) =>
-            `throw provider=${ExternalSourceEnum.MONOBANK} accountId=${accountId} transactionIds=${newTransactions.map(t => t.id).join(',')} error=${getErrorMessage(error)}`
+        inputs =>
+            `enter provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} count=${inputs.length}`,
+        (result, inputs) =>
+            `done provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
+        (error, inputs) =>
+            `throw provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
     )
-    private async createBatchTransactions(
-        newTransactions: BankSyncBatchResultInterface['transactions'],
-        accountId: number
-    ): Promise<TransactionEntityInterface[]> {
-        return await transactionService.bulkCreate(
-            newTransactions.map(bankTransaction =>
-                mapBankTransactionToCreateInput(
-                    bankTransaction,
-                    accountId,
-                    this.mccCategoryIdMap.get(String(bankTransaction.mcc)) ?? null,
-                    this.provider
-                )
-            )
-        );
+    private async createBatchTransactions(inputs: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
+        return await transactionService.bulkCreate(inputs);
     }
 
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
@@ -311,7 +310,20 @@ class AppMonobankSyncService {
             return 0;
         }
 
-        const createdTransactions = await this.createBatchTransactions(newTransactions, accountId);
+        const inputs = newTransactions.map(bankTransaction =>
+            mapBankTransactionToCreateInput(
+                bankTransaction,
+                accountId,
+                this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
+                this.provider
+            )
+        );
+        const createdTransactions = await this.createBatchTransactions(inputs);
+
+        ruleApplicationDrainerService.enqueueTransactions(
+            createdTransactions.map(transaction => transaction.id),
+            inputs
+        );
 
         return createdTransactions.length;
     }
@@ -325,14 +337,7 @@ class AppMonobankSyncService {
         }
 
         for (const bankTransaction of existingTransactions) {
-            await transactionService.update(
-                mapBankTransactionToCreateInput(
-                    bankTransaction,
-                    accountId,
-                    this.mccCategoryIdMap.get(String(bankTransaction.mcc)) ?? null,
-                    this.provider
-                )
-            );
+            await transactionService.update(mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
         }
 
         return existingTransactions.length;
