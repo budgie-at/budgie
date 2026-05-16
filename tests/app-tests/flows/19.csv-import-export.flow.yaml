@@ -114,7 +114,7 @@ appId: ${APP_ID}
       id: 'HomePage.TotalBalance'
     timeout: 10000
 
-# === Phase 2: Re-import with MCC default toggle OFF, assert fallback category ===
+# === Re-import with MCC default toggle OFF, assert fallback category ===
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
