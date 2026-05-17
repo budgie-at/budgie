@@ -1,3 +1,3 @@
 export enum AnalyticsTransactionsModeEnum {
-    UNCATEGORIZED = 'uncategorized'
+    UNCATEGORIZED = 'UNCATEGORIZED'
 }
