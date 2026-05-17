@@ -17,7 +17,6 @@ import { CategoryStatisticsCardSelector } from './category-statistics-card.selec
 
 interface Props {
     readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
-    readonly title: string;
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;
@@ -25,7 +24,7 @@ interface Props {
     readonly isIncome: boolean;
 }
 
-export const CategoryStatisticsCard = ({ category, title, amount, percentage, variant, filters, isIncome }: Props) => {
+export const CategoryStatisticsCard = ({ category, amount, percentage, variant, filters, isIncome }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -53,7 +52,7 @@ export const CategoryStatisticsCard = ({ category, title, amount, percentage, va
         <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
             <View className="flex-row items-center gap-x-md">
                 <CircleIcon icon={category.icon} variant={variant} />
-                <Text className="mr-auto text-primary text-xs">{title}</Text>
+                <Text className="mr-auto text-primary text-xs">{category.title}</Text>
                 <Text className={statsAmountVariants({ variant })} testID={amountTestID}>
                     {formatDigits(microAmount, defaultInstrument.symbol)}
                 </Text>
