@@ -1,0 +1,6 @@
+title,externalId,toAccount,toAmount,toCurrency,fromAccount,fromAmount,fromCurrency,category,operatedAt,comment,mcc
+,csv-mcc-groceries,e2e csv wallet,-12.00,USD,,,,,2026-04-10,E2E MCC Groceries,5411
+,csv-mcc-restaurant,e2e csv wallet,-25.00,USD,,,,,2026-04-11,E2E MCC Restaurant,5812
+,csv-mcc-fuel,e2e csv wallet,-40.00,USD,,,,,2026-04-12,E2E MCC Fuel,5541
+,csv-mcc-pharmacy,e2e csv wallet,-9.50,USD,,,,,2026-04-13,E2E MCC Pharmacy,5912
+,csv-mcc-no-code,e2e csv wallet,-3.00,USD,,,,,2026-04-14,E2E MCC No Code,

@@ -30,6 +30,7 @@ executionOrder:
         - 24.split-transaction-and-analytics.flow
         - 25.rules-crud.flow
         - 26.rules-application.flow
+        - 27.mcc-default-category.flow
 
 platform:
     ios:
