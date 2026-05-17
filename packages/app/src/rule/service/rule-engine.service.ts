@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- absorbs convert-transaction-to-transfer logic per CLAUDE.md rule 38/51 (approved by user during pr-322-rules SOTA cleanup) */
 import {
     AccountTypeEnum,
+    LanguageEnum,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
     TransactionEntryTypeEnum,
@@ -390,7 +391,7 @@ class RuleEngineService {
 
     // eslint-disable-next-line max-statements -- multi-step transfer conversion absorbed from convert-transaction-to-transfer util per CLAUDE.md rule 38/51
     private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {
-        const transaction = await transactionRepository.getById(transactionId, dbTransaction);
+        const transaction = await transactionRepository.getById(transactionId, LanguageEnum.EN, dbTransaction);
         if (!isDefined(transaction)) {
             return false;
         }

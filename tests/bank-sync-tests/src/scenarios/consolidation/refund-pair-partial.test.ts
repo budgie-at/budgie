@@ -71,7 +71,7 @@ describe('consolidation/refund-pair-partial', () => {
             refundAmounts: [40 * PRECISION]
         });
 
-        const promotedExpense = await transactionRepository.getById(expense.id);
+        const promotedExpense = await transactionRepository.getById(expense.id, LanguageEnum.EN);
 
         if (!promotedExpense) {
             throw new Error('Promoted expense not found');
