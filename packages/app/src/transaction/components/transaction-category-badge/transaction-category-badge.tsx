@@ -6,13 +6,10 @@ import {
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
-import { MccCategoryChip } from '../mcc-category-chip/mcc-category-chip';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
@@ -41,16 +38,10 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
                     return (
-                        <View className="flex-row gap-xs" key={entry.id}>
-                            <View className={wrapperClassName} testID={entryTestID}>
-                                <Text className={textClassName}>
-                                    {entryLabel}{' '}
-                                    <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
-                                </Text>
-                            </View>
-                            {isDefined(entry.mccCategory) && isDefined(entry.category) ? (
-                                <MccCategoryChip mccCategory={entry.mccCategory} />
-                            ) : null}
+                        <View className={wrapperClassName} testID={entryTestID} key={entry.id}>
+                            <Text className={textClassName}>
+                                {entryLabel} <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
+                            </Text>
                         </View>
                     );
                 })}
@@ -58,17 +49,11 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         );
     }
 
-    const [firstEntry] = transaction.entries;
-    const { mccCategory } = firstEntry;
-    const showMccChip = isDefined(mccCategory) && isDefined(firstEntry.category);
     const badgeTestID = isAdjustment ? TransactionCardSelector.AdjustmentBadge : TransactionCardSelector.Category(categoryLabel);
 
     return (
-        <View className="flex-row gap-xs">
-            <View className={wrapperClassName} testID={badgeTestID}>
-                <Text className={textClassName}>{categoryLabel}</Text>
-            </View>
-            {showMccChip && isDefined(mccCategory) ? <MccCategoryChip mccCategory={mccCategory} /> : null}
+        <View className={wrapperClassName} testID={badgeTestID}>
+            <Text className={textClassName}>{categoryLabel}</Text>
         </View>
     );
 };
