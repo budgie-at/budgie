@@ -7,9 +7,5 @@ export const getTransactionEntryLabel = (entry: TransactionEntryWithRelationsEnt
         return entry.category.title;
     }
 
-    if (isDefined(entry?.mccCategory?.shortDescription)) {
-        return entry.mccCategory.shortDescription;
-    }
-
     return unknownLabel;
 };
