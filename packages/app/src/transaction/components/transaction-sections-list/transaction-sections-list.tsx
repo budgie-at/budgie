@@ -7,12 +7,11 @@ import { ReactElement, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray } from '@rnw-community/shared';
 
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TRANSACTION_LIST_ESTIMATED_ITEM_SIZE } from '../../constant/transaction-list.constant';
 import { TransactionMenuStateInterface } from '../../interface/transaction-menu-state.interface';
@@ -95,21 +94,15 @@ export const TransactionSectionsList = ({
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => {
-            const firstEntry = transaction.entries.at(0);
-            const firstCategory = firstEntry?.category;
-            const resolvedCategoryTitle = isDefined(firstCategory) ? resolveCategoryTitle(firstCategory, t) : null;
-
-            return {
-                type: 'transaction' as const,
-                id: `transaction-${transaction.id}`,
-                data: {
-                    transaction,
-                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel, resolvedCategoryTitle)
-                }
-            };
-        })
+        ...transactions.map(transaction => ({
+            type: 'transaction' as const,
+            id: `transaction-${transaction.id}`,
+            data: {
+                transaction,
+                formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel, t)
+            }
+        }))
     ]);
 
     const isEmpty = isEmptyArray(flatData);

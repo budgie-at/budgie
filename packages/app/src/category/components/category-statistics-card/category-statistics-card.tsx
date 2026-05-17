@@ -51,9 +51,8 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
         });
     };
 
-    const visibleTitle = isDefined(category.id)
-        ? resolveCategoryTitle({ id: category.id, title: category.title, isDefault: category.isDefault }, t)
-        : category.title;
+    const resolvableCategory = isDefined(category.id) ? { id: category.id, title: category.title, isDefault: category.isDefault } : null;
+    const visibleTitle = resolveCategoryTitle(resolvableCategory, t) ?? category.title;
 
     return (
         <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
