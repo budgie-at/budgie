@@ -6,6 +6,7 @@ import {
     CategoryEntityInterface,
     ExternalSourceEnum,
     InstrumentEntityInterface,
+    LanguageEnum,
     LiabilityAccountCreateInputInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
@@ -39,12 +40,15 @@ export class ImporterService {
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
     private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
 
-    constructor(private readonly columnMap: ImporterColumnMapInterface) {}
+    constructor(
+        private readonly columnMap: ImporterColumnMapInterface,
+        private readonly language: LanguageEnum
+    ) {}
 
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);
+        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true, this.language);
         this.instrumentsMap = await this.initializeInstruments();
 
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);

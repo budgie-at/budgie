@@ -11,7 +11,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 
 import { SplitEntryRowSelector } from './split-entry-row.selector';
 
@@ -44,7 +43,7 @@ export const SplitEntryRow = (props: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
-    const categoryTitle = resolveCategoryTitle(category, t, t`Select category`);
+    const categoryTitle = isDefined(category) ? category.title : t`Select category`;
     const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
     return (
