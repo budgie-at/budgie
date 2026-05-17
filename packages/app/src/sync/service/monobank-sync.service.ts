@@ -146,9 +146,10 @@ class AppMonobankSyncService {
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();
         const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
+        const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? null : (sync.backwardSyncedAt ?? result.nextTo);
 
-        if (sync.mode === BankSyncModeEnum.FORWARD) {
-            if (result.completed) {
+        if (result.completed) {
+            if (sync.mode === BankSyncModeEnum.FORWARD) {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
                     status: BankSyncStatusEnum.IDLE,
@@ -158,28 +159,22 @@ class AppMonobankSyncService {
             } else {
                 await bankSyncRepository.update(sync.id, {
                     ...baseUpdate,
-                    forwardSyncFromAt: result.nextFrom
+                    mode: BankSyncModeEnum.FORWARD,
+                    status: BankSyncStatusEnum.IDLE,
+                    backwardSyncedAt: nextBackwardSyncedAt,
+                    backwardSyncFromAt: result.nextFrom
                 });
             }
-
-            return;
-        }
-
-        const nextBackwardSyncedAt = isNotEmptyArray(result.transactions) ? result.nextTo : sync.backwardSyncedAt;
-
-        if (result.completed) {
-            await bankSyncRepository.update(sync.id, {
-                ...baseUpdate,
-                mode: BankSyncModeEnum.FORWARD,
-                status: BankSyncStatusEnum.IDLE,
-                backwardSyncedAt: nextBackwardSyncedAt,
-                backwardSyncFromAt: result.nextFrom
-            });
-        } else {
+        } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
                 backwardSyncedAt: nextBackwardSyncedAt,
                 backwardSyncFromAt: result.nextTo
+            });
+        } else {
+            await bankSyncRepository.update(sync.id, {
+                ...baseUpdate,
+                forwardSyncFromAt: result.nextFrom
             });
         }
     }

@@ -48,17 +48,18 @@ export class BaseBankSyncService {
     }
 
     @Log(
-        (accountId, to, lastSeenFromAt) =>
-            `enter accountId=${accountId} to=${to.toISOString()} lastSeenFromAt=${lastSeenFromAt?.toISOString() ?? 'null'}`,
+        (accountId, to, firstEmptyFromInStreak) =>
+            `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'}`,
         result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, to, lastSeenFromAt) =>
-            `throw accountId=${accountId} to=${to.toISOString()} lastSeenFromAt=${lastSeenFromAt?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
+        (error, accountId, to, firstEmptyFromInStreak) =>
+            `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
-    async syncTransactionsBackward(accountId: string, to: Date, lastSeenFromAt: Date | null): Promise<BankSyncBatchResultInterface> {
+    async syncTransactionsBackward(
+        accountId: string,
+        to: Date,
+        firstEmptyFromInStreak: Date | null
+    ): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
-        const activityAnchor = lastSeenFromAt ?? new Date();
-        const oldestAllowedDate = addMonths(activityAnchor, -this.options.dormancyMonths);
-
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
 
@@ -71,11 +72,17 @@ export class BaseBankSyncService {
             };
         }
 
+        const hasTransactions = isDefined(oldestTransaction);
+        const reachedDormancyBoundary =
+            !hasTransactions &&
+            isDefined(firstEmptyFromInStreak) &&
+            from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
+
         return {
             nextTo: from,
             nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions,
-            completed: from <= oldestAllowedDate
+            completed: reachedDormancyBoundary
         };
     }
 
