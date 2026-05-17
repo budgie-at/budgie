@@ -2,8 +2,6 @@ import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts'
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import { Card } from '../../../@generic/component/card/card';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -22,7 +20,7 @@ interface Props {
 export const StatsByCategories = ({ title, stats, totalAmount, variant, filters, isIncome }: Props) => {
     const { t } = useLingui();
 
-    const renderStat = ({ category, amount, categoryTitle }: CategoryStatInterface) => {
+    const renderStat = ({ category, amount }: CategoryStatInterface) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
@@ -32,13 +30,11 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
             title: t`Uncategorized`,
             isDefault: false
         };
-        const resolvedTitle = isNotEmptyString(categoryTitle) ? categoryTitle : categoryData.title;
 
         return (
             <CategoryStatisticsCard
                 key={category?.id ?? 'uncategorized'}
                 category={categoryData}
-                title={resolvedTitle}
                 amount={amount}
                 percentage={percentage}
                 variant={variant}

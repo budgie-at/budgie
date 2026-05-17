@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, inArray, ne, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -201,8 +201,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
         return this.db
             .select({
-                category: CategoryEntityTable,
-                categoryTitle: categoryTitleSql.as('categoryTitle'),
+                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
                 amount: amountSql.as('amount')
             })
             .from(TransactionEntryEntityTable)
@@ -216,13 +215,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     eq(DefaultCategoryTranslationEntityTable.language, language)
                 )
             )
-            .where(
-                and(
-                    inArray(TransactionEntityTable.id, transactionIdsSubquery),
-                    this.buildLedgerEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
-                )
-            )
+            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), this.buildLedgerEntryCondition(), ne(AccountEntityTable.type, AccountTypeEnum.DEBT)))
             .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
             .orderBy(desc(amountSql));
     }
