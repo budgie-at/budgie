@@ -21,7 +21,7 @@ import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -46,8 +46,8 @@ export class ImporterService {
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
-    async process(csvText: string, totalRows: number, applyMccDefaultCategory: boolean): Promise<ImportProgressInterface> {
-        this.applyMccDefaultCategory = applyMccDefaultCategory;
+    async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
+        this.applyMccDefaultCategory = (await settingsRepository.getSettings()).applyMccDefaultCategory;
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
         [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);

@@ -1,4 +1,3 @@
 export const ImportScreenSelector = {
-    StartImportButton: 'CsvPage.StartImportButton',
-    ApplyMccDefaultSwitch: 'CsvPage.ApplyMccDefaultSwitch'
+    StartImportButton: 'CsvPage.StartImportButton'
 } as const;

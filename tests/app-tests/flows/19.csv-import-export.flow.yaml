@@ -155,9 +155,6 @@ appId: ${APP_ID}
     id: 'CsvPage.Preset.Budgie'
 
 - tapOn:
-    id: 'CsvPage.ApplyMccDefaultSwitch'
-
-- tapOn:
     id: 'CsvPage.StartImportButton'
 
 - tapOn:
