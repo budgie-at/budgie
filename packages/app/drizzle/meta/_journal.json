@@ -162,13 +162,6 @@
             "when": 1777597100000,
             "tag": "0022_default_category_translations",
             "breakpoints": true
-        },
-        {
-            "idx": 23,
-            "version": "6",
-            "when": 1777597200000,
-            "tag": "0023_renormalize_default_category_titles",
-            "breakpoints": true
         }
     ]
 }

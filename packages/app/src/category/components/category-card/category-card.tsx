@@ -1,10 +1,9 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { resolveCategoryTitle } from '../../utils/resolve-category-title.util';
 
 import { CategoryCardSelector } from './category-card.selector';
 
@@ -14,8 +13,6 @@ interface Props {
 }
 
 export const CategoryCard = ({ onOpen, category }: Props) => {
-    const { t } = useLingui();
-
     const handleOpen = () => void onOpen(category);
     const { isDefault } = category;
     const swipeLeftHint = isDefault ? null : (
@@ -32,7 +29,7 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
                     <CircleIcon icon={category.icon} variant="default" size={42} iconSize={20} />
                 </View>
             }
-            title={resolveCategoryTitle(category, t)}
+            title={category.title}
             right={swipeLeftHint}
             {...(!isDefault && { onPress: handleOpen })}
             className="flex-row gap-x-xl items-center"

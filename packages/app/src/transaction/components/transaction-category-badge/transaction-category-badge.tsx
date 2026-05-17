@@ -36,7 +36,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel, t);
+                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel);
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
