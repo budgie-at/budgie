@@ -1,9 +1,8 @@
 import { RuleActionTypeEnum, RuleActionWithRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { RuleActionPillContainer } from '../rule-action-pill-container/rule-action-pill-container';
 
 interface Props {
@@ -11,11 +10,10 @@ interface Props {
 }
 
 export const RuleActionPill = ({ action }: Props) => {
-    const { t } = useLingui();
     const { type, category, tag } = action;
 
     if (type === RuleActionTypeEnum.SET_CATEGORY && isDefined(category)) {
-        const categoryTitle = resolveCategoryTitle(category, t);
+        const categoryTitle = category.title;
 
         return (
             <RuleActionPillContainer icon={UserIconNameEnum.FolderOpen}>

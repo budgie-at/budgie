@@ -1,6 +1,5 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
-import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -49,7 +48,6 @@ export const TransactionSectionsList = ({
     footerSpacerMultiplier
 }: Props) => {
     const router = useRouter();
-    const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const { formatMonthAndDayWithTime } = useFormatDate();
     const { bottom } = useSafeAreaInsets();
@@ -100,7 +98,7 @@ export const TransactionSectionsList = ({
             data: {
                 transaction,
                 formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel, t)
+                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
             }
         }))
     ]);
