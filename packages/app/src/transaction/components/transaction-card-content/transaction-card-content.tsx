@@ -18,7 +18,7 @@ import { TransactionCategoryBadge } from '../transaction-category-badge/transact
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
-    readonly categoryLabel: string;
+    readonly categoryLabel: string | null;
 }
 
 export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel }: Props) => {

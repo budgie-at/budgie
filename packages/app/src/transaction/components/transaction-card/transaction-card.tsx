@@ -19,7 +19,7 @@ import { TransactionCardSelector } from './transaction-card.selector';
 export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
-    readonly categoryLabel: string;
+    readonly categoryLabel: string | null;
     readonly onPress?: (transaction: TransactionWithRelationsEntityInterface) => void;
     readonly onLongPress?: (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => void;
 }
