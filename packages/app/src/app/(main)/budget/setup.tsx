@@ -1,21 +1,15 @@
-import { BudgetPeriodEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../../budget/budget.selector';
 import { BudgetCategoryLimitsField } from '../../../budget/components/budget-category-limits-field/budget-category-limits-field';
@@ -25,100 +19,27 @@ import { BudgetPeriodStartDayField } from '../../../budget/components/budget-per
 import { BudgetPushEnabledField } from '../../../budget/components/budget-push-enabled-field/budget-push-enabled-field';
 import { BudgetUseLastDayField } from '../../../budget/components/budget-use-last-day-field/budget-use-last-day-field';
 import { BudgetWidgetEnabledField } from '../../../budget/components/budget-widget-enabled-field/budget-widget-enabled-field';
-import { BudgetFormSchema, BudgetFormValues } from '../../../budget/constant/budget-form-schema.constant';
-import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
-import { useGetBudgetCategoryLimitsQuery } from '../../../budget/query/use-get-budget-category-limits.query';
-import { budgetService } from '../../../budget/service/budget.service';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
+import { useBudgetForm } from '../../../budget/hooks/use-budget-form.hook';
 
-const DEFAULT_PERIOD_START_DAY = 1;
 const FORM_CONTENT_STYLE = { rowGap: 24 } as const;
 
 const handleCancel = () => void goBackOrReplace('/');
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function BudgetSetupScreen() {
     const { t } = useLingui();
     const { id } = useLocalSearchParams<{ id?: string }>();
     const editingId = isDefined(id) ? Number(id) : null;
-    const isEditing = isPositiveNumber(editingId);
 
-    const { budget, isLoading } = useGetActiveBudgetQuery();
-    const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(
-        isEditing && isDefined(budget) ? budget.id : null
-    );
-    const isWidgetEnabledSetting = useSetting('isBudgetWidgetEnabled');
-
-    const form = useForm<BudgetFormValues>({
-        mode: 'onChange',
-        resolver: zodResolver(BudgetFormSchema),
-        defaultValues: {
-            name: t`Monthly Budget`,
-            periodStartDay: DEFAULT_PERIOD_START_DAY,
-            useLastDayOfMonth: false,
-            overallLimit: 0,
-            categoryLimits: [],
-            pushEnabled: false,
-            isWidgetEnabled: true
-        }
-    });
-
-    useEffect(() => {
-        if (isEditing && isDefined(budget) && !isCategoryLimitsLoading) {
-            form.reset({
-                name: budget.name,
-                periodStartDay: budget.periodStartDay,
-                useLastDayOfMonth: budget.useLastDayOfMonth,
-                overallLimit: convertFromMicroUnits(budget.overallLimit),
-                categoryLimits: categoryLimits.map(limit => ({
-                    categoryId: limit.categoryId,
-                    limitAmount: convertFromMicroUnits(limit.limitAmount)
-                })),
-                pushEnabled: budget.pushEnabled,
-                isWidgetEnabled: isWidgetEnabledSetting
-            });
-        }
-    }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, isWidgetEnabledSetting, form]);
+    const { form, handleSubmit, isEditing, isLoading } = useBudgetForm({ editingId });
 
     const useLastDay = useWatch({ control: form.control, name: 'useLastDayOfMonth' });
     const { isValid } = form.formState;
 
-    if (isEditing && (isLoading || isCategoryLimitsLoading)) {
+    if (isLoading) {
         return <LoadingScreen />;
     }
 
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
-
-    const handleSubmit = form.handleSubmit(async values => {
-        try {
-            const payload = {
-                name: values.name,
-                period: BudgetPeriodEnum.MONTHLY,
-                periodStartDay: values.periodStartDay,
-                useLastDayOfMonth: values.useLastDayOfMonth,
-                overallLimit: convertToMicroUnits(values.overallLimit),
-                pushEnabled: values.pushEnabled,
-                categoryLimits: values.categoryLimits.map(limit => ({
-                    categoryId: limit.categoryId,
-                    limitAmount: convertToMicroUnits(limit.limitAmount)
-                }))
-            };
-
-            if (isEditing && isPositiveNumber(editingId)) {
-                await budgetService.updateBudget(editingId, payload);
-            } else {
-                await budgetService.createBudget(payload);
-            }
-
-            await updateSettingsMutation({ isBudgetWidgetEnabled: values.isWidgetEnabled });
-
-            goBackOrReplace('/');
-        } catch (error: unknown) {
-            const errorMessage = isEditing ? t`Could not save budget` : t`Could not create budget`;
-            Toast.show({ type: 'error', text1: errorMessage, text2: getErrorMessage(error) });
-        }
-    });
 
     const footer = (
         <View className="flex-row gap-x-md">
