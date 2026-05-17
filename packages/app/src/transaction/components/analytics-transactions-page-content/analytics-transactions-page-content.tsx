@@ -17,9 +17,6 @@ export const AnalyticsTransactionsPageContent = ({
 }: AnalyticsTransactionsPageContentPropsInterface) => {
     const { t } = useLingui();
 
-    const balanceAdjustmentLabel = t`Balance Adjustment`;
-    const categoriesLabel = t`Categories`;
-
     const listEmptyState = isLoading ? (
         <ActivityIndicator size="large" />
     ) : (
@@ -38,8 +35,8 @@ export const AnalyticsTransactionsPageContent = ({
                 sections={sections}
                 onEndReached={onLoadMore}
                 listEmptyState={listEmptyState}
-                balanceAdjustmentLabel={balanceAdjustmentLabel}
-                categoriesLabel={categoriesLabel}
+                balanceAdjustmentLabel={t`Balance Adjustment`}
+                categoriesLabel={t`Categories`}
                 footerSpacerMultiplier={0}
             />
         </Page>
