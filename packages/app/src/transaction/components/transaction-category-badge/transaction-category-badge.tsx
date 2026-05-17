@@ -6,6 +6,8 @@ import {
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -14,10 +16,10 @@ import { TransactionCardSelector } from '../transaction-card/transaction-card.se
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly categoryLabel: string;
+    readonly categoryLabel: string | null;
 }
 
-const wrapperClassName = 'rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
+const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
@@ -49,7 +51,11 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         );
     }
 
-    const badgeTestID = isAdjustment ? TransactionCardSelector.AdjustmentBadge : TransactionCardSelector.Category(categoryLabel);
+    if (!isAdjustment && !isDefined(categoryLabel)) {
+        return null;
+    }
+
+    const badgeTestID = isAdjustment ? TransactionCardSelector.AdjustmentBadge : TransactionCardSelector.Category(categoryLabel ?? '');
 
     return (
         <View className={wrapperClassName} testID={badgeTestID}>
