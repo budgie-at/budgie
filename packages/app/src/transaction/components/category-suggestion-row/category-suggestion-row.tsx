@@ -33,7 +33,7 @@ export const CategorySuggestionRow = (props: Props) => {
         onSelect(category.id);
     };
 
-    const getCategoryTitle = (category: CategoryEntityInterface): string => resolveCategoryTitle(category, t) ?? category.title;
+    const getCategoryTitle = (category: CategoryEntityInterface): string => resolveCategoryTitle(category, t);
 
     return (
         <IconTitleSuggestionRow

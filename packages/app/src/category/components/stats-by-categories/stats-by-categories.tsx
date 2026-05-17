@@ -24,6 +24,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, filters,
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
         const categoryData = category ?? {
+            id: 0,
             icon: UserIconNameEnum.BadgeQuestionMark,
             title: t`Uncategorized`,
             isDefault: false
