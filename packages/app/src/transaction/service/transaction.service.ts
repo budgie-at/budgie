@@ -1,6 +1,7 @@
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
+    LanguageEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionUpdatedByEnum,
@@ -81,7 +82,7 @@ class TransactionService {
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
     async deleteById(id: number): Promise<void> {
         await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.getById(id, tx);
+            const transaction = await transactionRepository.getById(id, LanguageEnum.EN, tx);
 
             if (isDefined(transaction?.consolidationType)) {
                 await unconsolidateByIdInTransaction(id, tx);
@@ -194,7 +195,7 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
         return await transactionAsync(db, async tx => {
-            const existingTransaction = await transactionRepository.getById(id, tx);
+            const existingTransaction = await transactionRepository.getById(id, LanguageEnum.EN, tx);
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
             const transaction = await transactionRepository.updateById(
                 id,

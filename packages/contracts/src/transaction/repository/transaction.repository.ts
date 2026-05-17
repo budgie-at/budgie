@@ -5,14 +5,14 @@ import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
-import { TRANSACTION_FULL_RELATIONS } from '../constant/transaction-relations.constant';
+import { buildTransactionFullRelations } from '../constant/transaction-relations.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -29,8 +29,6 @@ import type { TransactionUpdateInputInterface } from '../input/transaction-updat
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
-    private transactionRelations = TRANSACTION_FULL_RELATIONS;
-
     private entriesWithMccCategoryRelations = {
         [TransactionAssociationEnum.ENTRIES]: {
             with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
@@ -362,11 +360,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return transaction;
     }
 
-    getAll(limit = 20, filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
+    getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
         const where = this.buildWhere(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: this.transactionRelations,
+            with: buildTransactionFullRelations(language),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
             limit,
             ...(isDefined(where) ? { where } : {})
@@ -410,10 +408,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    getById(id: number, tx?: DB) {
+    getById(id: number, language: LanguageEnum, tx?: DB) {
         return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
-            with: this.transactionRelations
+            with: buildTransactionFullRelations(language)
         });
     }
 
@@ -569,10 +567,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
-    async findTransfersByAccountId(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersByAccountId(accountId: number, language: LanguageEnum, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
-            with: this.transactionRelations
+            with: buildTransactionFullRelations(language)
         });
     }
 

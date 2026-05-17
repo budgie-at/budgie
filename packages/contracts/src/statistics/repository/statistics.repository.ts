@@ -4,6 +4,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -26,34 +27,32 @@ import { StatisticsFilterInterface } from '../interface/statistics-filter.interf
 /* eslint-disable max-lines -- StatisticsRepository owns multiple cohesive SQL aggregation pipelines (income/expense × category/tag) that share private helpers; splitting would fragment a single logical SQL surface. */
 
 export class StatisticsRepository extends BaseTransactionFilterRepository {
-    /* jscpd:ignore-start */
-    private transactionRelations = {
-        [TransactionAssociationEnum.ENTRIES]: {
-            with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: {
-                    with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true
-                    }
-                },
-                [TransactionEntryAssociationEnum.CATEGORY]: true,
-                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-            }
-        },
-        [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-            with: {
-                [TransactionTagsAssociationEnum.TAG]: true
-            }
-        },
-        [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-        [TransactionAssociationEnum.TO_ACCOUNT]: true
-    } as const;
-    /* jscpd:ignore-end */
-
-    getTransactions(filters: StatisticsFilterInterface, limit: number) {
+    getTransactions(filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) {
         const transactionIds = this.buildStatisticsTransactionIdsQuery(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: this.transactionRelations,
+            /* jscpd:ignore-start */
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.ACCOUNT]: {
+                            with: {
+                                [AccountAssociationEnum.INSTRUMENT]: true
+                            }
+                        },
+                        [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
+                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                    }
+                },
+                [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+                    with: {
+                        [TransactionTagsAssociationEnum.TAG]: true
+                    }
+                },
+                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+                [TransactionAssociationEnum.TO_ACCOUNT]: true
+            },
+            /* jscpd:ignore-end */
             where: inArray(TransactionEntityTable.id, transactionIds),
             orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
             limit
