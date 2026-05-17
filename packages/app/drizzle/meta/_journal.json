@@ -155,13 +155,6 @@
             "when": 1777597000000,
             "tag": "0021_add_updated_by",
             "breakpoints": true
-        },
-        {
-            "idx": 22,
-            "version": "6",
-            "when": 1779724800000,
-            "tag": "0022_default_screenshot_protection_off",
-            "breakpoints": true
         }
     ]
 }
