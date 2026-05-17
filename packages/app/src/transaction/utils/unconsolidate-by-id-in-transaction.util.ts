@@ -1,4 +1,4 @@
-import { LanguageEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -7,7 +7,7 @@ import { transactionEntryRepository, transactionRepository, transactionTagsRepos
 import type { DB } from '@budgie/contracts';
 
 export const unconsolidateByIdInTransaction = async (transactionId: number, tx: DB): Promise<void> => {
-    const canonical = await transactionRepository.getById(transactionId, LanguageEnum.EN, tx);
+    const canonical = await transactionRepository.getByIdRaw(transactionId, tx);
     const isRefundCanonical = isDefined(canonical) && canonical.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     await transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
