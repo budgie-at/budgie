@@ -1463,6 +1463,14 @@
                     "notNull": true,
                     "autoincrement": false,
                     "default": false
+                },
+                "apply_mcc_default_category": {
+                    "name": "apply_mcc_default_category",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": true
                 }
             },
             "indexes": {},
@@ -1888,6 +1896,14 @@
                     "primaryKey": false,
                     "notNull": false,
                     "autoincrement": false
+                },
+                "category_source": {
+                    "name": "category_source",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'USER'"
                 },
                 "transaction_id": {
                     "name": "transaction_id",
