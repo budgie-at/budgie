@@ -415,6 +415,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
+    getByIdRaw(id: number, tx?: DB) {
+        return (tx ?? this.db).query.TransactionEntityTable.findFirst({
+            where: eq(TransactionEntityTable.id, id)
+        });
+    }
+
     async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         if (isNotEmptyArray(ids)) {
             return await (tx ?? this.db).query.TransactionEntityTable.findMany({
