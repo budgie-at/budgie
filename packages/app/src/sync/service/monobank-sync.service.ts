@@ -161,7 +161,7 @@ class AppMonobankSyncService {
                     ...baseUpdate,
                     mode: BankSyncModeEnum.FORWARD,
                     status: BankSyncStatusEnum.IDLE,
-                    backwardSyncedAt: nextBackwardSyncedAt,
+                    backwardSyncedAt: result.nextTo,
                     backwardSyncFromAt: result.nextFrom
                 });
             }

@@ -1,7 +1,7 @@
 import { Log } from '@budgie/logger';
 import { addMonths, addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
@@ -72,9 +72,8 @@ export class BaseBankSyncService {
             };
         }
 
-        const hasTransactions = isDefined(oldestTransaction);
         const reachedDormancyBoundary =
-            !hasTransactions &&
+            isEmptyArray(transactions) &&
             isDefined(firstEmptyFromInStreak) &&
             from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
 
