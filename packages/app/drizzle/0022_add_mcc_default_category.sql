@@ -1,5 +1,7 @@
 ALTER TABLE `mcc_categories` ADD `default_category_id` integer REFERENCES categories(id) ON DELETE SET NULL;
 --> statement-breakpoint
+ALTER TABLE `transaction_entries` ADD `category_source` text DEFAULT 'USER' NOT NULL;
+--> statement-breakpoint
 UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categories` WHERE `title` = 'Pets' AND `is_default` = 1 AND `is_system_category` = 0) WHERE `mcc` = '0742';
 --> statement-breakpoint
 UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categories` WHERE `title` = 'Housing & Utilities' AND `is_default` = 1 AND `is_system_category` = 0) WHERE `mcc` = '1520';
