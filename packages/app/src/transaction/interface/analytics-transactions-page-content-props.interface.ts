@@ -1,8 +1,8 @@
+import type { TransactionFilterPageHeaderPropsInterface } from './transaction-filter-page-header-props.interface';
 import type { TransactionsByMonthSection } from './transactions-by-month-section.type';
-import type { ReactElement } from 'react';
 
 export interface AnalyticsTransactionsPageContentPropsInterface {
-    readonly header: ReactElement;
+    readonly headerProps: TransactionFilterPageHeaderPropsInterface;
     readonly sections: TransactionsByMonthSection[];
     readonly isLoading: boolean;
     readonly onLoadMore: () => void;

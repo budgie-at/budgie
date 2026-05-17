@@ -3,15 +3,15 @@ import { useRouter } from 'expo-router';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetUncategorizedTransactionsQuery } from '../../query/use-get-uncategorized-transactions.query';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
-import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
 import type { UncategorizedAnalyticsTransactionsPagePropsInterface } from '../../interface/uncategorized-analytics-transactions-page-props.interface';
 
 const buildTypes = (params: UncategorizedAnalyticsTransactionsPagePropsInterface['params']): TransactionTypeEnum[] => {
     if (isNotEmptyArray(params.types)) {
-        return [...params.types];
+        return params.types;
     }
 
     if (isDefined(params.type)) {
@@ -21,9 +21,9 @@ const buildTypes = (params: UncategorizedAnalyticsTransactionsPagePropsInterface
     return [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
 };
 
-const buildFilterIds = (values?: readonly number[]): number[] | null => {
+const buildFilterIds = (values?: number[]): number[] | null => {
     if (isNotEmptyArray(values)) {
-        return [...values];
+        return values;
     }
 
     return null;
@@ -47,18 +47,15 @@ export const UncategorizedAnalyticsTransactionsPage = ({ params }: Uncategorized
 
     const handleGoBack = () => void router.back();
 
-    const headerTypes = filters.types ?? [];
+    const selectedType = filters.types?.length === 1 ? filters.types[0] : params.type;
+    const headerProps = {
+        mode: TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES,
+        type: selectedType,
+        types: filters.types,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        onGoBack: handleGoBack
+    };
 
-    const header = (
-        <TransactionFilterPageHeader
-            isMissingCategories
-            type={params.type}
-            types={headerTypes}
-            startDate={params.startDate}
-            endDate={params.endDate}
-            onGoBack={handleGoBack}
-        />
-    );
-
-    return <AnalyticsTransactionsPageContent header={header} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
+    return <AnalyticsTransactionsPageContent headerProps={headerProps} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
 };

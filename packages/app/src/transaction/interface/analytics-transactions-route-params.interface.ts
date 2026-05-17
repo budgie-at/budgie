@@ -8,7 +8,7 @@ export interface AnalyticsTransactionsRouteParamsInterface {
     readonly categoryId?: string;
     readonly tagId?: string;
     readonly type?: TransactionTypeEnum;
-    readonly types?: readonly TransactionTypeEnum[];
-    readonly accountIds?: readonly number[];
-    readonly tagIds?: readonly number[];
+    readonly types?: TransactionTypeEnum[];
+    readonly accountIds?: number[];
+    readonly tagIds?: number[];
 }
