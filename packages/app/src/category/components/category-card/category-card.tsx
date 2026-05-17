@@ -17,7 +17,6 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
     const { t } = useLingui();
 
     const handleOpen = () => void onOpen(category);
-    const visibleTitle = resolveCategoryTitle(category, t);
     const { isDefault } = category;
     const swipeLeftHint = isDefault ? null : (
         <Text className="text-secondary-foreground font-medium text-xs ml-auto">
@@ -33,7 +32,7 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
                     <CircleIcon icon={category.icon} variant="default" size={42} iconSize={20} />
                 </View>
             }
-            title={visibleTitle}
+            title={resolveCategoryTitle(category, t)}
             right={swipeLeftHint}
             {...(!isDefault && { onPress: handleOpen })}
             className="flex-row gap-x-xl items-center"

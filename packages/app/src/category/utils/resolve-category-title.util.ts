@@ -7,9 +7,12 @@ import type { MessageDescriptor } from '@lingui/core';
 
 type ResolvableCategory = Pick<CategoryEntityInterface, 'id' | 'title' | 'isDefault'>;
 
-export const resolveCategoryTitle = (category: ResolvableCategory, t: (descriptor: MessageDescriptor) => string): string => {
-    if (!category.isDefault) {
-        return category.title;
+export const resolveCategoryTitle = (
+    category: ResolvableCategory | null | undefined,
+    t: (descriptor: MessageDescriptor) => string
+): string | undefined => {
+    if (!isDefined(category) || !category.isDefault) {
+        return category?.title;
     }
     const descriptor = DEFAULT_CATEGORY_TITLE[category.id];
 
