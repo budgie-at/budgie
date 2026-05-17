@@ -1,14 +1,15 @@
-import { TransactionFilterInterface } from '@budgie/contracts';
+import { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
-export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface) => {
+export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface, language: LanguageEnum) => {
     const { defaultInstrument } = useSettingsContext();
-    const { data } = useLiveQuery(statisticsRepository.getIncomeByCategoryQuery(filters, defaultInstrument.id), [
+    const { data } = useLiveQuery(statisticsRepository.getIncomeByCategoryQuery(filters, defaultInstrument.id, language), [
         filters,
-        defaultInstrument.id
+        defaultInstrument.id,
+        language
     ]);
 
     return { incomeByCategory: data };
