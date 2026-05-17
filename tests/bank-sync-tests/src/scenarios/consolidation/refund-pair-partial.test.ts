@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { DEFAULT_TRANSACTION_FILTER, PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    DEFAULT_TRANSACTION_FILTER,
+    LanguageEnum,
+    PRECISION,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
 import { computeRefundedSummary } from '@app/transaction/utils/compute-refunded-summary.util';
 
@@ -41,7 +47,9 @@ describe('consolidation/refund-pair-partial', () => {
         expect(totals?.income).toBe(0);
         expect(totals?.expense).toBe(80 * PRECISION);
 
-        const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const categoryRows = statisticsRepository
+            .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId, LanguageEnum.EN)
+            .all();
         const categoryRow = categoryRows.find(row => row.category?.id === category.id);
         expect(categoryRow?.amount).toBe(80 * PRECISION);
     });
