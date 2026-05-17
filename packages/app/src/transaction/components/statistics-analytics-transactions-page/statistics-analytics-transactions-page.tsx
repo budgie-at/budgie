@@ -5,9 +5,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
+import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
-import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 import type { StatisticsAnalyticsTransactionsPagePropsInterface } from '../../interface/statistics-analytics-transactions-page-props.interface';
@@ -54,6 +54,19 @@ const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): Statis
     tagIds: buildTagIds(params)
 });
 
+const getHeaderMode = (params: AnalyticsTransactionsRouteParamsInterface): TransactionFilterPageHeaderModeEnum | null => {
+    if (isUntaggedNav(params)) {
+        return TransactionFilterPageHeaderModeEnum.UNTAGGED;
+    }
+
+    const isUncategorized = !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
+    if (isUncategorized) {
+        return TransactionFilterPageHeaderModeEnum.UNCATEGORIZED;
+    }
+
+    return null;
+};
+
 export const StatisticsAnalyticsTransactionsPage = ({ params }: StatisticsAnalyticsTransactionsPagePropsInterface) => {
     const router = useRouter();
     const filters = buildFilters(params);
@@ -65,22 +78,16 @@ export const StatisticsAnalyticsTransactionsPage = ({ params }: StatisticsAnalyt
 
     const handleGoBack = () => void router.back();
 
-    const isUntagged = isUntaggedNav(params);
-    const isUncategorized = !isUntagged && !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
     const selectedTag = tags?.[0] ?? null;
+    const headerProps = {
+        category,
+        tag: selectedTag,
+        type: params.type,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        mode: getHeaderMode(params),
+        onGoBack: handleGoBack
+    };
 
-    const header = (
-        <TransactionFilterPageHeader
-            category={category}
-            tag={selectedTag}
-            type={params.type}
-            startDate={params.startDate}
-            endDate={params.endDate}
-            isUncategorized={isUncategorized}
-            isUntagged={isUntagged}
-            onGoBack={handleGoBack}
-        />
-    );
-
-    return <AnalyticsTransactionsPageContent header={header} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
+    return <AnalyticsTransactionsPageContent headerProps={headerProps} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
 };

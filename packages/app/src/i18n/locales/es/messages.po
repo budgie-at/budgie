@@ -35,14 +35,14 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:33
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# categoría sin asignar} other {# categorías sin asignar}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} transacciones existentes coinciden con esta regla."
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:18
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing categories"
-msgstr "{count} categorías sin asignar"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -103,11 +103,6 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/rule/components/rules-list-page/rules-list-page.tsx:40
 msgid "1 matching rule"
 msgstr "1 regla coincidente"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:18
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "1 missing category"
-msgstr "1 categoría sin asignar"
 
 #: src/app/(tabs)/settings/index.tsx:69
 msgid "100% Offline & Private"
@@ -347,8 +342,8 @@ msgstr "Columnas disponibles"
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:19
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
@@ -430,9 +425,9 @@ msgstr "Efectivo"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
 #: src/app/(tabs)/settings/categories.tsx:85
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:21
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
 msgstr "Categorías"
 
@@ -1116,7 +1111,7 @@ msgstr "Fecha de devolución esperada (Opcional)"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:46
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:59
 msgid "Expenses"
 msgstr "Gastos"
 
@@ -1300,12 +1295,12 @@ msgstr "Incluir en patrimonio neto"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:55
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:38
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:51
 msgid "Income and expenses"
 msgstr "Ingresos y gastos"
 
@@ -1478,7 +1473,7 @@ msgstr "Fusionar con otra categoría"
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:28
 msgid "Missing categories"
 msgstr "Categorías sin asignar"
 
@@ -1599,8 +1594,8 @@ msgstr "No hay elementos para guardar"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:28
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
@@ -1650,7 +1645,7 @@ msgstr "Ninguna etiqueta coincide con tu búsqueda"
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
@@ -2311,7 +2306,7 @@ msgstr "Iniciar importación"
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:43
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
@@ -2523,7 +2518,7 @@ msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:49
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:62
 msgid "Transactions"
 msgstr "Transacciones"
 
@@ -2583,8 +2578,8 @@ msgstr "Prueba con un término de búsqueda diferente"
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:29
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:30
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
@@ -2608,7 +2603,7 @@ msgid "Ukrainian"
 msgstr "Ucraniano"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:32
 msgid "Uncategorized"
 msgstr "Sin categoría"
 
@@ -2632,7 +2627,7 @@ msgid "Unknown"
 msgstr "Desconocido"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Untagged"
 msgstr "Sin etiqueta"
 

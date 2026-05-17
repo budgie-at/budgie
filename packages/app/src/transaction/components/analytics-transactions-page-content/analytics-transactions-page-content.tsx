@@ -5,11 +5,12 @@ import { ActivityIndicator } from 'react-native';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { Page } from '../../../@generic/component/page/page';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
+import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
 import type { AnalyticsTransactionsPageContentPropsInterface } from '../../interface/analytics-transactions-page-content-props.interface';
 
 export const AnalyticsTransactionsPageContent = ({
-    header,
+    headerProps,
     sections,
     isLoading,
     onLoadMore
@@ -32,7 +33,7 @@ export const AnalyticsTransactionsPageContent = ({
     );
 
     return (
-        <Page header={header}>
+        <Page header={<TransactionFilterPageHeader {...headerProps} />}>
             <TransactionSectionsList
                 sections={sections}
                 onEndReached={onLoadMore}

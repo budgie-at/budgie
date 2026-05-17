@@ -6,13 +6,12 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 
 import type { TransactionFilterPageHeaderPropsInterface } from '../../interface/transaction-filter-page-header-props.interface';
 
 export const TransactionFilterPageHeader = ({
-    isMissingCategories,
-    isUncategorized,
-    isUntagged,
+    mode,
     category,
     tag,
     type,
@@ -25,11 +24,11 @@ export const TransactionFilterPageHeader = ({
     const { formatMonthAndDay } = useFormatDate();
 
     const getCategoryName = () => {
-        if (isMissingCategories) {
+        if (mode === TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES) {
             return t`Missing categories`;
         }
 
-        if (isUncategorized) {
+        if (mode === TransactionFilterPageHeaderModeEnum.UNCATEGORIZED) {
             return t`Uncategorized`;
         }
 
@@ -37,9 +36,10 @@ export const TransactionFilterPageHeader = ({
     };
 
     const categoryName = getCategoryName();
-    const tagName = isUntagged ? t`Untagged` : tag?.title;
+    const tagName = mode === TransactionFilterPageHeaderModeEnum.UNTAGGED ? t`Untagged` : tag?.title;
     const filterName = categoryName ?? tagName;
     const hasBothTypes = types?.includes(TransactionTypeEnum.INCOME) === true && types.includes(TransactionTypeEnum.EXPENSE);
+    const hasMissingCategories = mode === TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES;
 
     const periodText =
         isDefined(startDate) && isDefined(endDate)
@@ -65,7 +65,7 @@ export const TransactionFilterPageHeader = ({
     const title = filterName ?? getTypeText();
 
     const getSubtitle = () => {
-        if (isMissingCategories && hasBothTypes) {
+        if (hasMissingCategories && hasBothTypes) {
             return getTypeText();
         }
 
