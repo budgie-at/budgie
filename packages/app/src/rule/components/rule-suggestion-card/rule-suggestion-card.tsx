@@ -17,7 +17,7 @@ import { RuleConditionInputInterface } from '../../interface/rule-condition-inpu
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
-import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
+import { selectSuggestConditions } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 const serializeCondition = (condition: RuleConditionInputInterface): string =>
@@ -47,9 +47,9 @@ const findDuplicateRule = (
     );
 
 const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
-    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
+    const conditions = selectSuggestConditions(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
 
-    if (!isDefined(condition)) {
+    if (!isDefined(conditions)) {
         return null;
     }
 
@@ -67,7 +67,7 @@ const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCr
     return {
         enabled: true,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        conditions: [condition],
+        conditions,
         actions: [...categoryAction, ...tagActions]
     };
 };
