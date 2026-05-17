@@ -1,5 +1,5 @@
 import { BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -18,6 +18,8 @@ export const mapBankTransactionToCreateInput = (
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
     const exchangeRate = isPositiveNumber(operationAmount) && amount !== operationAmount ? amount / operationAmount : 1;
+    const hasMccDefault = isPositiveNumber(mccCategoryLookup?.defaultCategoryId);
+    const categorySource = hasMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
 
     return {
         amount,
@@ -38,6 +40,7 @@ export const mapBankTransactionToCreateInput = (
                 type: entryType,
                 amount,
                 categoryId: mccCategoryLookup?.defaultCategoryId ?? null,
+                categorySource,
                 mccCategoryId: mccCategoryLookup?.id ?? null,
                 externalId: bankTransaction.id,
                 exchangeRate,

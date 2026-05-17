@@ -6,6 +6,7 @@ export type TransactionEntryUpdateInputInterface = Partial<
         | 'transactionId'
         | 'accountId'
         | 'categoryId'
+        | 'categorySource'
         | 'mccCategoryId'
         | 'type'
         | 'amount'

@@ -2102,3 +2102,9 @@ UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categorie
 UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categories` WHERE `title` = 'Car & Fuel' AND `is_default` = 1 AND `is_system_category` = 0) WHERE `mcc` = '9752';
 --> statement-breakpoint
 UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categories` WHERE `title` = 'Entertainment' AND `is_default` = 1 AND `is_system_category` = 0) WHERE `mcc` = '9754';
+
+--> statement-breakpoint
+ALTER TABLE `settings` ADD `apply_mcc_default_category` integer DEFAULT true NOT NULL;
+
+--> statement-breakpoint
+ALTER TABLE `transaction_entries` ADD `category_source` text DEFAULT 'USER' NOT NULL;

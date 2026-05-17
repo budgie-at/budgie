@@ -1,10 +1,16 @@
 /* eslint-disable no-await-in-loop */
-import { BankSyncModeEnum, ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
+import {
+    BankSyncModeEnum,
+    ExternalSourceEnum,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    transactionAsync
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, db, settingsRepository } from '../../@generic/drizzle/db/db';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -95,14 +101,14 @@ export abstract class BaseFileBankSyncService {
     ): Promise<void> {
         const account = await getOrCreateBankAccount(bankAccount, this.provider, context.tx);
         await this.createBankSyncRecord(account.id, context.tx);
-        const bankSync = await bankSyncRepository.getByAccountId(account.id, context.tx);
 
         const transactions = client.getTransactions(bankAccount.id);
         if (!isNotEmptyArray(transactions)) {
             return;
         }
 
-        const applyMccDefault = isDefined(bankSync) ? bankSync.applyMccDefaultCategory : true;
+        const settings = await settingsRepository.getSettings();
+        const applyMccDefault = settings.applyMccDefaultCategory;
 
         const transactionInputs = transactions.map(transaction => {
             const rawLookup = isNotEmptyString(transaction.category)
@@ -122,14 +128,7 @@ export abstract class BaseFileBankSyncService {
             }
         );
 
-        const newInputs = transactionInputs.filter(
-            input => !isDefined(input.externalId) || !context.existingTransactionIdMap.has(input.externalId)
-        );
-        const newTransactionIds = upsertedTransactions
-            .filter(transaction => !isDefined(transaction.externalId) || !context.existingTransactionIdMap.has(transaction.externalId))
-            .map(transaction => transaction.id);
-
-        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
+        this.queueRulesForNewlyImportedTransactions(transactionInputs, upsertedTransactions, context.existingTransactionIdMap);
     }
 
     @Log(
@@ -183,6 +182,20 @@ export abstract class BaseFileBankSyncService {
             },
             tx
         );
+    }
+
+    private queueRulesForNewlyImportedTransactions(
+        transactionInputs: TransactionCreateInputInterface[],
+        upsertedTransactions: TransactionEntityInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ): void {
+        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
+            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
+
+        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
+        const newTransactionIds = upsertedTransactions.filter(wasNotPreviouslyImported).map(transaction => transaction.id);
+
+        ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
     }
 
     protected abstract parseFile(uri: string): Promise<ParsedFileResultInterface>;

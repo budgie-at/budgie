@@ -259,6 +259,7 @@ export { isTransferTransaction } from './transaction/type-guard/is-transfer-tran
 export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-negative-adjustment-transaction.type-guard';
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
+export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
