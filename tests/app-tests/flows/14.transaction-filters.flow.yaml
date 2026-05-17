@@ -37,6 +37,48 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionFilters.TypeApplyButton'
 
+- tapOn:
+    id: 'TransactionFilters.TypeChip'
+- tapOn:
+    id: 'TransactionFilters.TypeOption.INCOME'
+- tapOn:
+    id: 'TransactionFilters.TypeApplyButton'
+
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Expense'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Transfer'
+- extendedWaitUntil:
+    visible:
+      id: 'UncategorizedTransactionsPill.Button'
+    timeout: 5000
+- assertVisible: '1 missing category'
+- tapOn:
+    id: 'UncategorizedTransactionsPill.Button'
+- extendedWaitUntil:
+    visible: 'Missing categories'
+    timeout: 5000
+- assertVisible: 'Income'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Uncategorized_Income'
+- assertNotVisible:
+    id: 'TransactionCard.Label.E2E_Filter_Income'
+- tapOn:
+    id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Filter_Income'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionFilters.TypeChip'
+- tapOn:
+    id: 'TransactionFilters.TypeOption.INCOME'
+- tapOn:
+    id: 'TransactionFilters.TypeApplyButton'
+
 - swipe:
     from:
       id: 'TransactionFilters.DateChip'
