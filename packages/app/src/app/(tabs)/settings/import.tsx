@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -12,7 +12,6 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import {
     accountBalanceRepository,
     accountRepository,
@@ -50,7 +49,6 @@ export default function ImportScreen() {
     const [rowCount, setRowCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
-    const [applyMccDefault, setApplyMccDefault] = useState(true);
 
     const headersSet = new Set(headers);
 
@@ -136,7 +134,7 @@ export default function ImportScreen() {
             await transactionRepository.truncate();
             await accountBalanceRepository.truncate();
 
-            await importer.process(csvText, rowCount, applyMccDefault);
+            await importer.process(csvText, rowCount);
 
             await accountBalanceIncrementalService.updateAllBalances(true);
 
@@ -252,16 +250,6 @@ export default function ImportScreen() {
                     selectedHeaders={selectedHeaders}
                 />
                 <ImportColumnMapField control={control} name="mcc" label={t`MCC`} headers={headers} selectedHeaders={selectedHeaders} />
-                <View className="flex-row items-center justify-between py-md">
-                    <Text className="text-primary text-base">
-                        <Trans>Auto-assign categories from MCC</Trans>
-                    </Text>
-                    <ThemedSwitch
-                        value={applyMccDefault}
-                        onValueChange={setApplyMccDefault}
-                        testID={ImportScreenSelector.ApplyMccDefaultSwitch}
-                    />
-                </View>
             </ScrollView>
 
             <View className="pt-xl pb-xl flex-row gap-x-md">
