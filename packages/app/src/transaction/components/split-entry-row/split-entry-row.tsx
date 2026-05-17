@@ -44,7 +44,7 @@ export const SplitEntryRow = (props: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
-    const categoryTitle = hasCategorySelected && isDefined(category) ? resolveCategoryTitle(category, t) : t`Select category`;
+    const categoryTitle = resolveCategoryTitle(category, t, t`Select category`);
     const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
     return (

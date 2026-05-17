@@ -11,9 +11,8 @@ export const getTransactionEntryLabel = (
     unknownLabel: string,
     t: (descriptor: MessageDescriptor) => string
 ): string => {
-    const resolvedCategoryTitle = resolveCategoryTitle(entry?.category, t);
-    if (isDefined(resolvedCategoryTitle)) {
-        return resolvedCategoryTitle;
+    if (isDefined(entry?.category)) {
+        return resolveCategoryTitle(entry.category, t);
     }
 
     if (isDefined(entry?.mccCategory?.shortDescription)) {
