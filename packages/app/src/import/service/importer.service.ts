@@ -4,6 +4,7 @@ import {
     AccountTypeEnum,
     CategoryCreateEntityInterface,
     CategoryEntityInterface,
+    CategorySourceEnum,
     ExternalSourceEnum,
     InstrumentEntityInterface,
     LiabilityAccountCreateInputInterface,
@@ -149,6 +150,7 @@ export class ImporterService {
                 ? mccLookup.defaultCategoryId
                 : null;
         const resolvedCategoryId = mccDefaultCategoryId ?? category.id;
+        const categorySource = isDefined(mccDefaultCategoryId) ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
 
         const source: EntryParamsInterface = {
             account: isDefined(fromAccount) ? fromAccount : toAccount,
@@ -180,6 +182,7 @@ export class ImporterService {
             entries: this.createEntries({
                 type,
                 categoryId: resolvedCategoryId,
+                categorySource,
                 source,
                 dest,
                 externalId: normalizedRow.externalId,
@@ -203,6 +206,7 @@ export class ImporterService {
     private createEntries({
         type,
         categoryId,
+        categorySource,
         source,
         dest,
         externalId,
@@ -217,6 +221,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 }
@@ -228,6 +233,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 }
@@ -239,6 +245,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 },
@@ -247,6 +254,7 @@ export class ImporterService {
                     amount: Math.abs(dest.amount),
                     accountId: dest.account.id,
                     categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 }

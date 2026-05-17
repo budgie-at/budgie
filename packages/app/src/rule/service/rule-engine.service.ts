@@ -1,6 +1,7 @@
 /* eslint-disable max-lines, no-await-in-loop -- max-lines absorbs convert-transaction-to-transfer logic (approved during pr-322-rules SOTA); no-await-in-loop covers chunked microPause yields that keep the JS thread responsive during foreground sync (approved 2026-05-17 for issue #440) */
 import {
     AccountTypeEnum,
+    CategorySourceEnum,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
     TransactionEntryTypeEnum,
@@ -264,7 +265,9 @@ class RuleEngineService {
             return input;
         }
 
-        const entries = hasCategoryAction ? input.entries.map(entry => ({ ...entry, categoryId })) : input.entries;
+        const entries = hasCategoryAction
+            ? input.entries.map(entry => ({ ...entry, categoryId, categorySource: CategorySourceEnum.RULE }))
+            : input.entries;
 
         return {
             ...input,
@@ -385,7 +388,12 @@ class RuleEngineService {
         }
 
         appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
-        await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, transaction);
+        await transactionEntryRepository.updateCategoryByTransactionId(
+            transactionId,
+            action.categoryId,
+            CategorySourceEnum.RULE,
+            transaction
+        );
         await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
@@ -472,6 +480,7 @@ class RuleEngineService {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: originalEntry.amount,
                     categoryId: originalEntry.categoryId,
+                    categorySource: originalEntry.categorySource,
                     mccCategoryId: originalEntry.mccCategoryId,
                     externalId: null
                 },
@@ -481,6 +490,7 @@ class RuleEngineService {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: convertedAmount,
                     categoryId: originalEntry.categoryId,
+                    categorySource: originalEntry.categorySource,
                     mccCategoryId: null,
                     externalId: null
                 }

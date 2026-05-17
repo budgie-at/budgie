@@ -1,6 +1,6 @@
 import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transaction-to-create-input.util';
 import { BankProviderEnum, BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { ExternalSourceEnum, MCC_DEFAULT_CATEGORY_SEED } from '@budgie/contracts';
+import { CategorySourceEnum, ExternalSourceEnum, MCC_DEFAULT_CATEGORY_SEED } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import type { BankTransactionInterface } from '@budgie/bank-sync';
@@ -40,6 +40,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, PROVIDER);
 
         expect(result.entries[0].categoryId).toBe(42);
+        expect(result.entries[0].categorySource).toBe(CategorySourceEnum.MCC_DEFAULT);
         expect(result.entries[0].mccCategoryId).toBe(999);
     });
 
@@ -50,6 +51,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, PROVIDER);
 
         expect(result.entries[0].categoryId).toBeNull();
+        expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
         expect(result.entries[0].mccCategoryId).toBe(999);
     });
 
@@ -59,6 +61,7 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, null, PROVIDER);
 
         expect(result.entries[0].categoryId).toBeNull();
+        expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
         expect(result.entries[0].mccCategoryId).toBeNull();
     });
 });

@@ -1,4 +1,4 @@
-import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { BankSyncModeEnum, BankSyncStatusEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
@@ -15,8 +14,6 @@ import { buildBankSyncStatusLabel } from '../../utils/build-bank-sync-status-lab
 import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token-section';
 import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
-
-import { AccountBankSyncCardSelector } from './account-bank-sync-card.selector';
 
 import type { AccountBankSyncCardPropsInterface } from '../../interface/account-bank-sync-card-props.interface';
 
@@ -46,14 +43,6 @@ export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInter
     const handleToggle = (enabled: boolean) => {
         void monobankSyncService.setAccountSyncEnabled(accountId, enabled);
     };
-
-    const handleToggleMccDefault = (value: boolean) => {
-        void bankSyncRepository.update(bankSync.id, { applyMccDefaultCategory: value });
-    };
-
-    const supportsMccDefault = [ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK, ExternalSourceEnum.ERSTE].includes(
-        bankSync.provider
-    );
 
     return (
         <Card className="p-4xl gap-y-lg">
@@ -98,19 +87,6 @@ export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInter
                 )}
 
                 <BankSyncTokenSection accountId={accountId} token={bankSync.token} />
-
-                {supportsMccDefault && (
-                    <View className="flex-row items-center justify-between">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Auto-assign categories from MCC</Trans>
-                        </Text>
-                        <ThemedSwitch
-                            value={bankSync.applyMccDefaultCategory}
-                            onValueChange={handleToggleMccDefault}
-                            testID={AccountBankSyncCardSelector.MccDefaultSwitch}
-                        />
-                    </View>
-                )}
             </View>
         </Card>
     );

@@ -1,13 +1,13 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
 import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
-import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum, TransactionEntityInterface } from '@budgie/contracts';
+import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -26,12 +26,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
 import type { BankAccountInterface, BankSyncBatchResultInterface } from '@budgie/bank-sync';
-import type {
-    AccountEntityInterface,
-    BankSyncEntityInterface,
-    MccCategoryLookupInterface,
-    TransactionCreateInputInterface
-} from '@budgie/contracts';
+import type { AccountEntityInterface, BankSyncEntityInterface, MccCategoryLookupInterface } from '@budgie/contracts';
 
 class AppMonobankSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
@@ -197,7 +192,7 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id, sync);
+        const changedTransactionCount = await this.processFetchedTransactions(result.transactions, account.id);
 
         if (isPositiveNumber(changedTransactionCount)) {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC);
@@ -206,18 +201,6 @@ class AppMonobankSyncService {
         await microPause();
 
         return result;
-    }
-
-    @Log(
-        inputs =>
-            `enter provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} count=${inputs.length}`,
-        (result, inputs) =>
-            `done provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} insertedIds=${result.map(row => row.id).join(',')}`,
-        (error, inputs) =>
-            `throw provider=${ExternalSourceEnum.MONOBANK} externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    private async createBatchTransactions(inputs: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return await transactionService.bulkCreate(inputs);
     }
 
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
@@ -281,8 +264,7 @@ class AppMonobankSyncService {
 
     private async processFetchedTransactions(
         transactions: BankSyncBatchResultInterface['transactions'],
-        accountId: number,
-        sync: BankSyncEntityInterface
+        accountId: number
     ): Promise<number> {
         if (!isNotEmptyArray(transactions)) {
             return 0;
@@ -292,7 +274,7 @@ class AppMonobankSyncService {
         const newTransactions = transactions.filter(bankTransaction => !existingIds.has(bankTransaction.id));
         const existingTransactions = transactions.filter(bankTransaction => existingIds.has(bankTransaction.id));
 
-        const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId, sync);
+        const createdTransactionCount = await this.createNewTransactions(newTransactions, accountId);
         const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
 
         if (isPositiveNumber(updatedTransactionCount)) {
@@ -302,24 +284,21 @@ class AppMonobankSyncService {
         return createdTransactionCount + updatedTransactionCount;
     }
 
-    private async createNewTransactions(
-        newTransactions: BankSyncBatchResultInterface['transactions'],
-        accountId: number,
-        sync: BankSyncEntityInterface
-    ): Promise<number> {
+    private async createNewTransactions(newTransactions: BankSyncBatchResultInterface['transactions'], accountId: number): Promise<number> {
         if (!isNotEmptyArray(newTransactions)) {
             return 0;
         }
 
+        const settings = await settingsRepository.getSettings();
         const inputs = newTransactions.map(bankTransaction => {
             const rawLookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
             const effectiveLookup =
-                isDefined(rawLookup) && !sync.applyMccDefaultCategory ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
+                isDefined(rawLookup) && !settings.applyMccDefaultCategory ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
 
             return mapBankTransactionToCreateInput(bankTransaction, accountId, effectiveLookup, this.provider);
         });
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
-        const createdTransactions = await this.createBatchTransactions(prepared.transactionInputs);
+        const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
         const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 

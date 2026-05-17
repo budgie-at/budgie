@@ -1,1 +1,0 @@
-ALTER TABLE `bank_syncs` ADD `apply_mcc_default_category` integer DEFAULT true NOT NULL;
