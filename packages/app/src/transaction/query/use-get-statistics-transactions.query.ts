@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { TransactionsByMonthSection } from '../interface/transactions-by-month-section.type';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
@@ -14,12 +15,14 @@ const DEFAULT_LIMIT = 20;
 
 export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
     const { formatMonthAndYear } = useFormatDate();
+    const language = useSetting('language');
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
     const filterKey = JSON.stringify(filters);
 
-    const { data, error, updatedAt } = useLiveQuery(statisticsRepository.getTransactions(filters, loadedCount + 1), [
+    const { data, error, updatedAt } = useLiveQuery(statisticsRepository.getTransactions(filters, loadedCount + 1, language), [
         loadedCount,
-        filterKey
+        filterKey,
+        language
     ]);
 
     const hasMore = data.length > loadedCount;

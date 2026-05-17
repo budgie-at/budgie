@@ -12,6 +12,7 @@ import { Alert } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
@@ -97,6 +98,7 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> =>
 
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
+    const language = useSetting('language');
     const { openRuleForm } = useRuleFormModal();
 
     const handleDuplicateRule = (duplicateRule: RuleWithRelationsEntityInterface, ruleInput: RuleCreateInputInterface): Promise<void> => {
@@ -150,7 +152,7 @@ export const RuleSuggestionCard = (props: Props) => {
             throw new Error('Invalid rule input');
         }
 
-        const existingRules = await ruleRepository.findAllWithActionsAndCategories();
+        const existingRules = await ruleRepository.findAllWithActionsAndCategories(language);
         const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
         logger.log('handleYes:duplicate-check', {
             existingRulesCount: existingRules.length,
