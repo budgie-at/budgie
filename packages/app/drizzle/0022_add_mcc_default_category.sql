@@ -2105,6 +2105,3 @@ UPDATE `mcc_categories` SET `default_category_id` = (SELECT `id` FROM `categorie
 
 --> statement-breakpoint
 ALTER TABLE `settings` ADD `apply_mcc_default_category` integer DEFAULT true NOT NULL;
-
---> statement-breakpoint
-ALTER TABLE `transaction_entries` ADD `category_source` text DEFAULT 'USER' NOT NULL;
