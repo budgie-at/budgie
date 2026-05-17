@@ -5,9 +5,9 @@ import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.q
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
-export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) => {
+export const useGetUncategorizedTransactionsQuery = (filters: TransactionFilterInterface) => {
     const filterKey = buildTransactionFilterKey(filters);
-    const buildQuery = (limit: number) => transactionRepository.getAll(limit, filters);
+    const buildQuery = (limit: number) => transactionRepository.getUncategorized(limit, filters);
 
     return useGetTransactionSectionsQuery(buildQuery, filterKey);
 };
