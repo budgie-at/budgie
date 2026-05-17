@@ -18,12 +18,11 @@ export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }
     const { t } = useLingui();
 
     const handleSelect = () => void onSelect(category.id);
-    const visibleTitle = resolveCategoryTitle(category, t);
 
     return (
         <FilterRow isSelected={isSelected} onPress={handleSelect} testID={TransactionFiltersSelector.CategoryOption(category.title)}>
             <CircleIcon icon={category.icon} variant="ghost" size={32} iconSize={16} />
-            <FilterRowTitle>{visibleTitle}</FilterRowTitle>
+            <FilterRowTitle>{resolveCategoryTitle(category, t)}</FilterRowTitle>
             <FilterRowCheck isSelected={isSelected} testID={TransactionFiltersSelector.CategoryOptionSelected(category.title)} />
         </FilterRow>
     );

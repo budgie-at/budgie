@@ -9,7 +9,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { resolveCategoryTitle } from '../../../category/utils/resolve-category-title.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
@@ -37,8 +36,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const resolvedCategoryTitle = isDefined(entry.category) ? resolveCategoryTitle(entry.category, t) : null;
-                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel, resolvedCategoryTitle);
+                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel, t);
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
