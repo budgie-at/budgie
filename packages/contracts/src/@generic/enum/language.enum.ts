@@ -3,9 +3,5 @@ export enum LanguageEnum {
     FR = 'fr',
     UK = 'uk',
     DE = 'de',
-    ES = 'es',
-    IT = 'it',
-    PL = 'pl',
-    PT = 'pt',
-    NL = 'nl'
+    ES = 'es'
 }
