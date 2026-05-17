@@ -28,21 +28,33 @@ export class VoiceLlmService {
             [LanguageEnum.EN]: ['uah', 'hryvnia', 'hryvnias'],
             [LanguageEnum.DE]: ['uah', 'hrywnja'],
             [LanguageEnum.ES]: ['uah', 'grivna', 'grivnas'],
-            [LanguageEnum.FR]: ['uah', 'hryvnia', 'hryvnias']
+            [LanguageEnum.FR]: ['uah', 'hryvnia', 'hryvnias'],
+            [LanguageEnum.IT]: ['uah', 'grivnia', 'grivnie'],
+            [LanguageEnum.PL]: ['uah', 'hrywna', 'hrywny'],
+            [LanguageEnum.PT]: ['uah', 'hryvnia', 'hryvnias'],
+            [LanguageEnum.NL]: ['uah', 'hryvnia', 'hryvnias']
         },
         [CurrencyEnum.USD]: {
             [LanguageEnum.EN]: ['usd', '$', 'dollar', 'dollars', 'buck', 'bucks', 'dol'],
             [LanguageEnum.UK]: ['долар', 'доларів', 'долари'],
             [LanguageEnum.DE]: ['dollar', 'dollars'],
             [LanguageEnum.ES]: ['dólar', 'dólares', 'dolar', 'dolares'],
-            [LanguageEnum.FR]: ['dollar', 'dollars']
+            [LanguageEnum.FR]: ['dollar', 'dollars'],
+            [LanguageEnum.IT]: ['dollaro', 'dollari'],
+            [LanguageEnum.PL]: ['dolar', 'dolary', 'dolarów'],
+            [LanguageEnum.PT]: ['dólar', 'dólares', 'dolar', 'dolares'],
+            [LanguageEnum.NL]: ['dollar', 'dollars']
         },
         [CurrencyEnum.EUR]: {
             [LanguageEnum.EN]: ['eur', '€', 'euro', 'euros'],
             [LanguageEnum.UK]: ['євро', 'євра'],
             [LanguageEnum.DE]: ['euro', 'euros'],
             [LanguageEnum.ES]: ['euro', 'euros'],
-            [LanguageEnum.FR]: ['euro', 'euros']
+            [LanguageEnum.FR]: ['euro', 'euros'],
+            [LanguageEnum.IT]: ['euro', 'euri'],
+            [LanguageEnum.PL]: ['euro', 'euros'],
+            [LanguageEnum.PT]: ['euro', 'euros'],
+            [LanguageEnum.NL]: ['euro', 'euros']
         }
     };
 
@@ -169,6 +181,104 @@ export class VoiceLlmService {
             'soixante',
             'cent',
             'mille'
+        ],
+        [LanguageEnum.IT]: [
+            'uno',
+            'due',
+            'tre',
+            'quattro',
+            'cinque',
+            'sei',
+            'sette',
+            'otto',
+            'nove',
+            'dieci',
+            'undici',
+            'dodici',
+            'venti',
+            'trenta',
+            'quaranta',
+            'cinquanta',
+            'sessanta',
+            'settanta',
+            'ottanta',
+            'novanta',
+            'cento',
+            'mille'
+        ],
+        [LanguageEnum.PL]: [
+            'jeden',
+            'dwa',
+            'trzy',
+            'cztery',
+            'pięć',
+            'sześć',
+            'siedem',
+            'osiem',
+            'dziewięć',
+            'dziesięć',
+            'jedenaście',
+            'dwanaście',
+            'dwadzieścia',
+            'trzydzieści',
+            'czterdzieści',
+            'pięćdziesiąt',
+            'sześćdziesiąt',
+            'siedemdziesiąt',
+            'osiemdziesiąt',
+            'dziewięćdziesiąt',
+            'sto',
+            'tysiąc'
+        ],
+        [LanguageEnum.PT]: [
+            'um',
+            'uma',
+            'dois',
+            'duas',
+            'três',
+            'quatro',
+            'cinco',
+            'seis',
+            'sete',
+            'oito',
+            'nove',
+            'dez',
+            'onze',
+            'doze',
+            'vinte',
+            'trinta',
+            'quarenta',
+            'cinquenta',
+            'sessenta',
+            'setenta',
+            'oitenta',
+            'noventa',
+            'cem',
+            'mil'
+        ],
+        [LanguageEnum.NL]: [
+            'een',
+            'twee',
+            'drie',
+            'vier',
+            'vijf',
+            'zes',
+            'zeven',
+            'acht',
+            'negen',
+            'tien',
+            'elf',
+            'twaalf',
+            'twintig',
+            'dertig',
+            'veertig',
+            'vijftig',
+            'zestig',
+            'zeventig',
+            'tachtig',
+            'negentig',
+            'honderd',
+            'duizend'
         ]
     };
 
@@ -177,7 +287,11 @@ export class VoiceLlmService {
         [LanguageEnum.UK]: ['і', 'та'],
         [LanguageEnum.DE]: ['und'],
         [LanguageEnum.ES]: ['y', 'e'],
-        [LanguageEnum.FR]: ['et']
+        [LanguageEnum.FR]: ['et'],
+        [LanguageEnum.IT]: ['e', 'ed'],
+        [LanguageEnum.PL]: ['i', 'oraz'],
+        [LanguageEnum.PT]: ['e'],
+        [LanguageEnum.NL]: ['en']
     };
 
     private static readonly ALL_CURRENCY_TERMS = Object.values(VoiceLlmService.CURRENCY_TERMS_BY_LANGUAGE).flatMap(byLanguage =>

@@ -12,12 +12,12 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { resolveCategoryTitle } from '../../utils/resolve-category-title.util';
 
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
 interface Props {
     readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
+    readonly title: string;
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;
@@ -25,7 +25,7 @@ interface Props {
     readonly isIncome: boolean;
 }
 
-export const CategoryStatisticsCard = ({ category, amount, percentage, variant, filters, isIncome }: Props) => {
+export const CategoryStatisticsCard = ({ category, title, amount, percentage, variant, filters, isIncome }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -49,13 +49,11 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
         });
     };
 
-    const visibleTitle = resolveCategoryTitle(category, t);
-
     return (
         <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
             <View className="flex-row items-center gap-x-md">
                 <CircleIcon icon={category.icon} variant={variant} />
-                <Text className="mr-auto text-primary text-xs">{visibleTitle}</Text>
+                <Text className="mr-auto text-primary text-xs">{title}</Text>
                 <Text className={statsAmountVariants({ variant })} testID={amountTestID}>
                     {formatDigits(microAmount, defaultInstrument.symbol)}
                 </Text>
