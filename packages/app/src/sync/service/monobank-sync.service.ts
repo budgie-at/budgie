@@ -50,7 +50,12 @@ class AppMonobankSyncService {
         }
     }
 
-    @Log('enter', result => `done mccKeys=${[...result.keys()].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
+    @Log(
+        'enter',
+        result =>
+            `done totalMccCount=${result.size} withDefaultCount=${[...result.values()].filter(value => isDefined(value.defaultCategoryId)).length}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async loadMccCategories(): Promise<Map<string, MccCategoryLookupInterface>> {
         this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
 
