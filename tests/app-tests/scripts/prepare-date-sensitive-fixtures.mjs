@@ -50,6 +50,47 @@ const shiftTransactionsFixtureToNow = () => {
         SET created_at = created_at + (SELECT seconds FROM fixture_offset),
             updated_at = updated_at + (SELECT seconds FROM fixture_offset);
 
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            to_account_id,
+            exchange_rate
+        )
+        SELECT
+            MIN(operated_at) - 60,
+            MIN(operated_at) - 60,
+            'INCOME',
+            '',
+            MIN(operated_at) - 60,
+            'E2E Uncategorized Income',
+            2,
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'DEBIT',
+            2,
+            NULL,
+            id,
+            7000000
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
 

@@ -8,6 +8,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { UncategorizedTransactionsPillPropsInterface } from '../../interface/uncategorized-transactions-pill-props.interface';
 
+import { UncategorizedTransactionsPillSelector } from './uncategorized-transactions-pill.selector';
+
 const ANIMATION_DURATION_MS = 180;
 const ENTERING = FadeIn.duration(ANIMATION_DURATION_MS);
 const EXITING = FadeOut.duration(ANIMATION_DURATION_MS);
@@ -24,6 +26,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: UncategorizedT
                 onPress={onPress}
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
+                testID={UncategorizedTransactionsPillSelector.Button}
                 className="h-9 min-w-48 px-lg rounded-full border border-warning-corner bg-warning-background flex-row items-center justify-center gap-x-sm"
             >
                 <View className="h-5 w-5 rounded-full bg-warning-corner items-center justify-center">
