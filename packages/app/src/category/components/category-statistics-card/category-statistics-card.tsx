@@ -4,8 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { StatsBar } from '../../../@generic/component/stats-bar/stats-bar';
@@ -19,7 +17,7 @@ import { resolveCategoryTitle } from '../../utils/resolve-category-title.util';
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
 interface Props {
-    readonly category: Pick<CategoryEntityInterface, 'icon' | 'title' | 'isDefault'> & { readonly id?: CategoryEntityInterface['id'] };
+    readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;
@@ -51,8 +49,7 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
         });
     };
 
-    const resolvableCategory = isDefined(category.id) ? { id: category.id, title: category.title, isDefault: category.isDefault } : null;
-    const visibleTitle = resolveCategoryTitle(resolvableCategory, t) ?? category.title;
+    const visibleTitle = resolveCategoryTitle(category, t);
 
     return (
         <HapticPressable onPress={handlePress} className="gap-y-md" testID={cardTestID}>
