@@ -12,7 +12,7 @@ export const Logo = () => {
     const { theme, resolvedTheme } = useTheme();
 
     const isDark = (theme === 'system' ? resolvedTheme : theme) === 'dark';
-    const logo = (isDark ? darkLogo : lightLogo) as string;
+    const logo = (isDark ? darkLogo : lightLogo);
 
     return (
         <div className="size-8 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground">
