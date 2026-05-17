@@ -35,14 +35,14 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:33
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# без категорії} other {# без категорії}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:18
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing categories"
-msgstr "{count} без категорії"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -103,11 +103,6 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/rule/components/rules-list-page/rules-list-page.tsx:40
 msgid "1 matching rule"
 msgstr "1 відповідне правило"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:18
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "1 missing category"
-msgstr "1 без категорії"
 
 #: src/app/(tabs)/settings/index.tsx:69
 msgid "100% Offline & Private"
@@ -347,8 +342,8 @@ msgstr "Доступні стовпці"
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:19
-#: src/transaction/components/transaction-list/transaction-list.tsx:38
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -430,9 +425,9 @@ msgstr "Готівка"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
 #: src/app/(tabs)/settings/categories.tsx:85
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:21
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:39
+#: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
 msgstr "Категорії"
 
@@ -1116,7 +1111,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:46
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:59
 msgid "Expenses"
 msgstr "Витрати"
 
@@ -1300,12 +1295,12 @@ msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:55
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:38
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:51
 msgid "Income and expenses"
 msgstr "Доходи й витрати"
 
@@ -1478,7 +1473,7 @@ msgstr "Об'єднати з іншою категорією"
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:28
 msgid "Missing categories"
 msgstr "Без категорій"
 
@@ -1599,8 +1594,8 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:28
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1650,7 +1645,7 @@ msgstr "Жоден тег не відповідає вашому пошуку"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -2311,7 +2306,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:43
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -2523,7 +2518,7 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:49
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:62
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -2583,8 +2578,8 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:29
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:30
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -2608,7 +2603,7 @@ msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:32
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -2632,7 +2627,7 @@ msgid "Unknown"
 msgstr "Невідомо"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Untagged"
 msgstr "Без тегу"
 

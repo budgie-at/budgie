@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { Plural, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
@@ -15,8 +16,7 @@ const LAYOUT = LinearTransition.duration(ANIMATION_DURATION_MS);
 export const UncategorizedTransactionsPill = ({ count, onPress }: UncategorizedTransactionsPillPropsInterface) => {
     const { t } = useLingui();
 
-    const accessibilityLabel = count === 1 ? t`1 missing category` : t`${count} missing categories`;
-    const label = count === 1 ? <Trans>1 missing category</Trans> : <Trans>{count} missing categories</Trans>;
+    const accessibilityLabel = t({ message: plural(count, { one: '# missing category', other: '# missing categories' }) });
 
     return (
         <Animated.View entering={ENTERING} exiting={EXITING} layout={LAYOUT} className="self-start">
@@ -30,7 +30,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: UncategorizedT
                     <Icon icon={UserIconNameEnum.BadgeQuestionMark} className="text-warning-foreground" size={14} />
                 </View>
                 <Text className="text-warning-foreground text-sm font-semibold" numberOfLines={1}>
-                    {label}
+                    <Plural value={count} one="# missing category" other="# missing categories" />
                 </Text>
             </HapticPressable>
         </Animated.View>
