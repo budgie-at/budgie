@@ -50,39 +50,6 @@ env:
       timeout: 20000
 
 - tapOn:
-      id: 'AccountDetails.EditButton'
-
-- extendedWaitUntil:
-      visible: 'Account Settings'
-      timeout: 10000
-
-- scrollUntilVisible:
-      element:
-          id: 'AccountBankSyncCard.MccDefaultSwitch'
-      direction: DOWN
-      timeout: 10000
-
-- waitForAnimationToEnd
-
-- tapOn:
-      id: 'AccountBankSyncCard.MccDefaultSwitch'
-
-- waitForAnimationToEnd
-
-- tapOn:
-      id: 'AccountBankSyncCard.MccDefaultSwitch'
-
-- waitForAnimationToEnd
-
-- tapOn:
-      id: 'PageHeader.BackButton'
-
-- extendedWaitUntil:
-      visible:
-          id: 'AccountDetails.EditButton'
-      timeout: 10000
-
-- tapOn:
       id: 'PageHeader.BackButton'
 
 - extendedWaitUntil:

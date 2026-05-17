@@ -19,7 +19,6 @@ export const BankSyncEntityTable = sqliteTable(
             .notNull(),
         token: text('token').notNull(),
         enabled: int('enabled', { mode: 'boolean' }).default(true).notNull(),
-        applyMccDefaultCategory: int('apply_mcc_default_category', { mode: 'boolean' }).default(true).notNull(),
         mode: text('mode', { enum: convertEnumToDrizzleEnum(BankSyncModeEnum) })
             .$type<BankSyncModeEnum>()
             .default(BankSyncModeEnum.BACKWARD)

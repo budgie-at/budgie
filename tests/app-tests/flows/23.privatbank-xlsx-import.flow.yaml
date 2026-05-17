@@ -71,44 +71,23 @@ env:
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
-- tapOn:
-      id: 'AccountCard.Privatbank •1234'
-
-- extendedWaitUntil:
-      visible:
-          id: 'AccountDetails.EditButton'
-      timeout: 10000
-
-- tapOn:
-      id: 'AccountDetails.EditButton'
-
-- extendedWaitUntil:
-      visible: 'Account Settings'
-      timeout: 10000
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - scrollUntilVisible:
       element:
-          id: 'AccountBankSyncCard.MccDefaultSwitch'
+          id: 'SettingsPage.AutoAssignMccCategorySwitch'
       direction: DOWN
       timeout: 10000
 
 - waitForAnimationToEnd
 
 - tapOn:
-      id: 'AccountBankSyncCard.MccDefaultSwitch'
+      id: 'SettingsPage.AutoAssignMccCategorySwitch'
 
 - waitForAnimationToEnd
 
 - tapOn:
-      id: 'PageHeader.BackButton'
-
-- extendedWaitUntil:
-      visible:
-          id: 'AccountDetails.EditButton'
-      timeout: 10000
-
-- tapOn:
-      id: 'PageHeader.BackButton'
+      id: 'TabBar.Home'
 
 - extendedWaitUntil:
       visible:
