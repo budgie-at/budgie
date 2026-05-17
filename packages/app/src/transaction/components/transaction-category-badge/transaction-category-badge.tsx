@@ -11,7 +11,6 @@ import { isDefined } from '@rnw-community/shared';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
@@ -29,13 +28,14 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
 
     const hasMultipleEntries = transaction.entries.length > 1;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-    const unknownLabel = t`Unknown`;
 
     if (hasMultipleEntries) {
+        const unknownLabel = t`Unknown`;
+
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel);
+                    const entryLabel = entry.category?.title ?? unknownLabel;
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
@@ -51,14 +51,20 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         );
     }
 
-    if (!isAdjustment && !isDefined(categoryLabel)) {
+    if (isAdjustment) {
+        return (
+            <View className={wrapperClassName} testID={TransactionCardSelector.AdjustmentBadge}>
+                <Text className={textClassName}>{categoryLabel}</Text>
+            </View>
+        );
+    }
+
+    if (!isDefined(categoryLabel)) {
         return null;
     }
 
-    const badgeTestID = isAdjustment ? TransactionCardSelector.AdjustmentBadge : TransactionCardSelector.Category(categoryLabel ?? '');
-
     return (
-        <View className={wrapperClassName} testID={badgeTestID}>
+        <View className={wrapperClassName} testID={TransactionCardSelector.Category(categoryLabel)}>
             <Text className={textClassName}>{categoryLabel}</Text>
         </View>
     );
