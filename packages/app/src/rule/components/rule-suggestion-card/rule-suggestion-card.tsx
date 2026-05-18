@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Alert } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
@@ -53,11 +53,11 @@ const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCr
         return null;
     }
 
-    const categoryAction = isDefined(suggestRuleData.categoryId)
+    const categoryAction = isPositiveNumber(suggestRuleData.categoryId)
         ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: suggestRuleData.categoryId, tagId: null, accountId: null }]
         : [];
 
-    const tagActions = suggestRuleData.tagIds.map(tagId => ({
+    const tagActions = suggestRuleData.tagIds.filter(isPositiveNumber).map(tagId => ({
         type: RuleActionTypeEnum.ADD_TAG as const,
         categoryId: null,
         tagId,
