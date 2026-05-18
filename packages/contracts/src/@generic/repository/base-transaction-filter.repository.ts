@@ -80,7 +80,13 @@ export abstract class BaseTransactionFilterRepository {
             this.db
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
-                .where(and(isNull(TransactionEntryEntityTable.categoryId), this.buildLedgerEntryCondition()))
+                .where(
+                    and(
+                        isNull(TransactionEntryEntityTable.categoryId),
+                        this.buildLedgerEntryCondition(),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
+                )
         );
     }
 

@@ -373,6 +373,34 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
+    countUncategorized(filters: TransactionFilterInterface) {
+        const types = this.getUncategorizedTransactionTypes(filters.types);
+
+        return this.db
+            .select({
+                income: sql<number>`COALESCE(SUM(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN 1 ELSE 0 END), 0)`.mapWith(
+                    Number
+                ),
+                expense:
+                    sql<number>`COALESCE(SUM(CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN 1 ELSE 0 END), 0)`.mapWith(
+                        Number
+                    )
+            })
+            .from(TransactionEntityTable)
+            .where(this.buildUncategorizedWhere(filters, types));
+    }
+
+    getUncategorized(limit: number, filters: TransactionFilterInterface) {
+        const types = this.getUncategorizedTransactionTypes(filters.types);
+
+        return this.db.query.TransactionEntityTable.findMany({
+            with: this.transactionRelations,
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
+            limit,
+            where: this.buildUncategorizedWhere(filters, types)
+        });
+    }
+
     async findByIdsWithEntries(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
         if (!isNotEmptyArray(ids)) {
             return [];
@@ -636,15 +664,49 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
-            this.buildVisibleTransactionCondition(),
-            ...this.buildAccountCondition(accountIds),
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
-            ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
-            ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
-            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
+            ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : [])
         ].filter(isDefined);
 
         return isNotEmptyArray(conditions) ? and(...conditions) : null;
+    }
+
+    private buildUncategorizedWhere({ tagIds, accountIds, date }: TransactionFilterInterface, types: TransactionTypeEnum[]) {
+        const conditions: SQL[] = [
+            ...this.buildBaseFilterConditions({ accountIds, tagIds, date }),
+            this.buildUncategorizedTypeCondition(types),
+            this.buildCategoryCondition([])
+        ].filter(isDefined);
+
+        return and(...conditions);
+    }
+
+    private buildBaseFilterConditions({ accountIds, tagIds, date }: Pick<TransactionFilterInterface, 'accountIds' | 'tagIds' | 'date'>) {
+        return [
+            this.buildVisibleTransactionCondition(),
+            ...this.buildAccountCondition(accountIds),
+            ...(isDefined(tagIds) ? [this.buildTagCondition(tagIds)] : []),
+            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
+        ].filter(isDefined);
+    }
+
+    private buildUncategorizedTypeCondition(types: TransactionTypeEnum[]) {
+        if (isEmptyArray(types)) {
+            return sql`0 = 1`;
+        }
+
+        return inArray(TransactionEntityTable.type, types);
+    }
+
+    private getUncategorizedTransactionTypes(types: TransactionTypeEnum[] | null) {
+        const uncategorizedTypes = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
+
+        if (!isNotEmptyArray(types)) {
+            return uncategorizedTypes;
+        }
+
+        return uncategorizedTypes.filter(type => types.includes(type));
     }
 
     private buildTypeCondition(types: TransactionTypeEnum[]) {

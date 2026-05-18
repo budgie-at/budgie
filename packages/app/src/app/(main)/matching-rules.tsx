@@ -7,8 +7,8 @@ import { parseRuleIdsRouteParam } from '../../rule/utils/parse-rule-ids-route-pa
 const handleGoBack = () => void goBackOrReplace('/');
 
 export default function MatchingRulesPage() {
-    const routeParams = useLocalSearchParams();
-    const matchingRuleIds = parseRuleIdsRouteParam(routeParams['ruleIds']);
+    const routeParams = useLocalSearchParams<{ readonly ruleIds?: string | string[] }>();
+    const matchingRuleIds = parseRuleIdsRouteParam(routeParams.ruleIds);
 
     return <RulesListPage matchingRuleIds={matchingRuleIds} onGoBack={handleGoBack} />;
 }
