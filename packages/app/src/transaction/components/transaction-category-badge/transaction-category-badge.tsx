@@ -30,12 +30,10 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     if (hasMultipleEntries) {
-        const unknownLabel = t`Unknown`;
-
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const entryLabel = entry.category?.title ?? unknownLabel;
+                    const entryLabel = entry.category?.title ?? t`Unknown`;
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
