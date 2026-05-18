@@ -8,7 +8,7 @@ import {
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -108,7 +108,7 @@ export abstract class BaseFileBankSyncService {
         }
 
         const transactionInputs = transactions.map(transaction => {
-            const lookup = isNotEmptyString(transaction.category) ? (context.mccCategoryLookupMap.get(transaction.category) ?? null) : null;
+            const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
 
             return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
         });
