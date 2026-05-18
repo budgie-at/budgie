@@ -23,15 +23,7 @@ export const TransactionFilterPageHeader = ({
     const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
 
-    const getCategoryName = () => {
-        if (mode === TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES) {
-            return t`Missing categories`;
-        }
-
-        return category?.title;
-    };
-
-    const categoryName = getCategoryName();
+    const categoryName = mode === TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES ? t`Missing categories` : category?.title;
     const tagName = mode === TransactionFilterPageHeaderModeEnum.UNTAGGED ? t`Untagged` : tag?.title;
     const filterName = categoryName ?? tagName;
     const hasBothTypes = types?.includes(TransactionTypeEnum.INCOME) === true && types.includes(TransactionTypeEnum.EXPENSE);
