@@ -16,7 +16,8 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         fromCurrency: 'Валюта 2',
         // eslint-disable-next-line lingui/no-unlocalized-strings
         fromAmount: 'Сумма 2',
-        isPlanned: 'Запланировано'
+        isPlanned: 'Запланировано',
+        mcc: ''
     },
     [ImportPresetEnum.FinEye]: {
         category: 'category',
@@ -29,7 +30,8 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         operatedAt: 'date',
         toAccount: 'outcomeAccount',
         toAmount: 'outcome',
-        toCurrency: 'outcomeCurrency'
+        toCurrency: 'outcomeCurrency',
+        mcc: ''
     },
     [ImportPresetEnum.Budgie]: {
         externalId: 'externalId',
@@ -42,6 +44,7 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         category: 'category',
         operatedAt: 'operatedAt',
         comment: 'comment',
-        isPlanned: ''
+        isPlanned: '',
+        mcc: 'mcc'
     }
 };

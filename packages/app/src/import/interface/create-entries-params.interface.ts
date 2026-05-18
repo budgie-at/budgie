@@ -8,4 +8,5 @@ export interface CreateEntriesParamsInterface {
     source: EntryParamsInterface;
     dest: EntryParamsInterface | null;
     externalId?: string;
+    mccCategoryId: number | null;
 }
