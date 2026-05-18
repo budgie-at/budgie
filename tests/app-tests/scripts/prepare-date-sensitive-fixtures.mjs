@@ -91,6 +91,10 @@ const shiftTransactionsFixtureToNow = () => {
         FROM transactions
         WHERE id = last_insert_rowid();
 
+        UPDATE account_balances
+        SET amount = amount + 7000000
+        WHERE account_id = 2;
+
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
 

@@ -1,9 +1,10 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: 'TabBar.Transactions'
-- tapOn:
-    id: 'TabBar.Transactions'
+      id: 'TabBar.Transactions'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
-    visible:
-      id: 'TransactionsPage.Container'
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 15000

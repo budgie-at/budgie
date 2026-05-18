@@ -35,14 +35,17 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} Spalten verfügbar"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:33
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# fehlende Kategorie} other {# fehlende Kategorien}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} bestehende Transaktionen entsprechen dieser Regel."
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+msgid "{count} missing categories"
+msgstr "{count} fehlende Kategorien"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+msgid "{count} missing category"
+msgstr "{count} fehlende Kategorie"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -342,7 +345,7 @@ msgstr "Verfügbare Spalten"
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
 #: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
@@ -407,7 +410,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
-#: src/import/components/import-database/import-database.tsx:39
+#: src/import/components/import-database/import-database.tsx:49
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
@@ -425,7 +428,7 @@ msgstr "Bargeld"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
 #: src/app/(tabs)/settings/categories.tsx:85
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:21
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
@@ -709,7 +712,7 @@ msgstr "Tag konnte nicht gespeichert werden"
 msgid "Could not select CSV file"
 msgstr "CSV-Datei konnte nicht ausgewählt werden"
 
-#: src/import/components/import-database/import-database.tsx:50
+#: src/import/components/import-database/import-database.tsx:66
 msgid "Could not select database backup"
 msgstr "Datenbanksicherung konnte nicht ausgewählt werden"
 
@@ -1250,9 +1253,9 @@ msgstr "Konten und Transaktionen aus Privatbank XLSX-Export importieren"
 msgid "Import CSV"
 msgstr "CSV importieren"
 
-#: src/import/components/import-database/import-database.tsx:36
-#: src/import/components/import-database/import-database.tsx:38
-#: src/import/components/import-database/import-database.tsx:58
+#: src/import/components/import-database/import-database.tsx:46
+#: src/import/components/import-database/import-database.tsx:48
+#: src/import/components/import-database/import-database.tsx:74
 msgid "Import Database"
 msgstr "Datenbank importieren"
 
@@ -1272,7 +1275,7 @@ msgstr "Privatbank importieren"
 msgid "Import transactions from a CSV file"
 msgstr "Transaktionen aus einer CSV-Datei importieren"
 
-#: src/import/components/import-database/import-database.tsx:37
+#: src/import/components/import-database/import-database.tsx:47
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt. Die App wird nach dem Import neu gestartet. Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -1594,7 +1597,7 @@ msgstr "Keine Einträge zum Speichern"
 msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:28
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
@@ -1925,7 +1928,7 @@ msgstr "Wiederherstellen"
 msgid "Restore Account?"
 msgstr "Konto wiederherstellen?"
 
-#: src/import/components/import-database/import-database.tsx:59
+#: src/import/components/import-database/import-database.tsx:75
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
@@ -2578,7 +2581,7 @@ msgstr "Versuchen Sie einen anderen Suchbegriff"
 msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:30
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
