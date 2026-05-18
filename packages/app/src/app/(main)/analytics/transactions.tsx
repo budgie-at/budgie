@@ -38,7 +38,7 @@ const getTransactionType = (value: string | null): TransactionTypeEnum | null =>
 const getTransactionTypes = (value: string | string[] | undefined): TransactionTypeEnum[] =>
     getRouteParamValues(value).map(getTransactionType).filter(isDefined);
 
-const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number);
+const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
 
 export default function AnalyticsTransactionsPage() {
     const searchParams = useLocalSearchParams<{
@@ -74,8 +74,8 @@ export default function AnalyticsTransactionsPage() {
     };
 
     if (params.mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
-        return <UncategorizedAnalyticsTransactionsPage params={params} />;
+        return <UncategorizedAnalyticsTransactionsPage {...params} />;
     }
 
-    return <StatisticsAnalyticsTransactionsPage params={params} />;
+    return <StatisticsAnalyticsTransactionsPage {...params} />;
 }

@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
@@ -10,7 +12,7 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
     categoryIds: filters.categoryIds,
     date: filters.date,
     tagIds: filters.tagIds,
-    types: [filters.type]
+    types: isDefined(filters.type) ? [filters.type] : null
 });
 
 export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
