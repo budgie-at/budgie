@@ -35,10 +35,9 @@ env:
       text: 'Import Database'
       index: 1
 
-- tapOn:
-      id: 'TabBar.Home'
+- waitForAnimationToEnd
 
-- extendedWaitUntil:
-    visible:
-      id: 'TabBar.Home'
-    timeout: 15000
+- runFlow:
+      file: ../navigation/relaunch-app-and-wait.flow.yaml
+      env:
+          DESTINATION_ID: 'TabBar.Home'
