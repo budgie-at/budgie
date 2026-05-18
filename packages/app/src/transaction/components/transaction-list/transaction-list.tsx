@@ -110,7 +110,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
             )}
 
             {canShowUncategorizedPill ? (
-                <View className="px-5 pt-2 pb-1">
+                <View className="pt-2 pb-1">
                     <UncategorizedTransactionsPill count={uncategorizedTransactionCount} onPress={handleUncategorizedPress} />
                 </View>
             ) : null}

@@ -37,14 +37,17 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:33
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# missing category} other {# missing categories}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} existing transactions match this rule."
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+msgid "{count} missing categories"
+msgstr "{count} missing categories"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
+msgid "{count} missing category"
+msgstr "{count} missing category"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -344,7 +347,7 @@ msgstr "Available Columns"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:20
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
 #: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
@@ -409,7 +412,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
-#: src/import/components/import-database/import-database.tsx:39
+#: src/import/components/import-database/import-database.tsx:49
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
@@ -427,7 +430,7 @@ msgstr "Cash"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
 #: src/app/(tabs)/settings/categories.tsx:85
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:21
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
@@ -711,7 +714,7 @@ msgstr "Could not save tag"
 msgid "Could not select CSV file"
 msgstr "Could not select CSV file"
 
-#: src/import/components/import-database/import-database.tsx:50
+#: src/import/components/import-database/import-database.tsx:66
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
@@ -1252,9 +1255,9 @@ msgstr "Import accounts and transactions from Privatbank XLSX export"
 msgid "Import CSV"
 msgstr "Import CSV"
 
-#: src/import/components/import-database/import-database.tsx:36
-#: src/import/components/import-database/import-database.tsx:38
-#: src/import/components/import-database/import-database.tsx:58
+#: src/import/components/import-database/import-database.tsx:46
+#: src/import/components/import-database/import-database.tsx:48
+#: src/import/components/import-database/import-database.tsx:74
 msgid "Import Database"
 msgstr "Import Database"
 
@@ -1274,7 +1277,7 @@ msgstr "Import Privatbank"
 msgid "Import transactions from a CSV file"
 msgstr "Import transactions from a CSV file"
 
-#: src/import/components/import-database/import-database.tsx:37
+#: src/import/components/import-database/import-database.tsx:47
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
@@ -1596,7 +1599,7 @@ msgstr "No items to save"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:28
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1927,7 +1930,7 @@ msgstr "Restore"
 msgid "Restore Account?"
 msgstr "Restore Account?"
 
-#: src/import/components/import-database/import-database.tsx:59
+#: src/import/components/import-database/import-database.tsx:75
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
@@ -2580,7 +2583,7 @@ msgstr "Try a different search term"
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:30
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
