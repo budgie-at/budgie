@@ -60,7 +60,7 @@ const getHeaderMode = (params: AnalyticsTransactionsRouteParamsInterface): Trans
 
     const isUncategorized = !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
     if (isUncategorized) {
-        return TransactionFilterPageHeaderModeEnum.UNCATEGORIZED;
+        return TransactionFilterPageHeaderModeEnum.MISSING_CATEGORIES;
     }
 
     return null;

@@ -28,10 +28,6 @@ export const TransactionFilterPageHeader = ({
             return t`Missing categories`;
         }
 
-        if (mode === TransactionFilterPageHeaderModeEnum.UNCATEGORIZED) {
-            return t`Uncategorized`;
-        }
-
         return category?.title;
     };
 
