@@ -884,6 +884,18 @@ env:
       id: 'RulesPage.RuleCard.0'
     timeout: 10000
 
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+- assertVisible:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
 # Delete rule
 
 - swipe:
@@ -951,6 +963,18 @@ env:
       id: 'RulesPage.RuleCard.0'
     timeout: 10000
 
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+- assertVisible:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
+
 # Delete rule
 
 - swipe:
@@ -1017,6 +1041,18 @@ env:
     visible:
       id: 'RulesPage.RuleCard.0'
     timeout: 10000
+
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+- assertVisible:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- assertVisible:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- tapOn:
+    id: 'PageHeader.BackButton'
+- waitForAnimationToEnd
 
 # Delete rule
 

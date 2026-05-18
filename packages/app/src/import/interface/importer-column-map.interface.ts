@@ -13,4 +13,5 @@ export interface ImporterColumnMapInterface {
     category: string;
     operatedAt: string;
     comment: string;
+    mcc: string;
 }
