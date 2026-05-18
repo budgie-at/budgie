@@ -2,7 +2,7 @@ import { DateRangeInterface } from '../../@generic/interface/date-range.interfac
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 
 export interface StatisticsFilterInterface {
-    readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE;
+    readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE | null;
     readonly date: DateRangeInterface | null;
     readonly categoryIds: number[] | null;
     readonly tagIds: number[] | null;
