@@ -37,17 +37,13 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# missing category} other {# missing categories}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} existing transactions match this rule."
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing categories"
-msgstr "{count} missing categories"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing category"
-msgstr "{count} missing category"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -412,7 +408,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
-#: src/import/components/import-database/import-database.tsx:49
+#: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
@@ -714,7 +710,7 @@ msgstr "Could not save tag"
 msgid "Could not select CSV file"
 msgstr "Could not select CSV file"
 
-#: src/import/components/import-database/import-database.tsx:66
+#: src/import/components/import-database/import-database.tsx:50
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
@@ -1116,7 +1112,7 @@ msgstr "Expected Return Date (Optional)"
 msgid "Expense"
 msgstr "Expense"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:59
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:47
 msgid "Expenses"
 msgstr "Expenses"
 
@@ -1255,9 +1251,9 @@ msgstr "Import accounts and transactions from Privatbank XLSX export"
 msgid "Import CSV"
 msgstr "Import CSV"
 
-#: src/import/components/import-database/import-database.tsx:46
-#: src/import/components/import-database/import-database.tsx:48
-#: src/import/components/import-database/import-database.tsx:74
+#: src/import/components/import-database/import-database.tsx:36
+#: src/import/components/import-database/import-database.tsx:38
+#: src/import/components/import-database/import-database.tsx:58
 msgid "Import Database"
 msgstr "Import Database"
 
@@ -1277,7 +1273,7 @@ msgstr "Import Privatbank"
 msgid "Import transactions from a CSV file"
 msgstr "Import transactions from a CSV file"
 
-#: src/import/components/import-database/import-database.tsx:47
+#: src/import/components/import-database/import-database.tsx:37
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
@@ -1300,12 +1296,12 @@ msgstr "Include in Net Worth"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:55
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Income"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:51
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Income and expenses"
 msgstr "Income and expenses"
 
@@ -1478,7 +1474,7 @@ msgstr "Merge into another category"
 msgid "Merge into another tag"
 msgstr "Merge into another tag"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:28
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
 msgstr "Missing categories"
 
@@ -1930,7 +1926,7 @@ msgstr "Restore"
 msgid "Restore Account?"
 msgstr "Restore Account?"
 
-#: src/import/components/import-database/import-database.tsx:75
+#: src/import/components/import-database/import-database.tsx:59
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
@@ -2523,7 +2519,7 @@ msgid "Transaction not found"
 msgstr "Transaction not found"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:62
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:50
 msgid "Transactions"
 msgstr "Transactions"
 
@@ -2608,7 +2604,6 @@ msgid "Ukrainian"
 msgstr "Ukrainian"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:32
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
@@ -2632,7 +2627,7 @@ msgid "Unknown"
 msgstr "Unknown"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
 msgid "Untagged"
 msgstr "Untagged"
 

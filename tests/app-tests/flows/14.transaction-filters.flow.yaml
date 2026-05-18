@@ -51,13 +51,11 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'UncategorizedTransactionsPill.Button'
-      timeout: 5000
 - assertVisible: '1 missing category'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:
       visible: 'Missing categories'
-      timeout: 5000
 - assertVisible: 'Income'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Uncategorized_Income'
@@ -68,7 +66,6 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'TransactionCard.Label.E2E_Filter_Income'
-      timeout: 5000
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'

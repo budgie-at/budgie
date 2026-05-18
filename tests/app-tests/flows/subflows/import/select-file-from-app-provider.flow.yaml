@@ -106,7 +106,6 @@ env:
 
 - tapOn:
       id: '${FILE_ROW_ID_MATCH}'
-      point: '30%,10%'
       retryTapIfNoChange: true
 
 - runFlow:
