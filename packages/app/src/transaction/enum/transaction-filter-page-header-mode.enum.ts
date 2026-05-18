@@ -1,5 +1,4 @@
 export enum TransactionFilterPageHeaderModeEnum {
     MISSING_CATEGORIES = 'MISSING_CATEGORIES',
-    UNCATEGORIZED = 'UNCATEGORIZED',
     UNTAGGED = 'UNTAGGED'
 }
