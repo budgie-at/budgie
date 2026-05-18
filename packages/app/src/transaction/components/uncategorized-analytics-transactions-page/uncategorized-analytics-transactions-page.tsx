@@ -7,9 +7,9 @@ import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filt
 import { useGetUncategorizedTransactionsQuery } from '../../query/use-get-uncategorized-transactions.query';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
 
-import type { UncategorizedAnalyticsTransactionsPagePropsInterface } from '../../interface/uncategorized-analytics-transactions-page-props.interface';
+import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 
-const buildTypes = (params: UncategorizedAnalyticsTransactionsPagePropsInterface['params']): TransactionTypeEnum[] => {
+const buildTypes = (params: AnalyticsTransactionsRouteParamsInterface): TransactionTypeEnum[] => {
     if (isNotEmptyArray(params.types)) {
         return params.types;
     }
@@ -29,7 +29,7 @@ const buildFilterIds = (values?: number[]): number[] | null => {
     return null;
 };
 
-const buildFilters = ({ params }: UncategorizedAnalyticsTransactionsPagePropsInterface): TransactionFilterInterface => ({
+const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): TransactionFilterInterface => ({
     ...DEFAULT_TRANSACTION_FILTER,
     types: buildTypes(params),
     date: {
@@ -40,9 +40,9 @@ const buildFilters = ({ params }: UncategorizedAnalyticsTransactionsPagePropsInt
     tagIds: buildFilterIds(params.tagIds)
 });
 
-export const UncategorizedAnalyticsTransactionsPage = ({ params }: UncategorizedAnalyticsTransactionsPagePropsInterface) => {
+export const UncategorizedAnalyticsTransactionsPage = (params: AnalyticsTransactionsRouteParamsInterface) => {
     const router = useRouter();
-    const filters = buildFilters({ params });
+    const filters = buildFilters(params);
     const { sections, loadMore, isLoading } = useGetUncategorizedTransactionsQuery(filters);
 
     const handleGoBack = () => void router.back();
