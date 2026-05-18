@@ -50,6 +50,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
         suggestRuleData,
         updateRuleData,
         matchingRulesCount,
+        matchingRuleIds,
         onRuleCreated,
         onDismiss,
         onCreatingChange
@@ -105,6 +106,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     suggestRuleData={suggestRuleData}
                     updateRuleData={updateRuleData}
                     matchingRulesCount={matchingRulesCount}
+                    matchingRuleIds={matchingRuleIds}
                     onRuleCreated={onRuleCreated}
                     onDismiss={onDismiss}
                     onCreatingChange={onCreatingChange}

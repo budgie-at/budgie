@@ -1,121 +1,81 @@
-import { StatisticsFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator } from 'react-native';
+import { TransactionTypeEnum } from '@budgie/contracts';
+import { useLocalSearchParams } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { Page } from '../../../@generic/component/page/page';
-import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { TransactionSectionsList } from '../../../transaction/components/transaction-sections-list/transaction-sections-list';
-import { TransactionFilterPageHeader } from '../../../transaction/components/transactions-page-header/transaction-filter-page-header';
-import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
+import { StatisticsAnalyticsTransactionsPage } from '../../../transaction/components/statistics-analytics-transactions-page/statistics-analytics-transactions-page';
+import { UncategorizedAnalyticsTransactionsPage } from '../../../transaction/components/uncategorized-analytics-transactions-page/uncategorized-analytics-transactions-page';
+import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 
-interface RouteParams {
-    readonly startDate?: string;
-    readonly endDate?: string;
-    readonly categoryId?: string;
-    readonly tagId?: string;
-    readonly type?: string;
-}
+import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
 
-const UNTAGGED_PARAM = 'untagged';
-
-const isUntaggedNav = (params: RouteParams): boolean => params.tagId === UNTAGGED_PARAM;
-
-const buildCategoryIds = (params: RouteParams): number[] | null => {
-    if (isDefined(params.categoryId)) {
-        return [Number(params.categoryId)];
+const getRouteParam = (value: string | string[] | undefined): string | null => {
+    if (Array.isArray(value)) {
+        return value[0] ?? null;
     }
 
-    if (isUntaggedNav(params)) {
-        return null;
+    return value ?? null;
+};
+
+const getRouteParamValues = (value: string | string[] | undefined): string[] => {
+    const values = Array.isArray(value) ? value : [value].filter(isDefined);
+
+    return values.flatMap(item => item.split(',')).filter(isNotEmptyString);
+};
+
+const getTransactionType = (value: string | null): TransactionTypeEnum | null => {
+    if (value === TransactionTypeEnum.INCOME) {
+        return TransactionTypeEnum.INCOME;
     }
 
-    if (isDefined(params.type) && !isDefined(params.tagId)) {
-        return [];
+    if (value === TransactionTypeEnum.EXPENSE) {
+        return TransactionTypeEnum.EXPENSE;
     }
 
     return null;
 };
 
-const buildTagIds = (params: RouteParams): number[] | null => {
-    if (isUntaggedNav(params)) {
-        return [];
-    }
+const getTransactionTypes = (value: string | string[] | undefined): TransactionTypeEnum[] =>
+    getRouteParamValues(value).map(getTransactionType).filter(isDefined);
 
-    if (isDefined(params.tagId)) {
-        return [Number(params.tagId)];
-    }
-
-    return null;
-};
-
-const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
-    type: params.type as TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE,
-    date: {
-        from: isDefined(params.startDate) ? new Date(params.startDate) : null,
-        to: isDefined(params.endDate) ? new Date(params.endDate) : null
-    },
-    categoryIds: buildCategoryIds(params),
-    tagIds: buildTagIds(params)
-});
+const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
 
 export default function AnalyticsTransactionsPage() {
-    const { t } = useLingui();
-    const router = useRouter();
-    const params = useLocalSearchParams() as RouteParams;
-    const filters = buildFilters(params);
+    const searchParams = useLocalSearchParams<{
+        readonly mode?: string | string[];
+        readonly startDate?: string | string[];
+        readonly endDate?: string | string[];
+        readonly categoryId?: string | string[];
+        readonly tagId?: string | string[];
+        readonly type?: string | string[];
+        readonly types?: string | string[];
+        readonly accountIds?: string | string[];
+        readonly tagIds?: string | string[];
+    }>();
+    const mode = getRouteParam(searchParams.mode);
+    const startDate = getRouteParam(searchParams.startDate);
+    const endDate = getRouteParam(searchParams.endDate);
+    const categoryId = getRouteParam(searchParams.categoryId);
+    const tagId = getRouteParam(searchParams.tagId);
+    const type = getTransactionType(getRouteParam(searchParams.type));
+    const types = getTransactionTypes(searchParams.types);
+    const accountIds = getNumberParams(searchParams.accountIds);
+    const tagIds = getNumberParams(searchParams.tagIds);
+    const params: AnalyticsTransactionsRouteParamsInterface = {
+        ...(mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED && { mode }),
+        ...(isDefined(startDate) && { startDate }),
+        ...(isDefined(endDate) && { endDate }),
+        ...(isDefined(categoryId) && { categoryId }),
+        ...(isDefined(tagId) && { tagId }),
+        ...(isDefined(type) && { type }),
+        ...(isNotEmptyArray(types) && { types }),
+        ...(isNotEmptyArray(accountIds) && { accountIds }),
+        ...(isNotEmptyArray(tagIds) && { tagIds })
+    };
 
-    const { category } = useGetCategoryByIdQuery(isDefined(params.categoryId) ? Number(params.categoryId) : 0);
-    const tagIdsForLookup = isUntaggedNav(params) || !isDefined(params.tagId) ? [] : [Number(params.tagId)];
-    const { tags } = useGetTagByIdsQuery(tagIdsForLookup);
-    const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
+    if (params.mode === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
+        return <UncategorizedAnalyticsTransactionsPage {...params} />;
+    }
 
-    const handleGoBack = () => void router.back();
-
-    const isUntagged = isUntaggedNav(params);
-    const isUncategorized = !isUntagged && !isDefined(params.categoryId) && !isDefined(params.tagId) && isDefined(params.type);
-    const balanceAdjustmentLabel = t`Balance Adjustment`;
-    const categoriesLabel = t`Categories`;
-
-    const listEmptyState = isLoading ? (
-        <ActivityIndicator size="large" />
-    ) : (
-        <EmptyState
-            circleIcon={UserIconNameEnum.Receipt}
-            title={t`No matching transactions`}
-            titleClassName="text-md text-primary font-semibold"
-            description={t`Try adjusting your filters to see more results`}
-            descriptionClassName="text-center max-w-[250px]"
-        />
-    );
-
-    return (
-        <Page
-            header={
-                <TransactionFilterPageHeader
-                    category={category}
-                    tag={tags?.[0]}
-                    type={params.type}
-                    startDate={params.startDate}
-                    endDate={params.endDate}
-                    isUncategorized={isUncategorized}
-                    isUntagged={isUntagged}
-                    onGoBack={handleGoBack}
-                />
-            }
-        >
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={loadMore}
-                listEmptyState={listEmptyState}
-                balanceAdjustmentLabel={balanceAdjustmentLabel}
-                categoriesLabel={categoriesLabel}
-                footerSpacerMultiplier={0}
-            />
-        </Page>
-    );
+    return <StatisticsAnalyticsTransactionsPage {...params} />;
 }

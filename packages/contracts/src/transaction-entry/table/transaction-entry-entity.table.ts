@@ -48,6 +48,9 @@ export const TransactionEntryEntityTable = sqliteTable(
         index('transaction_entries_category_idx')
             .on(table.categoryId)
             .where(sql`${table.categoryId} IS NOT NULL`),
+        index('transaction_entries_uncategorized_transaction_idx')
+            .on(table.transactionId)
+            .where(sql`${table.categoryId} IS NULL AND ${table.deletedAt} IS NULL AND ${table.originalTransactionId} IS NULL`),
         index('transaction_entries_category_type_idx')
             .on(table.categoryId, table.type)
             .where(sql`${table.categoryId} IS NOT NULL`)
