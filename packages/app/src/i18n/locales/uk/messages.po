@@ -35,17 +35,13 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# транзакція без категорії} few {# транзакції без категорії} many {# транзакцій без категорії} other {# транзакцій без категорії}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing categories"
-msgstr "{count} транзакції без категорії"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:19
-msgid "{count} missing category"
-msgstr "{count} транзакція без категорії"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -410,7 +406,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
-#: src/import/components/import-database/import-database.tsx:49
+#: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
@@ -712,7 +708,7 @@ msgstr "Не вдалося зберегти тег"
 msgid "Could not select CSV file"
 msgstr "Не вдалося вибрати CSV-файл"
 
-#: src/import/components/import-database/import-database.tsx:66
+#: src/import/components/import-database/import-database.tsx:50
 msgid "Could not select database backup"
 msgstr "Не вдалося вибрати резервну копію бази даних"
 
@@ -1114,7 +1110,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:59
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:47
 msgid "Expenses"
 msgstr "Витрати"
 
@@ -1253,9 +1249,9 @@ msgstr "Імпорт рахунків та транзакцій з XLSX-експ
 msgid "Import CSV"
 msgstr "Імпортувати CSV"
 
-#: src/import/components/import-database/import-database.tsx:46
-#: src/import/components/import-database/import-database.tsx:48
-#: src/import/components/import-database/import-database.tsx:74
+#: src/import/components/import-database/import-database.tsx:36
+#: src/import/components/import-database/import-database.tsx:38
+#: src/import/components/import-database/import-database.tsx:58
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
@@ -1275,7 +1271,7 @@ msgstr "Імпорт Приватбанку"
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
-#: src/import/components/import-database/import-database.tsx:47
+#: src/import/components/import-database/import-database.tsx:37
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
@@ -1298,12 +1294,12 @@ msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:55
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:51
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
 msgid "Income and expenses"
 msgstr "Доходи й витрати"
 
@@ -1476,7 +1472,7 @@ msgstr "Об'єднати з іншою категорією"
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:28
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
 msgid "Missing categories"
 msgstr "Без категорій"
 
@@ -1928,7 +1924,7 @@ msgstr "Відновити"
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
-#: src/import/components/import-database/import-database.tsx:75
+#: src/import/components/import-database/import-database.tsx:59
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
@@ -2521,7 +2517,7 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:62
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:50
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -2606,7 +2602,6 @@ msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:32
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -2630,7 +2625,7 @@ msgid "Unknown"
 msgstr "Невідомо"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
 msgid "Untagged"
 msgstr "Без тегу"
 
