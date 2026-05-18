@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.18.0](https://github.com/budgie-at/budgie/compare/v5.17.6...v5.18.0) (2026-05-18)
+
+### Bug Fixes
+
+- **app:** address analytics review cleanups ([2028b66](https://github.com/budgie-at/budgie/commit/2028b66cba9b012ecba7815d3b736a31eb7250ce))
+- **app:** address analytics review feedback ([dbbce08](https://github.com/budgie-at/budgie/commit/dbbce08a797138aeefd1750fe68149d048357b05))
+- **app:** address reviewer polish feedback ([9a6faa8](https://github.com/budgie-at/budgie/commit/9a6faa8c3491167e6d3e313ecf7fc87244c34ba2))
+- **app:** address uncategorized insight review ([e1e69f0](https://github.com/budgie-at/budgie/commit/e1e69f0975c3cdbe7a7ef9b9a276b767180979cd))
+- **app:** align analytics route mode enum ([c2decf1](https://github.com/budgie-at/budgie/commit/c2decf172290c396badea47ff0a6f5072f970232))
+- **app:** default screenshot protection off ([874a052](https://github.com/budgie-at/budgie/commit/874a052b1300c1c3790176d1170b73e11e9829c4))
+- **app:** stabilize uncategorized transaction insight ([d0970ee](https://github.com/budgie-at/budgie/commit/d0970ee7badc8d6ea187429eff8c7ea97417149a))
+- **app:** unify missing category header mode ([36e506f](https://github.com/budgie-at/budgie/commit/36e506ff3abac8c38ffbaed6e38729fe60bed350))
+
+### Features
+
+- **app:** add uncategorized transaction insight ([bc39241](https://github.com/budgie-at/budgie/commit/bc392419c399bd82b321eea5512d11bcb8863870))
+
 ## [5.17.6](https://github.com/budgie-at/budgie/compare/v5.17.5...v5.17.6) (2026-05-16)
 
 ### Bug Fixes
