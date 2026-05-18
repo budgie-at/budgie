@@ -7,7 +7,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, settingsRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -48,6 +48,20 @@ class AppMonobankSyncService {
         } finally {
             this.isRunning = false;
         }
+    }
+
+    @Log(
+        token => `enter tokenLen=${token.length}`,
+        (result, token) => `done tokenLen=${token.length} externalIds=${result.map(account => account.externalId).join(',')}`,
+        (error, token) => `throw tokenLen=${token.length} error=${getErrorMessage(error)}`
+    )
+    async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
+        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
+        if (!isNotEmptyArray(bankAccounts)) {
+            return [];
+        }
+
+        return mapBankAccountsToPreview(bankAccounts, this.provider);
     }
 
     @Log(
@@ -208,15 +222,6 @@ class AppMonobankSyncService {
         return result;
     }
 
-    async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
-        if (!isNotEmptyArray(bankAccounts)) {
-            return [];
-        }
-
-        return mapBankAccountsToPreview(bankAccounts, this.provider);
-    }
-
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
         const bankAccounts = await new MonobankSyncService(token).syncAccounts();
 
@@ -294,13 +299,10 @@ class AppMonobankSyncService {
             return 0;
         }
 
-        const settings = await settingsRepository.getSettings();
         const inputs = newTransactions.map(bankTransaction => {
-            const rawLookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
-            const effectiveLookup =
-                isDefined(rawLookup) && !settings.applyMccDefaultCategory ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
+            const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
 
-            return mapBankTransactionToCreateInput(bankTransaction, accountId, effectiveLookup, this.provider);
+            return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
         });
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);

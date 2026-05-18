@@ -10,7 +10,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, db, settingsRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -107,16 +107,10 @@ export abstract class BaseFileBankSyncService {
             return;
         }
 
-        const settings = await settingsRepository.getSettings();
-        const applyMccDefault = settings.applyMccDefaultCategory;
-
         const transactionInputs = transactions.map(transaction => {
-            const rawLookup = isNotEmptyString(transaction.category)
-                ? (context.mccCategoryLookupMap.get(transaction.category) ?? null)
-                : null;
-            const effectiveLookup = isDefined(rawLookup) && !applyMccDefault ? { id: rawLookup.id, defaultCategoryId: null } : rawLookup;
+            const lookup = isNotEmptyString(transaction.category) ? (context.mccCategoryLookupMap.get(transaction.category) ?? null) : null;
 
-            return mapBankTransactionToCreateInput(transaction, account.id, effectiveLookup, this.provider);
+            return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
         });
 
         const upsertedTransactions = await transactionImportService.bulkUpsertImported(

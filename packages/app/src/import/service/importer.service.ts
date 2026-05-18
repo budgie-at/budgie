@@ -15,13 +15,13 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { Log, getLogger } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { categoryRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -42,12 +42,32 @@ export class ImporterService {
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
     private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
-    private applyMccDefaultCategory = false;
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
+    @Log(
+        (normalizedRow, fallbackCategoryId) =>
+            `enter mcc="${normalizedRow.mcc}" rowCategory="${normalizedRow.category}" fallbackCategoryId=${fallbackCategoryId}`,
+        (result, normalizedRow) =>
+            `done mcc="${normalizedRow.mcc}" categoryId=${result.categoryId} categorySource=${result.categorySource} mccCategoryId=${result.mccCategoryId}`,
+        (error, normalizedRow) => `throw mcc="${normalizedRow.mcc}" error=${getErrorMessage(error)}`
+    )
+    private resolveCategoryAssignment(
+        normalizedRow: NormalizedRowType,
+        fallbackCategoryId: number
+    ): { categoryId: number; categorySource: CategorySourceEnum; mccCategoryId: number | null } {
+        const mccLookup = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoryLookupMap.get(normalizedRow.mcc) ?? null) : null;
+        const mccCategoryId = mccLookup?.id ?? null;
+        const hasExplicitCategory = isNotEmptyString(normalizedRow.category);
+
+        if (!hasExplicitCategory && isDefined(mccLookup) && isPositiveNumber(mccLookup.defaultCategoryId)) {
+            return { categoryId: mccLookup.defaultCategoryId, categorySource: CategorySourceEnum.MCC_DEFAULT, mccCategoryId };
+        }
+
+        return { categoryId: fallbackCategoryId, categorySource: CategorySourceEnum.USER, mccCategoryId };
+    }
+
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
-        this.applyMccDefaultCategory = (await settingsRepository.getSettings()).applyMccDefaultCategory;
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
         [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);
@@ -140,17 +160,7 @@ export class ImporterService {
             this.parseRow(normalizedRow);
 
         const type = this.determineTransactionType(toAmount, fromInstrument);
-
-        const mccLookup = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoryLookupMap.get(normalizedRow.mcc) ?? null) : null;
-        const mccCategoryId = mccLookup?.id ?? null;
-
-        const hasExplicitCategory = isNotEmptyString(normalizedRow.category);
-        const mccDefaultCategoryId =
-            !hasExplicitCategory && this.applyMccDefaultCategory && isDefined(mccLookup) && isPositiveNumber(mccLookup.defaultCategoryId)
-                ? mccLookup.defaultCategoryId
-                : null;
-        const resolvedCategoryId = mccDefaultCategoryId ?? category.id;
-        const categorySource = isDefined(mccDefaultCategoryId) ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
+        const categoryAssignment = this.resolveCategoryAssignment(normalizedRow, category.id);
 
         const source: EntryParamsInterface = {
             account: isDefined(fromAccount) ? fromAccount : toAccount,
@@ -181,12 +191,10 @@ export class ImporterService {
             tagIds: [],
             entries: this.createEntries({
                 type,
-                categoryId: resolvedCategoryId,
-                categorySource,
+                ...categoryAssignment,
                 source,
                 dest,
-                externalId: normalizedRow.externalId,
-                mccCategoryId
+                externalId: normalizedRow.externalId
             })
         };
     }
