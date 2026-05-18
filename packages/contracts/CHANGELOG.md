@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.18.0](https://github.com/budgie-at/budgie/compare/v5.17.6...v5.18.0) (2026-05-18)
+
+### Bug Fixes
+
+- **app:** address analytics review feedback ([dbbce08](https://github.com/budgie-at/budgie/commit/dbbce08a797138aeefd1750fe68149d048357b05))
+- **app:** address uncategorized insight review ([e1e69f0](https://github.com/budgie-at/budgie/commit/e1e69f0975c3cdbe7a7ef9b9a276b767180979cd))
+
+### Features
+
+- **app:** add uncategorized transaction insight ([bc39241](https://github.com/budgie-at/budgie/commit/bc392419c399bd82b321eea5512d11bcb8863870))
+
 # [5.17.0](https://github.com/budgie-at/budgie/compare/v5.16.3...v5.17.0) (2026-05-13)
 
 ### Bug Fixes
