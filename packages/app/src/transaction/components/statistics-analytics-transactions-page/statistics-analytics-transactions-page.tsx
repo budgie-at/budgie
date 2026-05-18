@@ -10,7 +10,6 @@ import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistic
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
-import type { StatisticsAnalyticsTransactionsPagePropsInterface } from '../../interface/statistics-analytics-transactions-page-props.interface';
 
 const UNTAGGED_PARAM = 'untagged';
 
@@ -45,7 +44,7 @@ const buildTagIds = (params: AnalyticsTransactionsRouteParamsInterface): number[
 };
 
 const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): StatisticsFilterInterface => ({
-    type: params.type === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE,
+    type: params.type === TransactionTypeEnum.INCOME || params.type === TransactionTypeEnum.EXPENSE ? params.type : null,
     date: {
         from: isDefined(params.startDate) ? new Date(params.startDate) : null,
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
@@ -67,7 +66,7 @@ const getHeaderMode = (params: AnalyticsTransactionsRouteParamsInterface): Trans
     return null;
 };
 
-export const StatisticsAnalyticsTransactionsPage = ({ params }: StatisticsAnalyticsTransactionsPagePropsInterface) => {
+export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransactionsRouteParamsInterface) => {
     const router = useRouter();
     const filters = buildFilters(params);
 
