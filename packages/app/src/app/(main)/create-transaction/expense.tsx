@@ -9,12 +9,12 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
-import { normalizeRouteParam } from '../../../transaction/utils/normalize-route-param.util';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
