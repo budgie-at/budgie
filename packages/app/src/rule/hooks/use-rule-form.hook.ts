@@ -65,7 +65,7 @@ const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface): RuleC
 
     const conditions: RuleCreateInputInterface['conditions'] = prefillData.conditions.map(condition => ({
         field: condition.field,
-        operator: RuleConditionOperatorEnum.CONTAINS,
+        operator: condition.operator,
         value: condition.value,
         secondaryValue: null
     }));

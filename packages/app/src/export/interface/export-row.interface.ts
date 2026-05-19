@@ -10,4 +10,5 @@ export interface ExportRowInterface {
     category: string;
     operatedAt: string;
     comment: string;
+    mcc: string;
 }
