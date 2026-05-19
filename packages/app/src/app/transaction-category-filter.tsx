@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -43,16 +44,14 @@ export default function TransactionCategoryFilterModal() {
         router.push('/settings/categories');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all categories`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 category`;
-        }
-
-        return t`Show ${selectedCount} categories`;
-    };
+    const buildApplyLabel = () =>
+        t({
+            message: plural(selectedCount, {
+                0: 'Show all categories',
+                one: 'Show # category',
+                other: 'Show # categories'
+            })
+        });
     const applyLabel = buildApplyLabel();
 
     return (

@@ -50,8 +50,8 @@ msgid "(Beta testers)"
 msgstr "(Bêta-testeurs)"
 
 #: src/generic/component/waitlist-form/waitlist-form.tsx:104
-msgid "{formattedCount}+ people already waiting"
-msgstr "{formattedCount}+ personnes déjà inscrites"
+msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
+msgstr "{initialCount, plural, one {#+ personne attend déjà} other {#+ personnes attendent déjà}}"
 
 #: src/generic/component/open-source-section/open-source-visual-code.tsx:11
 msgid "# Audit the code yourself"
@@ -5512,7 +5512,7 @@ msgstr "Enrichissez la documentation"
 msgid "Enter transactions in both apps"
 msgstr "Saisissez les transactions dans les deux applications"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:114
+#: src/generic/component/waitlist-form/waitlist-form.tsx:119
 msgid "Enter your email"
 msgstr "Entrez votre e-mail"
 
@@ -7267,7 +7267,7 @@ msgstr "Rejoindre la liste d'attente pour un accès anticipé"
 #: src/generic/component/footer/footer.tsx:90
 #: src/generic/component/header/header.tsx:91
 #: src/generic/component/mobile-menu/mobile-menu.tsx:50
-#: src/generic/component/waitlist-form/waitlist-form.tsx:125
+#: src/generic/component/waitlist-form/waitlist-form.tsx:130
 msgid "Join Waitlist"
 msgstr "Rejoindre la liste d'attente"
 
@@ -8445,7 +8445,7 @@ msgstr "Pas de pannes de service affectant votre accès"
 msgid "No sign-up, no email, no account — install and start logging"
 msgstr "Sans inscription, sans e-mail, sans compte — installez et commencez à enregistrer"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:142
+#: src/generic/component/waitlist-form/waitlist-form.tsx:147
 msgid "No spam, ever. Unsubscribe anytime."
 msgstr "Jamais de spam. Désabonnement à tout moment."
 
@@ -10533,7 +10533,7 @@ msgstr "Certaines fonctionnalités avancées encore en développement"
 msgid "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 msgstr "Certaines applications ont véritablement besoin de capacités serveur, comme l'envoi d'emails ou le traitement de paiements. Le local-first concerne l'emplacement des données et leur propriétaire, pas l'élimination totale des serveurs. Une application local-first peut utiliser des serveurs pour des capacités spécifiques tout en gardant les données utilisateur en local. L'essentiel est que le serveur gère des actions, pas le stockage de données personnelles."
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:90
+#: src/generic/component/waitlist-form/waitlist-form.tsx:91
 msgid "Something went wrong. Please try again."
 msgstr "Une erreur s'est produite. Veuillez réessayer."
 
