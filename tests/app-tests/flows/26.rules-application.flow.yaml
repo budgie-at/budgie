@@ -220,9 +220,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 - tapOn:
     id: 'TabBar.Transactions'
@@ -380,7 +380,7 @@ env:
     id: 'RulesPage.RuleCard.0'
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+    id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
 
 - runFlow:
