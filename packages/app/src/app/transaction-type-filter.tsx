@@ -1,4 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -42,16 +43,14 @@ export default function TransactionTypeFilterModal() {
         resolveTransactionTypeFilter({ value: localValueRef.current });
     };
 
-    const buildApplyLabel = () => {
-        if (localSelectedCount === 0) {
-            return t`Show all types`;
-        }
-        if (localSelectedCount === 1) {
-            return t`Show 1 type`;
-        }
-
-        return t`Show ${localSelectedCount} types`;
-    };
+    const buildApplyLabel = () =>
+        t({
+            message: plural(localSelectedCount, {
+                0: 'Show all types',
+                one: 'Show # type',
+                other: 'Show # types'
+            })
+        });
     const applyLabel = buildApplyLabel();
 
     return (

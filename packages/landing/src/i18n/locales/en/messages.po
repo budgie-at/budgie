@@ -50,8 +50,8 @@ msgid "(Beta testers)"
 msgstr "(Beta testers)"
 
 #: src/generic/component/waitlist-form/waitlist-form.tsx:104
-msgid "{formattedCount}+ people already waiting"
-msgstr "{formattedCount}+ people already waiting"
+msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
+msgstr "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 
 #: src/generic/component/open-source-section/open-source-visual-code.tsx:11
 msgid "# Audit the code yourself"
@@ -5512,7 +5512,7 @@ msgstr "Enhance documentation"
 msgid "Enter transactions in both apps"
 msgstr "Enter transactions in both apps"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:114
+#: src/generic/component/waitlist-form/waitlist-form.tsx:119
 msgid "Enter your email"
 msgstr "Enter your email"
 
@@ -7267,7 +7267,7 @@ msgstr "Join the waitlist for early access"
 #: src/generic/component/footer/footer.tsx:90
 #: src/generic/component/header/header.tsx:91
 #: src/generic/component/mobile-menu/mobile-menu.tsx:50
-#: src/generic/component/waitlist-form/waitlist-form.tsx:125
+#: src/generic/component/waitlist-form/waitlist-form.tsx:130
 msgid "Join Waitlist"
 msgstr "Join Waitlist"
 
@@ -8445,7 +8445,7 @@ msgstr "No service outages affecting your access"
 msgid "No sign-up, no email, no account — install and start logging"
 msgstr "No sign-up, no email, no account — install and start logging"
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:142
+#: src/generic/component/waitlist-form/waitlist-form.tsx:147
 msgid "No spam, ever. Unsubscribe anytime."
 msgstr "No spam, ever. Unsubscribe anytime."
 
@@ -10533,7 +10533,7 @@ msgstr "Some advanced features still in development"
 msgid "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 msgstr "Some applications genuinely need server capabilities, like sending emails or processing payments. Local-first is about where data lives and who owns it, not about eliminating servers entirely. A local-first application can use servers for specific capabilities while keeping user data local. The key is that the server handles actions, not storage of personal data."
 
-#: src/generic/component/waitlist-form/waitlist-form.tsx:90
+#: src/generic/component/waitlist-form/waitlist-form.tsx:91
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
 
