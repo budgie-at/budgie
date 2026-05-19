@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.19.0](https://github.com/budgie-at/budgie/compare/v5.18.0...v5.19.0) (2026-05-19)
+
+### Bug Fixes
+
+- **app:** load plural rules polyfill ([37761bd](https://github.com/budgie-at/budgie/commit/37761bd167fd3ce4e834a2d405b914706ea37d65))
+- enforce non-null action target via Zod refinement and filter invalid tagIds ([dfeb83a](https://github.com/budgie-at/budgie/commit/dfeb83a502fa6e56cbaaf20c07c1ac3795b08fdf)), closes [#448](https://github.com/budgie-at/budgie/issues/448)
+
+### Features
+
+- **app:** include MCC in quick rule conditions when available ([a50476f](https://github.com/budgie-at/budgie/commit/a50476f5ef33a650e471a59e17fe80e736cf3a67)), closes [#448](https://github.com/budgie-at/budgie/issues/448)
+- **app:** plumb MCC through CSV import/export and add Maestro coverage ([86fc96f](https://github.com/budgie-at/budgie/commit/86fc96fe364a4689175d1dc0f75449ecd69b3b22)), closes [#448](https://github.com/budgie-at/budgie/issues/448)
+- **app:** plumb operator through rule prefill flow ([be4de67](https://github.com/budgie-at/budgie/commit/be4de679d60e13b4e9aa3f252ab47f6a05f5eb22)), closes [#448](https://github.com/budgie-at/budgie/issues/448)
+
 # [5.18.0](https://github.com/budgie-at/budgie/compare/v5.17.6...v5.18.0) (2026-05-18)
 
 ### Bug Fixes
