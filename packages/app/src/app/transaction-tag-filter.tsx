@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -43,16 +44,14 @@ export default function TransactionTagFilterModal() {
         router.push('/settings/tags');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all tags`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 tag`;
-        }
-
-        return t`Show ${selectedCount} tags`;
-    };
+    const buildApplyLabel = () =>
+        t({
+            message: plural(selectedCount, {
+                0: 'Show all tags',
+                one: 'Show # tag',
+                other: 'Show # tags'
+            })
+        });
     const applyLabel = buildApplyLabel();
 
     return (

@@ -1,5 +1,6 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { ReactElement } from 'react';
 import { View } from 'react-native';
@@ -37,7 +38,12 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPageP
     const matchingRulesCount = matchingRuleIds.length;
     const isMatchingRulesFilterActive = isNotEmptyArray(matchingRuleIds);
     const visibleRules = isMatchingRulesFilterActive && isDefined(rules) ? rules.filter(rule => matchingRuleIds.includes(rule.id)) : rules;
-    const matchingRulesFilterLabel = matchingRulesCount === 1 ? t`1 matching rule` : t`${matchingRulesCount} matching rules`;
+    const matchingRulesFilterLabel = t({
+        message: plural(matchingRulesCount, {
+            one: '# matching rule',
+            other: '# matching rules'
+        })
+    });
     const listHeaderComponent = isMatchingRulesFilterActive ? (
         <View style={HEADER_SPACER_STYLE} className="justify-end pb-lg">
             <View testID={RulesPageSelector.MatchingRulesFilter} className="self-start">

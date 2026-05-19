@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -43,16 +44,14 @@ export default function TransactionAccountFilterModal() {
         router.push('/create-account');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all accounts`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 account`;
-        }
-
-        return t`Show ${selectedCount} accounts`;
-    };
+    const buildApplyLabel = () =>
+        t({
+            message: plural(selectedCount, {
+                0: 'Show all accounts',
+                one: 'Show # account',
+                other: 'Show # accounts'
+            })
+        });
     const applyLabel = buildApplyLabel();
 
     return (
