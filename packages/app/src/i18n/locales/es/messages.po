@@ -403,7 +403,7 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:256
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
@@ -1324,7 +1324,7 @@ msgstr "Indexando {done} de {total}"
 msgid "Invalid file"
 msgstr "Archivo inválido"
 
-#: src/app/(tabs)/settings/import.tsx:247
+#: src/app/(tabs)/settings/import.tsx:248
 msgid "Is Planned"
 msgstr "Es planificado"
 
@@ -1447,6 +1447,10 @@ msgstr "coincide"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Coincide con regex"
+
+#: src/app/(tabs)/settings/import.tsx:244
+msgid "MCC"
+msgstr "MCC"
 
 #: src/app/rule-mcc-selector.tsx:48
 msgid "MCC categories are not loaded"

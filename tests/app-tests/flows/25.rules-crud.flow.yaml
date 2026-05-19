@@ -52,9 +52,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Edit Rule (change condition value to "Netflix Updated") ---
 
@@ -78,18 +78,18 @@ env:
       id: 'RulesPage.RuleCard.0'
     timeout: 5000
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Toggle Enabled/Disabled ---
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+    id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
 
 - tapOn:
-    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+    id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
 
 - runFlow:
@@ -185,9 +185,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
@@ -264,9 +264,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
@@ -354,9 +354,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 
@@ -442,9 +442,9 @@ env:
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Conditions'
+    id: 'RulesPage.RuleCardConditions.0'
 - assertVisible:
-    id: 'RulesPage.RuleCard.0.Actions'
+    id: 'RulesPage.RuleCardActions.0'
 
 # --- Delete Rule (clean up) ---
 

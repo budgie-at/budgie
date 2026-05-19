@@ -10,4 +10,5 @@ export interface ImporterRowInterface {
     category: CategoryEntityInterface;
     operatedAt: Date;
     isPlanned: boolean;
+    mccCategoryId: number | null;
 }

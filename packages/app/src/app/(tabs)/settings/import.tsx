@@ -241,6 +241,7 @@ export default function ImportScreen() {
                     headers={headers}
                     selectedHeaders={selectedHeaders}
                 />
+                <ImportColumnMapField control={control} name="mcc" label={t`MCC`} headers={headers} selectedHeaders={selectedHeaders} />
                 <ImportColumnMapField
                     control={control}
                     name="isPlanned"
