@@ -35,6 +35,10 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# categoría pendiente} other {# categorías pendientes}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} transacciones existentes coinciden con esta regla."
@@ -337,8 +341,8 @@ msgstr "Columnas disponibles"
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/app/(main)/analytics/transactions.tsx:81
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
@@ -419,10 +423,10 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:82
 #: src/app/(tabs)/settings/categories.tsx:85
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
 msgstr "Categorías"
 
@@ -1106,7 +1110,7 @@ msgstr "Fecha de devolución esperada (Opcional)"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:47
 msgid "Expenses"
 msgstr "Gastos"
 
@@ -1290,10 +1294,14 @@ msgstr "Incluir en patrimonio neto"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
+
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+msgid "Income and expenses"
+msgstr "Ingresos y gastos"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:26
 msgid "Income by category"
@@ -1468,6 +1476,10 @@ msgstr "Fusionar con otra categoría"
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+msgid "Missing categories"
+msgstr "Categorías sin asignar"
+
 #: src/app/(main)/create-account/index.tsx:39
 msgid "Money lent or borrowed"
 msgstr "Dinero prestado o recibido"
@@ -1585,8 +1597,8 @@ msgstr "No hay elementos para guardar"
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
-#: src/app/(main)/analytics/transactions.tsx:89
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
@@ -1636,7 +1648,7 @@ msgstr "Ninguna etiqueta coincide con tu búsqueda"
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
@@ -2297,7 +2309,7 @@ msgstr "Iniciar importación"
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
@@ -2509,7 +2521,7 @@ msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:50
 msgid "Transactions"
 msgstr "Transacciones"
 
@@ -2569,8 +2581,8 @@ msgstr "Prueba con un término de búsqueda diferente"
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
-#: src/app/(main)/analytics/transactions.tsx:91
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
@@ -2594,7 +2606,6 @@ msgid "Ukrainian"
 msgstr "Ucraniano"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Sin categoría"
 
@@ -2618,7 +2629,7 @@ msgid "Unknown"
 msgstr "Desconocido"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
 msgid "Untagged"
 msgstr "Sin etiqueta"
 

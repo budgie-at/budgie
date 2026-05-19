@@ -1,5 +1,8 @@
+import { Log } from '@budgie/logger';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
+
+import { getErrorMessage } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
@@ -14,6 +17,17 @@ import { translationDrainerService } from '../../ai/service/translation-drainer.
 import { authService } from '../../auth/service/auth.service';
 
 class DatabaseImportService {
+    @Log(
+        sourceUri => `enter sourceUri="${sourceUri}"`,
+        (result, sourceUri) => `done result=${String(result)} sourceUri="${sourceUri}"`,
+        (error, sourceUri) => `throw sourceUri="${sourceUri}" error=${getErrorMessage(error)}`
+    )
+    async importFromUri(sourceUri: string): Promise<void> {
+        await this.replaceFromUri(sourceUri);
+        await authService.clearAllPins();
+        await reloadApp();
+    }
+
     async replaceFromUri(sourceUri: string): Promise<void> {
         const destinationPath = this.getDestinationPath();
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
@@ -24,12 +38,6 @@ class DatabaseImportService {
         this.deleteDestinationFiles(destinationPath, tempPath);
         this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
         this.copyDatabaseSidecars(sourceUri, destinationPath);
-    }
-
-    async importFromUri(sourceUri: string): Promise<void> {
-        await this.replaceFromUri(sourceUri);
-        await authService.clearAllPins();
-        await reloadApp();
     }
 
     private replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): void {

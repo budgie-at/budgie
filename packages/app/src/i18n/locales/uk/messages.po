@@ -35,6 +35,10 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# транзакція без категорії} few {# транзакції без категорії} many {# транзакцій без категорії} other {# транзакцій без категорії}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
@@ -337,8 +341,8 @@ msgstr "Доступні стовпці"
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/app/(main)/analytics/transactions.tsx:81
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -419,10 +423,10 @@ msgid "Cash"
 msgstr "Готівка"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:82
 #: src/app/(tabs)/settings/categories.tsx:85
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
 msgstr "Категорії"
 
@@ -1106,7 +1110,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:47
 msgid "Expenses"
 msgstr "Витрати"
 
@@ -1290,10 +1294,14 @@ msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
+
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+msgid "Income and expenses"
+msgstr "Доходи й витрати"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:26
 msgid "Income by category"
@@ -1468,6 +1476,10 @@ msgstr "Об'єднати з іншою категорією"
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
 
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+msgid "Missing categories"
+msgstr "Без категорій"
+
 #: src/app/(main)/create-account/index.tsx:39
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
@@ -1585,8 +1597,8 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/app/(main)/analytics/transactions.tsx:89
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1636,7 +1648,7 @@ msgstr "Жоден тег не відповідає вашому пошуку"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -2297,7 +2309,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -2509,7 +2521,7 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:50
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -2569,8 +2581,8 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/app/(main)/analytics/transactions.tsx:91
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -2594,7 +2606,6 @@ msgid "Ukrainian"
 msgstr "Українська"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -2618,7 +2629,7 @@ msgid "Unknown"
 msgstr "Невідомо"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
 msgid "Untagged"
 msgstr "Без тегу"
 
