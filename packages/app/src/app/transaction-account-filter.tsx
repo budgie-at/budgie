@@ -19,7 +19,6 @@ import { TransactionFiltersSelector } from '../transaction/components/transactio
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -44,15 +43,13 @@ export default function TransactionAccountFilterModal() {
         router.push('/create-account');
     };
 
-    const buildApplyLabel = () =>
-        t({
-            message: plural(selectedCount, {
-                0: 'Show all accounts',
-                one: 'Show # account',
-                other: 'Show # accounts'
-            })
-        });
-    const applyLabel = buildApplyLabel();
+    const applyLabel = t({
+        message: plural(selectedCount, {
+            0: 'Show all accounts',
+            one: 'Show # account',
+            other: 'Show # accounts'
+        })
+    });
 
     return (
         <FilterSheet>
