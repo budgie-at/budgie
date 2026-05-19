@@ -9,7 +9,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Alert } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
@@ -17,7 +17,7 @@ import { RuleConditionInputInterface } from '../../interface/rule-condition-inpu
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
-import { selectSuggestCondition } from '../../util/select-suggest-condition.util';
+import { selectSuggestConditions } from '../../util/select-suggest-condition.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 const serializeCondition = (condition: RuleConditionInputInterface): string =>
@@ -47,17 +47,17 @@ const findDuplicateRule = (
     );
 
 const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCreateInputInterface | null => {
-    const condition = selectSuggestCondition(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
+    const conditions = selectSuggestConditions(suggestRuleData.title, suggestRuleData.mccCode, suggestRuleData.comment);
 
-    if (!isDefined(condition)) {
+    if (!isDefined(conditions)) {
         return null;
     }
 
-    const categoryAction = isDefined(suggestRuleData.categoryId)
+    const categoryAction = isPositiveNumber(suggestRuleData.categoryId)
         ? [{ type: RuleActionTypeEnum.SET_CATEGORY as const, categoryId: suggestRuleData.categoryId, tagId: null, accountId: null }]
         : [];
 
-    const tagActions = suggestRuleData.tagIds.map(tagId => ({
+    const tagActions = suggestRuleData.tagIds.filter(isPositiveNumber).map(tagId => ({
         type: RuleActionTypeEnum.ADD_TAG as const,
         categoryId: null,
         tagId,
@@ -67,7 +67,7 @@ const buildRuleCreateInput = (suggestRuleData: SuggestRuleDataInterface): RuleCr
     return {
         enabled: true,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-        conditions: [condition],
+        conditions,
         actions: [...categoryAction, ...tagActions]
     };
 };
