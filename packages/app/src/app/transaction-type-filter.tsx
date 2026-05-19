@@ -43,15 +43,13 @@ export default function TransactionTypeFilterModal() {
         resolveTransactionTypeFilter({ value: localValueRef.current });
     };
 
-    const buildApplyLabel = () =>
-        t({
-            message: plural(localSelectedCount, {
-                0: 'Show all types',
-                one: 'Show # type',
-                other: 'Show # types'
-            })
-        });
-    const applyLabel = buildApplyLabel();
+    const applyLabel = t({
+        message: plural(localSelectedCount, {
+            0: 'Show all types',
+            one: 'Show # type',
+            other: 'Show # types'
+        })
+    });
 
     return (
         <FilterSheet>
