@@ -1,4 +1,5 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -93,7 +94,14 @@ export const TransactionFieldIcons = (props: TransactionFieldIconsPropsInterface
 
     const showSplitIcon = isDefined(onSplitPress);
     const showConsolidationIcon = isDefined(onConsolidationPress);
-    const splitValue = isSplitActive ? t`${splitEntryCount} items` : void 0;
+    const splitValue = isSplitActive
+        ? t({
+              message: plural(splitEntryCount, {
+                  one: '# item',
+                  other: '# items'
+              })
+          })
+        : void 0;
     const splitEnabled = isAmountPositive || isSplitActive;
     const categoryIcon = category?.icon ?? UserIconNameEnum.Folder;
 

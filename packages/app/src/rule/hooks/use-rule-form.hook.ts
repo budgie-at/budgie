@@ -7,6 +7,7 @@ import {
     RuleCreateInputSchema
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -65,7 +66,7 @@ const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface): RuleC
 
     const conditions: RuleCreateInputInterface['conditions'] = prefillData.conditions.map(condition => ({
         field: condition.field,
-        operator: RuleConditionOperatorEnum.CONTAINS,
+        operator: condition.operator,
         value: condition.value,
         secondaryValue: null
     }));
@@ -122,7 +123,12 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
         return confirmAlert({
             title: t`Apply to existing transactions?`,
-            message: t`${count} existing transactions match this rule.`,
+            message: t({
+                message: plural(count, {
+                    one: '# existing transaction matches this rule.',
+                    other: '# existing transactions match this rule.'
+                })
+            }),
             confirmText: t`Apply`,
             cancelText: t`Skip`
         });

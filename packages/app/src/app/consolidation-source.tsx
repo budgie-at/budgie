@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { dismissAllOrReplace } from '../@generic/utils/dismiss-all-or-replace.util';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
 import { useConsolidationSourceModal } from '../transaction/context/consolidation-source-modal.context';
 
@@ -17,6 +18,11 @@ export default function ConsolidationSourceModal() {
 
     const handleClose = () => {
         resolveConsolidationSource(null);
+    };
+
+    const handleRevertSuccess = () => {
+        resolveConsolidationSource(null, { skipBack: true });
+        dismissAllOrReplace('/');
     };
 
     useEffect(
@@ -40,7 +46,11 @@ export default function ConsolidationSourceModal() {
     return (
         <View style={containerStyle} collapsable={false}>
             <Stack.Screen options={screenOptions} />
-            <ConsolidationSourceModalContent transactionId={currentParams.transactionId} onClose={handleClose} />
+            <ConsolidationSourceModalContent
+                transactionId={currentParams.transactionId}
+                onClose={handleClose}
+                onRevertSuccess={handleRevertSuccess}
+            />
         </View>
     );
 }

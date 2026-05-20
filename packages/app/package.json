@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "5.18.0",
+    "version": "5.21.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -29,6 +29,7 @@
         "@budgie/logger": "workspace:*",
         "@expo/fingerprint": "~0.16.6",
         "@formatjs/intl": "^3.1.8",
+        "@formatjs/intl-pluralrules": "^6.3.7",
         "@hookform/resolvers": "^5.2.2",
         "@legendapp/list": "^2.0.18",
         "@lingui/core": "^5.7.0",
