@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -18,7 +19,6 @@ import { TransactionFiltersSelector } from '../transaction/components/transactio
 import { useTransactionCategoryFilterModal } from '../transaction/context/transaction-category-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionCategoryFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -43,17 +43,13 @@ export default function TransactionCategoryFilterModal() {
         router.push('/settings/categories');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all categories`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 category`;
-        }
-
-        return t`Show ${selectedCount} categories`;
-    };
-    const applyLabel = buildApplyLabel();
+    const applyLabel = t({
+        message: plural(selectedCount, {
+            0: 'Show all categories',
+            one: 'Show # category',
+            other: 'Show # categories'
+        })
+    });
 
     return (
         <FilterSheet>
