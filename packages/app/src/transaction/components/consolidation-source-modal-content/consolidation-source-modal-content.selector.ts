@@ -7,5 +7,6 @@ export const ConsolidationSourceModalSelector = {
         `ConsolidationSourceModal.RowAmount.${index}.${normalizePart(entryType)}.${normalizePart(amount)}` as const,
     RowFromAccount: (index: number, title: string) => `ConsolidationSourceModal.RowFromAccount.${index}.${normalizePart(title)}` as const,
     RowToAccount: (index: number, title: string) => `ConsolidationSourceModal.RowToAccount.${index}.${normalizePart(title)}` as const,
+    RevertButton: 'ConsolidationSourceModal.RevertButton',
     DoneButton: 'ConsolidationSourceModal.DoneButton'
 } as const;

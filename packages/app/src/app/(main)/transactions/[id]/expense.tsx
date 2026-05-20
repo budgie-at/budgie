@@ -11,6 +11,7 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
+import { dismissAllOrReplace } from '../../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
@@ -20,6 +21,7 @@ import { SimpleQuickForm } from '../../../../transaction/components/simple-quick
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { useConsolidationSourceModal } from '../../../../transaction/context/consolidation-source-modal.context';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
+import { useRevertConsolidation } from '../../../../transaction/hook/use-revert-consolidation.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
@@ -62,8 +64,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
     const sourceAccount = sourceEntry.account;
-    const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
+    const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
 
     const handleOpenRefundSources = () => void openConsolidationSourceModal({ transactionId });
 
@@ -85,7 +87,11 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                         title={t`Edit Expense`}
                         onGoBack={handleGoBack}
                         right={
-                            <TransactionActionsMenu onDelete={handleDelete} isConsolidated={isConsolidated}>
+                            <TransactionActionsMenu
+                                onDelete={handleDelete}
+                                isConsolidated={isConsolidated}
+                                {...(isConsolidated && { onRevert: handleRevert })}
+                            >
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }
@@ -97,7 +103,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     transactionType={TransactionTypeEnum.EXPENSE}
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
-                    mccCategoryId={mccCategoryId}
+                    mccCategoryId={sourceEntry.mccCategoryId ?? null}
                     amountTopContent={<RefundedPill transaction={transaction} onPress={handleOpenRefundSources} />}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}

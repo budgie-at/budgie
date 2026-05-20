@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
 
-import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionConsolidationTypeEnum, TransactionEntryEntityTable } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { transactionService } from '@app/transaction/service/transaction.service';
 
 const PRECISION = 1_000_000;
 
@@ -40,5 +42,36 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
         const result = await transferConsolidationService.consolidate();
         expect(result.consolidated).toBe(0);
+    });
+
+    it('reverts an ATM cash withdrawal canonical and restores the source expense', async () => {
+        const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
+        const expense = seedAtmExpense(bankAccount.id);
+
+        await transferConsolidationService.consolidate();
+
+        const canonical = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)[0];
+        expect(canonical).toBeDefined();
+
+        await transactionService.unconsolidateById(canonical.id);
+
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);
+        expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+
+        const restoredEntries = testDb
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.transactionId, expense.id))
+            .all();
+        expect(restoredEntries).toHaveLength(1);
+        expect(restoredEntries[0].originalTransactionId).toBeNull();
+
+        const leftoverEntries = testDb
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.transactionId, canonical.id))
+            .all();
+        expect(leftoverEntries).toHaveLength(0);
     });
 });
