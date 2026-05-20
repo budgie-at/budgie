@@ -29,8 +29,9 @@ Maestro flows for Budgie.
 1. Navigation coverage belongs in dedicated navigation flows. Business flows should not repeatedly retest the same navigation path.
 2. Shared subflows should remove duplication, but not hide uncertain behavior behind generic retries.
 3. Coordinate taps are last resort only. Prefer app selectors whenever possible.
-4. Shared subflows must have one clear responsibility. Delete thin wrappers that only rename parameters or forward to another flow.
-5. Use plain step sequences over nested `runFlow` blocks when the steps are linear and expected.
+4. For native confirmation dialogs whose button text also exists behind the dialog, tap the dialog action by `text` plus the proven dialog `index`. Do not use point taps for alert buttons.
+5. Shared subflows must have one clear responsibility. Delete thin wrappers that only rename parameters or forward to another flow.
+6. Use plain step sequences over nested `runFlow` blocks when the steps are linear and expected.
 
 ## File Picker Rules
 
@@ -41,6 +42,8 @@ Maestro flows for Budgie.
 3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text only when it is actually visible and assert the picker root state separately.
 4. When debugging picker failures, inspect live hierarchy before changing selectors. Labels and tappable container ids are often different nodes.
 5. Use the same rule for native selector sheets: hierarchy often exposes a stable visible placeholder or title text that is more reliable than an internal input id.
+6. Do not change shared file-picker or import subflows while implementing a business-flow feature unless the task explicitly asks for harness work. If a feature flow fails before fixture import completes, treat it as environment, simulator state, fixture setup, or harness flakiness first; restore shared subflows to their prior behavior and get explicit approval before editing `flows/subflows/import/*`.
+7. Do not add coordinate taps, alternate picker strategies, or wider waits to shared import subflows as a reaction to one scenario failure. Prove the issue across multiple affected flows or isolate the workaround inside the scenario only after approval.
 
 ## Import Rules
 
