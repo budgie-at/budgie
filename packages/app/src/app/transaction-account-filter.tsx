@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -18,7 +19,6 @@ import { TransactionFiltersSelector } from '../transaction/components/transactio
 import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -43,17 +43,13 @@ export default function TransactionAccountFilterModal() {
         router.push('/create-account');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all accounts`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 account`;
-        }
-
-        return t`Show ${selectedCount} accounts`;
-    };
-    const applyLabel = buildApplyLabel();
+    const applyLabel = t({
+        message: plural(selectedCount, {
+            0: 'Show all accounts',
+            one: 'Show # account',
+            other: 'Show # accounts'
+        })
+    });
 
     return (
         <FilterSheet>
