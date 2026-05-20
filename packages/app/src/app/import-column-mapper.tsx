@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
@@ -27,7 +28,12 @@ export default function ImportColumnMapperModal() {
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const hasCurrentValue = isNotEmptyString(currentValue);
     const availableCount = availableHeaders.length;
-    const description = t`${availableCount} columns available`;
+    const description = t({
+        message: plural(availableCount, {
+            one: '# column available',
+            other: '# columns available'
+        })
+    });
 
     const containerStyle = { flex: 1, backgroundColor };
 
