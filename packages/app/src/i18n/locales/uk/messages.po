@@ -43,6 +43,10 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
+
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Ця категорія має # транзакцію. Виберіть іншу категорію, щоб перепризначити її.} few {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.} many {Ця категорія має # транзакцій. Виберіть іншу категорію, щоб перепризначити їх.} other {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.}}"
@@ -50,14 +54,6 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing categories"
-msgstr "{count} відсутні категорії"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing category"
-msgstr "{count} відсутня категорія"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
