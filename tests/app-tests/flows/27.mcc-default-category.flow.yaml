@@ -44,15 +44,15 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: 'e2e-mcc-default-category(, csv)?'
+          FILE_ROW_ID_MATCH: 'e2e-mcc-default-category.*'
 
 - extendedWaitUntil:
       visible:
-          id: 'CsvPage.Preset.Budgie'
+          id: 'ImportScreen.PresetChip.Budgie'
       timeout: 15000
 
 - tapOn:
-      id: 'CsvPage.Preset.Budgie'
+      id: 'ImportScreen.PresetChip.Budgie'
 
 - tapOn:
       id: 'CsvPage.StartImportButton'
@@ -65,49 +65,25 @@ appId: ${APP_ID}
           id: 'TabBar.Home'
       timeout: 10000
 
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'e2e csv wallet USD'
+
 - scrollUntilVisible:
       element:
-          id: 'TransactionCard.Label.E2E_MCC_Groceries'
+          id: 'TransactionCard.Label.E2E_MCC_No_Code'
       direction: DOWN
       timeout: 10000
       speed: 20
       visibilityPercentage: 30
+      centerElement: true
 
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.Category.Groceries'
-      timeout: 3000
-
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.E2E_MCC_Restaurant'
-      direction: DOWN
-      timeout: 10000
-      speed: 20
-      visibilityPercentage: 30
-
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Category.Restaurants & Cafes'
-      timeout: 3000
-
-- scrollUntilVisible:
-      element:
-          id: 'TransactionCard.Label.E2E_MCC_Fuel'
-      direction: DOWN
-      timeout: 10000
-      speed: 20
-      visibilityPercentage: 30
-
-- waitForAnimationToEnd
-
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Category.Car & Fuel'
+          id: 'TransactionCard.Category.Other'
       timeout: 3000
 
 - scrollUntilVisible:
@@ -117,25 +93,59 @@ appId: ${APP_ID}
       timeout: 10000
       speed: 20
       visibilityPercentage: 30
+      centerElement: true
 
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.Category.Health & Medical'
+          id: 'TransactionCard.Category.Health_Medical'
       timeout: 3000
 
 - scrollUntilVisible:
       element:
-          id: 'TransactionCard.Label.E2E_MCC_No_Code'
+          id: 'TransactionCard.Label.E2E_MCC_Fuel'
       direction: DOWN
       timeout: 10000
       speed: 20
       visibilityPercentage: 30
+      centerElement: true
 
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.Category.Other'
+          id: 'TransactionCard.Category.Car_Fuel'
+      timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_MCC_Restaurant'
+      direction: DOWN
+      timeout: 10000
+      speed: 20
+      visibilityPercentage: 30
+      centerElement: true
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Category.Restaurants_Cafes'
+      timeout: 3000
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_MCC_Groceries'
+      direction: DOWN
+      timeout: 10000
+      speed: 20
+      visibilityPercentage: 30
+      centerElement: true
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Category.Groceries'
       timeout: 3000
