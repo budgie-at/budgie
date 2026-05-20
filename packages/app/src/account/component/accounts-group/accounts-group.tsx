@@ -1,5 +1,6 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -52,6 +53,12 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
     const handleSelectSingle = (id: number) => void onSelect(id);
 
     const arrowIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
+    const accountsCountLabel = t({
+        message: plural(accountsCount, {
+            one: '# account',
+            other: '# accounts'
+        })
+    });
 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
@@ -69,9 +76,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
 
                     <View className="gap-y-xxs mr-auto">
                         <Text className="text-sm text-secondary-foreground font-medium">{t(ACCOUNT_TYPE[type])}</Text>
-                        <Text className="text-sm text-secondary-foreground">
-                            <Trans>{accountsCount} accounts</Trans>
-                        </Text>
+                        <Text className="text-sm text-secondary-foreground">{accountsCountLabel}</Text>
                     </View>
 
                     {isAllSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
