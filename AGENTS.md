@@ -453,6 +453,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands
+5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
 ## E2E Testing
 

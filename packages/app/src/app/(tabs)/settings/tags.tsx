@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -38,9 +39,15 @@ export default function Tags() {
     const handleDeleteTag = async (id: number) => {
         const count = await tagService.countTransactions(id);
         if (isPositiveNumber(count)) {
+            const description = t({
+                message: plural(count, {
+                    one: 'This tag has # transaction. Select another tag to reassign it to.',
+                    other: 'This tag has # transactions. Select another tag to reassign them to.'
+                })
+            });
             const targetTagIds = await openTagsSelector({
                 excludeTagIds: [id],
-                description: t`This tag has transactions. Select another tag to reassign them to.`,
+                description,
                 singleSelect: true
             });
 
