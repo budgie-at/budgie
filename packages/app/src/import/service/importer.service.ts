@@ -27,12 +27,13 @@ import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
-import { EntryParamsInterface } from '../interface/entry-params.interface';
-import { ImportProgressInterface } from '../interface/import-progress.interface';
-import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
-import { ImporterRowInterface } from '../interface/importer-row.interface';
-import { NormalizedRowType } from '../type/normalized-row.type';
+
+import type { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
+import type { EntryParamsInterface } from '../interface/entry-params.interface';
+import type { ImportProgressInterface } from '../interface/import-progress.interface';
+import type { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
+import type { ImporterRowInterface } from '../interface/importer-row.interface';
+import type { NormalizedRowType } from '../type/normalized-row.type';
 
 const logger = getLogger('ImporterService');
 
