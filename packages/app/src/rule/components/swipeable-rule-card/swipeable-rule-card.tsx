@@ -150,18 +150,15 @@ export const SwipeableRuleCard = (props: Props) => {
 
     const isCreating = status === 'creating';
     const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
-    const pillClassName = layout === 'wide' ? 'self-start min-w-[160px] max-w-[85%]' : 'self-start';
+    const cardClassName = layout === 'wide' ? 'items-center' : 'items-start';
+    const buttonClassName = layout === 'wide' ? 'self-center max-w-[85%]' : 'self-start max-w-[85%]';
+    const pillClassName = layout === 'wide' ? 'self-center max-w-full' : 'self-start';
 
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View testID={cardTestID}>
-                    <HapticPressable
-                        testID={buttonTestID}
-                        onPress={handleYesButtonPress}
-                        disabled={isCreating}
-                        className="self-start max-w-[85%]"
-                    >
+                <View testID={cardTestID} className={cardClassName}>
+                    <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className={buttonClassName}>
                         <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent}>
                             {descriptionText}
                         </RuleIndicatorPill>
