@@ -465,6 +465,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
+10. Treat `tests/app-tests/flows/subflows/import/*` as shared harness infrastructure. Do not edit those import picker subflows to fix a single business-flow failure unless the user explicitly approves harness changes; restore shared behavior and debug simulator or fixture state first.
 
 ### Maestro Robustness
 

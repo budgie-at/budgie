@@ -1,11 +1,11 @@
 appId: ${APP_ID}
 ---
 - extendedWaitUntil:
-    visible: 'Are you sure?'
+    visible: 'Revert consolidation?'
     timeout: 10000
 - tapOn:
-    text: 'Delete'
+    text: 'Revert'
     index: 0
 - extendedWaitUntil:
-    notVisible: 'Are you sure?'
+    notVisible: 'Revert consolidation?'
     timeout: 15000
