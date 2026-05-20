@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.21.0](https://github.com/budgie-at/budgie/compare/v5.20.1...v5.21.0) (2026-05-20)
+
+### Features
+
+- **app:** add consolidation revert action ([bf9adfa](https://github.com/budgie-at/budgie/commit/bf9adfaa08e8f919bb04e566c1bf2b2dcd5a17f8))
+
 ## [5.20.1](https://github.com/budgie-at/budgie/compare/v5.20.0...v5.20.1) (2026-05-20)
 
 ### Bug Fixes
