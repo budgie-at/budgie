@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -38,9 +39,15 @@ export default function Categories() {
     const handleDeleteCategory = async (id: number) => {
         const count = await categoryService.countTransactionEntries(id);
         if (isPositiveNumber(count)) {
+            const description = t({
+                message: plural(count, {
+                    one: 'This category has # transaction. Select another category to reassign it to.',
+                    other: 'This category has # transactions. Select another category to reassign them to.'
+                })
+            });
             const targetCategoryId = await openCategorySelector({
                 excludeCategoryIds: [id],
-                description: t`This category has transactions. Select another category to reassign them to.`,
+                description,
                 variant: 'primary'
             });
 

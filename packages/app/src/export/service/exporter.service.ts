@@ -3,6 +3,7 @@ import {
     AccountEntityInterface,
     CategoryEntityInterface,
     InstrumentEntityInterface,
+    MccCategoryEntityInterface,
     TransactionTypeEnum,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
@@ -13,7 +14,13 @@ import Papa from 'papaparse';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, categoryRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import {
+    accountRepository,
+    categoryRepository,
+    instrumentRepository,
+    mccCategoryRepository,
+    transactionRepository
+} from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
@@ -21,6 +28,7 @@ import { ExportRowInterface } from '../interface/export-row.interface';
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;
 type InstrumentsMap = Map<number, InstrumentEntityInterface>;
+type MccCategoriesMap = Map<number, MccCategoryEntityInterface>;
 
 class ExporterService {
     private readonly BATCH_SIZE = 750;
@@ -35,26 +43,30 @@ class ExporterService {
         'fromCurrency',
         'category',
         'operatedAt',
-        'comment'
+        'comment',
+        'mcc'
     ] as const;
 
     private accountsMap: AccountsMap = new Map();
     private deletedAccountsMap: AccountsMap = new Map();
     private categoriesMap: CategoriesMap = new Map();
     private instrumentsMap: InstrumentsMap = new Map();
+    private mccCategoriesMap: MccCategoriesMap = new Map();
 
     async exportToCsv(): Promise<string> {
-        const [accounts, deletedAccounts, categories, instruments] = await Promise.all([
+        const [accounts, deletedAccounts, categories, instruments, mccCategories] = await Promise.all([
             accountRepository.getAll(),
             accountRepository.getAllArchived(),
             categoryRepository.findAll(),
-            instrumentRepository.getAll()
+            instrumentRepository.getAll(),
+            mccCategoryRepository.findAll()
         ]);
 
         this.accountsMap = new Map(accounts.map(acc => [acc.id, acc]));
         this.deletedAccountsMap = new Map(deletedAccounts.map(acc => [acc.id, acc]));
         this.categoriesMap = new Map(categories.map(cat => [cat.id, cat]));
         this.instrumentsMap = new Map(instruments.map(inst => [inst.id, inst]));
+        this.mccCategoriesMap = new Map(mccCategories.map(mccCategory => [mccCategory.id, mccCategory]));
 
         const rows = await this.processTransactionsInBatches();
 
@@ -137,7 +149,8 @@ class ExporterService {
             toCurrency: fromInstrument?.code ?? '',
             category: category?.title ?? '',
             operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-            comment: transaction.comment
+            comment: transaction.comment,
+            mcc: ''
         };
     }
 
@@ -168,8 +181,10 @@ class ExporterService {
         return transaction.entries.map(entry => {
             const category = isDefined(entry.categoryId) ? this.categoriesMap.get(entry.categoryId) : null;
             const signedAmount = transaction.type === TransactionTypeEnum.EXPENSE ? -entry.amount : entry.amount;
+            const mcc = isDefined(entry.mccCategoryId) ? (this.mccCategoriesMap.get(entry.mccCategoryId)?.mcc ?? '') : '';
+            const row = this.createExportRow(transaction, toAccount, toInstrument, category, signedAmount);
 
-            return this.createExportRow(transaction, toAccount, toInstrument, category, signedAmount);
+            return { ...row, mcc };
         });
     }
 
@@ -192,7 +207,8 @@ class ExporterService {
             fromCurrency: '',
             category: category?.title ?? '',
             operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-            comment: transaction.comment
+            comment: transaction.comment,
+            mcc: ''
         };
     }
 }
