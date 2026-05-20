@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 env:
-    FIRST_XLSX_ROW_ID_MATCH: 'privatbank-statement-001, xlsx'
-    SECOND_XLSX_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
+    FIRST_XLSX_ROW_ID_MATCH: 'privatbank-statement-001.*'
+    SECOND_XLSX_ROW_ID_MATCH: 'privatbank-statement-002.*'
 ---
 - runFlow:
       file: subflows/import/import-database-from-settings.flow.yaml
@@ -28,6 +28,8 @@ env:
       file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
       env:
           XLSX_ROW_ID_MATCH: ${FIRST_XLSX_ROW_ID_MATCH}
+          FILE_ROW_TEXT_MATCH: ${FIRST_XLSX_ROW_ID_MATCH}
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'QUAD_UP'
 
 - scrollUntilVisible:
       element:
@@ -101,6 +103,8 @@ env:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_ROW_TEXT_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'QUAD_UP'
 
 - extendedWaitUntil:
       visible:
@@ -170,6 +174,8 @@ env:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_ROW_TEXT_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'QUAD_UP'
 
 - extendedWaitUntil:
       visible:
