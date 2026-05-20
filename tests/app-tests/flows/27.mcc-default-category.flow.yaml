@@ -18,44 +18,10 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'SettingsPage.AutoAssignMccCategorySwitch'
 
-- scrollUntilVisible:
-      element:
-          id: 'CsvPage.ImportCard'
-      direction: DOWN
-      centerElement: true
-      waitToSettleTimeoutMs: 500
-
-- waitForAnimationToEnd
-
-- tapOn:
-      id: 'CsvPage.ImportCard'
-      retryTapIfNoChange: true
-
-- waitForAnimationToEnd
-
 - runFlow:
-      when:
-          notVisible: 'Cancel'
-      commands:
-          - tapOn:
-                id: 'CsvPage.ImportCard'
-          - waitForAnimationToEnd
-
-- runFlow:
-      file: subflows/import/select-file-from-app-provider.flow.yaml
+      file: subflows/import/import-test-transactions.flow.yaml
       env:
-          FILE_ROW_ID_MATCH: 'e2e-mcc-default-category.*'
-
-- extendedWaitUntil:
-      visible:
-          id: 'ImportScreen.PresetChip.Budgie'
-      timeout: 15000
-
-- tapOn:
-      id: 'ImportScreen.PresetChip.Budgie'
-
-- tapOn:
-      id: 'CsvPage.StartImportButton'
+          CSV_DISPLAY_NAME: e2e-mcc-default-category
 
 - tapOn:
       id: 'TabBar.Home'

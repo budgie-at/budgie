@@ -33,7 +33,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/select-file-from-app-provider.flow.yaml
     env:
-      FILE_ROW_ID_MATCH: 'e2e-budgie-import.*'
+      FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
 
 - extendedWaitUntil:
     visible:
@@ -158,7 +158,7 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/import/select-file-from-app-provider.flow.yaml
     env:
-      FILE_ROW_ID_MATCH: 'e2e-budgie-import.*'
+      FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
 
 - extendedWaitUntil:
     visible:
