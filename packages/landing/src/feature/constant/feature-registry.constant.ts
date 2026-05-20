@@ -106,6 +106,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'voice-transaction-entry',
             'mcc-auto-category',
             'custom-categories',
+            'uncategorized-transactions',
             'recurring-payments-calendar'
         ],
         relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
@@ -440,6 +441,7 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         relatedFeatureSlugs: [
             'tag-analytics',
             'custom-categories',
+            'uncategorized-transactions',
             'date-filter-presets',
             'recurring-payments-calendar',
             'ai-merchant-translation'
@@ -468,6 +470,51 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
         ogTags: ['analytics', 'charts', 'drill-down']
     },
     {
+        slug: 'uncategorized-transactions',
+        tier: FeatureTierEnum.CORE,
+        title: msg`Uncategorized Transaction Finder`,
+        tagline: msg`A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics.`,
+        metaTitle: msg`Uncategorized Transactions Finder`,
+        metaDescription: msg`Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device.`,
+        primaryKeyword: 'uncategorized transactions',
+        seoKeywords: [
+            'uncategorized transactions',
+            'missing category transactions',
+            'categorize expenses app',
+            'expense category cleanup',
+            'budget analytics cleanup'
+        ],
+        relatedFeatureSlugs: [
+            'custom-categories',
+            'spending-analytics',
+            'ai-auto-categorization',
+            'date-filter-presets',
+            'mcc-auto-category'
+        ],
+        relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
+        faqs: [
+            {
+                question: msg`What are uncategorized transactions?`,
+                answer: msg`They are income or expense transactions without a category. Budgie calls them "missing categories" in the app because the next action is to assign a category and clean up your reports.`
+            },
+            {
+                question: msg`Does the count respect my current filters?`,
+                answer: msg`Yes. The pill counts only uncategorized transactions inside the active account, type, date, and tag filters, so the number always matches the list you are reviewing.`
+            },
+            {
+                question: msg`Will this slow down my transaction list?`,
+                answer: msg`No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device, without a cloud analytics service.`
+            },
+            {
+                question: msg`Can AI categorize the missing transactions?`,
+                answer: msg`Yes. You can still use Budgie's on-device AI category suggestions, MCC mapping, or manual categories. The missing-category page simply finds the gaps so you know what to fix.`
+            }
+        ],
+        publishedAt: '2026-05-18',
+        updatedAt: '2026-05-18',
+        ogTags: ['uncategorized', 'categories', 'analytics']
+    },
+    {
         slug: 'custom-categories',
         tier: FeatureTierEnum.CORE,
         title: msg`Custom Spending Categories That Bend To You`,
@@ -482,7 +529,14 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'reassign transactions categories',
             'budget category tree'
         ],
-        relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'transaction-tags', 'spending-analytics', 'split-transactions'],
+        relatedFeatureSlugs: [
+            'ai-auto-categorization',
+            'expense-tracking',
+            'uncategorized-transactions',
+            'transaction-tags',
+            'spending-analytics',
+            'split-transactions'
+        ],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -872,7 +926,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'monthly view expense app',
             'date preset filter'
         ],
-        relatedFeatureSlugs: ['spending-analytics', 'recurring-payments-calendar', 'tag-analytics', 'mcc-auto-category'],
+        relatedFeatureSlugs: [
+            'spending-analytics',
+            'uncategorized-transactions',
+            'recurring-payments-calendar',
+            'tag-analytics',
+            'mcc-auto-category'
+        ],
         relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
         faqs: [
             {
@@ -1178,7 +1238,13 @@ export const FEATURE_REGISTRY: readonly FeatureRegistryEntryInterface[] = [
             'MCC mapping budget app',
             'bank-issued category codes'
         ],
-        relatedFeatureSlugs: ['ai-auto-categorization', 'privatbank-import', 'erste-bank-pdf-import', 'date-filter-presets'],
+        relatedFeatureSlugs: [
+            'ai-auto-categorization',
+            'uncategorized-transactions',
+            'privatbank-import',
+            'erste-bank-pdf-import',
+            'date-filter-presets'
+        ],
         relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
         faqs: [
             {
