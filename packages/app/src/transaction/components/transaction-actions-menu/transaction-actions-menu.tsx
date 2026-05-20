@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -19,17 +19,13 @@ import type { TransactionActionsMenuPropsInterface } from '../../interface/trans
 
 const TRIGGER_SIZE = 40;
 
-export const TransactionActionsMenu = ({ onDelete, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
+export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
     const { t } = useLingui();
     const { isMenuOpen, closeMenu, handleCloseComplete, openMenu } = useDeferredMenuClose();
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const deleteLabel = isConsolidated ? t`Unconsolidate Transaction` : t`Delete Transaction`;
-    const confirmTitle = isConsolidated ? t`Unconsolidate transaction?` : t`Are you sure?`;
-    const confirmMessage = isConsolidated
-        ? t`Original imported transactions will be restored and the consolidated transaction will be removed.`
-        : t`This action cannot be undone.`;
-    const confirmText = isConsolidated ? t`Unconsolidate` : t`Delete`;
-    const deleteIcon = isConsolidated ? UserIconNameEnum.GitPullRequestClosed : UserIconNameEnum.Trash2;
+    const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
+    const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
+    const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
 
     const handleToggleMenu = (event: GestureResponderEvent) => {
         if (isMenuOpen) {
@@ -53,18 +49,34 @@ export const TransactionActionsMenu = ({ onDelete, isConsolidated = false, child
         openMenu();
     };
 
-    const handleDeletePress = () => {
+    const handleActionPress = () => {
+        if (isConsolidated) {
+            closeMenu(() => {
+                onRevert?.();
+            });
+
+            return;
+        }
+
         closeMenu(
             () =>
                 void confirmAlert({
-                    title: confirmTitle,
-                    message: confirmMessage,
-                    confirmText,
+                    title: t`Are you sure?`,
+                    message: t`This action cannot be undone.`,
+                    confirmText: t`Delete`,
                     cancelText: t`Cancel`,
                     isDestructive: true
-                }).then(confirmed => confirmed && onDelete())
+                }).then(confirmed => {
+                    if (confirmed) {
+                        void onDelete();
+                    }
+
+                    return null;
+                })
         );
     };
+
+    const showAction = !isConsolidated || isDefined(onRevert);
 
     return (
         <View>
@@ -85,13 +97,15 @@ export const TransactionActionsMenu = ({ onDelete, isConsolidated = false, child
                     <View className="py-sm">
                         {children}
 
-                        <PopoverMenuItem
-                            icon={deleteIcon}
-                            label={deleteLabel}
-                            onPress={handleDeletePress}
-                            variant="destructive"
-                            testID={TransactionActionsMenuSelector.DeleteButton}
-                        />
+                        {showAction ? (
+                            <PopoverMenuItem
+                                icon={actionIcon}
+                                label={actionLabel}
+                                onPress={handleActionPress}
+                                variant="destructive"
+                                testID={actionTestID}
+                            />
+                        ) : null}
                     </View>
                 </TransactionActionsMenuContext.Provider>
             </PopoverMenu>
