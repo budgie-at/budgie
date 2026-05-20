@@ -1,5 +1,6 @@
 'use client';
 
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ArrowRight, Loader2, Users } from 'lucide-react';
@@ -100,8 +101,12 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         return <WaitlistSuccess position={position} variant={variant} />;
     }
 
-    const formattedCount = initialCount.toLocaleString();
-    const countText = t`${formattedCount}+ people already waiting`;
+    const countText = t({
+        message: plural(initialCount, {
+            one: '#+ person already waiting',
+            other: '#+ people already waiting'
+        })
+    });
     const isButtonDisabled = isLoading || !isNotEmptyString(email);
 
     return (

@@ -1236,6 +1236,7 @@ __metadata:
     "@budgie/logger": "workspace:*"
     "@expo/fingerprint": "npm:~0.16.6"
     "@formatjs/intl": "npm:^3.1.8"
+    "@formatjs/intl-pluralrules": "npm:^6.3.7"
     "@hookform/resolvers": "npm:^5.2.2"
     "@legendapp/list": "npm:^2.0.18"
     "@lingui/babel-plugin-lingui-macro": "npm:^5.7.0"
@@ -2966,6 +2967,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/bigdecimal@npm:0.2.5":
+  version: 0.2.5
+  resolution: "@formatjs/bigdecimal@npm:0.2.5"
+  checksum: 10/035a70be4175d47d82d81025ad4386d7c248ef7afb2676b4e0773595d01df1078f3d5224e2f7f17721c9169bbb77d4282898624bf0112d2e6350438b7032a1cb
+  languageName: node
+  linkType: hard
+
 "@formatjs/ecma402-abstract@npm:2.3.6":
   version: 2.3.6
   resolution: "@formatjs/ecma402-abstract@npm:2.3.6"
@@ -2984,6 +2992,13 @@ __metadata:
   dependencies:
     tslib: "npm:^2.8.0"
   checksum: 10/e7e6efc677d63a13d99a854305db471b69f64cbfebdcb6dbe507dab9aa7eaae482ca5de86f343c856ca0a2c8f251672bd1f37c572ce14af602c0287378097d43
+  languageName: node
+  linkType: hard
+
+"@formatjs/fast-memoize@npm:3.1.5":
+  version: 3.1.5
+  resolution: "@formatjs/fast-memoize@npm:3.1.5"
+  checksum: 10/5ff47e3cc5b46a72028cf0c6a3a291781cc3c7e198b6d4446119d870d6366ecc5a05d5826fce3568bab62abf9f7b4ebbe9bfb8420bb81bbe2a8a120b062ac909
   languageName: node
   linkType: hard
 
@@ -3014,6 +3029,25 @@ __metadata:
   dependencies:
     tslib: "npm:^2.8.0"
   checksum: 10/eb12a7f5367bbecdfafc20d7f005559ce840f420e970f425c5213d35e94e86dfe75bde03464971a26494bf8427d4961269db22ecad2834f2a19d888b5d9cc064
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-localematcher@npm:0.8.8":
+  version: 0.8.8
+  resolution: "@formatjs/intl-localematcher@npm:0.8.8"
+  dependencies:
+    "@formatjs/fast-memoize": "npm:3.1.5"
+  checksum: 10/21b02d3d5e40a9a3530f314e7ac2020c1caccc538baca120be6d37bf47ca3208ecf1a3d1fe1dde89d0d46382ec457c6c2714423dc7322ecbd1a3b60d553572a6
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-pluralrules@npm:^6.3.7":
+  version: 6.3.7
+  resolution: "@formatjs/intl-pluralrules@npm:6.3.7"
+  dependencies:
+    "@formatjs/bigdecimal": "npm:0.2.5"
+    "@formatjs/intl-localematcher": "npm:0.8.8"
+  checksum: 10/0f98dcec85d7365988e5c0ed5d21f13f3b514e9fc1227b0d7d9fbef9ea71dd09427a672c80b06cf065b76b48d48fbed6ee1a687c1365b63260aab68cb5f3b478
   languageName: node
   linkType: hard
 

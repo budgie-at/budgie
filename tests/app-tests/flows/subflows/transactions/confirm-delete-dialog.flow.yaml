@@ -4,8 +4,8 @@ appId: ${APP_ID}
     visible: 'Are you sure?'
     timeout: 10000
 - tapOn:
-    point: '67%,56%'
+    text: 'Delete'
+    index: 0
 - extendedWaitUntil:
     notVisible: 'Are you sure?'
     timeout: 15000
-

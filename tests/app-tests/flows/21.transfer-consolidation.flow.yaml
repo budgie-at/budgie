@@ -23,9 +23,13 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
 - assertVisible:
-    id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
-- assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_Untouched'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
 
 # 3. Trigger consolidation from Settings
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
@@ -76,7 +80,11 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Consolidation_Untouched'
 
-# 8. Open canonical 1 -> Sources sheet -> 2 rows -> close
+# 8. Open canonical 1 -> Sources sheet -> Revert -> source rows restored
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    direction: UP
 - tapOn:
     id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
 - extendedWaitUntil:
@@ -99,111 +107,77 @@ appId: ${APP_ID}
     id: 'ConsolidationSourceModal.RowTitle.1.E2E_Consolidation_P1_In'
 - assertVisible:
     id: 'ConsolidationSourceModal.RowAmount.1.DEBIT.200000000'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RevertButton'
 - tapOn:
-    id: 'ConsolidationSourceModal.DoneButton'
-- extendedWaitUntil:
-    notVisible:
-      id: 'ConsolidationSourceModal.Row.0'
-    timeout: 5000
+    id: 'ConsolidationSourceModal.RevertButton'
+- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
-    timeout: 3000
+      id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
+    timeout: 10000
+- extendedWaitUntil:
+    notVisible:
+      id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
+    timeout: 5000
 
-# 9. Delete canonical 1 -> INCOME source reappears, canonical card gone
+# 9. Detail actions menu on canonical 2 replaces Delete with Revert
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
+    direction: DOWN
 - tapOn:
-    id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionActionsMenu.TriggerButton'
+    timeout: 10000
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.RevertButton'
     timeout: 3000
-- tapOn:
+- assertNotVisible:
     id: 'TransactionActionsMenu.DeleteButton'
-- extendedWaitUntil:
-    visible: 'Unconsolidate transaction?'
-    timeout: 10000
-- tapOn: 'Unconsolidate'
-- extendedWaitUntil:
-    notVisible: 'Unconsolidate transaction?'
-    timeout: 15000
+- tapOn:
+    id: 'TransactionActionsMenu.RevertButton'
+- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Consolidation_P1_In'
-- assertNotVisible:
-    id: 'TransactionCard.FromAccount.E2E_Consolidation_A'
-
-# 10. Archive E2E Consolidation USD -> unconsolidate canonical 2 first, then archive
-- tapOn:
-    id: 'TabBar.Home'
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.TotalBalance'
+      id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
     timeout: 10000
-- scrollUntilVisible:
-    element:
-      id: 'AccountCard.E2E Consolidation USD'
-    direction: DOWN
-- waitForAnimationToEnd
-- tapOn:
-    id: 'AccountCard.E2E Consolidation USD'
-- extendedWaitUntil:
-    visible:
-      id: 'AccountDetails.EditButton'
-    timeout: 10000
-- tapOn:
-    id: 'AccountDetails.EditButton'
-- scrollUntilVisible:
-    element:
-      id: 'AccountDetails.ArchiveButton'
-    direction: DOWN
-- tapOn:
-    id: 'AccountDetails.ArchiveButton'
-- extendedWaitUntil:
-    visible: 'Archive Account?'
-    timeout: 10000
-- tapOn: 'Archive'
-- extendedWaitUntil:
-    notVisible: 'Archive Account?'
-    timeout: 10000
-
-# 11. Permanently delete the archived USD account after unconsolidation
-- runFlow: subflows/accounts/open-archived-accounts.flow.yaml
-- extendedWaitUntil:
-    visible:
-      id: 'ArchivedAccountCard.E2E Consolidation USD'
-    timeout: 10000
-- swipe:
-    from:
-      id: 'ArchivedAccountCard.E2E Consolidation USD'
-    direction: LEFT
-- waitForAnimationToEnd
-- extendedWaitUntil:
-    visible:
-      id: 'DeletableRow.DeleteButton'
-    timeout: 10000
-- tapOn:
-    id: 'DeletableRow.DeleteButton'
-- extendedWaitUntil:
-    visible: 'Delete Account Permanently?'
-    timeout: 10000
-- tapOn: 'Delete Permanently'
-- extendedWaitUntil:
-    notVisible:
-      id: 'ArchivedAccountCard.E2E Consolidation USD'
-    timeout: 10000
-
-# 12. After archive/delete: USD source EXPENSE gone, EUR source INCOME reappears, canonical 2 gone
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-- assertVisible:
-    id: 'TransactionCard.Label.E2E_Consolidation_P2_In'
-- assertNotVisible:
-    id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
 - assertNotVisible:
     id: 'TransactionCard.FromAccount.E2E_Consolidation_USD'
 
-# 13. Final balance assertions on home (UAH-only)
+# 10. Long-press menu on the ATM canonical replaces Delete with Revert
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+    direction: DOWN
+- longPressOn:
+    id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionContextMenu.RevertButton'
+    timeout: 10000
+- assertNotVisible:
+    id: 'TransactionContextMenu.DeleteButton'
+- tapOn:
+    id: 'TransactionContextMenu.RevertButton'
+- runFlow: subflows/transactions/confirm-revert-consolidation.flow.yaml
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
+    timeout: 10000
+- assertNotVisible:
+    id: 'TransactionCard.FromAccount.E2E_Consolidation_Card'
+- assertNotVisible:
+    id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash'
+
+# 11. Final balance assertions show generated cash withdrawal entries are gone
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
@@ -212,10 +186,10 @@ appId: ${APP_ID}
     timeout: 10000
 - scrollUntilVisible:
     element:
-      id: 'AccountCard.Balance.E2E_Consolidation_Cash.500'
+      id: 'AccountCard.Balance.E2E_Consolidation_Cash.0'
     direction: DOWN
 - assertVisible:
-    id: 'AccountCard.Balance.E2E_Consolidation_Cash.500'
+    id: 'AccountCard.Balance.E2E_Consolidation_Cash.0'
 - scrollUntilVisible:
     element:
       id: 'AccountCard.Balance.E2E_Consolidation_A.750'
