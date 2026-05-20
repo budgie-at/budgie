@@ -35,13 +35,17 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# catégorie manquante} other {# catégories manquantes}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} transactions existantes correspondent à cette règle."
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing categories"
+msgstr "{count} catégories manquantes"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing category"
+msgstr "{count} catégorie manquante"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -296,7 +300,7 @@ msgstr "Appliquer"
 
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx:22
 msgid "Apply default categories based on merchant category codes"
-msgstr ""
+msgstr "Appliquer les catégories par défaut selon les codes de catégorie des marchands"
 
 #: src/rule/hooks/use-rule-form.hook.ts:124
 msgid "Apply to existing transactions?"
@@ -2632,7 +2636,7 @@ msgstr "Déconsolider la transaction"
 msgid "Unconsolidate transaction?"
 msgstr "Déconsolider la transaction ?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Inconnu"
 
