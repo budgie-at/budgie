@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
@@ -20,12 +19,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: UncategorizedT
     const { t } = useLingui();
     const animationProgress = useSharedValue(0);
 
-    const pillText = t({
-        message: plural(count, {
-            one: '# missing category',
-            other: '# missing categories'
-        })
-    });
+    const pillText = count === 1 ? t`${count} missing category` : t`${count} missing categories`;
     const pillAnimatedStyle = useAnimatedStyle(() => ({
         opacity: animationProgress.value,
         transform: [

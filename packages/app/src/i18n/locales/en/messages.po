@@ -37,13 +37,17 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# missing category} other {# missing categories}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} existing transactions match this rule."
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing categories"
+msgstr "{count} missing categories"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing category"
+msgstr "{count} missing category"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -2634,7 +2638,7 @@ msgstr "Unconsolidate Transaction"
 msgid "Unconsolidate transaction?"
 msgstr "Unconsolidate transaction?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Unknown"
 

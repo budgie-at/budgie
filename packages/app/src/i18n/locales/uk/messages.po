@@ -35,13 +35,17 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# транзакція без категорії} few {# транзакції без категорії} many {# транзакцій без категорії} other {# транзакцій без категорії}}"
-
 #: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "{count} existing transactions match this rule."
 msgstr "{count} наявних транзакцій відповідають цьому правилу."
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing categories"
+msgstr "{count} відсутні категорії"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
+msgid "{count} missing category"
+msgstr "{count} відсутня категорія"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -296,7 +300,7 @@ msgstr "Застосувати"
 
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx:22
 msgid "Apply default categories based on merchant category codes"
-msgstr ""
+msgstr "Застосовувати типові категорії на основі кодів категорій продавців"
 
 #: src/rule/hooks/use-rule-form.hook.ts:124
 msgid "Apply to existing transactions?"
@@ -2632,7 +2636,7 @@ msgstr "Розконсолідувати Транзакцію"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Невідомо"
 
