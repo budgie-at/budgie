@@ -5,6 +5,7 @@ export interface SuggestionOrchestratorSharedProps {
     readonly transactionType: TransactionTypeEnum;
     readonly transactionTitle: string;
     readonly categoryId: number | null;
+    readonly isCategoryUserConfirmed: boolean;
     readonly mccCategoryId: number | null;
     readonly comment: string;
     readonly aiContext: string;

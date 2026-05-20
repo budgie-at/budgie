@@ -11,6 +11,7 @@ interface Props {
     readonly isSplitActive: boolean;
     readonly transactionType: TransactionTypeEnum;
     readonly categoryId: number | null;
+    readonly isCategoryUserConfirmed: boolean;
     readonly comment: string;
     readonly aiContext: string;
     readonly accountId: number;
@@ -30,6 +31,7 @@ export const QuickFormBottomOverlay = (props: Props) => {
         isSplitActive,
         transactionType,
         categoryId,
+        isCategoryUserConfirmed,
         comment,
         aiContext,
         accountId,
@@ -50,6 +52,7 @@ export const QuickFormBottomOverlay = (props: Props) => {
                 transactionType={transactionType}
                 transactionTitle={transactionTitle}
                 categoryId={categoryId}
+                isCategoryUserConfirmed={isCategoryUserConfirmed}
                 mccCategoryId={mccCategoryId}
                 comment={comment}
                 aiContext={aiContext}
