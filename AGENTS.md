@@ -453,6 +453,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands
+5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
 ## E2E Testing
 
@@ -465,7 +466,6 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. Do not add `launchApp`, `stopApp`, relaunch subflows, or app restarts to Maestro flows without explicit user approval for that exact case.
-10. Treat `tests/app-tests/flows/subflows/import/*` as shared harness infrastructure. Do not edit those import picker subflows to fix a single business-flow failure unless the user explicitly approves harness changes; restore shared behavior and debug simulator or fixture state first.
 
 ### Maestro Robustness
 

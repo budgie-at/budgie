@@ -1,5 +1,6 @@
 /* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
@@ -18,7 +19,6 @@ import { TransactionTagFilterItem } from '../transaction/components/transaction-
 import { useTransactionTagFilterModal } from '../transaction/context/transaction-tag-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
-// eslint-disable-next-line max-statements -- Filter modal orchestrates multiple hooks, handlers, and label derivation
 export default function TransactionTagFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
@@ -43,17 +43,13 @@ export default function TransactionTagFilterModal() {
         router.push('/settings/tags');
     };
 
-    const buildApplyLabel = () => {
-        if (selectedCount === 0) {
-            return t`Show all tags`;
-        }
-        if (selectedCount === 1) {
-            return t`Show 1 tag`;
-        }
-
-        return t`Show ${selectedCount} tags`;
-    };
-    const applyLabel = buildApplyLabel();
+    const applyLabel = t({
+        message: plural(selectedCount, {
+            0: 'Show all tags',
+            one: 'Show # tag',
+            other: 'Show # tags'
+        })
+    });
 
     return (
         <FilterSheet>
