@@ -45,6 +45,10 @@ msgstr "{availableCount, plural, one {# column available} other {# columns avail
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# missing category} other {# missing categories}}"
+
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -52,14 +56,6 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing categories"
-msgstr "{count} missing categories"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing category"
-msgstr "{count} missing category"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"

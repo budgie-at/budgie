@@ -43,6 +43,10 @@ msgstr "{availableCount, plural, one {# columna disponible} other {# columnas di
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# transacción existente coincide con esta regla.} other {# transacciones existentes coinciden con esta regla.}}"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# categoría faltante} other {# categorías faltantes}}"
+
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Esta categoría tiene # transacción. Selecciona otra categoría para reasignarla.} other {Esta categoría tiene # transacciones. Selecciona otra categoría para reasignarlas.}}"
@@ -50,14 +54,6 @@ msgstr "{count, plural, one {Esta categoría tiene # transacción. Selecciona ot
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Esta etiqueta tiene # transacción. Selecciona otra etiqueta para reasignarla.} other {Esta etiqueta tiene # transacciones. Selecciona otra etiqueta para reasignarlas.}}"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing categories"
-msgstr "{count} categorías faltantes"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing category"
-msgstr "{count} categoría faltante"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
