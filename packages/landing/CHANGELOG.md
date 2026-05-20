@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.20.1](https://github.com/budgie-at/budgie/compare/v5.20.0...v5.20.1) (2026-05-20)
+
+### Bug Fixes
+
+- pluralize count-aware UI copy ([793117e](https://github.com/budgie-at/budgie/commit/793117e253701349ac20b67791da51f96b37cf06))
+
+# [5.20.0](https://github.com/budgie-at/budgie/compare/v5.19.0...v5.20.0) (2026-05-19)
+
+### Features
+
+- **landing:** add uncategorized transactions feature page ([6a18d88](https://github.com/budgie-at/budgie/commit/6a18d888ef3a170e5d1f9f94c9a09e81bf17748f))
+
 # [5.17.0](https://github.com/budgie-at/budgie/compare/v5.16.3...v5.17.0) (2026-05-13)
 
 ### Bug Fixes
