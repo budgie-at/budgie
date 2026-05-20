@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.20.0](https://github.com/budgie-at/budgie/compare/v5.19.0...v5.20.0) (2026-05-19)
+
+### Features
+
+- **landing:** add uncategorized transactions feature page ([6a18d88](https://github.com/budgie-at/budgie/commit/6a18d888ef3a170e5d1f9f94c9a09e81bf17748f))
+
 # [5.19.0](https://github.com/budgie-at/budgie/compare/v5.18.0...v5.19.0) (2026-05-19)
 
 ### Bug Fixes
