@@ -25,7 +25,6 @@ const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
-type CardLayout = 'compact' | 'wide';
 
 interface Props {
     readonly descriptionText: string;
@@ -33,7 +32,6 @@ interface Props {
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
-    readonly layout?: CardLayout;
     readonly onYes: () => Promise<void>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
@@ -41,17 +39,7 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Shared card component with gesture handling, animations, and multiple render states
 export const SwipeableRuleCard = (props: Props) => {
-    const {
-        descriptionText,
-        successMessage,
-        errorMessage,
-        cardTestID,
-        buttonTestID,
-        layout = 'compact',
-        onYes,
-        onComplete,
-        onDismiss
-    } = props;
+    const { descriptionText, successMessage, errorMessage, cardTestID, buttonTestID, onYes, onComplete, onDismiss } = props;
 
     const [status, setStatus] = useState<CardStatus>('idle');
     const [hapticNotification, hapticImpact] = useVibration();
@@ -150,19 +138,13 @@ export const SwipeableRuleCard = (props: Props) => {
 
     const isCreating = status === 'creating';
     const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
-    const pillClassName = layout === 'wide' ? 'self-start min-w-[160px] max-w-[85%]' : 'self-start';
 
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View testID={cardTestID}>
-                    <HapticPressable
-                        testID={buttonTestID}
-                        onPress={handleYesButtonPress}
-                        disabled={isCreating}
-                        className="self-start max-w-[85%]"
-                    >
-                        <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent}>
+                <View testID={cardTestID} className="self-start">
+                    <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className="self-start">
+                        <RuleIndicatorPill icon={UserIconNameEnum.Zap} className="self-start" trailingContent={trailingContent}>
                             {descriptionText}
                         </RuleIndicatorPill>
                     </HapticPressable>

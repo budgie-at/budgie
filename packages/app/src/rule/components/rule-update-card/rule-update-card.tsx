@@ -62,7 +62,6 @@ export const RuleUpdateCard = (props: Props) => {
             descriptionText={t`Update rule?`}
             successMessage={<Trans>Rule updated</Trans>}
             errorMessage={<Trans>Could not update rule</Trans>}
-            layout="wide"
             onYes={handleYes}
             onComplete={onRuleUpdated}
             onDismiss={onDismiss}
