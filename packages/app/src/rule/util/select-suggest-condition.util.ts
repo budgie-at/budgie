@@ -1,6 +1,6 @@
 import { RuleConditionCreateInputInterface, RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 const REFERENCE_PATTERNS = [/\bREF[#:]?\w*/giu, /#\w{4,}/gu, /\b\d{5,}\b/gu];
 
@@ -65,43 +65,46 @@ const isGenericTitle = (title: string): boolean => {
     return uniqueWords.size < MINIMUM_UNIQUE_WORDS && containsGenericPattern;
 };
 
-export const selectSuggestCondition = (
+const isCleanedTextUsable = (cleaned: string): boolean =>
+    isNotEmptyString(cleaned) && cleaned.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleaned);
+
+export const selectSuggestConditions = (
     title: string,
     mccCode: string | null,
     comment?: string
-): RuleConditionCreateInputInterface | null => {
-    const cleanedTitle = cleanMerchantTitle(title);
-
-    if (isNotEmptyString(cleanedTitle) && cleanedTitle.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleanedTitle)) {
-        return {
-            field: RuleConditionFieldEnum.TITLE,
-            operator: RuleConditionOperatorEnum.CONTAINS,
-            value: cleanedTitle,
-            secondaryValue: null
-        };
-    }
-
-    if (isNotEmptyString(comment)) {
-        const cleanedComment = cleanMerchantTitle(comment);
-
-        if (isNotEmptyString(cleanedComment) && cleanedComment.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleanedComment)) {
-            return {
-                field: RuleConditionFieldEnum.COMMENT,
-                operator: RuleConditionOperatorEnum.CONTAINS,
-                value: cleanedComment,
-                secondaryValue: null
-            };
-        }
-    }
+): RuleConditionCreateInputInterface[] | null => {
+    const conditions: RuleConditionCreateInputInterface[] = [];
 
     if (isNotEmptyString(mccCode)) {
-        return {
+        conditions.push({
             field: RuleConditionFieldEnum.MCC_CODE,
             operator: RuleConditionOperatorEnum.EQUALS,
             value: mccCode,
             secondaryValue: null
-        };
+        });
     }
 
-    return null;
+    const cleanedTitle = cleanMerchantTitle(title);
+
+    if (isCleanedTextUsable(cleanedTitle)) {
+        conditions.push({
+            field: RuleConditionFieldEnum.TITLE,
+            operator: RuleConditionOperatorEnum.CONTAINS,
+            value: cleanedTitle,
+            secondaryValue: null
+        });
+    } else if (isNotEmptyString(comment)) {
+        const cleanedComment = cleanMerchantTitle(comment);
+
+        if (isCleanedTextUsable(cleanedComment)) {
+            conditions.push({
+                field: RuleConditionFieldEnum.COMMENT,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value: cleanedComment,
+                secondaryValue: null
+            });
+        }
+    }
+
+    return isNotEmptyArray(conditions) ? conditions : null;
 };

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.1](https://github.com/budgie-at/budgie/compare/v5.21.0...v5.21.1) (2026-05-20)
+
+### Bug Fixes
+
+- **contracts:** auto-consolidate same-currency transfer amounts ([30f3469](https://github.com/budgie-at/budgie/commit/30f34692ebd5568f8d26780690742ac76e98bbaf))
+
+# [5.19.0](https://github.com/budgie-at/budgie/compare/v5.18.0...v5.19.0) (2026-05-19)
+
+### Bug Fixes
+
+- enforce non-null action target via Zod refinement and filter invalid tagIds ([dfeb83a](https://github.com/budgie-at/budgie/commit/dfeb83a502fa6e56cbaaf20c07c1ac3795b08fdf)), closes [#448](https://github.com/budgie-at/budgie/issues/448)
+
 # [5.18.0](https://github.com/budgie-at/budgie/compare/v5.17.6...v5.18.0) (2026-05-18)
 
 ### Bug Fixes
