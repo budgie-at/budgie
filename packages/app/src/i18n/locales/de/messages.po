@@ -43,6 +43,10 @@ msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verf
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} other {# vorhandene Transaktionen passen zu dieser Regel.}}"
 
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# fehlende Kategorie} other {# fehlende Kategorien}}"
+
 #: src/app/(tabs)/settings/categories.tsx:42
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen wird.} other {Diese Kategorie hat # Transaktionen. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen werden.}}"
@@ -50,14 +54,6 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 #: src/app/(tabs)/settings/tags.tsx:42
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing categories"
-msgstr "{count} fehlende Kategorien"
-
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:22
-msgid "{count} missing category"
-msgstr "{count} fehlende Kategorie"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
