@@ -11,16 +11,14 @@ import { isDefined } from '@rnw-community/shared';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
-import { MccCategoryChip } from '../mcc-category-chip/mcc-category-chip';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly categoryLabel: string;
+    readonly categoryLabel: string | null;
 }
 
-const wrapperClassName = 'rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
+const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
@@ -30,27 +28,20 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
 
     const hasMultipleEntries = transaction.entries.length > 1;
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-    const unknownLabel = t`Unknown`;
 
     if (hasMultipleEntries) {
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => {
-                    const entryLabel = getTransactionEntryLabel(entry, unknownLabel);
+                    const entryLabel = entry.category?.title ?? t`Unknown`;
                     const entryAmount = convertFromMicroUnits(entry.amount);
                     const entryTestID = TransactionCardSelector.EntryCategoryAmount(entryLabel, entryAmount);
 
                     return (
-                        <View className="flex-row gap-xs" key={entry.id}>
-                            <View className={wrapperClassName} testID={entryTestID}>
-                                <Text className={textClassName}>
-                                    {entryLabel}{' '}
-                                    <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
-                                </Text>
-                            </View>
-                            {isDefined(entry.mccCategory) && isDefined(entry.category) ? (
-                                <MccCategoryChip mccCategory={entry.mccCategory} />
-                            ) : null}
+                        <View className={wrapperClassName} testID={entryTestID} key={entry.id}>
+                            <Text className={textClassName}>
+                                {entryLabel} <Text className="text-primary/70">{formatDigits(entryAmount, defaultInstrument.symbol)}</Text>
+                            </Text>
                         </View>
                     );
                 })}
@@ -58,17 +49,21 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         );
     }
 
-    const [firstEntry] = transaction.entries;
-    const { mccCategory } = firstEntry;
-    const showMccChip = isDefined(mccCategory) && isDefined(firstEntry.category);
-    const badgeTestID = isAdjustment ? TransactionCardSelector.AdjustmentBadge : TransactionCardSelector.Category(categoryLabel);
-
-    return (
-        <View className="flex-row gap-xs">
-            <View className={wrapperClassName} testID={badgeTestID}>
+    if (isAdjustment) {
+        return (
+            <View className={wrapperClassName} testID={TransactionCardSelector.AdjustmentBadge}>
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>
-            {showMccChip && isDefined(mccCategory) ? <MccCategoryChip mccCategory={mccCategory} /> : null}
+        );
+    }
+
+    if (!isDefined(categoryLabel)) {
+        return null;
+    }
+
+    return (
+        <View className={wrapperClassName} testID={TransactionCardSelector.Category(categoryLabel)}>
+            <Text className={textClassName}>{categoryLabel}</Text>
         </View>
     );
 };
