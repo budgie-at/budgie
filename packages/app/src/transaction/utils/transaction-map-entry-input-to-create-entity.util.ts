@@ -9,6 +9,7 @@ export const transactionMapEntryInputToCreateEntity = (
     transactionId,
     accountId: entry.accountId,
     categoryId: entry.categoryId,
+    categorySource: entry.categorySource,
     mccCategoryId: entry.mccCategoryId,
     type: entry.type,
     amount: convertToMicroUnits(entry.amount),

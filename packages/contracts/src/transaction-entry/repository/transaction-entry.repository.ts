@@ -8,6 +8,7 @@ import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.t
 import type { DB } from '../../@generic/type/db.type';
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity.interface';
+import type { CategorySourceEnum } from '../enum/category-source.enum';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 
 export class TransactionEntryRepository {
@@ -123,10 +124,15 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
-    async updateCategoryByTransactionId(transactionId: number, categoryId: number, tx?: DB): Promise<void> {
+    async updateCategoryByTransactionId(
+        transactionId: number,
+        categoryId: number,
+        categorySource: CategorySourceEnum,
+        tx?: DB
+    ): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntryEntityTable)
-            .set({ categoryId })
+            .set({ categoryId, categorySource })
             .where(and(eq(TransactionEntryEntityTable.transactionId, transactionId), isNull(TransactionEntryEntityTable.deletedAt)));
     }
 

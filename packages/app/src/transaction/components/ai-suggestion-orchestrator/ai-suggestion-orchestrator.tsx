@@ -19,6 +19,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         isSplitActive,
         transactionTitle,
         categoryId,
+        isCategoryUserConfirmed,
         mccCategoryId,
         comment,
         aiContext,
@@ -30,7 +31,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
 
     const safeCategoryId = categoryId ?? 0;
     const hasContext = hasEmbeddingContext(transactionTitle, mccCategoryId, comment, aiContext);
-    const hasCategorySelected = isPositiveNumber(safeCategoryId);
+    const hasCategorySelected = isPositiveNumber(safeCategoryId) && isCategoryUserConfirmed;
     const hasComment = isNotEmptyString(comment);
 
     const step = useAiSuggestionOrchestrator({

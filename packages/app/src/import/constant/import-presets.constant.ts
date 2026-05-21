@@ -27,11 +27,11 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         fromAmount: 'income',
         fromCurrency: 'incomeCurrency',
         isPlanned: '',
+        mcc: '',
         operatedAt: 'date',
         toAccount: 'outcomeAccount',
         toAmount: 'outcome',
-        toCurrency: 'outcomeCurrency',
-        mcc: ''
+        toCurrency: 'outcomeCurrency'
     },
     [ImportPresetEnum.Budgie]: {
         externalId: 'externalId',

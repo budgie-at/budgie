@@ -56,6 +56,11 @@ env:
           id: 'TransactionCard.Label.E2E_Privatbank_Salary'
       timeout: 20000
 
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Category.Groceries'
+      timeout: 3000
+
 - tapOn:
       id: 'PageHeader.BackButton'
 
@@ -66,6 +71,29 @@ env:
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.AutoAssignMccCategorySwitch'
+      direction: DOWN
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'SettingsPage.AutoAssignMccCategorySwitch'
+
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'TabBar.Home'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountCard.Privatbank •1234'
+      timeout: 10000
+
 - longPressOn:
       id: 'AccountCard.Privatbank •1234'
 
@@ -73,6 +101,7 @@ env:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:
       visible:
@@ -142,6 +171,7 @@ env:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${SECOND_XLSX_ROW_ID_MATCH}
+          FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:
       visible:

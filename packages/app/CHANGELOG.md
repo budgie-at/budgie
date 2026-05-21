@@ -3,6 +3,64 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.22.0](https://github.com/budgie-at/budgie/compare/v5.21.5...v5.22.0) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** hide category badge for uncategorized transactions ([b34e234](https://github.com/budgie-at/budgie/commit/b34e23484bd05132a8141b3b534d1b66041e94b9))
+- **app:** null mccCategoryId on CSV transfer entries ([3e2534b](https://github.com/budgie-at/budgie/commit/3e2534b216d1a304d083d0be8108e6bccf589640)), closes [#437](https://github.com/budgie-at/budgie/issues/437)
+- **app:** persist categorySource in batch-create entry mapper ([d1c1bd1](https://github.com/budgie-at/budgie/commit/d1c1bd1a20a14254b7f4e8518c7617296466d0c0))
+- **app:** restore plural macro for uncategorized-transactions pill ([bdb874d](https://github.com/budgie-at/budgie/commit/bdb874d1764939e004e46c45dba541695f9a6ba8))
+- **app:** thread categorySource and mccCategoryId through importer and refresh paths ([851842e](https://github.com/budgie-at/budgie/commit/851842e4ca3f71977ec8461d69723c95d0145775))
+- backfill MCC default-category mappings via migration 0024 ([5873740](https://github.com/budgie-at/budgie/commit/58737403483ca4a568993f40586bc578b05a67db))
+- drop MCC fallback from transaction entry label ([3a3a7ca](https://github.com/budgie-at/budgie/commit/3a3a7ca38cb62584f545de0f546da60b1a1dff60))
+- drop trailing statement-breakpoint from 0023 migration ([7bf4242](https://github.com/budgie-at/budgie/commit/7bf4242bde1e5f947ea978b7708417791dabcb7b)), closes [#436](https://github.com/budgie-at/budgie/issues/436)
+- split categorySource ALTER into migration 0023 ([d34d3fc](https://github.com/budgie-at/budgie/commit/d34d3fc43dc752ee9f1db5afb35f3debee5288ea))
+
+### Features
+
+- add MCC default-category toggle across all import flows ([b9fe6d5](https://github.com/budgie-at/budgie/commit/b9fe6d53f3e1d93cb4f167dbc9b36f098830e793)), closes [#436](https://github.com/budgie-at/budgie/issues/436)
+- **app:** keep category suggestions visible for MCC-defaulted transactions ([aaa64f3](https://github.com/budgie-at/budgie/commit/aaa64f358cbadd9fdb95f0c0bf12023cafeea4a3))
+- auto-assign category from MCC on bank-sync import ([5a8a545](https://github.com/budgie-at/budgie/commit/5a8a5452f9f0166b35ca2157d08c55a2d423ee55)), closes [#436](https://github.com/budgie-at/budgie/issues/436)
+- **contracts:** expand MCC default-category seed to 1051 mappings ([6d907c0](https://github.com/budgie-at/budgie/commit/6d907c05dcd00bbe6b4fe595018fd4ecba3e5f9f))
+
+### Performance Improvements
+
+- yield JS thread during sync hot paths ([ca56556](https://github.com/budgie-at/budgie/commit/ca5655653e3e4620b9014f35fe998b225742f02c)), closes [#440](https://github.com/budgie-at/budgie/issues/440) [#440](https://github.com/budgie-at/budgie/issues/440)
+
+### Reverts
+
+- **app:** rule-engine microPause yields from ca5655653 ([9fa81e7](https://github.com/budgie-at/budgie/commit/9fa81e76cd482524ba1ca690d76d76aeb1aa364e)), closes [#444](https://github.com/budgie-at/budgie/issues/444)
+
+## [5.21.5](https://github.com/budgie-at/budgie/compare/v5.21.4...v5.21.5) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** consolidate iban bridge transfer chains ([8e903fd](https://github.com/budgie-at/budgie/commit/8e903fd898fc6e20b8d959b6fd815dd82b33e75c))
+- **app:** consolidate same-bank fee transfers ([ee397c0](https://github.com/budgie-at/budgie/commit/ee397c04b944858482c4b65a99e076477eb28112))
+
+## [5.21.4](https://github.com/budgie-at/budgie/compare/v5.21.3...v5.21.4) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** pop expense detail when converting to transfer ([874b43f](https://github.com/budgie-at/budgie/commit/874b43f15ad2268279e5a07176b5a5aef87c5834))
+- **app:** preserve back history when converting transaction to transfer ([7b64429](https://github.com/budgie-at/budgie/commit/7b64429fe207ff6bcbb6c8ae8a2d62bceb109821)), closes [#464](https://github.com/budgie-at/budgie/issues/464)
+
+## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** align expo sdk dependencies ([65bed4b](https://github.com/budgie-at/budgie/commit/65bed4b536fb057bf91eae9541ceb798550d420b))
+
+## [5.21.2](https://github.com/budgie-at/budgie/compare/v5.21.1...v5.21.2) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** center rule suggestion pill ([d8e6641](https://github.com/budgie-at/budgie/commit/d8e664117316bc290f8cd3bb4645eef376511ce1))
+- **app:** expand rule suggestion pill ([e7ccfcd](https://github.com/budgie-at/budgie/commit/e7ccfcd4f9fe9662d887adabb45b2b0fd4a39705))
+- **app:** smooth rule pill transition ([49e228e](https://github.com/budgie-at/budgie/commit/49e228e8b88c2516e7221264db32103b04853d03))
+- **app:** stabilize rule pill transitions ([1fe2709](https://github.com/budgie-at/budgie/commit/1fe270912de3d36767097d844566d0c58201f6d0))
+
 ## [5.21.1](https://github.com/budgie-at/budgie/compare/v5.21.0...v5.21.1) (2026-05-20)
 
 **Note:** Version bump only for package @budgie-at/app

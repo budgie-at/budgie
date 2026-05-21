@@ -1,4 +1,6 @@
+/* eslint-disable max-lines -- Form orchestration component grew with categorySource plumbing for MCC default suggestions (approved by user). */
 import {
+    CategorySourceEnum,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -92,6 +94,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const comment = useWatch({ control, name: 'comment' });
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
+    const categorySource = useWatch({ control, name: 'entries.0.categorySource' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
     const amount = useWatch({ control, name: 'amount' });
@@ -106,6 +109,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const handleSelectCategory = (selectedCategoryId: number) => {
         setValue('entries.0.categoryId', selectedCategoryId);
+        setValue('entries.0.categorySource', CategorySourceEnum.USER);
     };
 
     const handleSelectTag = (selectedTagId: number) => {
@@ -168,6 +172,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const isSplitActive = splitEntryCount > 1;
     const hasTagsSelected = isNotEmptyArray(tagIds);
+    const isCategoryUserConfirmed = !isDefined(categorySource) || categorySource === CategorySourceEnum.USER;
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -250,6 +255,7 @@ export const SimpleQuickForm = (props: Props) => {
                     isSplitActive={isSplitActive}
                     transactionType={transactionType}
                     categoryId={categoryId}
+                    isCategoryUserConfirmed={isCategoryUserConfirmed}
                     comment={comment}
                     aiContext={aiContext}
                     accountId={accountId}
