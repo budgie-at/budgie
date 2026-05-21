@@ -28,6 +28,7 @@ import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.
 
 import { ruleMatcherService } from './rule-matcher.service';
 
+import type { RuleBatchOutcomeInterface } from '../interface/rule-batch-outcome.interface';
 import type { RuleCreatePreparationResultInterface } from '../interface/rule-create-preparation-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { DB, RuleActionEntityInterface, RuleWithRelationsEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
@@ -55,11 +56,16 @@ class RuleEngineService {
         const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
         const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
 
-        await this.getBatchStarts(transactionIds.length).reduce(
-            (previousBatch, batchStart) =>
-                previousBatch.then(() => this.applyRulesToTransactionsBatch(batchStart, transactionIds, evaluationInputs, rules)),
-            Promise.resolve()
-        );
+        let converted: boolean = false;
+        for (const batchStart of this.getBatchStarts(transactionIds.length)) {
+            // eslint-disable-next-line no-await-in-loop -- sequential per-batch processing to avoid concurrent SQLite writers
+            const batchConverted = await this.applyRulesToTransactionsBatch(batchStart, transactionIds, evaluationInputs, rules);
+            converted ||= batchConverted;
+        }
+
+        if (converted) {
+            await accountBalanceIncrementalService.updateAllBalances(true);
+        }
     }
 
     @Log(
@@ -94,6 +100,7 @@ class RuleEngineService {
             `done ruleId=${ruleId} hasProgress=${isDefined(onProgress)} applied=${result.applied} failed=${result.failed} total=${result.total}`,
         (error, ruleId, onProgress) => `throw ruleId=${ruleId} hasProgress=${isDefined(onProgress)} error=${getErrorMessage(error)}`
     )
+    // eslint-disable-next-line max-statements -- Orchestrator: match → batch → hoist balance flush → return result
     async applyRuleToMatchingTransactions(
         ruleId: number,
         onProgress: ((processed: number, total: number) => void) | null
@@ -112,11 +119,15 @@ class RuleEngineService {
         }
 
         const total = matchingIds.length;
-        const failed = await this.applyRuleToMatchingTransactionBatches(matchingIds, rule.actions, onProgress);
+        const batchOutcome = await this.applyRuleToMatchingTransactionBatches(matchingIds, rule.actions, onProgress);
 
-        const applied = total - failed;
+        if (batchOutcome.converted) {
+            await accountBalanceIncrementalService.updateAllBalances(true);
+        }
 
-        return { applied, failed, total };
+        const applied = total - batchOutcome.failed;
+
+        return { applied, failed: batchOutcome.failed, total };
     }
 
     private async applyRulesToTransactionsBatch(
@@ -124,33 +135,39 @@ class RuleEngineService {
         transactionIds: number[],
         evaluationInputs: RuleEvaluationInputInterface[],
         rules: RuleWithRelationsEntityInterface[]
-    ): Promise<void> {
+    ): Promise<boolean> {
         await this.waitForNextBatch();
 
         const batchIds = transactionIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
-        await Promise.all(
-            batchIds.map((transactionId, offset) =>
-                this.applyRulesToTransaction(transactionId, evaluationInputs[batchStart + offset], rules)
-            )
-        );
+        let converted = false;
+
+        for (const [offset, transactionId] of batchIds.entries()) {
+            // eslint-disable-next-line no-await-in-loop -- sequential per-row to keep at most one SQLite writer per rule batch
+            const rowConverted = await this.applyRulesToTransaction(transactionId, evaluationInputs[batchStart + offset], rules);
+            converted ||= rowConverted;
+        }
+
+        return converted;
     }
 
     private async applyRuleToMatchingTransactionBatches(
         matchingIds: number[],
         actions: RuleActionEntityInterface[],
         onProgress: ((processed: number, total: number) => void) | null
-    ): Promise<number> {
+    ): Promise<RuleBatchOutcomeInterface> {
         let processed = 0;
         let failed = 0;
+        let converted = false;
         const total = matchingIds.length;
 
         await this.getBatchStarts(total).reduce(
             (previousBatch, batchStart) =>
                 previousBatch.then(async () => {
                     const batchIds = matchingIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
-                    const batchFailed = await this.applyRuleToMatchingTransactionBatch(batchIds, actions);
+                    const batchOutcome = await this.applyRuleToMatchingTransactionBatch(batchIds, actions);
 
-                    failed += batchFailed;
+                    failed += batchOutcome.failed;
+                    converted ||= batchOutcome.converted;
                     processed += batchIds.length;
                     onProgress?.(processed, total);
 
@@ -159,35 +176,47 @@ class RuleEngineService {
             Promise.resolve(null)
         );
 
-        return failed;
+        return { failed, converted };
     }
 
-    private async applyRuleToMatchingTransactionBatch(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
+    private async applyRuleToMatchingTransactionBatch(
+        batchIds: number[],
+        actions: RuleActionEntityInterface[]
+    ): Promise<RuleBatchOutcomeInterface> {
         await this.waitForNextBatch();
 
-        const results = await Promise.allSettled(batchIds.map(transactionId => this.applyRuleActionsToTransaction(transactionId, actions)));
+        let failed = 0;
+        let converted = false;
 
-        return results.filter(result => result.status === 'rejected').length;
+        for (const transactionId of batchIds) {
+            try {
+                // eslint-disable-next-line no-await-in-loop -- sequential per-row to keep at most one SQLite writer per rule batch
+                const rowConverted = await this.applyRuleActionsToTransaction(transactionId, actions);
+                converted ||= rowConverted;
+            } catch {
+                failed += 1;
+            }
+        }
+
+        return { failed, converted };
     }
 
     private async applyRulesToTransaction(
         transactionId: number,
         input: RuleEvaluationInputInterface,
         rules: RuleWithRelationsEntityInterface[]
-    ): Promise<void> {
+    ): Promise<boolean> {
         const matchingRules = rules.filter(rule => ruleMatcherService.evaluateRule(rule, input));
 
         if (!isNotEmptyArray(matchingRules)) {
-            return;
+            return false;
         }
 
-        await transactionAsync(db, async transaction => {
+        return transactionAsync(db, async transaction => {
             const convertedToTransfer = await this.applyMatchingRulesSequentially(transactionId, matchingRules, transaction);
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
 
-            if (convertedToTransfer) {
-                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
-            }
+            return convertedToTransfer;
         });
     }
 
@@ -218,14 +247,12 @@ class RuleEngineService {
         });
     }
 
-    private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
-        await transactionAsync(db, async transaction => {
+    private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<boolean> {
+        return transactionAsync(db, async transaction => {
             const convertedToTransfer = await this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>());
             await transactionRepository.updateById(transactionId, { updatedBy: TransactionUpdatedByEnum.RULE }, transaction);
 
-            if (convertedToTransfer) {
-                await accountBalanceIncrementalService.updateAllBalances(true, transaction);
-            }
+            return convertedToTransfer;
         });
     }
 
