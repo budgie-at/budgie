@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- absorbs convert-transaction-to-transfer logic per CLAUDE.md rule 38/51 (approved by user during pr-322-rules SOTA cleanup) */
 import {
     AccountTypeEnum,
+    CategorySourceEnum,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
     TransactionEntryTypeEnum,
@@ -200,7 +201,7 @@ class RuleEngineService {
         let convertedToTransfer = false;
 
         for (const rule of matchingRules) {
-            // eslint-disable-next-line no-await-in-loop -- rules must apply sequentially: each step mutates appliedExclusiveActions which gates the next iteration
+            // eslint-disable-next-line no-await-in-loop -- rules apply sequentially; convert-to-transfer in one rule affects matching of later rules
             const converted = await this.applyRuleActions(transactionId, rule.actions, transaction, appliedExclusiveActions);
             convertedToTransfer ||= converted;
         }
@@ -247,7 +248,9 @@ class RuleEngineService {
             return input;
         }
 
-        const entries = hasCategoryAction ? input.entries.map(entry => ({ ...entry, categoryId })) : input.entries;
+        const entries = hasCategoryAction
+            ? input.entries.map(entry => ({ ...entry, categoryId, categorySource: CategorySourceEnum.RULE }))
+            : input.entries;
 
         return {
             ...input,
@@ -368,7 +371,12 @@ class RuleEngineService {
         }
 
         appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
-        await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, transaction);
+        await transactionEntryRepository.updateCategoryByTransactionId(
+            transactionId,
+            action.categoryId,
+            CategorySourceEnum.RULE,
+            transaction
+        );
         await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
@@ -455,6 +463,7 @@ class RuleEngineService {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: originalEntry.amount,
                     categoryId: originalEntry.categoryId,
+                    categorySource: originalEntry.categorySource,
                     mccCategoryId: originalEntry.mccCategoryId,
                     externalId: null
                 },
@@ -464,6 +473,7 @@ class RuleEngineService {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: convertedAmount,
                     categoryId: originalEntry.categoryId,
+                    categorySource: originalEntry.categorySource,
                     mccCategoryId: null,
                     externalId: null
                 }

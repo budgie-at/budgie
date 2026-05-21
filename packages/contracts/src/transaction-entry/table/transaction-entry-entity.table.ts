@@ -7,6 +7,7 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { CategorySourceEnum } from '../enum/category-source.enum';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 
 export const TransactionEntryEntityTable = sqliteTable(
@@ -19,6 +20,10 @@ export const TransactionEntryEntityTable = sqliteTable(
             .notNull()
             .references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         categoryId: int('category_id', { mode: 'number' }).references(() => CategoryEntityTable.id, { onDelete: 'cascade' }),
+        categorySource: text('category_source', { enum: convertEnumToDrizzleEnum(CategorySourceEnum) })
+            .notNull()
+            .default(CategorySourceEnum.USER)
+            .$type<CategorySourceEnum>(),
         mccCategoryId: int('mcc_category_id', { mode: 'number' }).references(() => MccCategoryEntityTable.id, { onDelete: 'set null' }),
         transactionId: int('transaction_id', { mode: 'number' })
             .notNull()

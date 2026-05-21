@@ -3,6 +3,7 @@ import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-crea
 import { TransactionEntryEntitySchema } from './transaction-entry-entity.schema';
 
 export const TransactionEntryCreateEntitySchema = convertToCreateEntitySchema(TransactionEntryEntitySchema).partial({
+    categorySource: true,
     externalId: true,
     exchangeRate: true,
     toIban: true,
