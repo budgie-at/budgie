@@ -1,12 +1,15 @@
-import { BankTransactionInterface, BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { BankTransactionTypeEnum } from '@budgie/bank-sync';
+import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
+
+import type { BankTransactionInterface } from '@budgie/bank-sync';
+import type { MccCategoryLookupInterface, TransactionCreateInputInterface } from '@budgie/contracts';
 
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
     accountId: number,
-    mccCategoryId: number | null,
+    mccCategoryLookup: MccCategoryLookupInterface | null,
     provider: ExternalSourceEnum
 ): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === BankTransactionTypeEnum.INCOME;
@@ -15,6 +18,8 @@ export const mapBankTransactionToCreateInput = (
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
     const exchangeRate = isPositiveNumber(operationAmount) && amount !== operationAmount ? amount / operationAmount : 1;
+    const hasMccDefault = isPositiveNumber(mccCategoryLookup?.defaultCategoryId);
+    const categorySource = hasMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
 
     return {
         amount,
@@ -34,8 +39,9 @@ export const mapBankTransactionToCreateInput = (
                 accountId,
                 type: entryType,
                 amount,
-                categoryId: null,
-                mccCategoryId,
+                categoryId: mccCategoryLookup?.defaultCategoryId ?? null,
+                categorySource,
+                mccCategoryId: mccCategoryLookup?.id ?? null,
                 externalId: bankTransaction.id,
                 exchangeRate,
                 toIban: bankTransaction.counterIban ?? null

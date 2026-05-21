@@ -8,6 +8,7 @@ import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
 import { BaseFileBankSyncService } from './base-file-bank-sync.service';
 
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
+import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 class ErsteSyncService extends BaseFileBankSyncService {
     constructor() {
@@ -35,7 +36,7 @@ class ErsteSyncService extends BaseFileBankSyncService {
         };
     }
 
-    protected async resolveMccCategoryIdMap(): Promise<Map<string, number | null>> {
+    protected async resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
         return new Map();
     }
 }

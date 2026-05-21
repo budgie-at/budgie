@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.22.0](https://github.com/budgie-at/budgie/compare/v5.21.5...v5.22.0) (2026-05-21)
+
+### Features
+
+- add MCC default-category toggle across all import flows ([b9fe6d5](https://github.com/budgie-at/budgie/commit/b9fe6d53f3e1d93cb4f167dbc9b36f098830e793)), closes [#436](https://github.com/budgie-at/budgie/issues/436)
+- auto-assign category from MCC on bank-sync import ([5a8a545](https://github.com/budgie-at/budgie/commit/5a8a5452f9f0166b35ca2157d08c55a2d423ee55)), closes [#436](https://github.com/budgie-at/budgie/issues/436)
+- **contracts:** expand MCC default-category seed to 1051 mappings ([6d907c0](https://github.com/budgie-at/budgie/commit/6d907c05dcd00bbe6b4fe595018fd4ecba3e5f9f))
+
+## [5.21.5](https://github.com/budgie-at/budgie/compare/v5.21.4...v5.21.5) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** consolidate iban bridge transfer chains ([8e903fd](https://github.com/budgie-at/budgie/commit/8e903fd898fc6e20b8d959b6fd815dd82b33e75c))
+- **app:** consolidate same-bank fee transfers ([ee397c0](https://github.com/budgie-at/budgie/commit/ee397c04b944858482c4b65a99e076477eb28112))
+
+## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** align expo sdk dependencies ([65bed4b](https://github.com/budgie-at/budgie/commit/65bed4b536fb057bf91eae9541ceb798550d420b))
+
 ## [5.21.1](https://github.com/budgie-at/budgie/compare/v5.21.0...v5.21.1) (2026-05-20)
 
 ### Bug Fixes
