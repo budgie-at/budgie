@@ -12,7 +12,6 @@ import { getErrorMessage } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
-import { SwipeableRuleCardStatus } from '../swipeable-rule-card-status/swipeable-rule-card-status';
 
 const logger = getLogger('SwipeableRuleCard');
 
@@ -70,7 +69,14 @@ export const SwipeableRuleCard = (props: Props) => {
         hapticImpact(ImpactFeedbackStyle.Light);
     };
 
+    const isSuccess = status === 'success';
+    const isError = status === 'error';
+    const isStatus = isSuccess || isError;
+    const isCreating = status === 'creating';
+    const isInteractive = !isStatus;
+
     const panGesture = Gesture.Pan()
+        .enabled(isInteractive)
         .activeOffsetX(10)
         .onUpdate(event => {
             const clampedTranslation = Math.max(0, event.translationX);
@@ -124,52 +130,35 @@ export const SwipeableRuleCard = (props: Props) => {
         void handleYesPress();
     };
 
-    if (status === 'success') {
-        return (
-            <SwipeableRuleCardStatus
-                icon={UserIconNameEnum.CircleCheck}
-                iconClassName="text-positive-foreground"
-                textClassName="text-xs text-secondary-foreground font-medium"
-            >
-                {successMessage}
-            </SwipeableRuleCardStatus>
-        );
-    }
-
-    if (status === 'error') {
-        return (
-            <SwipeableRuleCardStatus
-                icon={UserIconNameEnum.CircleAlert}
-                iconClassName="text-destructive-foreground"
-                textClassName="text-xs text-destructive-foreground font-medium"
-            >
-                {errorMessage}
-            </SwipeableRuleCardStatus>
-        );
-    }
-
-    const isCreating = status === 'creating';
     const isWideLayout = layout === 'wide';
     const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
     const cardClassName = isWideLayout ? 'items-center' : 'items-start';
     const buttonClassName = isWideLayout ? 'self-center' : 'self-start max-w-[85%]';
     const pillClassName = isWideLayout ? 'self-center' : 'self-start';
     const pillTextProps = isWideLayout ? { textClassName: 'shrink-0' } : {};
+    const statusIcon = isSuccess ? UserIconNameEnum.CircleCheck : UserIconNameEnum.CircleAlert;
+    const statusIconClassName = isSuccess ? 'text-positive-foreground' : 'text-destructive-foreground';
+    const statusTextClassName = isSuccess
+        ? 'text-xs text-secondary-foreground font-medium shrink-0'
+        : 'text-xs text-destructive-foreground font-medium shrink-0';
+    const statusMessage = isSuccess ? successMessage : errorMessage;
+    const pillContent = isStatus ? (
+        <RuleIndicatorPill icon={statusIcon} iconClassName={statusIconClassName} textClassName={statusTextClassName}>
+            {statusMessage}
+        </RuleIndicatorPill>
+    ) : (
+        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className={buttonClassName}>
+            <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent} {...pillTextProps}>
+                {descriptionText}
+            </RuleIndicatorPill>
+        </HapticPressable>
+    );
 
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
                 <View testID={cardTestID} className={cardClassName}>
-                    <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className={buttonClassName}>
-                        <RuleIndicatorPill
-                            icon={UserIconNameEnum.Zap}
-                            className={pillClassName}
-                            trailingContent={trailingContent}
-                            {...pillTextProps}
-                        >
-                            {descriptionText}
-                        </RuleIndicatorPill>
-                    </HapticPressable>
+                    {pillContent}
                 </View>
             </Animated.View>
         </GestureDetector>
