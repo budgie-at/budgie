@@ -20,11 +20,11 @@ const SOURCE_CARD_SUFFIX = '0356';
 const TARGET_CARD_SUFFIX = '5524';
 const PRIVATBANK_FAKE_IBAN_PREFIX = 'UA1111111';
 
-const seedPrivatbankAccount = (suffix: string) =>
+const seedPrivatbankAccount = (suffix: string, externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK) =>
     seed.account({
         title: `Privatbank •${suffix}`,
         type: AccountTypeEnum.BANK_SYNC,
-        externalSource: ExternalSourceEnum.PRIVATBANK,
+        externalSource,
         iban: `${PRIVATBANK_FAKE_IBAN_PREFIX}${suffix}`
     });
 
@@ -35,12 +35,13 @@ const updateTitle = (transactionId: number, title: string): void => {
 const seedPrivatbankFeeTransfer = (
     incomeTitle = `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
     expenseAmount = TRANSFER_WITH_FEE_AMOUNT,
-    incomeOperatedAt = new Date(2026, 4, 14, 11, 30, 0)
+    incomeOperatedAt = new Date(2026, 4, 14, 11, 30, 0),
+    externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
 ) => {
     const operatedAt = new Date(2026, 4, 14, 11, 30, 0);
     const transferMcc = findMccByCode('4829');
-    const sourceAccount = seedPrivatbankAccount(SOURCE_CARD_SUFFIX);
-    const targetAccount = seedPrivatbankAccount(TARGET_CARD_SUFFIX);
+    const sourceAccount = seedPrivatbankAccount(SOURCE_CARD_SUFFIX, externalSource);
+    const targetAccount = seedPrivatbankAccount(TARGET_CARD_SUFFIX, externalSource);
     const expense = seedBankPair.expense(
         { externalId: 'privatbank-card-transfer-expense', operatedAt },
         { accountId: sourceAccount.id, amount: expenseAmount, mccCategoryId: transferMcc.id }
@@ -61,24 +62,48 @@ const expectNoConsolidation = (expenseTransactionId: number, incomeTransactionId
     expect(fetchTransactionById(incomeTransactionId).consolidationParentTransactionId).toBeNull();
 };
 
+const expectSameBankHintedFeeConsolidation = (
+    expenseTransactionId: number,
+    incomeTransactionId: number,
+    sourceAccountId: number,
+    targetAccountId: number
+): void => {
+    const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER);
+
+    expect(canonicals).toHaveLength(1);
+    expect(canonicals[0].fromAccountId).toBe(sourceAccountId);
+    expect(canonicals[0].toAccountId).toBe(targetAccountId);
+    expect(canonicals[0].exchangeRate).toBe(1);
+    expect([expenseTransactionId, incomeTransactionId].map(id => fetchTransactionById(id).consolidationParentTransactionId)).toEqual([
+        canonicals[0].id,
+        canonicals[0].id
+    ]);
+};
+
+const expectPrivatbankFeeTransferConsolidated = async (
+    externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
+): Promise<void> => {
+    const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer(
+        `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
+        TRANSFER_WITH_FEE_AMOUNT,
+        new Date(2026, 4, 14, 11, 30, 0),
+        externalSource
+    );
+
+    const result = await transferConsolidationService.consolidate();
+
+    expect(result.consolidated).toBe(1);
+    expect(result.found).toBe(1);
+    expectSameBankHintedFeeConsolidation(expense.id, income.id, sourceAccount.id, targetAccount.id);
+};
+
 describe('consolidation/same-bank-hinted-fee-transfer', () => {
     it('auto-consolidates a same-bank own-card transfer when titles point at both account suffixes and the amount delta is fee-sized', async () => {
-        const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer();
+        await expectPrivatbankFeeTransferConsolidated();
+    });
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.consolidated).toBe(1);
-        expect(result.found).toBe(1);
-
-        const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER);
-        expect(canonicals).toHaveLength(1);
-        expect(canonicals[0].fromAccountId).toBe(sourceAccount.id);
-        expect(canonicals[0].toAccountId).toBe(targetAccount.id);
-        expect(canonicals[0].exchangeRate).toBe(1);
-        expect([expense.id, income.id].map(id => fetchTransactionById(id).consolidationParentTransactionId)).toEqual([
-            canonicals[0].id,
-            canonicals[0].id
-        ]);
+    it('auto-consolidates legacy same-bank own-card transfers when account source is missing but IBAN bank prefix matches', async () => {
+        await expectPrivatbankFeeTransferConsolidated(null);
     });
 
     it('does NOT consolidate when the reciprocal account hint does not match', async () => {
