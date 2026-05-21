@@ -7,12 +7,14 @@ import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNu
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
+import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { buildTransactionFullRelations } from '../constant/transaction-relations.constant';
+import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionConsolidationTypeEnum } from '../enum/transaction-consolidation-type.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -364,7 +366,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const where = this.buildWhere(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: buildTransactionFullRelations(language),
+            with: this.buildFullRelations(language),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
             limit,
             ...(isDefined(where) ? { where } : {})
@@ -392,7 +394,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const types = this.getUncategorizedTransactionTypes(filters.types);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: buildTransactionFullRelations(language),
+            with: this.buildFullRelations(language),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
             limit,
             where: this.buildUncategorizedWhere(filters, types)
@@ -439,7 +441,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     getById(id: number, language: LanguageEnum, tx?: DB) {
         return (tx ?? this.db).query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
-            with: buildTransactionFullRelations(language)
+            with: this.buildFullRelations(language)
         });
     }
 
@@ -604,7 +606,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     async findTransfersByAccountId(accountId: number, language: LanguageEnum, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
-            with: buildTransactionFullRelations(language)
+            with: this.buildFullRelations(language)
         });
     }
 
@@ -734,5 +736,29 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     .where(and(eq(TransactionEntryEntityTable.type, type), this.buildLedgerEntryCondition()))
             )
         );
+    }
+
+    private buildFullRelations(language: LanguageEnum) {
+        return {
+            [TransactionAssociationEnum.ENTRIES]: {
+                where: isNull(TransactionEntryEntityTable.originalTransactionId),
+                with: {
+                    [TransactionEntryAssociationEnum.ACCOUNT]: {
+                        with: {
+                            [AccountAssociationEnum.INSTRUMENT]: true
+                        }
+                    },
+                    [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
+                    [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                }
+            },
+            [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+                with: {
+                    [TransactionTagsAssociationEnum.TAG]: true
+                }
+            },
+            [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+            [TransactionAssociationEnum.TO_ACCOUNT]: true
+        } as const;
     }
 }
