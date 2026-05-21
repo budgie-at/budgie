@@ -36,8 +36,8 @@ Maestro flows for Budgie.
 
 1. Treat file selection as one complete subflow: navigate provider, open folder, select file, then confirm native `Open`.
 2. In iOS Files, prefer native folder row ids over label text:
-   - `budgie \(E2E\), Container`
-   - `E2EFixtures, Folder`
+    - `budgie \(E2E\), Container`
+    - `E2EFixtures, Folder`
 3. `On My iPhone` currently has no stable tappable row id in Maestro hierarchy, so tap it by text only when it is actually visible and assert the picker root state separately.
 4. When debugging picker failures, inspect live hierarchy before changing selectors. Labels and tappable container ids are often different nodes.
 5. Use the same rule for native selector sheets: hierarchy often exposes a stable visible placeholder or title text that is more reliable than an internal input id.
