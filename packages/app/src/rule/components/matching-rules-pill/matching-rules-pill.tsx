@@ -15,8 +15,6 @@ import { MatchingRulesPillSelector } from './matching-rules-pill.selector';
 
 import type { MatchingRulesPillPropsInterface } from '../../interface/matching-rules-pill-props.interface';
 
-const ENTRY_DELAY_MS = 500;
-
 export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: MatchingRulesPillPropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
@@ -44,7 +42,7 @@ export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Match
 
     return (
         <View className="items-center">
-            <Animated.View entering={FadeIn.delay(ENTRY_DELAY_MS).duration(200)} exiting={FadeOut.duration(200)}>
+            <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)}>
                 <HapticPressable testID={MatchingRulesPillSelector.Pill} onPress={handlePress} className="self-center">
                     <RuleIndicatorPill icon={UserIconNameEnum.Workflow}>{label}</RuleIndicatorPill>
                 </HapticPressable>
