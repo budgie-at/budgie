@@ -244,7 +244,7 @@ export class ImporterService {
                     accountId: source.account.id,
                     categoryId,
                     categorySource,
-                    mccCategoryId,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 },
                 {
@@ -253,7 +253,7 @@ export class ImporterService {
                     accountId: dest.account.id,
                     categoryId,
                     categorySource,
-                    mccCategoryId,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 }
             ];
