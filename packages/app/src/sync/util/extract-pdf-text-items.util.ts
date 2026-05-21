@@ -1,4 +1,4 @@
-import { requireNativeModule } from 'expo-modules-core';
+import { requireNativeModule } from 'expo';
 
 import type { PdfTextItemInterface } from '@budgie/bank-sync';
 
