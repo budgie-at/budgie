@@ -84,6 +84,13 @@ class RuleApplicationDrainerService {
         }
     }
 
+    async whenIdle(): Promise<void> {
+        while (isDefined(this.runPromise)) {
+            // eslint-disable-next-line no-await-in-loop -- intentional: re-await if a new run starts during drain
+            await this.runPromise.catch(emptyFn);
+        }
+    }
+
     private async drainNextBatch(): Promise<void> {
         if (!isNotEmptyArray(this.pendingTransactionIds) && !isNotEmptyArray(this.pendingRuleIds)) {
             return;
