@@ -134,10 +134,8 @@ export { DefaultCategoryTranslationEntityTable } from './category-translation/ta
 export { DefaultCategoryTranslationEntityRelations } from './category-translation/relations/default-category-translation-entity.relations';
 
 export { DefaultCategoryTranslationEntitySchema } from './category-translation/schema/default-category-translation-entity.schema';
-export { DefaultCategoryTranslationCreateEntitySchema } from './category-translation/schema/default-category-translation-create-entity.schema';
 
 export type { DefaultCategoryTranslationEntityInterface } from './category-translation/entity/default-category-translation-entity.interface';
-export type { DefaultCategoryTranslationCreateEntityInterface } from './category-translation/entity/default-category-translation-create-entity.interface';
 
 export { MCC_GROUP_TYPE_MAX_LENGTH } from './mcc-group/constant/mcc-group-type-max-length.constant';
 export { MCC_GROUP_DESCRIPTION_MAX_LENGTH } from './mcc-group/constant/mcc-group-description-max-length.constant';
