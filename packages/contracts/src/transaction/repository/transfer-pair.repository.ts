@@ -577,6 +577,12 @@ export class TransferPairRepository {
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_account.external_source as expenseExternalSource,
                     SUBSTR(expense_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
+                    CASE
+                        WHEN expense_account.iban IS NOT NULL
+                            AND LENGTH(expense_account.iban) > ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                        THEN SUBSTR(expense_account.iban, 1, LENGTH(expense_account.iban) - ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH})
+                        ELSE NULL
+                    END as expenseAccountBankHint,
                     expense_instrument.code as expenseCurrency,
                     expense_mcc.mcc_group_id as expenseMccGroupId
                 FROM transaction_entries expense_entry
@@ -609,6 +615,12 @@ export class TransferPairRepository {
                     income_account.instrument_id as incomeInstrumentId,
                     income_account.external_source as incomeExternalSource,
                     SUBSTR(income_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
+                    CASE
+                        WHEN income_account.iban IS NOT NULL
+                            AND LENGTH(income_account.iban) > ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                        THEN SUBSTR(income_account.iban, 1, LENGTH(income_account.iban) - ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH})
+                        ELSE NULL
+                    END as incomeAccountBankHint,
                     income_instrument.code as incomeCurrency,
                     income_mcc.mcc_group_id as incomeMccGroupId
                 FROM transaction_entries income_entry
@@ -715,6 +727,10 @@ export class TransferPairRepository {
                         WHEN expense_entries.expenseExternalSource IS NOT NULL
                             AND expense_entries.expenseExternalSource != ''
                             AND expense_entries.expenseExternalSource = income_entries.incomeExternalSource
+                        THEN 1
+                        WHEN expense_entries.expenseAccountBankHint IS NOT NULL
+                            AND expense_entries.expenseAccountBankHint != ''
+                            AND expense_entries.expenseAccountBankHint = income_entries.incomeAccountBankHint
                         THEN 1
                         ELSE 0
                     END as sameBank,
