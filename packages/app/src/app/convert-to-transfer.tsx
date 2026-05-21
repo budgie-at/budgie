@@ -22,7 +22,7 @@ import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.sele
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 /* jscpd:ignore-end */
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer, currentParams] = useConvertToTransferModal();
@@ -101,10 +101,13 @@ export default function ConvertToTransferModal() {
                 const transferRoute = `/transactions/${transactionId}/transfer` as const;
 
                 if (router.canDismiss()) {
-                    router.dismissAll();
+                    router.dismiss();
+                }
+                if (router.canGoBack()) {
+                    router.back();
                 }
 
-                router.replace(transferRoute);
+                router.push(transferRoute);
             }
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
