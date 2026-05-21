@@ -222,6 +222,7 @@ class TransactionImportService {
             transactionId,
             accountId: existingEntry.accountId,
             categoryId: existingEntry.categoryId,
+            categorySource: existingEntry.categorySource,
             mccCategoryId: existingEntry.mccCategoryId,
             type: existingEntry.type,
             amount: existingEntry.amount,
