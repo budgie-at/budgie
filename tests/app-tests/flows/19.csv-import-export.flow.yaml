@@ -37,11 +37,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'CsvPage.Preset.Budgie'
+      id: 'ImportScreen.PresetChip.Budgie'
     timeout: 15000
 
 - tapOn:
-    id: 'CsvPage.Preset.Budgie'
+    id: 'ImportScreen.PresetChip.Budgie'
 
 - tapOn:
     id: 'CsvPage.StartImportButton'
@@ -51,7 +51,36 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'HomePage.NetWorthValue.88'
+      id: 'HomePage.NetWorthValue.78'
+    timeout: 10000
+
+- runFlow:
+    file: subflows/accounts/open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: 'e2e csv wallet USD'
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_CSV_MCC_Grocery'
+    direction: DOWN
+    timeout: 10000
+    speed: 20
+    visibilityPercentage: 30
+    centerElement: true
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Category.Groceries'
+    timeout: 3000
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'TabBar.Home'
     timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
@@ -98,3 +127,75 @@ appId: ${APP_ID}
     visible:
       id: 'HomePage.TotalBalance'
     timeout: 10000
+
+# === Re-import with MCC default toggle OFF, assert fallback category ===
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- scrollUntilVisible:
+    element:
+      id: 'CsvPage.ImportCard'
+    direction: DOWN
+    centerElement: true
+    waitToSettleTimeoutMs: 500
+
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'CsvPage.ImportCard'
+    retryTapIfNoChange: true
+
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      notVisible: 'Cancel'
+    commands:
+      - tapOn:
+          id: 'CsvPage.ImportCard'
+      - waitForAnimationToEnd
+
+- runFlow:
+    file: subflows/import/select-file-from-app-provider.flow.yaml
+    env:
+      FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
+
+- extendedWaitUntil:
+    visible:
+      id: 'ImportScreen.PresetChip.Budgie'
+    timeout: 15000
+
+- tapOn:
+    id: 'ImportScreen.PresetChip.Budgie'
+
+- tapOn:
+    id: 'CsvPage.StartImportButton'
+
+- tapOn:
+    id: 'TabBar.Home'
+
+- extendedWaitUntil:
+    visible:
+      id: 'HomePage.NetWorthValue.78'
+    timeout: 10000
+
+- runFlow:
+    file: subflows/accounts/open-account-details.flow.yaml
+    env:
+      ACCOUNT_NAME: 'e2e csv wallet USD'
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_CSV_MCC_Grocery'
+    direction: DOWN
+    timeout: 10000
+    speed: 20
+    visibilityPercentage: 30
+    centerElement: true
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Category.Other'
+    timeout: 3000
