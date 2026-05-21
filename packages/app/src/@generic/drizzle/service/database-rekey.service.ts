@@ -10,6 +10,8 @@ import { DB_NAME } from '../constant/db-name.constant';
 import { expoDb } from '../db/db';
 import * as schema from '../db/schema';
 
+import { databaseLifecycleService } from './database-lifecycle.service';
+
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
 import { RekeyPathsInterface } from './interface/rekey-paths.interface';
 
@@ -40,8 +42,7 @@ class DatabaseRekeyService {
     }
 
     private async commit(paths: RekeyPathsInterface, onCommit: () => Promise<void>): Promise<void> {
-        await expoDb.closeAsync();
-        this.clearDatabaseGlobals();
+        await databaseLifecycleService.close();
         this.deleteDestinationSidecars(paths.destinationPath);
         this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
         new File(paths.tempDatabasePath).move(new File(paths.destinationPath));
@@ -118,13 +119,6 @@ class DatabaseRekeyService {
     private deleteDestinationSidecars(destinationPath: string): void {
         this.deleteFileIfExists(`${destinationPath}-wal`);
         this.deleteFileIfExists(`${destinationPath}-shm`);
-    }
-
-    private clearDatabaseGlobals(): void {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
     }
 
     private deleteDatabaseFiles(databasePath: string): void {

@@ -5,7 +5,7 @@ import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -31,22 +31,17 @@ class AppMonobankSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
     private readonly provider = ExternalSourceEnum.MONOBANK;
-    private isRunning = false;
+    private currentSync: Promise<BackgroundTask.BackgroundTaskResult> | null = null;
     private mccCategoryIdMap = new Map<string, number>();
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
-        if (this.isRunning) {
-            return BackgroundTask.BackgroundTaskResult.Success;
+        if (isDefined(this.currentSync)) {
+            return this.currentSync;
         }
-        this.isRunning = true;
-        try {
-            await this.loadMccCategories();
+        this.currentSync = this.runSync();
 
-            return await this.executeSyncLoop();
-        } finally {
-            this.isRunning = false;
-        }
+        return this.currentSync;
     }
 
     @Log('enter', result => `done mccKeys=${[...result.keys()].join(',')}`, error => `throw error=${getErrorMessage(error)}`)
@@ -235,6 +230,12 @@ class AppMonobankSyncService {
         return createdTransactions;
     }
 
+    async whenIdle(): Promise<void> {
+        while (isDefined(this.currentSync)) {
+            await this.currentSync.catch(emptyFn);
+        }
+    }
+
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
         const bankAccounts = await new MonobankSyncService(token).syncAccounts();
         if (!isNotEmptyArray(bankAccounts)) {
@@ -383,6 +384,16 @@ class AppMonobankSyncService {
             forwardSyncFromAt: now,
             forwardSyncedAt: null
         });
+    }
+
+    private async runSync(): Promise<BackgroundTask.BackgroundTaskResult> {
+        try {
+            await this.loadMccCategories();
+
+            return await this.executeSyncLoop();
+        } finally {
+            this.currentSync = null;
+        }
     }
 }
 
