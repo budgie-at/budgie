@@ -45,15 +45,21 @@ src/
 ## Code Quality Rules (from PR reviews)
 
 ### Use `isDefined` for null checks in context hooks
+
 ```typescript
 // Good
-if (!isDefined(context)) { throw new Error('...'); }
+if (!isDefined(context)) {
+    throw new Error('...');
+}
 
 // Bad
-if (context === null) { throw new Error('...'); }
+if (context === null) {
+    throw new Error('...');
+}
 ```
 
 ### Extract inline types to named interfaces
+
 ```typescript
 // Good - named interface for state shape
 interface SuggestionResultInterface<T> {
@@ -68,7 +74,9 @@ const [result, setResult] = useState<{ key: string | null; status: SuggestionInt
 ```
 
 ### One interface per file
+
 Never put multiple interfaces in the same file. Each gets its own file in `/interface`:
+
 ```
 // Good
 interface/pattern-config.interface.ts
@@ -79,7 +87,9 @@ interface/pattern.interface.ts  (containing both Config and Facts)
 ```
 
 ### Extract complex conditional logic to pure functions
+
 When a component computes derived state through if/else chains, extract to a standalone function:
+
 ```typescript
 // Good - extracted to a pure function
 const computeStatusLabel = (params: StatusParams): StatusResult => {
@@ -90,10 +100,14 @@ const computeStatusLabel = (params: StatusParams): StatusResult => {
 // Bad - mutable let variables in component body
 let statusLabel: string;
 let brainProgress: number;
-if (isRunning) { statusLabel = phaseLabel; brainProgress = progress; }
+if (isRunning) {
+    statusLabel = phaseLabel;
+    brainProgress = progress;
+}
 ```
 
 ### Use `Trans` for JSX text children, `t` for string props
+
 ```typescript
 // Good
 <Text><Trans>Prepare AI Data</Trans></Text>
@@ -103,7 +117,9 @@ if (isRunning) { statusLabel = phaseLabel; brainProgress = progress; }
 ```
 
 ### Inline redundant handler wrappers
+
 Don't create named constants that only delegate to another function:
+
 ```typescript
 // Good - inline in the call site
 useLongPressHold({ onPress: () => void start(), onLongPressComplete: () => void startFresh() });
@@ -115,6 +131,7 @@ useLongPressHold({ onPress: handlePress, onLongPressComplete: handleLongPressCom
 ```
 
 ### Simplify return-from-transaction patterns
+
 ```typescript
 // Good - return directly
 async updateById(id: number, input: Input): Promise<Entity> {
@@ -129,7 +146,9 @@ async updateById(id: number, input: Input): Promise<Entity> {
 ```
 
 ### Use shared utility functions for common operations
+
 Don't inline `reduce` or similar patterns when a shared util exists:
+
 ```typescript
 // Good - use shared util
 import { sumAmounts } from '../../@generic/util/sum-amounts.util';
@@ -140,14 +159,20 @@ const total = transactions.reduce((sum, t) => sum + t.amount, 0);
 ```
 
 ### Inline trivial constants used once
-Constants like `ICON_SIZE = 20` used only once add indirection without value — inline them:
+
+Constants like `ICON_SIZE = 20` used only once add indirection without value — inline them. This applies equally to i18n locals (`t\`...\``), derived strings, and other intermediate values:
+
 ```typescript
 // Good - inline when used once
 <Icon size={20} />
+const entryLabel = entry.category?.title ?? t`Unknown`;
 
 // Bad - unnecessary constant for single use
 const ICON_SIZE = 20;
 <Icon size={ICON_SIZE} />
+
+const unknownLabel = t`Unknown`;
+const entryLabel = entry.category?.title ?? unknownLabel;
 ```
 
 ## React 19 Rules
@@ -155,22 +180,24 @@ const ICON_SIZE = 20;
 1. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
 2. **No displayName** - Never use `Component.displayName`
 3. **No forwardRef** - React 19 handles ref forwarding natively. Accept `ref` as a regular prop:
-   ```typescript
-   // Good - React 19 native ref
-   interface Props {
-       ref?: RefObject<ViewRef>;
-   }
-   export const MyComponent = ({ ref, ...props }: Props) => { ... };
 
-   // Bad - forwardRef
-   export const MyComponent = forwardRef<ViewRef, Props>((props, ref) => { ... });
-   ```
+    ```typescript
+    // Good - React 19 native ref
+    interface Props {
+        ref?: RefObject<ViewRef>;
+    }
+    export const MyComponent = ({ ref, ...props }: Props) => { ... };
+
+    // Bad - forwardRef
+    export const MyComponent = forwardRef<ViewRef, Props>((props, ref) => { ... });
+    ```
 
 ## Code Organization Rules
 
 ### No Complex Logic in JSX Props
 
 Extract ternaries and logical operators to variables before JSX (`@rnw-community/no-complex-jsx-logic`):
+
 ```typescript
 // Good
 const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
@@ -188,6 +215,7 @@ const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
 ### Microunits Conversion
 
 Always use utility functions for microunits conversion, never manual `* PRECISION` or `/ PRECISION`:
+
 ```typescript
 // Good
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -204,6 +232,7 @@ const microAmount = Math.round(userInputAmount * PRECISION);
 ### Remove Useless Wrappers
 
 Don't create single-line wrapper functions that just forward to another function:
+
 ```typescript
 // Good - Pass directly
 <SingleDatePicker onChange={resolveDatePicker} />
@@ -216,6 +245,7 @@ const handleDateSelect = (date: Date) => resolveDatePicker(date);
 ### Use Minimal Interface Properties
 
 When only specific properties are needed, use `Pick<>`:
+
 ```typescript
 // Good
 export const getTagsDisplayValue = (tags: Pick<TagEntityInterface, 'title'>[] | null) => { ... };
@@ -227,12 +257,14 @@ export const getTagsDisplayValue = (tags: TagEntityInterface[] | null) => { ... 
 ## ESLint Disable Guidelines
 
 For form orchestration components that exceed `max-statements` (15), add disable comment:
+
 ```typescript
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => { ... };
 ```
 
 Valid cases for `max-statements` disable:
+
 - Components with 5+ hooks (useFormContext, useWatch, custom hooks)
 - Components orchestrating multiple modals/selectors
 - Form components with validation and submission logic
@@ -283,6 +315,7 @@ export const MyComponent = (props: Props) => {
 ### Props Patterns
 
 **Destructuring** - For 5+ props, destructure in function body:
+
 ```typescript
 // Good - Destructure in body for many props
 export const MyComponent = (props: Props) => {
@@ -294,6 +327,7 @@ export const SimpleComponent = ({ title, onPress }: Props) => { ... };
 ```
 
 **Prefer children for composition:**
+
 ```typescript
 // Good - children for primary content
 <AccountCardBase topRight={<DeadlineIndicator />}>
@@ -305,6 +339,7 @@ export const SimpleComponent = ({ title, onPress }: Props) => { ... };
 ```
 
 **No object props** - Pass plain props:
+
 ```typescript
 // Good
 <BottomSheetSearch rightActionIcon={UserIconNameEnum.Plus} rightActionOnPress={handleCreate} />
@@ -316,6 +351,7 @@ export const SimpleComponent = ({ title, onPress }: Props) => { ... };
 ### Event Handlers
 
 Always extract handlers into named `handle*` methods:
+
 ```typescript
 // Good
 const handleClose = () => void ref.current?.close();
@@ -350,6 +386,7 @@ className={`bg-${variant}-background text-${variant}-foreground`}
 ### Color Palette Variants
 
 Use centralized palettes from `@generic/constant/`:
+
 - `BACKGROUND_COLOR_PALETTE` - Background + border colors
 - `FOREGROUND_COLOR_PALETTE` - Text + icon colors
 
@@ -358,6 +395,7 @@ Available variants: `default`, `destructive`, `warning`, `dark-warning`, `positi
 ### Utility Function
 
 Use `cn()` from `@generic/utils/` for combining classes:
+
 ```typescript
 import { cn } from '../../utils/cn/cn';
 className={cn('base-classes', classNameFromProps)}
@@ -369,22 +407,23 @@ className={cn('base-classes', classNameFromProps)}
 
 - **One component per route file**
 - **Prefer direct routes** over dynamic with switch statements:
-  ```
-  transactions/[id]/expense.tsx   # Good - Specific route
-  transactions/[id].tsx           # Bad - Switch on type
-  ```
+    ```
+    transactions/[id]/expense.tsx   # Good - Specific route
+    transactions/[id].tsx           # Bad - Switch on type
+    ```
 - **Inline all logic** in route components
 
 ### Route Groups
 
-| Group | Purpose | Tab Bar |
-|-------|---------|---------|
-| `(tabs)` | Main screens | Visible |
-| `(main)` | Modal/push screens | Hidden |
+| Group    | Purpose            | Tab Bar |
+| -------- | ------------------ | ------- |
+| `(tabs)` | Main screens       | Visible |
+| `(main)` | Modal/push screens | Hidden  |
 
 ### Code Duplication in Routes
 
 Wrap JSX only (not logic) in jscpd markers for similar form structures:
+
 ```tsx
 {/* jscpd:ignore-start */}
 <Page header={...}>
@@ -417,6 +456,7 @@ return (
 ### Form Field Components
 
 Use `useFormContext` internally - no prop drilling:
+
 ```typescript
 const FormField = ({ name }: { name: string }) => {
     const { control } = useFormContext();
@@ -444,6 +484,7 @@ yarn i18n:sync
 ### Repository Singletons
 
 Import from `@generic/drizzle/db/db.ts`:
+
 ```typescript
 import { accountRepository, transactionRepository } from '../@generic/drizzle/db/db';
 ```
@@ -451,11 +492,9 @@ import { accountRepository, transactionRepository } from '../@generic/drizzle/db
 ### Live Queries
 
 Use `useLiveQuery` for reactive data:
+
 ```typescript
-const { data, error, updatedAt } = useLiveQuery(
-    accountRepository.findById(id),
-    [id]
-);
+const { data, error, updatedAt } = useLiveQuery(accountRepository.findById(id), [id]);
 ```
 
 **`useLiveQuery` deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
@@ -480,6 +519,7 @@ If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding 
 ## Error Handling
 
 Use Toast for user-facing errors:
+
 ```typescript
 import Toast from 'react-native-toast-message';
 
@@ -493,6 +533,7 @@ Toast.show({
 ## Provider Architecture
 
 Root layout has 14 nested providers in this order:
+
 1. SafeAreaProvider
 2. SQLiteProvider
 3. SettingsProvider
@@ -513,6 +554,7 @@ Root layout has 14 nested providers in this order:
 ### Prompt Constants
 
 Extract LLM prompts to dedicated constant files in `ai/constant/`:
+
 ```typescript
 // Good - prompt in constant file
 // ai/constant/translation-prompt.constant.ts
@@ -528,6 +570,7 @@ class TranslationLlmService {
 ### Shared Hook Types
 
 Use generic interfaces for hooks with similar return shapes:
+
 ```typescript
 // Good - shared generic interface in ai/interface/
 export interface UseSuggestionReturnInterface<T> {
@@ -543,6 +586,7 @@ interface UseTagSuggestionReturn { status: ...; suggestedTags: ... }
 ### Extract Complex JSX to Components
 
 When a function returns ReactNode (like `getHeaderRight`), extract it into a proper React component in its own folder. This enables hooks and follows the one-component-per-folder rule:
+
 ```typescript
 // Good - separate component with hooks
 export const AiTranslationFieldsHeaderRight = (props: Props) => {
@@ -558,6 +602,7 @@ const getHeaderRight = (params: Params): ReactNode => { ... };
 ### Async Functions in useEffect
 
 Keep async functions defined inside `useEffect` (not extracted outside) to avoid `react-hooks/set-state-in-effect` lint errors:
+
 ```typescript
 // Good - suggest defined inside useEffect
 useEffect(() => {
@@ -577,6 +622,7 @@ useEffect(() => { void suggest(); }, [isReady]);
 ## Background Tasks
 
 Register tasks in `_layout.tsx` after migrations:
+
 - Exchange rate sync (hourly)
 - Balance updates (weekly)
 - Monobank sync
