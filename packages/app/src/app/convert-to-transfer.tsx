@@ -101,7 +101,7 @@ export default function ConvertToTransferModal() {
                 const transferRoute = `/transactions/${transactionId}/transfer` as const;
 
                 if (router.canDismiss()) {
-                    router.dismissAll();
+                    router.dismiss();
                 }
 
                 router.replace(transferRoute);
