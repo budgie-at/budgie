@@ -1,13 +1,13 @@
 import { TransactionEntryWithRelationsEntityInterface } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 export const getTransactionEntryLabel = (entry: TransactionEntryWithRelationsEntityInterface | undefined, unknownLabel: string): string => {
-    if (isDefined(entry?.category)) {
+    if (isNotEmptyString(entry?.category?.title)) {
         return entry.category.title;
     }
 
-    if (isDefined(entry?.mccCategory?.shortDescription)) {
+    if (isNotEmptyString(entry?.mccCategory?.shortDescription)) {
         return entry.mccCategory.shortDescription;
     }
 

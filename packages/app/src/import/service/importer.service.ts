@@ -35,6 +35,8 @@ import { NormalizedRowType } from '../type/normalized-row.type';
 
 const logger = getLogger('ImporterService');
 
+const OTHER_DEFAULT_CATEGORY_ID = 38;
+
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
@@ -50,7 +52,7 @@ export class ImporterService {
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true, this.language);
+        this.fallbackCategory = await this.loadFallbackCategory();
         this.instrumentsMap = await this.initializeInstruments();
         this.mccCategoriesMap = await this.initializeMccCategories();
 
@@ -68,6 +70,15 @@ export class ImporterService {
         );
 
         return progress;
+    }
+
+    private async loadFallbackCategory(): Promise<CategoryEntityInterface> {
+        const [fallback] = await categoryRepository.findById(OTHER_DEFAULT_CATEGORY_ID, this.language);
+        if (!isDefined(fallback)) {
+            throw new Error(`Default "Other" category not found (id=${OTHER_DEFAULT_CATEGORY_ID})`);
+        }
+
+        return fallback;
     }
 
     private async initializeInstruments(): Promise<Record<string, InstrumentEntityInterface>> {
