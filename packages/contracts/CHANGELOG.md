@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.5](https://github.com/budgie-at/budgie/compare/v5.21.4...v5.21.5) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** consolidate iban bridge transfer chains ([8e903fd](https://github.com/budgie-at/budgie/commit/8e903fd898fc6e20b8d959b6fd815dd82b33e75c))
+- **app:** consolidate same-bank fee transfers ([ee397c0](https://github.com/budgie-at/budgie/commit/ee397c04b944858482c4b65a99e076477eb28112))
+
 ## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
 
 ### Bug Fixes
