@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** align expo sdk dependencies ([65bed4b](https://github.com/budgie-at/budgie/commit/65bed4b536fb057bf91eae9541ceb798550d420b))
+
 ## [5.21.2](https://github.com/budgie-at/budgie/compare/v5.21.1...v5.21.2) (2026-05-21)
 
 ### Bug Fixes
