@@ -451,6 +451,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
+    async getByIdWithEntries(id: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface | undefined> {
+        return await (tx ?? this.db).query.TransactionEntityTable.findFirst({
+            where: eq(TransactionEntityTable.id, id),
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    where: isNull(TransactionEntryEntityTable.originalTransactionId)
+                }
+            }
+        });
+    }
+
     async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
         if (isNotEmptyArray(ids)) {
             return await (tx ?? this.db).query.TransactionEntityTable.findMany({
