@@ -11,6 +11,7 @@ import { privatbankCategoryMatcherMatch } from './privatbank-category-matcher.se
 import type { FileBasedBankSyncClientInterface } from '../interface/file-based-bank-sync-client.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { BankAccountInterface } from '@budgie/bank-sync';
+import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 const collectUniqueCategories = (client: FileBasedBankSyncClientInterface, accountIds: string[]): string[] => {
     const categorySet = new Set<string>();
@@ -42,7 +43,7 @@ class PrivatbankSyncService extends BaseFileBankSyncService {
     protected async resolveMccCategoryIdMap(
         client: FileBasedBankSyncClientInterface,
         bankAccounts: BankAccountInterface[]
-    ): Promise<Map<string, number | null>> {
+    ): Promise<Map<string, MccCategoryLookupInterface | null>> {
         const accountIds = bankAccounts.map(account => account.id);
         const uniqueCategories = collectUniqueCategories(client, accountIds);
 

@@ -4,11 +4,12 @@ import {
     AccountTypeEnum,
     CategoryCreateEntityInterface,
     CategoryEntityInterface,
+    CategorySourceEnum,
     ExternalSourceEnum,
     InstrumentEntityInterface,
     LanguageEnum,
     LiabilityAccountCreateInputInterface,
-    MccCategoryEntityInterface,
+    MccCategoryLookupInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -19,19 +20,21 @@ import { getLogger } from '@budgie/logger';
 import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { categoryRepository, instrumentRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
+import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
-import { EntryParamsInterface } from '../interface/entry-params.interface';
-import { ImportProgressInterface } from '../interface/import-progress.interface';
-import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
-import { ImporterRowInterface } from '../interface/importer-row.interface';
-import { NormalizedRowType } from '../type/normalized-row.type';
+
+import type { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
+import type { EntryParamsInterface } from '../interface/entry-params.interface';
+import type { ImportProgressInterface } from '../interface/import-progress.interface';
+import type { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
+import type { ImporterRowInterface } from '../interface/importer-row.interface';
+import type { NormalizedRowType } from '../type/normalized-row.type';
 
 const logger = getLogger('ImporterService');
 
@@ -41,8 +44,8 @@ export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
-    private mccCategoriesMap: Map<string, MccCategoryEntityInterface> = new Map();
     private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
+    private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
     constructor(
         private readonly columnMap: ImporterColumnMapInterface,
@@ -54,7 +57,7 @@ export class ImporterService {
 
         this.fallbackCategory = await this.loadFallbackCategory();
         this.instrumentsMap = await this.initializeInstruments();
-        this.mccCategoriesMap = await this.initializeMccCategories();
+        this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
 
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
 
@@ -88,12 +91,6 @@ export class ImporterService {
             (acc, instrument) => ({ ...acc, [instrument.code]: instrument }),
             {}
         );
-    }
-
-    private async initializeMccCategories(): Promise<Map<string, MccCategoryEntityInterface>> {
-        const mccCategories = await mccCategoryRepository.findAll();
-
-        return new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory]));
     }
 
     private async collectEntities(csvText: string): Promise<{
@@ -153,8 +150,18 @@ export class ImporterService {
     }
 
     private createTransaction(normalizedRow: NormalizedRowType): TransactionCreateInputInterface {
-        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, mccCategoryId } =
-            this.parseRow(normalizedRow);
+        const {
+            toAccount,
+            fromAccount,
+            categoryId,
+            categorySource,
+            mccCategoryId,
+            operatedAt,
+            toAmount,
+            fromInstrument,
+            toInstrument,
+            fromAmount
+        } = this.parseRow(normalizedRow);
 
         const type = this.determineTransactionType(toAmount, fromInstrument);
 
@@ -185,7 +192,15 @@ export class ImporterService {
             toAccountId: source.account.id,
             fromAccountId: dest?.account.id ?? null,
             tagIds: [],
-            entries: this.createEntries({ type, category, source, dest, externalId: normalizedRow.externalId, mccCategoryId })
+            entries: this.createEntries({
+                type,
+                categoryId,
+                categorySource,
+                mccCategoryId,
+                source,
+                dest,
+                externalId: normalizedRow.externalId
+            })
         };
     }
 
@@ -203,7 +218,8 @@ export class ImporterService {
 
     private createEntries({
         type,
-        category,
+        categoryId,
+        categorySource,
         source,
         dest,
         externalId,
@@ -217,7 +233,8 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id,
+                    categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 }
@@ -228,7 +245,8 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id,
+                    categoryId,
+                    categorySource,
                     mccCategoryId,
                     externalId: entryExternalId
                 }
@@ -239,7 +257,8 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id,
+                    categoryId,
+                    categorySource,
                     mccCategoryId: null,
                     externalId: entryExternalId
                 },
@@ -247,7 +266,8 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(dest.amount),
                     accountId: dest.account.id,
-                    categoryId: category.id,
+                    categoryId,
+                    categorySource,
                     mccCategoryId: null,
                     externalId: entryExternalId
                 }
@@ -281,18 +301,17 @@ export class ImporterService {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
-        const category = this.categoriesMap[normalizedRow.category] ?? this.fallbackCategory;
+        const explicitCategory = this.categoriesMap[normalizedRow.category] ?? this.fallbackCategory;
         const operatedAt = this.parseDate(normalizedRow.operatedAt);
         const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
         const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
         const isPlanned = normalizedRow.isPlanned === '1';
-        const mccCategoryId = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoriesMap.get(normalizedRow.mcc)?.id ?? null) : null;
 
         if (!isDefined(toAccount)) {
             throw new Error(`To Account ${normalizedRow.toAccount} not found`);
         }
-        if (!isDefined(category)) {
+        if (!isDefined(explicitCategory)) {
             throw new Error(`Category "${normalizedRow.category}" not found`);
         }
         if (!isDefined(operatedAt) || isNaN(operatedAt.getTime())) {
@@ -308,17 +327,25 @@ export class ImporterService {
             throw new Error(`From Amount "${normalizedRow.fromAmount}" is invalid`);
         }
 
+        const mccLookup = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoryLookupMap.get(normalizedRow.mcc) ?? null) : null;
+        const mccCategoryId = mccLookup?.id ?? null;
+        const hasExplicitCategory = isNotEmptyString(normalizedRow.category);
+        const useMccDefault = !hasExplicitCategory && isDefined(mccLookup) && isPositiveNumber(mccLookup.defaultCategoryId);
+        const categoryId = useMccDefault ? mccLookup.defaultCategoryId : explicitCategory.id;
+        const categorySource = useMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
+
         return {
             toAccount,
             fromAccount,
-            category,
+            categoryId,
+            categorySource,
+            mccCategoryId,
             operatedAt,
             toAmount,
             fromInstrument,
             toInstrument,
             fromAmount,
-            isPlanned,
-            mccCategoryId
+            isPlanned
         };
     }
 
