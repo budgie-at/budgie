@@ -1,6 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useSQLiteContext } from 'expo-sqlite';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +9,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { AnimatedSectionList } from '../../@generic/component/animated-section-list/animated-section-list';
 import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
+import { expoDb } from '../../@generic/drizzle/db/db';
 import { AccountGridItem } from '../../account/component/account-grid-item/account-grid-item';
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
@@ -39,8 +39,7 @@ export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
 
-    const db = useSQLiteContext();
-    useDrizzleStudio(db);
+    useDrizzleStudio(expoDb);
 
     const scrollY = useSharedValue(0);
 
