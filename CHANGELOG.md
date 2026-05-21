@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.2](https://github.com/budgie-at/budgie/compare/v5.21.1...v5.21.2) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** center rule suggestion pill ([d8e6641](https://github.com/budgie-at/budgie/commit/d8e664117316bc290f8cd3bb4645eef376511ce1))
+- **app:** expand rule suggestion pill ([e7ccfcd](https://github.com/budgie-at/budgie/commit/e7ccfcd4f9fe9662d887adabb45b2b0fd4a39705))
+- **app:** smooth rule pill transition ([49e228e](https://github.com/budgie-at/budgie/commit/49e228e8b88c2516e7221264db32103b04853d03))
+- **app:** stabilize rule pill transitions ([1fe2709](https://github.com/budgie-at/budgie/commit/1fe270912de3d36767097d844566d0c58201f6d0))
+
 ## [5.21.1](https://github.com/budgie-at/budgie/compare/v5.21.0...v5.21.1) (2026-05-20)
 
 ### Bug Fixes
