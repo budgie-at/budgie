@@ -3,6 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../constant/transfer-pair-fast-time-window.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../constant/transfer-pair-implied-rate-tolerance.constant';
@@ -18,6 +19,17 @@ import type { TransferPairCandidateInterface } from '../interface/transfer-pair-
 import type { TransferPairReviewCandidateInterface } from '../interface/transfer-pair-review-candidate.interface';
 
 export class TransferPairRepository {
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_MINUTES = 2;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_SECONDS =
+        TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_MINUTES * 60;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA = 500 * PRECISION;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA_RATIO = 0.05;
+
+    private static readonly ACCOUNT_HINT_SUFFIX_LENGTH = 4;
+
     constructor(private db: DB) {}
 
     @Log(
@@ -51,7 +63,7 @@ export class TransferPairRepository {
             FROM (${this.buildRankedCandidateSql()})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE')
+                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE', 'AUTO_SAME_BANK_HINTED_FEE')
         `;
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
@@ -564,6 +576,7 @@ export class TransferPairRepository {
                     expense_account.title as expenseAccountTitle,
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_account.external_source as expenseExternalSource,
+                    SUBSTR(expense_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
                     expense_instrument.code as expenseCurrency,
                     expense_mcc.mcc_group_id as expenseMccGroupId
                 FROM transaction_entries expense_entry
@@ -595,6 +608,7 @@ export class TransferPairRepository {
                     income_account.title as incomeAccountTitle,
                     income_account.instrument_id as incomeInstrumentId,
                     income_account.external_source as incomeExternalSource,
+                    SUBSTR(income_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
                     income_instrument.code as incomeCurrency,
                     income_mcc.mcc_group_id as incomeMccGroupId
                 FROM transaction_entries income_entry
@@ -698,6 +712,13 @@ export class TransferPairRepository {
                         ELSE 0
                     END as sameCurrency,
                     CASE
+                        WHEN expense_entries.expenseExternalSource IS NOT NULL
+                            AND expense_entries.expenseExternalSource != ''
+                            AND expense_entries.expenseExternalSource = income_entries.incomeExternalSource
+                        THEN 1
+                        ELSE 0
+                    END as sameBank,
+                    CASE
                         WHEN expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseEntryAmount = income_entries.incomeEntryAmount
                         THEN 1
@@ -713,7 +734,21 @@ export class TransferPairRepository {
                             AND ABS(income_entries.incomeEntryAmount - expense_entries.expenseOperationAmount) / income_entries.incomeEntryAmount <= 0.01
                         THEN 1
                         ELSE 0
-                    END as operationAmountMatch
+                    END as operationAmountMatch,
+                    CASE
+                        WHEN expense_entries.expenseAccountHintSuffix IS NOT NULL
+                            AND income_entries.incomeAccountHintSuffix IS NOT NULL
+                            AND LENGTH(expense_entries.expenseAccountHintSuffix) = ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                            AND LENGTH(income_entries.incomeAccountHintSuffix) = ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                            AND expense_entries.expenseTransactionTitle LIKE '%' || income_entries.incomeAccountHintSuffix || '%'
+                            AND income_entries.incomeTransactionTitle LIKE '%' || expense_entries.expenseAccountHintSuffix || '%'
+                            AND income_entries.incomeEntryAmount > 0
+                            AND expense_entries.expenseEntryAmount > income_entries.incomeEntryAmount
+                            AND expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA}
+                            AND (expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount) * 1.0 / income_entries.incomeEntryAmount <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA_RATIO}
+                        THEN 1
+                        ELSE 0
+                    END as hintedFeeAmountMatch
                 FROM expense_entries
                 INNER JOIN income_entries ON
                     income_entries.incomeAccountId != expense_entries.expenseAccountId
@@ -757,6 +792,13 @@ export class TransferPairRepository {
                         WHEN impliedRateMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE'
+                        WHEN sameBank = 1
+                            AND sameCurrency = 1
+                            AND expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
+                            AND incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}
+                            AND hintedFeeAmountMatch = 1
+                            AND timeDiff <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_SECONDS}
+                        THEN 'AUTO_SAME_BANK_HINTED_FEE'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
                         THEN 'REVIEW_CROSS_CURRENCY_OPERATION'
@@ -766,6 +808,7 @@ export class TransferPairRepository {
                         WHEN ibanMatch = 1 THEN 'iban'
                         WHEN operationAmountMatch = 1 THEN 'operation-amount'
                         WHEN impliedRateMatch = 1 THEN 'implied-rate'
+                        WHEN hintedFeeAmountMatch = 1 THEN 'same-bank-hinted-fee'
                         ELSE 'amount'
                     END as matchType
                 FROM scored_pairs
@@ -781,7 +824,8 @@ export class TransferPairRepository {
                                 WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 5
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
                                 ELSE 99
                             END,
                             timeDiff
@@ -794,7 +838,8 @@ export class TransferPairRepository {
                                 WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 5
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
                                 ELSE 99
                             END,
                             timeDiff

@@ -362,11 +362,23 @@ class TransferConsolidationService {
     }
 
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {
+        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE') {
+            return 1;
+        }
+
         if (candidate.expenseEntryAmount === candidate.incomeEntryAmount) {
             return 1;
         }
 
         return candidate.expenseEntryAmount / candidate.incomeEntryAmount;
+    }
+
+    private getPairConsolidationType(candidate: TransferPairCandidateInterface): TransactionConsolidationTypeEnum {
+        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE') {
+            return TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER;
+        }
+
+        return TransactionConsolidationTypeEnum.TRANSFER_PAIR;
     }
 
     private async consolidatePairInner(candidate: TransferPairCandidateInterface, tx: DB): Promise<void> {
@@ -379,7 +391,7 @@ class TransferConsolidationService {
             fromAmount: candidate.expenseEntryAmount,
             toAmount: candidate.incomeEntryAmount,
             exchangeRate: this.computeExchangeRate(candidate),
-            consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+            consolidationType: this.getPairConsolidationType(candidate),
             fromEntryExchangeRate: candidate.expenseEntryExchangeRate,
             toEntryExchangeRate: candidate.incomeEntryExchangeRate,
             fromEntryToIban: candidate.expenseEntryToIban
