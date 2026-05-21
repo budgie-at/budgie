@@ -164,8 +164,12 @@ appId: ${APP_ID}
 
 - tapOn:
     id: 'PageHeader.BackButton'
-
-- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionsPage.Container'
+    timeout: 10000
+- assertNotVisible:
+    id: 'HomePage.TotalBalance'
 
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Convert_Expense'
