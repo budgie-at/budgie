@@ -5,7 +5,15 @@ import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, {
+    FadeIn,
+    FadeOut,
+    LinearTransition,
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring
+} from 'react-native-reanimated';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -22,6 +30,12 @@ const SNAP_BACK_SPRING_CONFIG = { damping: 20, stiffness: 200 };
 const SLIDE_OUT_DISTANCE = 300;
 const SUCCESS_AUTO_DISMISS_MS = 2000;
 const ERROR_AUTO_DISMISS_MS = 3000;
+const PILL_LAYOUT_ANIMATION_MS = 180;
+const PILL_CONTENT_ENTER_MS = 120;
+const PILL_CONTENT_EXIT_MS = 90;
+const PILL_LAYOUT_TRANSITION = LinearTransition.duration(PILL_LAYOUT_ANIMATION_MS);
+const PILL_CONTENT_ENTERING = FadeIn.duration(PILL_CONTENT_ENTER_MS);
+const PILL_CONTENT_EXITING = FadeOut.duration(PILL_CONTENT_EXIT_MS);
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
 type CardLayout = 'compact' | 'wide';
@@ -142,6 +156,7 @@ export const SwipeableRuleCard = (props: Props) => {
         ? 'text-xs text-secondary-foreground font-medium shrink-0'
         : 'text-xs text-destructive-foreground font-medium shrink-0';
     const statusMessage = isSuccess ? successMessage : errorMessage;
+    const pillContentKey = isStatus ? status : 'action';
     const pillContent = isStatus ? (
         <RuleIndicatorPill icon={statusIcon} iconClassName={statusIconClassName} textClassName={statusTextClassName}>
             {statusMessage}
@@ -158,7 +173,16 @@ export const SwipeableRuleCard = (props: Props) => {
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
                 <View testID={cardTestID} className={cardClassName}>
-                    {pillContent}
+                    <Animated.View layout={PILL_LAYOUT_TRANSITION} className="items-center">
+                        <Animated.View
+                            key={pillContentKey}
+                            entering={PILL_CONTENT_ENTERING}
+                            exiting={PILL_CONTENT_EXITING}
+                            layout={PILL_LAYOUT_TRANSITION}
+                        >
+                            {pillContent}
+                        </Animated.View>
+                    </Animated.View>
                 </View>
             </Animated.View>
         </GestureDetector>
