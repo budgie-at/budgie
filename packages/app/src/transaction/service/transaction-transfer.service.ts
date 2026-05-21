@@ -1,6 +1,5 @@
 import {
     AccountTypeEnum,
-    LanguageEnum,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
@@ -112,7 +111,7 @@ class TransactionTransferService {
     }
 
     private async getTransferConversionTransaction(id: number, direction: 'expense' | 'income', tx: DB) {
-        const transaction = await transactionRepository.getById(id, LanguageEnum.EN, tx);
+        const transaction = await transactionRepository.getByIdWithEntries(id, tx);
 
         if (!isDefined(transaction)) {
             throw new Error(t`Transaction not found`);
