@@ -3,6 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { TRANSFER_MCC_GROUP_ID } from '../constant/transfer-mcc-group-id.constant';
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../constant/transfer-pair-fast-time-window.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../constant/transfer-pair-implied-rate-tolerance.constant';
@@ -12,11 +13,23 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import type { DB } from '../../@generic/type/db.type';
 import type { AtmCashWithdrawalCandidateInterface } from '../interface/atm-cash-withdrawal-candidate.interface';
 import type { AtmCashWithdrawalReviewCandidateInterface } from '../interface/atm-cash-withdrawal-review-candidate.interface';
+import type { IbanBridgeChainTransferCandidateInterface } from '../interface/iban-bridge-chain-transfer-candidate.interface';
 import type { IbanBridgeTransferCandidateInterface } from '../interface/iban-bridge-transfer-candidate.interface';
 import type { TransferPairCandidateInterface } from '../interface/transfer-pair-candidate.interface';
 import type { TransferPairReviewCandidateInterface } from '../interface/transfer-pair-review-candidate.interface';
 
 export class TransferPairRepository {
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_MINUTES = 2;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_SECONDS =
+        TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_MINUTES * 60;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA = 500 * PRECISION;
+
+    private static readonly SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA_RATIO = 0.05;
+
+    private static readonly ACCOUNT_HINT_SUFFIX_LENGTH = 4;
+
     constructor(private db: DB) {}
 
     @Log(
@@ -50,7 +63,7 @@ export class TransferPairRepository {
             FROM (${this.buildRankedCandidateSql()})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE')
+                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE', 'AUTO_SAME_BANK_HINTED_FEE')
         `;
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
@@ -341,6 +354,211 @@ export class TransferPairRepository {
         return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
     }
 
+    @Log(
+        'enter',
+        result =>
+            `done sourceExpenseTransactionIds=${result.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${result.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} bridgeExpenseTransactionIds=${result.map(candidate => candidate.bridgeExpenseTransactionId).join(',')} targetIncomeTransactionIds=${result.map(candidate => candidate.targetIncomeTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
+    async findIbanBridgeChainTransferCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
+        const sql = `
+            SELECT
+                'AUTO_IBAN_BRIDGE_CHAIN_TRANSFER' as confidenceBucket,
+                sourceExpenseTransactionId,
+                sourceExpenseTransactionTitle,
+                sourceExpenseTransactionComment,
+                sourceExpenseEntryId,
+                sourceExpenseEntryToIban,
+                bridgeIncomeTransactionId,
+                bridgeIncomeTransactionTitle,
+                bridgeIncomeEntryId,
+                bridgeExpenseTransactionId,
+                bridgeExpenseTransactionTitle,
+                bridgeExpenseEntryId,
+                targetIncomeTransactionId,
+                targetIncomeTransactionTitle,
+                targetIncomeEntryId,
+                operatedAt,
+                sourceAccountId,
+                sourceAccountTitle,
+                bridgeAccountId,
+                bridgeAccountTitle,
+                targetAccountId,
+                targetAccountTitle,
+                sourceAmount,
+                bridgeAmount,
+                targetAmount,
+                sourceAmount * 1.0 / targetAmount as exchangeRate,
+                timeDiff
+            FROM (
+                SELECT
+                    source_expense_tx.id as sourceExpenseTransactionId,
+                    source_expense_tx.title as sourceExpenseTransactionTitle,
+                    source_expense_tx.comment as sourceExpenseTransactionComment,
+                    source_expense_entry.id as sourceExpenseEntryId,
+                    source_expense_entry.to_iban as sourceExpenseEntryToIban,
+                    bridge_income_tx.id as bridgeIncomeTransactionId,
+                    bridge_income_tx.title as bridgeIncomeTransactionTitle,
+                    bridge_income_entry.id as bridgeIncomeEntryId,
+                    bridge_expense_tx.id as bridgeExpenseTransactionId,
+                    bridge_expense_tx.title as bridgeExpenseTransactionTitle,
+                    bridge_expense_entry.id as bridgeExpenseEntryId,
+                    target_income_tx.id as targetIncomeTransactionId,
+                    target_income_tx.title as targetIncomeTransactionTitle,
+                    target_income_entry.id as targetIncomeEntryId,
+                    source_expense_tx.operated_at as operatedAt,
+                    source_account.id as sourceAccountId,
+                    source_account.title as sourceAccountTitle,
+                    bridge_account.id as bridgeAccountId,
+                    bridge_account.title as bridgeAccountTitle,
+                    target_account.id as targetAccountId,
+                    target_account.title as targetAccountTitle,
+                    source_expense_entry.amount as sourceAmount,
+                    bridge_income_entry.amount as bridgeAmount,
+                    target_income_entry.amount as targetAmount,
+                    MAX(
+                        ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at),
+                        ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at),
+                        ABS(target_income_tx.operated_at - source_expense_tx.operated_at)
+                    ) as timeDiff,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY source_expense_tx.id
+                        ORDER BY
+                            MAX(
+                                ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(target_income_tx.operated_at - source_expense_tx.operated_at)
+                            ),
+                            bridge_income_tx.id,
+                            bridge_expense_tx.id,
+                            target_income_tx.id
+                    ) as sourceExpenseRank,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY bridge_income_tx.id
+                        ORDER BY
+                            MAX(
+                                ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(target_income_tx.operated_at - source_expense_tx.operated_at)
+                            ),
+                            source_expense_tx.id,
+                            bridge_expense_tx.id,
+                            target_income_tx.id
+                    ) as bridgeIncomeRank,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY bridge_expense_tx.id
+                        ORDER BY
+                            MAX(
+                                ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(target_income_tx.operated_at - source_expense_tx.operated_at)
+                            ),
+                            source_expense_tx.id,
+                            bridge_income_tx.id,
+                            target_income_tx.id
+                    ) as bridgeExpenseRank,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY target_income_tx.id
+                        ORDER BY
+                            MAX(
+                                ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at),
+                                ABS(target_income_tx.operated_at - source_expense_tx.operated_at)
+                            ),
+                            source_expense_tx.id,
+                            bridge_income_tx.id,
+                            bridge_expense_tx.id
+                    ) as targetIncomeRank
+                FROM transaction_entries source_expense_entry
+                INNER JOIN transactions source_expense_tx ON
+                    source_expense_entry.transaction_id = source_expense_tx.id
+                    AND source_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND source_expense_tx.deleted_at IS NULL
+                    AND source_expense_tx.consolidation_parent_transaction_id IS NULL
+                INNER JOIN accounts source_account ON
+                    source_account.id = source_expense_entry.account_id
+                    AND source_account.deleted_at IS NULL
+                    AND source_account.iban IS NOT NULL
+                    AND source_account.iban != ''
+                INNER JOIN transactions bridge_income_tx ON
+                    bridge_income_tx.type = '${TransactionTypeEnum.INCOME}'
+                    AND bridge_income_tx.deleted_at IS NULL
+                    AND bridge_income_tx.consolidation_parent_transaction_id IS NULL
+                    AND ABS(bridge_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                INNER JOIN transaction_entries bridge_income_entry ON
+                    bridge_income_entry.transaction_id = bridge_income_tx.id
+                    AND bridge_income_entry.deleted_at IS NULL
+                    AND bridge_income_entry.original_transaction_id IS NULL
+                    AND bridge_income_entry.exchange_rate > 0
+                    AND bridge_income_entry.amount > 0
+                    AND bridge_income_entry.to_iban = source_account.iban
+                INNER JOIN accounts bridge_account ON
+                    bridge_account.id = bridge_income_entry.account_id
+                    AND bridge_account.deleted_at IS NULL
+                INNER JOIN transactions bridge_expense_tx ON
+                    bridge_expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
+                    AND bridge_expense_tx.deleted_at IS NULL
+                    AND bridge_expense_tx.consolidation_parent_transaction_id IS NULL
+                    AND ABS(bridge_expense_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                INNER JOIN transaction_entries bridge_expense_entry ON
+                    bridge_expense_entry.transaction_id = bridge_expense_tx.id
+                    AND bridge_expense_entry.deleted_at IS NULL
+                    AND bridge_expense_entry.original_transaction_id IS NULL
+                    AND bridge_expense_entry.account_id = bridge_account.id
+                    AND bridge_expense_entry.amount = bridge_income_entry.amount
+                    AND bridge_expense_entry.exchange_rate > 0
+                    AND bridge_expense_entry.to_iban IS NOT NULL
+                    AND bridge_expense_entry.to_iban != ''
+                INNER JOIN transactions target_income_tx ON
+                    target_income_tx.type = '${TransactionTypeEnum.INCOME}'
+                    AND target_income_tx.deleted_at IS NULL
+                    AND target_income_tx.consolidation_parent_transaction_id IS NULL
+                    AND ABS(target_income_tx.operated_at - source_expense_tx.operated_at) <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
+                INNER JOIN transaction_entries target_income_entry ON
+                    target_income_entry.transaction_id = target_income_tx.id
+                    AND target_income_entry.deleted_at IS NULL
+                    AND target_income_entry.original_transaction_id IS NULL
+                    AND target_income_entry.amount = bridge_expense_entry.amount
+                    AND target_income_entry.exchange_rate > 0
+                INNER JOIN accounts target_account ON
+                    target_account.id = target_income_entry.account_id
+                    AND target_account.deleted_at IS NULL
+                    AND target_account.iban = bridge_expense_entry.to_iban
+                    AND target_account.iban = source_expense_entry.to_iban
+                LEFT JOIN mcc_categories source_expense_mcc ON source_expense_mcc.id = source_expense_entry.mcc_category_id
+                LEFT JOIN mcc_categories bridge_income_mcc ON bridge_income_mcc.id = bridge_income_entry.mcc_category_id
+                LEFT JOIN mcc_categories bridge_expense_mcc ON bridge_expense_mcc.id = bridge_expense_entry.mcc_category_id
+                LEFT JOIN mcc_categories target_income_mcc ON target_income_mcc.id = target_income_entry.mcc_category_id
+                WHERE source_expense_entry.deleted_at IS NULL
+                    AND source_expense_entry.original_transaction_id IS NULL
+                    AND source_expense_entry.exchange_rate > 0
+                    AND source_expense_entry.amount > 0
+                    AND source_expense_entry.to_iban IS NOT NULL
+                    AND source_expense_entry.to_iban != ''
+                    AND source_account.id != bridge_account.id
+                    AND bridge_account.id != target_account.id
+                    AND source_account.id != target_account.id
+                    AND ABS(source_expense_entry.amount - (bridge_income_entry.amount / bridge_income_entry.exchange_rate)) / source_expense_entry.amount <= 0.01
+                    AND (
+                        source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
+                        OR bridge_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
+                        OR bridge_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
+                        OR target_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID}
+                    )
+                    AND (source_expense_mcc.mcc_group_id IS NULL OR source_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (bridge_income_mcc.mcc_group_id IS NULL OR bridge_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (bridge_expense_mcc.mcc_group_id IS NULL OR bridge_expense_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+                    AND (target_income_mcc.mcc_group_id IS NULL OR target_income_mcc.mcc_group_id = ${TRANSFER_MCC_GROUP_ID})
+            )
+            WHERE sourceExpenseRank = 1
+                AND bridgeIncomeRank = 1
+                AND bridgeExpenseRank = 1
+                AND targetIncomeRank = 1
+        `;
+
+        return this.db.$client.getAllAsync<IbanBridgeChainTransferCandidateInterface>(sql);
+    }
+
     private buildRankedCandidateSql(): string {
         return `
             WITH expense_entries AS (
@@ -358,6 +576,7 @@ export class TransferPairRepository {
                     expense_account.title as expenseAccountTitle,
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_account.external_source as expenseExternalSource,
+                    SUBSTR(expense_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
                     expense_instrument.code as expenseCurrency,
                     expense_mcc.mcc_group_id as expenseMccGroupId
                 FROM transaction_entries expense_entry
@@ -389,6 +608,7 @@ export class TransferPairRepository {
                     income_account.title as incomeAccountTitle,
                     income_account.instrument_id as incomeInstrumentId,
                     income_account.external_source as incomeExternalSource,
+                    SUBSTR(income_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
                     income_instrument.code as incomeCurrency,
                     income_mcc.mcc_group_id as incomeMccGroupId
                 FROM transaction_entries income_entry
@@ -492,6 +712,13 @@ export class TransferPairRepository {
                         ELSE 0
                     END as sameCurrency,
                     CASE
+                        WHEN expense_entries.expenseExternalSource IS NOT NULL
+                            AND expense_entries.expenseExternalSource != ''
+                            AND expense_entries.expenseExternalSource = income_entries.incomeExternalSource
+                        THEN 1
+                        ELSE 0
+                    END as sameBank,
+                    CASE
                         WHEN expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseEntryAmount = income_entries.incomeEntryAmount
                         THEN 1
@@ -507,7 +734,21 @@ export class TransferPairRepository {
                             AND ABS(income_entries.incomeEntryAmount - expense_entries.expenseOperationAmount) / income_entries.incomeEntryAmount <= 0.01
                         THEN 1
                         ELSE 0
-                    END as operationAmountMatch
+                    END as operationAmountMatch,
+                    CASE
+                        WHEN expense_entries.expenseAccountHintSuffix IS NOT NULL
+                            AND income_entries.incomeAccountHintSuffix IS NOT NULL
+                            AND LENGTH(expense_entries.expenseAccountHintSuffix) = ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                            AND LENGTH(income_entries.incomeAccountHintSuffix) = ${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}
+                            AND expense_entries.expenseTransactionTitle LIKE '%' || income_entries.incomeAccountHintSuffix || '%'
+                            AND income_entries.incomeTransactionTitle LIKE '%' || expense_entries.expenseAccountHintSuffix || '%'
+                            AND income_entries.incomeEntryAmount > 0
+                            AND expense_entries.expenseEntryAmount > income_entries.incomeEntryAmount
+                            AND expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA}
+                            AND (expense_entries.expenseEntryAmount - income_entries.incomeEntryAmount) * 1.0 / income_entries.incomeEntryAmount <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_MAX_AMOUNT_DELTA_RATIO}
+                        THEN 1
+                        ELSE 0
+                    END as hintedFeeAmountMatch
                 FROM expense_entries
                 INNER JOIN income_entries ON
                     income_entries.incomeAccountId != expense_entries.expenseAccountId
@@ -551,6 +792,13 @@ export class TransferPairRepository {
                         WHEN impliedRateMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE'
+                        WHEN sameBank = 1
+                            AND sameCurrency = 1
+                            AND expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
+                            AND incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}
+                            AND hintedFeeAmountMatch = 1
+                            AND timeDiff <= ${TransferPairRepository.SAME_BANK_HINTED_FEE_TRANSFER_TIME_WINDOW_SECONDS}
+                        THEN 'AUTO_SAME_BANK_HINTED_FEE'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
                         THEN 'REVIEW_CROSS_CURRENCY_OPERATION'
@@ -560,6 +808,7 @@ export class TransferPairRepository {
                         WHEN ibanMatch = 1 THEN 'iban'
                         WHEN operationAmountMatch = 1 THEN 'operation-amount'
                         WHEN impliedRateMatch = 1 THEN 'implied-rate'
+                        WHEN hintedFeeAmountMatch = 1 THEN 'same-bank-hinted-fee'
                         ELSE 'amount'
                     END as matchType
                 FROM scored_pairs
@@ -575,7 +824,8 @@ export class TransferPairRepository {
                                 WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 5
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
                                 ELSE 99
                             END,
                             timeDiff
@@ -588,7 +838,8 @@ export class TransferPairRepository {
                                 WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
+                                WHEN 'AUTO_SAME_BANK_HINTED_FEE' THEN 5
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
                                 ELSE 99
                             END,
                             timeDiff
