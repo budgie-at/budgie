@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.4](https://github.com/budgie-at/budgie/compare/v5.21.3...v5.21.4) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** pop expense detail when converting to transfer ([874b43f](https://github.com/budgie-at/budgie/commit/874b43f15ad2268279e5a07176b5a5aef87c5834))
+- **app:** preserve back history when converting transaction to transfer ([7b64429](https://github.com/budgie-at/budgie/commit/7b64429fe207ff6bcbb6c8ae8a2d62bceb109821)), closes [#464](https://github.com/budgie-at/budgie/issues/464)
+
 ## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
 
 ### Bug Fixes
