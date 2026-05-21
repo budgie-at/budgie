@@ -50,7 +50,7 @@ export class TransferPairRepository {
             FROM (${this.buildRankedCandidateSql()})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_FAST', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE')
+                AND confidenceBucket IN ('AUTO_IBAN_AMOUNT', 'AUTO_SAME_CURRENCY_AMOUNT', 'AUTO_CROSS_CURRENCY_OPERATION', 'AUTO_CROSS_CURRENCY_IMPLIED_RATE')
         `;
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
@@ -82,7 +82,7 @@ export class TransferPairRepository {
             FROM (${this.buildRankedCandidateSql()})
             WHERE expenseRank = 1
                 AND incomeRank = 1
-                AND confidenceBucket IN ('REVIEW_SAME_CURRENCY_SLOW', 'REVIEW_CROSS_CURRENCY_OPERATION')
+                AND confidenceBucket IN ('REVIEW_CROSS_CURRENCY_OPERATION')
         `;
 
         return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
@@ -543,8 +543,7 @@ export class TransferPairRepository {
                         THEN 'AUTO_IBAN_AMOUNT'
                         WHEN hasTransferMcc = 1
                             AND sameCurrencyAmountMatch = 1
-                            AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
-                        THEN 'AUTO_SAME_CURRENCY_FAST'
+                        THEN 'AUTO_SAME_CURRENCY_AMOUNT'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
@@ -552,9 +551,6 @@ export class TransferPairRepository {
                         WHEN impliedRateMatch = 1
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE'
-                        WHEN hasTransferMcc = 1
-                            AND sameCurrencyAmountMatch = 1
-                        THEN 'REVIEW_SAME_CURRENCY_SLOW'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
                         THEN 'REVIEW_CROSS_CURRENCY_OPERATION'
@@ -576,11 +572,10 @@ export class TransferPairRepository {
                         ORDER BY
                             CASE confidenceBucket
                                 WHEN 'AUTO_IBAN_AMOUNT' THEN 1
-                                WHEN 'AUTO_SAME_CURRENCY_FAST' THEN 2
+                                WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_SAME_CURRENCY_SLOW' THEN 5
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
                                 ELSE 99
                             END,
                             timeDiff
@@ -590,11 +585,10 @@ export class TransferPairRepository {
                         ORDER BY
                             CASE confidenceBucket
                                 WHEN 'AUTO_IBAN_AMOUNT' THEN 1
-                                WHEN 'AUTO_SAME_CURRENCY_FAST' THEN 2
+                                WHEN 'AUTO_SAME_CURRENCY_AMOUNT' THEN 2
                                 WHEN 'AUTO_CROSS_CURRENCY_OPERATION' THEN 3
                                 WHEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE' THEN 4
-                                WHEN 'REVIEW_SAME_CURRENCY_SLOW' THEN 5
-                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 6
+                                WHEN 'REVIEW_CROSS_CURRENCY_OPERATION' THEN 5
                                 ELSE 99
                             END,
                             timeDiff

@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.21.4](https://github.com/budgie-at/budgie/compare/v5.21.3...v5.21.4) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** pop expense detail when converting to transfer ([874b43f](https://github.com/budgie-at/budgie/commit/874b43f15ad2268279e5a07176b5a5aef87c5834))
+- **app:** preserve back history when converting transaction to transfer ([7b64429](https://github.com/budgie-at/budgie/commit/7b64429fe207ff6bcbb6c8ae8a2d62bceb109821)), closes [#464](https://github.com/budgie-at/budgie/issues/464)
+
+## [5.21.3](https://github.com/budgie-at/budgie/compare/v5.21.2...v5.21.3) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** align expo sdk dependencies ([65bed4b](https://github.com/budgie-at/budgie/commit/65bed4b536fb057bf91eae9541ceb798550d420b))
+
+## [5.21.2](https://github.com/budgie-at/budgie/compare/v5.21.1...v5.21.2) (2026-05-21)
+
+### Bug Fixes
+
+- **app:** center rule suggestion pill ([d8e6641](https://github.com/budgie-at/budgie/commit/d8e664117316bc290f8cd3bb4645eef376511ce1))
+- **app:** expand rule suggestion pill ([e7ccfcd](https://github.com/budgie-at/budgie/commit/e7ccfcd4f9fe9662d887adabb45b2b0fd4a39705))
+- **app:** smooth rule pill transition ([49e228e](https://github.com/budgie-at/budgie/commit/49e228e8b88c2516e7221264db32103b04853d03))
+- **app:** stabilize rule pill transitions ([1fe2709](https://github.com/budgie-at/budgie/commit/1fe270912de3d36767097d844566d0c58201f6d0))
+
+## [5.21.1](https://github.com/budgie-at/budgie/compare/v5.21.0...v5.21.1) (2026-05-20)
+
+### Bug Fixes
+
+- **contracts:** auto-consolidate same-currency transfer amounts ([30f3469](https://github.com/budgie-at/budgie/commit/30f34692ebd5568f8d26780690742ac76e98bbaf))
+
 # [5.21.0](https://github.com/budgie-at/budgie/compare/v5.20.1...v5.21.0) (2026-05-20)
 
 ### Features
