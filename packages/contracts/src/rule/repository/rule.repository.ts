@@ -41,6 +41,16 @@ export class RuleRepository {
         });
     }
 
+    findAllWithConditions() {
+        return this.db.query.RuleEntityTable.findMany({
+            where: isNull(RuleEntityTable.deletedAt),
+            orderBy: [asc(RuleEntityTable.id)],
+            with: {
+                [RuleAssociationEnum.CONDITIONS]: true
+            }
+        });
+    }
+
     findAllWithActionsAndCategories() {
         return this.db.query.RuleEntityTable.findMany({
             where: isNull(RuleEntityTable.deletedAt),
