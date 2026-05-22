@@ -1,18 +1,26 @@
 import { describe, expect, it } from 'vitest';
+
 import { eq } from 'drizzle-orm';
 
 import {
-    AccountTypeEnum,
     ExternalSourceEnum,
     PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
+import {
+    expectSingleConsolidation,
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    seedBankPair,
+    seedBankSyncAccount,
+    testDb,
+    updateBankTransaction
+} from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
@@ -21,16 +29,7 @@ const INCOME_AMOUNT = 29_999 * PRECISION;
 const COMPETING_INCOME_AMOUNT = 29_998 * PRECISION;
 
 const seedAccount = (title: string, externalSource: ExternalSourceEnum | null, iban: string) =>
-    seed.account({
-        title,
-        type: AccountTypeEnum.BANK_SYNC,
-        externalSource,
-        iban
-    });
-
-const updateTransaction = (transactionId: number, title: string, externalSource: ExternalSourceEnum): void => {
-    testDb.update(TransactionEntityTable).set({ title, externalSource }).where(eq(TransactionEntityTable.id, transactionId)).run();
-};
+    seedBankSyncAccount(title, externalSource, iban);
 
 const seedInterbankFeeTransfer = (
     sourceAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.MONOBANK,
@@ -57,8 +56,8 @@ const seedInterbankFeeTransfer = (
         }
     );
 
-    updateTransaction(expense.id, 'приват сина 3', ExternalSourceEnum.MONOBANK);
-    updateTransaction(income.id, 'від IHOR YEHOROV', ExternalSourceEnum.PRIVATBANK);
+    updateBankTransaction(expense.id, { title: 'приват сина 3', externalSource: ExternalSourceEnum.MONOBANK });
+    updateBankTransaction(income.id, { title: 'від IHOR YEHOROV', externalSource: ExternalSourceEnum.PRIVATBANK });
 
     return { expense, income, sourceAccount, targetAccount, transferMcc };
 };
@@ -103,10 +102,7 @@ const expectSeededInterbankFeeTransferConsolidates = async (
         targetAccountExternalSource
     );
 
-    const result = await transferConsolidationService.consolidate();
-
-    expect(result.found).toBe(1);
-    expect(result.consolidated).toBe(1);
+    await expectSingleConsolidation();
     expectTransferPairConsolidated(expense.id, income.id, sourceAccount.id, targetAccount.id);
 };
 
@@ -131,7 +127,7 @@ describe('consolidation/interbank-hinted-fee-transfer', () => {
             }
         );
 
-        updateTransaction(competingIncome.id, 'від IHOR YEHOROV', ExternalSourceEnum.PRIVATBANK);
+        updateBankTransaction(competingIncome.id, { title: 'від IHOR YEHOROV', externalSource: ExternalSourceEnum.PRIVATBANK });
 
         const result = await transferConsolidationService.consolidate();
 

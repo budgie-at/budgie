@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-
-import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
-    PRECISION,
-    TransactionConsolidationTypeEnum,
-    TransactionEntityTable
-} from '@budgie/contracts';
-
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
 
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+
+import {
+    expectSingleConsolidation,
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    seedBankPair,
+    seedBankSyncAccount,
+    updateBankTransaction
+} from '../../harness';
 
 const TRANSFER_AMOUNT = 10_000 * PRECISION;
 const TRANSFER_WITH_FEE_AMOUNT = 10_300 * PRECISION;
@@ -21,16 +21,7 @@ const TARGET_CARD_SUFFIX = '5524';
 const PRIVATBANK_FAKE_IBAN_PREFIX = 'UA1111111';
 
 const seedPrivatbankAccount = (suffix: string, externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK) =>
-    seed.account({
-        title: `Privatbank •${suffix}`,
-        type: AccountTypeEnum.BANK_SYNC,
-        externalSource,
-        iban: `${PRIVATBANK_FAKE_IBAN_PREFIX}${suffix}`
-    });
-
-const updateTitle = (transactionId: number, title: string): void => {
-    testDb.update(TransactionEntityTable).set({ title }).where(eq(TransactionEntityTable.id, transactionId)).run();
-};
+    seedBankSyncAccount(`Privatbank •${suffix}`, externalSource, `${PRIVATBANK_FAKE_IBAN_PREFIX}${suffix}`);
 
 const seedPrivatbankFeeTransfer = (
     incomeTitle = `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
@@ -50,8 +41,8 @@ const seedPrivatbankFeeTransfer = (
         { externalId: 'privatbank-card-transfer-income', operatedAt: incomeOperatedAt },
         { accountId: targetAccount.id, amount: TRANSFER_AMOUNT, mccCategoryId: transferMcc.id }
     );
-    updateTitle(expense.id, `На свою картку *${TARGET_CARD_SUFFIX}`);
-    updateTitle(income.id, incomeTitle);
+    updateBankTransaction(expense.id, { title: `На свою картку *${TARGET_CARD_SUFFIX}` });
+    updateBankTransaction(income.id, { title: incomeTitle });
 
     return { expense, income, sourceAccount, targetAccount };
 };
@@ -90,10 +81,7 @@ const expectPrivatbankFeeTransferConsolidated = async (
         externalSource
     );
 
-    const result = await transferConsolidationService.consolidate();
-
-    expect(result.consolidated).toBe(1);
-    expect(result.found).toBe(1);
+    await expectSingleConsolidation();
     expectSameBankHintedFeeConsolidation(expense.id, income.id, sourceAccount.id, targetAccount.id);
 };
 
