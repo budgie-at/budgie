@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.2](https://github.com/budgie-at/budgie/compare/v5.22.1...v5.22.2) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize quick rule hints ([411870b](https://github.com/budgie-at/budgie/commit/411870be60366bee77cb5cff5a9bd19bf61e426a))
+
 ## [5.22.1](https://github.com/budgie-at/budgie/compare/v5.22.0...v5.22.1) (2026-05-22)
 
 ### Bug Fixes
