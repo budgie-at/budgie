@@ -1,6 +1,6 @@
 import { RuleConditionCreateInputInterface, RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 const REFERENCE_PATTERNS = [/\bREF[#:]?\w*/giu, /#\w{4,}/gu, /\b\d{5,}\b/gu];
 
@@ -16,8 +16,11 @@ const SUFFIX_PATTERN = /\.?\b(?:COM|NET|ORG|INC|LLC|LTD|GMBH|CO|CORP|PLC|SA|AG|S
 
 const EXTRA_WHITESPACE = /\s{2,}/gu;
 const LEADING_TRAILING_SEPARATORS = /^[\s*\-_.,/]+|[\s*\-_.,/]+$/gu;
+const REGEX_SPECIAL_CHARACTERS = /[\\^$.*+?()[\]{}|]/gu;
+const TOKEN_SEPARATOR = /\s+/u;
 
 const MINIMUM_CLEANED_LENGTH = 3;
+const MAX_CONDITION_REGEX_LENGTH = 200;
 
 // eslint-disable-next-line max-statements -- sequential regex cleanup steps absorbed from clean-merchant-title util per CLAUDE.md rule 38/51
 const cleanMerchantTitle = (title: string): string => {
@@ -68,6 +71,58 @@ const isGenericTitle = (title: string): boolean => {
 const isCleanedTextUsable = (cleaned: string): boolean =>
     isNotEmptyString(cleaned) && cleaned.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleaned);
 
+const escapeRegexToken = (token: string): string => token.replace(REGEX_SPECIAL_CHARACTERS, '\\$&');
+
+const buildFlexibleContainsRegex = (text: string): string => {
+    const tokens = text.split(TOKEN_SEPARATOR).filter(isNotEmptyString).map(escapeRegexToken);
+    let regex = '';
+
+    for (const token of tokens) {
+        const nextRegex = isNotEmptyString(regex) ? `${regex}.*${token}` : token;
+
+        if (nextRegex.length > MAX_CONDITION_REGEX_LENGTH) {
+            return regex;
+        }
+
+        regex = nextRegex;
+    }
+
+    return regex;
+};
+
+const buildTextCondition = (
+    field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
+    text: string
+): RuleConditionCreateInputInterface | null => {
+    const cleanedText = cleanMerchantTitle(text);
+
+    if (!isCleanedTextUsable(cleanedText)) {
+        return null;
+    }
+
+    if (text.toLowerCase().includes(cleanedText.toLowerCase())) {
+        return {
+            field,
+            operator: RuleConditionOperatorEnum.CONTAINS,
+            value: cleanedText,
+            secondaryValue: null
+        };
+    }
+
+    const regex = buildFlexibleContainsRegex(cleanedText);
+
+    if (!isNotEmptyString(regex)) {
+        return null;
+    }
+
+    return {
+        field,
+        operator: RuleConditionOperatorEnum.MATCHES_REGEX,
+        value: regex,
+        secondaryValue: null
+    };
+};
+
 export const selectSuggestConditions = (
     title: string,
     mccCode: string | null,
@@ -84,25 +139,15 @@ export const selectSuggestConditions = (
         });
     }
 
-    const cleanedTitle = cleanMerchantTitle(title);
+    const titleCondition = buildTextCondition(RuleConditionFieldEnum.TITLE, title);
 
-    if (isCleanedTextUsable(cleanedTitle)) {
-        conditions.push({
-            field: RuleConditionFieldEnum.TITLE,
-            operator: RuleConditionOperatorEnum.CONTAINS,
-            value: cleanedTitle,
-            secondaryValue: null
-        });
+    if (isDefined(titleCondition)) {
+        conditions.push(titleCondition);
     } else if (isNotEmptyString(comment)) {
-        const cleanedComment = cleanMerchantTitle(comment);
+        const commentCondition = buildTextCondition(RuleConditionFieldEnum.COMMENT, comment);
 
-        if (isCleanedTextUsable(cleanedComment)) {
-            conditions.push({
-                field: RuleConditionFieldEnum.COMMENT,
-                operator: RuleConditionOperatorEnum.CONTAINS,
-                value: cleanedComment,
-                secondaryValue: null
-            });
+        if (isDefined(commentCondition)) {
+            conditions.push(commentCondition);
         }
     }
 
