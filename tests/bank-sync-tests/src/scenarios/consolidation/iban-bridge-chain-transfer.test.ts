@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
 import {
-    AccountTypeEnum,
     TransactionConsolidationTypeEnum,
     TransactionCreateEntityInterface,
     TransactionEntityTable,
@@ -12,9 +11,16 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, testDb } from '../../harness';
-
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import {
+    expectSingleConsolidation,
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    seed,
+    seedBankPair,
+    seedBankSyncAccount,
+    testDb
+} from '../../harness';
 
 const SOURCE_IBAN = 'UA-SOURCE-EUR';
 const BRIDGE_IBAN = 'UA-BRIDGE-UAH';
@@ -27,22 +33,9 @@ const UAH_TO_EUR_RATE = EUR_AMOUNT / UAH_AMOUNT;
 const seedBridgeAccounts = () => {
     const transferMcc = findMccByCode('4829');
     const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-    const sourceAccount = seed.account({
-        title: 'Monobank Fop EUR',
-        type: AccountTypeEnum.BANK_SYNC,
-        instrumentId: eur.id,
-        iban: SOURCE_IBAN
-    });
-    const bridgeAccount = seed.account({
-        title: 'Monobank Fop UAH',
-        type: AccountTypeEnum.BANK_SYNC,
-        iban: BRIDGE_IBAN
-    });
-    const targetAccount = seed.account({
-        title: 'Monobank Black',
-        type: AccountTypeEnum.BANK_SYNC,
-        iban: TARGET_IBAN
-    });
+    const sourceAccount = seedBankSyncAccount('Monobank Fop EUR', null, SOURCE_IBAN, eur.id);
+    const bridgeAccount = seedBankSyncAccount('Monobank Fop UAH', null, BRIDGE_IBAN);
+    const targetAccount = seedBankSyncAccount('Monobank Black', null, TARGET_IBAN);
 
     return { transferMcc, sourceAccount, bridgeAccount, targetAccount };
 };
@@ -176,13 +169,6 @@ const expectMovedSources = (canonicalId: number, expectedSourceIds: number[]): v
     const sourceIds = fetchMovedSourceIds(canonicalId);
 
     expect(sourceIds.sort((left, right) => left - right)).toEqual(expectedSourceIds.sort((left, right) => left - right));
-};
-
-const expectSingleConsolidation = async (): Promise<void> => {
-    const result = await transferConsolidationService.consolidate();
-
-    expect(result.consolidated).toBe(1);
-    expect(result.found).toBe(1);
 };
 
 describe('consolidation/iban-bridge-chain-transfer', () => {
