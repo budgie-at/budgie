@@ -1,9 +1,9 @@
 import { RuleActionTypeEnum } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 import { EXCLUSIVE_ACTION_TYPES } from '../constant/exclusive-action-types.constant';
 
 export const useHasConflictingRules = (actionTypes: RuleActionTypeEnum[], excludeRuleId?: number): boolean => {

@@ -9,6 +9,7 @@ export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';
 export type { DateRangeInterface } from './@generic/interface/date-range.interface';
+export type { DatabaseClientInterface } from './@generic/interface/database-client.interface';
 export type { EmbeddingPendingContextBaseInterface } from './@generic/interface/embedding-pending-context-base.interface';
 export type { EmbeddingQueryConfigInterface } from './@generic/interface/embedding-query-config.interface';
 export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
@@ -17,6 +18,7 @@ export type { TagScoreResultInterface } from './@generic/interface/tag-score-res
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 
 export type { DB, TX } from './@generic/type/db.type';
+export type { DatabaseValue } from './@generic/type/database-value.type';
 
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
 export { transactionAsync } from './@generic/util/transaction-async.util';

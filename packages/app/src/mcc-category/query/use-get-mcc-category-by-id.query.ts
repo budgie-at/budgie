@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { mccCategoryRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 
 export const useGetMccCategoryByIdQuery = (id: number | null) => {
     const shouldFetch = isDefined(id) && isPositiveNumber(id);

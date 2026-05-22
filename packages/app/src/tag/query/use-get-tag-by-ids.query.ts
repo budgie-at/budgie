@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 
 export const useGetTagByIdsQuery = (ids: number[]) => {
     const idsKey = ids.join(',');
@@ -12,5 +11,5 @@ export const useGetTagByIdsQuery = (ids: number[]) => {
         return { isLoading: true, tags: null, updatedAt: null, error };
     }
 
-    return { tags: data, isLoading: false, updatedAt, error };
+    return { tags: data ?? [], isLoading: false, updatedAt, error };
 };

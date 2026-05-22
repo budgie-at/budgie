@@ -1,9 +1,9 @@
 import { AccountFilterInterface } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 
 export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilterInterface) => {
     const excludeAccountId = filter?.excludeAccountId;
@@ -22,7 +22,7 @@ export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilter
 
     return {
         isLoading: false,
-        accounts: data,
+        accounts: data ?? [],
         error
     };
 };

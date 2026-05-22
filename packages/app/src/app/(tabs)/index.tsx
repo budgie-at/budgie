@@ -1,6 +1,4 @@
 import { AccountTypeEnum } from '@budgie/contracts';
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { useSQLiteContext } from 'expo-sqlite';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -38,9 +36,6 @@ const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum =
 export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
-
-    const db = useSQLiteContext();
-    useDrizzleStudio(db);
 
     const scrollY = useSharedValue(0);
 

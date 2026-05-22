@@ -5,13 +5,11 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { RuleActionCreateEntityInterface } from '../entity/rule-action-create-entity.interface';
 import { RuleActionEntityTable } from '../table/rule-action-entity.table';
 
-import type { TX } from '../../@generic/type/db.type';
-import type * as schema from '../../schema';
+import type { DB, TX } from '../../@generic/type/db.type';
 import type { RuleActionEntityInterface } from '../entity/rule-action-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleActionRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     findByRuleId(ruleId: number) {
         return this.db.query.RuleActionEntityTable.findMany({

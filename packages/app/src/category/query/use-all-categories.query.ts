@@ -1,8 +1,7 @@
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 
 import type { CategoryEntityInterface } from '@budgie/contracts';
 

@@ -1,18 +1,17 @@
 import { format } from 'date-fns';
+import { sql } from 'drizzle-orm';
 import { File, Paths } from 'expo-file-system';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
-import * as SQLite from 'expo-sqlite';
 
-import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { expoDb } from '../../@generic/drizzle/db/db';
+import { db, opSqliteDb } from '../../@generic/drizzle/db/db';
 
 class DatabaseExportService {
     async exportAndShare(): Promise<void> {
-        const sourcePath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+        const sourcePath = opSqliteDb.getDbPath();
         const fileName = `budgie-backup-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.db`;
         const destinationPath = `${Paths.cache.uri}/${fileName}`;
 
-        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)'); // eslint-disable-line lingui/no-unlocalized-strings
+        await db.run(sql`PRAGMA wal_checkpoint(FULL)`);
 
         const sourceFile = new File(sourcePath);
         const destinationFile = new File(destinationPath);

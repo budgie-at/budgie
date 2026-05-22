@@ -2,14 +2,11 @@ import { eq } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
+import { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
-import type * as schema from '../../schema';
-import type { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-
 export class MccGroupRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     findAll() {
         return this.db.query.MccGroupEntityTable.findMany();

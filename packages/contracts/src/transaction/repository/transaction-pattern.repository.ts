@@ -5,6 +5,7 @@ import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -376,22 +377,24 @@ INNER JOIN latest_overall lo ON lo.title = f.title AND lo.account_id = f.account
 LEFT JOIN latest_display ld ON ld.title = f.title AND ld.account_id = f.account_id AND ld.rk = 1
 ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
 
-        return this.db.$client.getAllAsync<MonthlyPatternRawRowInterface>(bankSql, [
-            tzOffset,
-            tzOffset,
-            type,
-            entryType,
-            recencyTimestamp,
-            MIN_MONTHLY_OCCURRENCES,
-            AMOUNT_VARIANCE_MULTIPLIER,
-            DAY_CONCENTRATION_DENOMINATOR,
-            DAY_CONCENTRATION_NUMERATOR,
-            type,
-            entryType,
-            displayMonth,
-            defaultInstrumentId,
-            defaultInstrumentId
-        ]);
+        return this.db.all<MonthlyPatternRawRowInterface>(
+            bindRawQuery(bankSql, [
+                tzOffset,
+                tzOffset,
+                type,
+                entryType,
+                recencyTimestamp,
+                MIN_MONTHLY_OCCURRENCES,
+                AMOUNT_VARIANCE_MULTIPLIER,
+                DAY_CONCENTRATION_DENOMINATOR,
+                DAY_CONCENTRATION_NUMERATOR,
+                type,
+                entryType,
+                displayMonth,
+                defaultInstrumentId,
+                defaultInstrumentId
+            ])
+        );
     }
 
     // eslint-disable-next-line max-lines-per-function -- Raw SQL window-function CTE cannot be split further
@@ -496,21 +499,23 @@ INNER JOIN latest_overall lo ON lo.comment = f.comment AND lo.category_id = f.ca
 LEFT JOIN latest_display ld ON ld.comment = f.comment AND ld.category_id = f.category_id AND ld.account_id = f.account_id AND ld.rk = 1
 ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
 
-        return this.db.$client.getAllAsync<MonthlyPatternRawRowInterface>(manualSql, [
-            tzOffset,
-            tzOffset,
-            type,
-            entryType,
-            recencyTimestamp,
-            MIN_MONTHLY_OCCURRENCES,
-            AMOUNT_VARIANCE_MULTIPLIER,
-            DAY_CONCENTRATION_DENOMINATOR,
-            DAY_CONCENTRATION_NUMERATOR,
-            type,
-            entryType,
-            displayMonth,
-            defaultInstrumentId,
-            defaultInstrumentId
-        ]);
+        return this.db.all<MonthlyPatternRawRowInterface>(
+            bindRawQuery(manualSql, [
+                tzOffset,
+                tzOffset,
+                type,
+                entryType,
+                recencyTimestamp,
+                MIN_MONTHLY_OCCURRENCES,
+                AMOUNT_VARIANCE_MULTIPLIER,
+                DAY_CONCENTRATION_DENOMINATOR,
+                DAY_CONCENTRATION_NUMERATOR,
+                type,
+                entryType,
+                displayMonth,
+                defaultInstrumentId,
+                defaultInstrumentId
+            ])
+        );
     }
 }

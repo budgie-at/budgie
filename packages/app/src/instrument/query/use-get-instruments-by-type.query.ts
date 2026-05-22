@@ -1,9 +1,9 @@
 import { InstrumentTypeEnum } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 
 export const useGetInstrumentsByTypeQuery = (type: InstrumentTypeEnum) => {
     const { data, updatedAt, error } = useLiveQuery(instrumentRepository.findByType(type), [type]);
@@ -18,7 +18,7 @@ export const useGetInstrumentsByTypeQuery = (type: InstrumentTypeEnum) => {
     }
 
     return {
-        instruments: data,
+        instruments: data ?? [],
         isLoading: false,
         updatedAt,
         error

@@ -1,9 +1,11 @@
 import { Log } from '@budgie/logger';
+import { sql } from 'drizzle-orm';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
@@ -117,13 +119,15 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     ): Promise<CommentDistanceResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
-        return await this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
-            convertEmbeddingToJson(queryEmbedding),
-            vecLimit,
-            distanceThreshold,
-            categoryId,
-            commentLimit
-        ]);
+        return await this.db.all<CommentDistanceResultInterface>(
+            bindRawQuery(SIMILAR_COMMENTS_QUERY, [
+                convertEmbeddingToJson(queryEmbedding),
+                vecLimit,
+                distanceThreshold,
+                categoryId,
+                commentLimit
+            ])
+        );
     }
 
     async upsert(params: UpsertMerchantEmbeddingParamsInterface): Promise<number | null> {
@@ -146,10 +150,12 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: MerchantEmbeddingEntityTable.id });
 
-        await this.db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]);
-        await this.db.$client.runAsync(
-            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-            [row.id]
+        await this.db.run(bindRawQuery('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]));
+        await this.db.run(
+            bindRawQuery(
+                'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+                [row.id]
+            )
         );
 
         return row.id;
@@ -173,7 +179,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async findPendingMerchantContexts(limit: number): Promise<MerchantPendingContextInterface[]> {
-        const rows = await this.db.$client.getAllAsync<{
+        const rows = await this.db.all<{
             title: string;
             mccDescription: string;
             categoryId: number;
@@ -182,7 +188,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             transactionIdsCsv: string;
             tagIdsCsv: string | null;
             existingEmbeddingId: number | null;
-        }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]);
+        }>(bindRawQuery(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]));
 
         return rows.map(row => ({
             title: row.title,
@@ -193,7 +199,7 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async countPendingMerchantContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ c: number }>(`SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, []);
+        const [row] = await this.db.all<{ c: number }>(sql.raw(`SELECT COUNT(*) AS c FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`));
 
         return row.c;
     }

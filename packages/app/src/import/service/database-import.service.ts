@@ -1,11 +1,9 @@
 import { Log } from '@budgie/logger';
 import { File, Paths } from 'expo-file-system';
-import * as SQLite from 'expo-sqlite';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { expoDb } from '../../@generic/drizzle/db/db';
+import { clearDatabaseGlobals, opSqliteDb } from '../../@generic/drizzle/db/db';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { aiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { aiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
@@ -33,7 +31,7 @@ class DatabaseImportService {
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
         await this.pauseLongLivedRuntime();
-        await expoDb.closeAsync();
+        await opSqliteDb.closeAsync();
         this.clearDatabaseGlobals();
         this.deleteDestinationFiles(destinationPath, tempPath);
         this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
@@ -65,10 +63,7 @@ class DatabaseImportService {
     }
 
     private clearDatabaseGlobals() {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
+        clearDatabaseGlobals();
     }
 
     private deleteFileIfExists(path: string) {
@@ -88,7 +83,7 @@ class DatabaseImportService {
     }
 
     private getDestinationPath() {
-        return `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+        return opSqliteDb.getDbPath();
     }
 }
 

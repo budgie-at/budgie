@@ -37,11 +37,11 @@ describe('consolidation/refund-pair-partial', () => {
 
         await transferConsolidationService.consolidate();
 
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
+        const totals = await statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
         expect(totals?.income).toBe(0);
         expect(totals?.expense).toBe(80 * PRECISION);
 
-        const categoryRows = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
+        const categoryRows = await statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).all();
         const categoryRow = categoryRows.find(row => row.category?.id === category.id);
         expect(categoryRow?.amount).toBe(80 * PRECISION);
     });
@@ -52,7 +52,7 @@ describe('consolidation/refund-pair-partial', () => {
             refundAmounts: [40 * PRECISION]
         });
 
-        const balance = accountBalanceRepository.getByAccountId(account.id).get();
+        const balance = await accountBalanceRepository.getByAccountId(account.id).get();
 
         expect(balance?.balance).toBe(-80 * PRECISION);
     });

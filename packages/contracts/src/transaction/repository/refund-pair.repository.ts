@@ -1,3 +1,4 @@
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -16,14 +17,14 @@ export class RefundPairRepository {
 
     async findCandidates(): Promise<RefundCandidateInterface[]> {
         const sql = this.buildAutoBucketSql();
-        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
+        const rows = await this.db.all<RefundCandidateRowInterface>(bindRawQuery(sql));
 
         return rows.map(row => this.mapRow(row));
     }
 
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         const sql = this.buildReviewBucketSql();
-        const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);
+        const rows = await this.db.all<RefundReviewCandidateRowInterface>(bindRawQuery(sql));
 
         return rows.map(row => this.mapRow(row));
     }

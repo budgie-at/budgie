@@ -1227,6 +1227,7 @@ __metadata:
     "@lingui/babel-plugin-lingui-macro": "npm:^5.7.0"
     "@lingui/core": "npm:^5.7.0"
     "@lingui/react": "npm:^5.7.0"
+    "@op-engineering/op-sqlite": "npm:15.2.14"
     "@react-native-masked-view/masked-view": "npm:^0.3.2"
     "@rnw-community/shared": "npm:^2.0.0"
     "@tailwindcss/postcss": "npm:^4.1.14"
@@ -1254,7 +1255,6 @@ __metadata:
     expo-contacts: "npm:~55.0.14"
     expo-dev-client: "npm:~55.0.35"
     expo-document-picker: "npm:~55.0.13"
-    expo-drizzle-studio-plugin: "npm:^0.2.1"
     expo-file-system: "npm:~55.0.21"
     expo-font: "npm:~55.0.8"
     expo-haptics: "npm:~55.0.14"
@@ -1269,7 +1269,6 @@ __metadata:
     expo-secure-store: "npm:~55.0.14"
     expo-sharing: "npm:~55.0.19"
     expo-splash-screen: "npm:~55.0.21"
-    expo-sqlite: "npm:~55.0.16"
     expo-system-ui: "npm:~55.0.18"
     expo-task-manager: "npm:~55.0.16"
     expo-updates: "npm:~55.0.23"
@@ -1432,7 +1431,6 @@ __metadata:
     date-fns: "npm:^4.1.0"
     drizzle-orm: "npm:^0.45.2"
     drizzle-zod: "npm:^0.8.3"
-    expo-sqlite: "npm:~55.0.16"
     zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
@@ -4834,6 +4832,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@op-engineering/op-sqlite@npm:15.2.14":
+  version: 15.2.14
+  resolution: "@op-engineering/op-sqlite@npm:15.2.14"
+  peerDependencies:
+    "@sqlite.org/sqlite-wasm": "*"
+    react: "*"
+    react-native: "*"
+  peerDependenciesMeta:
+    "@sqlite.org/sqlite-wasm":
+      optional: true
+  checksum: 10/35922f5104e1cebf3cf8e76f7a67724da3d93da1451e366a77bd1827f2fa3f2b48e224d2b797d72fbe3b47f27ec91b29452c7005b58ee4f53db10fd70b5436c1
+  languageName: node
+  linkType: hard
+
 "@open-draft/deferred-promise@npm:^2.2.0":
   version: 2.2.0
   resolution: "@open-draft/deferred-promise@npm:2.2.0"
@@ -7720,13 +7732,6 @@ __metadata:
   dependencies:
     possible-typed-array-names: "npm:^1.0.0"
   checksum: 10/6c9da3a66caddd83c875010a1ca8ef11eac02ba15fb592dc9418b2b5e7b77b645fa7729380a92d9835c2f05f2ca1b6251f39b993e0feb3f1517c74fa1af02cab
-  languageName: node
-  linkType: hard
-
-"await-lock@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "await-lock@npm:2.2.2"
-  checksum: 10/feb11f36768a8545879ed2d214b46aae484e6564ffa466af9212d5782897203770795cae01f813de04a46f66c0b8ee6bc690a0c435b04e00cad5a18ef0842e25
   languageName: node
   linkType: hard
 
@@ -11279,16 +11284,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-drizzle-studio-plugin@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "expo-drizzle-studio-plugin@npm:0.2.1"
-  peerDependencies:
-    expo: ">=53.0.5"
-    expo-sqlite: ">=15.2.9"
-  checksum: 10/5d8e3c74ddd5a60324f608df3ea1c057988dce06110f14e751ff46b4afc38b2cfb1fa42dacb040bd4b2f72781cdbf4ccaf9c98c80e5cef8a64ba8830e82ed5b1
-  languageName: node
-  linkType: hard
-
 "expo-eas-client@npm:~55.0.5":
   version: 55.0.5
   resolution: "expo-eas-client@npm:55.0.5"
@@ -11598,19 +11593,6 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/733af58826a59d7a9e982c6215f4fdf76f73ae40796d7e456968199f90bf78e3ff113a8e672f9f3201f946012e9c8dbc1f7d2f8e2093e3d0fa20d73990b0871b
-  languageName: node
-  linkType: hard
-
-"expo-sqlite@npm:~55.0.16":
-  version: 55.0.16
-  resolution: "expo-sqlite@npm:55.0.16"
-  dependencies:
-    await-lock: "npm:^2.2.2"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10/9e3beef346093d47afb86f58c5343aa84183f0148fe88cb4bf595ca2c720034d66fee32320abbea125c4344e22abc57d7a2f745dcec88b346f321ecfa3b67527
   languageName: node
   linkType: hard
 

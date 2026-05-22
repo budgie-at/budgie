@@ -1,14 +1,11 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { SettingsRepository } from '@budgie/contracts';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { open } from '@op-engineering/op-sqlite';
 import { File, Paths } from 'expo-file-system';
-import * as SQLite from 'expo-sqlite';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DB_NAME } from '../constant/db-name.constant';
-import { expoDb } from '../db/db';
-import * as schema from '../db/schema';
+import { clearDatabaseGlobals, createDatabase, opSqliteDb } from '../db/db';
 
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
 import { RekeyPathsInterface } from './interface/rekey-paths.interface';
@@ -40,7 +37,7 @@ class DatabaseRekeyService {
     }
 
     private async commit(paths: RekeyPathsInterface, onCommit: () => Promise<void>): Promise<void> {
-        await expoDb.closeAsync();
+        await opSqliteDb.closeAsync();
         this.clearDatabaseGlobals();
         this.deleteDestinationSidecars(paths.destinationPath);
         this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
@@ -55,16 +52,16 @@ class DatabaseRekeyService {
     }
 
     private async exportDatabase(tempDatabasePath: string, nextKey: string | null): Promise<void> {
-        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)');
-        await expoDb.execAsync('PRAGMA journal_mode = DELETE');
-        await expoDb.execAsync(
+        await opSqliteDb.execute('PRAGMA wal_checkpoint(FULL)');
+        await opSqliteDb.execute('PRAGMA journal_mode = DELETE');
+        await opSqliteDb.execute(
             `ATTACH DATABASE '${this.escapeSqlString(tempDatabasePath)}' AS migrated KEY '${this.escapeSqlString(nextKey ?? '')}';`
         );
 
         try {
-            await expoDb.execAsync(`SELECT sqlcipher_export('migrated');`);
+            await opSqliteDb.execute(`SELECT sqlcipher_export('migrated');`);
         } finally {
-            await expoDb.execAsync('DETACH DATABASE migrated;');
+            await opSqliteDb.execute('DETACH DATABASE migrated;');
         }
     }
 
@@ -73,14 +70,14 @@ class DatabaseRekeyService {
         nextKey: string | null,
         nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
     ): Promise<void> {
-        const tempDatabase = await SQLite.openDatabaseAsync(tempDatabaseName, { enableChangeListener: true }, Paths.cache.uri);
+        const tempDatabase = open({
+            name: tempDatabaseName,
+            location: Paths.cache.uri,
+            ...(isNotEmptyString(nextKey) && { encryptionKey: nextKey })
+        });
 
         try {
-            if (isNotEmptyString(nextKey)) {
-                await tempDatabase.execAsync(`PRAGMA key = '${this.escapeSqlString(nextKey)}';`);
-            }
-
-            const tempSettingsRepository = new SettingsRepository(drizzle(tempDatabase, { schema }));
+            const tempSettingsRepository = new SettingsRepository(createDatabase(tempDatabase));
             await tempSettingsRepository.update(nextSettings);
         } finally {
             await tempDatabase.closeAsync();
@@ -89,7 +86,7 @@ class DatabaseRekeyService {
 
     private getPaths(): RekeyPathsInterface {
         const tempDatabaseName = 'auth-migration.db';
-        const destinationPath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+        const destinationPath = opSqliteDb.getDbPath();
 
         return {
             tempDatabaseName,
@@ -121,10 +118,7 @@ class DatabaseRekeyService {
     }
 
     private clearDatabaseGlobals(): void {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
+        clearDatabaseGlobals();
     }
 
     private deleteDatabaseFiles(databasePath: string): void {

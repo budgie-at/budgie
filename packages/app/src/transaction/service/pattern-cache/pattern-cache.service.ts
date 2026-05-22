@@ -1,6 +1,6 @@
-import * as SQLite from 'expo-sqlite';
-
 import { isDefined } from '@rnw-community/shared';
+
+import { addDatabaseChangeListener } from '../../../@generic/drizzle/db/db';
 
 import type { MonthlyPatternRawRowInterface, RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
@@ -84,7 +84,7 @@ class PatternCacheService {
 
 export const patternCacheService = new PatternCacheService();
 
-SQLite.addDatabaseChangeListener(({ tableName }) => {
+addDatabaseChangeListener(tableName => {
     if (TRACKED_TABLES.has(tableName)) {
         patternCacheService.invalidate();
     }

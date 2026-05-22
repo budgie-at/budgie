@@ -7,6 +7,7 @@ import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 import { EMBEDDING_DIMENSIONS } from '../constant/embedding-dimensions.constant';
 import { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import { DB } from '../type/db.type';
+import { bindRawQuery } from '../util/bind-raw-query.util';
 import { convertEmbeddingToJson } from '../util/convert-embedding-to-json.util';
 import { transactionAsync } from '../util/transaction-async.util';
 
@@ -35,12 +36,14 @@ export abstract class BaseEmbeddingRepository {
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryScoreResultInterface[]> {
-        return await this.db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
-            convertEmbeddingToJson(queryEmbedding),
-            vecLimit,
-            distanceThreshold,
-            categoryLimit
-        ]);
+        return await this.db.all<CategoryScoreResultInterface>(
+            bindRawQuery(this.queryConfig.similarCategoriesQuery, [
+                convertEmbeddingToJson(queryEmbedding),
+                vecLimit,
+                distanceThreshold,
+                categoryLimit
+            ])
+        );
     }
 
     @Log(
@@ -54,13 +57,15 @@ export abstract class BaseEmbeddingRepository {
     async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsParamsInterface): Promise<TagScoreResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
 
-        return await this.db.$client.getAllAsync<TagScoreResultInterface>(this.queryConfig.similarTagsQuery, [
-            convertEmbeddingToJson(queryEmbedding),
-            vecLimit,
-            distanceThreshold,
-            categoryId,
-            tagLimit
-        ]);
+        return await this.db.all<TagScoreResultInterface>(
+            bindRawQuery(this.queryConfig.similarTagsQuery, [
+                convertEmbeddingToJson(queryEmbedding),
+                vecLimit,
+                distanceThreshold,
+                categoryId,
+                tagLimit
+            ])
+        );
     }
 
     protected isValidDimensions(dimensions: number): boolean {
@@ -78,10 +83,9 @@ export abstract class BaseEmbeddingRepository {
 
     protected async rebuildVec(): Promise<void> {
         const { vecTableName, sourceTableName } = this.queryConfig;
-        await this.db.$client.runAsync(`DELETE FROM ${vecTableName}`, []);
-        await this.db.$client.runAsync(
-            `INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`,
-            []
+        await this.db.run(sql.raw(`DELETE FROM ${vecTableName}`));
+        await this.db.run(
+            sql.raw(`INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`)
         );
     }
 
