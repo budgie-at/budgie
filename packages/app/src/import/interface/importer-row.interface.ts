@@ -1,4 +1,4 @@
-import { AccountEntityInterface, CategoryEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, CategorySourceEnum, InstrumentEntityInterface } from '@budgie/contracts';
 
 export interface ImporterRowInterface {
     toAccount: AccountEntityInterface;
@@ -7,7 +7,9 @@ export interface ImporterRowInterface {
     fromAccount: AccountEntityInterface | null;
     fromAmount: number | null;
     fromInstrument: InstrumentEntityInterface | null;
-    category: CategoryEntityInterface;
+    categoryId: number;
+    categorySource: CategorySourceEnum;
+    mccCategoryId: number | null;
     operatedAt: Date;
     isPlanned: boolean;
 }

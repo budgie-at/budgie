@@ -11,6 +11,7 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
+import { dismissAllOrReplace } from '../../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
@@ -18,6 +19,7 @@ import { ConvertToTransferMenuItem } from '../../../../transaction/components/co
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
+import { useRevertConsolidation } from '../../../../transaction/hook/use-revert-consolidation.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
@@ -65,6 +67,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
     const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
     const isConsolidated = isDefined(transaction.consolidationType);
+    const handleRevert = useRevertConsolidation(transactionId, () => void dismissAllOrReplace('/'));
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -84,7 +87,11 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                         title={t`Edit Income`}
                         onGoBack={handleGoBack}
                         right={
-                            <TransactionActionsMenu onDelete={handleDelete} isConsolidated={isConsolidated}>
+                            <TransactionActionsMenu
+                                onDelete={handleDelete}
+                                isConsolidated={isConsolidated}
+                                {...(isConsolidated && { onRevert: handleRevert })}
+                            >
                                 <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
                             </TransactionActionsMenu>
                         }

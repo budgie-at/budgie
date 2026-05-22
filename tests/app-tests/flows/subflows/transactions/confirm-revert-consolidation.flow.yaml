@@ -1,0 +1,11 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible: 'Revert consolidation?'
+    timeout: 10000
+- tapOn:
+    text: 'Revert'
+    index: 0
+- extendedWaitUntil:
+    notVisible: 'Revert consolidation?'
+    timeout: 15000

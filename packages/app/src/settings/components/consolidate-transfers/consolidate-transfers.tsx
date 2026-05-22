@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { getLogger } from '@budgie/logger';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -23,10 +24,22 @@ export const ConsolidateTransfers = () => {
         try {
             const { autoCandidateCount, manualReviewCandidateCount } = await transferConsolidationService.preview();
             logger.log('preview', { autoCandidateCount, manualReviewCandidateCount });
+            const autoCandidateText = t({
+                message: plural(autoCandidateCount, {
+                    one: '# high-confidence transfer pair',
+                    other: '# high-confidence transfer pairs'
+                })
+            });
+            const manualReviewCandidateText = t({
+                message: plural(manualReviewCandidateCount, {
+                    one: '# lower-confidence pair',
+                    other: '# lower-confidence pairs'
+                })
+            });
 
             const confirmed = await confirmAlert({
                 title: t`Consolidate Transfers`,
-                message: t`This will consolidate ${autoCandidateCount} high-confidence transfer pairs. ${manualReviewCandidateCount} lower-confidence pairs will be logged for review only.`,
+                message: t`This will consolidate ${autoCandidateText}. ${manualReviewCandidateText} will be logged for review only.`,
                 confirmText: t`Consolidate`,
                 cancelText: t`Cancel`
             });
@@ -40,11 +53,17 @@ export const ConsolidateTransfers = () => {
             logger.log('confirm:result', { confirmed: true });
             const { consolidated, found } = await transferConsolidationService.consolidate();
             logger.log('consolidated', { found, consolidated });
+            const foundPairsText = t({
+                message: plural(found, {
+                    one: '# high-confidence pair',
+                    other: '# high-confidence pairs'
+                })
+            });
 
             Toast.show({
                 type: 'success',
                 text1: t`Transfers consolidated`,
-                text2: t`Consolidated ${consolidated} of ${found} high-confidence pairs.`
+                text2: t`Consolidated ${consolidated} of ${foundPairsText}.`
             });
         } catch (error) {
             const errorMessage = getErrorMessage(error);

@@ -11,6 +11,7 @@ import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/p
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
+import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionListConvertMenuItem } from '../transaction-list-convert-menu-item/transaction-list-convert-menu-item';
 
@@ -41,6 +42,8 @@ export const TransactionListContextMenu = ({
     const deleteTransaction = useDeleteTransaction();
     const [openConvertToTransfer] = useConvertToTransferModal();
     const pendingActionRef = useRef<EmptyFn | null>(null);
+    const transactionId = transaction?.id ?? 0;
+    const revertConsolidation = useRevertConsolidation(transactionId);
 
     if (!isDefined(transaction)) {
         return null;
@@ -48,8 +51,9 @@ export const TransactionListContextMenu = ({
 
     const isConsolidated = isDefined(transaction.consolidationType);
     const canConvert = !isConsolidated && isConvertibleTransaction(transaction);
-    const deleteLabel = isConsolidated ? t`Unconsolidate Transaction` : t`Delete Transaction`;
-    const deleteIcon = isConsolidated ? UserIconNameEnum.GitPullRequestClosed : UserIconNameEnum.Trash2;
+    const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
+    const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
+    const actionTestID = isConsolidated ? TransactionListContextMenuSelector.RevertButton : TransactionListContextMenuSelector.DeleteButton;
 
     const closeMenu = (afterClose?: EmptyFn) => {
         pendingActionRef.current = afterClose ?? null;
@@ -74,7 +78,13 @@ export const TransactionListContextMenu = ({
         closeMenu(() => void router.push(getTransactionHref(transaction)));
     };
 
-    const handleDeletePress = () => {
+    const handleActionPress = () => {
+        if (isConsolidated) {
+            closeMenu(revertConsolidation);
+
+            return;
+        }
+
         closeMenu(() => {
             deleteTransaction(transaction.id, { isConsolidated }).catch(emptyFn);
         });
@@ -108,11 +118,11 @@ export const TransactionListContextMenu = ({
                 />
                 <TransactionListConvertMenuItem isVisible={canConvert} onConvert={handleConvertPress} />
                 <PopoverMenuItem
-                    icon={deleteIcon}
-                    label={deleteLabel}
-                    onPress={handleDeletePress}
+                    icon={actionIcon}
+                    label={actionLabel}
+                    onPress={handleActionPress}
                     variant="destructive"
-                    testID={TransactionListContextMenuSelector.DeleteButton}
+                    testID={actionTestID}
                 />
             </View>
         </PopoverMenu>

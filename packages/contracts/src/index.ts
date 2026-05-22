@@ -149,6 +149,7 @@ export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository'
 
 export { MCC_CODE_LENGTH } from './mcc-category/constant/mcc-code-length.constant';
 export { MCC_DESCRIPTION_MAX_LENGTH } from './mcc-category/constant/mcc-description-max-length.constant';
+export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
 
 export { MccCategoryAssociationEnum } from './mcc-category/enum/mcc-category-association.enum';
 
@@ -157,6 +158,7 @@ export { MccCategoryEntityRelations } from './mcc-category/relations/mcc-categor
 
 export type { MccCategoryEntityInterface } from './mcc-category/entity/mcc-category-entity.interface';
 export type { MccCategoryCreateEntityInterface } from './mcc-category/entity/mcc-category-create-entity.interface';
+export type { MccCategoryLookupInterface } from './mcc-category/interface/mcc-category-lookup.interface';
 
 export { MccCategoryEntitySchema } from './mcc-category/schema/mcc-category-entity.schema';
 export { MccCategoryCreateEntitySchema } from './mcc-category/schema/mcc-category-create-entity.schema';
@@ -245,6 +247,7 @@ export type { TransferPairCandidateInterface } from './transaction/interface/tra
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
+export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
@@ -258,6 +261,7 @@ export { isTransferTransaction } from './transaction/type-guard/is-transfer-tran
 export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-negative-adjustment-transaction.type-guard';
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
+export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
