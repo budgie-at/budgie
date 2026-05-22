@@ -1,6 +1,6 @@
 import { RuleConditionCreateInputInterface, RuleConditionFieldEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 const REFERENCE_PATTERNS = [/\bREF[#:]?\w*/giu, /#\w{4,}/gu, /\b\d{5,}\b/gu];
 
@@ -16,8 +16,15 @@ const SUFFIX_PATTERN = /\.?\b(?:COM|NET|ORG|INC|LLC|LTD|GMBH|CO|CORP|PLC|SA|AG|S
 
 const EXTRA_WHITESPACE = /\s{2,}/gu;
 const LEADING_TRAILING_SEPARATORS = /^[\s*\-_.,/]+|[\s*\-_.,/]+$/gu;
+const REGEX_SPECIAL_CHARACTERS = /[\\^$.*+?()[\]{}|]/gu;
+const TOKEN_SEPARATOR = /\s+/u;
+const QUICK_RULE_SYMBOL_SEPARATOR_PATTERN = /[:+\\]+/u;
+const TITLE_TOKEN_SEPARATOR_PATTERN = /[^\p{L}\p{N}]+/gu;
 
 const MINIMUM_CLEANED_LENGTH = 3;
+const MAX_CONDITION_REGEX_LENGTH = 200;
+const MINIMUM_TITLE_TOKEN_LENGTH = 2;
+const MAXIMUM_TITLE_TOKEN_CONDITIONS = 2;
 
 // eslint-disable-next-line max-statements -- sequential regex cleanup steps absorbed from clean-merchant-title util per CLAUDE.md rule 38/51
 const cleanMerchantTitle = (title: string): string => {
@@ -68,6 +75,94 @@ const isGenericTitle = (title: string): boolean => {
 const isCleanedTextUsable = (cleaned: string): boolean =>
     isNotEmptyString(cleaned) && cleaned.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleaned);
 
+const escapeRegexToken = (token: string): string => token.replace(REGEX_SPECIAL_CHARACTERS, '\\$&');
+
+const buildFlexibleContainsRegex = (text: string): string => {
+    const tokens = text.split(TOKEN_SEPARATOR).filter(isNotEmptyString).map(escapeRegexToken);
+    let regex = '';
+
+    for (const token of tokens) {
+        const nextRegex = isNotEmptyString(regex) ? `${regex}.*${token}` : token;
+
+        if (nextRegex.length > MAX_CONDITION_REGEX_LENGTH) {
+            return regex;
+        }
+
+        regex = nextRegex;
+    }
+
+    return regex;
+};
+
+const buildSymbolSeparatedTextConditions = (
+    field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
+    value: string
+): RuleConditionCreateInputInterface[] => {
+    const tokenValues = value
+        .split(TITLE_TOKEN_SEPARATOR_PATTERN)
+        .filter(token => token.length >= MINIMUM_TITLE_TOKEN_LENGTH)
+        .slice(0, MAXIMUM_TITLE_TOKEN_CONDITIONS);
+
+    if (!isNotEmptyArray(tokenValues)) {
+        return [
+            {
+                field,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value,
+                secondaryValue: null
+            }
+        ];
+    }
+
+    return tokenValues.map(tokenValue => ({
+        field,
+        operator: RuleConditionOperatorEnum.CONTAINS,
+        value: tokenValue,
+        secondaryValue: null
+    }));
+};
+
+const buildTextConditions = (
+    field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
+    text: string
+): RuleConditionCreateInputInterface[] | null => {
+    const cleanedText = cleanMerchantTitle(text);
+
+    if (!isCleanedTextUsable(cleanedText)) {
+        return null;
+    }
+
+    if (QUICK_RULE_SYMBOL_SEPARATOR_PATTERN.test(cleanedText)) {
+        return buildSymbolSeparatedTextConditions(field, cleanedText);
+    }
+
+    if (text.toLowerCase().includes(cleanedText.toLowerCase())) {
+        return [
+            {
+                field,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value: cleanedText,
+                secondaryValue: null
+            }
+        ];
+    }
+
+    const regex = buildFlexibleContainsRegex(cleanedText);
+
+    if (!isNotEmptyString(regex)) {
+        return null;
+    }
+
+    return [
+        {
+            field,
+            operator: RuleConditionOperatorEnum.MATCHES_REGEX,
+            value: regex,
+            secondaryValue: null
+        }
+    ];
+};
+
 export const selectSuggestConditions = (
     title: string,
     mccCode: string | null,
@@ -84,25 +179,15 @@ export const selectSuggestConditions = (
         });
     }
 
-    const cleanedTitle = cleanMerchantTitle(title);
+    const titleConditions = buildTextConditions(RuleConditionFieldEnum.TITLE, title);
 
-    if (isCleanedTextUsable(cleanedTitle)) {
-        conditions.push({
-            field: RuleConditionFieldEnum.TITLE,
-            operator: RuleConditionOperatorEnum.CONTAINS,
-            value: cleanedTitle,
-            secondaryValue: null
-        });
+    if (isDefined(titleConditions)) {
+        conditions.push(...titleConditions);
     } else if (isNotEmptyString(comment)) {
-        const cleanedComment = cleanMerchantTitle(comment);
+        const commentConditions = buildTextConditions(RuleConditionFieldEnum.COMMENT, comment);
 
-        if (isCleanedTextUsable(cleanedComment)) {
-            conditions.push({
-                field: RuleConditionFieldEnum.COMMENT,
-                operator: RuleConditionOperatorEnum.CONTAINS,
-                value: cleanedComment,
-                secondaryValue: null
-            });
+        if (isDefined(commentConditions)) {
+            conditions.push(...commentConditions);
         }
     }
 
