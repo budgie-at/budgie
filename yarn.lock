@@ -1263,6 +1263,8 @@ __metadata:
     expo-linking: "npm:~55.0.15"
     expo-local-authentication: "npm:~55.0.14"
     expo-localization: "npm:~55.0.15"
+    expo-modules-core: "npm:~55.0.22"
+    expo-notifications: "npm:^55.0.23"
     expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~55.0.15"
     expo-screen-capture: "npm:~55.0.14"
@@ -8031,6 +8033,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"badgin@npm:^1.1.5":
+  version: 1.2.3
+  resolution: "badgin@npm:1.2.3"
+  checksum: 10/14465ad87d9e949e825120db14fc351d39ba66a51396ae4fede2a55505ddc75c7d1a30ac28f2583896e76ed76ddb725a2038f9d7fe9404c0abc038bad58b1e53
+  languageName: node
+  linkType: hard
+
 "bail@npm:^2.0.0":
   version: 2.0.2
   resolution: "bail@npm:2.0.2"
@@ -11139,6 +11148,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-application@npm:~55.0.15":
+  version: 55.0.15
+  resolution: "expo-application@npm:55.0.15"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/5425a2b06d820b8206e091ceddcdd7b96127e456fee03ce6fd263b4cc23aad935e2ec98efd13bffbf608be1679154bb113fcd36eb9aedc2757746f01c14728e3
+  languageName: node
+  linkType: hard
+
 "expo-asset@npm:~55.0.17":
   version: 55.0.17
   resolution: "expo-asset@npm:55.0.17"
@@ -11445,7 +11463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-core@npm:55.0.25":
+"expo-modules-core@npm:55.0.25, expo-modules-core@npm:~55.0.22":
   version: 55.0.25
   resolution: "expo-modules-core@npm:55.0.25"
   dependencies:
@@ -11458,6 +11476,23 @@ __metadata:
     react-native-worklets:
       optional: true
   checksum: 10/9a1121a46d15ba585f05893c4b785ed767bf595722b19c181a4867fca982ac769b295d230f5197345b91353a8202c16f92005923f7671ddf5166c85678124657
+  languageName: node
+  linkType: hard
+
+"expo-notifications@npm:^55.0.23":
+  version: 55.0.23
+  resolution: "expo-notifications@npm:55.0.23"
+  dependencies:
+    "@expo/image-utils": "npm:^0.8.14"
+    abort-controller: "npm:^3.0.0"
+    badgin: "npm:^1.1.5"
+    expo-application: "npm:~55.0.15"
+    expo-constants: "npm:~55.0.16"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/20268fdaddfbf95a5c6ba35af6e81e0752739827c44e1ee65e762a026696fc07283e9c3fbac85b173ff1c9a02688a2072d03b73e5b807890e89d6fe6677075fd
   languageName: node
   linkType: hard
 
