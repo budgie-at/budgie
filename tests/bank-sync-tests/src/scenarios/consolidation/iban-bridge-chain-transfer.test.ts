@@ -71,6 +71,75 @@ const seedBridgeRows = (operatedAt: Date, bridgeAccountId: number, transferMccId
     return { bridgeIncome, bridgeExpense };
 };
 
+const seedTargetIncome = (externalId: string, operatedAt: Date, targetAccountId: number, transferMccId: number) =>
+    seedBankPair.income(
+        { externalId, operatedAt },
+        {
+            accountId: targetAccountId,
+            amount: UAH_AMOUNT,
+            mccCategoryId: transferMccId
+        }
+    );
+
+const seedDirectTransfer = (
+    operatedAt: Date,
+    sourceAccountId: number,
+    targetAccountId: number,
+    consolidationType: TransactionConsolidationTypeEnum | null = null
+) => {
+    const directTransfer = testDb
+        .insert(TransactionEntityTable)
+        .values({
+            type: TransactionTypeEnum.TRANSFER,
+            title: 'На чорну картку',
+            externalId: null,
+            externalSource: null,
+            operatedAt,
+            exchangeRate: UAH_TO_EUR_RATE,
+            fromAccountId: sourceAccountId,
+            toAccountId: targetAccountId,
+            comment: '',
+            needsEmbedding: false,
+            consolidationParentTransactionId: null,
+            consolidationType,
+            updatedBy: null
+        } satisfies TransactionCreateEntityInterface)
+        .returning()
+        .get();
+
+    testDb
+        .insert(TransactionEntryEntityTable)
+        .values([
+            {
+                transactionId: directTransfer.id,
+                accountId: sourceAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.CREDIT,
+                amount: EUR_AMOUNT,
+                externalId: null,
+                exchangeRate: UAH_TO_EUR_RATE,
+                toIban: TARGET_IBAN,
+                originalTransactionId: null
+            },
+            {
+                transactionId: directTransfer.id,
+                accountId: targetAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.DEBIT,
+                amount: UAH_AMOUNT,
+                externalId: null,
+                exchangeRate: 1,
+                toIban: null,
+                originalTransactionId: null
+            }
+        ] satisfies TransactionEntryCreateEntityInterface[])
+        .run();
+
+    return directTransfer;
+};
+
 const fetchMovedSourceIds = (canonicalId: number): number[] => {
     const movedEntries = testDb
         .select()
@@ -109,6 +178,13 @@ const expectMovedSources = (canonicalId: number, expectedSourceIds: number[]): v
     expect(sourceIds.sort((left, right) => left - right)).toEqual(expectedSourceIds.sort((left, right) => left - right));
 };
 
+const expectSingleConsolidation = async (): Promise<void> => {
+    const result = await transferConsolidationService.consolidate();
+
+    expect(result.consolidated).toBe(1);
+    expect(result.found).toBe(1);
+};
+
 describe('consolidation/iban-bridge-chain-transfer', () => {
     it('collapses a technical bridge chain into one direct canonical transfer', async () => {
         const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
@@ -124,19 +200,9 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             }
         );
         const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
-        const targetIncome = seedBankPair.income(
-            { externalId: 'target-income', operatedAt },
-            {
-                accountId: targetAccount.id,
-                amount: UAH_AMOUNT,
-                mccCategoryId: transferMcc.id
-            }
-        );
+        const targetIncome = seedTargetIncome('target-income', operatedAt, targetAccount.id, transferMcc.id);
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.consolidated).toBe(1);
-        expect(result.found).toBe(1);
+        await expectSingleConsolidation();
 
         const canonicalId = expectCanonicalTransfer(
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
@@ -152,62 +218,10 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
     it('prioritizes bridge consolidation over the generic technical pair when a direct transfer exists', async () => {
         const operatedAt = new Date(2026, 4, 20, 18, 38, 0);
         const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
-        const directTransfer = testDb
-            .insert(TransactionEntityTable)
-            .values({
-                type: TransactionTypeEnum.TRANSFER,
-                title: 'На чорну картку',
-                externalId: null,
-                externalSource: null,
-                operatedAt,
-                exchangeRate: UAH_TO_EUR_RATE,
-                fromAccountId: sourceAccount.id,
-                toAccountId: targetAccount.id,
-                comment: '',
-                needsEmbedding: false,
-                consolidationParentTransactionId: null,
-                consolidationType: null,
-                updatedBy: null
-            } satisfies TransactionCreateEntityInterface)
-            .returning()
-            .get();
-
-        testDb
-            .insert(TransactionEntryEntityTable)
-            .values([
-                {
-                    transactionId: directTransfer.id,
-                    accountId: sourceAccount.id,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: EUR_AMOUNT,
-                    externalId: null,
-                    exchangeRate: UAH_TO_EUR_RATE,
-                    toIban: TARGET_IBAN,
-                    originalTransactionId: null
-                },
-                {
-                    transactionId: directTransfer.id,
-                    accountId: targetAccount.id,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: UAH_AMOUNT,
-                    externalId: null,
-                    exchangeRate: 1,
-                    toIban: null,
-                    originalTransactionId: null
-                }
-            ] satisfies TransactionEntryCreateEntityInterface[])
-            .run();
-
+        const directTransfer = seedDirectTransfer(operatedAt, sourceAccount.id, targetAccount.id);
         const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.consolidated).toBe(1);
-        expect(result.found).toBe(1);
+        await expectSingleConsolidation();
 
         const canonicalId = expectCanonicalTransfer(
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
@@ -218,5 +232,38 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
 
         expectSourcesParented(canonicalId, sourceIds);
         expectMovedSources(canonicalId, [directTransfer.id, ...sourceIds]);
+    });
+
+    it('attaches leftover technical source and target rows to an existing bridge canonical transfer', async () => {
+        const operatedAt = new Date(2026, 4, 21, 13, 50, 4);
+        const { transferMcc, sourceAccount, targetAccount } = seedBridgeAccounts();
+        const canonicalTransfer = seedDirectTransfer(
+            operatedAt,
+            sourceAccount.id,
+            targetAccount.id,
+            TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER
+        );
+        const sourceExpense = seedBankPair.expense(
+            { externalId: 'leftover-source-expense', operatedAt },
+            {
+                accountId: sourceAccount.id,
+                amount: EUR_AMOUNT,
+                exchangeRate: UAH_TO_EUR_RATE,
+                mccCategoryId: transferMcc.id,
+                toIban: TARGET_IBAN
+            }
+        );
+        const targetIncome = seedTargetIncome(
+            'leftover-target-income',
+            new Date(operatedAt.getTime() + 1000),
+            targetAccount.id,
+            transferMcc.id
+        );
+
+        await expectSingleConsolidation();
+        expectCanonicalTransfer(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, sourceAccount.id, targetAccount.id);
+        expect(fetchTransactionById(canonicalTransfer.id).consolidationParentTransactionId).toBeNull();
+        expectSourcesParented(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
+        expectMovedSources(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);
     });
 });
