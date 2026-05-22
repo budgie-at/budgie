@@ -363,14 +363,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
-        const where = this.buildWhere(filters);
-
-        return this.db.query.TransactionEntityTable.findMany({
-            with: this.buildFullRelations(language),
-            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
-            limit,
-            ...(isDefined(where) ? { where } : {})
-        });
+        return this.listOrderedByOperatedAt(limit, language, this.buildWhere(filters));
     }
 
     countUncategorized(filters: TransactionFilterInterface) {
@@ -393,12 +386,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     getUncategorized(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
         const types = this.getUncategorizedTransactionTypes(filters.types);
 
-        return this.db.query.TransactionEntityTable.findMany({
-            with: this.buildFullRelations(language),
-            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
-            limit,
-            where: this.buildUncategorizedWhere(filters, types)
-        });
+        return this.listOrderedByOperatedAt(limit, language, this.buildUncategorizedWhere(filters, types));
     }
 
     async findByIdsWithEntries(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
@@ -747,6 +735,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                     .where(and(eq(TransactionEntryEntityTable.type, type), this.buildLedgerEntryCondition()))
             )
         );
+    }
+
+    private listOrderedByOperatedAt(limit: number, language: LanguageEnum, where: SQL | null | undefined) {
+        return this.db.query.TransactionEntityTable.findMany({
+            with: this.buildFullRelations(language),
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
+            limit,
+            ...(isDefined(where) ? { where } : {})
+        });
     }
 
     private buildFullRelations(language: LanguageEnum) {
