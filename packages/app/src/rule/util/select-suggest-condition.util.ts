@@ -16,15 +16,12 @@ const SUFFIX_PATTERN = /\.?\b(?:COM|NET|ORG|INC|LLC|LTD|GMBH|CO|CORP|PLC|SA|AG|S
 
 const EXTRA_WHITESPACE = /\s{2,}/gu;
 const LEADING_TRAILING_SEPARATORS = /^[\s*\-_.,/]+|[\s*\-_.,/]+$/gu;
-const REGEX_SPECIAL_CHARACTERS = /[\\^$.*+?()[\]{}|]/gu;
-const TOKEN_SEPARATOR = /\s+/u;
-const QUICK_RULE_SYMBOL_SEPARATOR_PATTERN = /[:+\\]+/u;
+const QUICK_RULE_SYMBOL_SEPARATOR_PATTERN = /[^\p{L}\p{N}\s]+/u;
 const TITLE_TOKEN_SEPARATOR_PATTERN = /[^\p{L}\p{N}]+/gu;
 
 const MINIMUM_CLEANED_LENGTH = 3;
-const MAX_CONDITION_REGEX_LENGTH = 200;
 const MINIMUM_TITLE_TOKEN_LENGTH = 2;
-const MAXIMUM_TITLE_TOKEN_CONDITIONS = 2;
+const MAXIMUM_TITLE_TOKEN_CONDITIONS = 3;
 
 // eslint-disable-next-line max-statements -- sequential regex cleanup steps absorbed from clean-merchant-title util per CLAUDE.md rule 38/51
 const cleanMerchantTitle = (title: string): string => {
@@ -74,25 +71,6 @@ const isGenericTitle = (title: string): boolean => {
 
 const isCleanedTextUsable = (cleaned: string): boolean =>
     isNotEmptyString(cleaned) && cleaned.length >= MINIMUM_TITLE_LENGTH && !isGenericTitle(cleaned);
-
-const escapeRegexToken = (token: string): string => token.replace(REGEX_SPECIAL_CHARACTERS, '\\$&');
-
-const buildFlexibleContainsRegex = (text: string): string => {
-    const tokens = text.split(TOKEN_SEPARATOR).filter(isNotEmptyString).map(escapeRegexToken);
-    let regex = '';
-
-    for (const token of tokens) {
-        const nextRegex = isNotEmptyString(regex) ? `${regex}.*${token}` : token;
-
-        if (nextRegex.length > MAX_CONDITION_REGEX_LENGTH) {
-            return regex;
-        }
-
-        regex = nextRegex;
-    }
-
-    return regex;
-};
 
 const buildSymbolSeparatedTextConditions = (
     field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
@@ -147,20 +125,7 @@ const buildTextConditions = (
         ];
     }
 
-    const regex = buildFlexibleContainsRegex(cleanedText);
-
-    if (!isNotEmptyString(regex)) {
-        return null;
-    }
-
-    return [
-        {
-            field,
-            operator: RuleConditionOperatorEnum.MATCHES_REGEX,
-            value: regex,
-            secondaryValue: null
-        }
-    ];
+    return buildSymbolSeparatedTextConditions(field, cleanedText);
 };
 
 export const selectSuggestConditions = (
