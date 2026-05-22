@@ -1263,7 +1263,6 @@ __metadata:
     expo-linking: "npm:~55.0.15"
     expo-local-authentication: "npm:~55.0.14"
     expo-localization: "npm:~55.0.15"
-    expo-modules-core: "npm:~55.0.22"
     expo-notifications: "npm:^55.0.23"
     expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~55.0.15"
@@ -11463,7 +11462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-core@npm:55.0.25, expo-modules-core@npm:~55.0.22":
+"expo-modules-core@npm:55.0.25":
   version: 55.0.25
   resolution: "expo-modules-core@npm:55.0.25"
   dependencies:
