@@ -411,7 +411,7 @@ class TransferConsolidationService {
     }
 
     private computeExchangeRate(candidate: TransferPairCandidateInterface): number {
-        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE') {
+        if (candidate.confidenceBucket === 'AUTO_SAME_BANK_HINTED_FEE' || candidate.confidenceBucket === 'AUTO_INTERBANK_HINTED_FEE') {
             return 1;
         }
 
