@@ -25,6 +25,7 @@ export const SettingsEntityTable = sqliteTable(
         showCents: int('show_cents', { mode: 'boolean' }).notNull().default(true),
         isVibrationEnabled: int('is_vibration_enabled', { mode: 'boolean' }).notNull().default(true),
         isScreenshotProtectionEnabled: int('is_screenshot_protection_enabled', { mode: 'boolean' }).notNull().default(false),
+        applyMccDefaultCategory: int('apply_mcc_default_category', { mode: 'boolean' }).notNull().default(true),
         isBudgetWidgetEnabled: int('is_budget_widget_enabled', { mode: 'boolean' }).notNull().default(false)
     })
 );

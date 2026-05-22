@@ -1,10 +1,12 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { selectSuggestCondition } from './select-suggest-condition.util';
+import { selectSuggestConditions } from './select-suggest-condition.util';
 
 export const buildDismissKey = (transactionId: number, title: string, comment: string, mccCode: string | null): string => {
-    const condition = selectSuggestCondition(title, mccCode, comment);
-    const conditionSignature = isDefined(condition) ? `${condition.field}:${condition.value}` : 'none';
+    const conditions = selectSuggestConditions(title, mccCode, comment);
+    const conditionSignature = isDefined(conditions)
+        ? conditions.map(condition => `${condition.field}:${condition.value}`).join('|')
+        : 'none';
 
     return `${transactionId}:${conditionSignature}`;
 };

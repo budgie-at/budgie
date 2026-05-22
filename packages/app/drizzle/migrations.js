@@ -23,7 +23,9 @@ import m0018 from './0018_add_transaction_tags_is_primary.sql';
 import m0019 from './0019_add_consolidation_ledger.sql';
 import m0020 from './0020_add_rules.sql';
 import m0021 from './0021_add_updated_by.sql';
-import m0022 from './0022_add_budget_planning.sql';
+import m0022 from './0022_add_uncategorized_transaction_indexes.sql';
+import m0023 from './0023_add_mcc_default_category.sql';
+import m0024 from './0024_add_budget_planning.sql';
 
 export default {
     journal,
@@ -50,6 +52,8 @@ export default {
         m0019,
         m0020,
         m0021,
-        m0022
+        m0022,
+        m0023,
+        m0024
     }
 };

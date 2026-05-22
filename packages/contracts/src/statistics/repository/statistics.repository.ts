@@ -137,20 +137,14 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
     private buildStatisticsTransactionIdsQuery(filters: StatisticsFilterInterface) {
         const baseWhere = this.buildStatisticsFilterWhere(filters);
+        const typeConditions = isDefined(filters.type) ? [eq(TransactionEntityTable.type, filters.type)] : [];
 
         return this.db
             .selectDistinct({ id: TransactionEntityTable.id })
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    baseWhere,
-                    this.buildLedgerEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-                    eq(TransactionEntityTable.type, filters.type)
-                )
-            );
+            .where(and(baseWhere, this.buildLedgerEntryCondition(), ne(AccountEntityTable.type, AccountTypeEnum.DEBT), ...typeConditions));
     }
     /* jscpd:ignore-end */
 

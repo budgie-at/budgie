@@ -66,6 +66,7 @@ if [ -n "$APP_DATA" ] && [ -d "$APP_DATA/Documents/SQLite" ]; then
 fi
 
 if [ -n "$APP_DATA" ]; then
+    rm -f "$APP_DATA/Documents/E2EFixtures/rules-base.db" 2>/dev/null || true
     rm -f "$APP_DATA/Documents/E2EFixtures"/e2e-* 2>/dev/null || true
     rm -f "$APP_DATA/Documents/E2ECsvFixtures"/e2e-* 2>/dev/null || true
 fi
@@ -93,7 +94,7 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/14.db" "14.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
-install_database_fixture "$SCRIPT_DIR/../fixtures/rules-base.db" "rules-base.db"
+install_database_fixture "$SCRIPT_DIR/../fixtures/25.db" "25.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/budget-base.db" "budget-base.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/budget-multi-currency.db" "budget-multi-currency.db"
 "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv" "$SIMULATOR_UDID" "$APP_ID"
@@ -104,6 +105,7 @@ FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../
 FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test17-suggested-rule.csv" "test17-suggested-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
 FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test25-duplicate-rule.csv" "test25-duplicate-rule.csv" "$SIMULATOR_UDID" "$APP_ID"
 FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/test27-matching-rules-pill.csv" "test27-matching-rules-pill.csv" "$SIMULATOR_UDID" "$APP_ID"
+FIXTURE_FOLDER_NAME=E2ECsvFixtures "$INSTALL_DB_FIXTURE_SCRIPT" "$SCRIPT_DIR/../fixtures/e2e-mcc-default-category.csv" "e2e-mcc-default-category.csv" "$SIMULATOR_UDID" "$APP_ID"
 
 if [ -n "$APP_DATA" ]; then
     install_statement_fixtures

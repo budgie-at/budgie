@@ -15,9 +15,9 @@ msgstr ""
 msgid " • {embeddingPending} tx queued"
 msgstr " • {embeddingPending} Tx ausstehend"
 
-#: src/account/component/accounts-group/accounts-group.tsx:73
-msgid "{accountsCount} accounts"
-msgstr "{accountsCount} Konten"
+#: src/account/component/accounts-group/accounts-group.tsx:56
+msgid "{accountsCount, plural, one {# account} other {# accounts}}"
+msgstr "{accountsCount, plural, one {# Konto} other {# Konten}}"
 
 #: src/app/(tabs)/settings/archived.tsx:32
 msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
@@ -31,9 +31,13 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den G
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 
-#: src/app/import-column-mapper.tsx:30
-msgid "{availableCount} columns available"
-msgstr "{availableCount} Spalten verfügbar"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:27
+msgid "{autoCandidateCount, plural, one {# high-confidence transfer pair} other {# high-confidence transfer pairs}}"
+msgstr "{autoCandidateCount, plural, one {# Überweisungspaar mit hoher Trefferquote} other {# Überweisungspaare mit hoher Trefferquote}}"
+
+#: src/app/import-column-mapper.tsx:31
+msgid "{availableCount, plural, one {# column available} other {# columns available}}"
+msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
 
 #: src/budget/service/budget-alert-monitor.service.ts:97
 msgid "{categoryName}: {threshold}% spent"
@@ -43,9 +47,21 @@ msgstr "{categoryName}: {threshold}% ausgegeben"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
 
-#: src/rule/hooks/use-rule-form.hook.ts:125
-msgid "{count} existing transactions match this rule."
-msgstr "{count} bestehende Transaktionen entsprechen dieser Regel."
+#: src/rule/hooks/use-rule-form.hook.ts:126
+msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
+msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} other {# vorhandene Transaktionen passen zu dieser Regel.}}"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx:23
+msgid "{count, plural, one {# missing category} other {# missing categories}}"
+msgstr "{count, plural, one {# fehlende Kategorie} other {# fehlende Kategorien}}"
+
+#: src/app/(tabs)/settings/categories.tsx:42
+msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
+msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen wird.} other {Diese Kategorie hat # Transaktionen. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen werden.}}"
+
+#: src/app/(tabs)/settings/tags.tsx:42
+msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
+msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx:37
 msgid "{formattedAmount} · {category}"
@@ -59,10 +75,22 @@ msgstr "{formattedRemaining} noch zuzuweisen"
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} über Budget"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:37
-#: src/rule/components/rules-list-page/rules-list-page.tsx:40
-msgid "{matchingRulesCount} matching rules"
-msgstr "{matchingRulesCount} passende Regeln"
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:56
+msgid "{found, plural, one {# high-confidence pair} other {# high-confidence pairs}}"
+msgstr "{found, plural, one {# Paar mit hoher Trefferquote} other {# Paare mit hoher Trefferquote}}"
+
+#: src/app/transaction-type-filter.tsx:46
+msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
+msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeigen} other {# Typen anzeigen}}"
+
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:33
+msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
+msgstr "{manualReviewCandidateCount, plural, one {# Paar mit niedrigerer Trefferquote} other {# Paare mit niedrigerer Trefferquote}}"
+
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
+#: src/rule/components/rules-list-page/rules-list-page.tsx:41
+msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
+msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Regeln}}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:63
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:64
@@ -74,6 +102,18 @@ msgstr "{percentage}% der Ausgaben"
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
 
+#: src/app/transaction-account-filter.tsx:46
+msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
+msgstr "{selectedCount, plural, =0 {Alle Konten anzeigen} one {# Konto anzeigen} other {# Konten anzeigen}}"
+
+#: src/app/transaction-category-filter.tsx:46
+msgid "{selectedCount, plural, =0 {Show all categories} one {Show # category} other {Show # categories}}"
+msgstr "{selectedCount, plural, =0 {Alle Kategorien anzeigen} one {# Kategorie anzeigen} other {# Kategorien anzeigen}}"
+
+#: src/app/transaction-tag-filter.tsx:46
+msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
+msgstr "{selectedCount, plural, =0 {Alle Tags anzeigen} one {# Tag anzeigen} other {# Tags anzeigen}}"
+
 #: src/ai/service/ai-umbrella-status.service.ts:75
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
@@ -82,9 +122,9 @@ msgstr "{source}-Fehler · {message}"
 msgid "{source} failed: {message}"
 msgstr "{source} fehlgeschlagen: {message}"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:96
-msgid "{splitEntryCount} items"
-msgstr "{splitEntryCount} Einträge"
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:98
+msgid "{splitEntryCount, plural, one {# item} other {# items}}"
+msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
 #: src/budget/components/budget-widget/budget-widget.tsx:68
 msgid "+{hiddenCategoryCount} more"
@@ -110,12 +150,7 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:37
-#: src/rule/components/rules-list-page/rules-list-page.tsx:40
-msgid "1 matching rule"
-msgstr "1 passende Regel"
-
-#: src/app/(tabs)/settings/index.tsx:70
+#: src/app/(tabs)/settings/index.tsx:71
 msgid "100% Offline & Private"
 msgstr "100% Offline & Privat"
 
@@ -123,7 +158,7 @@ msgstr "100% Offline & Privat"
 msgid "A rule with the same conditions already exists."
 msgstr "Eine Regel mit denselben Bedingungen existiert bereits."
 
-#: src/app/(tabs)/settings/index.tsx:214
+#: src/app/(tabs)/settings/index.tsx:216
 msgid "About"
 msgstr "Über"
 
@@ -215,7 +250,7 @@ msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
 msgid "Adjustment"
 msgstr "Anpassung"
 
-#: src/app/(tabs)/settings/index.tsx:109
+#: src/app/(tabs)/settings/index.tsx:111
 msgid "AI"
 msgstr "KI"
 
@@ -237,7 +272,7 @@ msgstr "KI aus"
 msgid "AI-Generated Metadata"
 msgstr "KI-generierte Metadaten"
 
-#: src/app/(tabs)/settings/index.tsx:218
+#: src/app/(tabs)/settings/index.tsx:220
 msgid "AI-powered budgeting app with complete privacy. All data processing happens locally on your device."
 msgstr "KI-gestützte Budget-App mit vollständigem Datenschutz. Alle Daten werden lokal auf deinem Gerät verarbeitet."
 
@@ -245,7 +280,7 @@ msgstr "KI-gestützte Budget-App mit vollständigem Datenschutz. Alle Daten werd
 msgid "All"
 msgstr "Alle"
 
-#: src/app/import-column-mapper.tsx:85
+#: src/app/import-column-mapper.tsx:91
 msgid "All columns have been assigned"
 msgstr "Alle Spalten wurden zugewiesen"
 
@@ -261,7 +296,7 @@ msgstr "Alles erledigt"
 msgid "All Time"
 msgstr "Gesamte Zeit"
 
-#: src/app/(tabs)/settings/index.tsx:71
+#: src/app/(tabs)/settings/index.tsx:72
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine Cloud-Synchronisierung, kein Tracking, keine Datenweitergabe."
 
@@ -269,14 +304,14 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Already syncing"
 msgstr "Synchronisiert bereits"
 
-#: src/app/(tabs)/settings/import.tsx:196
+#: src/app/(tabs)/settings/import.tsx:197
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
 msgid "Amount"
 msgstr "Betrag"
 
 #: src/app/(main)/create-transaction/transfer.tsx:60
-#: src/app/(main)/transactions/[id]/transfer.tsx:66
+#: src/app/(main)/transactions/[id]/transfer.tsx:69
 msgid "Amount exceeds debt account balance"
 msgstr "Betrag übersteigt den Schuldenkontostand"
 
@@ -293,20 +328,24 @@ msgstr "API-Token"
 msgid "App Lock"
 msgstr "App-Sperre"
 
-#: src/app/(tabs)/settings/index.tsx:222
+#: src/app/(tabs)/settings/index.tsx:224
 msgid "App Version"
 msgstr "App-Version"
 
-#: src/app/(tabs)/settings/index.tsx:173
+#: src/app/(tabs)/settings/index.tsx:175
 msgid "Appearance"
 msgstr "Erscheinungsbild"
 
 #: src/app/note-input.tsx:54
-#: src/rule/hooks/use-rule-form.hook.ts:126
+#: src/rule/hooks/use-rule-form.hook.ts:132
 msgid "Apply"
 msgstr "Anwenden"
 
-#: src/rule/hooks/use-rule-form.hook.ts:124
+#: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx:22
+msgid "Apply default categories based on merchant category codes"
+msgstr "Standardkategorien anhand von Händlerkategoriecodes anwenden"
+
+#: src/rule/hooks/use-rule-form.hook.ts:125
 msgid "Apply to existing transactions?"
 msgstr "Auf bestehende Transaktionen anwenden?"
 
@@ -319,7 +358,7 @@ msgid "Archive Account?"
 msgstr "Konto archivieren?"
 
 #: src/app/(tabs)/settings/archived.tsx:57
-#: src/app/(tabs)/settings/index.tsx:154
+#: src/app/(tabs)/settings/index.tsx:156
 msgid "Archived Accounts"
 msgstr "Archivierte Konten"
 
@@ -332,12 +371,16 @@ msgid "Are you sure you want to delete this rule?"
 msgstr "Möchten Sie diese Regel wirklich löschen?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:29
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:27
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:64
 #: src/transaction/hook/use-delete-transaction.hook.ts:16
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx:21
+msgid "Auto-assign categories from MCC"
+msgstr "Kategorien automatisch per MCC zuweisen"
+
+#: src/app/(tabs)/settings/index.tsx:143
 msgid "Auto-categorize transactions"
 msgstr "Transaktionen automatisch kategorisieren"
 
@@ -345,7 +388,7 @@ msgstr "Transaktionen automatisch kategorisieren"
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 
-#: src/app/import-column-mapper.tsx:70
+#: src/app/import-column-mapper.tsx:76
 msgid "Available Columns"
 msgstr "Verfügbare Spalten"
 
@@ -353,8 +396,8 @@ msgstr "Verfügbare Spalten"
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/app/(main)/analytics/transactions.tsx:81
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:38
+#: src/transaction/components/transaction-list/transaction-list.tsx:68
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -405,7 +448,7 @@ msgid "Borrowed"
 msgstr "Geliehen"
 
 #: src/app/(main)/budget/index.tsx:87
-#: src/app/(tabs)/settings/index.tsx:147
+#: src/app/(tabs)/settings/index.tsx:149
 msgid "Budget"
 msgstr "Budget"
 
@@ -413,7 +456,7 @@ msgstr "Budget"
 msgid "Budget limit reached"
 msgstr "Budgetlimit erreicht"
 
-#: src/app/(tabs)/settings/index.tsx:216
+#: src/app/(tabs)/settings/index.tsx:218
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -425,18 +468,19 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(main)/budget/index.tsx:70
-#: src/app/(tabs)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:258
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:80
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:63
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:67
 #: src/transaction/hook/use-delete-transaction.hook.ts:27
+#: src/transaction/hook/use-revert-consolidation.hook.ts:19
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -445,10 +489,10 @@ msgid "Cash"
 msgstr "Bargeld"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:15
-#: src/app/(main)/analytics/transactions.tsx:82
-#: src/app/(tabs)/settings/categories.tsx:85
+#: src/app/(tabs)/settings/categories.tsx:92
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:39
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "Categories"
 msgstr "Kategorien"
 
@@ -456,11 +500,11 @@ msgstr "Kategorien"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Kategorien ({selectedCategoriesCount})"
 
-#: src/app/(tabs)/settings/categories.tsx:33
-#: src/app/(tabs)/settings/import.tsx:180
+#: src/app/(tabs)/settings/categories.tsx:34
+#: src/app/(tabs)/settings/import.tsx:181
 #: src/budget/service/budget-alert-monitor.service.ts:96
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:168
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
 msgstr "Kategorie"
 
@@ -535,7 +579,7 @@ msgstr "Menü schließen"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/app/(tabs)/settings/import.tsx:240
+#: src/app/(tabs)/settings/import.tsx:241
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/rule/constant/rule-condition-field.constant.ts:7
 msgid "Comment"
@@ -565,18 +609,18 @@ msgstr "Tag-Auswahl bestätigen"
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:30
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:43
 msgid "Consolidate"
 msgstr "Konsolidieren"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:28
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:61
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:80
 msgid "Consolidate Transfers"
 msgstr "Überweisungen konsolidieren"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:47
-msgid "Consolidated {consolidated} of {found} high-confidence pairs."
-msgstr "{consolidated} von {found} hochsicheren Paaren konsolidiert."
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:66
+msgid "Consolidated {consolidated} of {foundPairsText}."
+msgstr "{consolidated} von {foundPairsText} konsolidiert."
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:22
 msgid "Contact (optional)"
@@ -594,7 +638,7 @@ msgstr "Enthält"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
@@ -602,7 +646,7 @@ msgstr "Konvertierung fehlgeschlagen"
 msgid "Convert"
 msgstr "Umwandeln"
 
-#: src/app/convert-to-transfer.tsx:118
+#: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
@@ -625,11 +669,11 @@ msgstr "Konto konnte nicht archiviert werden"
 msgid "Could not clear data"
 msgstr "Daten konnten nicht gelöscht werden"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:52
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:71
 msgid "Could not consolidate transfers"
 msgstr "Transfers konnten nicht konsolidiert werden"
 
-#: src/app/(main)/budget/setup.tsx:118
+#: src/budget/hooks/use-budget-form.hook.ts:92
 msgid "Could not create budget"
 msgstr "Budget konnte nicht erstellt werden"
 
@@ -638,7 +682,7 @@ msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
-#: src/rule/hooks/use-rule-form.hook.ts:152
+#: src/rule/hooks/use-rule-form.hook.ts:158
 msgid "Could not create rule"
 msgstr "Regel konnte nicht erstellt werden"
 
@@ -662,15 +706,15 @@ msgstr "Konto konnte nicht gelöscht werden."
 msgid "Could not delete budget"
 msgstr "Budget konnte nicht gelöscht werden"
 
-#: src/app/(tabs)/settings/categories.tsx:67
+#: src/app/(tabs)/settings/categories.tsx:74
 msgid "Could not delete category"
 msgstr "Kategorie konnte nicht gelöscht werden"
 
-#: src/rule/hooks/use-rule-form.hook.ts:169
+#: src/rule/hooks/use-rule-form.hook.ts:175
 msgid "Could not delete rule."
 msgstr "Regel konnte nicht gelöscht werden."
 
-#: src/app/(tabs)/settings/tags.tsx:68
+#: src/app/(tabs)/settings/tags.tsx:75
 msgid "Could not delete tag"
 msgstr "Tag konnte nicht gelöscht werden"
 
@@ -691,11 +735,11 @@ msgstr "Datenbank konnte nicht exportiert werden"
 msgid "Could not fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
-#: src/app/(tabs)/settings/import.tsx:142
+#: src/app/(tabs)/settings/import.tsx:143
 msgid "Could not import CSV file"
 msgstr "CSV-Datei konnte nicht importiert werden"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:32
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:39
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
@@ -707,15 +751,15 @@ msgstr "Kategorie konnte nicht zusammengeführt werden"
 msgid "Could not merge tag"
 msgstr "Tag konnte nicht zusammengeführt werden"
 
-#: src/app/(tabs)/settings/import.tsx:111
+#: src/app/(tabs)/settings/import.tsx:112
 msgid "Could not read CSV file"
 msgstr "CSV-Datei konnte nicht gelesen werden"
 
-#: src/app/(tabs)/settings/categories.tsx:53
+#: src/app/(tabs)/settings/categories.tsx:60
 msgid "Could not reassign category"
 msgstr "Kategorie konnte nicht neu zugewiesen werden"
 
-#: src/app/(tabs)/settings/tags.tsx:54
+#: src/app/(tabs)/settings/tags.tsx:61
 msgid "Could not reassign tag"
 msgstr "Tag konnte nicht neu zugewiesen werden"
 
@@ -732,7 +776,11 @@ msgstr "Bank-Synchronisation konnte nicht zurückgesetzt werden"
 msgid "Could not restore account."
 msgstr "Konto konnte nicht wiederhergestellt werden."
 
-#: src/app/(main)/budget/setup.tsx:118
+#: src/transaction/hook/use-revert-consolidation.hook.ts:33
+msgid "Could not revert consolidation."
+msgstr ""
+
+#: src/budget/hooks/use-budget-form.hook.ts:92
 msgid "Could not save budget"
 msgstr "Budget konnte nicht gespeichert werden"
 
@@ -761,7 +809,7 @@ msgid "Could not unconsolidate transaction."
 msgstr "Transaktion konnte nicht entkonsolidiert werden."
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx:64
-#: src/rule/hooks/use-rule-form.hook.ts:152
+#: src/rule/hooks/use-rule-form.hook.ts:158
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts:44
 msgid "Could not update rule"
 msgstr "Regel konnte nicht aktualisiert werden"
@@ -786,7 +834,7 @@ msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
 msgid "Create a PIN"
 msgstr "PIN erstellen"
 
-#: src/app/transaction-account-filter.tsx:93
+#: src/app/transaction-account-filter.tsx:89
 msgid "Create Accounts"
 msgstr "Konten erstellen"
 
@@ -794,7 +842,7 @@ msgstr "Konten erstellen"
 msgid "Create and copy the personal token"
 msgstr "Persönlichen Token erstellen und kopieren"
 
-#: src/app/(tabs)/settings/index.tsx:132
+#: src/app/(tabs)/settings/index.tsx:134
 msgid "Create and organize transaction tags"
 msgstr "Transaktions-Tags erstellen und organisieren"
 
@@ -802,11 +850,11 @@ msgstr "Transaktions-Tags erstellen und organisieren"
 msgid "Create anyway"
 msgstr "Trotzdem erstellen"
 
-#: src/app/(main)/budget/setup.tsx:91
+#: src/app/(main)/budget/setup.tsx:42
 msgid "Create budget"
 msgstr "Budget erstellen"
 
-#: src/app/transaction-category-filter.tsx:84
+#: src/app/transaction-category-filter.tsx:80
 msgid "Create Categories"
 msgstr "Kategorien erstellen"
 
@@ -814,11 +862,11 @@ msgstr "Kategorien erstellen"
 msgid "Create Category"
 msgstr "Kategorie erstellen"
 
-#: src/app/transaction-category-filter.tsx:86
+#: src/app/transaction-category-filter.tsx:82
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Erstellen Sie benutzerdefinierte Kategorien in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
 
-#: src/app/transaction-tag-filter.tsx:86
+#: src/app/transaction-tag-filter.tsx:82
 msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Transaktionen zu kennzeichnen und zu filtern"
 
@@ -831,7 +879,7 @@ msgstr "Erstellen Sie eines, um zu beginnen."
 msgid "Create Rule"
 msgstr "Regel erstellen"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:85
+#: src/rule/components/rules-list-page/rules-list-page.tsx:91
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Regeln erstellen, um Banktransaktionen automatisch zu kategorisieren und zu taggen"
 
@@ -839,7 +887,7 @@ msgstr "Regeln erstellen, um Banktransaktionen automatisch zu kategorisieren und
 msgid "Create Tag"
 msgstr "Tag erstellen"
 
-#: src/app/transaction-tag-filter.tsx:84
+#: src/app/transaction-tag-filter.tsx:80
 msgid "Create Tags"
 msgstr "Tags erstellen"
 
@@ -851,7 +899,7 @@ msgstr "Erstellen Sie Tags, um Ihre Transaktionen zu organisieren"
 msgid "Create your budget"
 msgstr "Erstelle dein Budget"
 
-#: src/app/transaction-account-filter.tsx:95
+#: src/app/transaction-account-filter.tsx:91
 msgid "Create your first account to start tracking your finances"
 msgstr "Erstellen Sie Ihr erstes Konto, um Ihre Finanzen zu verfolgen"
 
@@ -884,7 +932,7 @@ msgstr "Benutzerdefinierte Kategorien, die Sie erstellen, werden hier angezeigt"
 msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
-#: src/app/(tabs)/settings/index.tsx:199
+#: src/app/(tabs)/settings/index.tsx:201
 msgid "Data management"
 msgstr "Datenverwaltung"
 
@@ -894,8 +942,8 @@ msgstr "Datenbank exportiert"
 
 #: src/@generic/component/date-filter/date-filter.tsx:35
 #: src/@generic/component/date-filter/date-filter.tsx:56
-#: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:124
+#: src/app/(tabs)/settings/import.tsx:189
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:132
 msgid "Date"
 msgstr "Datum"
 
@@ -919,7 +967,7 @@ msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
 #: src/app/(main)/budget/index.tsx:69
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:66
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
 msgstr "Löschen"
@@ -954,7 +1002,7 @@ msgid "Delete rule"
 msgstr "Regel löschen"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:51
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -966,8 +1014,8 @@ msgstr "App-Sperre deaktivieren"
 msgid "Display this budget on the home screen"
 msgstr "Dieses Budget auf dem Startbildschirm anzeigen"
 
-#: src/app/import-column-mapper.tsx:91
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:70
+#: src/app/import-column-mapper.tsx:97
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:88
 msgid "Done"
 msgstr "Fertig"
 
@@ -1020,7 +1068,7 @@ msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
 #: src/app/(main)/budget/index.tsx:105
-#: src/app/(main)/budget/setup.tsx:91
+#: src/app/(main)/budget/setup.tsx:42
 msgid "Edit budget"
 msgstr "Budget bearbeiten"
 
@@ -1032,11 +1080,11 @@ msgstr "Kategorie bearbeiten"
 msgid "Edit existing"
 msgstr "Bestehende bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:85
+#: src/app/(main)/transactions/[id]/expense.tsx:87
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/app/(main)/transactions/[id]/income.tsx:84
+#: src/app/(main)/transactions/[id]/income.tsx:87
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
@@ -1048,11 +1096,11 @@ msgstr "Regel bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:105
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:115
 msgid "Edit Transaction"
 msgstr "Transaktion bearbeiten"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:77
+#: src/app/(main)/transactions/[id]/transfer.tsx:80
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
@@ -1192,7 +1240,7 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 msgid "Expense"
 msgstr "Ausgabe"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:47
 msgid "Expenses"
 msgstr "Ausgaben"
 
@@ -1212,7 +1260,7 @@ msgstr "Datenbank exportieren"
 msgid "Export your transactions to Excel"
 msgstr "Transaktionen nach Excel exportieren"
 
-#: src/app/(tabs)/settings/import.tsx:212
+#: src/app/(tabs)/settings/import.tsx:213
 msgid "External ID"
 msgstr "Externe ID"
 
@@ -1253,7 +1301,7 @@ msgstr "Feld"
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
 
-#: src/app/(tabs)/settings/import.tsx:150
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Fix Errors"
 msgstr "Fehler beheben"
 
@@ -1273,19 +1321,19 @@ msgstr "von"
 msgid "From"
 msgstr "Von"
 
-#: src/app/(tabs)/settings/import.tsx:219
+#: src/app/(tabs)/settings/import.tsx:220
 msgid "From Account"
 msgstr "Von Konto"
 
-#: src/app/(tabs)/settings/import.tsx:233
+#: src/app/(tabs)/settings/import.tsx:234
 msgid "From Amount"
 msgstr "Von Betrag"
 
-#: src/app/(tabs)/settings/import.tsx:226
+#: src/app/(tabs)/settings/import.tsx:227
 msgid "From Currency"
 msgstr "Von Währung"
 
-#: src/app/(tabs)/settings/index.tsx:99
+#: src/app/(tabs)/settings/index.tsx:100
 msgid "General"
 msgstr "Allgemein"
 
@@ -1309,7 +1357,7 @@ msgstr "Erhalte eine Benachrichtigung, wenn die App geschlossen ist und ein Budg
 msgid "Greater Than"
 msgstr "Größer als"
 
-#: src/app/(tabs)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:84
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 
@@ -1370,7 +1418,7 @@ msgid "In List"
 msgstr "In Liste"
 
 #: src/app/(tabs)/settings/inactive.tsx:30
-#: src/app/(tabs)/settings/index.tsx:162
+#: src/app/(tabs)/settings/index.tsx:164
 msgid "Inactive Accounts"
 msgstr "Inaktive Konten"
 
@@ -1380,10 +1428,14 @@ msgstr "In Nettovermögen einbeziehen"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:36
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Einnahmen"
+
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:39
+msgid "Income and expenses"
+msgstr "Einnahmen und Ausgaben"
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx:26
 msgid "Income by category"
@@ -1406,7 +1458,7 @@ msgstr "Indexierung {done} von {total}"
 msgid "Invalid file"
 msgstr "Ungültige Datei"
 
-#: src/app/(tabs)/settings/import.tsx:247
+#: src/app/(tabs)/settings/import.tsx:249
 msgid "Is Planned"
 msgstr "Ist geplant"
 
@@ -1494,15 +1546,15 @@ msgstr "Wird geladen..."
 msgid "Main Currency"
 msgstr "Hauptwährung"
 
-#: src/app/(tabs)/settings/index.tsx:123
+#: src/app/(tabs)/settings/index.tsx:125
 msgid "Manage Categories"
 msgstr "Kategorien verwalten"
 
-#: src/app/(tabs)/settings/index.tsx:140
+#: src/app/(tabs)/settings/index.tsx:142
 msgid "Manage Rules"
 msgstr "Regeln verwalten"
 
-#: src/app/(tabs)/settings/index.tsx:131
+#: src/app/(tabs)/settings/index.tsx:133
 msgid "Manage Tags"
 msgstr "Tags verwalten"
 
@@ -1510,7 +1562,7 @@ msgstr "Tags verwalten"
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/app/(tabs)/settings/import.tsx:156
+#: src/app/(tabs)/settings/import.tsx:157
 msgid "Map CSV Columns"
 msgstr "CSV-Spalten zuordnen"
 
@@ -1522,7 +1574,7 @@ msgstr "Alle übereinstimmen"
 msgid "Match Any"
 msgstr "Beliebige übereinstimmen"
 
-#: src/app/(tabs)/settings/import.tsx:157
+#: src/app/(tabs)/settings/import.tsx:158
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
@@ -1533,6 +1585,11 @@ msgstr "entspricht"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:61
 msgid "Matches Regex"
 msgstr "Entspricht Regex"
+
+#: src/app/(tabs)/settings/import.tsx:245
+#: src/app/(tabs)/settings/import.tsx:253
+msgid "MCC"
+msgstr "MCC"
 
 #: src/app/rule-mcc-selector.tsx:48
 msgid "MCC categories are not loaded"
@@ -1546,7 +1603,7 @@ msgstr "MCC-Code"
 msgid "Merchant code"
 msgstr "Händlercode"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:62
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:81
 msgid "Merge high-confidence duplicate transfer transactions"
 msgstr "Doppelte Überweisungstransaktionen mit hoher Sicherheit zusammenführen"
 
@@ -1557,6 +1614,10 @@ msgstr "In eine andere Kategorie zusammenführen"
 #: src/tag/components/tag-form/tag-form.tsx:202
 msgid "Merge into another tag"
 msgstr "In einen anderen Tag zusammenführen"
+
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+msgid "Missing categories"
+msgstr "Fehlende Kategorien"
 
 #: src/app/(main)/create-account/index.tsx:39
 msgid "Money lent or borrowed"
@@ -1572,7 +1633,7 @@ msgstr "Monobank"
 msgid "Monthly budget"
 msgstr "Monatsbudget"
 
-#: src/app/(main)/budget/setup.tsx:57
+#: src/budget/hooks/use-budget-form.hook.ts:40
 msgid "Monthly Budget"
 msgstr "Monatliches Budget"
 
@@ -1613,7 +1674,7 @@ msgid "New Transfer"
 msgstr "Neue Überweisung"
 
 #: src/account/component/account-select-content/account-select-content.tsx:40
-#: src/app/transaction-account-filter.tsx:85
+#: src/app/transaction-account-filter.tsx:81
 msgid "No accounts found"
 msgstr "Keine Konten gefunden"
 
@@ -1622,7 +1683,7 @@ msgstr "Keine Konten gefunden"
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
-#: src/app/transaction-account-filter.tsx:92
+#: src/app/transaction-account-filter.tsx:88
 msgid "No Accounts Yet"
 msgstr "Noch keine Konten"
 
@@ -1634,7 +1695,7 @@ msgstr "Keine archivierten Konten"
 msgid "No archived accounts match your search"
 msgstr "Keine archivierten Konten entsprechen deiner Suche"
 
-#: src/app/transaction-category-filter.tsx:76
+#: src/app/transaction-category-filter.tsx:72
 #: src/category/components/category-select-content/category-select-content.tsx:56
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
@@ -1643,7 +1704,7 @@ msgstr "Keine Kategorien gefunden"
 msgid "No categories match your search"
 msgstr "Keine Kategorien entsprechen Ihrer Suche"
 
-#: src/app/transaction-category-filter.tsx:83
+#: src/app/transaction-category-filter.tsx:79
 msgid "No Categories Yet"
 msgstr "Noch keine Kategorien"
 
@@ -1687,8 +1748,8 @@ msgstr "Keine Einträge zum Speichern"
 msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
-#: src/app/(main)/analytics/transactions.tsx:89
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
@@ -1712,15 +1773,15 @@ msgstr "Keine wiederkehrenden Zahlungen erkannt"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:83
+#: src/rule/components/rules-list-page/rules-list-page.tsx:89
 msgid "No Rules Yet"
 msgstr "Noch keine Regeln"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:46
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:53
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
-#: src/app/transaction-tag-filter.tsx:76
+#: src/app/transaction-tag-filter.tsx:72
 #: src/tag/components/tags-select-content/tags-select-content.tsx:55
 msgid "No tags found"
 msgstr "Keine Tags gefunden"
@@ -1733,12 +1794,12 @@ msgstr "Keine Tags in diesem Zeitraum"
 msgid "No tags match your search"
 msgstr "Keine Tags entsprechen Ihrer Suche"
 
-#: src/app/transaction-tag-filter.tsx:83
+#: src/app/transaction-tag-filter.tsx:79
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
@@ -1771,7 +1832,7 @@ msgstr "Nicht generiert"
 msgid "not set"
 msgstr "nicht gesetzt"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:133
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:141
 msgid "Note"
 msgstr "Notiz"
 
@@ -1815,11 +1876,10 @@ msgstr "Optionale Obergrenzen pro Kategorie innerhalb dieses Budgets"
 msgid "or"
 msgstr "oder"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:121
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:29
 #: src/transaction/hook/use-delete-transaction.hook.ts:18
 msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
 msgstr "Ursprünglich importierte Transaktionen werden wiederhergestellt und die konsolidierte Transaktion wird entfernt."
@@ -1889,14 +1949,14 @@ msgstr "PINs stimmen nicht überein"
 msgid "Please enter your Monobank API token"
 msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
-#: src/app/(tabs)/settings/categories.tsx:54
-#: src/app/(tabs)/settings/categories.tsx:68
-#: src/app/(tabs)/settings/tags.tsx:55
-#: src/app/(tabs)/settings/tags.tsx:69
+#: src/app/(tabs)/settings/categories.tsx:61
+#: src/app/(tabs)/settings/categories.tsx:75
+#: src/app/(tabs)/settings/tags.tsx:62
+#: src/app/(tabs)/settings/tags.tsx:76
 #: src/category/components/category-form/category-form.tsx:123
 #: src/category/components/category-form/category-form.tsx:167
 #: src/tag/components/tag-form/tag-form.tsx:112
@@ -1916,7 +1976,7 @@ msgstr "Portugiesisch (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Vorlage angewendet. Passen Sie die Spalten bei Bedarf unten an."
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:68
 msgid "Privacy"
 msgstr "Privatsphäre"
 
@@ -2022,7 +2082,7 @@ msgstr "Erstattet"
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Erstattet {formattedRefundedAmount}"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
 msgid "Refunds"
 msgstr "Erstattungen"
 
@@ -2051,6 +2111,17 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Resuming AI…"
 msgstr "KI wird fortgesetzt…"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:78
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
+#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
+#: src/transaction/hook/use-revert-consolidation.hook.ts:18
+msgid "Revert"
+msgstr ""
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts:16
+msgid "Revert consolidation?"
+msgstr ""
+
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
 msgstr "Revolut"
@@ -2067,7 +2138,7 @@ msgstr "Regel erstellt"
 msgid "Rule updated"
 msgstr "Regel aktualisiert"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:66
+#: src/rule/components/rules-list-page/rules-list-page.tsx:72
 msgid "Rules"
 msgstr "Regeln"
 
@@ -2089,12 +2160,12 @@ msgstr "Ersparnisse"
 msgid "Savings Account"
 msgstr "Sparkonto"
 
-#: src/app/(tabs)/settings/index.tsx:82
+#: src/app/(tabs)/settings/index.tsx:83
 msgid "Screenshot Protection"
 msgstr "Screenshot-Schutz"
 
 #: src/app/account-selector.tsx:39
-#: src/app/transaction-account-filter.tsx:103
+#: src/app/transaction-account-filter.tsx:99
 msgid "Search accounts..."
 msgstr "Konten durchsuchen..."
 
@@ -2106,9 +2177,9 @@ msgstr "Archivierte Konten suchen..."
 msgid "Search by code or description..."
 msgstr "Nach Code oder Beschreibung suchen..."
 
-#: src/app/(tabs)/settings/categories.tsx:86
+#: src/app/(tabs)/settings/categories.tsx:93
 #: src/app/category-selector.tsx:58
-#: src/app/transaction-category-filter.tsx:94
+#: src/app/transaction-category-filter.tsx:90
 msgid "Search categories..."
 msgstr "Kategorien durchsuchen..."
 
@@ -2136,9 +2207,9 @@ msgstr "Suchbegriffe"
 msgid "Search languages..."
 msgstr "Sprachen durchsuchen..."
 
-#: src/app/(tabs)/settings/tags.tsx:87
+#: src/app/(tabs)/settings/tags.tsx:94
 #: src/app/tags-selector.tsx:142
-#: src/app/transaction-tag-filter.tsx:94
+#: src/app/transaction-tag-filter.tsx:90
 msgid "Search tags..."
 msgstr "Tags durchsuchen..."
 
@@ -2154,7 +2225,7 @@ msgstr "Zweiter Wert"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Sichern Sie Ihre App mit PIN und Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:76
+#: src/app/(tabs)/settings/index.tsx:77
 msgid "Security"
 msgstr "Sicherheit"
 
@@ -2270,7 +2341,7 @@ msgstr "Typ auswählen"
 msgid "Select Type"
 msgstr "Typ auswählen"
 
-#: src/app/import-column-mapper.tsx:55
+#: src/app/import-column-mapper.tsx:61
 msgid "Selected"
 msgstr "Ausgewählt"
 
@@ -2282,7 +2353,7 @@ msgstr "Push-Benachrichtigungen senden"
 msgid "Sending {fromCode}"
 msgstr "Senden {fromCode}"
 
-#: src/app/(tabs)/settings/index.tsx:148
+#: src/app/(tabs)/settings/index.tsx:150
 msgid "Set a monthly limit and track spending"
 msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
 
@@ -2298,67 +2369,19 @@ msgstr "Kategorie festlegen"
 msgid "Set Return Date"
 msgstr "Rückgabedatum festlegen"
 
-#: src/app/(tabs)/settings/index.tsx:60
+#: src/app/(tabs)/settings/index.tsx:61
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/app/transaction-type-filter.tsx:53
-msgid "Show {localSelectedCount} types"
-msgstr "{localSelectedCount} Typen anzeigen"
-
-#: src/app/transaction-account-filter.tsx:54
-msgid "Show {selectedCount} accounts"
-msgstr "{selectedCount} Konten anzeigen"
-
-#: src/app/transaction-category-filter.tsx:54
-msgid "Show {selectedCount} categories"
-msgstr "{selectedCount} Kategorien anzeigen"
-
-#: src/app/transaction-tag-filter.tsx:54
-msgid "Show {selectedCount} tags"
-msgstr "{selectedCount} Tags anzeigen"
-
-#: src/app/(tabs)/settings/index.tsx:182
+#: src/app/(tabs)/settings/index.tsx:184
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "$1.234,56 statt $1.235 anzeigen"
-
-#: src/app/transaction-account-filter.tsx:51
-msgid "Show 1 account"
-msgstr "1 Konto anzeigen"
-
-#: src/app/transaction-category-filter.tsx:51
-msgid "Show 1 category"
-msgstr "1 Kategorie anzeigen"
-
-#: src/app/transaction-tag-filter.tsx:51
-msgid "Show 1 tag"
-msgstr "1 Tag anzeigen"
-
-#: src/app/transaction-type-filter.tsx:50
-msgid "Show 1 type"
-msgstr "1 Typ anzeigen"
-
-#: src/app/transaction-account-filter.tsx:48
-msgid "Show all accounts"
-msgstr "Alle Konten anzeigen"
-
-#: src/app/transaction-category-filter.tsx:48
-msgid "Show all categories"
-msgstr "Alle Kategorien anzeigen"
 
 #: src/app/date-filter.tsx:32
 msgid "Show all dates"
 msgstr "Alle Daten anzeigen"
 
-#: src/app/transaction-tag-filter.tsx:48
-msgid "Show all tags"
-msgstr "Alle Tags anzeigen"
-
-#: src/app/transaction-type-filter.tsx:47
-msgid "Show all types"
-msgstr "Alle Typen anzeigen"
-
-#: src/app/(tabs)/settings/index.tsx:181
+#: src/app/(tabs)/settings/index.tsx:183
 msgid "Show Cents"
 msgstr "Cent anzeigen"
 
@@ -2374,7 +2397,7 @@ msgstr "Dieses Konto auf der Hauptseite anzeigen"
 msgid "Show widget on home"
 msgstr "Widget auf Startseite anzeigen"
 
-#: src/rule/hooks/use-rule-form.hook.ts:127
+#: src/rule/hooks/use-rule-form.hook.ts:133
 msgid "Skip"
 msgstr "Überspringen"
 
@@ -2398,11 +2421,11 @@ msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 msgid "Source"
 msgstr "Quelle"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:21
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
 msgid "Source transactions"
 msgstr "Quelltransaktionen"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:144
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:152
 msgid "Sources"
 msgstr "Quellen"
 
@@ -2426,11 +2449,11 @@ msgstr "Ausgaben nach Tag"
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:112
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:120
 msgid "Split"
 msgstr "Aufteilen"
 
-#: src/app/(tabs)/settings/import.tsx:150
+#: src/app/(tabs)/settings/import.tsx:151
 msgid "Start Import"
 msgstr "Import starten"
 
@@ -2439,7 +2462,7 @@ msgstr "Import starten"
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
@@ -2484,7 +2507,7 @@ msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 msgid "Syncing history..."
 msgstr "Verlauf wird synchronisiert..."
 
-#: src/app/(tabs)/settings/tags.tsx:33
+#: src/app/(tabs)/settings/tags.tsx:34
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx:33
 msgid "Tag"
 msgstr "Tag"
@@ -2502,8 +2525,8 @@ msgid "Tag transactions to see how your spending breaks down by context."
 msgstr "Markieren Sie Transaktionen mit Tags, um zu sehen, wie sich Ihre Ausgaben nach Kontext aufschlüsseln."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx:16
-#: src/app/(tabs)/settings/tags.tsx:86
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:155
+#: src/app/(tabs)/settings/tags.tsx:93
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:163
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags"
 msgstr "Tags"
@@ -2516,7 +2539,7 @@ msgstr "Tags ({selectedTagsCount})"
 msgid "Tap re-record to try again"
 msgstr "Auf 'Erneut aufnehmen' tippen, um es erneut zu versuchen"
 
-#: src/app/import-column-mapper.tsx:62
+#: src/app/import-column-mapper.tsx:68
 msgid "Tap to clear"
 msgstr "Tippen zum Leeren"
 
@@ -2534,16 +2557,12 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:47
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:30
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:65
 #: src/transaction/hook/use-delete-transaction.hook.ts:19
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/app/(tabs)/settings/categories.tsx:43
-msgid "This category has transactions. Select another category to reassign them to."
-msgstr "Diese Kategorie hat Transaktionen. Wählen Sie eine andere Kategorie, um sie neu zuzuweisen."
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:47
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:54
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Dieser konsolidierte Transfer hat keine verschobenen Quelleinträge."
 
@@ -2559,10 +2578,6 @@ msgstr "Dadurch werden alle Transaktionen neu indiziert. Fortfahren?"
 msgid "This re-translates every category and tag. Continue?"
 msgstr "Dadurch werden alle Kategorien und Tags neu übersetzt. Fortfahren?"
 
-#: src/app/(tabs)/settings/tags.tsx:43
-msgid "This tag has transactions. Select another tag to reassign them to."
-msgstr "Dieser Tag hat Transaktionen. Wählen Sie einen anderen Tag, um sie neu zuzuweisen."
-
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
 msgstr "Diese Woche"
@@ -2571,9 +2586,9 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:29
-msgid "This will consolidate {autoCandidateCount} high-confidence transfer pairs. {manualReviewCandidateCount} lower-confidence pairs will be logged for review only."
-msgstr "Dies konsolidiert {autoCandidateCount} hochsichere Überweisungspaare. {manualReviewCandidateCount} Paare mit geringerer Sicherheit werden nur zur Überprüfung protokolliert."
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:42
+msgid "This will consolidate {autoCandidateText}. {manualReviewCandidateText} will be logged for review only."
+msgstr "Dies konsolidiert {autoCandidateText}. Zur Überprüfung protokolliert: {manualReviewCandidateText}."
 
 #: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the expense to a transfer between accounts."
@@ -2590,6 +2605,10 @@ msgstr "Dies entfernt dein Monatsbudget. Du kannst jederzeit ein neues erstellen
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Dadurch wird der Synchronisationsverlauf zurückgesetzt und alle Transaktionen dieses Bankkontos erneut synchronisiert. Ihre bestehenden Transaktionen, Tags und Kategorien bleiben erhalten und werden mit neuen Daten aktualisiert."
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts:17
+msgid "This will restore the original transactions and remove the consolidated transaction."
+msgstr ""
 
 #: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
@@ -2608,16 +2627,16 @@ msgstr "nach"
 msgid "To"
 msgstr "Nach"
 
-#: src/app/(tabs)/settings/import.tsx:172
+#: src/app/(tabs)/settings/import.tsx:173
 msgid "To Account"
 msgstr "Auf Konto"
 
-#: src/app/(tabs)/settings/import.tsx:204
+#: src/app/(tabs)/settings/import.tsx:205
 msgid "To Currency"
 msgstr "In Währung"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:87
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Today"
 msgstr "Heute"
 
@@ -2655,7 +2674,7 @@ msgid "Transaction not found"
 msgstr "Transaktion nicht gefunden"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:15
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:42
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:50
 msgid "Transactions"
 msgstr "Transaktionen"
 
@@ -2681,7 +2700,7 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
-#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:46
+#: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:65
 msgid "Transfers consolidated"
 msgstr "Überweisungen konsolidiert"
 
@@ -2715,8 +2734,8 @@ msgstr "Versuchen Sie einen anderen Suchbegriff"
 msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
-#: src/app/(main)/analytics/transactions.tsx:91
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:27
+#: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
@@ -2740,31 +2759,23 @@ msgid "Ukrainian"
 msgstr "Ukrainisch"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:25
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:31
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Unconsolidate"
 msgstr "Entkonsolidieren"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
-#: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:51
-msgid "Unconsolidate Transaction"
-msgstr "Transaktion entkonsolidieren"
-
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:27
 #: src/transaction/hook/use-delete-transaction.hook.ts:16
 msgid "Unconsolidate transaction?"
 msgstr "Transaktion entkonsolidieren?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:33
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Unbekannt"
 
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx:26
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:26
+#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:27
 msgid "Untagged"
 msgstr "Ohne Tag"
 
@@ -2809,15 +2820,15 @@ msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
 msgid "Value"
 msgstr "Wert"
 
-#: src/app/(tabs)/settings/index.tsx:163
+#: src/app/(tabs)/settings/index.tsx:165
 msgid "View and activate hidden accounts"
 msgstr "Versteckte Konten anzeigen und aktivieren"
 
-#: src/app/(tabs)/settings/index.tsx:124
+#: src/app/(tabs)/settings/index.tsx:126
 msgid "View and delete custom categories"
 msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 
-#: src/app/(tabs)/settings/index.tsx:155
+#: src/app/(tabs)/settings/index.tsx:157
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
 
@@ -2849,7 +2860,7 @@ msgstr "Wise"
 msgid "XLSX export"
 msgstr "XLSX-Export"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:89
 msgid "Yesterday"
 msgstr "Gestern"
 
