@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.1](https://github.com/budgie-at/budgie/compare/v5.22.0...v5.22.1) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** consolidate bridge transfer leftovers ([01e27d9](https://github.com/budgie-at/budgie/commit/01e27d98094a66d347995caba3ae0d79f93857b8))
+- **app:** consolidate interbank fee transfers ([1b83bfb](https://github.com/budgie-at/budgie/commit/1b83bfbd355b56a83f15597beb80bd13a30383aa))
+- **app:** consolidate legacy same-bank fee transfers ([942a5e8](https://github.com/budgie-at/budgie/commit/942a5e88b2ae43f8e80e0c13793695ecf5295b33))
+- **app:** use transaction source for interbank consolidation ([a4cd7ba](https://github.com/budgie-at/budgie/commit/a4cd7baef6f2bb11fe915e3257307e5d4151148a))
+
 # [5.22.0](https://github.com/budgie-at/budgie/compare/v5.21.5...v5.22.0) (2026-05-21)
 
 ### Bug Fixes
