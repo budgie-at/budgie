@@ -3,7 +3,6 @@ import {
     AccountEntityInterface,
     CategoryEntityInterface,
     InstrumentEntityInterface,
-    LanguageEnum,
     MccCategoryEntityInterface,
     TransactionTypeEnum,
     TransactionWithEntriesEntityInterface
@@ -54,11 +53,11 @@ class ExporterService {
     private instrumentsMap: InstrumentsMap = new Map();
     private mccCategoriesMap: MccCategoriesMap = new Map();
 
-    async exportToCsv(language: LanguageEnum): Promise<string> {
+    async exportToCsv(): Promise<string> {
         const [accounts, deletedAccounts, categories, instruments, mccCategories] = await Promise.all([
             accountRepository.getAll(),
             accountRepository.getAllArchived(),
-            categoryRepository.findAll(language),
+            categoryRepository.findAllNonSystem(),
             instrumentRepository.getAll(),
             mccCategoryRepository.findAll()
         ]);
@@ -74,8 +73,8 @@ class ExporterService {
         return Papa.unparse(rows, { header: true, columns: [...this.CSV_COLUMNS] });
     }
 
-    async saveAndShare(language: LanguageEnum): Promise<void> {
-        const csvContent = await this.exportToCsv(language);
+    async saveAndShare(): Promise<void> {
+        const csvContent = await this.exportToCsv();
         const fileName = `budgie-export-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.csv`;
 
         const file = new File(Paths.cache, fileName);

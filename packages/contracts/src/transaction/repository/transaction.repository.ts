@@ -190,7 +190,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 instrument.id AS instrumentId,
                 instrument.code AS currencyCode,
                 instrument.symbol AS currencySymbol,
-                category.title AS categoryTitle,
                 mcc.mcc AS mcc,
                 mcc.short_description AS mccDescription,
                 moved.to_iban AS toIban
@@ -203,7 +202,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
             LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
             LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
-            LEFT JOIN categories category ON category.id = moved.category_id
             LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
             WHERE moved.transaction_id = ?
               AND moved.original_transaction_id IS NOT NULL
