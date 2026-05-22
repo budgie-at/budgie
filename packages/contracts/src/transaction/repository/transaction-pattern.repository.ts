@@ -4,10 +4,12 @@ import { SQL, and, between, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, 
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
@@ -53,19 +55,22 @@ export class TransactionPatternRepository {
     constructor(private db: DB) {}
 
     @Log(
-        query =>
-            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes}`,
-        (result, query) =>
-            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
-        (error, query) =>
-            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} error=${getErrorMessage(error)}`
+        (query, language) =>
+            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language}`,
+        (result, query, language) =>
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+        (error, query, language) =>
+            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} weekday=${query.weekday} window=${query.timeWindowStartMinutes}-${query.timeWindowEndMinutes} language=${language} error=${getErrorMessage(error)}`
     )
-    async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+    async findRepeatedPatterns(
+        query: TransactionPatternQueryInterface,
+        language: LanguageEnum
+    ): Promise<RepeatedTransactionPatternInterface[]> {
         const limit = query.limit ?? DEFAULT_LIMIT;
         const pathResults = await Promise.all(
             PATTERN_GROUP_COLUMNS.map(async groupColumn => {
                 const conditions = this.buildPatternConditions(query, groupColumn);
-                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn);
+                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn, language);
 
                 return this.enrichPatternsWithTags(patternRows, groupColumn);
             })
@@ -75,16 +80,20 @@ export class TransactionPatternRepository {
     }
 
     @Log(
-        query =>
-            `enter type=${query.type} defaultInstrumentId=${query.defaultInstrumentId} displayMonth=${query.displayMonth} tzOffset=${query.timezoneOffsetSeconds}`,
-        (result, query) =>
-            `done type=${query.type} displayMonth=${query.displayMonth} titles=${result.map(pattern => pattern.title).join('|')} accountIds=${result.map(pattern => pattern.accountId).join(',')}`,
-        (error, query) => `throw type=${query.type} displayMonth=${query.displayMonth} error=${getErrorMessage(error)}`
+        (query, language) =>
+            `enter type=${query.type} defaultInstrumentId=${query.defaultInstrumentId} displayMonth=${query.displayMonth} tzOffset=${query.timezoneOffsetSeconds} language=${language}`,
+        (result, query, language) =>
+            `done type=${query.type} displayMonth=${query.displayMonth} language=${language} titles=${result.map(pattern => pattern.title).join('|')} accountIds=${result.map(pattern => pattern.accountId).join(',')}`,
+        (error, query, language) =>
+            `throw type=${query.type} displayMonth=${query.displayMonth} language=${language} error=${getErrorMessage(error)}`
     )
-    async findMonthlyRecurringPatterns(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+    async findMonthlyRecurringPatterns(
+        query: MonthlyPatternQueryInterface,
+        language: LanguageEnum
+    ): Promise<MonthlyPatternRawRowInterface[]> {
         const [bankPatterns, manualPatterns] = await Promise.all([
-            this.executeBankSyncedMonthlyQuery(query),
-            this.executeManualMonthlyQuery(query)
+            this.executeBankSyncedMonthlyQuery(query, language),
+            this.executeManualMonthlyQuery(query, language)
         ]);
 
         const allPatterns = [...bankPatterns, ...manualPatterns];
@@ -102,19 +111,22 @@ export class TransactionPatternRepository {
     }
 
     @Log(
-        query =>
-            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax}`,
-        (result, query) =>
-            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
-        (error, query) =>
-            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} error=${getErrorMessage(error)}`
+        (query, language) =>
+            `enter type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language}`,
+        (result, query, language) =>
+            `done type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language} categoryIds=${result.map(pattern => pattern.categoryId).join(',')} titles=${result.map(pattern => pattern.title).join('|')}`,
+        (error, query, language) =>
+            `throw type=${query.type} accountId=${query.accountId ?? 0} categoryId=${query.categoryId ?? 0} amountMin=${query.amountMin} amountMax=${query.amountMax} language=${language} error=${getErrorMessage(error)}`
     )
-    async findAmountBasedPatterns(query: AmountPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+    async findAmountBasedPatterns(
+        query: AmountPatternQueryInterface,
+        language: LanguageEnum
+    ): Promise<RepeatedTransactionPatternInterface[]> {
         const limit = query.limit ?? DEFAULT_LIMIT;
         const pathResults = await Promise.all(
             PATTERN_GROUP_COLUMNS.map(async groupColumn => {
                 const conditions = this.buildAmountPatternConditions(query, groupColumn);
-                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn);
+                const patternRows = await this.executePatternQuery(conditions, limit, groupColumn, language);
 
                 return this.enrichPatternsWithTags(patternRows, groupColumn);
             })
@@ -217,13 +229,19 @@ export class TransactionPatternRepository {
         return conditions;
     }
 
-    private async executePatternQuery(conditions: SQL[], limit: number, groupColumn: PatternGroupColumn): Promise<PatternRowInterface[]> {
+    private async executePatternQuery(
+        conditions: SQL[],
+        limit: number,
+        groupColumn: PatternGroupColumn,
+        language: LanguageEnum
+    ): Promise<PatternRowInterface[]> {
         const titleSource = groupColumn === 'title' ? TransactionEntityTable.title : TransactionEntityTable.comment;
+        const localizedCategoryTitle = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
 
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
-                categoryTitle: CategoryEntityTable.title,
+                categoryTitle: localizedCategoryTitle.as('categoryTitle'),
                 categoryIcon: CategoryEntityTable.icon,
                 title: titleSource,
                 comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
@@ -239,8 +257,15 @@ export class TransactionPatternRepository {
             .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
             .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
+            .leftJoin(
+                DefaultCategoryTranslationEntityTable,
+                and(
+                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                    eq(DefaultCategoryTranslationEntityTable.language, language)
+                )
+            )
             .where(and(...conditions))
-            .groupBy(TransactionEntryEntityTable.categoryId, titleSource)
+            .groupBy(TransactionEntryEntityTable.categoryId, titleSource, localizedCategoryTitle)
             .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`), desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
             .limit(limit);
@@ -340,7 +365,10 @@ export class TransactionPatternRepository {
         };
     }
 
-    private async executeBankSyncedMonthlyQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+    private async executeBankSyncedMonthlyQuery(
+        query: MonthlyPatternQueryInterface,
+        language: LanguageEnum
+    ): Promise<MonthlyPatternRawRowInterface[]> {
         const { entryType, recencyTimestamp, tzOffset, type, defaultInstrumentId, displayMonth } = this.buildMonthlyQueryContext(query);
 
         const bankSql = `
@@ -379,6 +407,7 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
         return this.db.$client.getAllAsync<MonthlyPatternRawRowInterface>(bankSql, [
             tzOffset,
             tzOffset,
+            language,
             type,
             entryType,
             recencyTimestamp,
@@ -386,6 +415,7 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
             AMOUNT_VARIANCE_MULTIPLIER,
             DAY_CONCENTRATION_DENOMINATOR,
             DAY_CONCENTRATION_NUMERATOR,
+            language,
             type,
             entryType,
             displayMonth,
@@ -395,13 +425,16 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
     }
 
     // eslint-disable-next-line max-lines-per-function -- Raw SQL window-function CTE cannot be split further
-    private async executeManualMonthlyQuery(query: MonthlyPatternQueryInterface): Promise<MonthlyPatternRawRowInterface[]> {
+    private async executeManualMonthlyQuery(
+        query: MonthlyPatternQueryInterface,
+        language: LanguageEnum
+    ): Promise<MonthlyPatternRawRowInterface[]> {
         const { entryType, recencyTimestamp, tzOffset, type, defaultInstrumentId, displayMonth } = this.buildMonthlyQueryContext(query);
 
         const manualSql = `
 WITH groups AS (
     SELECT t.comment, te.category_id, a.id AS account_id, a.instrument_id,
-           cat.title AS cat_title, cat.icon AS cat_icon,
+           COALESCE(dct.title, cat.title) AS cat_title, cat.icon AS cat_icon,
            CAST(strftime('%d', t.operated_at + ?, 'unixepoch') AS INTEGER) AS day_of_month,
            strftime('%Y-%m', t.operated_at + ?, 'unixepoch') AS year_month,
            t.id AS tx_id, te.amount, t.operated_at
@@ -409,6 +442,7 @@ WITH groups AS (
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN default_category_translations dct ON dct.category_id = cat.id AND dct.language = ?
     WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT' AND t.operated_at >= ?
       AND t.title = '' AND t.comment != '' AND te.category_id IS NOT NULL
@@ -448,12 +482,13 @@ filtered AS (
 ),
 all_time AS (
     SELECT t.comment, te.category_id, a.id AS account_id, a.instrument_id,
-           cat.title AS cat_title, cat.icon AS cat_icon,
+           COALESCE(dct.title, cat.title) AS cat_title, cat.icon AS cat_icon,
            t.id AS tx_id, te.amount, t.operated_at
     FROM transactions t
     INNER JOIN transaction_entries te ON te.transaction_id = t.id AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
     INNER JOIN accounts a ON a.id = te.account_id
     LEFT JOIN categories cat ON cat.id = te.category_id
+    LEFT JOIN default_category_translations dct ON dct.category_id = cat.id AND dct.language = ?
     WHERE t.type = ? AND te.type = ? AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
       AND a.type != 'DEBT'
       AND t.title = '' AND t.comment != '' AND te.category_id IS NOT NULL
@@ -499,6 +534,7 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
         return this.db.$client.getAllAsync<MonthlyPatternRawRowInterface>(manualSql, [
             tzOffset,
             tzOffset,
+            language,
             type,
             entryType,
             recencyTimestamp,
@@ -506,6 +542,7 @@ ORDER BY f.occurrence_count DESC, f.last_occurrence DESC`;
             AMOUNT_VARIANCE_MULTIPLIER,
             DAY_CONCENTRATION_DENOMINATOR,
             DAY_CONCENTRATION_NUMERATOR,
+            language,
             type,
             entryType,
             displayMonth,

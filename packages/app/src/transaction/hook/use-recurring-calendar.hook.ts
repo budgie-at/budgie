@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
 import { recurringCalendarService } from '../service/recurring-calendar.service';
 
@@ -14,6 +15,7 @@ const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
 export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
     const { defaultInstrument } = useSettingsContext();
+    const language = useSetting('language');
     const focusKey = useFocusKey();
     const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
     const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +30,12 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
 
         const fetchData = async (): Promise<void> => {
             try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments(defaultInstrument.id, displayYear, displayMonth);
+                const result = await recurringCalendarService.getMonthlyRecurringPayments(
+                    defaultInstrument.id,
+                    displayYear,
+                    displayMonth,
+                    language
+                );
 
                 if (!cancelled) {
                     hasLoadedRef.current = true;
@@ -57,7 +64,7 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
         return () => {
             cancelled = true;
         };
-    }, [focusKey, defaultInstrument.id, displayYear, displayMonth]);
+    }, [focusKey, defaultInstrument.id, displayYear, displayMonth, language]);
 
     return { data, isLoading };
 };
