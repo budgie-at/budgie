@@ -247,6 +247,7 @@ export type { TransferPairCandidateInterface } from './transaction/interface/tra
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
+export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
