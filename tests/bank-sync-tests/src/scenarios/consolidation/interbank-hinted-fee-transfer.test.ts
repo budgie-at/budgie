@@ -20,7 +20,7 @@ const EXPENSE_AMOUNT = 30_317.41 * PRECISION;
 const INCOME_AMOUNT = 29_999 * PRECISION;
 const COMPETING_INCOME_AMOUNT = 29_998 * PRECISION;
 
-const seedAccount = (title: string, externalSource: ExternalSourceEnum, iban: string) =>
+const seedAccount = (title: string, externalSource: ExternalSourceEnum | null, iban: string) =>
     seed.account({
         title,
         type: AccountTypeEnum.BANK_SYNC,
@@ -32,11 +32,14 @@ const updateTransaction = (transactionId: number, title: string, externalSource:
     testDb.update(TransactionEntityTable).set({ title, externalSource }).where(eq(TransactionEntityTable.id, transactionId)).run();
 };
 
-const seedInterbankFeeTransfer = () => {
+const seedInterbankFeeTransfer = (
+    sourceAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.MONOBANK,
+    targetAccountExternalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
+) => {
     const operatedAt = new Date(2026, 4, 20, 18, 39, 0);
     const transferMcc = findMccByCode('4829');
-    const sourceAccount = seedAccount('Monobank Black •3126', ExternalSourceEnum.MONOBANK, 'UA-MONOBANK-3126');
-    const targetAccount = seedAccount('Privatbank •0356', ExternalSourceEnum.PRIVATBANK, 'UA-PRIVATBANK-0356');
+    const sourceAccount = seedAccount('Monobank Black •3126', sourceAccountExternalSource, 'UA-MONOBANK-3126');
+    const targetAccount = seedAccount('Privatbank •0356', targetAccountExternalSource, 'UA-PRIVATBANK-0356');
     const expense = seedBankPair.expense(
         { externalId: 'interbank-fee-expense', operatedAt },
         {
@@ -91,15 +94,29 @@ const expectTransferPairConsolidated = (
     expect(fetchTransactionById(incomeTransactionId).consolidationParentTransactionId).toBe(canonicals[0].id);
 };
 
+const expectSeededInterbankFeeTransferConsolidates = async (
+    sourceAccountExternalSource: ExternalSourceEnum | null,
+    targetAccountExternalSource: ExternalSourceEnum | null
+): Promise<void> => {
+    const { expense, income, sourceAccount, targetAccount } = seedInterbankFeeTransfer(
+        sourceAccountExternalSource,
+        targetAccountExternalSource
+    );
+
+    const result = await transferConsolidationService.consolidate();
+
+    expect(result.found).toBe(1);
+    expect(result.consolidated).toBe(1);
+    expectTransferPairConsolidated(expense.id, income.id, sourceAccount.id, targetAccount.id);
+};
+
 describe('consolidation/interbank-hinted-fee-transfer', () => {
     it('auto-consolidates a first interbank transfer when transfer MCC, time, and fee delta make the pair unambiguous', async () => {
-        const { expense, income, sourceAccount, targetAccount } = seedInterbankFeeTransfer();
+        await expectSeededInterbankFeeTransferConsolidates(ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK);
+    });
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result.found).toBe(1);
-        expect(result.consolidated).toBe(1);
-        expectTransferPairConsolidated(expense.id, income.id, sourceAccount.id, targetAccount.id);
+    it('uses transaction bank sources when imported accounts do not carry bank sources', async () => {
+        await expectSeededInterbankFeeTransferConsolidates(null, null);
     });
 
     it('does NOT auto-consolidate when another fee-sized income competes for the same expense', async () => {

@@ -708,6 +708,7 @@ export class TransferPairRepository {
                     expense_account.title as expenseAccountTitle,
                     expense_account.instrument_id as expenseInstrumentId,
                     expense_account.external_source as expenseExternalSource,
+                    COALESCE(NULLIF(expense_account.external_source, ''), expense_tx.external_source) as expenseBankSource,
                     SUBSTR(expense_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as expenseAccountHintSuffix,
                     CASE
                         WHEN expense_account.iban IS NOT NULL
@@ -746,6 +747,7 @@ export class TransferPairRepository {
                     income_account.title as incomeAccountTitle,
                     income_account.instrument_id as incomeInstrumentId,
                     income_account.external_source as incomeExternalSource,
+                    COALESCE(NULLIF(income_account.external_source, ''), income_tx.external_source) as incomeBankSource,
                     SUBSTR(income_account.iban, -${TransferPairRepository.ACCOUNT_HINT_SUFFIX_LENGTH}) as incomeAccountHintSuffix,
                     CASE
                         WHEN income_account.iban IS NOT NULL
@@ -898,11 +900,11 @@ export class TransferPairRepository {
                         ELSE 0
                     END as hintedFeeAmountMatch,
                     CASE
-                        WHEN expense_entries.expenseExternalSource IS NOT NULL
-                            AND expense_entries.expenseExternalSource != ''
-                            AND income_entries.incomeExternalSource IS NOT NULL
-                            AND income_entries.incomeExternalSource != ''
-                            AND expense_entries.expenseExternalSource != income_entries.incomeExternalSource
+                        WHEN expense_entries.expenseBankSource IS NOT NULL
+                            AND expense_entries.expenseBankSource != ''
+                            AND income_entries.incomeBankSource IS NOT NULL
+                            AND income_entries.incomeBankSource != ''
+                            AND expense_entries.expenseBankSource != income_entries.incomeBankSource
                             AND expense_entries.expenseInstrumentId = income_entries.incomeInstrumentId
                             AND expense_entries.expenseMccGroupId = ${TRANSFER_MCC_GROUP_ID}
                             AND income_entries.incomeMccGroupId = ${TRANSFER_MCC_GROUP_ID}
