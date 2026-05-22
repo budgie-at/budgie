@@ -26,6 +26,8 @@ import type {
     AtmCashWithdrawalCandidateInterface,
     AtmCashWithdrawalReviewCandidateInterface,
     DB,
+    ExistingTransferBridgeCandidateInterface,
+    ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
     IbanBridgeTransferCandidateInterface,
@@ -63,6 +65,8 @@ class TransferConsolidationService {
             autoCandidateCount:
                 candidates.pairCandidates.length +
                 candidates.atmCashWithdrawalCandidates.length +
+                candidates.existingTransferBridgeCandidates.length +
+                candidates.existingTransferIncomeDuplicateCandidates.length +
                 candidates.ibanBridgeCanonicalDuplicateCandidates.length +
                 candidates.ibanBridgeChainTransferCandidates.length +
                 candidates.ibanBridgeTransferCandidates.length +
@@ -145,6 +149,32 @@ class TransferConsolidationService {
 
     @Log(
         candidates =>
+            `enter sourceExpenseTransactionIds=${candidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${candidates.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')}`,
+        (result, candidates) =>
+            `done sourceExpenseTransactionIds=${candidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${candidates.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')} consolidated=${result}`,
+        (error, candidates) =>
+            `throw sourceExpenseTransactionIds=${candidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${candidates.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async processExistingTransferBridgeCandidates(candidates: ExistingTransferBridgeCandidateInterface[]): Promise<number> {
+        return this.reduceConsolidations(candidates, candidate => this.consolidateExistingTransferBridge(candidate));
+    }
+
+    @Log(
+        candidates =>
+            `enter existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')} incomeTransactionIds=${candidates.map(candidate => candidate.incomeTransactionId).join(',')}`,
+        (result, candidates) =>
+            `done existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')} incomeTransactionIds=${candidates.map(candidate => candidate.incomeTransactionId).join(',')} consolidated=${result}`,
+        (error, candidates) =>
+            `throw existingTransferIds=${candidates.map(candidate => candidate.existingTransferId).join(',')} incomeTransactionIds=${candidates.map(candidate => candidate.incomeTransactionId).join(',')} error=${getErrorMessage(error)}`
+    )
+    private async processExistingTransferIncomeDuplicateCandidates(
+        candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
+    ): Promise<number> {
+        return this.reduceConsolidations(candidates, candidate => this.consolidateExistingTransferIncomeDuplicate(candidate));
+    }
+
+    @Log(
+        candidates =>
             `enter sourceExpenseTransactionIds=${candidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${candidates.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} bridgeExpenseTransactionIds=${candidates.map(candidate => candidate.bridgeExpenseTransactionId).join(',')} targetIncomeTransactionIds=${candidates.map(candidate => candidate.targetIncomeTransactionId).join(',')}`,
         (result, candidates) =>
             `done sourceExpenseTransactionIds=${candidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} bridgeIncomeTransactionIds=${candidates.map(candidate => candidate.bridgeIncomeTransactionId).join(',')} bridgeExpenseTransactionIds=${candidates.map(candidate => candidate.bridgeExpenseTransactionId).join(',')} targetIncomeTransactionIds=${candidates.map(candidate => candidate.targetIncomeTransactionId).join(',')} consolidated=${result}`,
@@ -217,6 +247,30 @@ class TransferConsolidationService {
 
     @Log(
         candidate =>
+            `enter sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
+        (result, candidate) =>
+            `done result=${String(result)} sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
+        (error, candidate) =>
+            `throw sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} existingTransferId=${candidate.existingTransferId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} error=${getErrorMessage(error)}`
+    )
+    private async consolidateExistingTransferBridge(candidate: ExistingTransferBridgeCandidateInterface): Promise<void> {
+        await transactionAsync(db, async tx => this.consolidateExistingTransferBridgeInner(candidate, tx));
+    }
+
+    @Log(
+        candidate =>
+            `enter existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff}`,
+        (result, candidate) =>
+            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff}`,
+        (error, candidate) =>
+            `throw existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} amount=${candidate.amount} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
+    )
+    private async consolidateExistingTransferIncomeDuplicate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<void> {
+        await transactionAsync(db, async tx => this.consolidateExistingTransferIncomeDuplicateInner(candidate, tx));
+    }
+
+    @Log(
+        candidate =>
             `enter sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} targetIncomeTransactionId=${candidate.targetIncomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
         (result, candidate) =>
             `done result=${String(result)} sourceExpenseTransactionId=${candidate.sourceExpenseTransactionId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} targetIncomeTransactionId=${candidate.targetIncomeTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
@@ -246,34 +300,14 @@ class TransferConsolidationService {
     )
     private async runConsolidation(): Promise<ConsolidationResultInterface> {
         const candidates = await this.findConsolidationCandidateGroups();
-        const bridgeChainConsolidated = await this.processIbanBridgeChainTransferCandidates(candidates.ibanBridgeChainTransferCandidates);
-        const bridgeDuplicateConsolidated = await this.processIbanBridgeCanonicalDuplicateCandidates(
-            candidates.ibanBridgeCanonicalDuplicateCandidates
-        );
-        const bridgeConsolidated = await this.processIbanBridgeTransferCandidates(candidates.ibanBridgeTransferCandidates);
-        const pairConsolidated = await this.processPairCandidates(candidates.pairCandidates);
-        const atmConsolidated = await this.processAtmCashWithdrawalCandidates(candidates.atmCashWithdrawalCandidates);
-        const refundConsolidated = await this.processRefundCandidates(candidates.refundCandidates);
-        const consolidated =
-            bridgeChainConsolidated +
-            bridgeDuplicateConsolidated +
-            pairConsolidated +
-            bridgeConsolidated +
-            atmConsolidated +
-            refundConsolidated;
+        const consolidated = await this.processAutoCandidateGroups(candidates);
 
         if (isPositiveNumber(consolidated)) {
             await accountBalanceIncrementalService.updateAllBalances(true);
         }
 
         const result = {
-            found:
-                candidates.pairCandidates.length +
-                candidates.ibanBridgeChainTransferCandidates.length +
-                candidates.ibanBridgeCanonicalDuplicateCandidates.length +
-                candidates.ibanBridgeTransferCandidates.length +
-                candidates.atmCashWithdrawalCandidates.length +
-                candidates.refundCandidates.length,
+            found: this.countAutoCandidates(candidates),
             consolidated
         };
 
@@ -283,7 +317,7 @@ class TransferConsolidationService {
     @Log(
         'enter',
         result =>
-            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeChainSourceExpenseTransactionIds=${result.ibanBridgeChainTransferCandidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} ibanBridgeDuplicateExpenseTransactionIds=${result.ibanBridgeCanonicalDuplicateCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')} refundExpenseTransactionIds=${result.refundCandidates.map(candidate => candidate.expenseTransactionId).join(',')} refundReviewExpenseTransactionIds=${result.refundReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')}`,
+            `done manualExpenseTransactionIds=${result.manualReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmReviewTransactionIds=${result.atmCashWithdrawalReviewCandidates.map(candidate => candidate.transactionId).join(',')} pairExpenseTransactionIds=${result.pairCandidates.map(candidate => candidate.expenseTransactionId).join(',')} ibanBridgeChainSourceExpenseTransactionIds=${result.ibanBridgeChainTransferCandidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} ibanBridgeDuplicateExpenseTransactionIds=${result.ibanBridgeCanonicalDuplicateCandidates.map(candidate => candidate.expenseTransactionId).join(',')} existingTransferBridgeSourceExpenseTransactionIds=${result.existingTransferBridgeCandidates.map(candidate => candidate.sourceExpenseTransactionId).join(',')} existingTransferIncomeDuplicateIncomeTransactionIds=${result.existingTransferIncomeDuplicateCandidates.map(candidate => candidate.incomeTransactionId).join(',')} ibanBridgeExpenseTransactionIds=${result.ibanBridgeTransferCandidates.map(candidate => candidate.expenseTransactionId).join(',')} atmTransactionIds=${result.atmCashWithdrawalCandidates.map(candidate => candidate.transactionId).join(',')} refundExpenseTransactionIds=${result.refundCandidates.map(candidate => candidate.expenseTransactionId).join(',')} refundReviewExpenseTransactionIds=${result.refundReviewCandidates.map(candidate => candidate.expenseTransactionId).join(',')}`,
         error => `throw error=${getErrorMessage(error)}`
     )
     private async findConsolidationCandidateGroups(): Promise<ConsolidationCandidateGroupsInterface> {
@@ -291,14 +325,23 @@ class TransferConsolidationService {
         const atmCashWithdrawalReviewCandidates = await this.findAtmCashWithdrawalReviewCandidates();
         const ibanBridgeChainTransferCandidates = await this.findIbanBridgeChainTransferCandidates();
         const ibanBridgeCanonicalDuplicateCandidates = await this.findIbanBridgeCanonicalDuplicateCandidates();
+        const existingTransferBridgeCandidates = await this.findExistingTransferBridgeCandidates();
         const ibanBridgeTransferCandidates = this.filterIbanBridgeTransferCandidates(
             await this.findIbanBridgeTransferCandidates(),
             ibanBridgeChainTransferCandidates
         );
+        const existingTransferIncomeDuplicateCandidates = this.filterExistingTransferIncomeDuplicateCandidates(
+            await this.findExistingTransferIncomeDuplicateCandidates(),
+            existingTransferBridgeCandidates
+        );
         const pairCandidates = this.filterPairCandidates(
             await this.findPairCandidates(),
-            ibanBridgeChainTransferCandidates,
-            ibanBridgeTransferCandidates
+            this.buildBridgeSourceTransactionIdSet(
+                ibanBridgeChainTransferCandidates,
+                existingTransferBridgeCandidates,
+                ibanBridgeTransferCandidates,
+                existingTransferIncomeDuplicateCandidates
+            )
         );
         const atmCashWithdrawalCandidates = await this.findAtmCashWithdrawalCandidates();
         const refundCandidates = await this.findRefundCandidates();
@@ -307,6 +350,8 @@ class TransferConsolidationService {
         return {
             manualReviewCandidates,
             atmCashWithdrawalReviewCandidates,
+            existingTransferBridgeCandidates,
+            existingTransferIncomeDuplicateCandidates,
             ibanBridgeCanonicalDuplicateCandidates,
             ibanBridgeChainTransferCandidates,
             pairCandidates,
@@ -376,6 +421,24 @@ class TransferConsolidationService {
         result => `done sourceExpenseTransactionIds=${result.map(candidate => candidate.sourceExpenseTransactionId).join(',')}`,
         error => `throw error=${getErrorMessage(error)}`
     )
+    private async findExistingTransferBridgeCandidates(): Promise<ExistingTransferBridgeCandidateInterface[]> {
+        return transferPairRepository.findExistingTransferBridgeCandidates();
+    }
+
+    @Log(
+        'enter',
+        result => `done incomeTransactionIds=${result.map(candidate => candidate.incomeTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
+    private async findExistingTransferIncomeDuplicateCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
+        return transferPairRepository.findExistingTransferIncomeDuplicateCandidates();
+    }
+
+    @Log(
+        'enter',
+        result => `done sourceExpenseTransactionIds=${result.map(candidate => candidate.sourceExpenseTransactionId).join(',')}`,
+        error => `throw error=${getErrorMessage(error)}`
+    )
     private async findIbanBridgeChainTransferCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
         return transferPairRepository.findIbanBridgeChainTransferCandidates();
     }
@@ -396,6 +459,47 @@ class TransferConsolidationService {
     )
     private async findRefundReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         return refundPairRepository.findReviewCandidates();
+    }
+
+    private async processAutoCandidateGroups(candidates: ConsolidationCandidateGroupsInterface): Promise<number> {
+        const bridgeChainConsolidated = await this.processIbanBridgeChainTransferCandidates(candidates.ibanBridgeChainTransferCandidates);
+        const existingTransferBridgeConsolidated = await this.processExistingTransferBridgeCandidates(
+            candidates.existingTransferBridgeCandidates
+        );
+        const bridgeDuplicateConsolidated = await this.processIbanBridgeCanonicalDuplicateCandidates(
+            candidates.ibanBridgeCanonicalDuplicateCandidates
+        );
+        const bridgeConsolidated = await this.processIbanBridgeTransferCandidates(candidates.ibanBridgeTransferCandidates);
+        const existingTransferIncomeDuplicateConsolidated = await this.processExistingTransferIncomeDuplicateCandidates(
+            candidates.existingTransferIncomeDuplicateCandidates
+        );
+        const pairConsolidated = await this.processPairCandidates(candidates.pairCandidates);
+        const atmConsolidated = await this.processAtmCashWithdrawalCandidates(candidates.atmCashWithdrawalCandidates);
+        const refundConsolidated = await this.processRefundCandidates(candidates.refundCandidates);
+
+        return (
+            bridgeChainConsolidated +
+            existingTransferBridgeConsolidated +
+            bridgeDuplicateConsolidated +
+            pairConsolidated +
+            bridgeConsolidated +
+            existingTransferIncomeDuplicateConsolidated +
+            atmConsolidated +
+            refundConsolidated
+        );
+    }
+
+    private countAutoCandidates(candidates: ConsolidationCandidateGroupsInterface): number {
+        return (
+            candidates.pairCandidates.length +
+            candidates.ibanBridgeChainTransferCandidates.length +
+            candidates.existingTransferBridgeCandidates.length +
+            candidates.ibanBridgeCanonicalDuplicateCandidates.length +
+            candidates.existingTransferIncomeDuplicateCandidates.length +
+            candidates.ibanBridgeTransferCandidates.length +
+            candidates.atmCashWithdrawalCandidates.length +
+            candidates.refundCandidates.length
+        );
     }
 
     private async reduceConsolidations<T>(candidates: T[], consolidate: (candidate: T) => Promise<void>): Promise<number> {
@@ -513,6 +617,45 @@ class TransferConsolidationService {
         await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingCanonicalTransferId, tx);
     }
 
+    private async consolidateExistingTransferBridgeInner(candidate: ExistingTransferBridgeCandidateInterface, tx: DB): Promise<void> {
+        const sourceTransactionIds = this.buildExistingTransferBridgeSourceTransactionIds(candidate);
+        const canonicalInput: CanonicalTransferInputInterface = {
+            title:
+                candidate.existingTransferTitle ?? candidate.sourceExpenseTransactionTitle ?? candidate.bridgeIncomeTransactionTitle ?? '',
+            operatedAt: candidate.operatedAt,
+            fromAccountId: candidate.sourceAccountId,
+            toAccountId: candidate.targetAccountId,
+            fromAmount: candidate.sourceAmount,
+            toAmount: candidate.targetAmount,
+            exchangeRate: candidate.exchangeRate,
+            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+            fromEntryExchangeRate: candidate.exchangeRate,
+            toEntryExchangeRate: 1,
+            fromEntryToIban: candidate.sourceExpenseEntryToIban
+        };
+
+        await this.executeConsolidation(sourceTransactionIds, canonicalInput, tx);
+    }
+
+    private async consolidateExistingTransferIncomeDuplicateInner(
+        candidate: ExistingTransferIncomeDuplicateCandidateInterface,
+        tx: DB
+    ): Promise<void> {
+        const sourceTransactionIds = [candidate.incomeTransactionId];
+
+        if (!(await this.areCandidatesStillEligible(sourceTransactionIds, tx))) {
+            return;
+        }
+
+        if (!(await this.isExistingTransferStillEligible(candidate.existingTransferId, tx))) {
+            return;
+        }
+
+        await transactionRepository.setConsolidationType(candidate.existingTransferId, TransactionConsolidationTypeEnum.TRANSFER_PAIR, tx);
+        await this.copySourceTags(sourceTransactionIds, candidate.existingTransferId, tx);
+        await this.moveSourcesToCanonical(sourceTransactionIds, candidate.existingTransferId, tx);
+    }
+
     private async consolidateIbanBridgeChainTransferInner(candidate: IbanBridgeChainTransferCandidateInterface, tx: DB): Promise<void> {
         const sourceTransactionIds = this.buildBridgeChainSourceTransactionIds(candidate);
         const canonicalInput: CanonicalTransferInputInterface = {
@@ -562,6 +705,12 @@ class TransferConsolidationService {
         return fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt));
     }
 
+    private async isExistingTransferStillEligible(transactionId: number, tx: DB): Promise<boolean> {
+        const transaction = await transactionRepository.getById(transactionId, tx);
+
+        return isDefined(transaction) && !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt);
+    }
+
     private buildBridgeSourceTransactionIds(candidate: IbanBridgeTransferCandidateInterface): number[] {
         const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
@@ -570,6 +719,10 @@ class TransferConsolidationService {
         }
 
         return sourceTransactionIds;
+    }
+
+    private buildExistingTransferBridgeSourceTransactionIds(candidate: ExistingTransferBridgeCandidateInterface): number[] {
+        return [candidate.sourceExpenseTransactionId, candidate.bridgeIncomeTransactionId, candidate.existingTransferId];
     }
 
     private buildBridgeChainSourceTransactionIds(candidate: IbanBridgeChainTransferCandidateInterface): number[] {
@@ -583,14 +736,22 @@ class TransferConsolidationService {
 
     private filterPairCandidates(
         candidates: TransferPairCandidateInterface[],
-        bridgeChainCandidates: IbanBridgeChainTransferCandidateInterface[],
-        bridgeCandidates: IbanBridgeTransferCandidateInterface[]
+        sourceTransactionIds: Set<number>
     ): TransferPairCandidateInterface[] {
-        const sourceTransactionIds = this.buildBridgeSourceTransactionIdSet(bridgeChainCandidates, bridgeCandidates);
-
         return candidates.filter(
             candidate =>
                 !sourceTransactionIds.has(candidate.expenseTransactionId) && !sourceTransactionIds.has(candidate.incomeTransactionId)
+        );
+    }
+
+    private filterExistingTransferIncomeDuplicateCandidates(
+        candidates: ExistingTransferIncomeDuplicateCandidateInterface[],
+        existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[]
+    ): ExistingTransferIncomeDuplicateCandidateInterface[] {
+        const sourceTransactionIds = this.buildExistingTransferBridgeSourceTransactionIdSet(existingTransferBridgeCandidates);
+
+        return candidates.filter(
+            candidate => !sourceTransactionIds.has(candidate.existingTransferId) && !sourceTransactionIds.has(candidate.incomeTransactionId)
         );
     }
 
@@ -608,12 +769,36 @@ class TransferConsolidationService {
 
     private buildBridgeSourceTransactionIdSet(
         bridgeChainCandidates: IbanBridgeChainTransferCandidateInterface[],
-        bridgeCandidates: IbanBridgeTransferCandidateInterface[]
+        existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
+        bridgeCandidates: IbanBridgeTransferCandidateInterface[],
+        existingTransferIncomeDuplicateCandidates: ExistingTransferIncomeDuplicateCandidateInterface[]
     ): Set<number> {
         const sourceTransactionIds = this.buildBridgeChainSourceTransactionIdSet(bridgeChainCandidates);
 
+        for (const candidate of existingTransferBridgeCandidates) {
+            for (const transactionId of this.buildExistingTransferBridgeSourceTransactionIds(candidate)) {
+                sourceTransactionIds.add(transactionId);
+            }
+        }
+
         for (const candidate of bridgeCandidates) {
             for (const transactionId of this.buildBridgeSourceTransactionIds(candidate)) {
+                sourceTransactionIds.add(transactionId);
+            }
+        }
+
+        for (const candidate of existingTransferIncomeDuplicateCandidates) {
+            sourceTransactionIds.add(candidate.incomeTransactionId);
+        }
+
+        return sourceTransactionIds;
+    }
+
+    private buildExistingTransferBridgeSourceTransactionIdSet(candidates: ExistingTransferBridgeCandidateInterface[]): Set<number> {
+        const sourceTransactionIds = new Set<number>();
+
+        for (const candidate of candidates) {
+            for (const transactionId of this.buildExistingTransferBridgeSourceTransactionIds(candidate)) {
                 sourceTransactionIds.add(transactionId);
             }
         }
