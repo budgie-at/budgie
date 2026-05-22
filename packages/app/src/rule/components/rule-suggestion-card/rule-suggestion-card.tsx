@@ -1,5 +1,6 @@
 import {
     RuleActionTypeEnum,
+    RuleAssociationEnum,
     RuleConditionMatchTypeEnum,
     RuleCreateInputInterface,
     RuleWithRelationsEntityInterface
@@ -37,8 +38,8 @@ const areConditionsEqual = (inputConditions: RuleConditionInputInterface[], exis
 const findDuplicateRule = (
     conditions: RuleConditionInputInterface[],
     conditionMatchType: RuleConditionMatchTypeEnum,
-    existingRules: RuleWithRelationsEntityInterface[]
-): RuleWithRelationsEntityInterface | undefined =>
+    existingRules: Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS>[]
+): Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS> | undefined =>
     existingRules.find(
         rule =>
             rule.conditionMatchType === conditionMatchType &&
@@ -99,7 +100,10 @@ export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
     const { openRuleForm } = useRuleFormModal();
 
-    const handleDuplicateRule = (duplicateRule: RuleWithRelationsEntityInterface, ruleInput: RuleCreateInputInterface): Promise<void> => {
+    const handleDuplicateRule = (
+        duplicateRule: Pick<RuleWithRelationsEntityInterface, 'id'>,
+        ruleInput: RuleCreateInputInterface
+    ): Promise<void> => {
         logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
 
         return new Promise<void>((resolve, reject) => {
@@ -150,7 +154,7 @@ export const RuleSuggestionCard = (props: Props) => {
             throw new Error('Invalid rule input');
         }
 
-        const existingRules = await ruleRepository.findAllWithActionsAndCategories();
+        const existingRules = await ruleRepository.findAllWithConditions();
         const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
         logger.log('handleYes:duplicate-check', {
             existingRulesCount: existingRules.length,
