@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.3](https://github.com/budgie-at/budgie/compare/v5.22.2...v5.22.3) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** clamp quick form transaction title ([7e870f2](https://github.com/budgie-at/budgie/commit/7e870f2839888b4e448ba6900d05bd5d6549211e))
+
 ## [5.22.2](https://github.com/budgie-at/budgie/compare/v5.22.1...v5.22.2) (2026-05-22)
 
 ### Bug Fixes
