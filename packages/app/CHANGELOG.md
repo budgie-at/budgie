@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.5](https://github.com/budgie-at/budgie/compare/v5.22.4...v5.22.5) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** keep generated rules SQL-pushable ([198229c](https://github.com/budgie-at/budgie/commit/198229ce50193f559bda8c23c245de63fbb4bfad))
+
 ## [5.22.4](https://github.com/budgie-at/budgie/compare/v5.22.3...v5.22.4) (2026-05-22)
 
 ### Bug Fixes
