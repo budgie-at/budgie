@@ -18,9 +18,13 @@ const EXTRA_WHITESPACE = /\s{2,}/gu;
 const LEADING_TRAILING_SEPARATORS = /^[\s*\-_.,/]+|[\s*\-_.,/]+$/gu;
 const REGEX_SPECIAL_CHARACTERS = /[\\^$.*+?()[\]{}|]/gu;
 const TOKEN_SEPARATOR = /\s+/u;
+const QUICK_RULE_SYMBOL_SEPARATOR_PATTERN = /[:+\\]+/u;
+const TITLE_TOKEN_SEPARATOR_PATTERN = /[^\p{L}\p{N}]+/gu;
 
 const MINIMUM_CLEANED_LENGTH = 3;
 const MAX_CONDITION_REGEX_LENGTH = 200;
+const MINIMUM_TITLE_TOKEN_LENGTH = 2;
+const MAXIMUM_TITLE_TOKEN_CONDITIONS = 2;
 
 // eslint-disable-next-line max-statements -- sequential regex cleanup steps absorbed from clean-merchant-title util per CLAUDE.md rule 38/51
 const cleanMerchantTitle = (title: string): string => {
@@ -90,23 +94,57 @@ const buildFlexibleContainsRegex = (text: string): string => {
     return regex;
 };
 
-const buildTextCondition = (
+const buildSymbolSeparatedTextConditions = (
+    field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
+    value: string
+): RuleConditionCreateInputInterface[] => {
+    const tokenValues = value
+        .split(TITLE_TOKEN_SEPARATOR_PATTERN)
+        .filter(token => token.length >= MINIMUM_TITLE_TOKEN_LENGTH)
+        .slice(0, MAXIMUM_TITLE_TOKEN_CONDITIONS);
+
+    if (!isNotEmptyArray(tokenValues)) {
+        return [
+            {
+                field,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value,
+                secondaryValue: null
+            }
+        ];
+    }
+
+    return tokenValues.map(tokenValue => ({
+        field,
+        operator: RuleConditionOperatorEnum.CONTAINS,
+        value: tokenValue,
+        secondaryValue: null
+    }));
+};
+
+const buildTextConditions = (
     field: RuleConditionFieldEnum.TITLE | RuleConditionFieldEnum.COMMENT,
     text: string
-): RuleConditionCreateInputInterface | null => {
+): RuleConditionCreateInputInterface[] | null => {
     const cleanedText = cleanMerchantTitle(text);
 
     if (!isCleanedTextUsable(cleanedText)) {
         return null;
     }
 
+    if (QUICK_RULE_SYMBOL_SEPARATOR_PATTERN.test(cleanedText)) {
+        return buildSymbolSeparatedTextConditions(field, cleanedText);
+    }
+
     if (text.toLowerCase().includes(cleanedText.toLowerCase())) {
-        return {
-            field,
-            operator: RuleConditionOperatorEnum.CONTAINS,
-            value: cleanedText,
-            secondaryValue: null
-        };
+        return [
+            {
+                field,
+                operator: RuleConditionOperatorEnum.CONTAINS,
+                value: cleanedText,
+                secondaryValue: null
+            }
+        ];
     }
 
     const regex = buildFlexibleContainsRegex(cleanedText);
@@ -115,12 +153,14 @@ const buildTextCondition = (
         return null;
     }
 
-    return {
-        field,
-        operator: RuleConditionOperatorEnum.MATCHES_REGEX,
-        value: regex,
-        secondaryValue: null
-    };
+    return [
+        {
+            field,
+            operator: RuleConditionOperatorEnum.MATCHES_REGEX,
+            value: regex,
+            secondaryValue: null
+        }
+    ];
 };
 
 export const selectSuggestConditions = (
@@ -139,15 +179,15 @@ export const selectSuggestConditions = (
         });
     }
 
-    const titleCondition = buildTextCondition(RuleConditionFieldEnum.TITLE, title);
+    const titleConditions = buildTextConditions(RuleConditionFieldEnum.TITLE, title);
 
-    if (isDefined(titleCondition)) {
-        conditions.push(titleCondition);
+    if (isDefined(titleConditions)) {
+        conditions.push(...titleConditions);
     } else if (isNotEmptyString(comment)) {
-        const commentCondition = buildTextCondition(RuleConditionFieldEnum.COMMENT, comment);
+        const commentConditions = buildTextConditions(RuleConditionFieldEnum.COMMENT, comment);
 
-        if (isDefined(commentCondition)) {
-            conditions.push(commentCondition);
+        if (isDefined(commentConditions)) {
+            conditions.push(...commentConditions);
         }
     }
 
