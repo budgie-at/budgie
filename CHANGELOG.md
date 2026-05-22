@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.4](https://github.com/budgie-at/budgie/compare/v5.22.3...v5.22.4) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize symbol quick rules ([ef21022](https://github.com/budgie-at/budgie/commit/ef21022b9522b9f6af9eb8e72700ce347853b817))
+- **app:** yield between db batches ([05c6382](https://github.com/budgie-at/budgie/commit/05c63826b5809992b8e31b88a4a25db1ed602a15))
+
 ## [5.22.3](https://github.com/budgie-at/budgie/compare/v5.22.2...v5.22.3) (2026-05-22)
 
 ### Bug Fixes
