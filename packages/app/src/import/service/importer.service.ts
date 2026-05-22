@@ -40,7 +40,7 @@ const logger = getLogger('ImporterService');
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
-    private categoriesMap: Record<string, CategoryEntityInterface> = {};
+    private categoriesMap: Record<string, CategoryEntityInterface | undefined> = {};
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
@@ -284,7 +284,7 @@ export class ImporterService {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
-        const explicitCategory = this.categoriesMap[normalizedRow.category] ?? null;
+        const explicitCategory = this.categoriesMap[normalizedRow.category];
         const operatedAt = this.parseDate(normalizedRow.operatedAt);
         const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
