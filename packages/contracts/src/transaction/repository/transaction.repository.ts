@@ -53,54 +53,58 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        tx => `enter merchantEmbeddingMatchHasTx=${String(isDefined(tx))}`,
+        (result, ...[tx]) => `done result=${String(result)} merchantEmbeddingMatchHasTx=${String(isDefined(tx))}`,
+        (error, ...[tx]) => `throw merchantEmbeddingMatchHasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-                JOIN merchant_embeddings me
-                  ON me.title = transactions.title
-                  AND me.mcc_description = COALESCE(mcc.full_description, '')
-                  AND me.category_id = te.category_id
-                  AND me.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
+        await Promise.resolve(
+            (tx ?? this.db).run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND title != ''
+                  AND EXISTS (
+                    SELECT 1 FROM transaction_entries te
+                    LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                    JOIN merchant_embeddings me
+                      ON me.title = transactions.title
+                      AND me.mcc_description = COALESCE(mcc.full_description, '')
+                      AND me.category_id = te.category_id
+                      AND me.deleted_at IS NULL
+                    WHERE te.transaction_id = transactions.id
+                      AND te.deleted_at IS NULL
+                      AND te.category_id IS NOT NULL
+                  )
+            `)
+        );
     }
 
     @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        tx => `enter commentEmbeddingMatchHasTx=${String(isDefined(tx))}`,
+        (result, ...[tx]) => `done result=${String(result)} commentEmbeddingMatchHasTx=${String(isDefined(tx))}`,
+        (error, ...[tx]) => `throw commentEmbeddingMatchHasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                JOIN comment_embeddings ce
-                  ON ce.comment = transactions.comment
-                  AND ce.category_id = te.category_id
-                  AND ce.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `);
+        await Promise.resolve(
+            (tx ?? this.db).run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND title = ''
+                  AND comment != ''
+                  AND EXISTS (
+                    SELECT 1 FROM transaction_entries te
+                    JOIN comment_embeddings ce
+                      ON ce.comment = transactions.comment
+                      AND ce.category_id = te.category_id
+                      AND ce.deleted_at IS NULL
+                    WHERE te.transaction_id = transactions.id
+                      AND te.deleted_at IS NULL
+                      AND te.category_id IS NOT NULL
+                  )
+            `)
+        );
     }
 
     @Log(
@@ -333,6 +337,63 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
     }
 
+    @Log(
+        tx => `enter nonIndexableHasTx=${String(isDefined(tx))}`,
+        (result, ...[tx]) => `done result=${String(result)} nonIndexableHasTx=${String(isDefined(tx))}`,
+        (error, ...[tx]) => `throw nonIndexableHasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async clearNonIndexableFlags(tx?: DB): Promise<void> {
+        const runner = tx ?? this.db;
+
+        await Promise.resolve(
+            runner.run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND title = ''
+                  AND comment = ''
+            `)
+        );
+
+        await Promise.resolve(
+            runner.run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND EXISTS (
+                    SELECT 1 FROM transaction_entries te
+                    WHERE te.transaction_id = transactions.id
+                      AND te.deleted_at IS NULL
+                      AND te.category_id IS NULL
+                  )
+            `)
+        );
+
+        await Promise.resolve(
+            runner.run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND EXISTS (
+                    SELECT 1 FROM transaction_entries te
+                    INNER JOIN accounts acc ON acc.id = te.account_id
+                    WHERE te.transaction_id = transactions.id
+                      AND te.deleted_at IS NULL
+                      AND acc.type = ${AccountTypeEnum.DEBT}
+                  )
+            `)
+        );
+
+        await Promise.resolve(
+            runner.run(sql`
+                UPDATE transactions SET needs_embedding = 0
+                WHERE needs_embedding = 1
+                  AND deleted_at IS NULL
+                  AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
+            `)
+        );
+    }
+
     async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
     }
@@ -478,50 +539,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 .set({ needsEmbedding: false })
                 .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
         }
-    }
-
-    async clearNonIndexableFlags(tx?: DB): Promise<void> {
-        const runner = tx ?? this.db;
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment = ''
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NULL
-              )
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                INNER JOIN accounts acc ON acc.id = te.account_id
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND acc.type = ${AccountTypeEnum.DEBT}
-              )
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
-        `);
     }
 
     async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
