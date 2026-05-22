@@ -36,8 +36,8 @@ describe('consolidation/transfer-pair-by-amount', () => {
 
         await transferConsolidationService.consolidate();
 
-        const fromBalance = accountBalanceRepository.getByAccountId(fromAccount.id).get();
-        const toBalance = accountBalanceRepository.getByAccountId(toAccount.id).get();
+        const fromBalance = await accountBalanceRepository.getByAccountId(fromAccount.id).get();
+        const toBalance = await accountBalanceRepository.getByAccountId(toAccount.id).get();
 
         expect(fromBalance?.balance).toBe(-250 * PRECISION);
         expect(toBalance?.balance).toBe(250 * PRECISION);

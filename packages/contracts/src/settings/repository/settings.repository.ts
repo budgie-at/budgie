@@ -4,13 +4,11 @@ import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
 import type { DB } from '../../@generic/type/db.type';
-import type * as schema from '../../schema';
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
 import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class SettingsRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     async update(input: Partial<SettingsCreateEntityInterface>, tx?: DB): Promise<SettingsEntityInterface> {
         const [settings] = await (tx ?? this.db).update(SettingsEntityTable).set(input).returning();

@@ -3,12 +3,11 @@ import { eq } from 'drizzle-orm';
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
-import type * as schema from '../../schema';
+import type { DB } from '../../@generic/type/db.type';
 import type { InstrumentEntityInterface } from '../entity/instrument-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class InstrumentRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     async getAll(): Promise<InstrumentEntityInterface[]> {
         return await this.db.query.InstrumentEntityTable.findMany();

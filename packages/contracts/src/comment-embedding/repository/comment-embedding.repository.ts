@@ -1,5 +1,8 @@
+import { sql } from 'drizzle-orm';
+
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
 import { DB } from '../../@generic/type/db.type';
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { CommentPendingContextInterface } from '../interface/comment-pending-context.interface';
 import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
@@ -94,10 +97,11 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
             })
             .returning({ id: CommentEmbeddingEntityTable.id });
 
-        await this.db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]);
-        await this.db.$client.runAsync(
-            'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
-            [row.id]
+        await this.db.run(bindRawQuery('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]));
+        await this.db.run(
+            bindRawQuery('INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?', [
+                row.id
+            ])
         );
 
         return row.id;
@@ -121,14 +125,14 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async findPendingCommentContexts(limit: number): Promise<CommentPendingContextInterface[]> {
-        const rows = await this.db.$client.getAllAsync<{
+        const rows = await this.db.all<{
             comment: string;
             categoryId: number;
             categoryTitleEn: string | null;
             transactionIdsCsv: string;
             tagIdsCsv: string | null;
             existingEmbeddingId: number | null;
-        }>(PENDING_COMMENT_CONTEXTS_QUERY, [limit]);
+        }>(bindRawQuery(PENDING_COMMENT_CONTEXTS_QUERY, [limit]));
 
         return rows.map(row => ({
             comment: row.comment,
@@ -137,7 +141,7 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
     }
 
     async countPendingCommentContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ c: number }>(`SELECT COUNT(*) AS c FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, []);
+        const [row] = await this.db.all<{ c: number }>(sql.raw(`SELECT COUNT(*) AS c FROM (${PENDING_COMMENT_CONTEXTS_BASE})`));
 
         return row.c;
     }

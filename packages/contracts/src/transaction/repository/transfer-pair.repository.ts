@@ -2,6 +2,8 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
+
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
@@ -35,7 +37,7 @@ export class TransferPairRepository {
     async findCandidates(): Promise<TransferPairCandidateInterface[]> {
         const sql = buildTransferPairCandidatesSql();
 
-        return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
+        return this.findRawCandidates<TransferPairCandidateInterface>(sql);
     }
 
     @Log(
@@ -47,7 +49,7 @@ export class TransferPairRepository {
     async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
         const sql = buildTransferPairManualReviewCandidatesSql();
 
-        return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
+        return this.findRawCandidates<TransferPairReviewCandidateInterface>(sql);
     }
 
     @Log(
@@ -59,7 +61,7 @@ export class TransferPairRepository {
     async findAtmCashWithdrawalCandidates(): Promise<AtmCashWithdrawalCandidateInterface[]> {
         const sql = buildAtmCashWithdrawalCandidatesSql();
 
-        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
+        return this.findRawCandidates<AtmCashWithdrawalCandidateInterface>(sql);
     }
 
     @Log(
@@ -71,7 +73,7 @@ export class TransferPairRepository {
     async findAtmCashWithdrawalReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
         const sql = buildAtmCashWithdrawalReviewCandidatesSql();
 
-        return this.db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql);
+        return this.findRawCandidates<AtmCashWithdrawalReviewCandidateInterface>(sql);
     }
 
     @Log(
@@ -83,7 +85,7 @@ export class TransferPairRepository {
     async findIbanBridgeTransferCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
         const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL;
 
-        return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
+        return this.findRawCandidates<IbanBridgeTransferCandidateInterface>(sql);
     }
 
     @Log(
@@ -95,7 +97,7 @@ export class TransferPairRepository {
     async findIbanBridgeCanonicalDuplicateCandidates(): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
         const sql = IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL;
 
-        return this.db.$client.getAllAsync<IbanBridgeCanonicalDuplicateCandidateInterface>(sql);
+        return this.findRawCandidates<IbanBridgeCanonicalDuplicateCandidateInterface>(sql);
     }
 
     @Log(
@@ -107,6 +109,10 @@ export class TransferPairRepository {
     async findIbanBridgeChainTransferCandidates(): Promise<IbanBridgeChainTransferCandidateInterface[]> {
         const sql = IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL;
 
-        return this.db.$client.getAllAsync<IbanBridgeChainTransferCandidateInterface>(sql);
+        return this.findRawCandidates<IbanBridgeChainTransferCandidateInterface>(sql);
+    }
+
+    private async findRawCandidates<T>(query: string): Promise<T[]> {
+        return this.db.all<T>(bindRawQuery(query));
     }
 }

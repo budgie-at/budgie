@@ -5,13 +5,11 @@ import { isEmptyArray } from '@rnw-community/shared';
 import { RuleConditionCreateEntityInterface } from '../entity/rule-condition-create-entity.interface';
 import { RuleConditionEntityTable } from '../table/rule-condition-entity.table';
 
-import type { TX } from '../../@generic/type/db.type';
-import type * as schema from '../../schema';
+import type { DB, TX } from '../../@generic/type/db.type';
 import type { RuleConditionEntityInterface } from '../entity/rule-condition-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleConditionRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     findByRuleId(ruleId: number) {
         return this.db.query.RuleConditionEntityTable.findMany({

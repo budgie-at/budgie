@@ -2,11 +2,10 @@ import { and, eq } from 'drizzle-orm';
 
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
-import type * as schema from '../../schema';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import type { DB } from '../../@generic/type/db.type';
 
 export class ExchangeRateRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     getAll() {
         return this.db.query.ExchangeRateEntityTable.findMany();

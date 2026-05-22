@@ -1,7 +1,7 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
+import { useLiveQuery } from '../../@generic/drizzle/hook/use-live-query.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface) => {
@@ -11,5 +11,5 @@ export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface)
         defaultInstrument.id
     ]);
 
-    return { incomeByCategory: data };
+    return { incomeByCategory: data ?? [] };
 };

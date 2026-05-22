@@ -5,13 +5,11 @@ import { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interfac
 import { RuleAssociationEnum } from '../enum/rule-association.enum';
 import { RuleEntityTable } from '../table/rule-entity.table';
 
-import type { TX } from '../../@generic/type/db.type';
-import type * as schema from '../../schema';
+import type { DB, TX } from '../../@generic/type/db.type';
 import type { RuleEntityInterface } from '../entity/rule-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    constructor(private db: DB) {}
 
     findAll() {
         return this.db.query.RuleEntityTable.findMany({

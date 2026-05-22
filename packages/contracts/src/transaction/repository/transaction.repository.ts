@@ -6,6 +6,7 @@ import { alias } from 'drizzle-orm/sqlite-core';
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { bindRawQuery } from '../../@generic/util/bind-raw-query.util';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -114,28 +115,30 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
     )
     async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
-        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
-            `WITH signals AS (
-                SELECT me.category_id AS category_id
-                FROM merchant_embeddings me
-                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
-                WHERE mcc.id = ? AND me.deleted_at IS NULL
-                UNION ALL
-                SELECT te.category_id
-                FROM transaction_entries te
-                INNER JOIN transactions t ON t.id = te.transaction_id
-                WHERE te.mcc_category_id = ?
-                  AND te.category_id IS NOT NULL
-                  AND t.deleted_at IS NULL
-                  AND te.deleted_at IS NULL
+        return await this.db.all<{ categoryId: number; count: number }>(
+            bindRawQuery(
+                `WITH signals AS (
+                    SELECT me.category_id AS category_id
+                    FROM merchant_embeddings me
+                    INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                    WHERE mcc.id = ? AND me.deleted_at IS NULL
+                    UNION ALL
+                    SELECT te.category_id
+                    FROM transaction_entries te
+                    INNER JOIN transactions t ON t.id = te.transaction_id
+                    WHERE te.mcc_category_id = ?
+                      AND te.category_id IS NOT NULL
+                      AND t.deleted_at IS NULL
+                      AND te.deleted_at IS NULL
+                )
+                SELECT category_id AS categoryId, COUNT(*) AS count
+                FROM signals
+                WHERE category_id IS NOT NULL
+                GROUP BY category_id
+                ORDER BY COUNT(*) DESC
+                LIMIT ?`,
+                [mccCategoryId, mccCategoryId, limit]
             )
-            SELECT category_id AS categoryId, COUNT(*) AS count
-            FROM signals
-            WHERE category_id IS NOT NULL
-            GROUP BY category_id
-            ORDER BY COUNT(*) DESC
-            LIMIT ?`,
-            [mccCategoryId, mccCategoryId, limit]
         );
     }
 
@@ -166,54 +169,56 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
     )
     async findConsolidationSources(canonicalTransactionId: number): Promise<ConsolidationSourceRowInterface[]> {
-        return await this.db.$client.getAllAsync<ConsolidationSourceRowInterface>(
-            `SELECT
-                moved.transaction_id AS canonicalTransactionId,
-                moved.original_transaction_id AS sourceTransactionId,
-                source.type AS sourceType,
-                source.title AS sourceTitle,
-                source.comment AS sourceComment,
-                source.external_id AS sourceExternalId,
-                source.external_source AS sourceExternalSource,
-                source.operated_at * 1000 AS sourceOperatedAtMs,
-                moved.id AS entryId,
-                moved.type AS entryType,
-                moved.amount AS amount,
-                moved.exchange_rate AS exchangeRate,
-                account.id AS accountId,
-                account.title AS accountTitle,
-                account.icon AS accountIcon,
-                source_from_account.title AS sourceFromAccountTitle,
-                source_from_account.icon AS sourceFromAccountIcon,
-                source_to_account.title AS sourceToAccountTitle,
-                source_to_account.icon AS sourceToAccountIcon,
-                canonical_from_account.title AS canonicalFromAccountTitle,
-                canonical_from_account.icon AS canonicalFromAccountIcon,
-                canonical_to_account.title AS canonicalToAccountTitle,
-                canonical_to_account.icon AS canonicalToAccountIcon,
-                instrument.id AS instrumentId,
-                instrument.code AS currencyCode,
-                instrument.symbol AS currencySymbol,
-                category.title AS categoryTitle,
-                mcc.mcc AS mcc,
-                mcc.short_description AS mccDescription,
-                moved.to_iban AS toIban
-            FROM transaction_entries moved
-            INNER JOIN transactions source ON source.id = moved.original_transaction_id
-            INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
-            INNER JOIN accounts account ON account.id = moved.account_id
-            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
-            LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
-            LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
-            LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
-            LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
-            LEFT JOIN categories category ON category.id = moved.category_id
-            LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
-            WHERE moved.transaction_id = ?
-              AND moved.original_transaction_id IS NOT NULL
-              AND moved.deleted_at IS NULL
-            ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
-            [canonicalTransactionId]
+        return await this.db.all<ConsolidationSourceRowInterface>(
+            bindRawQuery(
+                `SELECT
+                    moved.transaction_id AS canonicalTransactionId,
+                    moved.original_transaction_id AS sourceTransactionId,
+                    source.type AS sourceType,
+                    source.title AS sourceTitle,
+                    source.comment AS sourceComment,
+                    source.external_id AS sourceExternalId,
+                    source.external_source AS sourceExternalSource,
+                    source.operated_at * 1000 AS sourceOperatedAtMs,
+                    moved.id AS entryId,
+                    moved.type AS entryType,
+                    moved.amount AS amount,
+                    moved.exchange_rate AS exchangeRate,
+                    account.id AS accountId,
+                    account.title AS accountTitle,
+                    account.icon AS accountIcon,
+                    source_from_account.title AS sourceFromAccountTitle,
+                    source_from_account.icon AS sourceFromAccountIcon,
+                    source_to_account.title AS sourceToAccountTitle,
+                    source_to_account.icon AS sourceToAccountIcon,
+                    canonical_from_account.title AS canonicalFromAccountTitle,
+                    canonical_from_account.icon AS canonicalFromAccountIcon,
+                    canonical_to_account.title AS canonicalToAccountTitle,
+                    canonical_to_account.icon AS canonicalToAccountIcon,
+                    instrument.id AS instrumentId,
+                    instrument.code AS currencyCode,
+                    instrument.symbol AS currencySymbol,
+                    category.title AS categoryTitle,
+                    mcc.mcc AS mcc,
+                    mcc.short_description AS mccDescription,
+                    moved.to_iban AS toIban
+                FROM transaction_entries moved
+                INNER JOIN transactions source ON source.id = moved.original_transaction_id
+                INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
+                INNER JOIN accounts account ON account.id = moved.account_id
+                INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+                LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
+                LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
+                LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
+                LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
+                LEFT JOIN categories category ON category.id = moved.category_id
+                LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
+                WHERE moved.transaction_id = ?
+                  AND moved.original_transaction_id IS NOT NULL
+                  AND moved.deleted_at IS NULL
+                ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
+                [canonicalTransactionId]
+            )
         );
     }
 
