@@ -12,12 +12,8 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
-import {
-    LEGEND_LIST_CONTENT_GAP,
-    LEGEND_LIST_ESTIMATED_ITEM_SIZE,
-    LEGEND_LIST_HEADER_HEIGHT,
-    LEGEND_LIST_STYLE
-} from '../../../@generic/constant/legend-list.constant';
+import { LEGEND_LIST_CONTENT_GAP, LEGEND_LIST_HEADER_HEIGHT, LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
 import { RuleCard } from '../rule-card/rule-card';
@@ -78,7 +74,8 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPageP
                     data={visibleRules}
                     renderItem={renderItem}
                     keyExtractor={getKeyExtractor}
-                    estimatedItemSize={LEGEND_LIST_ESTIMATED_ITEM_SIZE}
+                    estimatedItemSize={RULES_LIST_SIZING.estimatedItemSize}
+                    getItemType={RULES_LIST_SIZING.getItemType}
                     recycleItems
                     showsVerticalScrollIndicator={false}
                     ListFooterComponent={listFooter}
