@@ -17,14 +17,6 @@ const buildManualRecommendedSql = (): string => `
     END
 `;
 
-const buildManualOppositeTypeSql = (): string => `
-    (
-        (current_tx.type = ? AND candidate.type = ? AND current_entry.amount >= candidate_entry.amount + COALESCE(refund_totals.refunds_total, 0))
-        OR
-        (current_tx.type = ? AND candidate.type = ? AND candidate_entry.amount >= current_entry.amount + COALESCE(refund_totals.refunds_total, 0))
-    )
-`;
-
 const buildManualSearchSql = (): string => `
     (
         ? = '%%'
@@ -43,7 +35,7 @@ const buildManualCurrentTransactionSql = (): string => `
         WHERE id = ?
           AND deleted_at IS NULL
           AND consolidation_parent_transaction_id IS NULL
-          AND type IN (?, ?)
+          AND type = ?
     )
 `;
 
@@ -55,6 +47,7 @@ const buildManualCurrentEntrySql = (): string => `
         INNER JOIN accounts account ON account.id = entry.account_id
         WHERE entry.deleted_at IS NULL
           AND entry.original_transaction_id IS NULL
+          AND entry.type = ?
         LIMIT 1
     )
 `;
@@ -97,10 +90,7 @@ const buildManualCandidateFromSql = (): string => `
     LEFT JOIN categories category ON category.id = candidate_entry.category_id
     CROSS JOIN current_tx
     CROSS JOIN current_entry
-    LEFT JOIN refund_totals ON refund_totals.transaction_id = CASE
-        WHEN current_tx.type = ? THEN current_tx.id
-        ELSE candidate.id
-    END
+    LEFT JOIN refund_totals ON refund_totals.transaction_id = candidate.id
 `;
 
 const buildManualCandidateWhereSql = (): string => `
@@ -109,13 +99,15 @@ const buildManualCandidateWhereSql = (): string => `
       AND candidate.consolidation_parent_transaction_id IS NULL
       AND candidate_entry.deleted_at IS NULL
       AND candidate_entry.original_transaction_id IS NULL
+      AND candidate_entry.type = ?
       AND account.instrument_id = current_entry.instrument_id
-      AND ${buildManualOppositeTypeSql()}
+      AND candidate.type = ?
+      AND candidate_entry.amount >= current_entry.amount + COALESCE(refund_totals.refunds_total, 0)
       AND (candidate.consolidation_type IS NULL OR candidate.consolidation_type = ?)
       AND ${buildManualSearchSql()}
 `;
 
-export const REFUND_MATCH_CANDIDATES_SQL = `
+export const REFUNDABLE_EXPENSE_CANDIDATES_SQL = `
     WITH ${buildManualCurrentTransactionSql()},
     ${buildManualCurrentEntrySql()},
     ${buildManualRefundTotalsSql()}
@@ -126,17 +118,14 @@ export const REFUND_MATCH_CANDIDATES_SQL = `
     LIMIT 80
 `;
 
-export const buildRefundMatchCandidateParams = (transactionId: number, searchPattern: string): (number | string)[] => [
-    transactionId,
-    TransactionTypeEnum.EXPENSE,
+export const buildRefundableExpenseCandidateParams = (refundIncomeTransactionId: number, searchPattern: string): (number | string)[] => [
+    refundIncomeTransactionId,
     TransactionTypeEnum.INCOME,
+    TransactionEntryTypeEnum.DEBIT,
     TransactionEntryTypeEnum.DEBIT,
     MANUAL_RECOMMENDED_AMOUNT_DISTANCE_RATIO,
     MANUAL_RECOMMENDED_DATE_DISTANCE_SECONDS,
-    TransactionTypeEnum.EXPENSE,
-    TransactionTypeEnum.EXPENSE,
-    TransactionTypeEnum.INCOME,
-    TransactionTypeEnum.INCOME,
+    TransactionEntryTypeEnum.CREDIT,
     TransactionTypeEnum.EXPENSE,
     TransactionConsolidationTypeEnum.REFUND,
     searchPattern,

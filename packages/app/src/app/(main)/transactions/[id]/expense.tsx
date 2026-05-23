@@ -57,7 +57,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
     const handleGoBack = () => void goBackOrReplace('/');
     const [sourceEntry] = transaction.entries;
     const isConsolidated = isDefined(transaction.consolidationType);
-    const { handleOpenConvert, handleOpenRefundConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
+    const { handleOpenConvert, handleOpenRefundSources, handleRevert } = useUpdateExpenseTransactionActions({
         transaction,
         transactionId,
         fromAccountId
@@ -75,7 +75,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
-                                onConvertToRefund={handleOpenRefundConvert}
                                 onConvertToTransfer={handleOpenConvert}
                             />
                         }

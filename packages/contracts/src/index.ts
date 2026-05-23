@@ -251,7 +251,7 @@ export type { IbanBridgeChainTransferCandidateInterface } from './transaction/in
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
-export type { RefundMatchCandidateInterface } from './transaction/interface/refund-match-candidate.interface';
+export type { RefundableExpenseCandidateInterface } from './transaction/interface/refundable-expense-candidate.interface';
 export type { RefundReviewConfidenceBucket } from './transaction/interface/refund-review-confidence-bucket.type';
 export type { RefundReviewCandidateInterface } from './transaction/interface/refund-review-candidate.interface';
 
