@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 
 const logger = getLogger('useGetConsolidationSourcesQuery');
 
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
+    const language = useSetting('language');
     const [sources, setSources] = useState<ConsolidationSourceRowInterface[]>([]);
     const [consolidationType, setConsolidationType] = useState<TransactionConsolidationTypeEnum | null>(null);
     const [hasError, setHasError] = useState(false);
@@ -30,7 +32,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         const fetchData = async (): Promise<void> => {
             const [rows, canonical] = await Promise.all([
                 transactionRepository.findConsolidationSources(transactionId),
-                transactionRepository.getById(transactionId)
+                transactionRepository.getById(transactionId, language)
             ]);
             if (isActive) {
                 setSources(rows);
@@ -45,7 +47,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         return () => {
             isActive = false;
         };
-    }, [transactionId]);
+    }, [transactionId, language]);
 
     return { sources, consolidationType, hasError, isLoading };
 };
