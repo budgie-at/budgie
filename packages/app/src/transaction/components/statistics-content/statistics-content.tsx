@@ -8,6 +8,7 @@ import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { StatsByCategoriesPanel } from '../../../category/components/stats-by-categories-panel/stats-by-categories-panel';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { StatsByTagsPanel } from '../../../tag/components/stats-by-tags-panel/stats-by-tags-panel';
 import { useGetExpenseByCategoryQuery } from '../../query/use-get-expense-by-category.query';
 import { useGetExpenseByTagQuery } from '../../query/use-get-expense-by-tag.query';
@@ -28,9 +29,10 @@ export const StatisticsContent = ({ activeTab }: Props) => {
         ...DEFAULT_TRANSACTION_FILTER,
         date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
     });
+    const language = useSetting('language');
 
-    const { incomeByCategory } = useGetIncomeByCategoryQuery(filters);
-    const { expenseByCategory } = useGetExpenseByCategoryQuery(filters);
+    const { incomeByCategory } = useGetIncomeByCategoryQuery(filters, language);
+    const { expenseByCategory } = useGetExpenseByCategoryQuery(filters, language);
     const { incomeByTag } = useGetIncomeByTagQuery(filters);
     const { expenseByTag } = useGetExpenseByTagQuery(filters);
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);

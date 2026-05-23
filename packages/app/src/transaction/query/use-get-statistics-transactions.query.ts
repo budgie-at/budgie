@@ -1,6 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
 import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.query';
@@ -16,8 +17,9 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
 });
 
 export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
-    const filterKey = buildTransactionFilterKey(buildTransactionFilter(filters));
-    const buildQuery = (limit: number) => statisticsRepository.getTransactions(filters, limit);
+    const language = useSetting('language');
+    const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${language}`;
+    const buildQuery = (limit: number) => statisticsRepository.getTransactions(filters, limit, language);
 
     return useGetTransactionSectionsQuery(buildQuery, filterKey);
 };

@@ -7,7 +7,7 @@ export interface ImporterRowInterface {
     fromAccount: AccountEntityInterface | null;
     fromAmount: number | null;
     fromInstrument: InstrumentEntityInterface | null;
-    categoryId: number;
+    categoryId: number | null;
     categorySource: CategorySourceEnum;
     mccCategoryId: number | null;
     operatedAt: Date;

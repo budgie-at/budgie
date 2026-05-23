@@ -25,6 +25,7 @@ import m0020 from './0020_add_rules.sql';
 import m0021 from './0021_add_updated_by.sql';
 import m0022 from './0022_add_uncategorized_transaction_indexes.sql';
 import m0023 from './0023_add_mcc_default_category.sql';
+import m0024 from './0024_default_category_translations.sql';
 
 export default {
     journal,
@@ -52,6 +53,7 @@ export default {
         m0020,
         m0021,
         m0022,
-        m0023
+        m0023,
+        m0024
     }
 };
