@@ -41,6 +41,12 @@
             "sourceType": "github",
             "computedHash": "246e65cd72a7e360987d94e6c61564ce6d71c6361d1784d529d70e4cbbe8522d"
         },
+        "serve-sim": {
+            "source": "evanbacon/serve-sim",
+            "sourceType": "github",
+            "skillPath": "skills/serve-sim/SKILL.md",
+            "computedHash": "ffb030f94f716dd5f69cc614b40a67a798827e9dc523b5f70aaff1fc71c91310"
+        },
         "subagent-driven-development": {
             "source": "obra/superpowers",
             "sourceType": "github",
