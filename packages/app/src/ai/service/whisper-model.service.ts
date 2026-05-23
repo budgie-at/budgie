@@ -18,7 +18,7 @@ class WhisperModelService {
     async download(onProgress: (downloadProgress: number) => void): Promise<string> {
         const { modelDirectory, modelFile, tempFile } = this.resolvePaths();
 
-        this.prepareFiles(modelDirectory, modelFile, tempFile);
+        await this.prepareFiles(modelDirectory, modelFile, tempFile);
 
         if (this.isExistingModelFile(modelFile)) {
             onProgress(1);
@@ -29,7 +29,7 @@ class WhisperModelService {
         this.deleteFileIfExists(modelFile);
         this.deleteFileIfExists(tempFile);
         await this.downloadToTempFile(tempFile, onProgress);
-        tempFile.move(modelFile);
+        await tempFile.move(modelFile);
         onProgress(1);
 
         return modelFile.uri;
@@ -49,22 +49,22 @@ class WhisperModelService {
         return { modelDirectory, modelFile, tempFile };
     }
 
-    private prepareFiles(modelDirectory: Directory, modelFile: File, tempFile: File): void {
+    private async prepareFiles(modelDirectory: Directory, modelFile: File, tempFile: File): Promise<void> {
         if (!modelDirectory.exists) {
             modelDirectory.create({ idempotent: true, intermediates: true });
         }
-        this.migrateLegacyModelFile(modelFile);
+        await this.migrateLegacyModelFile(modelFile);
         this.deleteFileIfExists(tempFile);
     }
 
-    private migrateLegacyModelFile(modelFile: File): void {
+    private async migrateLegacyModelFile(modelFile: File): Promise<void> {
         const legacyFile = new File(Paths.document, WHISPER_MODEL_FILENAME);
 
         if (!this.isExistingModelFile(legacyFile) || modelFile.exists) {
             return;
         }
 
-        legacyFile.move(modelFile);
+        await legacyFile.move(modelFile);
     }
 
     private isExistingModelFile(file: File): boolean {
