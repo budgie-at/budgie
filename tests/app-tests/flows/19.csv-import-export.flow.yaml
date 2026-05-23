@@ -184,6 +184,9 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: 'e2e csv wallet USD'
 
+- assertVisible:
+    id: 'UncategorizedTransactionsPill.Button'
+
 - scrollUntilVisible:
     element:
       id: 'TransactionCard.Label.E2E_CSV_MCC_Grocery'
@@ -195,7 +198,5 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Category.Other'
-    timeout: 3000
+- assertNotVisible:
+    id: 'TransactionCard.Category.Other'
