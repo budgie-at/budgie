@@ -176,6 +176,13 @@
             "when": 1779235200000,
             "tag": "0024_add_budget_planning",
             "breakpoints": true
+        },
+        {
+            "idx": 25,
+            "version": "6",
+            "when": 1779321600000,
+            "tag": "0025_budget_planning_followups",
+            "breakpoints": true
         }
     ]
 }

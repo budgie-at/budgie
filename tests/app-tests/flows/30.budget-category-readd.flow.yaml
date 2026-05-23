@@ -1,0 +1,149 @@
+appId: ${APP_ID}
+---
+
+- runFlow:
+    file: setup/setup-budget-test.flow.yaml
+
+# --- Create budget with Groceries category limit 200 ---
+
+- openLink: 'budgie://budget'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetWidget.EmptyState'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetWidget.EmptyState'
+- extendedWaitUntil:
+    visible: 'Create budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- tapOn: 'Use last day of month'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: 'Groceries'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '200'
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.CategoryRow.11'
+    timeout: 3000
+
+# --- Remove the Groceries category limit (soft-delete) ---
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.RemoveButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.SpentLabel'
+    timeout: 3000
+- assertNotVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+
+# --- Re-add the same Groceries category with a different amount (300) ---
+# Repros bug #426: partial unique index must allow re-add after soft delete.
+
+- tapOn:
+    id: 'BudgetDetail.EditButton'
+- extendedWaitUntil:
+    visible: 'Edit budget'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitAddButton'
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    timeout: 3000
+
+- scrollUntilVisible:
+    element:
+      id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+    direction: DOWN
+    centerElement: true
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.CategorySelector'
+- runFlow:
+    file: subflows/shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: 'Groceries'
+
+- extendedWaitUntil:
+    notVisible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 3000
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimit.0.AmountInput'
+- inputText: '300'
+
+- tapOn:
+    id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'BudgetSetup.SaveButton'
+
+# Detail row re-appears for the same category id; no UNIQUE-constraint toast.
+
+- extendedWaitUntil:
+    visible:
+      id: 'BudgetDetail.CategoryRow.11'
+    timeout: 3000
+- assertVisible:
+    id: 'BudgetDetail.CategoryRow.11'
+    text: '0.00 / 300.00'
