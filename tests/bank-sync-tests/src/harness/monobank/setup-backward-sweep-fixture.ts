@@ -1,7 +1,6 @@
 import { type BankSyncEntityInterface, BankSyncEntityTable, BankSyncModeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-
 import { testDb } from '../scenario/setup';
 
 import { setupMonobankFixture } from './setup-monobank-fixture';

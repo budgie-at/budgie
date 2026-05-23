@@ -1,7 +1,6 @@
 import { ExternalSourceEnum, type TransactionEntityInterface, TransactionEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 
-
 import { testDb } from '../scenario/setup';
 
 export const fetchPersistedMonobankTransactions = (): TransactionEntityInterface[] =>

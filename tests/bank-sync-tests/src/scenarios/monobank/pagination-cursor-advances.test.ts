@@ -6,8 +6,6 @@ import { buildMonobank, fetchBankSyncById, fetchPersistedMonobankTransactions, m
 
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
-
-
 const PAGE_SIZE = 500;
 const MS_PER_SECOND = 1_000;
 const PAGE_TX_AMOUNT_KOPECKS = -1000;
@@ -17,8 +15,8 @@ const FIXTURE_FORWARD_FROM = new Date('2025-01-01T00:00:00Z');
 const buildBatch = (offset: number): MonobankTransactionApiInterface[] =>
     Array.from({ length: PAGE_SIZE }, (_, index) => {
         const ordinal = offset + index;
-        
-return buildMonobank.transaction({
+
+        return buildMonobank.transaction({
             id: `tx-page-${ordinal}`,
             amount: PAGE_TX_AMOUNT_KOPECKS,
             hold: false,

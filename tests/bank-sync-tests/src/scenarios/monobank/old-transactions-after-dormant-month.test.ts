@@ -12,8 +12,6 @@ import {
 
 import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
-
-
 const SECONDS_PER_DAY = 86_400;
 const MS_PER_SECOND = 1_000;
 const OLD_TRANSACTION_AGE_DAYS = 80;

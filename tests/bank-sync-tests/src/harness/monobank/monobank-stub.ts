@@ -4,7 +4,6 @@ import { monobankServer } from './monobank-server';
 
 import type { MonobankClientInfoApiInterface, MonobankTransactionApiInterface } from '@budgie/bank-sync';
 
-
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 
 export const monobankStub = {
