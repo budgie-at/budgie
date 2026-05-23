@@ -1,4 +1,3 @@
-import { LegendList } from '@legendapp/list';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
@@ -7,13 +6,13 @@ import { isDefined } from '@rnw-community/shared';
 
 import {
     LEGEND_LIST_CONTENT_GAP,
-    LEGEND_LIST_ESTIMATED_ITEM_SIZE,
     LEGEND_LIST_HEADER_HEIGHT,
     LEGEND_LIST_STYLE,
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
+import { BudgieLegendList } from '../budgie-legend-list/budgie-legend-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
@@ -79,17 +78,16 @@ export const SearchablePageList = <T extends IdInterface>({
 
     return (
         <>
-            <LegendList
+            <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}
                 contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 ListHeaderComponent={listHeader}
+                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
-                estimatedItemSize={sizing?.estimatedItemSize ?? LEGEND_LIST_ESTIMATED_ITEM_SIZE}
+                estimatedItemSize={sizing?.estimatedItemSize}
                 getItemType={sizing?.getItemType}
-                recycleItems
-                showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 ListFooterComponent={listFooter}
             />
