@@ -5,11 +5,11 @@ export interface IbanBridgeTransferCandidateInterface {
     readonly expenseTransactionComment: string | null;
     readonly operatedAt: number;
     readonly expenseEntryId: number;
-    readonly expenseEntryToIban: string;
+    readonly expenseEntryToIban: string | null;
     readonly incomeTransactionId: number;
     readonly incomeTransactionTitle: string | null;
     readonly incomeEntryId: number;
-    readonly incomeEntryToIban: string;
+    readonly incomeEntryToIban: string | null;
     readonly bridgeAccountId: number;
     readonly bridgeAccountTitle: string;
     readonly bridgeAmount: number;
