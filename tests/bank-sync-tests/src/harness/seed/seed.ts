@@ -57,6 +57,7 @@ export const seed = {
             forwardSyncedAt: input.forwardSyncedAt ?? null,
             backwardSyncFromAt: input.backwardSyncFromAt ?? null,
             backwardSyncedAt: input.backwardSyncedAt ?? null,
+            backwardCompletedAt: input.backwardCompletedAt ?? null,
             transactionCount: input.transactionCount ?? 0,
             errorCount: input.errorCount ?? 0,
             lastError: input.lastError ?? null

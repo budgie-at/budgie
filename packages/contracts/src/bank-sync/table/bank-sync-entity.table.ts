@@ -28,6 +28,7 @@ export const BankSyncEntityTable = sqliteTable(
             .default(BankSyncStatusEnum.IDLE)
             .notNull(),
         backwardSyncedAt: int('backward_synced_at', { mode: 'timestamp' }),
+        backwardCompletedAt: int('backward_completed_at', { mode: 'timestamp' }),
         backwardSyncFromAt: int('backward_sync_from_at', { mode: 'timestamp' }),
         forwardSyncedAt: int('forward_synced_at', { mode: 'timestamp' }),
         forwardSyncFromAt: int('forward_sync_from_at', { mode: 'timestamp' }),

@@ -12,5 +12,6 @@ export const BankSyncCreateEntitySchema = convertToCreateEntitySchema(BankSyncEn
     forwardSyncedAt: true,
     backwardSyncFromAt: true,
     backwardSyncedAt: true,
+    backwardCompletedAt: true,
     transactionCount: true
 });

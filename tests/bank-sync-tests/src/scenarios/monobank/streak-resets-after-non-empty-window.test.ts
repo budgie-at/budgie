@@ -15,11 +15,10 @@ import type { MonobankTransactionApiInterface } from '@budgie/bank-sync';
 const FROZEN_SWEEP_START = new Date('2026-06-15T00:00:00Z');
 const SECONDS_PER_DAY = 86_400;
 const MS_PER_SECOND = 1_000;
-const OLD_TRANSACTION_AGE_DAYS = 80;
-const OLD_TRANSACTION_AMOUNT_KOPECKS = -1234;
-const EXPECTED_PERSISTED_COUNT = 1;
+const MID_STREAK_TX_AGE_DAYS = 70;
+const MID_STREAK_TX_AMOUNT_KOPECKS = -777;
 
-describe('monobank/old-transactions-after-dormant-month', () => {
+describe('monobank/streak-resets-after-non-empty-window', () => {
     beforeEach(() => {
         vi.setSystemTime(FROZEN_SWEEP_START);
     });
@@ -29,29 +28,29 @@ describe('monobank/old-transactions-after-dormant-month', () => {
     });
 
      
-    it('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates at the dormancy boundary', async () => {
+    it('clears the streak anchor on a non-empty window so a later empty page must re-anchor before dormancy can trip', async () => {
         const bankSync = setupBackwardSweepFixture(FROZEN_SWEEP_START);
 
-        const oldTransactionTimeSeconds =
-            Math.floor(FROZEN_SWEEP_START.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
-        const oldTransaction: MonobankTransactionApiInterface = buildMonobank.transaction({
-            id: 'tx-old-80d',
-            amount: OLD_TRANSACTION_AMOUNT_KOPECKS,
+        const midStreakTransactionTimeSeconds =
+            Math.floor(FROZEN_SWEEP_START.getTime() / MS_PER_SECOND) - MID_STREAK_TX_AGE_DAYS * SECONDS_PER_DAY;
+        const midStreakTransaction: MonobankTransactionApiInterface = buildMonobank.transaction({
+            id: 'tx-mid-streak-70d',
+            amount: MID_STREAK_TX_AMOUNT_KOPECKS,
             hold: false,
-            time: oldTransactionTimeSeconds
+            time: midStreakTransactionTimeSeconds
         });
 
-        monobankStub.statementBatches([[], [], [oldTransaction], [], [], []]);
+        monobankStub.statementBatches([[], [], [midStreakTransaction], []]);
 
         await monobankSyncService.sync();
 
         const persisted = fetchPersistedMonobankTransactions();
-        expect(persisted).toHaveLength(EXPECTED_PERSISTED_COUNT);
-        const [persistedOld] = persisted;
-        expect(persistedOld.externalId).toBe('tx-old-80d');
+        expect(persisted).toHaveLength(1);
+        expect(persisted[0].externalId).toBe('tx-mid-streak-70d');
 
         const finalSync = fetchBankSyncById(bankSync.id);
         expect(finalSync.mode).toBe(BankSyncModeEnum.FORWARD);
-        expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
+        expect(finalSync.backwardCompletedAt).not.toBeNull();
+        expect(finalSync.backwardSyncedAt).toBeNull();
     });
 });

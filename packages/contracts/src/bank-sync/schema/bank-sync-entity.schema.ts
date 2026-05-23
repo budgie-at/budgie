@@ -15,7 +15,18 @@ export const BankSyncEntitySchema = createSelectSchema(BankSyncEntityTable, {
     enabled: schema => schema.default(true).describe('Whether sync is enabled for this account.'),
     mode: zodEnum(BankSyncModeEnum).describe('Current sync mode (forward or backward).'),
     status: zodEnum(BankSyncStatusEnum).describe('Current sync status.'),
-    backwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp when backward sync was completed.'),
+    backwardSyncedAt: schema =>
+        schema
+            .nullable()
+            .default(null)
+            .describe(
+                'Transient streak anchor: the `from` of the first empty 31-day window in the current dormancy streak. Null when no empty streak is active.'
+            ),
+    backwardCompletedAt: schema =>
+        schema
+            .nullable()
+            .default(null)
+            .describe('Terminal completion timestamp: when the backward sweep finished (history exhausted or dormancy boundary reached).'),
     backwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync backward from (newest point going back).'),
     forwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp of the last successful forward sync.'),
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),

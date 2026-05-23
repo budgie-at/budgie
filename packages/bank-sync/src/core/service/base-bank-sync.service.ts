@@ -3,6 +3,7 @@ import { addMonths, addSeconds, fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
+import { BankSyncBatchReasonEnum } from '../enum/bank-sync-batch-reason.enum';
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
@@ -26,7 +27,8 @@ export class BaseBankSyncService {
 
     @Log(
         (accountId, from) => `enter accountId=${accountId} from=${from.toISOString()}`,
-        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
+        (result, accountId, from) =>
+            `done accountId=${accountId} from=${from.toISOString()} count=${result.transactions.length} completed=${String(result.completed)} reason=${result.reason}`,
         (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
     )
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
@@ -40,17 +42,19 @@ export class BaseBankSyncService {
                 nextFrom: this.getNextTimeFromTransaction(oldestTransaction),
                 nextTo: to,
                 transactions,
-                completed: false
+                completed: false,
+                reason: BankSyncBatchReasonEnum.PAGINATING
             };
         }
 
-        return { nextFrom: to, nextTo: to, transactions, completed: true };
+        return { nextFrom: to, nextTo: to, transactions, completed: true, reason: BankSyncBatchReasonEnum.CAUGHT_UP };
     }
 
     @Log(
         (accountId, to, firstEmptyFromInStreak) =>
             `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'}`,
-        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
+        (result, accountId, to, firstEmptyFromInStreak) =>
+            `done accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} count=${result.transactions.length} completed=${String(result.completed)} reason=${result.reason}`,
         (error, accountId, to, firstEmptyFromInStreak) =>
             `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
@@ -68,20 +72,23 @@ export class BaseBankSyncService {
                 nextTo: this.getNextTimeFromTransaction(oldestTransaction),
                 nextFrom: from,
                 transactions,
-                completed: false
+                completed: false,
+                reason: BankSyncBatchReasonEnum.PAGINATING
             };
         }
 
-        const reachedDormancyBoundary =
-            isEmptyArray(transactions) &&
-            isDefined(firstEmptyFromInStreak) &&
-            from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
+        const dormancyFloor = isDefined(firstEmptyFromInStreak)
+            ? addMonths(firstEmptyFromInStreak, -this.options.dormancyBoundaryMonths)
+            : null;
+        const reachedDormancyBoundary = isEmptyArray(transactions) && isDefined(dormancyFloor) && from <= dormancyFloor;
+        const reason = this.resolveBackwardBatchReason(transactions, reachedDormancyBoundary);
 
         return {
             nextTo: from,
             nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions,
-            completed: reachedDormancyBoundary
+            completed: reachedDormancyBoundary,
+            reason
         };
     }
 
@@ -128,5 +135,19 @@ export class BaseBankSyncService {
 
     private getNextTimeFromTransaction(transaction: BankTransactionInterface): Date {
         return addSeconds(fromUnixTime(transaction.time), -1);
+    }
+
+    private resolveBackwardBatchReason(
+        transactions: BankTransactionInterface[],
+        reachedDormancyBoundary: boolean
+    ): BankSyncBatchReasonEnum {
+        if (reachedDormancyBoundary) {
+            return BankSyncBatchReasonEnum.DORMANCY_BOUNDARY;
+        }
+        if (isEmptyArray(transactions)) {
+            return BankSyncBatchReasonEnum.STREAK_EXTENDING;
+        }
+
+        return BankSyncBatchReasonEnum.STREAK_RESET;
     }
 }

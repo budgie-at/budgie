@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop, lingui/no-unlocalized-strings, max-lines -- Sync orchestration requires sequential awaits and many log tags */
-import { MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
+import { BankSyncBatchReasonEnum, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import * as BackgroundTask from 'expo-background-task';
@@ -180,7 +180,8 @@ class AppMonobankSyncService {
                     ...baseUpdate,
                     mode: BankSyncModeEnum.FORWARD,
                     status: BankSyncStatusEnum.IDLE,
-                    backwardSyncedAt: result.nextTo,
+                    backwardSyncedAt: null,
+                    backwardCompletedAt: now,
                     backwardSyncFromAt: result.nextFrom
                 });
             }
@@ -207,7 +208,13 @@ class AppMonobankSyncService {
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
+            return {
+                transactions: [],
+                nextTo: new Date(),
+                nextFrom: new Date(),
+                completed: true,
+                reason: BankSyncBatchReasonEnum.CAUGHT_UP
+            };
         }
 
         const result = await this.fetchTransactionBatch(sync, account.externalId);
@@ -365,7 +372,8 @@ class AppMonobankSyncService {
             mode: BankSyncModeEnum.BACKWARD,
             status: BankSyncStatusEnum.SYNCING,
             backwardSyncFromAt: now,
-            backwardSyncedAt: earliestTxTime ?? null,
+            backwardSyncedAt: null,
+            backwardCompletedAt: earliestTxTime ?? null,
             forwardSyncFromAt: now,
             forwardSyncedAt: null
         });
