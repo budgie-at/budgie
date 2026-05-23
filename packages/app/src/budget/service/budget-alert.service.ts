@@ -18,11 +18,11 @@ class BudgetAlertService {
         (budget, spent, categoryLimits) =>
             `enter budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length}`,
         (result, budget, spent, categoryLimits) =>
-            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newTriggers=${result.length}`,
+            `done budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} newTriggers=${result.length} triggerKeys=${result.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')}`,
         (error, budget, spent, categoryLimits) =>
             `throw budgetId=${budget.id} spentOverall=${spent.spentOverall} spentByCategory=${spent.spentByCategory.length} categoryLimits=${categoryLimits.length} error=${getErrorMessage(error)}`
     )
-    async evaluateAndPersist(
+    async evaluate(
         budget: BudgetEntityInterface,
         spent: BudgetSpentInterface,
         categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
@@ -32,14 +32,26 @@ class BudgetAlertService {
 
         const storageKey = this.buildStorageKey(budget.id, periodStart.getTime());
         const fired = await this.loadFired(storageKey);
-        const newTriggers = triggers.filter(trigger => !fired.has(this.buildTriggerKey(trigger)));
 
-        if (isNotEmptyArray(newTriggers)) {
-            newTriggers.forEach(trigger => fired.add(this.buildTriggerKey(trigger)));
-            await Storage.setItem(storageKey, JSON.stringify([...fired]));
+        return triggers.filter(trigger => !fired.has(this.buildTriggerKey(trigger)));
+    }
+
+    @Log(
+        (budgetId, periodStartMs, triggers) =>
+            `enter budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')}`,
+        'done',
+        (error, budgetId, periodStartMs, triggers) =>
+            `throw budgetId=${budgetId} periodStartMs=${periodStartMs} triggerKeys=${triggers.map(trigger => `${trigger.scope}:${trigger.categoryId ?? ''}:${trigger.threshold}`).join(',')} error=${getErrorMessage(error)}`
+    )
+    async markDelivered(budgetId: number, periodStartMs: number, triggers: readonly BudgetAlertTriggerInterface[]): Promise<void> {
+        if (!isNotEmptyArray(triggers)) {
+            return;
         }
 
-        return newTriggers;
+        const storageKey = this.buildStorageKey(budgetId, periodStartMs);
+        const fired = await this.loadFired(storageKey);
+        triggers.forEach(trigger => fired.add(this.buildTriggerKey(trigger)));
+        await Storage.setItem(storageKey, JSON.stringify([...fired]));
     }
 
     private async loadFired(storageKey: string): Promise<Set<string>> {

@@ -1,18 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, router } from 'expo-router';
-import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { useAppState } from '../../../@generic/hook/use-app-state.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../../budget/budget.selector';
@@ -21,32 +19,16 @@ import { BudgetProgressBar } from '../../../budget/components/budget-progress-ba
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../../../budget/query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../../budget/query/use-get-budget-spent.query';
-import { budgetAlertService } from '../../../budget/service/budget-alert.service';
 import { budgetService } from '../../../budget/service/budget.service';
 import { formatBudgetPeriodLabel } from '../../../budget/utils/format-budget-period-label.util';
 
 const handleGoBack = () => void goBackOrReplace('/');
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function BudgetDetailScreen() {
     const { t } = useLingui();
     const { budget, isLoading } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
-
-    useEffect(() => {
-        if (!isDefined(budget)) {
-            return;
-        }
-
-        void budgetAlertService.evaluateAndPersist(budget, spent, categoryLimits).catch(emptyFn);
-    }, [budget, spent, categoryLimits]);
-
-    useAppState(isActive => {
-        if (isActive && isDefined(budget) && budget.pushEnabled) {
-            budgetAlertService.evaluateAndPersist(budget, spent, categoryLimits).catch(emptyFn);
-        }
-    });
 
     if (isLoading) {
         return <LoadingScreen />;
