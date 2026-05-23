@@ -14,7 +14,7 @@ export default function ConsolidationSourceModal() {
     const { backgroundColor } = useFormsheetListStyles();
 
     const screenOptions = { contentStyle: { backgroundColor } };
-    const containerStyle = { flex: 1, backgroundColor };
+    const containerStyle = { backgroundColor };
 
     const handleClose = () => {
         resolveConsolidationSource(null);

@@ -79,7 +79,7 @@ msgstr "{localSelectedCount, plural, =0 {Afficher tous les types} one {Afficher 
 msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
 msgstr "{manualReviewCandidateCount, plural, one {# paire à confiance plus faible} other {# paires à confiance plus faible}}"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:38
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:41
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# règle correspondante} other {# règles correspondantes}}"
@@ -138,7 +138,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "A rule with the same conditions already exists."
 msgstr "Une règle avec les mêmes conditions existe déjà."
 
@@ -443,11 +443,13 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(tabs)/settings/import.tsx:258
+#: src/app/convert-to-refund.tsx:73
+#: src/app/convert-to-refund.tsx:110
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -606,15 +608,25 @@ msgstr "Contient"
 msgid "Continue"
 msgstr "Continuer"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Conversion failed"
 msgstr "Échec de la conversion"
 
+#: src/app/convert-to-refund.tsx:72
+#: src/app/convert-to-refund.tsx:92
 #: src/app/convert-to-transfer.tsx:76
 msgid "Convert"
 msgstr "Convertir"
 
-#: src/app/convert-to-transfer.tsx:118
+#: src/transaction/components/convert-to-refund-menu-item/convert-to-refund-menu-item.tsx:21
+msgid "Convert to Refund"
+msgstr "Convertir en remboursement"
+
+#: src/app/convert-to-refund.tsx:70
+msgid "Convert to Refund?"
+msgstr "Convertir en remboursement ?"
+
+#: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
@@ -641,11 +653,15 @@ msgstr "Impossible d'effacer les données"
 msgid "Could not consolidate transfers"
 msgstr "Impossible de consolider les virements"
 
+#: src/app/convert-to-refund.tsx:85
+msgid "Could not convert to refund"
+msgstr "Impossible de convertir en remboursement"
+
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:177
 #: src/rule/hooks/use-rule-form.hook.ts:158
 msgid "Could not create rule"
 msgstr "Impossible de créer la règle"
@@ -738,7 +754,7 @@ msgstr "Impossible de restaurer le compte."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:33
 msgid "Could not revert consolidation."
-msgstr ""
+msgstr "Impossible d'annuler la consolidation."
 
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not save category"
@@ -802,7 +818,7 @@ msgstr "Créer et copier le jeton personnel"
 msgid "Create and organize transaction tags"
 msgstr "Créer et organiser les étiquettes de transaction"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:135
 msgid "Create anyway"
 msgstr "Créer quand même"
 
@@ -970,7 +986,7 @@ msgstr "Téléchargement des modèles d'IA…"
 msgid "Downloading models"
 msgstr "Téléchargement des modèles"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Duplicate rule"
 msgstr "Dupliquer la règle"
 
@@ -994,15 +1010,15 @@ msgstr "ex. Compte d'épargne"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:134
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:87
+#: src/app/(main)/transactions/[id]/expense.tsx:104
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:87
+#: src/app/(main)/transactions/[id]/income.tsx:104
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -1150,6 +1166,7 @@ msgid "Expected Return Date (Optional)"
 msgstr "Date de retour prévue (optionnel)"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:29
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Dépense"
@@ -1338,6 +1355,7 @@ msgstr "Inclure dans la valeur nette"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:29
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1642,6 +1660,7 @@ msgstr "Aucun élément à enregistrer"
 msgid "No languages found"
 msgstr "Aucune langue trouvée"
 
+#: src/app/convert-to-refund.tsx:140
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
@@ -1692,6 +1711,10 @@ msgstr "Aucune étiquette ne correspond à votre recherche"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
+
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:52
+msgid "No title"
+msgstr "Sans titre"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
@@ -1827,7 +1850,7 @@ msgstr "Les codes PIN ne correspondent pas"
 msgid "Please enter your Monobank API token"
 msgstr "Veuillez entrer votre jeton API Monobank"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Please try again"
 msgstr "Veuillez réessayer"
 
@@ -1867,7 +1890,7 @@ msgstr "Privatbank"
 msgid "PrivatBank"
 msgstr "PrivatBank"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
 msgid "Quick rule"
 msgstr "Règle rapide"
 
@@ -1940,6 +1963,10 @@ msgstr "Recalculer les soldes"
 msgid "Receiving {toCode}"
 msgstr "Réception {toCode}"
 
+#: src/app/convert-to-refund.tsx:142
+msgid "Recommended"
+msgstr "Recommandé"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:16
 msgid "Recurring"
 msgstr "Récurrents"
@@ -1947,6 +1974,10 @@ msgstr "Récurrents"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
+
+#: src/transaction/service/transaction-refund.service.ts:215
+msgid "Refund amount cannot exceed the expense"
+msgstr "Le montant du remboursement ne peut pas dépasser la dépense"
 
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded"
@@ -1959,6 +1990,10 @@ msgstr "Remboursé {formattedRefundedAmount}"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
 msgid "Refunds"
 msgstr "Remboursements"
+
+#: src/transaction/service/transaction-refund.service.ts:199
+msgid "Refunds must connect an expense and an income"
+msgstr "Les remboursements doivent lier une dépense et un revenu"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -1981,16 +2016,17 @@ msgstr "Restaurer à partir d'un fichier de sauvegarde"
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
 
+#: src/app/convert-to-refund.tsx:102
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:78
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
-msgstr ""
+msgstr "Annuler"
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:16
 msgid "Revert consolidation?"
-msgstr ""
+msgstr "Annuler la consolidation ?"
 
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
@@ -2000,7 +2036,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Règle"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:172
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:176
 msgid "Rule created"
 msgstr "Règle créée"
 
@@ -2061,6 +2097,10 @@ msgstr "Rechercher des contacts..."
 msgid "Search currencies..."
 msgstr "Rechercher des devises..."
 
+#: src/app/convert-to-refund.tsx:44
+msgid "Search expenses refunded by this income"
+msgstr "Rechercher les dépenses remboursées par ce revenu"
+
 #: src/app/icon-selector.tsx:106
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Rechercher des icônes (ex. argent, voyage, nourriture)..."
@@ -2068,6 +2108,10 @@ msgstr "Rechercher des icônes (ex. argent, voyage, nourriture)..."
 #: src/app/(tabs)/settings/inactive.tsx:31
 msgid "Search inactive accounts..."
 msgstr "Rechercher des comptes inactifs..."
+
+#: src/app/convert-to-refund.tsx:45
+msgid "Search income refunds up to this expense"
+msgstr "Rechercher les remboursements jusqu'à cette dépense"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:112
 msgid "Search Keywords"
@@ -2145,6 +2189,10 @@ msgstr "Sélectionner le type d'action"
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
 
+#: src/transaction/service/transaction-refund.service.ts:185
+msgid "Select an opposite transaction type"
+msgstr "Sélectionnez une transaction de type opposé"
+
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:46
 msgid "Select category"
 msgstr "Sélectionner la catégorie"
@@ -2214,6 +2262,11 @@ msgstr "Sélectionner le type"
 #: src/app/import-column-mapper.tsx:61
 msgid "Selected"
 msgstr "Sélectionné"
+
+#: src/transaction/service/transaction-refund.service.ts:203
+#: src/transaction/service/transaction-refund.service.ts:207
+msgid "Selected transaction is already consolidated"
+msgstr "La transaction sélectionnée est déjà consolidée"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
@@ -2452,13 +2505,17 @@ msgstr "Cela convertira la dépense en un transfert entre comptes."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Cela convertira le revenu en un transfert entre comptes."
 
+#: src/app/convert-to-refund.tsx:71
+msgid "This will link the selected opposite transaction as a refund. You can revert it from the refund sources sheet."
+msgstr "La transaction opposée sélectionnée sera liée comme remboursement. Vous pouvez annuler cela depuis la feuille des sources de remboursement."
+
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Cela réinitialisera l'historique de synchronisation et resynchronisera toutes les transactions de ce compte bancaire. Vos transactions, étiquettes et catégories existantes seront conservées et mises à jour avec les nouvelles données."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:17
 msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr ""
+msgstr "Cela restaurera les transactions d'origine et supprimera la transaction consolidée."
 
 #: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
@@ -2519,6 +2576,8 @@ msgstr "La transaction doit avoir un compte de destination"
 msgid "Transaction must have a source account"
 msgstr "La transaction doit avoir un compte source"
 
+#: src/transaction/service/transaction-refund.service.ts:170
+#: src/transaction/service/transaction-refund.service.ts:211
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Transaction introuvable"
@@ -2592,6 +2651,10 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Réessayer"
+
+#: src/app/convert-to-refund.tsx:141
+msgid "Try another search or choose a same-currency opposite transaction with a valid refund amount."
+msgstr "Essayez une autre recherche ou choisissez une transaction de type opposé dans la même devise avec un montant de remboursement valide."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11

@@ -80,7 +80,7 @@ CREATE TABLE `settings` (
 	`is_biometric_enabled` integer DEFAULT false NOT NULL,
 	`show_cents` integer DEFAULT true NOT NULL,
 	`is_vibration_enabled` integer DEFAULT true NOT NULL,
-	`is_screenshot_protection_enabled` integer DEFAULT true NOT NULL,
+	`is_screenshot_protection_enabled` integer DEFAULT false NOT NULL,
 	FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`default_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -218,4 +218,3 @@ VALUES
     (true, 'Clothing & Accessories',     'Shirt',                NULL, false),
     (true, 'Other',                      'CircleDot',            NULL, false),
     (true, 'Emergency Fund',             'AlertTriangle',        NULL, false);
-

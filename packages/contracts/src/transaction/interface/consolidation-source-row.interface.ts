@@ -31,6 +31,7 @@ export interface ConsolidationSourceRowInterface {
     readonly currencyCode: string;
     readonly currencySymbol: string;
     readonly categoryTitle: string | null;
+    readonly categoryIcon: UserIconNameEnum | null;
     readonly mcc: string | null;
     readonly mccDescription: string | null;
     readonly toIban: string | null;

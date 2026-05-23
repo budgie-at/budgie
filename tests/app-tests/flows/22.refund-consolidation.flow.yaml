@@ -8,10 +8,28 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Localized'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Localized'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Partial'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Partial'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Full'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Full'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
 
@@ -33,20 +51,38 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionCard.Label.E2E_Refund_Partial'
-    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.RefundedPill.9'
+    direction: DOWN
+- assertVisible:
+    id: 'TransactionCard.RefundedPill.9'
+- assertNotVisible:
+    id: 'TransactionCard.Amount.10'
+- assertVisible:
+    id: 'TransactionCard.Label.E2E_Refund_Localized'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.RefundedPill.4'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.RefundedPill.4'
 - assertNotVisible:
     id: 'TransactionCard.Amount.3'
 - assertNotVisible:
     id: 'TransactionCard.Amount.5'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+    direction: DOWN
 - assertVisible:
     id: 'TransactionCard.Amount.8'
 - assertVisible:
     id: 'TransactionCard.Label.E2E_Refund_Ambiguous'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.RefundedPill.4'
+    direction: UP
 
 - tapOn:
     id: 'TransactionCard.RefundedPill.4'
@@ -58,6 +94,27 @@ appId: ${APP_ID}
     id: 'ConsolidationSourceModal.RowTitle.0.E2E_Refund_Full'
 - assertVisible:
     id: 'ConsolidationSourceModal.RowAmount.0.DEBIT.55000000'
+- tapOn:
+    id: 'ConsolidationSourceModal.DoneButton'
+- extendedWaitUntil:
+    notVisible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 5000
+
+- scrollUntilVisible:
+    element:
+      id: 'TransactionCard.RefundedPill.9'
+    direction: UP
+- tapOn:
+    id: 'TransactionCard.RefundedPill.9'
+- extendedWaitUntil:
+    visible:
+      id: 'ConsolidationSourceModal.Row.0'
+    timeout: 10000
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowTitle.0._E2E_Refund_Localized'
+- assertVisible:
+    id: 'ConsolidationSourceModal.RowAmount.0.DEBIT.18000000'
 - tapOn:
     id: 'ConsolidationSourceModal.DoneButton'
 - extendedWaitUntil:
