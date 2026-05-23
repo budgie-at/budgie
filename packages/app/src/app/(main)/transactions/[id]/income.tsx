@@ -63,6 +63,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
         transactionId,
         toAccountId
     });
+    const canConvertToRefund = !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
+    const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
 
     return (
         <FormProvider {...form}>
@@ -76,8 +78,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
                                 onDelete={handleDelete}
                                 isConsolidated={isConsolidated}
                                 onRevert={handleRevert}
-                                onConvertToRefund={handleOpenRefundConvert}
                                 onConvertToTransfer={handleOpenConvert}
+                                {...refundConvertProps}
                             />
                         }
                     />

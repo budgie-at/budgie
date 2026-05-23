@@ -33,8 +33,7 @@ export const useUpdateIncomeTransactionActions = ({
 
     const handleOpenRefundConvert = () =>
         void openConvertToRefund({
-            transactionId,
-            transactionType: TransactionTypeEnum.INCOME
+            refundIncomeTransactionId: transactionId
         }).then(canonicalId => {
             if (isDefined(canonicalId)) {
                 const expenseRoute = `/transactions/${canonicalId}/expense` as const;

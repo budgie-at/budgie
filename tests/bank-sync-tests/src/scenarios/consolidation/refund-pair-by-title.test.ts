@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { PRECISION, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { fetchTransactionById, runRefundScenario, seed, seedRefundedExpense } from '../../harness';
 
@@ -63,6 +63,23 @@ describe('consolidation/refund-pair-by-title', () => {
                 refundsTotal: 898 * PRECISION
             }
         ]);
+    });
+
+    it('finds manual refund candidates only from refund income transactions', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 120 * PRECISION,
+            refundAmounts: [40 * PRECISION],
+            title: 'Apple Store',
+            refundTitle: 'Apple Store refund'
+        });
+
+        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+        const expenseCandidates = await refundPairRepository.findRefundableExpenseCandidates(expense.id, '');
+
+        expect(incomeCandidates).toMatchObject([{ id: expense.id, type: TransactionTypeEnum.EXPENSE }]);
+        expect(expenseCandidates).toEqual([]);
     });
 
     it('does NOT consolidate when titles differ', async () => {

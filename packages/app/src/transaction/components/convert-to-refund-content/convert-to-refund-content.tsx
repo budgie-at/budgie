@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
@@ -9,28 +9,25 @@ import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-mod
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useConvertToRefundAction } from '../../hooks/use-convert-to-refund-action.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
-import { useRefundMatchCandidatesQuery } from '../../query/use-refund-match-candidates.query';
+import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-expense-candidates.query';
 import { ConvertToRefundFooter } from '../convert-to-refund-footer/convert-to-refund-footer';
 import { TransactionPicker } from '../transaction-picker/transaction-picker';
 
 import type { ConvertToRefundContentPropsInterface } from '../../interface/convert-to-refund-content-props.interface';
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
 
-export const ConvertToRefundContent = ({ transactionId, resolveConvertToRefund }: ConvertToRefundContentPropsInterface) => {
+export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConvertToRefund }: ConvertToRefundContentPropsInterface) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const [selectedCandidate, setSelectedCandidate] = useState<TransactionPickerItemInterface | null>(null);
-    const { transaction } = useGetTransactionByIdQuery(transactionId);
-    const { candidates, errorMessage, isLoading } = useRefundMatchCandidatesQuery(transactionId, search);
-    const canonicalTransactionId = transaction?.consolidationParentTransactionId ?? transactionId;
+    const { transaction } = useGetTransactionByIdQuery(refundIncomeTransactionId);
+    const { candidates, errorMessage, isLoading } = useRefundableExpenseCandidatesQuery(refundIncomeTransactionId, search);
+    const canonicalTransactionId = transaction?.consolidationParentTransactionId ?? refundIncomeTransactionId;
     const showRevert =
         transaction?.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
         isDefined(transaction?.consolidationParentTransactionId);
     const selectedCandidateId = selectedCandidate?.id ?? null;
-    const searchPlaceholder =
-        transaction?.type === TransactionTypeEnum.INCOME
-            ? t`Search expenses refunded by this income`
-            : t`Search income refunds up to this expense`;
+    const searchPlaceholder = t`Search expenses refunded by this income`;
 
     const handleClose = () => {
         resolveConvertToRefund(null);
@@ -42,7 +39,7 @@ export const ConvertToRefundContent = ({ transactionId, resolveConvertToRefund }
     };
 
     const revertRefund = useRevertConsolidation(canonicalTransactionId, handleRevertSuccess);
-    const convertToRefund = useConvertToRefundAction(transactionId, selectedCandidate, resolveConvertToRefund);
+    const convertToRefund = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, resolveConvertToRefund);
     const footer = (
         <ConvertToRefundFooter
             selectedCandidate={selectedCandidate}
@@ -62,7 +59,7 @@ export const ConvertToRefundContent = ({ transactionId, resolveConvertToRefund }
             isLoading={isLoading}
             errorMessage={errorMessage}
             emptyTitle={t`No matching transactions`}
-            emptyDescription={t`Try another search or choose a same-currency opposite transaction with a valid refund amount.`}
+            emptyDescription={t`Try another search or choose a same-currency expense with a valid refund amount.`}
             footer={footer}
             onSearchChange={setSearch}
             onSelectItem={setSelectedCandidate}

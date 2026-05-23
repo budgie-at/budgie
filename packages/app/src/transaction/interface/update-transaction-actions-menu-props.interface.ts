@@ -5,6 +5,6 @@ export interface UpdateTransactionActionsMenuPropsInterface extends Pick<
     'onDelete' | 'isConsolidated'
 > {
     readonly onRevert: () => void;
-    readonly onConvertToRefund: () => void;
+    readonly onConvertToRefund?: () => void;
     readonly onConvertToTransfer: () => void;
 }

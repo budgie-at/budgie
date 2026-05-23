@@ -2,17 +2,20 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-import { REFUND_MATCH_CANDIDATES_SQL, buildRefundMatchCandidateParams } from './sql-factory/refund-match-candidate-sql.factory';
+import {
+    REFUNDABLE_EXPENSE_CANDIDATES_SQL,
+    buildRefundableExpenseCandidateParams
+} from './sql-factory/refundable-expense-candidate-sql.factory';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { RefundCandidateBaseRowInterface } from '../interface/refund-candidate-base-row.interface';
 import type { RefundCandidateBaseInterface } from '../interface/refund-candidate-base.interface';
 import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
 import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
-import type { RefundMatchCandidateRowInterface } from '../interface/refund-match-candidate-row.interface';
-import type { RefundMatchCandidateInterface } from '../interface/refund-match-candidate.interface';
 import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
 import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
+import type { RefundableExpenseCandidateRowInterface } from '../interface/refundable-expense-candidate-row.interface';
+import type { RefundableExpenseCandidateInterface } from '../interface/refundable-expense-candidate.interface';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
 
@@ -48,14 +51,17 @@ export class RefundPairRepository {
         return rows.map(row => this.mapReviewCandidateRow(row));
     }
 
-    async findManualCandidates(transactionId: number, search: string): Promise<RefundMatchCandidateInterface[]> {
+    async findRefundableExpenseCandidates(
+        refundIncomeTransactionId: number,
+        search: string
+    ): Promise<RefundableExpenseCandidateInterface[]> {
         const searchPattern = `%${search.trim().toLowerCase()}%`;
-        const rows = await this.db.$client.getAllAsync<RefundMatchCandidateRowInterface>(
-            REFUND_MATCH_CANDIDATES_SQL,
-            buildRefundMatchCandidateParams(transactionId, searchPattern)
+        const rows = await this.db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
+            REFUNDABLE_EXPENSE_CANDIDATES_SQL,
+            buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern)
         );
 
-        return rows.map(row => this.mapManualCandidateRow(row));
+        return rows.map(row => this.mapRefundableExpenseCandidateRow(row));
     }
 
     private buildAutoBucketSql(): string {
@@ -269,7 +275,7 @@ export class RefundPairRepository {
         };
     }
 
-    private mapManualCandidateRow(row: RefundMatchCandidateRowInterface): RefundMatchCandidateInterface {
+    private mapRefundableExpenseCandidateRow(row: RefundableExpenseCandidateRowInterface): RefundableExpenseCandidateInterface {
         return {
             id: row.id,
             type: row.type,

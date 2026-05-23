@@ -4,10 +4,10 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { transactionRefundService } from '../service/transaction-refund.service';
 
-import type { RefundMatchCandidateInterface } from '@budgie/contracts';
+import type { RefundableExpenseCandidateInterface } from '@budgie/contracts';
 
-export const useRefundMatchCandidatesQuery = (transactionId: number, search: string) => {
-    const [candidates, setCandidates] = useState<RefundMatchCandidateInterface[]>([]);
+export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: number, search: string) => {
+    const [candidates, setCandidates] = useState<RefundableExpenseCandidateInterface[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export const useRefundMatchCandidatesQuery = (transactionId: number, search: str
 
         setIsLoading(true);
         void transactionRefundService
-            .findCandidates(transactionId, search)
+            .findRefundableExpenses(refundIncomeTransactionId, search)
             .then(result => {
                 if (isMounted) {
                     setCandidates(result);
@@ -42,7 +42,7 @@ export const useRefundMatchCandidatesQuery = (transactionId: number, search: str
         return () => {
             isMounted = false;
         };
-    }, [search, transactionId]);
+    }, [refundIncomeTransactionId, search]);
 
     return { candidates, errorMessage, isLoading };
 };

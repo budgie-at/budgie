@@ -11,7 +11,7 @@ import type { ConvertToRefundModalResolveType } from '../interface/convert-to-re
 import type { TransactionPickerItemInterface } from '../interface/transaction-picker-item.interface';
 
 export const useConvertToRefundAction = (
-    transactionId: number,
+    refundIncomeTransactionId: number,
     selectedCandidate: TransactionPickerItemInterface | null,
     resolveConvertToRefund: ConvertToRefundModalResolveType
 ) => {
@@ -25,7 +25,7 @@ export const useConvertToRefundAction = (
 
         const confirmed = await confirmAlert({
             title: t`Convert to Refund?`,
-            message: t`This will link the selected opposite transaction as a refund. You can revert it from the refund sources sheet.`,
+            message: t`This will link the selected expense to this refund income. You can revert it from the refund sources sheet.`,
             confirmText: t`Convert`,
             cancelText: t`Cancel`,
             isDestructive: false
@@ -36,7 +36,10 @@ export const useConvertToRefundAction = (
         }
 
         try {
-            const canonicalId = await convertToRefund({ transactionId, refundTransactionId: selectedCandidate.id });
+            const canonicalId = await convertToRefund({
+                refundIncomeTransactionId,
+                expenseTransactionId: selectedCandidate.id
+            });
             resolveConvertToRefund(canonicalId);
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not convert to refund`, text2: getErrorMessage(error) });

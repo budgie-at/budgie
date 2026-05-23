@@ -2,9 +2,9 @@ import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 
 import type { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-export interface RefundMatchCandidateInterface {
+export interface RefundableExpenseCandidateInterface {
     readonly id: number;
-    readonly type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
+    readonly type: TransactionTypeEnum.EXPENSE;
     readonly title: string;
     readonly comment: string;
     readonly operatedAt: Date;

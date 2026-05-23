@@ -13,7 +13,7 @@ export default function ConvertToRefundModal() {
     const [, resolveConvertToRefund, currentParams] = useConvertToRefundModal();
     const resolveConvertToRefundRef = useRef(resolveConvertToRefund);
     const { backgroundColor } = useFormsheetListStyles();
-    const transactionId = currentParams?.transactionId ?? 0;
+    const refundIncomeTransactionId = currentParams?.refundIncomeTransactionId ?? 0;
     const screenOptions = { contentStyle: { backgroundColor } };
     const containerStyle = { flex: 1, backgroundColor };
 
@@ -36,7 +36,7 @@ export default function ConvertToRefundModal() {
     return (
         <View style={containerStyle} collapsable={false} testID={ConvertToRefundModalSelector.Page}>
             <Stack.Screen options={screenOptions} />
-            <ConvertToRefundContent transactionId={transactionId} resolveConvertToRefund={resolveConvertToRefund} />
+            <ConvertToRefundContent refundIncomeTransactionId={refundIncomeTransactionId} resolveConvertToRefund={resolveConvertToRefund} />
         </View>
     );
 }
