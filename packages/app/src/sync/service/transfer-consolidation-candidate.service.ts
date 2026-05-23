@@ -1,10 +1,8 @@
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { refundPairRepository, transferPairRepository } from '../../@generic/drizzle/db/db';
-
-import { transferConsolidationSourceTransactionIdService } from './transfer-consolidation-source-transaction-id.service';
 
 import type { ConsolidationCandidateGroupsInterface } from '../interface/consolidation-candidate-groups.interface';
 import type {
@@ -44,7 +42,7 @@ class TransferConsolidationCandidateService {
         );
         const pairCandidates = this.filterPairCandidates(
             await this.findPairCandidates(),
-            transferConsolidationSourceTransactionIdService.buildBridgeSourceTransactionIdSet(
+            this.buildBridgeSourceTransactionIdSet(
                 ibanBridgeChainTransferCandidates,
                 existingTransferBridgeCandidates,
                 ibanBridgeTransferCandidates,
@@ -183,10 +181,7 @@ class TransferConsolidationCandidateService {
         candidates: ExistingTransferIncomeDuplicateCandidateInterface[],
         existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[]
     ): ExistingTransferIncomeDuplicateCandidateInterface[] {
-        const sourceTransactionIds =
-            transferConsolidationSourceTransactionIdService.buildExistingTransferBridgeSourceTransactionIdSet(
-                existingTransferBridgeCandidates
-            );
+        const sourceTransactionIds = this.buildExistingTransferBridgeSourceTransactionIdSet(existingTransferBridgeCandidates);
 
         return candidates.filter(
             candidate => !sourceTransactionIds.has(candidate.existingTransferId) && !sourceTransactionIds.has(candidate.incomeTransactionId)
@@ -197,13 +192,64 @@ class TransferConsolidationCandidateService {
         candidates: IbanBridgeTransferCandidateInterface[],
         bridgeChainCandidates: IbanBridgeChainTransferCandidateInterface[]
     ): IbanBridgeTransferCandidateInterface[] {
-        const sourceTransactionIds =
-            transferConsolidationSourceTransactionIdService.buildBridgeChainSourceTransactionIdSet(bridgeChainCandidates);
+        const sourceTransactionIds = this.buildBridgeChainSourceTransactionIdSet(bridgeChainCandidates);
 
         return candidates.filter(
             candidate =>
                 !sourceTransactionIds.has(candidate.expenseTransactionId) && !sourceTransactionIds.has(candidate.incomeTransactionId)
         );
+    }
+
+    private buildBridgeSourceTransactionIdSet(
+        bridgeChainCandidates: IbanBridgeChainTransferCandidateInterface[],
+        existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
+        bridgeCandidates: IbanBridgeTransferCandidateInterface[],
+        existingTransferIncomeDuplicateCandidates: ExistingTransferIncomeDuplicateCandidateInterface[]
+    ): Set<number> {
+        const sourceTransactionIds = this.buildBridgeChainSourceTransactionIdSet(bridgeChainCandidates);
+        const existingTransferBridgeSourceTransactionIds = existingTransferBridgeCandidates.flatMap(candidate => [
+            candidate.sourceExpenseTransactionId,
+            candidate.bridgeIncomeTransactionId,
+            candidate.existingTransferId
+        ]);
+        const bridgeSourceTransactionIds = bridgeCandidates
+            .flatMap(candidate => [candidate.expenseTransactionId, candidate.incomeTransactionId, candidate.existingDirectTransferId])
+            .filter(isDefined);
+        const duplicateSourceTransactionIds = existingTransferIncomeDuplicateCandidates.map(candidate => candidate.incomeTransactionId);
+        const additionalSourceTransactionIds = [
+            ...existingTransferBridgeSourceTransactionIds,
+            ...bridgeSourceTransactionIds,
+            ...duplicateSourceTransactionIds
+        ];
+
+        for (const sourceTransactionId of additionalSourceTransactionIds) {
+            sourceTransactionIds.add(sourceTransactionId);
+        }
+
+        return sourceTransactionIds;
+    }
+
+    private buildExistingTransferBridgeSourceTransactionIdSet(candidates: ExistingTransferBridgeCandidateInterface[]): Set<number> {
+        return new Set(
+            candidates.flatMap(candidate => [
+                candidate.sourceExpenseTransactionId,
+                candidate.bridgeIncomeTransactionId,
+                candidate.existingTransferId
+            ])
+        );
+    }
+
+    private buildBridgeChainSourceTransactionIdSet(candidates: IbanBridgeChainTransferCandidateInterface[]): Set<number> {
+        const sourceTransactionIds = new Set<number>();
+
+        for (const candidate of candidates) {
+            sourceTransactionIds.add(candidate.sourceExpenseTransactionId);
+            sourceTransactionIds.add(candidate.bridgeIncomeTransactionId);
+            sourceTransactionIds.add(candidate.bridgeExpenseTransactionId);
+            sourceTransactionIds.add(candidate.targetIncomeTransactionId);
+        }
+
+        return sourceTransactionIds;
     }
 }
 
