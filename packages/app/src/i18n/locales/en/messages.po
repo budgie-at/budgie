@@ -1020,7 +1020,7 @@ msgstr "Edit existing"
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:74
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -1660,8 +1660,11 @@ msgstr "No items to save"
 msgid "No languages found"
 msgstr "No languages found"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+msgid "No matching expenses"
+msgstr "No matching expenses"
+
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:64
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1971,11 +1974,11 @@ msgstr "Recurring"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
-#: src/transaction/service/transaction-refund.service.ts:84
+#: src/transaction/service/transaction-refund.service.ts:81
 msgid "Refund amount cannot exceed the expense"
 msgstr "Refund amount cannot exceed the expense"
 
-#: src/transaction/service/transaction-refund.service.ts:72
+#: src/transaction/service/transaction-refund.service.ts:64
 msgid "Refund conversion starts from an income"
 msgstr "Refund conversion starts from an income"
 
@@ -2089,7 +2092,7 @@ msgstr "Search contacts..."
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:33
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
 msgid "Search expenses refunded by this income"
 msgstr "Search expenses refunded by this income"
 
@@ -2247,7 +2250,7 @@ msgstr "Select Type"
 msgid "Selected"
 msgstr "Selected"
 
-#: src/transaction/service/transaction-refund.service.ts:76
+#: src/transaction/service/transaction-refund.service.ts:73
 msgid "Selected transaction is already consolidated"
 msgstr "Selected transaction is already consolidated"
 
@@ -2559,8 +2562,8 @@ msgstr "Transaction must have a destination account"
 msgid "Transaction must have a source account"
 msgstr "Transaction must have a source account"
 
-#: src/transaction/service/transaction-refund.service.ts:54
-#: src/transaction/service/transaction-refund.service.ts:80
+#: src/transaction/service/transaction-refund.service.ts:53
+#: src/transaction/service/transaction-refund.service.ts:77
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Transaction not found"
@@ -2612,6 +2615,10 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+msgid "Try a different merchant, amount, or date."
+msgstr "Try a different merchant, amount, or date."
+
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40
 #: src/app/currency-selector.tsx:52
@@ -2634,10 +2641,6 @@ msgstr "Try adjusting your filters to see more results"
 #: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Try Again"
-
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:65
-msgid "Try another search or choose a same-currency expense with a valid refund amount."
-msgstr "Try another search or choose a same-currency expense with a valid refund amount."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11
