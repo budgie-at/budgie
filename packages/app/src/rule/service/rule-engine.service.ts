@@ -398,7 +398,7 @@ class RuleEngineService {
 
     // eslint-disable-next-line max-statements -- multi-step transfer conversion absorbed from convert-transaction-to-transfer util per CLAUDE.md rule 38/51
     private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {
-        const transaction = await transactionRepository.getById(transactionId, dbTransaction);
+        const transaction = await transactionRepository.getByIdWithEntries(transactionId, dbTransaction);
         if (!isDefined(transaction)) {
             return false;
         }

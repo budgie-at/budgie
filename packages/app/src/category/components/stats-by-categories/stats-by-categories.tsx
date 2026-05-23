@@ -1,17 +1,18 @@
-import { CategoryEntityInterface, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { CategoryStatInterface } from '../../interface/category-stat.interface';
 import { CategoryStatisticsCard } from '../category-statistics-card/category-statistics-card';
 
 interface Props {
     readonly title: string;
     readonly totalAmount: number;
     readonly variant: ColorPaletteVariant;
-    readonly stats: { amount: number; category: CategoryEntityInterface | null }[];
+    readonly stats: CategoryStatInterface[];
     readonly filters: TransactionFilterInterface;
     readonly isIncome: boolean;
 }
@@ -19,13 +20,15 @@ interface Props {
 export const StatsByCategories = ({ title, stats, totalAmount, variant, filters, isIncome }: Props) => {
     const { t } = useLingui();
 
-    const renderStat = ({ category, amount }: { category: CategoryEntityInterface | null; amount: number }) => {
+    const renderStat = ({ category, amount }: CategoryStatInterface) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
         const categoryData = category ?? {
+            id: 0,
             icon: UserIconNameEnum.BadgeQuestionMark,
-            title: t`Uncategorized`
+            title: t`Uncategorized`,
+            isDefault: false
         };
 
         return (
