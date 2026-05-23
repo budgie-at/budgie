@@ -18,6 +18,7 @@ import { DeletableRow } from '../deletable-row/deletable-row';
 
 import { SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM, SEARCHABLE_LIST_FOOTER_HEIGHT } from './searchable-page-list.constant';
 
+import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
@@ -26,6 +27,7 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     children?: ReactNode;
+    sizing?: LegendListSizingInterface<T>;
 }
 
 const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: SEARCHABLE_LIST_CONTENT_PADDING_BOTTOM };
@@ -36,7 +38,14 @@ const FOOTER_SPACER_STYLE = { height: SEARCHABLE_LIST_FOOTER_HEIGHT };
 const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
-export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, getDeleteConfirmation, children }: Props<T>) => {
+export const SearchablePageList = <T extends IdInterface>({
+    data,
+    onDelete,
+    renderCard,
+    getDeleteConfirmation,
+    children,
+    sizing
+}: Props<T>) => {
     const [notify] = useVibration();
 
     const handleDeleteItem = async (id: number) => {
@@ -77,7 +86,8 @@ export const SearchablePageList = <T extends IdInterface>({ data, onDelete, rend
                 ListHeaderComponent={listHeader}
                 renderItem={renderItem}
                 keyExtractor={legendListKeyExtractor}
-                estimatedItemSize={LEGEND_LIST_ESTIMATED_ITEM_SIZE}
+                estimatedItemSize={sizing?.estimatedItemSize ?? LEGEND_LIST_ESTIMATED_ITEM_SIZE}
+                getItemType={sizing?.getItemType}
                 recycleItems
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
