@@ -128,14 +128,15 @@ jobs:
               >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Create deployment environment
+      - name: Publish deployment metadata
         if: steps.deploy-web.outputs.deployment_url
         uses: actions/github-script@v8
         with:
+          github-token: ${{ github.token }}
           script: |
             const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
+            const prNumber = context.payload.pull_request.number;
 
-            // Create deployment
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -146,7 +147,6 @@ jobs:
               required_contexts: []
             });
 
-            // Create deployment status
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -156,44 +156,40 @@ jobs:
               description: 'Web app deployed successfully'
             });
 
-      - name: Comment deployment URL on PR
-        if: steps.deploy-web.outputs.deployment_url
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const deploymentUrl = '${{ steps.deploy-web.outputs.deployment_url }}';
-            const prNumber = context.payload.pull_request.number;
-
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber
-            });
-
-            const existingComment = comments.data.find(comment =>
-              comment.user.login === 'github-actions[bot]' &&
-              comment.body.includes('🚀 Preview Deployment')
-            );
-
-            const commentBody = '## 🚀 Preview Deployment\n\n' +
-              'Your PR has been deployed! You can test the changes at:\n\n' +
-              '🌐 **[Open Preview App](' + deploymentUrl + ')**\n\n' +
-              'This deployment will be automatically updated with new commits.';
-
-            if (existingComment) {
-              await github.rest.issues.updateComment({
+            try {
+              const comments = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: existingComment.id,
-                body: commentBody
+                issue_number: prNumber
               });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: commentBody
-              });
+
+              const existingComment = comments.data.find(comment =>
+                comment.user.login === 'github-actions[bot]' &&
+                comment.body.includes('🚀 Preview Deployment')
+              );
+
+              const commentBody = '## 🚀 Preview Deployment\n\n' +
+                'Your PR has been deployed! You can test the changes at:\n\n' +
+                '🌐 **[Open Preview App](' + deploymentUrl + ')**\n\n' +
+                'This deployment will be automatically updated with new commits.';
+
+              if (existingComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existingComment.id,
+                  body: commentBody
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: commentBody
+                });
+              }
+            } catch (error) {
+              core.warning(`Could not update the PR preview comment: ${error.message}`);
             }
 
 
