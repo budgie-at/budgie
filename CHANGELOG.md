@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.23.0](https://github.com/budgie-at/budgie/compare/v5.22.7...v5.23.0) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** widen categoriesMap value type so categoryId nullability flows ([8c33537](https://github.com/budgie-at/budgie/commit/8c335378059af63e87f989c40437832c7ac268b7))
+- **contracts:** extract listOrderedByOperatedAt to dedupe findMany shape ([819fb25](https://github.com/budgie-at/budgie/commit/819fb251671ae418033a96f780950f7039db1400))
+- **contracts:** use raw SQL for translation subquery in relation extras ([3035365](https://github.com/budgie-at/budgie/commit/30353658492acb7cf47f7981f398254febe2c174))
+- keep preview deploy comments best-effort ([4f4bb37](https://github.com/budgie-at/budgie/commit/4f4bb373a30859e6ad25cc49a4f031f673e03ef3))
+- localize default category titles across pattern queries and exports ([1618e17](https://github.com/budgie-at/budgie/commit/1618e1751ed4908e6a85c560592077c31955fb02))
+
+### Features
+
+- **app:** translate default category titles via id-keyed message map ([0605bd9](https://github.com/budgie-at/budgie/commit/0605bd9fa3370b21ea536b1133425271d30d0c79)), closes [#438](https://github.com/budgie-at/budgie/issues/438)
+
+### Reverts
+
+- **contracts:** drop LanguageEnum IT/PL/PT/NL expansion ([60d842e](https://github.com/budgie-at/budgie/commit/60d842e014091d5be4d9e088c20528c66121722f))
+
 ## [5.22.7](https://github.com/budgie-at/budgie/compare/v5.22.6...v5.22.7) (2026-05-23)
 
 ### Bug Fixes
