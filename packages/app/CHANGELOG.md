@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.6](https://github.com/budgie-at/budgie/compare/v5.22.5...v5.22.6) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** stabilize list item sizing ([2f7f24c](https://github.com/budgie-at/budgie/commit/2f7f24cf80fb28d54ca8de1a15dd125640950a6e))
+
 ## [5.22.5](https://github.com/budgie-at/budgie/compare/v5.22.4...v5.22.5) (2026-05-22)
 
 ### Bug Fixes
