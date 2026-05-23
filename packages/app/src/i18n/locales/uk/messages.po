@@ -79,7 +79,7 @@ msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {
 msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other {# lower-confidence pairs}}"
 msgstr "{manualReviewCandidateCount, plural, one {# пара з нижчою впевненістю} few {# пари з нижчою впевненістю} many {# пар з нижчою впевненістю} other {# пари з нижчою впевненістю}}"
 
-#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:38
+#: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
 #: src/rule/components/rules-list-page/rules-list-page.tsx:41
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# відповідне правило} few {# відповідні правила} many {# відповідних правил} other {# відповідного правила}}"
@@ -138,7 +138,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
 
@@ -443,11 +443,13 @@ msgstr "Budgie"
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
 #: src/app/(tabs)/settings/import.tsx:258
+#: src/app/convert-to-refund.tsx:73
+#: src/app/convert-to-refund.tsx:110
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
 #: src/import/components/import-database/import-database.tsx:39
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx:49
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:129
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:133
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:44
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/settings/components/truncate-data/truncate-data.tsx:22
@@ -606,15 +608,25 @@ msgstr "Містить"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
+#: src/app/convert-to-refund.tsx:72
+#: src/app/convert-to-refund.tsx:92
 #: src/app/convert-to-transfer.tsx:76
 msgid "Convert"
 msgstr "Конвертувати"
 
-#: src/app/convert-to-transfer.tsx:118
+#: src/transaction/components/convert-to-refund-menu-item/convert-to-refund-menu-item.tsx:21
+msgid "Convert to Refund"
+msgstr "Перетворити на повернення"
+
+#: src/app/convert-to-refund.tsx:70
+msgid "Convert to Refund?"
+msgstr "Перетворити на повернення?"
+
+#: src/app/convert-to-transfer.tsx:121
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:37
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:21
 #: src/transaction/components/transaction-list-convert-menu-item/transaction-list-convert-menu-item.tsx:19
@@ -641,11 +653,15 @@ msgstr "Не вдалося очистити дані"
 msgid "Could not consolidate transfers"
 msgstr "Не вдалося консолідувати перекази"
 
+#: src/app/convert-to-refund.tsx:85
+msgid "Could not convert to refund"
+msgstr "Не вдалося перетворити на повернення"
+
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:173
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:177
 #: src/rule/hooks/use-rule-form.hook.ts:158
 msgid "Could not create rule"
 msgstr "Не вдалося створити правило"
@@ -738,7 +754,7 @@ msgstr "Не вдалося відновити рахунок."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:33
 msgid "Could not revert consolidation."
-msgstr ""
+msgstr "Не вдалося скасувати об'єднання."
 
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not save category"
@@ -802,7 +818,7 @@ msgstr "Створити та скопіювати персональний то
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:131
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:135
 msgid "Create anyway"
 msgstr "Все одно створити"
 
@@ -970,7 +986,7 @@ msgstr "Завантаження моделей ШІ…"
 msgid "Downloading models"
 msgstr "Завантаження моделей"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:132
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
@@ -994,15 +1010,15 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:130
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:134
 msgid "Edit existing"
 msgstr "Редагувати наявне"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:87
+#: src/app/(main)/transactions/[id]/expense.tsx:104
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:87
+#: src/app/(main)/transactions/[id]/income.tsx:104
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1150,6 +1166,7 @@ msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:29
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
@@ -1338,6 +1355,7 @@ msgstr "Включити в чисту вартість"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
 #: src/transaction/components/statistics-content/statistics-content.tsx:69
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:29
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1642,6 +1660,7 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
+#: src/app/convert-to-refund.tsx:140
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
@@ -1692,6 +1711,10 @@ msgstr "Жоден тег не відповідає вашому пошуку"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
+
+#: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx:52
+msgid "No title"
+msgstr "Без назви"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:73
 msgid "No transactions yet"
@@ -1827,7 +1850,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/app/convert-to-transfer.tsx:110
+#: src/app/convert-to-transfer.tsx:113
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1867,7 +1890,7 @@ msgstr "Приватбанк"
 msgid "PrivatBank"
 msgstr "ПриватБанк"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:171
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:175
 msgid "Quick rule"
 msgstr "Швидке правило"
 
@@ -1940,6 +1963,10 @@ msgstr "Перерахувати баланси"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
+#: src/app/convert-to-refund.tsx:142
+msgid "Recommended"
+msgstr "Рекомендовано"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx:16
 msgid "Recurring"
 msgstr "Регулярні"
@@ -1947,6 +1974,10 @@ msgstr "Регулярні"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx:64
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
+
+#: src/transaction/service/transaction-refund.service.ts:215
+msgid "Refund amount cannot exceed the expense"
+msgstr "Сума повернення не може перевищувати витрату"
 
 #: src/transaction/components/refunded-pill/refunded-pill.tsx:78
 msgid "Refunded"
@@ -1959,6 +1990,10 @@ msgstr "Повернено {formattedRefundedAmount}"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:27
 msgid "Refunds"
 msgstr "Повернення"
+
+#: src/transaction/service/transaction-refund.service.ts:199
+msgid "Refunds must connect an expense and an income"
+msgstr "Повернення має поєднувати витрату та дохід"
 
 #: src/app/resync-window-picker.tsx:115
 msgid "Resets all sync state"
@@ -1981,16 +2016,17 @@ msgstr "Відновити з файлу резервної копії"
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 
+#: src/app/convert-to-refund.tsx:102
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx:78
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:26
 #: src/transaction/components/transaction-list-context-menu/transaction-list-context-menu.tsx:54
 #: src/transaction/hook/use-revert-consolidation.hook.ts:18
 msgid "Revert"
-msgstr ""
+msgstr "Відновити"
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:16
 msgid "Revert consolidation?"
-msgstr ""
+msgstr "Скасувати об'єднання?"
 
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Revolut"
@@ -2000,7 +2036,7 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Правило"
 
-#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:172
+#: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:176
 msgid "Rule created"
 msgstr "Правило створено"
 
@@ -2061,6 +2097,10 @@ msgstr "Шукати контакти..."
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
+#: src/app/convert-to-refund.tsx:44
+msgid "Search expenses refunded by this income"
+msgstr "Пошук витрат для цього повернення"
+
 #: src/app/icon-selector.tsx:106
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
@@ -2068,6 +2108,10 @@ msgstr "Пошук іконок (напр. гроші, подорожі, їжа)
 #: src/app/(tabs)/settings/inactive.tsx:31
 msgid "Search inactive accounts..."
 msgstr "Шукати неактивні рахунки..."
+
+#: src/app/convert-to-refund.tsx:45
+msgid "Search income refunds up to this expense"
+msgstr "Пошук повернень до цієї витрати"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:112
 msgid "Search Keywords"
@@ -2145,6 +2189,10 @@ msgstr "Вибрати тип дії"
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
+#: src/transaction/service/transaction-refund.service.ts:185
+msgid "Select an opposite transaction type"
+msgstr "Оберіть транзакцію протилежного типу"
+
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:46
 msgid "Select category"
 msgstr "Обрати категорію"
@@ -2214,6 +2262,11 @@ msgstr "Вибрати тип"
 #: src/app/import-column-mapper.tsx:61
 msgid "Selected"
 msgstr "Вибрано"
+
+#: src/transaction/service/transaction-refund.service.ts:203
+#: src/transaction/service/transaction-refund.service.ts:207
+msgid "Selected transaction is already consolidated"
+msgstr "Вибрану транзакцію вже об'єднано"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:115
 msgid "Sending {fromCode}"
@@ -2452,13 +2505,17 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
+#: src/app/convert-to-refund.tsx:71
+msgid "This will link the selected opposite transaction as a refund. You can revert it from the refund sources sheet."
+msgstr "Вибрану транзакцію протилежного типу буде прив'язано як повернення. Це можна скасувати у вікні джерел повернення."
+
 #: src/app/resync-window-picker.tsx:67
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
 
 #: src/transaction/hook/use-revert-consolidation.hook.ts:17
 msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr ""
+msgstr "Початкові транзакції буде відновлено, а об'єднану транзакцію буде видалено."
 
 #: src/@generic/constant/date-period.constant.ts:12
 msgid "This Year"
@@ -2519,6 +2576,8 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
+#: src/transaction/service/transaction-refund.service.ts:170
+#: src/transaction/service/transaction-refund.service.ts:211
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
@@ -2592,6 +2651,10 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Спробувати знову"
+
+#: src/app/convert-to-refund.tsx:141
+msgid "Try another search or choose a same-currency opposite transaction with a valid refund amount."
+msgstr "Спробуйте інший пошук або оберіть транзакцію протилежного типу в тій самій валюті з допустимою сумою повернення."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11

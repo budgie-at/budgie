@@ -191,6 +191,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 instrument.code AS currencyCode,
                 instrument.symbol AS currencySymbol,
                 category.title AS categoryTitle,
+                category.icon AS categoryIcon,
                 mcc.mcc AS mcc,
                 mcc.short_description AS mccDescription,
                 moved.to_iban AS toIban

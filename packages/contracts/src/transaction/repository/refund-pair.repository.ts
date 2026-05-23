@@ -2,119 +2,139 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { REFUND_TIME_WINDOW_SECONDS } from '../constant/refund-time-window.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
+import { REFUND_MATCH_CANDIDATES_SQL, buildRefundMatchCandidateParams } from './sql-factory/refund-match-candidate-sql.factory';
+
 import type { DB } from '../../@generic/type/db.type';
+import type { RefundCandidateBaseRowInterface } from '../interface/refund-candidate-base-row.interface';
+import type { RefundCandidateBaseInterface } from '../interface/refund-candidate-base.interface';
 import type { RefundCandidateRowInterface } from '../interface/refund-candidate-row.interface';
 import type { RefundCandidateInterface } from '../interface/refund-candidate.interface';
+import type { RefundMatchCandidateRowInterface } from '../interface/refund-match-candidate-row.interface';
+import type { RefundMatchCandidateInterface } from '../interface/refund-match-candidate.interface';
 import type { RefundReviewCandidateRowInterface } from '../interface/refund-review-candidate-row.interface';
 import type { RefundReviewCandidateInterface } from '../interface/refund-review-candidate.interface';
 
 const MANUAL_REVIEW_TIME_WINDOW_SECONDS = 7_776_000;
-const TITLE_PREFIXES = ['REFUND', 'RETURN', 'REVERSAL', 'CHARGEBACK', 'CR '] as const;
 
 export class RefundPairRepository {
+    private static readonly AUTO_TITLE_PREFIXES = ['Скасування. ', 'Скасування.', 'Скасування '] as const;
+
+    private static readonly REVIEW_TITLE_PREFIXES = [
+        ...RefundPairRepository.AUTO_TITLE_PREFIXES,
+        'REFUND ',
+        'REFUND',
+        'RETURN ',
+        'RETURN',
+        'REVERSAL ',
+        'REVERSAL',
+        'CHARGEBACK ',
+        'CHARGEBACK',
+        'CR '
+    ] as const;
+
     constructor(private db: DB) {}
 
     async findCandidates(): Promise<RefundCandidateInterface[]> {
         const sql = this.buildAutoBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(sql);
 
-        return rows.map(row => this.mapRow(row));
+        return rows.map(row => this.mapCandidateRow(row));
     }
 
     async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
         const sql = this.buildReviewBucketSql();
         const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(sql);
 
-        return rows.map(row => this.mapRow(row));
+        return rows.map(row => this.mapReviewCandidateRow(row));
+    }
+
+    async findManualCandidates(transactionId: number, search: string): Promise<RefundMatchCandidateInterface[]> {
+        const searchPattern = `%${search.trim().toLowerCase()}%`;
+        const rows = await this.db.$client.getAllAsync<RefundMatchCandidateRowInterface>(
+            REFUND_MATCH_CANDIDATES_SQL,
+            buildRefundMatchCandidateParams(transactionId, searchPattern)
+        );
+
+        return rows.map(row => this.mapManualCandidateRow(row));
     }
 
     private buildAutoBucketSql(): string {
         return `
-            WITH expense_entries AS (
-                SELECT
-                    expense_tx.id AS txId,
-                    expense_tx.title AS txTitle,
-                    expense_tx.operated_at AS operatedAt,
-                    expense_entry.account_id AS accountId,
-                    expense_entry.amount AS amount,
-                    UPPER(TRIM(expense_tx.title)) AS normTitle
-                FROM transactions expense_tx
-                INNER JOIN transaction_entries expense_entry
-                    ON expense_entry.transaction_id = expense_tx.id
-                    AND expense_entry.deleted_at IS NULL
-                    AND expense_entry.original_transaction_id IS NULL
-                    AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
-                    AND expense_entry.amount > 0
-                WHERE expense_tx.deleted_at IS NULL
-                    AND expense_tx.consolidation_parent_transaction_id IS NULL
-                    AND expense_tx.consolidation_type IS NULL
-                    AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-            ),
-            income_entries AS (
-                SELECT
-                    income_tx.id AS txId,
-                    income_tx.operated_at AS operatedAt,
-                    income_entry.account_id AS accountId,
-                    income_entry.amount AS amount,
-                    UPPER(TRIM(income_tx.title)) AS normTitle
-                FROM transactions income_tx
-                INNER JOIN transaction_entries income_entry
-                    ON income_entry.transaction_id = income_tx.id
-                    AND income_entry.deleted_at IS NULL
-                    AND income_entry.original_transaction_id IS NULL
-                    AND income_entry.type = '${TransactionEntryTypeEnum.DEBIT}'
-                    AND income_entry.amount > 0
-                WHERE income_tx.deleted_at IS NULL
-                    AND income_tx.consolidation_parent_transaction_id IS NULL
-                    AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-            ),
-            candidate_pairs AS (
-                SELECT
-                    exp.txId AS expenseTxId,
-                    exp.accountId AS accountId,
-                    exp.amount AS expenseAmount,
-                    inc.txId AS refundTxId,
-                    inc.amount AS refundAmount
-                FROM expense_entries exp
-                INNER JOIN income_entries inc
-                    ON inc.accountId = exp.accountId
-                    AND inc.normTitle = exp.normTitle
-                    AND inc.operatedAt > exp.operatedAt
-                    AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
-            ),
-            unambiguous_refunds AS (
-                SELECT refundTxId
-                FROM candidate_pairs
-                GROUP BY refundTxId
-                HAVING COUNT(DISTINCT expenseTxId) = 1
-            )
             SELECT
-                candidate_pairs.expenseTxId AS expenseTransactionId,
-                candidate_pairs.accountId AS accountId,
-                candidate_pairs.expenseAmount AS expenseEntryAmount,
-                SUM(candidate_pairs.refundAmount) AS refundsTotal,
-                GROUP_CONCAT(candidate_pairs.refundTxId, ',' ORDER BY candidate_pairs.refundTxId) AS refundIncomeTransactionIds
-            FROM candidate_pairs
-            INNER JOIN unambiguous_refunds
-                ON unambiguous_refunds.refundTxId = candidate_pairs.refundTxId
-            GROUP BY candidate_pairs.expenseTxId
-            HAVING SUM(candidate_pairs.refundAmount) <= candidate_pairs.expenseAmount
+                confidenceBucket,
+                matchType,
+                expenseTxId AS expenseTransactionId,
+                accountId,
+                expenseAmount AS expenseEntryAmount,
+                SUM(refundAmount) AS refundsTotal,
+                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
+            FROM (${this.buildRankedCandidateSql()})
+            WHERE refundCandidateCount = 1
+                AND refundRank = 1
+                AND confidenceBucket IN ('AUTO_REFUND_EXACT_TITLE', 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE')
+            GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
+            HAVING SUM(refundAmount) <= expenseAmount
         `;
     }
 
     private buildReviewBucketSql(): string {
-        const stripPrefixesExp = this.buildStripPrefixesSql('UPPER(TRIM(exp.txTitle))');
-        const stripPrefixesInc = this.buildStripPrefixesSql('UPPER(TRIM(inc.txTitle))');
+        return `
+            SELECT
+                expenseTxId AS expenseTransactionId,
+                confidenceBucket,
+                matchType,
+                accountId,
+                expenseAmount AS expenseEntryAmount,
+                SUM(refundAmount) AS refundsTotal,
+                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
+            FROM (${this.buildRankedCandidateSql()})
+            WHERE refundRank = 1
+                AND confidenceBucket IN ('REVIEW_REFUND_PREFIX_TITLE_MCC')
+            GROUP BY confidenceBucket, matchType, expenseTxId, accountId, expenseAmount
+            HAVING SUM(refundAmount) <= expenseAmount
+        `;
+    }
+
+    private buildRankedCandidateSql(): string {
+        const expenseAutoTitle = RefundPairRepository.buildStripPrefixesSql(
+            'UPPER(TRIM(expense_tx.title))',
+            RefundPairRepository.AUTO_TITLE_PREFIXES
+        );
+        const incomeAutoTitle = RefundPairRepository.buildStripPrefixesSql(
+            'UPPER(TRIM(income_tx.title))',
+            RefundPairRepository.AUTO_TITLE_PREFIXES
+        );
+        const expenseReviewTitle = RefundPairRepository.buildStripPrefixesSql(
+            'UPPER(TRIM(expense_tx.title))',
+            RefundPairRepository.REVIEW_TITLE_PREFIXES
+        );
+        const incomeReviewTitle = RefundPairRepository.buildStripPrefixesSql(
+            'UPPER(TRIM(income_tx.title))',
+            RefundPairRepository.REVIEW_TITLE_PREFIXES
+        );
 
         return `
-            WITH expense_entries AS (
+            WITH ${this.buildExpenseEntriesSql(expenseAutoTitle, expenseReviewTitle)},
+            ${this.buildIncomeEntriesSql(incomeAutoTitle, incomeReviewTitle)},
+            ${this.buildCompatiblePairsSql()},
+            ${this.buildRankedPairsSql()}
+            SELECT * FROM ranked_pairs
+        `;
+    }
+
+    private buildExpenseEntriesSql(autoTitle: string, reviewTitle: string): string {
+        return `
+            expense_entries AS (
                 SELECT
                     expense_tx.id AS txId,
                     expense_tx.title AS txTitle,
                     expense_tx.operated_at AS operatedAt,
                     expense_entry.account_id AS accountId,
                     expense_entry.amount AS amount,
-                    expense_entry.mcc_category_id AS mccCategoryId
+                    expense_entry.mcc_category_id AS mccCategoryId,
+                    UPPER(TRIM(expense_tx.title)) AS rawNormTitle,
+                    ${autoTitle} AS autoNormTitle,
+                    ${reviewTitle} AS reviewNormTitle
                 FROM transactions expense_tx
                 INNER JOIN transaction_entries expense_entry
                     ON expense_entry.transaction_id = expense_tx.id
@@ -126,7 +146,12 @@ export class RefundPairRepository {
                     AND expense_tx.consolidation_parent_transaction_id IS NULL
                     AND expense_tx.consolidation_type IS NULL
                     AND expense_tx.type = '${TransactionTypeEnum.EXPENSE}'
-            ),
+            )
+        `;
+    }
+
+    private buildIncomeEntriesSql(autoTitle: string, reviewTitle: string): string {
+        return `
             income_entries AS (
                 SELECT
                     income_tx.id AS txId,
@@ -134,7 +159,10 @@ export class RefundPairRepository {
                     income_tx.operated_at AS operatedAt,
                     income_entry.account_id AS accountId,
                     income_entry.amount AS amount,
-                    income_entry.mcc_category_id AS mccCategoryId
+                    income_entry.mcc_category_id AS mccCategoryId,
+                    UPPER(TRIM(income_tx.title)) AS rawNormTitle,
+                    ${autoTitle} AS autoNormTitle,
+                    ${reviewTitle} AS reviewNormTitle
                 FROM transactions income_tx
                 INNER JOIN transaction_entries income_entry
                     ON income_entry.transaction_id = income_tx.id
@@ -145,46 +173,93 @@ export class RefundPairRepository {
                 WHERE income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.type = '${TransactionTypeEnum.INCOME}'
-            ),
-            candidate_pairs AS (
+            )
+        `;
+    }
+
+    private buildCompatiblePairsSql(): string {
+        return `
+            compatible_pairs AS (
                 SELECT
                     exp.txId AS expenseTxId,
                     exp.accountId AS accountId,
                     exp.amount AS expenseAmount,
                     inc.txId AS refundTxId,
-                    inc.amount AS refundAmount
+                    inc.amount AS refundAmount,
+                    inc.operatedAt - exp.operatedAt AS timeDiff,
+                    CASE
+                        WHEN inc.rawNormTitle = exp.rawNormTitle
+                            AND inc.rawNormTitle != ''
+                            AND inc.operatedAt > exp.operatedAt
+                            AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                        THEN 'AUTO_REFUND_EXACT_TITLE'
+                        WHEN inc.autoNormTitle = exp.autoNormTitle
+                            AND inc.autoNormTitle != ''
+                            AND inc.rawNormTitle != exp.rawNormTitle
+                            AND inc.operatedAt > exp.operatedAt
+                            AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
+                        THEN 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE'
+                        WHEN inc.reviewNormTitle = exp.reviewNormTitle
+                            AND inc.reviewNormTitle != ''
+                            AND inc.mccCategoryId = exp.mccCategoryId
+                            AND inc.rawNormTitle != exp.rawNormTitle
+                            AND inc.operatedAt > exp.operatedAt
+                            AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
+                        THEN 'REVIEW_REFUND_PREFIX_TITLE_MCC'
+                        ELSE NULL
+                    END AS confidenceBucket,
+                    CASE
+                        WHEN inc.rawNormTitle = exp.rawNormTitle THEN 'exact-title'
+                        WHEN inc.autoNormTitle = exp.autoNormTitle THEN 'localized-cancellation-title'
+                        ELSE 'prefix-title-mcc'
+                    END AS matchType
                 FROM expense_entries exp
                 INNER JOIN income_entries inc
                     ON inc.accountId = exp.accountId
-                    AND inc.mccCategoryId = exp.mccCategoryId
-                    AND inc.operatedAt > exp.operatedAt
-                    AND (inc.operatedAt - exp.operatedAt) <= ${MANUAL_REVIEW_TIME_WINDOW_SECONDS}
-                    AND (
-                        UPPER(TRIM(inc.txTitle)) LIKE '%' || ${stripPrefixesExp} || '%'
-                        OR UPPER(TRIM(exp.txTitle)) LIKE '%' || ${stripPrefixesInc} || '%'
-                    )
-                    AND NOT (
-                        UPPER(TRIM(inc.txTitle)) = UPPER(TRIM(exp.txTitle))
-                        AND (inc.operatedAt - exp.operatedAt) <= ${REFUND_TIME_WINDOW_SECONDS}
-                    )
             )
-            SELECT
-                expenseTxId AS expenseTransactionId,
-                accountId AS accountId,
-                expenseAmount AS expenseEntryAmount,
-                SUM(refundAmount) AS refundsTotal,
-                GROUP_CONCAT(refundTxId, ',' ORDER BY refundTxId) AS refundIncomeTransactionIds
-            FROM candidate_pairs
-            GROUP BY expenseTxId
-            HAVING SUM(refundAmount) <= expenseAmount
         `;
     }
 
-    private buildStripPrefixesSql(seedExpression: string): string {
-        return `TRIM(${TITLE_PREFIXES.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
+    private buildRankedPairsSql(): string {
+        return `
+            ranked_pairs AS (
+                SELECT
+                    *,
+                    COUNT(*) OVER (PARTITION BY refundTxId) AS refundCandidateCount,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY refundTxId
+                        ORDER BY
+                            CASE confidenceBucket
+                                WHEN 'AUTO_REFUND_EXACT_TITLE' THEN 1
+                                WHEN 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE' THEN 2
+                                WHEN 'REVIEW_REFUND_PREFIX_TITLE_MCC' THEN 3
+                                ELSE 99
+                            END,
+                            timeDiff
+                    ) AS refundRank
+                FROM compatible_pairs
+                WHERE confidenceBucket IS NOT NULL
+            )
+        `;
     }
 
-    private mapRow(row: RefundCandidateRowInterface): RefundCandidateInterface {
+    private mapCandidateRow(row: RefundCandidateRowInterface): RefundCandidateInterface {
+        return {
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        };
+    }
+
+    private mapReviewCandidateRow(row: RefundReviewCandidateRowInterface): RefundReviewCandidateInterface {
+        return {
+            ...this.mapCandidateBaseRow(row),
+            confidenceBucket: row.confidenceBucket,
+            matchType: row.matchType
+        };
+    }
+
+    private mapCandidateBaseRow(row: RefundCandidateBaseRowInterface): RefundCandidateBaseInterface {
         return {
             accountId: row.accountId,
             expenseTransactionId: row.expenseTransactionId,
@@ -192,5 +267,27 @@ export class RefundPairRepository {
             refundIncomeTransactionIds: row.refundIncomeTransactionIds.split(',').map(item => Number(item)),
             refundsTotal: row.refundsTotal
         };
+    }
+
+    private mapManualCandidateRow(row: RefundMatchCandidateRowInterface): RefundMatchCandidateInterface {
+        return {
+            id: row.id,
+            type: row.type,
+            title: row.title,
+            comment: row.comment,
+            operatedAt: new Date(row.operatedAtMs),
+            amount: row.amount,
+            accountTitle: row.accountTitle,
+            currencyCode: row.currencyCode,
+            currencySymbol: row.currencySymbol,
+            categoryTitle: row.categoryTitle,
+            categoryTitleEn: row.categoryTitleEn,
+            categoryIcon: row.categoryIcon,
+            isRecommended: row.isRecommended === 1
+        };
+    }
+
+    private static buildStripPrefixesSql(seedExpression: string, prefixes: readonly string[]): string {
+        return `TRIM(${prefixes.reduce((acc, prefix) => `REPLACE(${acc}, '${prefix}', '')`, seedExpression)})`;
     }
 }
