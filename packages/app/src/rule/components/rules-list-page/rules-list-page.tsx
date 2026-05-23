@@ -1,5 +1,5 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list';
+import { LegendList } from '@legendapp/list/react-native';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { ReactElement } from 'react';
@@ -75,7 +75,6 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPageP
                     renderItem={renderItem}
                     keyExtractor={getKeyExtractor}
                     estimatedItemSize={RULES_LIST_SIZING.estimatedItemSize}
-                    getItemType={RULES_LIST_SIZING.getItemType}
                     recycleItems
                     showsVerticalScrollIndicator={false}
                     ListFooterComponent={listFooter}

@@ -1,5 +1,5 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list';
+import { LegendList } from '@legendapp/list/react-native';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -119,7 +119,7 @@ export const TransactionSectionsList = ({
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
                     estimatedItemSize={TRANSACTION_LIST_SIZING.estimatedItemSize}
-                    stickyIndices={getStickyIndices(flatData)}
+                    stickyHeaderIndices={getStickyIndices(flatData)}
                     recycleItems
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
