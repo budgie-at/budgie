@@ -16,7 +16,8 @@ export const BudgetFormSchema = z
         overallLimit: z.number().positive(),
         categoryLimits: z.array(BudgetCategoryLimitFormSchema),
         pushEnabled: z.boolean(),
-        isWidgetEnabled: z.boolean()
+        isWidgetEnabled: z.boolean(),
+        instrumentId: z.number().int().positive()
     })
     .transform(values => ({
         ...values,

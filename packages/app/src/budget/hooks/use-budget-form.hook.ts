@@ -32,6 +32,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
         isEditing && isDefined(budget) ? budget.id : null
     );
     const isWidgetEnabledSetting = useSetting('isBudgetWidgetEnabled');
+    const defaultInstrumentId = useSetting('defaultInstrumentId');
 
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
@@ -43,7 +44,8 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
             overallLimit: 0,
             categoryLimits: [],
             pushEnabled: false,
-            isWidgetEnabled: true
+            isWidgetEnabled: true,
+            instrumentId: isPositiveNumber(defaultInstrumentId) ? defaultInstrumentId : 0
         }
     });
 
@@ -59,13 +61,23 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                     limitAmount: convertFromMicroUnits(limit.limitAmount)
                 })),
                 pushEnabled: budget.pushEnabled,
-                isWidgetEnabled: isWidgetEnabledSetting
+                isWidgetEnabled: isWidgetEnabledSetting,
+                instrumentId: budget.instrumentId
             });
         }
     }, [isEditing, budget, categoryLimits, isCategoryLimitsLoading, isWidgetEnabledSetting, form]);
 
     const handleSubmit = form.handleSubmit(async values => {
         try {
+            if (!isPositiveNumber(values.instrumentId)) {
+                Toast.show({
+                    type: 'error',
+                    text1: t`Could not save budget: a default currency is required.`
+                });
+
+                return;
+            }
+
             const payload = {
                 name: values.name,
                 period: BudgetPeriodEnum.MONTHLY,
@@ -73,6 +85,7 @@ export const useBudgetForm = ({ editingId }: UseBudgetFormOptionsInterface) => {
                 useLastDayOfMonth: values.useLastDayOfMonth,
                 overallLimit: convertToMicroUnits(values.overallLimit),
                 pushEnabled: values.pushEnabled,
+                instrumentId: values.instrumentId,
                 categoryLimits: values.categoryLimits.map(limit => ({
                     categoryId: limit.categoryId,
                     limitAmount: convertToMicroUnits(limit.limitAmount)

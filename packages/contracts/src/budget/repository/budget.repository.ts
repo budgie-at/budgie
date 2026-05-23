@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, between, desc, eq, isNull } from 'drizzle-orm';
+import { and, between, count, desc, eq, isNull } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -70,6 +70,16 @@ export class BudgetRepository {
             .update(BudgetEntityTable)
             .set({ deletedAt: new Date() })
             .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)));
+    }
+
+    @Log('enter', result => `done missingInstrumentCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async countMissingInstrument(): Promise<number> {
+        const [row] = await this.db
+            .select({ count: count() })
+            .from(BudgetEntityTable)
+            .where(and(isNull(BudgetEntityTable.instrumentId), isNull(BudgetEntityTable.deletedAt)));
+
+        return row.count;
     }
 
     findActive() {

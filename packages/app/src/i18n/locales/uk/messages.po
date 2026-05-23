@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# пара переказів із в�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:97
+#: src/budget/service/budget-alert-monitor.service.ts:108
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
 
-#: src/budget/service/budget-alert-monitor.service.ts:97
+#: src/budget/service/budget-alert-monitor.service.ts:108
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
@@ -153,6 +153,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx:71
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
+
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:78
+msgid "A default currency is required before you can manage budgets."
+msgstr "Перед керуванням бюджетами потрібно вибрати валюту за замовчуванням."
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "A rule with the same conditions already exists."
@@ -447,14 +451,22 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/budget/index.tsx:87
+#: src/app/(main)/budget/index.tsx:69
 #: src/app/(tabs)/settings/index.tsx:149
 msgid "Budget"
 msgstr "Бюджет"
 
-#: src/budget/service/budget-alert-monitor.service.ts:88
+#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:20
+msgid "Budget currency"
+msgstr "Валюта бюджету"
+
+#: src/budget/service/budget-alert-monitor.service.ts:99
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
+
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:75
+msgid "Budget setup incomplete"
+msgstr "Налаштування бюджету неповне"
 
 #: src/app/(tabs)/settings/index.tsx:218
 msgid "Budgie"
@@ -467,7 +479,7 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(main)/budget/index.tsx:70
+#: src/app/(main)/budget/index.tsx:52
 #: src/app/(tabs)/settings/import.tsx:258
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -502,7 +514,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:96
+#: src/budget/service/budget-alert-monitor.service.ts:107
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -673,7 +685,7 @@ msgstr "Не вдалося очистити дані"
 msgid "Could not consolidate transfers"
 msgstr "Не вдалося консолідувати перекази"
 
-#: src/budget/hooks/use-budget-form.hook.ts:92
+#: src/budget/hooks/use-budget-form.hook.ts:105
 msgid "Could not create budget"
 msgstr "Не вдалося створити бюджет"
 
@@ -702,7 +714,7 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
 
-#: src/app/(main)/budget/index.tsx:82
+#: src/app/(main)/budget/index.tsx:64
 msgid "Could not delete budget"
 msgstr "Не вдалося видалити бюджет"
 
@@ -780,9 +792,13 @@ msgstr "Не вдалося відновити рахунок."
 msgid "Could not revert consolidation."
 msgstr ""
 
-#: src/budget/hooks/use-budget-form.hook.ts:92
+#: src/budget/hooks/use-budget-form.hook.ts:105
 msgid "Could not save budget"
 msgstr "Не вдалося зберегти бюджет"
+
+#: src/budget/hooks/use-budget-form.hook.ts:75
+msgid "Could not save budget: a default currency is required."
+msgstr "Не вдалося зберегти бюджет: потрібна валюта за замовчуванням."
 
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not save category"
@@ -850,7 +866,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create anyway"
 msgstr "Все одно створити"
 
-#: src/app/(main)/budget/setup.tsx:42
+#: src/app/(main)/budget/setup.tsx:44
 msgid "Create budget"
 msgstr "Створити бюджет"
 
@@ -966,7 +982,7 @@ msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/app/(main)/budget/index.tsx:69
+#: src/app/(main)/budget/index.tsx:51
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:66
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -980,11 +996,11 @@ msgstr "Видалити рахунок назавжди?"
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/app/(main)/budget/index.tsx:112
+#: src/app/(main)/budget/index.tsx:94
 msgid "Delete budget"
 msgstr "Видалити бюджет"
 
-#: src/app/(main)/budget/index.tsx:67
+#: src/app/(main)/budget/index.tsx:49
 msgid "Delete budget?"
 msgstr "Видалити бюджет?"
 
@@ -1067,8 +1083,8 @@ msgstr "напр. Дім, Особисте"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/app/(main)/budget/index.tsx:105
-#: src/app/(main)/budget/setup.tsx:42
+#: src/app/(main)/budget/index.tsx:87
+#: src/app/(main)/budget/setup.tsx:44
 msgid "Edit budget"
 msgstr "Редагувати бюджет"
 
@@ -1633,7 +1649,7 @@ msgstr "Монобанк"
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
-#: src/budget/hooks/use-budget-form.hook.ts:40
+#: src/budget/hooks/use-budget-form.hook.ts:41
 msgid "Monthly Budget"
 msgstr "Місячний бюджет"
 
@@ -1860,6 +1876,10 @@ msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:80
+msgid "Open settings"
+msgstr "Відкрити налаштування"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
 msgid "Open the Privatbank24 app"
 msgstr "Відкрийте додаток Приват24"
@@ -1888,7 +1908,7 @@ msgstr "Початкові імпортовані транзакції буде 
 msgid "Original transaction"
 msgstr "Початкова транзакція"
 
-#: src/budget/service/budget-alert-monitor.service.ts:88
+#: src/budget/service/budget-alert-monitor.service.ts:99
 msgid "Overall budget: {threshold}% spent"
 msgstr "Загальний бюджет: {threshold}% витрачено"
 
@@ -2598,7 +2618,7 @@ msgstr "Це конвертує витрату у переказ між раху
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
-#: src/app/(main)/budget/index.tsx:68
+#: src/app/(main)/budget/index.tsx:50
 msgid "This will remove your monthly budget. You can create a new one anytime."
 msgstr "Це видалить ваш місячний бюджет. Ви можете створити новий у будь-який час."
 
@@ -2770,6 +2790,7 @@ msgstr "Розконсолідувати"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
+#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:17
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Невідомо"
@@ -2868,11 +2889,11 @@ msgstr "Вчора"
 msgid "You gave money"
 msgstr "Ви дали гроші"
 
-#: src/budget/service/budget-alert-monitor.service.ts:89
+#: src/budget/service/budget-alert-monitor.service.ts:100
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Ви витратили {spentPercent}% загального бюджету."
 
-#: src/budget/service/budget-alert-monitor.service.ts:98
+#: src/budget/service/budget-alert-monitor.service.ts:109
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ви витратили {threshold}% ліміту для {categoryName}."
 

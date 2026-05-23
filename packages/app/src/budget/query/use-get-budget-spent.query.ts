@@ -2,7 +2,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetRepository, settingsRepository } from '../../@generic/drizzle/db/db';
+import { budgetRepository } from '../../@generic/drizzle/db/db';
 import { computeBudgetSpent } from '../utils/compute-budget-spent.util';
 import { computePeriodWindow } from '../utils/compute-period-window.util';
 
@@ -24,9 +24,7 @@ export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): Us
     const periodStart = new Date(periodStartMs);
     const nextPeriodStart = new Date(nextPeriodStartMs);
 
-    const { data: settingsData, updatedAt: settingsUpdatedAt } = useLiveQuery(settingsRepository.findSettings(), []);
-
-    const baseInstrumentId = settingsData?.defaultInstrumentId ?? 0;
+    const baseInstrumentId = isDefined(budget) ? budget.instrumentId : 0;
 
     const entriesQuery = budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, baseInstrumentId);
     const { data: entriesData, updatedAt: entriesUpdatedAt } = useLiveQuery(entriesQuery, [
@@ -35,7 +33,7 @@ export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): Us
         baseInstrumentId
     ]);
 
-    if (!isDefined(budget) || !isDefined(settingsUpdatedAt) || !isDefined(entriesUpdatedAt)) {
+    if (!isDefined(budget) || !isDefined(entriesUpdatedAt)) {
         return { spent: EMPTY_SPENT, isLoading: true };
     }
 

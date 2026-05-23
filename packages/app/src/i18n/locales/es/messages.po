@@ -39,11 +39,11 @@ msgstr "{autoCandidateCount, plural, one {# par de transferencias de alta confia
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# columna disponible} other {# columnas disponibles}}"
 
-#: src/budget/service/budget-alert-monitor.service.ts:97
+#: src/budget/service/budget-alert-monitor.service.ts:108
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% gastado"
 
-#: src/budget/service/budget-alert-monitor.service.ts:97
+#: src/budget/service/budget-alert-monitor.service.ts:108
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: límite alcanzado"
 
@@ -153,6 +153,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx:71
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
+
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:78
+msgid "A default currency is required before you can manage budgets."
+msgstr "Se requiere una moneda predeterminada antes de poder gestionar presupuestos."
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx:128
 msgid "A rule with the same conditions already exists."
@@ -447,14 +451,22 @@ msgstr "Autenticación biométrica"
 msgid "Borrowed"
 msgstr "Prestado"
 
-#: src/app/(main)/budget/index.tsx:87
+#: src/app/(main)/budget/index.tsx:69
 #: src/app/(tabs)/settings/index.tsx:149
 msgid "Budget"
 msgstr "Presupuesto"
 
-#: src/budget/service/budget-alert-monitor.service.ts:88
+#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:20
+msgid "Budget currency"
+msgstr "Moneda del presupuesto"
+
+#: src/budget/service/budget-alert-monitor.service.ts:99
 msgid "Budget limit reached"
 msgstr "Límite de presupuesto alcanzado"
+
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:75
+msgid "Budget setup incomplete"
+msgstr "Configuración del presupuesto incompleta"
 
 #: src/app/(tabs)/settings/index.tsx:218
 msgid "Budgie"
@@ -467,7 +479,7 @@ msgstr "Budgie"
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx:51
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx:55
-#: src/app/(main)/budget/index.tsx:70
+#: src/app/(main)/budget/index.tsx:52
 #: src/app/(tabs)/settings/import.tsx:258
 #: src/app/convert-to-transfer.tsx:77
 #: src/app/resync-window-picker.tsx:69
@@ -502,7 +514,7 @@ msgstr "Categorías ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:181
-#: src/budget/service/budget-alert-monitor.service.ts:96
+#: src/budget/service/budget-alert-monitor.service.ts:107
 #: src/category/components/category-form-selector/category-form-selector.tsx:34
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:176
 msgid "Category"
@@ -673,7 +685,7 @@ msgstr "No se pudieron borrar los datos"
 msgid "Could not consolidate transfers"
 msgstr "No se pudieron consolidar las transferencias"
 
-#: src/budget/hooks/use-budget-form.hook.ts:92
+#: src/budget/hooks/use-budget-form.hook.ts:105
 msgid "Could not create budget"
 msgstr "No se pudo crear el presupuesto"
 
@@ -702,7 +714,7 @@ msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más ta
 msgid "Could not delete account."
 msgstr "No se pudo eliminar la cuenta."
 
-#: src/app/(main)/budget/index.tsx:82
+#: src/app/(main)/budget/index.tsx:64
 msgid "Could not delete budget"
 msgstr "No se pudo eliminar el presupuesto"
 
@@ -780,9 +792,13 @@ msgstr "No se pudo restaurar la cuenta."
 msgid "Could not revert consolidation."
 msgstr ""
 
-#: src/budget/hooks/use-budget-form.hook.ts:92
+#: src/budget/hooks/use-budget-form.hook.ts:105
 msgid "Could not save budget"
 msgstr "No se pudo guardar el presupuesto"
+
+#: src/budget/hooks/use-budget-form.hook.ts:75
+msgid "Could not save budget: a default currency is required."
+msgstr "No se pudo guardar el presupuesto: se requiere una moneda predeterminada."
 
 #: src/category/components/category-form/category-form.tsx:166
 msgid "Could not save category"
@@ -850,7 +866,7 @@ msgstr "Crear y organizar etiquetas de transacciones"
 msgid "Create anyway"
 msgstr "Crear de todos modos"
 
-#: src/app/(main)/budget/setup.tsx:42
+#: src/app/(main)/budget/setup.tsx:44
 msgid "Create budget"
 msgstr "Crear presupuesto"
 
@@ -966,7 +982,7 @@ msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:31
-#: src/app/(main)/budget/index.tsx:69
+#: src/app/(main)/budget/index.tsx:51
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:66
 #: src/transaction/hook/use-delete-transaction.hook.ts:20
 msgid "Delete"
@@ -980,11 +996,11 @@ msgstr "¿Eliminar cuenta permanentemente?"
 msgid "Delete all transactions and settings"
 msgstr "Eliminar todas las transacciones y la configuración"
 
-#: src/app/(main)/budget/index.tsx:112
+#: src/app/(main)/budget/index.tsx:94
 msgid "Delete budget"
 msgstr "Eliminar presupuesto"
 
-#: src/app/(main)/budget/index.tsx:67
+#: src/app/(main)/budget/index.tsx:49
 msgid "Delete budget?"
 msgstr "¿Eliminar presupuesto?"
 
@@ -1067,8 +1083,8 @@ msgstr "p. ej. Hogar, Personal"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/app/(main)/budget/index.tsx:105
-#: src/app/(main)/budget/setup.tsx:42
+#: src/app/(main)/budget/index.tsx:87
+#: src/app/(main)/budget/setup.tsx:44
 msgid "Edit budget"
 msgstr "Editar presupuesto"
 
@@ -1633,7 +1649,7 @@ msgstr "Monobank"
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
 
-#: src/budget/hooks/use-budget-form.hook.ts:40
+#: src/budget/hooks/use-budget-form.hook.ts:41
 msgid "Monthly Budget"
 msgstr "Presupuesto mensual"
 
@@ -1860,6 +1876,10 @@ msgstr "Abre George (banca online de Erste Bank)"
 msgid "Open Monobank to get your token"
 msgstr "Abra Monobank para obtener su token"
 
+#: src/budget/components/budget-integrity-guard/budget-integrity-guard.tsx:80
+msgid "Open settings"
+msgstr "Abrir configuración"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:17
 msgid "Open the Privatbank24 app"
 msgstr "Abre la aplicación Privatbank24"
@@ -1888,7 +1908,7 @@ msgstr "Las transacciones importadas originales serán restauradas y la transacc
 msgid "Original transaction"
 msgstr "Transacción original"
 
-#: src/budget/service/budget-alert-monitor.service.ts:88
+#: src/budget/service/budget-alert-monitor.service.ts:99
 msgid "Overall budget: {threshold}% spent"
 msgstr "Presupuesto total: {threshold}% gastado"
 
@@ -2598,7 +2618,7 @@ msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
-#: src/app/(main)/budget/index.tsx:68
+#: src/app/(main)/budget/index.tsx:50
 msgid "This will remove your monthly budget. You can create a new one anytime."
 msgstr "Esto eliminará tu presupuesto mensual. Puedes crear uno nuevo en cualquier momento."
 
@@ -2770,6 +2790,7 @@ msgstr "Desconsolidar"
 msgid "Unconsolidate transaction?"
 msgstr "¿Desconsolidar transacción?"
 
+#: src/budget/components/budget-currency-chip/budget-currency-chip.tsx:17
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 msgid "Unknown"
 msgstr "Desconocido"
@@ -2868,11 +2889,11 @@ msgstr "Ayer"
 msgid "You gave money"
 msgstr "Diste dinero"
 
-#: src/budget/service/budget-alert-monitor.service.ts:89
+#: src/budget/service/budget-alert-monitor.service.ts:100
 msgid "You have used {spentPercent}% of your overall budget."
 msgstr "Ha utilizado {spentPercent}% de su presupuesto total."
 
-#: src/budget/service/budget-alert-monitor.service.ts:98
+#: src/budget/service/budget-alert-monitor.service.ts:109
 msgid "You have used {threshold}% of the limit for {categoryName}."
 msgstr "Ha utilizado {threshold}% del límite para {categoryName}."
 
