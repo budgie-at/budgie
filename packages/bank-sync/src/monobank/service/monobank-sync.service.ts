@@ -4,13 +4,13 @@ import { MONOBANK_MAX_PERIOD_SECONDS } from '../constant/monobank-max-period-sec
 import { MONOBANK_RATE_LIMIT_MS } from '../constant/monobank-rate-limit-ms.constant';
 
 export class MonobankSyncService extends BaseBankSyncService {
-    private static readonly ACTIVE_ACCOUNT_DORMANCY_MONTHS = 6;
+    private static readonly DORMANCY_MONTHS = 6;
 
     constructor(token: string) {
         super(new MonobankClient(token), {
             maxPeriodSeconds: MONOBANK_MAX_PERIOD_SECONDS,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
-            dormancyBoundaryMonths: MonobankSyncService.ACTIVE_ACCOUNT_DORMANCY_MONTHS
+            dormancyMonths: MonobankSyncService.DORMANCY_MONTHS
         });
     }
 }

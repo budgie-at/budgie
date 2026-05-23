@@ -66,8 +66,8 @@ export const AccountBankSyncCard = ({ accountId }: AccountBankSyncCardPropsInter
                     <SyncDataRow label={t`Last sync`} value={formatDayAndMonthAndYearWithTime(bankSync.forwardSyncedAt)} />
                 )}
 
-                {isDefined(bankSync.backwardCompletedAt) && (
-                    <SyncDataRow label={t`History synced`} value={formatDayAndMonthAndYearWithTime(bankSync.backwardCompletedAt)} />
+                {isDefined(bankSync.backwardSyncedAt) && (
+                    <SyncDataRow label={t`History synced`} value={formatDayAndMonthAndYearWithTime(bankSync.backwardSyncedAt)} />
                 )}
 
                 {bankSync.errorCount > 0 && (

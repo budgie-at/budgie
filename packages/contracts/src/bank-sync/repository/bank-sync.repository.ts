@@ -159,7 +159,6 @@ export class BankSyncRepository {
                 status: BankSyncStatusEnum.IDLE,
                 backwardSyncFromAt: now,
                 backwardSyncedAt: null,
-                backwardCompletedAt: null,
                 forwardSyncFromAt: now,
                 forwardSyncedAt: null,
                 transactionCount: 0,

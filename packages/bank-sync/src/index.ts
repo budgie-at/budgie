@@ -2,7 +2,6 @@ export { disableLogging, Log } from '@budgie/logger';
 export { syncLogger } from './core/util/sync-logger.util';
 
 export { BankAccountTypeEnum } from './core/enum/bank-account-type.enum';
-export { BankSyncBatchReasonEnum } from './core/enum/bank-sync-batch-reason.enum';
 export { BankProviderEnum } from './core/enum/bank-provider.enum';
 export { BankSyncErrorCodeEnum } from './core/enum/bank-sync-error-code.enum';
 export { BankTransactionTypeEnum } from './core/enum/bank-transaction-type.enum';
