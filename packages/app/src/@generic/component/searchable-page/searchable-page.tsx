@@ -14,6 +14,7 @@ import { SearchablePageList } from '../searchable-page-list/searchable-page-list
 
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
 
+import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
@@ -30,6 +31,7 @@ interface Props<T extends IdInterface> {
     searchInputTestID?: string;
     testID?: string;
     children?: ReactNode;
+    sizing?: LegendListSizingInterface<T>;
 }
 
 export const SearchablePage = <T extends IdInterface>({
@@ -45,7 +47,8 @@ export const SearchablePage = <T extends IdInterface>({
     getDeleteConfirmation,
     searchInputTestID,
     testID,
-    children
+    children,
+    sizing
 }: Props<T>) => {
     const { bottom } = useSafeAreaInsets();
     const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - SEARCH_INPUT_VERTICAL_OFFSET;
@@ -60,6 +63,7 @@ export const SearchablePage = <T extends IdInterface>({
                         data={data}
                         renderCard={renderCard}
                         getDeleteConfirmation={getDeleteConfirmation}
+                        sizing={sizing}
                     >
                         {children}
                     </SearchablePageList>
