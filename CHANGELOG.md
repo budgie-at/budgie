@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.7](https://github.com/budgie-at/budgie/compare/v5.22.6...v5.22.7) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** centralize LegendList v3 defaults ([ad62226](https://github.com/budgie-at/budgie/commit/ad622262b573d9c25c62155b61e18bcff513ae03))
+- **app:** migrate LegendList to v3 beta ([88e295c](https://github.com/budgie-at/budgie/commit/88e295cad477c4074f7f7a202f073fde92bafe66))
+
 ## [5.22.6](https://github.com/budgie-at/budgie/compare/v5.22.5...v5.22.6) (2026-05-23)
 
 ### Bug Fixes
