@@ -478,6 +478,17 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 4. **Before PR:** Run all validation commands
 5. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 
+## Simulator Dev Testing
+
+1. For dev-client feature checks and debugging, use the local `serve-sim` skill and the Codex in-app browser.
+2. Read `.agents/skills/serve-sim/SKILL.md` before using serve-sim. Follow its referenced workflow files when interacting with the simulator.
+3. Start or discover serve-sim with JSON output: `npx --yes serve-sim --detach -q` or `npx --yes serve-sim --list -q`.
+4. Do not hardcode serve-sim ports. Use the returned `url`, `streamUrl`, and `wsUrl`; ports can differ when multiple simulators or sessions are running.
+5. When several simulators are booted, target the requested device with `-d <udid|name>`.
+6. Run serve-sim with project Node `>=22`; taps can fail on older shell Node versions.
+7. Use `serve-sim tap` for taps. Use normalized coordinates only.
+8. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
+
 ## E2E Testing
 
 1. Prefer black-box E2E flows over app-owned test hooks.
