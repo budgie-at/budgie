@@ -44,6 +44,8 @@ type FindMatchingTransactionsResultType = {
 };
 
 class RuleMatcherService {
+    private static readonly UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
+
     @Log(
         params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
         result => `done count=${result}`,
@@ -239,10 +241,31 @@ class RuleMatcherService {
                 return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
             }
             case RuleConditionOperatorEnum.MATCHES_REGEX:
-                return null;
+                return this.buildRegexSql(column, value);
             default:
                 return null;
         }
+    }
+
+    private buildRegexSql(column: Column | SQL, value: string): SQL | null {
+        const tokens = this.getFlexibleRegexTokens(value);
+
+        if (!isDefined(tokens)) {
+            return null;
+        }
+
+        const pattern = `%${tokens.map(token => this.escapeSqlLikeValue(token)).join('%')}%`;
+
+        return sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`;
+    }
+
+    private getFlexibleRegexTokens(value: string): string[] | null {
+        const tokens = value.split('.*');
+        const hasOnlySqlSafeTokens = tokens.every(
+            token => isNotEmptyString(token) && !RuleMatcherService.UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN.test(token)
+        );
+
+        return isNotEmptyArray(tokens) && hasOnlySqlSafeTokens ? tokens : null;
     }
 
     private escapeSqlLikeValue(value: string): string {

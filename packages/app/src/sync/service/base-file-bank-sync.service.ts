@@ -11,6 +11,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, bankSyncRepository, db } from '../../@generic/drizzle/db/db';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -142,6 +143,7 @@ export abstract class BaseFileBankSyncService {
 
             for (const bankAccount of bankAccounts) {
                 await this.importAccountTransactions(client, bankAccount, context);
+                await microPause();
             }
 
             await transactionService.updateAllBalances(tx);

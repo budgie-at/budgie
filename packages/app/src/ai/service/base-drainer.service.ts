@@ -249,6 +249,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             emptyFn();
         }
         await this.refreshPending();
+        await microPause();
     }
 
     private scheduleDrainAfter(ms: number): void {

@@ -1,5 +1,6 @@
 import {
     RuleActionTypeEnum,
+    RuleAssociationEnum,
     RuleConditionMatchTypeEnum,
     RuleCreateInputInterface,
     RuleWithRelationsEntityInterface
@@ -12,7 +13,6 @@ import { Alert } from 'react-native';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
@@ -38,8 +38,8 @@ const areConditionsEqual = (inputConditions: RuleConditionInputInterface[], exis
 const findDuplicateRule = (
     conditions: RuleConditionInputInterface[],
     conditionMatchType: RuleConditionMatchTypeEnum,
-    existingRules: RuleWithRelationsEntityInterface[]
-): RuleWithRelationsEntityInterface | undefined =>
+    existingRules: Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS>[]
+): Pick<RuleWithRelationsEntityInterface, 'id' | 'conditionMatchType' | RuleAssociationEnum.CONDITIONS> | undefined =>
     existingRules.find(
         rule =>
             rule.conditionMatchType === conditionMatchType &&
@@ -98,10 +98,12 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> =>
 
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
-    const language = useSetting('language');
     const { openRuleForm } = useRuleFormModal();
 
-    const handleDuplicateRule = (duplicateRule: RuleWithRelationsEntityInterface, ruleInput: RuleCreateInputInterface): Promise<void> => {
+    const handleDuplicateRule = (
+        duplicateRule: Pick<RuleWithRelationsEntityInterface, 'id'>,
+        ruleInput: RuleCreateInputInterface
+    ): Promise<void> => {
         logger.log('handleYes:duplicate-alert:shown', { duplicateRuleId: duplicateRule.id });
 
         return new Promise<void>((resolve, reject) => {
@@ -152,7 +154,7 @@ export const RuleSuggestionCard = (props: Props) => {
             throw new Error('Invalid rule input');
         }
 
-        const existingRules = await ruleRepository.findAllWithActionsAndCategories(language);
+        const existingRules = await ruleRepository.findAllWithConditions();
         const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
         logger.log('handleYes:duplicate-check', {
             existingRulesCount: existingRules.length,

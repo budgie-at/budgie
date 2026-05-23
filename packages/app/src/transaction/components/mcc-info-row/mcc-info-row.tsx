@@ -20,8 +20,12 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
     }
 
     return (
-        <View className="items-center mx-xl">
-            {hasTitle ? <Text className="text-sm text-secondary-foreground font-medium">{transactionTitle}</Text> : null}
+        <View className="items-center mx-xl gap-xs">
+            {hasTitle ? (
+                <Text className="w-full text-sm text-secondary-foreground font-medium text-center" numberOfLines={2}>
+                    {transactionTitle}
+                </Text>
+            ) : null}
 
             {hasMcc ? (
                 <View className="rounded-full py-xs px-md bg-primary/10 border border-primary/20">
