@@ -12,6 +12,7 @@ export default function ConvertToRefundModal() {
     const router = useRouter();
     const [, resolveConvertToRefund, currentParams] = useConvertToRefundModal();
     const resolveConvertToRefundRef = useRef(resolveConvertToRefund);
+    const hadParamsRef = useRef(false);
     const { backgroundColor } = useFormsheetListStyles();
     const refundIncomeTransactionId = currentParams?.refundIncomeTransactionId ?? 0;
     const screenOptions = { contentStyle: { backgroundColor } };
@@ -24,7 +25,11 @@ export default function ConvertToRefundModal() {
     useEffect(() => () => void resolveConvertToRefundRef.current(null, { skipBack: true }), []);
 
     useEffect(() => {
-        if (!currentParams && router.canGoBack()) {
+        if (currentParams) {
+            hadParamsRef.current = true;
+        }
+
+        if (!currentParams && !hadParamsRef.current && router.canGoBack()) {
             router.back();
         }
     }, [currentParams, router]);

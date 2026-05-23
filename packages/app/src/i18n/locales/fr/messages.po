@@ -80,7 +80,7 @@ msgid "{manualReviewCandidateCount, plural, one {# lower-confidence pair} other 
 msgstr "{manualReviewCandidateCount, plural, one {# paire à confiance plus faible} other {# paires à confiance plus faible}}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx:36
-#: src/rule/components/rules-list-page/rules-list-page.tsx:41
+#: src/rule/components/rules-list-page/rules-list-page.tsx:37
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# règle correspondante} other {# règles correspondantes}}"
 
@@ -295,7 +295,7 @@ msgid "Amount"
 msgstr "Montant"
 
 #: src/app/(main)/create-transaction/transfer.tsx:60
-#: src/app/(main)/transactions/[id]/transfer.tsx:69
+#: src/app/(main)/transactions/[id]/transfer.tsx:70
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
@@ -376,7 +376,7 @@ msgstr "Synchroniser automatiquement les comptes et transactions de Monobank"
 msgid "Available Columns"
 msgstr "Colonnes disponibles"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:70
+#: src/transaction/components/statistics-content/statistics-content.tsx:72
 msgid "Balance"
 msgstr "Solde"
 
@@ -657,7 +657,7 @@ msgstr "Impossible de consolider les virements"
 msgid "Could not convert to refund"
 msgstr "Impossible de convertir en remboursement"
 
-#: src/category/components/category-form/category-form.tsx:166
+#: src/category/components/category-form/category-form.tsx:167
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
@@ -719,7 +719,7 @@ msgstr "Impossible d'importer le fichier CSV"
 msgid "Could not load sources. Please try again."
 msgstr "Impossible de charger les sources. Veuillez réessayer."
 
-#: src/category/components/category-form/category-form.tsx:123
+#: src/category/components/category-form/category-form.tsx:125
 msgid "Could not merge category"
 msgstr "Impossible de fusionner la catégorie"
 
@@ -756,7 +756,7 @@ msgstr "Impossible de restaurer le compte."
 msgid "Could not revert consolidation."
 msgstr "Impossible d'annuler la consolidation."
 
-#: src/category/components/category-form/category-form.tsx:166
+#: src/category/components/category-form/category-form.tsx:167
 msgid "Could not save category"
 msgstr "Impossible d'enregistrer la catégorie"
 
@@ -780,7 +780,7 @@ msgstr "Impossible de configurer la synchronisation"
 msgid "Could not unconsolidate transaction."
 msgstr "Impossible de déconsolider la transaction."
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:64
+#: src/rule/components/rule-update-card/rule-update-card.tsx:66
 #: src/rule/hooks/use-rule-form.hook.ts:158
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts:44
 msgid "Could not update rule"
@@ -826,7 +826,7 @@ msgstr "Créer quand même"
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
-#: src/category/components/category-form/category-form.tsx:67
+#: src/category/components/category-form/category-form.tsx:69
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
@@ -847,7 +847,7 @@ msgstr "Créez-en un pour commencer."
 msgid "Create Rule"
 msgstr "Créer une règle"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:91
+#: src/rule/components/rules-list-page/rules-list-page.tsx:86
 msgid "Create rules to automatically categorize and tag your bank transactions"
 msgstr "Créez des règles pour catégoriser et taguer automatiquement vos transactions bancaires"
 
@@ -1006,7 +1006,7 @@ msgstr "p. ex. Courses, Divertissement"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/category/components/category-form/category-form.tsx:67
+#: src/category/components/category-form/category-form.tsx:69
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
@@ -1014,11 +1014,11 @@ msgstr "Modifier la catégorie"
 msgid "Edit existing"
 msgstr "Modifier l'existante"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:71
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:74
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -1034,7 +1034,7 @@ msgstr "Modifier l'étiquette"
 msgid "Edit Transaction"
 msgstr "Modifier la transaction"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:80
+#: src/app/(main)/transactions/[id]/transfer.tsx:81
 msgid "Edit Transfer"
 msgstr "Modifier le transfert"
 
@@ -1353,7 +1353,7 @@ msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:101
-#: src/transaction/components/statistics-content/statistics-content.tsx:69
+#: src/transaction/components/statistics-content/statistics-content.tsx:71
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx:43
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1529,7 +1529,7 @@ msgstr "Code marchand"
 msgid "Merge high-confidence duplicate transfer transactions"
 msgstr "Fusionner les virements en double de haute confiance"
 
-#: src/category/components/category-form/category-form.tsx:213
+#: src/category/components/category-form/category-form.tsx:214
 msgid "Merge into another category"
 msgstr "Fusionner avec une autre catégorie"
 
@@ -1687,7 +1687,7 @@ msgstr "Aucun paiement récurrent détecté"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:89
+#: src/rule/components/rules-list-page/rules-list-page.tsx:84
 msgid "No Rules Yet"
 msgstr "Aucune règle pour l'instant"
 
@@ -1802,7 +1802,7 @@ msgstr "Les transactions importées d'origine seront restaurées et la transacti
 msgid "Original transaction"
 msgstr "Transaction d’origine"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:59
+#: src/transaction/components/statistics-content/statistics-content.tsx:61
 msgid "Overview"
 msgstr "Aperçu"
 
@@ -1859,8 +1859,8 @@ msgstr "Veuillez réessayer"
 #: src/app/(tabs)/settings/categories.tsx:75
 #: src/app/(tabs)/settings/tags.tsx:62
 #: src/app/(tabs)/settings/tags.tsx:76
-#: src/category/components/category-form/category-form.tsx:123
-#: src/category/components/category-form/category-form.tsx:167
+#: src/category/components/category-form/category-form.tsx:125
+#: src/category/components/category-form/category-form.tsx:168
 #: src/tag/components/tag-form/tag-form.tsx:112
 #: src/tag/components/tag-form/tag-form.tsx:156
 msgid "Please try again later"
@@ -2033,11 +2033,11 @@ msgstr "Règle"
 msgid "Rule created"
 msgstr "Règle créée"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:63
+#: src/rule/components/rule-update-card/rule-update-card.tsx:65
 msgid "Rule updated"
 msgstr "Règle mise à jour"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx:72
+#: src/rule/components/rules-list-page/rules-list-page.tsx:68
 msgid "Rules"
 msgstr "Règles"
 
@@ -2136,7 +2136,7 @@ msgstr "Sécurité"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/category/components/category-form/category-form.tsx:107
+#: src/category/components/category-form/category-form.tsx:109
 msgid "Select a category to merge into"
 msgstr "Sélectionnez une catégorie pour fusionner"
 
@@ -2336,7 +2336,7 @@ msgstr "Dépenses par catégorie"
 msgid "Spending by Tag"
 msgstr "Dépenses par étiquette"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx:65
+#: src/transaction/components/statistics-content/statistics-content.tsx:67
 msgid "Spent"
 msgstr "Dépensé"
 
@@ -2377,7 +2377,7 @@ msgstr "Abonnements"
 msgid "Swap accounts"
 msgstr "Échanger les comptes"
 
-#: src/category/components/category-card/category-card.tsx:29
+#: src/category/components/category-card/category-card.tsx:20
 #: src/tag/components/tag-card/tag-card.tsx:23
 msgid "Swipe left"
 msgstr "Faites glisser vers la gauche"
@@ -2655,7 +2655,7 @@ msgstr "Type ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ukrainien"
 
-#: src/category/components/stats-by-categories/stats-by-categories.tsx:28
+#: src/category/components/stats-by-categories/stats-by-categories.tsx:30
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
@@ -2688,7 +2688,7 @@ msgstr "À venir"
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
-#: src/rule/components/rule-update-card/rule-update-card.tsx:62
+#: src/rule/components/rule-update-card/rule-update-card.tsx:64
 msgid "Update rule?"
 msgstr "Mettre à jour la règle ?"
 

@@ -82,6 +82,48 @@ describe('consolidation/refund-pair-by-title', () => {
         expect(expenseCandidates).toEqual([]);
     });
 
+    it('promotes the original expense when a localized cancellation prefix leaves the same title', async () => {
+        const { expense, refunds, result } = await runRefundScenario({
+            expenseAmount: 898 * PRECISION,
+            refundAmounts: [898 * PRECISION],
+            title: 'Lime',
+            refundTitle: 'Скасування. Lime'
+        });
+
+        expect(result.consolidated).toBe(1);
+
+        const reparentedRefund = fetchTransactionById(refunds[0].id);
+        expect(reparentedRefund.consolidationParentTransactionId).toBe(expense.id);
+
+        const promotedExpense = fetchTransactionById(expense.id);
+        expect(promotedExpense.consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+    });
+
+    it('ranks a localized cancellation prefix as a single automatic refund candidate', async () => {
+        const account = seed.account({ externalId: 'mono-card' });
+        const { expense, refunds } = seedRefundedExpense({
+            accountId: account.id,
+            expenseAmount: 898 * PRECISION,
+            refundAmounts: [898 * PRECISION],
+            title: 'Lime',
+            refundTitle: 'Скасування. Lime'
+        });
+
+        const candidates = await refundPairRepository.findCandidates();
+
+        expect(candidates).toEqual([
+            {
+                confidenceBucket: 'AUTO_REFUND_LOCALIZED_CANCELLATION_TITLE',
+                matchType: 'localized-cancellation-title',
+                accountId: account.id,
+                expenseTransactionId: expense.id,
+                expenseEntryAmount: 898 * PRECISION,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: 898 * PRECISION
+            }
+        ]);
+    });
+
     it('does NOT consolidate when titles differ', async () => {
         const account = seed.account({ externalId: 'mono-card' });
         seedRefundedExpense({
