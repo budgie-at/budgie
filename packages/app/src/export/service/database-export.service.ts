@@ -21,7 +21,7 @@ class DatabaseExportService {
             destinationFile.delete();
         }
 
-        sourceFile.copy(destinationFile);
+        await sourceFile.copy(destinationFile);
 
         const canShare = await isAvailableAsync();
         if (canShare) {

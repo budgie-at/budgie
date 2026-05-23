@@ -1,7 +1,7 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useEffect } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, ViewStyle } from 'react-native';
+import Animated, { AnimatedStyle, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,7 +14,7 @@ interface Props {
     readonly label: string;
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
     readonly variant: ColorPaletteVariant;
-    readonly animatedStyle?: StyleProp<ViewStyle>;
+    readonly animatedStyle?: AnimatedStyle<ViewStyle>;
     readonly testID?: string;
     readonly selectedTestID?: string;
     readonly onPress: () => void;
