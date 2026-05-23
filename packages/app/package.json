@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "5.22.0",
+    "version": "5.23.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -31,7 +31,7 @@
         "@formatjs/intl": "^3.1.8",
         "@formatjs/intl-pluralrules": "^6.3.7",
         "@hookform/resolvers": "^5.2.2",
-        "@legendapp/list": "^2.0.18",
+        "@legendapp/list": "^3.0.0-beta.56",
         "@lingui/core": "^5.7.0",
         "@lingui/react": "^5.7.0",
         "@react-native-masked-view/masked-view": "^0.3.2",

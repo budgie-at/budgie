@@ -1,13 +1,16 @@
-import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, inArray, ne, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
@@ -21,35 +24,35 @@ import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/tran
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { StatisticsFilterInterface } from '../interface/statistics-filter.interface';
 
-export class StatisticsRepository extends BaseTransactionFilterRepository {
-    /* jscpd:ignore-start */
-    private transactionRelations = {
-        [TransactionAssociationEnum.ENTRIES]: {
-            with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: {
-                    with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true
-                    }
-                },
-                [TransactionEntryAssociationEnum.CATEGORY]: true,
-                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-            }
-        },
-        [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-            with: {
-                [TransactionTagsAssociationEnum.TAG]: true
-            }
-        },
-        [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-        [TransactionAssociationEnum.TO_ACCOUNT]: true
-    } as const;
-    /* jscpd:ignore-end */
+/* eslint-disable max-lines -- StatisticsRepository owns multiple cohesive SQL aggregation pipelines (income/expense × category/tag) that share private helpers; splitting would fragment a single logical SQL surface. */
 
-    getTransactions(filters: StatisticsFilterInterface, limit: number) {
+export class StatisticsRepository extends BaseTransactionFilterRepository {
+    getTransactions(filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) {
         const transactionIds = this.buildStatisticsTransactionIdsQuery(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: this.transactionRelations,
+            /* jscpd:ignore-start */
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.ACCOUNT]: {
+                            with: {
+                                [AccountAssociationEnum.INSTRUMENT]: true
+                            }
+                        },
+                        [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
+                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                    }
+                },
+                [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+                    with: {
+                        [TransactionTagsAssociationEnum.TAG]: true
+                    }
+                },
+                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+                [TransactionAssociationEnum.TO_ACCOUNT]: true
+            },
+            /* jscpd:ignore-end */
             where: inArray(TransactionEntityTable.id, transactionIds),
             orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
             limit
@@ -92,12 +95,20 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .where(and(baseWhere, this.buildLedgerEntryCondition()));
     }
 
-    getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildCategoryBreakdownQuery(this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME), defaultInstrumentId);
+    getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
+        return this.buildCategoryBreakdownQuery(
+            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME),
+            defaultInstrumentId,
+            language
+        );
     }
 
-    getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildCategoryBreakdownQuery(this.buildTransactionIdsQuery(filters, TransactionTypeEnum.EXPENSE), defaultInstrumentId);
+    getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
+        return this.buildCategoryBreakdownQuery(
+            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.EXPENSE),
+            defaultInstrumentId,
+            language
+        );
     }
 
     getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
@@ -175,20 +186,29 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     /* jscpd:ignore-start */
     private buildCategoryBreakdownQuery(
         transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>,
-        defaultInstrumentId: number
+        defaultInstrumentId: number,
+        language: LanguageEnum
     ) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
         const amountSql = this.buildRefundAwareAmountSql(exchangeRateSql);
+        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
 
         return this.db
             .select({
-                category: CategoryEntityTable,
+                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
                 amount: amountSql.as('amount')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .leftJoin(
+                DefaultCategoryTranslationEntityTable,
+                and(
+                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                    eq(DefaultCategoryTranslationEntityTable.language, language)
+                )
+            )
             .where(
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
@@ -196,7 +216,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
                 )
             )
-            .groupBy(TransactionEntryEntityTable.categoryId)
+            .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
             .orderBy(desc(amountSql));
     }
 

@@ -923,10 +923,10 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Label.Test17_Direct_Create'
+      id: 'TransactionCard.Label.Store_C_Kyiv'
     timeout: 10000
 - tapOn:
-    id: 'TransactionCard.Label.Test17_Direct_Create'
+    id: 'TransactionCard.Label.Store_C_Kyiv'
 - waitForAnimationToEnd
 
 - tapOn:
@@ -971,6 +971,8 @@ env:
     id: 'RuleForm.Condition.0.FieldSelector'
 - assertVisible:
     id: 'RuleForm.Condition.1.FieldSelector'
+- assertVisible:
+    id: 'RuleForm.Condition.2.FieldSelector'
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd

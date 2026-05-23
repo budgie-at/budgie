@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.23.0](https://github.com/budgie-at/budgie/compare/v5.22.7...v5.23.0) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** widen categoriesMap value type so categoryId nullability flows ([8c33537](https://github.com/budgie-at/budgie/commit/8c335378059af63e87f989c40437832c7ac268b7))
+- **contracts:** extract listOrderedByOperatedAt to dedupe findMany shape ([819fb25](https://github.com/budgie-at/budgie/commit/819fb251671ae418033a96f780950f7039db1400))
+- **contracts:** use raw SQL for translation subquery in relation extras ([3035365](https://github.com/budgie-at/budgie/commit/30353658492acb7cf47f7981f398254febe2c174))
+- keep preview deploy comments best-effort ([4f4bb37](https://github.com/budgie-at/budgie/commit/4f4bb373a30859e6ad25cc49a4f031f673e03ef3))
+- localize default category titles across pattern queries and exports ([1618e17](https://github.com/budgie-at/budgie/commit/1618e1751ed4908e6a85c560592077c31955fb02))
+
+### Features
+
+- **app:** translate default category titles via id-keyed message map ([0605bd9](https://github.com/budgie-at/budgie/commit/0605bd9fa3370b21ea536b1133425271d30d0c79)), closes [#438](https://github.com/budgie-at/budgie/issues/438)
+
+### Reverts
+
+- **contracts:** drop LanguageEnum IT/PL/PT/NL expansion ([60d842e](https://github.com/budgie-at/budgie/commit/60d842e014091d5be4d9e088c20528c66121722f))
+
+## [5.22.7](https://github.com/budgie-at/budgie/compare/v5.22.6...v5.22.7) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** centralize LegendList v3 defaults ([ad62226](https://github.com/budgie-at/budgie/commit/ad622262b573d9c25c62155b61e18bcff513ae03))
+- **app:** migrate LegendList to v3 beta ([88e295c](https://github.com/budgie-at/budgie/commit/88e295cad477c4074f7f7a202f073fde92bafe66))
+
+## [5.22.6](https://github.com/budgie-at/budgie/compare/v5.22.5...v5.22.6) (2026-05-23)
+
+### Bug Fixes
+
+- **app:** stabilize list item sizing ([2f7f24c](https://github.com/budgie-at/budgie/commit/2f7f24cf80fb28d54ca8de1a15dd125640950a6e))
+
+## [5.22.5](https://github.com/budgie-at/budgie/compare/v5.22.4...v5.22.5) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** keep generated rules SQL-pushable ([198229c](https://github.com/budgie-at/budgie/commit/198229ce50193f559bda8c23c245de63fbb4bfad))
+
+## [5.22.4](https://github.com/budgie-at/budgie/compare/v5.22.3...v5.22.4) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize symbol quick rules ([ef21022](https://github.com/budgie-at/budgie/commit/ef21022b9522b9f6af9eb8e72700ce347853b817))
+- **app:** yield between db batches ([05c6382](https://github.com/budgie-at/budgie/commit/05c63826b5809992b8e31b88a4a25db1ed602a15))
+
+## [5.22.3](https://github.com/budgie-at/budgie/compare/v5.22.2...v5.22.3) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** clamp quick form transaction title ([7e870f2](https://github.com/budgie-at/budgie/commit/7e870f2839888b4e448ba6900d05bd5d6549211e))
+
+## [5.22.2](https://github.com/budgie-at/budgie/compare/v5.22.1...v5.22.2) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize quick rule hints ([411870b](https://github.com/budgie-at/budgie/commit/411870be60366bee77cb5cff5a9bd19bf61e426a))
+
+## [5.22.1](https://github.com/budgie-at/budgie/compare/v5.22.0...v5.22.1) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** consolidate bridge transfer leftovers ([01e27d9](https://github.com/budgie-at/budgie/commit/01e27d98094a66d347995caba3ae0d79f93857b8))
+- **app:** consolidate interbank fee transfers ([1b83bfb](https://github.com/budgie-at/budgie/commit/1b83bfbd355b56a83f15597beb80bd13a30383aa))
+- **app:** consolidate legacy same-bank fee transfers ([942a5e8](https://github.com/budgie-at/budgie/commit/942a5e88b2ae43f8e80e0c13793695ecf5295b33))
+- **app:** use transaction source for interbank consolidation ([a4cd7ba](https://github.com/budgie-at/budgie/commit/a4cd7baef6f2bb11fe915e3257307e5d4151148a))
+
 # [5.22.0](https://github.com/budgie-at/budgie/compare/v5.21.5...v5.22.0) (2026-05-21)
 
 ### Bug Fixes

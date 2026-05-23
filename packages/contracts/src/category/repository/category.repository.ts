@@ -2,8 +2,10 @@ import { and, count, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { DB } from '../../@generic/type/db.type';
+import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
@@ -25,21 +27,22 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         });
     }
 
-    findAll() {
-        return this.db.query.CategoryEntityTable.findMany();
+    findAll(language: LanguageEnum) {
+        return this.buildLocalizedCategoryBaseQuery(language);
     }
 
-    findBySearchQuery(search: string, includeDefault: boolean) {
+    findBySearchQuery(search: string, includeDefault: boolean, language: LanguageEnum) {
         const trimmed = search.trim();
         const baseFilter = includeDefault
             ? eq(CategoryEntityTable.isSystemCategory, false)
             : and(eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
+        const sortedByUsage = this.buildLocalizedCategoryBaseQuery(language).leftJoin(
+            TransactionEntryEntityTable,
+            eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId)
+        );
 
         if (!isNotEmptyString(trimmed)) {
-            return this.db
-                .select(getTableColumns(CategoryEntityTable))
-                .from(CategoryEntityTable)
-                .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            return sortedByUsage
                 .where(baseFilter)
                 .groupBy(CategoryEntityTable.id)
                 .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
@@ -49,13 +52,11 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         const searchExpr = or(
             like(CategoryEntityTable.titleSearch, pattern),
             like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
-            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern)
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern),
+            like(sql<string>`LOWER(COALESCE(${DefaultCategoryTranslationEntityTable.title}, ''))`, pattern)
         );
 
-        return this.db
-            .select(getTableColumns(CategoryEntityTable))
-            .from(CategoryEntityTable)
-            .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+        return sortedByUsage
             .where(and(searchExpr, baseFilter))
             .groupBy(CategoryEntityTable.id)
             .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
@@ -99,10 +100,8 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return category;
     }
 
-    findById(id: number) {
-        return this.db.query.CategoryEntityTable.findFirst({
-            where: eq(CategoryEntityTable.id, id)
-        });
+    findById(id: number, language: LanguageEnum) {
+        return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.id, id)).limit(1);
     }
 
     async deleteById(id: number): Promise<void> {
@@ -155,5 +154,25 @@ export class CategoryRepository extends TranslatableRepositoryBase {
             .update(CategoryEntityTable)
             .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
             .where(eq(CategoryEntityTable.id, id));
+    }
+
+    private selectWithLocalizedTitle() {
+        return {
+            ...getTableColumns(CategoryEntityTable),
+            title: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`.as('title')
+        };
+    }
+
+    private buildLocalizedCategoryBaseQuery(language: LanguageEnum) {
+        return this.db
+            .select(this.selectWithLocalizedTitle())
+            .from(CategoryEntityTable)
+            .leftJoin(
+                DefaultCategoryTranslationEntityTable,
+                and(
+                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                    eq(DefaultCategoryTranslationEntityTable.language, language)
+                )
+            );
     }
 }

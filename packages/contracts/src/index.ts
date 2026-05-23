@@ -130,6 +130,13 @@ export { CategoryUpdateEntitySchema } from './category/schema/category-update-en
 
 export { CategoryRepository } from './category/repository/category.repository';
 
+export { DefaultCategoryTranslationEntityTable } from './category-translation/table/default-category-translation-entity.table';
+export { DefaultCategoryTranslationEntityRelations } from './category-translation/relations/default-category-translation-entity.relations';
+
+export { DefaultCategoryTranslationEntitySchema } from './category-translation/schema/default-category-translation-entity.schema';
+
+export type { DefaultCategoryTranslationEntityInterface } from './category-translation/entity/default-category-translation-entity.interface';
+
 export { MCC_GROUP_TYPE_MAX_LENGTH } from './mcc-group/constant/mcc-group-type-max-length.constant';
 export { MCC_GROUP_DESCRIPTION_MAX_LENGTH } from './mcc-group/constant/mcc-group-description-max-length.constant';
 
@@ -246,6 +253,7 @@ export type { TransferPairCandidateInterface } from './transaction/interface/tra
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
+export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundCandidateInterface } from './transaction/interface/refund-candidate.interface';
