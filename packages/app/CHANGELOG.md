@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.22.4](https://github.com/budgie-at/budgie/compare/v5.22.3...v5.22.4) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize symbol quick rules ([ef21022](https://github.com/budgie-at/budgie/commit/ef21022b9522b9f6af9eb8e72700ce347853b817))
+- **app:** yield between db batches ([05c6382](https://github.com/budgie-at/budgie/commit/05c63826b5809992b8e31b88a4a25db1ed602a15))
+
+## [5.22.3](https://github.com/budgie-at/budgie/compare/v5.22.2...v5.22.3) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** clamp quick form transaction title ([7e870f2](https://github.com/budgie-at/budgie/commit/7e870f2839888b4e448ba6900d05bd5d6549211e))
+
+## [5.22.2](https://github.com/budgie-at/budgie/compare/v5.22.1...v5.22.2) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** stabilize quick rule hints ([411870b](https://github.com/budgie-at/budgie/commit/411870be60366bee77cb5cff5a9bd19bf61e426a))
+
+## [5.22.1](https://github.com/budgie-at/budgie/compare/v5.22.0...v5.22.1) (2026-05-22)
+
+### Bug Fixes
+
+- **app:** consolidate bridge transfer leftovers ([01e27d9](https://github.com/budgie-at/budgie/commit/01e27d98094a66d347995caba3ae0d79f93857b8))
+- **app:** consolidate interbank fee transfers ([1b83bfb](https://github.com/budgie-at/budgie/commit/1b83bfbd355b56a83f15597beb80bd13a30383aa))
+
 # [5.22.0](https://github.com/budgie-at/budgie/compare/v5.21.5...v5.22.0) (2026-05-21)
 
 ### Bug Fixes

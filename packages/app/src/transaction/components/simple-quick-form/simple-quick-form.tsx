@@ -172,7 +172,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const isSplitActive = splitEntryCount > 1;
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const isCategoryUserConfirmed = !isDefined(categorySource) || categorySource === CategorySourceEnum.USER;
+    const isCategoryUserConfirmed = categorySource !== CategorySourceEnum.MCC_DEFAULT;
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
