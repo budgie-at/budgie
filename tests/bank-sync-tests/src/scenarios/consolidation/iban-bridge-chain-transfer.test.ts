@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
 import {
+    ExchangeRateCreateEntityInterface,
+    ExchangeRateEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionCreateEntityInterface,
     TransactionEntityTable,
@@ -22,9 +24,9 @@ import {
     testDb
 } from '../../harness';
 
-const SOURCE_IBAN = 'UA-SOURCE-EUR';
-const BRIDGE_IBAN = 'UA-BRIDGE-UAH';
-const TARGET_IBAN = 'UA-TARGET-UAH';
+const SOURCE_IBAN = 'UA003220010000SOURCEEUR';
+const BRIDGE_IBAN = 'UA003220010000BRIDGEUAH';
+const TARGET_IBAN = 'UA003220010000TARGETUAH';
 const EUR_AMOUNT = 1_658_290_000;
 const UAH_AMOUNT = 84_456_700_000;
 const EUR_TO_UAH_RATE = UAH_AMOUNT / EUR_AMOUNT;
@@ -133,6 +135,72 @@ const seedDirectTransfer = (
     return directTransfer;
 };
 
+const seedLegacyDirectBridgeTransfer = (operatedAt: Date, bridgeAccountId: number, targetAccountId: number) => {
+    const directTransfer = testDb
+        .insert(TransactionEntityTable)
+        .values({
+            type: TransactionTypeEnum.TRANSFER,
+            title: 'На чорну картку',
+            externalId: null,
+            externalSource: null,
+            operatedAt,
+            exchangeRate: 1,
+            fromAccountId: bridgeAccountId,
+            toAccountId: targetAccountId,
+            comment: '',
+            needsEmbedding: false,
+            consolidationParentTransactionId: null,
+            consolidationType: null,
+            updatedBy: null
+        } satisfies TransactionCreateEntityInterface)
+        .returning()
+        .get();
+
+    testDb
+        .insert(TransactionEntryEntityTable)
+        .values([
+            {
+                transactionId: directTransfer.id,
+                accountId: bridgeAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.CREDIT,
+                amount: UAH_AMOUNT,
+                externalId: null,
+                exchangeRate: 1,
+                toIban: TARGET_IBAN,
+                originalTransactionId: null
+            },
+            {
+                transactionId: directTransfer.id,
+                accountId: targetAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.DEBIT,
+                amount: UAH_AMOUNT,
+                externalId: null,
+                exchangeRate: 1,
+                toIban: null,
+                originalTransactionId: null
+            }
+        ] satisfies TransactionEntryCreateEntityInterface[])
+        .run();
+
+    return directTransfer;
+};
+
+const seedLegacyExchangeRate = (sourceInstrumentId: number, bridgeInstrumentId: number): void => {
+    testDb
+        .insert(ExchangeRateEntityTable)
+        .values({
+            source: 'test',
+            baseInstrumentId: sourceInstrumentId,
+            quoteInstrumentId: bridgeInstrumentId,
+            rate: EUR_TO_UAH_RATE
+        } satisfies ExchangeRateCreateEntityInterface)
+        .run();
+};
+
 const fetchMovedSourceIds = (canonicalId: number): number[] => {
     const movedEntries = testDb
         .select()
@@ -215,6 +283,44 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             targetAccount.id
         );
         const sourceIds = [directTransfer.id, bridgeIncome.id, bridgeExpense.id];
+
+        expectSourcesParented(canonicalId, sourceIds);
+        expectMovedSources(canonicalId, [directTransfer.id, ...sourceIds]);
+    });
+
+    it('collapses a legacy bridge pair around an existing bridge-to-target transfer without entry IBANs', async () => {
+        const operatedAt = new Date(2026, 0, 5, 14, 47, 0);
+        const { transferMcc, sourceAccount, bridgeAccount, targetAccount } = seedBridgeAccounts();
+        const directTransfer = seedLegacyDirectBridgeTransfer(operatedAt, bridgeAccount.id, targetAccount.id);
+        const sourceExpense = seedBankPair.expense(
+            { externalId: 'legacy-source-expense', operatedAt },
+            {
+                accountId: sourceAccount.id,
+                amount: EUR_AMOUNT,
+                exchangeRate: UAH_TO_EUR_RATE,
+                mccCategoryId: transferMcc.id
+            }
+        );
+        const bridgeIncome = seedBankPair.income(
+            { externalId: 'legacy-bridge-income', operatedAt },
+            {
+                accountId: bridgeAccount.id,
+                amount: UAH_AMOUNT,
+                exchangeRate: EUR_TO_UAH_RATE,
+                mccCategoryId: transferMcc.id
+            }
+        );
+
+        seedLegacyExchangeRate(sourceAccount.instrumentId, bridgeAccount.instrumentId);
+
+        await expectSingleConsolidation();
+
+        const canonicalId = expectCanonicalTransfer(
+            TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+            sourceAccount.id,
+            targetAccount.id
+        );
+        const sourceIds = [directTransfer.id, sourceExpense.id, bridgeIncome.id];
 
         expectSourcesParented(canonicalId, sourceIds);
         expectMovedSources(canonicalId, [directTransfer.id, ...sourceIds]);

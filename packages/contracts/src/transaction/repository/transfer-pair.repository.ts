@@ -12,7 +12,10 @@ import {
 } from './sql-factory/transfer-pair-cash-withdrawal-sql.factory';
 import { IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-canonical-duplicate-sql.factory';
 import { IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-chain-sql.factory';
-import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
+import {
+    IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL,
+    LEGACY_DIRECT_BRIDGE_TRANSFER_CANDIDATES_SQL
+} from './sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { AtmCashWithdrawalCandidateInterface } from '../interface/atm-cash-withdrawal-candidate.interface';
@@ -81,7 +84,11 @@ export class TransferPairRepository {
         error => `throw error=${getErrorMessage(error)}`
     )
     async findIbanBridgeTransferCandidates(): Promise<IbanBridgeTransferCandidateInterface[]> {
-        const sql = IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL;
+        const sql = `
+            SELECT * FROM (${IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL})
+            UNION ALL
+            SELECT * FROM (${LEGACY_DIRECT_BRIDGE_TRANSFER_CANDIDATES_SQL})
+        `;
 
         return this.db.$client.getAllAsync<IbanBridgeTransferCandidateInterface>(sql);
     }
