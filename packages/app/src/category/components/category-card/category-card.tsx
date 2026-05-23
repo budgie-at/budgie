@@ -8,12 +8,18 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { CategoryCardSelector } from './category-card.selector';
 
 interface Props {
-    category: CategoryEntityInterface;
-    onOpen: (category: CategoryEntityInterface) => void;
+    readonly category: CategoryEntityInterface;
+    readonly onOpen: (category: CategoryEntityInterface) => void;
 }
 
 export const CategoryCard = ({ onOpen, category }: Props) => {
     const handleOpen = () => void onOpen(category);
+    const { isDefault } = category;
+    const swipeLeftHint = isDefault ? null : (
+        <Text className="text-secondary-foreground font-medium text-xs ml-auto">
+            <Trans>Swipe left</Trans>
+        </Text>
+    );
 
     return (
         <SimpleHorizontalCell
@@ -24,12 +30,8 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
                 </View>
             }
             title={category.title}
-            right={
-                <Text className="text-secondary-foreground font-medium text-xs ml-auto">
-                    <Trans>Swipe left</Trans>
-                </Text>
-            }
-            onPress={handleOpen}
+            right={swipeLeftHint}
+            {...(!isDefault && { onPress: handleOpen })}
             className="flex-row gap-x-xl items-center"
         />
     );

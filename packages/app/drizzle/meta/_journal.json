@@ -169,6 +169,13 @@
             "when": 1779148800000,
             "tag": "0023_add_mcc_default_category",
             "breakpoints": true
+        },
+        {
+            "idx": 24,
+            "version": "6",
+            "when": 1779148900000,
+            "tag": "0024_default_category_translations",
+            "breakpoints": true
         }
     ]
 }

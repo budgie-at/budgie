@@ -21,7 +21,7 @@ import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
@@ -40,8 +40,7 @@ const logger = getLogger('ImporterService');
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
-    private categoriesMap: Record<string, CategoryEntityInterface> = {};
-    private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
+    private categoriesMap: Record<string, CategoryEntityInterface | undefined> = {};
     private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
@@ -49,7 +48,6 @@ export class ImporterService {
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);
         this.instrumentsMap = await this.initializeInstruments();
         this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
 
@@ -286,7 +284,7 @@ export class ImporterService {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
-        const explicitCategory = this.categoriesMap[normalizedRow.category] ?? this.fallbackCategory;
+        const explicitCategory = this.categoriesMap[normalizedRow.category];
         const operatedAt = this.parseDate(normalizedRow.operatedAt);
         const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
@@ -295,9 +293,6 @@ export class ImporterService {
 
         if (!isDefined(toAccount)) {
             throw new Error(`To Account ${normalizedRow.toAccount} not found`);
-        }
-        if (!isDefined(explicitCategory)) {
-            throw new Error(`Category "${normalizedRow.category}" not found`);
         }
         if (!isDefined(operatedAt) || isNaN(operatedAt.getTime())) {
             throw new Error(`Date "${normalizedRow.operatedAt}" is invalid`);
@@ -314,9 +309,8 @@ export class ImporterService {
 
         const mccLookup = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoryLookupMap.get(normalizedRow.mcc) ?? null) : null;
         const mccCategoryId = mccLookup?.id ?? null;
-        const hasExplicitCategory = isNotEmptyString(normalizedRow.category);
-        const useMccDefault = !hasExplicitCategory && isDefined(mccLookup) && isPositiveNumber(mccLookup.defaultCategoryId);
-        const categoryId = useMccDefault ? mccLookup.defaultCategoryId : explicitCategory.id;
+        const useMccDefault = !isDefined(explicitCategory) && isDefined(mccLookup) && isPositiveNumber(mccLookup.defaultCategoryId);
+        const categoryId = useMccDefault ? mccLookup.defaultCategoryId : (explicitCategory?.id ?? null);
         const categorySource = useMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
 
         return {
