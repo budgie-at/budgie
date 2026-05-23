@@ -20,6 +20,7 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildIncomeEntry } from '../../../../transaction/utils/build-income-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
 
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
@@ -112,7 +113,10 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateTransactionFormP
 /* jscpd:ignore-start */
 export default function UpdateIncomeTransactionPage() {
     const { id } = useLocalSearchParams<IdParamInterface>();
-    const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
+    const transactionId = Number(id);
+    const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
+    const parentTransactionId = transaction?.consolidationParentTransactionId ?? 0;
+    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(parentTransactionId);
 
     if (isLoading) {
         return null;
@@ -122,6 +126,10 @@ export default function UpdateIncomeTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return <UpdateIncomeForm transaction={transaction} transactionId={Number(id)} />;
+    if (isDefined(transaction.consolidationParentTransactionId)) {
+        return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+    }
+
+    return <UpdateIncomeForm transaction={transaction} transactionId={transactionId} />;
 }
 /* jscpd:ignore-end */

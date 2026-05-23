@@ -1,5 +1,5 @@
 import { Stack, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -11,6 +11,7 @@ import { useConsolidationSourceModal } from '../transaction/context/consolidatio
 export default function ConsolidationSourceModal() {
     const router = useRouter();
     const [, resolveConsolidationSource, currentParams] = useConsolidationSourceModal();
+    const hadParamsRef = useRef(false);
     const { backgroundColor } = useFormsheetListStyles();
 
     const screenOptions = { contentStyle: { backgroundColor } };
@@ -34,7 +35,11 @@ export default function ConsolidationSourceModal() {
     );
 
     useEffect(() => {
-        if (!currentParams) {
+        if (currentParams) {
+            hadParamsRef.current = true;
+        }
+
+        if (!currentParams && !hadParamsRef.current && router.canGoBack()) {
             router.back();
         }
     }, [currentParams, router]);
