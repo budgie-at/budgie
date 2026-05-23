@@ -4,7 +4,7 @@ import { MONOBANK_MAX_PERIOD_SECONDS } from '../constant/monobank-max-period-sec
 import { MONOBANK_RATE_LIMIT_MS } from '../constant/monobank-rate-limit-ms.constant';
 
 export class MonobankSyncService extends BaseBankSyncService {
-    private static readonly DORMANCY_MONTHS = 6;
+    private static readonly DORMANCY_MONTHS = 3;
 
     constructor(token: string) {
         super(new MonobankClient(token), {

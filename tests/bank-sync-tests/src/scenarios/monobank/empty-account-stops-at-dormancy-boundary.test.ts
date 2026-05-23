@@ -6,10 +6,10 @@ import { describe, expect, it } from 'vitest';
 import { fetchBankSyncById, fetchPersistedMonobankTransactions, setupBackwardSweepFixture } from '../../harness';
 import { monobankServer } from '../../harness/monobank/monobank-server';
 
-const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 7;
+const EXPECTED_DORMANCY_BOUNDARY_REQUESTS = 4;
 
 describe('monobank/empty-account-stops-at-dormancy-boundary', () => {
-    it('records the first empty `from` then walks 6 more months past it before terminating', async () => {
+    it('records the first empty `from` then walks 3 more months past it before terminating', async () => {
         const bankSync = setupBackwardSweepFixture(new Date());
 
         let monobankRequestCount = 0;
