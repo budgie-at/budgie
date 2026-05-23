@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { budgetCategoryLimitRepository, budgetRepository, categoryRepository, settingsRepository } from '../../@generic/drizzle/db/db';
+import { budgetCategoryLimitRepository, budgetRepository, categoryRepository } from '../../@generic/drizzle/db/db';
 import { postLocalNotification } from '../../@generic/utils/request-push-permission.util';
 import { BUDGET_ALERT_MONITOR_TASK } from '../constant/budget-alert-monitor-task.constant';
 import { BudgetAlertScopeEnum } from '../enum/budget-alert-scope.enum';
@@ -31,7 +31,7 @@ class BudgetAlertMonitorService {
         }
 
         const periodStartMs = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date()).periodStart.getTime();
-        const spent = await this.computeSpent(budget.periodStartDay, budget.useLastDayOfMonth);
+        const spent = await this.computeSpent(budget.periodStartDay, budget.useLastDayOfMonth, budget.instrumentId);
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
         const newTriggers = await budgetAlertService.evaluate(budget, spent, categoryLimits);
 
@@ -51,11 +51,12 @@ class BudgetAlertMonitorService {
         });
     }
 
-    private async computeSpent(periodStartDay: number, useLastDayOfMonth: boolean): Promise<BudgetSpentInterface> {
+    private async computeSpent(
+        periodStartDay: number,
+        useLastDayOfMonth: boolean,
+        baseInstrumentId: number
+    ): Promise<BudgetSpentInterface> {
         const { periodStart, nextPeriodStart } = computePeriodWindow(periodStartDay, useLastDayOfMonth, new Date());
-
-        const settings = await settingsRepository.getSettings();
-        const baseInstrumentId = settings.defaultInstrumentId;
 
         if (!isPositiveNumber(baseInstrumentId)) {
             return { spentOverall: 0, spentByCategory: [], fallbackCount: 0 };

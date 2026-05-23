@@ -3,7 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { FormPage } from '../../../@generic/component/form-page/form-page';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
@@ -13,6 +13,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetSelector } from '../../../budget/budget.selector';
 import { BudgetCategoryLimitsField } from '../../../budget/components/budget-category-limits-field/budget-category-limits-field';
+import { BudgetCurrencyChip } from '../../../budget/components/budget-currency-chip/budget-currency-chip';
 import { BudgetNameField } from '../../../budget/components/budget-name-field/budget-name-field';
 import { BudgetOverallLimitField } from '../../../budget/components/budget-overall-limit-field/budget-overall-limit-field';
 import { BudgetPeriodStartDayField } from '../../../budget/components/budget-period-start-day-field/budget-period-start-day-field';
@@ -33,6 +34,7 @@ export default function BudgetSetupScreen() {
     const { form, handleSubmit, isEditing, isLoading } = useBudgetForm({ editingId });
 
     const useLastDay = useWatch({ control: form.control, name: 'useLastDayOfMonth' });
+    const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
     const { isValid } = form.formState;
 
     if (isLoading) {
@@ -40,6 +42,7 @@ export default function BudgetSetupScreen() {
     }
 
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
+    const currencyChip = isPositiveNumber(instrumentId) ? <BudgetCurrencyChip instrumentId={instrumentId} /> : null;
 
     const footer = (
         <View className="flex-row gap-x-md">
@@ -57,6 +60,7 @@ export default function BudgetSetupScreen() {
             >
                 <BudgetNameField control={form.control} />
                 <BudgetOverallLimitField control={form.control} autoFocus={!isEditing} />
+                {currencyChip}
                 <BudgetUseLastDayField control={form.control} />
                 {useLastDay ? null : <BudgetPeriodStartDayField control={form.control} />}
                 <BudgetPushEnabledField control={form.control} />

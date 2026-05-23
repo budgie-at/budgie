@@ -29,7 +29,8 @@ class BudgetService {
                     periodStartDay: input.periodStartDay,
                     useLastDayOfMonth: input.useLastDayOfMonth,
                     overallLimit: input.overallLimit,
-                    pushEnabled: input.pushEnabled
+                    pushEnabled: input.pushEnabled,
+                    instrumentId: input.instrumentId
                 },
                 tx
             );
@@ -58,7 +59,8 @@ class BudgetService {
                     ...(isDefined(input.periodStartDay) && { periodStartDay: input.periodStartDay }),
                     ...(isDefined(input.useLastDayOfMonth) && { useLastDayOfMonth: input.useLastDayOfMonth }),
                     ...(isDefined(input.overallLimit) && { overallLimit: input.overallLimit }),
-                    ...(isDefined(input.pushEnabled) && { pushEnabled: input.pushEnabled })
+                    ...(isDefined(input.pushEnabled) && { pushEnabled: input.pushEnabled }),
+                    ...(isDefined(input.instrumentId) && { instrumentId: input.instrumentId })
                 },
                 tx
             );
