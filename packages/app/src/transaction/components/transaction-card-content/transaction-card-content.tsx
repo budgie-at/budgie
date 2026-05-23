@@ -5,7 +5,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
-import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -24,15 +23,10 @@ interface Props {
 export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel }: Props) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
-    const [openConsolidationSourceModal] = useConsolidationSourceModal();
 
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
     const refundedPillTestID = TransactionCardSelector.RefundedPill(transaction.id);
-
-    const handleRefundPillPress = () => {
-        void openConsolidationSourceModal({ transactionId: transaction.id });
-    };
 
     return (
         <>
@@ -52,7 +46,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                         </Text>
                     ) : null}
 
-                    <RefundedPill transaction={transaction} onPress={handleRefundPillPress} testID={refundedPillTestID} />
+                    <RefundedPill transaction={transaction} testID={refundedPillTestID} />
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
                         <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
