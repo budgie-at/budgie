@@ -1018,7 +1018,7 @@ msgstr "Редагувати наявне"
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:74
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -1658,8 +1658,11 @@ msgstr "Немає елементів для збереження"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:61
+msgid "No matching expenses"
+msgstr "Немає відповідних витрат"
+
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx:25
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:64
 #: src/transaction/components/transaction-list/transaction-list.tsx:71
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -1969,11 +1972,11 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
-#: src/transaction/service/transaction-refund.service.ts:84
+#: src/transaction/service/transaction-refund.service.ts:81
 msgid "Refund amount cannot exceed the expense"
 msgstr "Сума повернення не може перевищувати витрату"
 
-#: src/transaction/service/transaction-refund.service.ts:72
+#: src/transaction/service/transaction-refund.service.ts:64
 msgid "Refund conversion starts from an income"
 msgstr "Перетворення на повернення починається з доходу"
 
@@ -2087,7 +2090,7 @@ msgstr "Шукати контакти..."
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:33
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:30
 msgid "Search expenses refunded by this income"
 msgstr "Пошук витрат для цього повернення"
 
@@ -2245,7 +2248,7 @@ msgstr "Вибрати тип"
 msgid "Selected"
 msgstr "Вибрано"
 
-#: src/transaction/service/transaction-refund.service.ts:76
+#: src/transaction/service/transaction-refund.service.ts:73
 msgid "Selected transaction is already consolidated"
 msgstr "Вибрану транзакцію вже об'єднано"
 
@@ -2557,8 +2560,8 @@ msgstr "Транзакція повинна мати рахунок призна
 msgid "Transaction must have a source account"
 msgstr "Транзакція повинна мати рахунок-джерело"
 
-#: src/transaction/service/transaction-refund.service.ts:54
-#: src/transaction/service/transaction-refund.service.ts:80
+#: src/transaction/service/transaction-refund.service.ts:53
+#: src/transaction/service/transaction-refund.service.ts:77
 #: src/transaction/service/transaction-transfer.service.ts:117
 msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
@@ -2610,6 +2613,10 @@ msgstr "Переклад"
 msgid "Translations ready"
 msgstr "Переклади готові"
 
+#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:62
+msgid "Try a different merchant, amount, or date."
+msgstr "Спробуйте іншого продавця, суму або дату."
+
 #: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/app/contact-selector.tsx:40
 #: src/app/currency-selector.tsx:52
@@ -2632,10 +2639,6 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Спробувати знову"
-
-#: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx:65
-msgid "Try another search or choose a same-currency expense with a valid refund amount."
-msgstr "Спробуйте інший пошук або виберіть витрату в тій самій валюті з коректною сумою повернення."
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11
