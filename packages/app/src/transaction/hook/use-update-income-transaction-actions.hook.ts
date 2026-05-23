@@ -1,4 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
+import { router } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -38,7 +39,7 @@ export const useUpdateIncomeTransactionActions = ({
             if (isDefined(canonicalId)) {
                 const expenseRoute = `/transactions/${canonicalId}/expense` as const;
 
-                dismissAllOrReplace(expenseRoute);
+                router.replace(expenseRoute);
             }
 
             return null;

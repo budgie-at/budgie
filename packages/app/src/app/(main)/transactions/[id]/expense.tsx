@@ -21,6 +21,7 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+import { getTransactionHref } from '../../../../transaction/utils/get-transaction-href.util';
 
 import type { UpdateTransactionFormPropsInterface } from '../../../../transaction/interface/update-transaction-form-props.interface';
 /* jscpd:ignore-end */
@@ -109,7 +110,10 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
 /* jscpd:ignore-start */
 export default function UpdateExpenseTransactionPage() {
     const { id } = useLocalSearchParams<IdParamInterface>();
-    const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
+    const transactionId = Number(id);
+    const { transaction, isLoading } = useGetTransactionByIdQuery(transactionId);
+    const parentTransactionId = transaction?.consolidationParentTransactionId ?? 0;
+    const { transaction: parentTransaction, isLoading: isParentLoading } = useGetTransactionByIdQuery(parentTransactionId);
 
     if (isLoading) {
         return null;
@@ -119,6 +123,10 @@ export default function UpdateExpenseTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />;
+    if (isDefined(transaction.consolidationParentTransactionId)) {
+        return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+    }
+
+    return <UpdateExpenseForm transaction={transaction} transactionId={transactionId} />;
 }
 /* jscpd:ignore-end */
