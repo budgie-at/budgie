@@ -17,6 +17,7 @@ import { budgetAlertService } from './budget-alert.service';
 
 import type { BudgetAlertTriggerInterface } from '../interface/budget-alert-trigger.interface';
 import type { BudgetSpentInterface } from '../interface/budget-spent.interface';
+import type { BudgetEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertMonitorService {
     private static readonly MINIMUM_INTERVAL_SECONDS = 15 * 60;
@@ -29,11 +30,12 @@ class BudgetAlertMonitorService {
             return [];
         }
 
+        const periodStartMs = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date()).periodStart.getTime();
         const spent = await this.computeSpent(budget.periodStartDay, budget.useLastDayOfMonth);
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
-        const newTriggers = await budgetAlertService.evaluateAndPersist(budget, spent, categoryLimits);
+        const newTriggers = await budgetAlertService.evaluate(budget, spent, categoryLimits);
 
-        await this.postTriggers(newTriggers, budget.overallLimit, spent);
+        await this.postAndMarkTriggers(newTriggers, budget, periodStartMs, spent);
 
         return newTriggers;
     }
@@ -64,10 +66,22 @@ class BudgetAlertMonitorService {
         return computeBudgetSpent(entries, baseInstrumentId);
     }
 
-    private async postTriggers(triggers: BudgetAlertTriggerInterface[], overallLimit: number, spent: BudgetSpentInterface): Promise<void> {
+    private async postAndMarkTriggers(
+        triggers: BudgetAlertTriggerInterface[],
+        budget: Pick<BudgetEntityInterface, 'id' | 'overallLimit'>,
+        periodStartMs: number,
+        spent: BudgetSpentInterface
+    ): Promise<void> {
         for (const trigger of triggers) {
             // eslint-disable-next-line no-await-in-loop
-            await this.postTrigger(trigger, overallLimit, spent);
+            const posted = await this.postTrigger(trigger, budget.overallLimit, spent)
+                .then(() => true)
+                .catch(() => false);
+
+            if (posted) {
+                // eslint-disable-next-line no-await-in-loop
+                await budgetAlertService.markDelivered(budget.id, periodStartMs, [trigger]);
+            }
         }
     }
 
