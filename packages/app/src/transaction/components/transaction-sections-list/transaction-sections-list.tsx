@@ -1,5 +1,4 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list/react-native';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useRouter } from 'expo-router';
 import { ReactElement, useState } from 'react';
@@ -8,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -113,17 +113,15 @@ export const TransactionSectionsList = ({
     return (
         <>
             <View className="flex-1">
-                <LegendList
+                <BudgieLegendList
                     style={LIST_STYLE}
                     data={flatData}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
                     estimatedItemSize={TRANSACTION_LIST_SIZING.estimatedItemSize}
                     stickyHeaderIndices={getStickyIndices(flatData)}
-                    recycleItems
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
-                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
                     ListEmptyComponent={listEmptyState}
                     getItemType={TRANSACTION_LIST_SIZING.getItemType}
