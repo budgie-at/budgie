@@ -1,5 +1,4 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { LegendList } from '@legendapp/list/react-native';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { ReactElement } from 'react';
@@ -7,6 +6,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
@@ -67,16 +67,15 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: RulesListPageP
     return (
         <Page testID={RulesPageSelector.Page} header={<PageHeader onGoBack={onGoBack} title={t`Rules`} />} withBlur>
             {isNotEmptyArray(visibleRules) ? (
-                <LegendList
+                <BudgieLegendList
                     style={LEGEND_LIST_STYLE}
                     contentContainerStyle={CONTENT_CONTAINER_STYLE}
                     ListHeaderComponent={listHeaderComponent}
+                    estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                     data={visibleRules}
                     renderItem={renderItem}
                     keyExtractor={getKeyExtractor}
                     estimatedItemSize={RULES_LIST_SIZING.estimatedItemSize}
-                    recycleItems
-                    showsVerticalScrollIndicator={false}
                     ListFooterComponent={listFooter}
                 />
             ) : (
