@@ -33,6 +33,7 @@ executionOrder:
         - 27.mcc-default-category.flow
         - 28.budget.flow
         - 29.budget-multi-currency.flow
+        - 30.budget-category-readd.flow
 
 platform:
     ios:
