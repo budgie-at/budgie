@@ -15,6 +15,7 @@ import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generat
 import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { RefundedPill } from '../../../../transaction/components/refunded-pill/refunded-pill';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
+import { TransactionCardSelector } from '../../../../transaction/components/transaction-card/transaction-card.selector';
 import { UpdateTransactionActionsMenu } from '../../../../transaction/components/update-transaction-actions-menu/update-transaction-actions-menu';
 import { useUpdateExpenseTransactionActions } from '../../../../transaction/hook/use-update-expense-transaction-actions.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
@@ -88,7 +89,13 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateTransactionForm
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={sourceEntry.mccCategoryId ?? null}
-                    amountTopContent={<RefundedPill transaction={transaction} onPress={handleOpenRefundSources} />}
+                    amountTopContent={
+                        <RefundedPill
+                            transaction={transaction}
+                            onPress={handleOpenRefundSources}
+                            testID={TransactionCardSelector.RefundedPill(transaction.id)}
+                        />
+                    }
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
