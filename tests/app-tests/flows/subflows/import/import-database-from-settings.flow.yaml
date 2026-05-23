@@ -4,6 +4,7 @@ env:
     FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
     FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
     FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
+    FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT || ''}
 ---
 - openLink: 'budgie://settings?anchor=data'
 
@@ -13,6 +14,14 @@ env:
       commands:
           - tapOn: 'Open'
 
+- scrollUntilVisible:
+      element:
+          id: 'SettingsPage.ImportDatabaseCard'
+      direction: UP
+      timeout: 5000
+      centerElement: true
+      waitToSettleTimeoutMs: 1000
+
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.ImportDatabaseCard'
@@ -20,6 +29,7 @@ env:
 
 - tapOn:
       id: 'SettingsPage.ImportDatabaseCard'
+      retryTapIfNoChange: true
 
 - runFlow:
       file: select-file-from-app-provider.flow.yaml
@@ -28,6 +38,7 @@ env:
           FILE_PICKER_INITIAL_SCROLL_SHIFT: ${FILE_PICKER_INITIAL_SCROLL_SHIFT}
           FILE_PICKER_SCROLL_SHIFT: ${FILE_PICKER_SCROLL_SHIFT}
           FILE_PICKER_REPEAT_TAP: ${FILE_PICKER_REPEAT_TAP}
+          FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
 
 - extendedWaitUntil:
       visible: 'Importing a database will replace all current data.*'
