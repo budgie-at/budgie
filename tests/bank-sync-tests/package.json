@@ -12,6 +12,7 @@
     "dependencies": {
         "@budgie/bank-sync": "workspace:*",
         "@budgie/contracts": "workspace:*",
+        "@rnw-community/shared": "^2.0.0",
         "better-sqlite3": "^11.7.0",
         "drizzle-orm": "^0.45.2",
         "msw": "^2.7.0",

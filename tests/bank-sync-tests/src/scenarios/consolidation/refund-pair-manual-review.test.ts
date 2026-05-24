@@ -1,11 +1,28 @@
 import { describe, expect, it } from 'vitest';
 
 import { PRECISION } from '@budgie/contracts';
+import { isDefined } from '@rnw-community/shared';
 
 import { fetchTransactionById, findMccByCode, seed, seedRefundedExpense } from '../../harness';
 
 import { refundPairRepository } from '@app/@generic/drizzle/db/db';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+
+const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
+    const mcc = findMccByCode('5621');
+
+    return seedRefundedExpense({
+        accountId,
+        ...(isDefined(refundAccountId) && { refundAccountId }),
+        expenseAmount: 103.2 * PRECISION,
+        refundAmounts: [102 * PRECISION],
+        title: 'Seezona',
+        refundTitle: 'Скасування. Seezona,Stockholm,SE',
+        mccCategoryId: mcc.id,
+        refundMccCategoryId: mcc.id,
+        refundDelaySeconds: 50 * 24 * 60 * 60
+    });
+};
 
 describe('consolidation/refund-pair-manual-review', () => {
     it('counts a prefix-stripped + same-MCC pair in manualReviewCandidateCount but does not auto-consolidate it', async () => {
@@ -33,17 +50,7 @@ describe('consolidation/refund-pair-manual-review', () => {
 
     it('recommends a localized cancellation with a location suffix for manual review', async () => {
         const account = seed.account({ externalId: 'mono-card' });
-        const mcc = findMccByCode('5621');
-        const { refunds } = seedRefundedExpense({
-            accountId: account.id,
-            expenseAmount: 103.2 * PRECISION,
-            refundAmounts: [102 * PRECISION],
-            title: 'Seezona',
-            refundTitle: 'Скасування. Seezona,Stockholm,SE',
-            mccCategoryId: mcc.id,
-            refundMccCategoryId: mcc.id,
-            refundDelaySeconds: 50 * 24 * 60 * 60
-        });
+        const { refunds } = seedSeezonaRefund(account.id);
 
         const preview = await transferConsolidationService.preview();
         const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
@@ -56,18 +63,7 @@ describe('consolidation/refund-pair-manual-review', () => {
     it('recommends same-currency refunds from another account for manual review', async () => {
         const expenseAccount = seed.account({ title: 'Expense Card', externalId: 'mono-expense-card' });
         const refundAccount = seed.account({ title: 'Refund Card', externalId: 'mono-refund-card' });
-        const mcc = findMccByCode('5621');
-        const { refunds } = seedRefundedExpense({
-            accountId: expenseAccount.id,
-            refundAccountId: refundAccount.id,
-            expenseAmount: 103.2 * PRECISION,
-            refundAmounts: [102 * PRECISION],
-            title: 'Seezona',
-            refundTitle: 'Скасування. Seezona,Stockholm,SE',
-            mccCategoryId: mcc.id,
-            refundMccCategoryId: mcc.id,
-            refundDelaySeconds: 50 * 24 * 60 * 60
-        });
+        const { refunds } = seedSeezonaRefund(expenseAccount.id, refundAccount.id);
 
         const preview = await transferConsolidationService.preview();
         const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
