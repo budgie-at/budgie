@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 
 import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
+import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
@@ -35,6 +36,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private timer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
     private subsystemUnsubscribe: (() => void) | null = null;
+    private foregroundWorkloadUnsubscribe: (() => void) | null = null;
     private started = false;
 
     constructor() {
@@ -55,6 +57,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 this.haltTimer();
             }
         });
+        this.foregroundWorkloadUnsubscribe = foregroundWorkloadService.subscribe(this.handleForegroundWorkloadChange);
         if (this.isSubsystemReady()) {
             this.scheduleDrain();
         }
@@ -72,6 +75,8 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.appStateSubscription = null;
         this.subsystemUnsubscribe?.();
         this.subsystemUnsubscribe = null;
+        this.foregroundWorkloadUnsubscribe?.();
+        this.foregroundWorkloadUnsubscribe = null;
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
     }
 
@@ -153,11 +158,23 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     protected isSafe(): boolean {
-        return this.started && this.isSubsystemReady() && AppState.currentState === 'active';
+        return this.started && this.isSubsystemReady() && AppState.currentState === 'active' && !foregroundWorkloadService.isActive();
     }
 
     private readonly handleAppState = (state: AppStateStatus): void => {
         this.onAppStateChange(state);
+    };
+
+    private readonly handleForegroundWorkloadChange = (): void => {
+        if (foregroundWorkloadService.isActive()) {
+            this.haltTimer();
+
+            return;
+        }
+
+        if (this.canScheduleDrain()) {
+            this.scheduleDrain();
+        }
     };
 
     @Log(state => `enter state=${state}`, 'done', error => `throw error=${getErrorMessage(error)}`)

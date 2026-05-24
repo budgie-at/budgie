@@ -61,6 +61,33 @@ export class TransactionEntryRepository {
             );
     }
 
+    @Log(
+        (transactionIds, tx) => `enter transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
+        (result, transactionIds, tx) =>
+            `done result=${String(result)} transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
+        (error, transactionIds, tx) =>
+            `throw transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async hasMovedSourceEntries(transactionIds: number[], tx?: DB): Promise<boolean> {
+        if (!isNotEmptyArray(transactionIds)) {
+            return false;
+        }
+
+        const [entry] = await (tx ?? this.db)
+            .select({ id: TransactionEntryEntityTable.id })
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                    isNull(TransactionEntryEntityTable.deletedAt)
+                )
+            )
+            .limit(1);
+
+        return isDefined(entry);
+    }
+
     async bulkCreate(inputs: TransactionEntryCreateEntityInterface[], tx?: DB): Promise<TransactionEntryEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionEntryEntityTable).values(inputs).returning();
